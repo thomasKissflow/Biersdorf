@@ -1,0 +1,59 @@
+{
+  "Config_Key": "REM:current",
+  "Config_Kind": "Reminders",
+  "Version_Label": "current",
+  "Config_State": "Published",
+  "Payload_JSON": {
+    "reminders": [
+      {
+        "id": "rem-1",
+        "event": "Supplier task not started",
+        "recipient": "Supplier contacts",
+        "afterDays": 7,
+        "escalateTo": "RMM case owner",
+        "escalateAfterDays": 14,
+        "enabled": true
+      },
+      {
+        "id": "rem-2",
+        "event": "Query or document request unanswered",
+        "recipient": "Supplier contacts",
+        "afterDays": 5,
+        "escalateTo": "Requesting reviewer + RMM",
+        "escalateAfterDays": 10,
+        "enabled": true
+      },
+      {
+        "id": "rem-3",
+        "event": "Review task idle",
+        "recipient": "Assigned reviewer",
+        "afterDays": 5,
+        "escalateTo": "RMM case owner",
+        "escalateAfterDays": 10,
+        "enabled": true
+      },
+      {
+        "id": "rem-5",
+        "event": "Final release pending",
+        "recipient": "Supplier contacts",
+        "afterDays": 3,
+        "escalateTo": "RMM case owner",
+        "escalateAfterDays": 7,
+        "enabled": true
+      },
+      {
+        "id": "rem-6",
+        "event": "Certificate expiring (closed case)",
+        "recipient": "Supplier contacts",
+        "afterDays": -30,
+        "escalateTo": "QM",
+        "escalateAfterDays": 0,
+        "enabled": false
+      }
+    ]
+  },
+  "Content_Hash": "cd560c67e354425f56120aa56f27c509cf24c8cca3f5a37b283b7c8d4d290d96",
+  "Published_At": "2026-09-21T10:00:00.000Z",
+  "Change_Note": "Seed (plan v5 §11.2).",
+  "Evaluator_Version": "prototype-domain@vendor"
+}

@@ -1,0 +1,3479 @@
+{
+ "suite": "S-OP",
+ "run": "R4",
+ "startedAt": "2026-10-21T19:27:53.022Z",
+ "savedAt": "2026-10-21T19:27:53.149Z",
+ "counts": {
+  "pass": 19,
+  "fail": 0,
+  "blocked": 0,
+  "not-run": 0
+ },
+ "steps": [
+  {
+   "name": "S1 supplier: the run's supplier with the self contact",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Supplier (raw)",
+      "value": {
+       "Supplier_Code": "ZZT-N21-R4-SUP-OP",
+       "Supplier_Legal_Name": "ZZT-N21-R4 S-OP Supplier GmbH",
+       "DUNS_Number": "921013400",
+       "Supplier_Country_Code": "DE",
+       "Supplier_Kind": "Manufacturer",
+       "Supplier_Active": "Yes",
+       "contacts": [
+        {
+         "key": "u-ZZT-N21-R4-SUP-OP-1",
+         "name": "ZZT-N21-R4 Thomas (self contact)",
+         "portalUser": "UsRmmKatrin",
+         "canConfirm": "Yes",
+         "active": "Yes"
+        },
+        {
+         "key": "u-ZZT-N21-R4-SUP-OP-2",
+         "name": "ZZT-N21-R4 Mira Lindqvist",
+         "portalUser": null,
+         "canConfirm": "No",
+         "active": "Yes"
+        }
+       ]
+      }
+     },
+     {
+      "what": "the supplier as RMM's screen maps it",
+      "value": {
+       "supplierId": "ZZT-N21-R4-SUP-OP",
+       "contacts": 2
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "addSupplier: the writer reports ok",
+      "ok": true
+     },
+     {
+      "label": "Supplier_Code and the name carry the run",
+      "ok": true
+     },
+     {
+      "label": "two contact rows, no duplicate",
+      "ok": true,
+      "detail": 2
+     },
+     {
+      "label": "the first contact is the self contact (portal user, its e-mail)",
+      "ok": true
+     },
+     {
+      "label": "RMM's screen maps the self contact to this supplier",
+      "ok": true,
+      "detail": "ZZT-N21-R4-SUP-OP"
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "not the app's code": "the domain's new supplier code is renamed to ZZT-N21-R4-SUP-OP before the writer runs (the run tag)",
+     "addSupplier: hand-offs": [],
+     "not the app's code (2)": "the self contact's portal user and login e-mail are a form edit (Contacts_Portal_User_Id, Contacts_Email): the administrator's invitation, which the app has no writer for",
+     "kissflowCalls (estimated live)": 29,
+     "integration runs (offline fakes)": []
+    }
+   },
+   "ms": 11,
+   "at": "2026-10-21T19:27:53.023Z"
+  },
+  {
+   "name": "S2 case: createCase, I-1 creates its CIQP Request",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Case (raw)",
+      "value": {
+       "Case_Code": "ZZT-N21-R4-OPR4",
+       "Supplier_Code": "ZZT-N21-R4-SUP-OP",
+       "Trade_Name": "ZZT-N21-R4 Glycerin 99.5 (S-OP)",
+       "Portal_Request_Item_Id": "PkReq1",
+       "Portal_Contact_Ids": "UsRmmKatrin",
+       "_status": "InProgress",
+       "_current_step": "Waiting for supplier: CIQ"
+      }
+     },
+     {
+      "what": "CIQP Request (raw)",
+      "value": {
+       "Case_Code": "ZZT-N21-R4-OPR4",
+       "App_Case_Item_Id": "PkCase5",
+       "Supplier_Code": "ZZT-N21-R4-SUP-OP",
+       "Case_Phase_Label": "Filling in",
+       "Assigned_Contacts": [
+        "UsRmmKatrin"
+       ],
+       "_status": "InProgress",
+       "_current_step": "Supplier: fill in the CIQ"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "createCase: the writer reports ok",
+      "ok": true
+     },
+     {
+      "label": "I-1 linked a CIQP Request on the case (Portal_Request_Item_Id)",
+      "ok": true
+     },
+     {
+      "label": "the case is at \"Waiting for supplier: CIQ\"",
+      "ok": true,
+      "detail": "Waiting for supplier: CIQ"
+     },
+     {
+      "label": "the case's portal contact is the self contact's user",
+      "ok": true
+     },
+     {
+      "label": "the request names the case and is assigned to the self contact",
+      "ok": true
+     },
+     {
+      "label": "the request is at \"Supplier: fill in the CIQ\"",
+      "ok": true,
+      "detail": "Supplier: fill in the CIQ"
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "createCase: hand-offs": [
+      {
+       "code": "case.started",
+       "status": "sent"
+      }
+     ],
+     "I-1 poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "kissflowCalls (estimated live)": 9,
+     "integration runs (offline fakes)": [
+      {
+       "code": "case.started",
+       "ok": true,
+       "detail": "created CIQP Request PkReq1 and linked it on the case"
+      }
+     ]
+    }
+   },
+   "ms": 3,
+   "at": "2026-10-21T19:27:53.035Z"
+  },
+  {
+   "name": "S3 completeness: the supplier fills in and confirms (portal), I-2",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQP Request (raw)",
+      "value": {
+       "Completeness_Confirm": "Confirmed",
+       "Completeness_At": "2026-10-21T19:27:53Z",
+       "Case_Phase_Label": "Filling in",
+       "_status": "InProgress",
+       "_current_step": "Supplier: keep the CIQ up to date"
+      }
+     },
+     {
+      "what": "CIQ Case (raw)",
+      "value": {
+       "Completeness_Confirm": "Confirmed",
+       "Completeness_At": "2026-10-21T19:27:53Z",
+       "Case_Phase": "Review",
+       "_status": "InProgress",
+       "_current_step": "Beiersdorf review and final release"
+      }
+     },
+     {
+      "what": "the case as RMM's screen maps it",
+      "value": {
+       "phase": "review"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the supplier's portal lists the request as a task",
+      "ok": true
+     },
+     {
+      "label": "no completeness blocker left",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the request's completeness is confirmed by the self contact (its e-mail)",
+      "ok": true
+     },
+     {
+      "label": "the request moved on to \"Supplier: keep the CIQ up to date\"",
+      "ok": true,
+      "detail": "Supplier: keep the CIQ up to date"
+     },
+     {
+      "label": "I-2 wrote the completeness and phase Review on the case",
+      "ok": true
+     },
+     {
+      "label": "RMM's screen shows the case in review",
+      "ok": true
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "I-2 poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "case step after I-2": "Beiersdorf review and final release",
+     "kissflowCalls (estimated live)": 32,
+     "integration runs (offline fakes)": [
+      {
+       "code": "requestChanged",
+       "ok": true,
+       "detail": "copied the 15 supplier-data fields to CIQ Case PkCase5"
+      },
+      {
+       "code": "requestChanged",
+       "ok": true,
+       "detail": "copied the 15 supplier-data fields to CIQ Case PkCase5"
+      },
+      {
+       "code": "completenessConfirmed",
+       "ok": true,
+       "detail": "recorded the completeness on CIQ Case PkCase5 and moved it to review"
+      }
+     ]
+    }
+   },
+   "ms": 23,
+   "at": "2026-10-21T19:27:53.039Z"
+  },
+  {
+   "name": "S4 reviews: ensureReviews starts the scope's review tracks",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "the case's review tracks as RMM's screen maps them",
+      "value": [
+       {
+        "dept": "RMM",
+        "status": "in-review",
+        "item": "PkRev11"
+       },
+       {
+        "dept": "REG",
+        "status": "in-review",
+        "item": "PkRev16"
+       },
+       {
+        "dept": "SAF",
+        "status": "in-review",
+        "item": "PkRev21"
+       },
+       {
+        "dept": "QM",
+        "status": "in-review",
+        "item": "PkRev26"
+       },
+       {
+        "dept": "MIC",
+        "status": "in-review",
+        "item": "PkRev31"
+       },
+       {
+        "dept": "SUS",
+        "status": "in-review",
+        "item": "PkRev36"
+       }
+      ]
+     },
+     {
+      "what": "CIQ Review items (raw)",
+      "value": [
+       {
+        "Review_Key": "ZZT-N21-R4-OPR4-RMM-1",
+        "Review_Dept": "RMM",
+        "Case_Item_Id": "PkCase5",
+        "Round_No": 1,
+        "_status": "InProgress",
+        "_current_step": "Review – RMM"
+       },
+       {
+        "Review_Key": "ZZT-N21-R4-OPR4-QM-1",
+        "Review_Dept": "QM",
+        "Case_Item_Id": "PkCase5",
+        "Round_No": 1,
+        "_status": "InProgress",
+        "_current_step": "Review – QM"
+       },
+       {
+        "Review_Key": "ZZT-N21-R4-OPR4-SAF-1",
+        "Review_Dept": "SAF",
+        "Case_Item_Id": "PkCase5",
+        "Round_No": 1,
+        "_status": "InProgress",
+        "_current_step": "Review – Safety"
+       },
+       {
+        "Review_Key": "ZZT-N21-R4-OPR4-REG-1",
+        "Review_Dept": "REG",
+        "Case_Item_Id": "PkCase5",
+        "Round_No": 1,
+        "_status": "InProgress",
+        "_current_step": "Review – Regulatory"
+       }
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "ensureReviews ran without a failure",
+      "ok": true,
+      "detail": [
+       "Started in Kissflow: ZZT-N21-R4-OPR4 reviews for RMM, Regulatory, Safety, QM, Microbiology, Sustainability."
+      ]
+     },
+     {
+      "label": "RMM's review track exists",
+      "ok": true
+     },
+     {
+      "label": "the RMM review sits at \"Review – RMM\"",
+      "ok": true,
+      "detail": "Review – RMM"
+     },
+     {
+      "label": "the RMM review names the case",
+      "ok": true
+     },
+     {
+      "label": "the QM review sits at \"Review – QM\"",
+      "ok": true,
+      "detail": "Review – QM"
+     },
+     {
+      "label": "the QM review names the case",
+      "ok": true
+     },
+     {
+      "label": "the SAF review sits at \"Review – Safety\"",
+      "ok": true,
+      "detail": "Review – Safety"
+     },
+     {
+      "label": "the SAF review names the case",
+      "ok": true
+     },
+     {
+      "label": "the REG review sits at \"Review – Regulatory\"",
+      "ok": true,
+      "detail": "Review – Regulatory"
+     },
+     {
+      "label": "the REG review names the case",
+      "ok": true
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "load effects": [
+      {
+       "effect": "ensureReviews",
+       "ok": true,
+       "message": "Started in Kissflow: ZZT-N21-R4-OPR4 reviews for RMM, Regulatory, Safety, QM, Microbiology, Sustainability."
+      }
+     ],
+     "the run's departments without a review track": [],
+     "kissflowCalls (estimated live)": 65,
+     "integration runs (offline fakes)": []
+    }
+   },
+   "ms": 7,
+   "at": "2026-10-21T19:27:53.062Z"
+  },
+  {
+   "name": "P1 QM 1 raise: op.round makes the CIQP Query",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Open Point (raw)",
+      "value": {
+       "OP_Key": "OP-OPR4-01",
+       "OP_Dept": "QM",
+       "OP_Kind": "Query",
+       "Round_No": 1,
+       "Query_Key": "OP-OPR4-01-R1",
+       "OP_Progress": "Open",
+       "OP_Outcome": null,
+       "Question_Text": "ZZT-N21-R4 QM P1: please confirm the specification limits for section K3 and name the test method.",
+       "Supplier_Justification": "ZZT-N21-R4 QM P1: needed for the QM review.",
+       "Supplier_Due_Date": "2026-11-04",
+       "Portal_Query_Item_Id": "PkQry4",
+       "Response_Kind": null,
+       "Response_Text": null,
+       "Return_Reason": null,
+       "Outcome_Reason": null,
+       "Closed_At": null,
+       "Closed_By": [],
+       "Raiser_Assignee": [
+        "UsRmmKatrin"
+       ],
+       "Thread_JSON (entries)": 1,
+       "_status": "InProgress",
+       "_current_step": "Open point – QM"
+      }
+     },
+     {
+      "what": "CIQP Query (raw)",
+      "value": {
+       "Query_Key": "OP-OPR4-01-R1",
+       "Round_No": 1,
+       "App_Open_Point_Id": "PkOp43",
+       "Case_Code": "ZZT-N21-R4-OPR4",
+       "Kind_Label": "Question",
+       "Responsible_Department": "Quality Management",
+       "Ref_Section_Key": "K3",
+       "Ref_Label": "K3 · Storage conditions and handling",
+       "Question_Text": "ZZT-N21-R4 QM P1: please confirm the specification limits for section K3 and name the test method.",
+       "Supplier_Justification": "ZZT-N21-R4 QM P1: needed for the QM review.",
+       "Supplier_Due_Date": "2026-11-04",
+       "Edited_At": null,
+       "Response_Kind": null,
+       "Response_Text": null,
+       "Assigned_Contacts": [
+        "UsRmmKatrin"
+       ],
+       "_status": "InProgress",
+       "_current_step": "Supplier: respond"
+      }
+     },
+     {
+      "what": "the open point as the raiser's screen maps it",
+      "value": {
+       "id": "OP-OPR4-01",
+       "dept": "QM",
+       "kind": "query",
+       "ref": {
+        "sectionId": "K3",
+        "label": "K3 · Storage conditions and handling"
+       },
+       "question": "ZZT-N21-R4 QM P1: please confirm the specification limits for section K3 and name the test method.",
+       "justification": "ZZT-N21-R4 QM P1: needed for the QM review.",
+       "responsibleId": "UsRmmKatrin",
+       "due": "2026-11-04",
+       "rounds": 1,
+       "status": "open",
+       "createdBy": "UsRmmKatrin",
+       "thread": [
+        {
+         "id": "ZZT-N21-R4-OPR4-m1-1",
+         "at": "2026-10-21T19:27:53.000Z",
+         "by": "UsRmmKatrin",
+         "side": "internal",
+         "action": "raised",
+         "text": "ZZT-N21-R4 QM P1: please confirm the specification limits for section K3 and name the test method."
+        }
+       ],
+       "edits": []
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the case has a QM review track to raise on",
+      "ok": true,
+      "detail": [
+       "RMM",
+       "REG",
+       "SAF",
+       "QM",
+       "MIC",
+       "SUS"
+      ]
+     },
+     {
+      "label": "raiseOpenPoint: the writer reports ok",
+      "ok": true
+     },
+     {
+      "label": "op.round and history.updated went out",
+      "ok": true
+     },
+     {
+      "label": "op.round linked a CIQP Query on the point (Portal_Query_Item_Id)",
+      "ok": true
+     },
+     {
+      "label": "the point is at \"Open point – QM\"",
+      "ok": true,
+      "detail": "Open point – QM"
+     },
+     {
+      "label": "it is held by the raiser (Raiser_Assignee, the step's assignee)",
+      "ok": true
+     },
+     {
+      "label": "its fields are the point's: key, department, round 1, open",
+      "ok": true
+     },
+     {
+      "label": "the query is round 1: Query_Key OP-OPR4-01-R1, Round_No 1",
+      "ok": true
+     },
+     {
+      "label": "the query names the point and the case",
+      "ok": true
+     },
+     {
+      "label": "the query has the point's question, note (justification) and due date",
+      "ok": true
+     },
+     {
+      "label": "the query's reference is the point's section",
+      "ok": true
+     },
+     {
+      "label": "the query's kind, department and supplier are the point's (the encoder's labels, the case's supplier code)",
+      "ok": true,
+      "detail": {
+       "Kind_Label": "Question",
+       "Responsible_Department": "Quality Management",
+       "Supplier_Code": "ZZT-N21-R4-SUP-OP"
+      }
+     },
+     {
+      "label": "the query is at \"Supplier: respond\"",
+      "ok": true,
+      "detail": "Supplier: respond"
+     },
+     {
+      "label": "the query is assigned to exactly the point's portal contacts, which are the request's (the self contact among them)",
+      "ok": true,
+      "detail": {
+       "query": [
+        "UsRmmKatrin"
+       ],
+       "point": [
+        "UsRmmKatrin"
+       ],
+       "request": [
+        "UsRmmKatrin"
+       ]
+      }
+     },
+     {
+      "label": "read back = written (the screens' fields, roundtrip opKeys, and the raiser's edits)",
+      "ok": true
+     },
+     {
+      "label": "the writers' index holds the point's task at its department step",
+      "ok": true
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "raiseOpenPoint: hand-offs": [
+      {
+       "code": "op.round",
+       "status": "sent"
+      },
+      {
+       "code": "history.updated",
+       "status": "sent"
+      }
+     ],
+     "open point": {
+      "opId": "OP-OPR4-01",
+      "itemId": "PkOp43"
+     },
+     "op.round poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "kissflowCalls (estimated live)": 48,
+     "integration runs (offline fakes)": [
+      {
+       "code": "op.round",
+       "ok": true,
+       "detail": "created CIQP Query PkQry4 (round 1) and linked it on the point"
+      },
+      {
+       "code": "history.updated",
+       "ok": true,
+       "detail": "wrote Questions_History_JSON on CIQP Request PkReq1"
+      }
+     ]
+    }
+   },
+   "ms": 8,
+   "at": "2026-10-21T19:27:53.069Z"
+  },
+  {
+   "name": "P1 QM 3 supplier answer, round 1 (portal writer, I-4)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQP Query (raw)",
+      "value": {
+       "Query_Key": "OP-OPR4-01-R1",
+       "Round_No": 1,
+       "App_Open_Point_Id": "PkOp43",
+       "Case_Code": "ZZT-N21-R4-OPR4",
+       "Kind_Label": "Question",
+       "Responsible_Department": "Quality Management",
+       "Ref_Section_Key": "K3",
+       "Ref_Label": "K3 · Storage conditions and handling",
+       "Question_Text": "ZZT-N21-R4 QM P1: please confirm the specification limits for section K3 and name the test method.",
+       "Supplier_Justification": "ZZT-N21-R4 QM P1: needed for the QM review.",
+       "Supplier_Due_Date": "2026-11-04",
+       "Edited_At": null,
+       "Response_Kind": "Answer",
+       "Response_Text": "ZZT-N21-R4 Supplier P1: the limits are in the specification of 12 Oct; method per Ph. Eur. 2.6.12.",
+       "Assigned_Contacts": [
+        "UsRmmKatrin"
+       ],
+       "_status": "Completed",
+       "_current_step": null
+      }
+     },
+     {
+      "what": "CIQ Open Point (raw)",
+      "value": {
+       "OP_Key": "OP-OPR4-01",
+       "OP_Dept": "QM",
+       "OP_Kind": "Query",
+       "Round_No": 1,
+       "Query_Key": "OP-OPR4-01-R1",
+       "OP_Progress": "In progress",
+       "OP_Outcome": null,
+       "Question_Text": "ZZT-N21-R4 QM P1: please confirm the specification limits for section K3 and name the test method.",
+       "Supplier_Justification": "ZZT-N21-R4 QM P1: needed for the QM review.",
+       "Supplier_Due_Date": "2026-11-04",
+       "Portal_Query_Item_Id": "PkQry4",
+       "Response_Kind": "Answer",
+       "Response_Text": "ZZT-N21-R4 Supplier P1: the limits are in the specification of 12 Oct; method per Ph. Eur. 2.6.12.",
+       "Return_Reason": null,
+       "Outcome_Reason": null,
+       "Closed_At": null,
+       "Closed_By": [],
+       "Raiser_Assignee": [
+        "UsRmmKatrin"
+       ],
+       "Thread_JSON (entries)": 1,
+       "_status": "InProgress",
+       "_current_step": "Open point – QM"
+      }
+     },
+     {
+      "what": "the open point as the raiser's screen maps it",
+      "value": {
+       "status": "in-progress",
+       "rounds": 1,
+       "question": "ZZT-N21-R4 QM P1: please confirm the specification limits for section K3 and name the test method.",
+       "thread": [
+        {
+         "side": "internal",
+         "action": "raised",
+         "text": "ZZT-N21-R4 QM P1: please confirm the specification limits for section K3 and name the test method."
+        },
+        {
+         "side": "supplier",
+         "action": "answered",
+         "text": "ZZT-N21-R4 Supplier P1: the limits are in the specification of 12 Oct; method per Ph. Eur. 2.6.12."
+        }
+       ]
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the supplier's portal shows the point's round-1 query as a task",
+      "ok": true,
+      "detail": "PkQry4"
+     },
+     {
+      "label": "the query holds the answer and has ended (Supplier: respond submitted)",
+      "ok": true,
+      "detail": "Completed"
+     },
+     {
+      "label": "I-4: the point has Response_* and OP_Progress \"In progress\"",
+      "ok": true
+     },
+     {
+      "label": "I-4: Supplier_Responsible_Email is the self contact's (its e-mail known)",
+      "ok": true
+     },
+     {
+      "label": "the point stays at \"Open point – QM\" with the raiser",
+      "ok": true,
+      "detail": "Open point – QM"
+     },
+     {
+      "label": "the raiser's screen shows the answer as the domain records it",
+      "ok": true
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "supplier side": "the portal's own writer (liveActions supplierRespond) as the self contact; it posts I-4 (queryAnswered)",
+     "I-4 poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "the answer is attributed to": "the self contact",
+     "kissflowCalls (estimated live)": 31,
+     "integration runs (offline fakes)": [
+      {
+       "code": "queryAnswered",
+       "ok": true,
+       "detail": "wrote the answer of CIQP Query PkQry4 on CIQ Open Point PkOp43"
+      }
+     ]
+    }
+   },
+   "ms": 6,
+   "at": "2026-10-21T19:27:53.077Z"
+  },
+  {
+   "name": "P2 SAF 1 raise: op.round makes the CIQP Query",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Open Point (raw)",
+      "value": {
+       "OP_Key": "OP-OPR4-02",
+       "OP_Dept": "SAF",
+       "OP_Kind": "Query",
+       "Round_No": 1,
+       "Query_Key": "OP-OPR4-02-R1",
+       "OP_Progress": "Open",
+       "OP_Outcome": null,
+       "Question_Text": "ZZT-N21-R4 SAF P2: please confirm the specification limits for section K2.2 and name the test method.",
+       "Supplier_Justification": "ZZT-N21-R4 SAF P2: needed for the SAF review.",
+       "Supplier_Due_Date": "2026-11-04",
+       "Portal_Query_Item_Id": "PkQry6",
+       "Response_Kind": null,
+       "Response_Text": null,
+       "Return_Reason": null,
+       "Outcome_Reason": null,
+       "Closed_At": null,
+       "Closed_By": [],
+       "Raiser_Assignee": [
+        "UsRmmKatrin"
+       ],
+       "Thread_JSON (entries)": 1,
+       "_status": "InProgress",
+       "_current_step": "Open point – Safety"
+      }
+     },
+     {
+      "what": "CIQP Query (raw)",
+      "value": {
+       "Query_Key": "OP-OPR4-02-R1",
+       "Round_No": 1,
+       "App_Open_Point_Id": "PkOp48",
+       "Case_Code": "ZZT-N21-R4-OPR4",
+       "Kind_Label": "Question",
+       "Responsible_Department": "Product Safety",
+       "Ref_Section_Key": "K2.2",
+       "Ref_Label": "K2.2 · Byproducts and contaminations",
+       "Question_Text": "ZZT-N21-R4 SAF P2: please confirm the specification limits for section K2.2 and name the test method.",
+       "Supplier_Justification": "ZZT-N21-R4 SAF P2: needed for the SAF review.",
+       "Supplier_Due_Date": "2026-11-04",
+       "Edited_At": null,
+       "Response_Kind": null,
+       "Response_Text": null,
+       "Assigned_Contacts": [
+        "UsRmmKatrin"
+       ],
+       "_status": "InProgress",
+       "_current_step": "Supplier: respond"
+      }
+     },
+     {
+      "what": "the open point as the raiser's screen maps it",
+      "value": {
+       "id": "OP-OPR4-02",
+       "dept": "SAF",
+       "kind": "query",
+       "ref": {
+        "sectionId": "K2.2",
+        "label": "K2.2 · Byproducts and contaminations"
+       },
+       "question": "ZZT-N21-R4 SAF P2: please confirm the specification limits for section K2.2 and name the test method.",
+       "justification": "ZZT-N21-R4 SAF P2: needed for the SAF review.",
+       "responsibleId": "UsRmmKatrin",
+       "due": "2026-11-04",
+       "rounds": 1,
+       "status": "open",
+       "createdBy": "UsRmmKatrin",
+       "thread": [
+        {
+         "id": "ZZT-N21-R4-OPR4-m2-1",
+         "at": "2026-10-21T19:27:53.000Z",
+         "by": "UsRmmKatrin",
+         "side": "internal",
+         "action": "raised",
+         "text": "ZZT-N21-R4 SAF P2: please confirm the specification limits for section K2.2 and name the test method."
+        }
+       ],
+       "edits": []
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the case has a SAF review track to raise on",
+      "ok": true,
+      "detail": [
+       "RMM",
+       "REG",
+       "SAF",
+       "QM",
+       "MIC",
+       "SUS"
+      ]
+     },
+     {
+      "label": "raiseOpenPoint: the writer reports ok",
+      "ok": true
+     },
+     {
+      "label": "op.round and history.updated went out",
+      "ok": true
+     },
+     {
+      "label": "op.round linked a CIQP Query on the point (Portal_Query_Item_Id)",
+      "ok": true
+     },
+     {
+      "label": "the point is at \"Open point – Safety\"",
+      "ok": true,
+      "detail": "Open point – Safety"
+     },
+     {
+      "label": "it is held by the raiser (Raiser_Assignee, the step's assignee)",
+      "ok": true
+     },
+     {
+      "label": "its fields are the point's: key, department, round 1, open",
+      "ok": true
+     },
+     {
+      "label": "the query is round 1: Query_Key OP-OPR4-02-R1, Round_No 1",
+      "ok": true
+     },
+     {
+      "label": "the query names the point and the case",
+      "ok": true
+     },
+     {
+      "label": "the query has the point's question, note (justification) and due date",
+      "ok": true
+     },
+     {
+      "label": "the query's reference is the point's section",
+      "ok": true
+     },
+     {
+      "label": "the query's kind, department and supplier are the point's (the encoder's labels, the case's supplier code)",
+      "ok": true,
+      "detail": {
+       "Kind_Label": "Question",
+       "Responsible_Department": "Product Safety",
+       "Supplier_Code": "ZZT-N21-R4-SUP-OP"
+      }
+     },
+     {
+      "label": "the query is at \"Supplier: respond\"",
+      "ok": true,
+      "detail": "Supplier: respond"
+     },
+     {
+      "label": "the query is assigned to exactly the point's portal contacts, which are the request's (the self contact among them)",
+      "ok": true,
+      "detail": {
+       "query": [
+        "UsRmmKatrin"
+       ],
+       "point": [
+        "UsRmmKatrin"
+       ],
+       "request": [
+        "UsRmmKatrin"
+       ]
+      }
+     },
+     {
+      "label": "read back = written (the screens' fields, roundtrip opKeys, and the raiser's edits)",
+      "ok": true
+     },
+     {
+      "label": "the writers' index holds the point's task at its department step",
+      "ok": true
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "raiseOpenPoint: hand-offs": [
+      {
+       "code": "op.round",
+       "status": "sent"
+      },
+      {
+       "code": "history.updated",
+       "status": "sent"
+      }
+     ],
+     "open point": {
+      "opId": "OP-OPR4-02",
+      "itemId": "PkOp48"
+     },
+     "op.round poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "kissflowCalls (estimated live)": 54,
+     "integration runs (offline fakes)": [
+      {
+       "code": "op.round",
+       "ok": true,
+       "detail": "created CIQP Query PkQry6 (round 1) and linked it on the point"
+      },
+      {
+       "code": "history.updated",
+       "ok": true,
+       "detail": "wrote Questions_History_JSON on CIQP Request PkReq1"
+      }
+     ]
+    }
+   },
+   "ms": 4,
+   "at": "2026-10-21T19:27:53.084Z"
+  },
+  {
+   "name": "P2 SAF 3 supplier answer, round 1 (portal writer, I-4)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQP Query (raw)",
+      "value": {
+       "Query_Key": "OP-OPR4-02-R1",
+       "Round_No": 1,
+       "App_Open_Point_Id": "PkOp48",
+       "Case_Code": "ZZT-N21-R4-OPR4",
+       "Kind_Label": "Question",
+       "Responsible_Department": "Product Safety",
+       "Ref_Section_Key": "K2.2",
+       "Ref_Label": "K2.2 · Byproducts and contaminations",
+       "Question_Text": "ZZT-N21-R4 SAF P2: please confirm the specification limits for section K2.2 and name the test method.",
+       "Supplier_Justification": "ZZT-N21-R4 SAF P2: needed for the SAF review.",
+       "Supplier_Due_Date": "2026-11-04",
+       "Edited_At": null,
+       "Response_Kind": "Answer",
+       "Response_Text": "ZZT-N21-R4 Supplier P2: the limits are in the specification of 12 Oct; method per Ph. Eur. 2.6.12.",
+       "Assigned_Contacts": [
+        "UsRmmKatrin"
+       ],
+       "_status": "Completed",
+       "_current_step": null
+      }
+     },
+     {
+      "what": "CIQ Open Point (raw)",
+      "value": {
+       "OP_Key": "OP-OPR4-02",
+       "OP_Dept": "SAF",
+       "OP_Kind": "Query",
+       "Round_No": 1,
+       "Query_Key": "OP-OPR4-02-R1",
+       "OP_Progress": "In progress",
+       "OP_Outcome": null,
+       "Question_Text": "ZZT-N21-R4 SAF P2: please confirm the specification limits for section K2.2 and name the test method.",
+       "Supplier_Justification": "ZZT-N21-R4 SAF P2: needed for the SAF review.",
+       "Supplier_Due_Date": "2026-11-04",
+       "Portal_Query_Item_Id": "PkQry6",
+       "Response_Kind": "Answer",
+       "Response_Text": "ZZT-N21-R4 Supplier P2: the limits are in the specification of 12 Oct; method per Ph. Eur. 2.6.12.",
+       "Return_Reason": null,
+       "Outcome_Reason": null,
+       "Closed_At": null,
+       "Closed_By": [],
+       "Raiser_Assignee": [
+        "UsRmmKatrin"
+       ],
+       "Thread_JSON (entries)": 1,
+       "_status": "InProgress",
+       "_current_step": "Open point – Safety"
+      }
+     },
+     {
+      "what": "the open point as the raiser's screen maps it",
+      "value": {
+       "status": "in-progress",
+       "rounds": 1,
+       "question": "ZZT-N21-R4 SAF P2: please confirm the specification limits for section K2.2 and name the test method.",
+       "thread": [
+        {
+         "side": "internal",
+         "action": "raised",
+         "text": "ZZT-N21-R4 SAF P2: please confirm the specification limits for section K2.2 and name the test method."
+        },
+        {
+         "side": "supplier",
+         "action": "answered",
+         "text": "ZZT-N21-R4 Supplier P2: the limits are in the specification of 12 Oct; method per Ph. Eur. 2.6.12."
+        }
+       ]
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the supplier's portal shows the point's round-1 query as a task",
+      "ok": true,
+      "detail": "PkQry6"
+     },
+     {
+      "label": "the query holds the answer and has ended (Supplier: respond submitted)",
+      "ok": true,
+      "detail": "Completed"
+     },
+     {
+      "label": "I-4: the point has Response_* and OP_Progress \"In progress\"",
+      "ok": true
+     },
+     {
+      "label": "I-4: Supplier_Responsible_Email is the self contact's (its e-mail known)",
+      "ok": true
+     },
+     {
+      "label": "the point stays at \"Open point – Safety\" with the raiser",
+      "ok": true,
+      "detail": "Open point – Safety"
+     },
+     {
+      "label": "the raiser's screen shows the answer as the domain records it",
+      "ok": true
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "supplier side": "the portal's own writer (liveActions supplierRespond) as the self contact; it posts I-4 (queryAnswered)",
+     "I-4 poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "the answer is attributed to": "the self contact",
+     "kissflowCalls (estimated live)": 35,
+     "integration runs (offline fakes)": [
+      {
+       "code": "queryAnswered",
+       "ok": true,
+       "detail": "wrote the answer of CIQP Query PkQry6 on CIQ Open Point PkOp48"
+      }
+     ]
+    }
+   },
+   "ms": 4,
+   "at": "2026-10-21T19:27:53.089Z"
+  },
+  {
+   "name": "P2 SAF 4 return: round 2, a new query (op.round)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Open Point (raw)",
+      "value": {
+       "OP_Key": "OP-OPR4-02",
+       "OP_Dept": "SAF",
+       "OP_Kind": "Query",
+       "Round_No": 2,
+       "Query_Key": "OP-OPR4-02-R2",
+       "OP_Progress": "Open",
+       "OP_Outcome": null,
+       "Question_Text": "ZZT-N21-R4 SAF P2: please confirm the specification limits for section K2.2 and name the test method.",
+       "Supplier_Justification": "ZZT-N21-R4 SAF P2: needed for the SAF review.",
+       "Supplier_Due_Date": "2026-11-04",
+       "Portal_Query_Item_Id": "PkQry8",
+       "Response_Kind": "Answer",
+       "Response_Text": "ZZT-N21-R4 Supplier P2: the limits are in the specification of 12 Oct; method per Ph. Eur. 2.6.12.",
+       "Return_Reason": "ZZT-N21-R4 SAF P2: please add the detection limit of the method.",
+       "Outcome_Reason": null,
+       "Closed_At": null,
+       "Closed_By": [],
+       "Raiser_Assignee": [
+        "UsRmmKatrin"
+       ],
+       "Thread_JSON (entries)": 3,
+       "_status": "InProgress",
+       "_current_step": "Open point – Safety"
+      }
+     },
+     {
+      "what": "CIQP Query (raw)",
+      "value": {
+       "Query_Key": "OP-OPR4-02-R2",
+       "Round_No": 2,
+       "App_Open_Point_Id": "PkOp48",
+       "Case_Code": "ZZT-N21-R4-OPR4",
+       "Kind_Label": "Question",
+       "Responsible_Department": "Product Safety",
+       "Ref_Section_Key": "K2.2",
+       "Ref_Label": "K2.2 · Byproducts and contaminations",
+       "Question_Text": "ZZT-N21-R4 SAF P2: please confirm the specification limits for section K2.2 and name the test method.",
+       "Supplier_Justification": "ZZT-N21-R4 SAF P2: needed for the SAF review.",
+       "Supplier_Due_Date": "2026-11-04",
+       "Edited_At": null,
+       "Response_Kind": null,
+       "Response_Text": null,
+       "Assigned_Contacts": [
+        "UsRmmKatrin"
+       ],
+       "_status": "InProgress",
+       "_current_step": "Supplier: respond"
+      }
+     },
+     {
+      "what": "the open point as the raiser's screen maps it",
+      "value": {
+       "id": "OP-OPR4-02",
+       "dept": "SAF",
+       "kind": "query",
+       "ref": {
+        "sectionId": "K2.2",
+        "label": "K2.2 · Byproducts and contaminations"
+       },
+       "question": "ZZT-N21-R4 SAF P2: please confirm the specification limits for section K2.2 and name the test method.",
+       "justification": "ZZT-N21-R4 SAF P2: needed for the SAF review.",
+       "responsibleId": "UsRmmKatrin",
+       "due": "2026-11-04",
+       "rounds": 2,
+       "status": "open",
+       "createdBy": "UsRmmKatrin",
+       "thread": [
+        {
+         "id": "ZZT-N21-R4-OPR4-m2-1",
+         "at": "2026-10-21T19:27:53.000Z",
+         "by": "UsRmmKatrin",
+         "side": "internal",
+         "action": "raised",
+         "text": "ZZT-N21-R4 SAF P2: please confirm the specification limits for section K2.2 and name the test method."
+        },
+        {
+         "id": "OP-OPR4-02-m2",
+         "at": "2026-10-23T16:00:40.000Z",
+         "by": "self:UsRmmKatrin",
+         "side": "supplier",
+         "action": "answered",
+         "text": "ZZT-N21-R4 Supplier P2: the limits are in the specification of 12 Oct; method per Ph. Eur. 2.6.12."
+        },
+        {
+         "id": "OP-OPR4-02-m3",
+         "at": "2026-10-21T19:27:53.000Z",
+         "by": "UsRmmKatrin",
+         "side": "internal",
+         "action": "returned",
+         "text": "ZZT-N21-R4 SAF P2: please add the detection limit of the method.",
+         "newRound": true
+        }
+       ],
+       "edits": []
+      }
+     },
+     {
+      "what": "CIQP Request questions history (per point)",
+      "value": [
+       {
+        "opId": "OP-OPR4-01",
+        "statusCode": "answered",
+        "rounds": 1,
+        "messages": 2
+       },
+       {
+        "opId": "OP-OPR4-02",
+        "statusCode": "open",
+        "rounds": 2,
+        "messages": 3
+       }
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "reviewResponse return: the writer reports ok",
+      "ok": true
+     },
+     {
+      "label": "the domain starts round 2 (open again)",
+      "ok": true
+     },
+     {
+      "label": "op.round and history.updated went out again",
+      "ok": true
+     },
+     {
+      "label": "op.round linked a NEW CIQP Query on the point",
+      "ok": true
+     },
+     {
+      "label": "the point is round 2: Round_No 2, Query_Key OP-OPR4-02-R2, OP_Progress \"Open\", the reason kept",
+      "ok": true
+     },
+     {
+      "label": "it stays at \"Open point – Safety\" with the raiser",
+      "ok": true,
+      "detail": "Open point – Safety"
+     },
+     {
+      "label": "Thread_JSON has two rounds: round 1's answer persisted, the return opens round 2",
+      "ok": true
+     },
+     {
+      "label": "the query is round 2: Query_Key OP-OPR4-02-R2, Round_No 2",
+      "ok": true
+     },
+     {
+      "label": "the query names the point and the case",
+      "ok": true
+     },
+     {
+      "label": "the query has the point's question, note (justification) and due date",
+      "ok": true
+     },
+     {
+      "label": "the query's reference is the point's section",
+      "ok": true
+     },
+     {
+      "label": "the query's kind, department and supplier are the point's (the encoder's labels, the case's supplier code)",
+      "ok": true,
+      "detail": {
+       "Kind_Label": "Question",
+       "Responsible_Department": "Product Safety",
+       "Supplier_Code": "ZZT-N21-R4-SUP-OP"
+      }
+     },
+     {
+      "label": "the query is at \"Supplier: respond\"",
+      "ok": true,
+      "detail": "Supplier: respond"
+     },
+     {
+      "label": "the query is assigned to exactly the point's portal contacts, which are the request's (the self contact among them)",
+      "ok": true,
+      "detail": {
+       "query": [
+        "UsRmmKatrin"
+       ],
+       "point": [
+        "UsRmmKatrin"
+       ],
+       "request": [
+        "UsRmmKatrin"
+       ]
+      }
+     },
+     {
+      "label": "read back = written (the screens' fields, roundtrip opKeys, and the raiser's edits)",
+      "ok": true
+     },
+     {
+      "label": "history.updated: the request's questions history is the one the screen sent",
+      "ok": true
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "reviewResponse return: hand-offs": [
+      {
+       "code": "op.round",
+       "status": "sent"
+      },
+      {
+       "code": "history.updated",
+       "status": "sent"
+      }
+     ],
+     "op.round poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "history.updated poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "kissflowCalls (estimated live)": 34,
+     "integration runs (offline fakes)": [
+      {
+       "code": "op.round",
+       "ok": true,
+       "detail": "created CIQP Query PkQry8 (round 2) and linked it on the point"
+      },
+      {
+       "code": "history.updated",
+       "ok": true,
+       "detail": "wrote Questions_History_JSON on CIQP Request PkReq1"
+      }
+     ]
+    }
+   },
+   "ms": 4,
+   "at": "2026-10-21T19:27:53.094Z"
+  },
+  {
+   "name": "P3 REG 1 raise: op.round makes the CIQP Query",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Open Point (raw)",
+      "value": {
+       "OP_Key": "OP-OPR4-03",
+       "OP_Dept": "REG",
+       "OP_Kind": "Query",
+       "Round_No": 1,
+       "Query_Key": "OP-OPR4-03-R1",
+       "OP_Progress": "Open",
+       "OP_Outcome": null,
+       "Question_Text": "ZZT-N21-R4 REG P3: please confirm the specification limits for section K6.1 and name the test method.",
+       "Supplier_Justification": "ZZT-N21-R4 REG P3: needed for the REG review.",
+       "Supplier_Due_Date": "2026-11-04",
+       "Portal_Query_Item_Id": "PkQry10",
+       "Response_Kind": null,
+       "Response_Text": null,
+       "Return_Reason": null,
+       "Outcome_Reason": null,
+       "Closed_At": null,
+       "Closed_By": [],
+       "Raiser_Assignee": [
+        "UsRmmKatrin"
+       ],
+       "Thread_JSON (entries)": 1,
+       "_status": "InProgress",
+       "_current_step": "Open point – Regulatory"
+      }
+     },
+     {
+      "what": "CIQP Query (raw)",
+      "value": {
+       "Query_Key": "OP-OPR4-03-R1",
+       "Round_No": 1,
+       "App_Open_Point_Id": "PkOp55",
+       "Case_Code": "ZZT-N21-R4-OPR4",
+       "Kind_Label": "Question",
+       "Responsible_Department": "Regulatory Affairs",
+       "Ref_Section_Key": "K6.1",
+       "Ref_Label": "K6.1 · EU REACH",
+       "Question_Text": "ZZT-N21-R4 REG P3: please confirm the specification limits for section K6.1 and name the test method.",
+       "Supplier_Justification": "ZZT-N21-R4 REG P3: needed for the REG review.",
+       "Supplier_Due_Date": "2026-11-04",
+       "Edited_At": null,
+       "Response_Kind": null,
+       "Response_Text": null,
+       "Assigned_Contacts": [
+        "UsRmmKatrin"
+       ],
+       "_status": "InProgress",
+       "_current_step": "Supplier: respond"
+      }
+     },
+     {
+      "what": "the open point as the raiser's screen maps it",
+      "value": {
+       "id": "OP-OPR4-03",
+       "dept": "REG",
+       "kind": "query",
+       "ref": {
+        "sectionId": "K6.1",
+        "label": "K6.1 · EU REACH"
+       },
+       "question": "ZZT-N21-R4 REG P3: please confirm the specification limits for section K6.1 and name the test method.",
+       "justification": "ZZT-N21-R4 REG P3: needed for the REG review.",
+       "responsibleId": "UsRmmKatrin",
+       "due": "2026-11-04",
+       "rounds": 1,
+       "status": "open",
+       "createdBy": "UsRmmKatrin",
+       "thread": [
+        {
+         "id": "ZZT-N21-R4-OPR4-m3-1",
+         "at": "2026-10-21T19:27:53.000Z",
+         "by": "UsRmmKatrin",
+         "side": "internal",
+         "action": "raised",
+         "text": "ZZT-N21-R4 REG P3: please confirm the specification limits for section K6.1 and name the test method."
+        }
+       ],
+       "edits": []
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the case has a REG review track to raise on",
+      "ok": true,
+      "detail": [
+       "RMM",
+       "REG",
+       "SAF",
+       "QM",
+       "MIC",
+       "SUS"
+      ]
+     },
+     {
+      "label": "raiseOpenPoint: the writer reports ok",
+      "ok": true
+     },
+     {
+      "label": "op.round and history.updated went out",
+      "ok": true
+     },
+     {
+      "label": "op.round linked a CIQP Query on the point (Portal_Query_Item_Id)",
+      "ok": true
+     },
+     {
+      "label": "the point is at \"Open point – Regulatory\"",
+      "ok": true,
+      "detail": "Open point – Regulatory"
+     },
+     {
+      "label": "it is held by the raiser (Raiser_Assignee, the step's assignee)",
+      "ok": true
+     },
+     {
+      "label": "its fields are the point's: key, department, round 1, open",
+      "ok": true
+     },
+     {
+      "label": "the query is round 1: Query_Key OP-OPR4-03-R1, Round_No 1",
+      "ok": true
+     },
+     {
+      "label": "the query names the point and the case",
+      "ok": true
+     },
+     {
+      "label": "the query has the point's question, note (justification) and due date",
+      "ok": true
+     },
+     {
+      "label": "the query's reference is the point's section",
+      "ok": true
+     },
+     {
+      "label": "the query's kind, department and supplier are the point's (the encoder's labels, the case's supplier code)",
+      "ok": true,
+      "detail": {
+       "Kind_Label": "Question",
+       "Responsible_Department": "Regulatory Affairs",
+       "Supplier_Code": "ZZT-N21-R4-SUP-OP"
+      }
+     },
+     {
+      "label": "the query is at \"Supplier: respond\"",
+      "ok": true,
+      "detail": "Supplier: respond"
+     },
+     {
+      "label": "the query is assigned to exactly the point's portal contacts, which are the request's (the self contact among them)",
+      "ok": true,
+      "detail": {
+       "query": [
+        "UsRmmKatrin"
+       ],
+       "point": [
+        "UsRmmKatrin"
+       ],
+       "request": [
+        "UsRmmKatrin"
+       ]
+      }
+     },
+     {
+      "label": "read back = written (the screens' fields, roundtrip opKeys, and the raiser's edits)",
+      "ok": true
+     },
+     {
+      "label": "the writers' index holds the point's task at its department step",
+      "ok": true
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "raiseOpenPoint: hand-offs": [
+      {
+       "code": "op.round",
+       "status": "sent"
+      },
+      {
+       "code": "history.updated",
+       "status": "sent"
+      }
+     ],
+     "open point": {
+      "opId": "OP-OPR4-03",
+      "itemId": "PkOp55"
+     },
+     "op.round poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "kissflowCalls (estimated live)": 58,
+     "integration runs (offline fakes)": [
+      {
+       "code": "op.round",
+       "ok": true,
+       "detail": "created CIQP Query PkQry10 (round 1) and linked it on the point"
+      },
+      {
+       "code": "history.updated",
+       "ok": true,
+       "detail": "wrote Questions_History_JSON on CIQP Request PkReq1"
+      }
+     ]
+    }
+   },
+   "ms": 5,
+   "at": "2026-10-21T19:27:53.100Z"
+  },
+  {
+   "name": "P3 REG 3 supplier answer, round 1 (portal writer, I-4)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQP Query (raw)",
+      "value": {
+       "Query_Key": "OP-OPR4-03-R1",
+       "Round_No": 1,
+       "App_Open_Point_Id": "PkOp55",
+       "Case_Code": "ZZT-N21-R4-OPR4",
+       "Kind_Label": "Question",
+       "Responsible_Department": "Regulatory Affairs",
+       "Ref_Section_Key": "K6.1",
+       "Ref_Label": "K6.1 · EU REACH",
+       "Question_Text": "ZZT-N21-R4 REG P3: please confirm the specification limits for section K6.1 and name the test method.",
+       "Supplier_Justification": "ZZT-N21-R4 REG P3: needed for the REG review.",
+       "Supplier_Due_Date": "2026-11-04",
+       "Edited_At": null,
+       "Response_Kind": "Answer",
+       "Response_Text": "ZZT-N21-R4 Supplier P3: the limits are in the specification of 12 Oct; method per Ph. Eur. 2.6.12.",
+       "Assigned_Contacts": [
+        "UsRmmKatrin"
+       ],
+       "_status": "Completed",
+       "_current_step": null
+      }
+     },
+     {
+      "what": "CIQ Open Point (raw)",
+      "value": {
+       "OP_Key": "OP-OPR4-03",
+       "OP_Dept": "REG",
+       "OP_Kind": "Query",
+       "Round_No": 1,
+       "Query_Key": "OP-OPR4-03-R1",
+       "OP_Progress": "In progress",
+       "OP_Outcome": null,
+       "Question_Text": "ZZT-N21-R4 REG P3: please confirm the specification limits for section K6.1 and name the test method.",
+       "Supplier_Justification": "ZZT-N21-R4 REG P3: needed for the REG review.",
+       "Supplier_Due_Date": "2026-11-04",
+       "Portal_Query_Item_Id": "PkQry10",
+       "Response_Kind": "Answer",
+       "Response_Text": "ZZT-N21-R4 Supplier P3: the limits are in the specification of 12 Oct; method per Ph. Eur. 2.6.12.",
+       "Return_Reason": null,
+       "Outcome_Reason": null,
+       "Closed_At": null,
+       "Closed_By": [],
+       "Raiser_Assignee": [
+        "UsRmmKatrin"
+       ],
+       "Thread_JSON (entries)": 1,
+       "_status": "InProgress",
+       "_current_step": "Open point – Regulatory"
+      }
+     },
+     {
+      "what": "the open point as the raiser's screen maps it",
+      "value": {
+       "status": "in-progress",
+       "rounds": 1,
+       "question": "ZZT-N21-R4 REG P3: please confirm the specification limits for section K6.1 and name the test method.",
+       "thread": [
+        {
+         "side": "internal",
+         "action": "raised",
+         "text": "ZZT-N21-R4 REG P3: please confirm the specification limits for section K6.1 and name the test method."
+        },
+        {
+         "side": "supplier",
+         "action": "answered",
+         "text": "ZZT-N21-R4 Supplier P3: the limits are in the specification of 12 Oct; method per Ph. Eur. 2.6.12."
+        }
+       ]
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the supplier's portal shows the point's round-1 query as a task",
+      "ok": true,
+      "detail": "PkQry10"
+     },
+     {
+      "label": "the query holds the answer and has ended (Supplier: respond submitted)",
+      "ok": true,
+      "detail": "Completed"
+     },
+     {
+      "label": "I-4: the point has Response_* and OP_Progress \"In progress\"",
+      "ok": true
+     },
+     {
+      "label": "I-4: Supplier_Responsible_Email is the self contact's (its e-mail known)",
+      "ok": true
+     },
+     {
+      "label": "the point stays at \"Open point – Regulatory\" with the raiser",
+      "ok": true,
+      "detail": "Open point – Regulatory"
+     },
+     {
+      "label": "the raiser's screen shows the answer as the domain records it",
+      "ok": true
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "supplier side": "the portal's own writer (liveActions supplierRespond) as the self contact; it posts I-4 (queryAnswered)",
+     "I-4 poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "the answer is attributed to": "the self contact",
+     "kissflowCalls (estimated live)": 40,
+     "integration runs (offline fakes)": [
+      {
+       "code": "queryAnswered",
+       "ok": true,
+       "detail": "wrote the answer of CIQP Query PkQry10 on CIQ Open Point PkOp55"
+      }
+     ]
+    }
+   },
+   "ms": 4,
+   "at": "2026-10-21T19:27:53.107Z"
+  },
+  {
+   "name": "P3 REG 4 accept: the point ends, history.updated",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Open Point (raw)",
+      "value": {
+       "OP_Key": "OP-OPR4-03",
+       "OP_Dept": "REG",
+       "OP_Kind": "Query",
+       "Round_No": 1,
+       "Query_Key": "OP-OPR4-03-R1",
+       "OP_Progress": "In progress",
+       "OP_Outcome": "Accepted",
+       "Question_Text": "ZZT-N21-R4 REG P3: please confirm the specification limits for section K6.1 and name the test method.",
+       "Supplier_Justification": "ZZT-N21-R4 REG P3: needed for the REG review.",
+       "Supplier_Due_Date": "2026-11-04",
+       "Portal_Query_Item_Id": "PkQry10",
+       "Response_Kind": "Answer",
+       "Response_Text": "ZZT-N21-R4 Supplier P3: the limits are in the specification of 12 Oct; method per Ph. Eur. 2.6.12.",
+       "Return_Reason": null,
+       "Outcome_Reason": null,
+       "Closed_At": "2026-10-21T19:27:53Z",
+       "Closed_By": [
+        "UsRmmKatrin"
+       ],
+       "Raiser_Assignee": [
+        "UsRmmKatrin"
+       ],
+       "Thread_JSON (entries)": 3,
+       "_status": "Completed",
+       "_current_step": "End"
+      }
+     },
+     {
+      "what": "the open point as the raiser's screen maps it",
+      "value": {
+       "id": "OP-OPR4-03",
+       "dept": "REG",
+       "kind": "query",
+       "ref": {
+        "sectionId": "K6.1",
+        "label": "K6.1 · EU REACH"
+       },
+       "question": "ZZT-N21-R4 REG P3: please confirm the specification limits for section K6.1 and name the test method.",
+       "justification": "ZZT-N21-R4 REG P3: needed for the REG review.",
+       "responsibleId": "UsRmmKatrin",
+       "due": "2026-11-04",
+       "rounds": 1,
+       "status": "closed",
+       "outcome": "accepted",
+       "createdBy": "UsRmmKatrin",
+       "closedBy": "UsRmmKatrin",
+       "closedAt": "2026-10-21T19:27:53.000Z",
+       "thread": [
+        {
+         "id": "ZZT-N21-R4-OPR4-m3-1",
+         "at": "2026-10-21T19:27:53.000Z",
+         "by": "UsRmmKatrin",
+         "side": "internal",
+         "action": "raised",
+         "text": "ZZT-N21-R4 REG P3: please confirm the specification limits for section K6.1 and name the test method."
+        },
+        {
+         "id": "OP-OPR4-03-m2",
+         "at": "2026-10-23T16:00:48.000Z",
+         "by": "self:UsRmmKatrin",
+         "side": "supplier",
+         "action": "answered",
+         "text": "ZZT-N21-R4 Supplier P3: the limits are in the specification of 12 Oct; method per Ph. Eur. 2.6.12."
+        },
+        {
+         "id": "OP-OPR4-03-m3",
+         "at": "2026-10-21T19:27:53.000Z",
+         "by": "UsRmmKatrin",
+         "side": "internal",
+         "action": "accepted",
+         "text": "Accepted."
+        }
+       ],
+       "edits": []
+      }
+     },
+     {
+      "what": "CIQP Request questions history (per point)",
+      "value": [
+       {
+        "opId": "OP-OPR4-01",
+        "statusCode": "answered",
+        "rounds": 1,
+        "messages": 2
+       },
+       {
+        "opId": "OP-OPR4-02",
+        "statusCode": "open",
+        "rounds": 2,
+        "messages": 3
+       },
+       {
+        "opId": "OP-OPR4-03",
+        "statusCode": "accepted",
+        "rounds": 1,
+        "messages": 3
+       }
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "reviewResponse accept: the writer reports ok",
+      "ok": true
+     },
+     {
+      "label": "the domain closes the point as accepted",
+      "ok": true
+     },
+     {
+      "label": "history.updated went out (no op.round, no op.closed)",
+      "ok": true
+     },
+     {
+      "label": "the point ended: OP_Outcome \"Accepted\", Completed",
+      "ok": true,
+      "detail": "Completed"
+     },
+     {
+      "label": "Closed_At and Closed_By (the raiser) are set",
+      "ok": true
+     },
+     {
+      "label": "Thread_JSON keeps the last answer and the acceptance",
+      "ok": true
+     },
+     {
+      "label": "read back = written (the screens' fields, roundtrip opKeys, and the raiser's edits)",
+      "ok": true
+     },
+     {
+      "label": "history.updated: the request's questions history is the one the screen sent",
+      "ok": true
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "reviewResponse accept: hand-offs": [
+      {
+       "code": "history.updated",
+       "status": "sent"
+      }
+     ],
+     "history.updated poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "kissflowCalls (estimated live)": 35,
+     "integration runs (offline fakes)": [
+      {
+       "code": "history.updated",
+       "ok": true,
+       "detail": "wrote Questions_History_JSON on CIQP Request PkReq1"
+      }
+     ]
+    }
+   },
+   "ms": 3,
+   "at": "2026-10-21T19:27:53.112Z"
+  },
+  {
+   "name": "P4 QM 1 raise: op.round makes the CIQP Query",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Open Point (raw)",
+      "value": {
+       "OP_Key": "OP-OPR4-04",
+       "OP_Dept": "QM",
+       "OP_Kind": "Query",
+       "Round_No": 1,
+       "Query_Key": "OP-OPR4-04-R1",
+       "OP_Progress": "Open",
+       "OP_Outcome": null,
+       "Question_Text": "ZZT-N21-R4 QM P4: please confirm the specification limits for section K3 and name the test method.",
+       "Supplier_Justification": "ZZT-N21-R4 QM P4: needed for the QM review.",
+       "Supplier_Due_Date": "2026-11-04",
+       "Portal_Query_Item_Id": "PkQry12",
+       "Response_Kind": null,
+       "Response_Text": null,
+       "Return_Reason": null,
+       "Outcome_Reason": null,
+       "Closed_At": null,
+       "Closed_By": [],
+       "Raiser_Assignee": [
+        "UsRmmKatrin"
+       ],
+       "Thread_JSON (entries)": 1,
+       "_status": "InProgress",
+       "_current_step": "Open point – QM"
+      }
+     },
+     {
+      "what": "CIQP Query (raw)",
+      "value": {
+       "Query_Key": "OP-OPR4-04-R1",
+       "Round_No": 1,
+       "App_Open_Point_Id": "PkOp62",
+       "Case_Code": "ZZT-N21-R4-OPR4",
+       "Kind_Label": "Question",
+       "Responsible_Department": "Quality Management",
+       "Ref_Section_Key": "K3",
+       "Ref_Label": "K3 · Storage conditions and handling",
+       "Question_Text": "ZZT-N21-R4 QM P4: please confirm the specification limits for section K3 and name the test method.",
+       "Supplier_Justification": "ZZT-N21-R4 QM P4: needed for the QM review.",
+       "Supplier_Due_Date": "2026-11-04",
+       "Edited_At": null,
+       "Response_Kind": null,
+       "Response_Text": null,
+       "Assigned_Contacts": [
+        "UsRmmKatrin"
+       ],
+       "_status": "InProgress",
+       "_current_step": "Supplier: respond"
+      }
+     },
+     {
+      "what": "the open point as the raiser's screen maps it",
+      "value": {
+       "id": "OP-OPR4-04",
+       "dept": "QM",
+       "kind": "query",
+       "ref": {
+        "sectionId": "K3",
+        "label": "K3 · Storage conditions and handling"
+       },
+       "question": "ZZT-N21-R4 QM P4: please confirm the specification limits for section K3 and name the test method.",
+       "justification": "ZZT-N21-R4 QM P4: needed for the QM review.",
+       "responsibleId": "UsRmmKatrin",
+       "due": "2026-11-04",
+       "rounds": 1,
+       "status": "open",
+       "createdBy": "UsRmmKatrin",
+       "thread": [
+        {
+         "id": "ZZT-N21-R4-OPR4-m4-1",
+         "at": "2026-10-21T19:27:53.000Z",
+         "by": "UsRmmKatrin",
+         "side": "internal",
+         "action": "raised",
+         "text": "ZZT-N21-R4 QM P4: please confirm the specification limits for section K3 and name the test method."
+        }
+       ],
+       "edits": []
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the case has a QM review track to raise on",
+      "ok": true,
+      "detail": [
+       "RMM",
+       "REG",
+       "SAF",
+       "QM",
+       "MIC",
+       "SUS"
+      ]
+     },
+     {
+      "label": "raiseOpenPoint: the writer reports ok",
+      "ok": true
+     },
+     {
+      "label": "op.round and history.updated went out",
+      "ok": true
+     },
+     {
+      "label": "op.round linked a CIQP Query on the point (Portal_Query_Item_Id)",
+      "ok": true
+     },
+     {
+      "label": "the point is at \"Open point – QM\"",
+      "ok": true,
+      "detail": "Open point – QM"
+     },
+     {
+      "label": "it is held by the raiser (Raiser_Assignee, the step's assignee)",
+      "ok": true
+     },
+     {
+      "label": "its fields are the point's: key, department, round 1, open",
+      "ok": true
+     },
+     {
+      "label": "the query is round 1: Query_Key OP-OPR4-04-R1, Round_No 1",
+      "ok": true
+     },
+     {
+      "label": "the query names the point and the case",
+      "ok": true
+     },
+     {
+      "label": "the query has the point's question, note (justification) and due date",
+      "ok": true
+     },
+     {
+      "label": "the query's reference is the point's section",
+      "ok": true
+     },
+     {
+      "label": "the query's kind, department and supplier are the point's (the encoder's labels, the case's supplier code)",
+      "ok": true,
+      "detail": {
+       "Kind_Label": "Question",
+       "Responsible_Department": "Quality Management",
+       "Supplier_Code": "ZZT-N21-R4-SUP-OP"
+      }
+     },
+     {
+      "label": "the query is at \"Supplier: respond\"",
+      "ok": true,
+      "detail": "Supplier: respond"
+     },
+     {
+      "label": "the query is assigned to exactly the point's portal contacts, which are the request's (the self contact among them)",
+      "ok": true,
+      "detail": {
+       "query": [
+        "UsRmmKatrin"
+       ],
+       "point": [
+        "UsRmmKatrin"
+       ],
+       "request": [
+        "UsRmmKatrin"
+       ]
+      }
+     },
+     {
+      "label": "read back = written (the screens' fields, roundtrip opKeys, and the raiser's edits)",
+      "ok": true
+     },
+     {
+      "label": "the writers' index holds the point's task at its department step",
+      "ok": true
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "raiseOpenPoint: hand-offs": [
+      {
+       "code": "op.round",
+       "status": "sent"
+      },
+      {
+       "code": "history.updated",
+       "status": "sent"
+      }
+     ],
+     "open point": {
+      "opId": "OP-OPR4-04",
+      "itemId": "PkOp62"
+     },
+     "op.round poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "kissflowCalls (estimated live)": 60,
+     "integration runs (offline fakes)": [
+      {
+       "code": "op.round",
+       "ok": true,
+       "detail": "created CIQP Query PkQry12 (round 1) and linked it on the point"
+      },
+      {
+       "code": "history.updated",
+       "ok": true,
+       "detail": "wrote Questions_History_JSON on CIQP Request PkReq1"
+      }
+     ]
+    }
+   },
+   "ms": 4,
+   "at": "2026-10-21T19:27:53.116Z"
+  },
+  {
+   "name": "P4 QM 4 close while the query is open: op.closed",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQP Query (raw)",
+      "value": {
+       "Query_Key": "OP-OPR4-04-R1",
+       "Round_No": 1,
+       "App_Open_Point_Id": "PkOp62",
+       "Case_Code": "ZZT-N21-R4-OPR4",
+       "Kind_Label": "Question",
+       "Responsible_Department": "Quality Management",
+       "Ref_Section_Key": "K3",
+       "Ref_Label": "K3 · Storage conditions and handling",
+       "Question_Text": "ZZT-N21-R4 QM P4: please confirm the specification limits for section K3 and name the test method.",
+       "Supplier_Justification": "ZZT-N21-R4 QM P4: needed for the QM review.",
+       "Supplier_Due_Date": "2026-11-04",
+       "Edited_At": null,
+       "Response_Kind": null,
+       "Response_Text": null,
+       "Assigned_Contacts": [
+        "UsRmmKatrin"
+       ],
+       "_status": "Completed",
+       "_current_step": null
+      }
+     },
+     {
+      "what": "CIQ Open Point (raw)",
+      "value": {
+       "OP_Key": "OP-OPR4-04",
+       "OP_Dept": "QM",
+       "OP_Kind": "Query",
+       "Round_No": 1,
+       "Query_Key": "OP-OPR4-04-R1",
+       "OP_Progress": "Open",
+       "OP_Outcome": "Withdrawn",
+       "Question_Text": "ZZT-N21-R4 QM P4: please confirm the specification limits for section K3 and name the test method.",
+       "Supplier_Justification": "ZZT-N21-R4 QM P4: needed for the QM review.",
+       "Supplier_Due_Date": "2026-11-04",
+       "Portal_Query_Item_Id": "PkQry12",
+       "Response_Kind": null,
+       "Response_Text": null,
+       "Return_Reason": null,
+       "Outcome_Reason": "ZZT-N21-R4 QM P4: already answered in the dossier on file; no answer needed.",
+       "Closed_At": "2026-10-21T19:27:53Z",
+       "Closed_By": [
+        "UsRmmKatrin"
+       ],
+       "Raiser_Assignee": [
+        "UsRmmKatrin"
+       ],
+       "Thread_JSON (entries)": 2,
+       "_status": "Completed",
+       "_current_step": "End"
+      }
+     },
+     {
+      "what": "the open point as the raiser's screen maps it",
+      "value": {
+       "id": "OP-OPR4-04",
+       "dept": "QM",
+       "kind": "query",
+       "ref": {
+        "sectionId": "K3",
+        "label": "K3 · Storage conditions and handling"
+       },
+       "question": "ZZT-N21-R4 QM P4: please confirm the specification limits for section K3 and name the test method.",
+       "justification": "ZZT-N21-R4 QM P4: needed for the QM review.",
+       "responsibleId": "UsRmmKatrin",
+       "due": "2026-11-04",
+       "rounds": 1,
+       "status": "closed",
+       "outcome": "withdrawn",
+       "createdBy": "UsRmmKatrin",
+       "closedBy": "UsRmmKatrin",
+       "closedAt": "2026-10-21T19:27:53.000Z",
+       "thread": [
+        {
+         "id": "ZZT-N21-R4-OPR4-m4-1",
+         "at": "2026-10-21T19:27:53.000Z",
+         "by": "UsRmmKatrin",
+         "side": "internal",
+         "action": "raised",
+         "text": "ZZT-N21-R4 QM P4: please confirm the specification limits for section K3 and name the test method."
+        },
+        {
+         "id": "OP-OPR4-04-m2",
+         "at": "2026-10-21T19:27:53.000Z",
+         "by": "UsRmmKatrin",
+         "side": "internal",
+         "action": "withdrawn",
+         "text": "Closed by Beiersdorf: no answer needed."
+        }
+       ],
+       "edits": []
+      }
+     },
+     {
+      "what": "CIQP Request questions history (per point)",
+      "value": [
+       {
+        "opId": "OP-OPR4-01",
+        "statusCode": "answered",
+        "rounds": 1,
+        "messages": 2
+       },
+       {
+        "opId": "OP-OPR4-02",
+        "statusCode": "open",
+        "rounds": 2,
+        "messages": 3
+       },
+       {
+        "opId": "OP-OPR4-03",
+        "statusCode": "accepted",
+        "rounds": 1,
+        "messages": 3
+       },
+       {
+        "opId": "OP-OPR4-04",
+        "statusCode": "closed",
+        "rounds": 1,
+        "messages": 2
+       }
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "closeOpenPoint: the writer reports ok",
+      "ok": true
+     },
+     {
+      "label": "the domain closes the point (withdrawn)",
+      "ok": true
+     },
+     {
+      "label": "op.closed and history.updated went out (the query was open)",
+      "ok": true
+     },
+     {
+      "label": "op.closed: the open query has ended, unanswered",
+      "ok": true,
+      "detail": "Completed"
+     },
+     {
+      "label": "the point ended: OP_Outcome \"Withdrawn\" with the internal reason, Completed",
+      "ok": true,
+      "detail": "Completed"
+     },
+     {
+      "label": "read back = written (the screens' fields, roundtrip opKeys, and the raiser's edits)",
+      "ok": true
+     },
+     {
+      "label": "history.updated: the request's questions history is the one the screen sent",
+      "ok": true
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "closeOpenPoint: hand-offs": [
+      {
+       "code": "op.closed",
+       "status": "sent"
+      },
+      {
+       "code": "history.updated",
+       "status": "sent"
+      }
+     ],
+     "op.closed poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "history.updated poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "kissflowCalls (estimated live)": 38,
+     "integration runs (offline fakes)": [
+      {
+       "code": "op.closed",
+       "ok": true,
+       "detail": "completed CIQP Query PkQry12"
+      },
+      {
+       "code": "history.updated",
+       "ok": true,
+       "detail": "wrote Questions_History_JSON on CIQP Request PkReq1"
+      }
+     ]
+    }
+   },
+   "ms": 4,
+   "at": "2026-10-21T19:27:53.121Z"
+  },
+  {
+   "name": "P5 REG 1 raise: op.round makes the CIQP Query",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Open Point (raw)",
+      "value": {
+       "OP_Key": "OP-OPR4-05",
+       "OP_Dept": "REG",
+       "OP_Kind": "Query",
+       "Round_No": 1,
+       "Query_Key": "OP-OPR4-05-R1",
+       "OP_Progress": "Open",
+       "OP_Outcome": null,
+       "Question_Text": "ZZT-N21-R4 REG P5: please confirm the specification limits for section K6.1 and name the test method.",
+       "Supplier_Justification": "ZZT-N21-R4 REG P5: needed for the REG review.",
+       "Supplier_Due_Date": "2026-11-04",
+       "Portal_Query_Item_Id": "PkQry14",
+       "Response_Kind": null,
+       "Response_Text": null,
+       "Return_Reason": null,
+       "Outcome_Reason": null,
+       "Closed_At": null,
+       "Closed_By": [],
+       "Raiser_Assignee": [
+        "UsRmmKatrin"
+       ],
+       "Thread_JSON (entries)": 1,
+       "_status": "InProgress",
+       "_current_step": "Open point – Regulatory"
+      }
+     },
+     {
+      "what": "CIQP Query (raw)",
+      "value": {
+       "Query_Key": "OP-OPR4-05-R1",
+       "Round_No": 1,
+       "App_Open_Point_Id": "PkOp69",
+       "Case_Code": "ZZT-N21-R4-OPR4",
+       "Kind_Label": "Question",
+       "Responsible_Department": "Regulatory Affairs",
+       "Ref_Section_Key": "K6.1",
+       "Ref_Label": "K6.1 · EU REACH",
+       "Question_Text": "ZZT-N21-R4 REG P5: please confirm the specification limits for section K6.1 and name the test method.",
+       "Supplier_Justification": "ZZT-N21-R4 REG P5: needed for the REG review.",
+       "Supplier_Due_Date": "2026-11-04",
+       "Edited_At": null,
+       "Response_Kind": null,
+       "Response_Text": null,
+       "Assigned_Contacts": [
+        "UsRmmKatrin"
+       ],
+       "_status": "InProgress",
+       "_current_step": "Supplier: respond"
+      }
+     },
+     {
+      "what": "the open point as the raiser's screen maps it",
+      "value": {
+       "id": "OP-OPR4-05",
+       "dept": "REG",
+       "kind": "query",
+       "ref": {
+        "sectionId": "K6.1",
+        "label": "K6.1 · EU REACH"
+       },
+       "question": "ZZT-N21-R4 REG P5: please confirm the specification limits for section K6.1 and name the test method.",
+       "justification": "ZZT-N21-R4 REG P5: needed for the REG review.",
+       "responsibleId": "UsRmmKatrin",
+       "due": "2026-11-04",
+       "rounds": 1,
+       "status": "open",
+       "createdBy": "UsRmmKatrin",
+       "thread": [
+        {
+         "id": "ZZT-N21-R4-OPR4-m5-1",
+         "at": "2026-10-21T19:27:53.000Z",
+         "by": "UsRmmKatrin",
+         "side": "internal",
+         "action": "raised",
+         "text": "ZZT-N21-R4 REG P5: please confirm the specification limits for section K6.1 and name the test method."
+        }
+       ],
+       "edits": []
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the case has a REG review track to raise on",
+      "ok": true,
+      "detail": [
+       "RMM",
+       "REG",
+       "SAF",
+       "QM",
+       "MIC",
+       "SUS"
+      ]
+     },
+     {
+      "label": "raiseOpenPoint: the writer reports ok",
+      "ok": true
+     },
+     {
+      "label": "op.round and history.updated went out",
+      "ok": true
+     },
+     {
+      "label": "op.round linked a CIQP Query on the point (Portal_Query_Item_Id)",
+      "ok": true
+     },
+     {
+      "label": "the point is at \"Open point – Regulatory\"",
+      "ok": true,
+      "detail": "Open point – Regulatory"
+     },
+     {
+      "label": "it is held by the raiser (Raiser_Assignee, the step's assignee)",
+      "ok": true
+     },
+     {
+      "label": "its fields are the point's: key, department, round 1, open",
+      "ok": true
+     },
+     {
+      "label": "the query is round 1: Query_Key OP-OPR4-05-R1, Round_No 1",
+      "ok": true
+     },
+     {
+      "label": "the query names the point and the case",
+      "ok": true
+     },
+     {
+      "label": "the query has the point's question, note (justification) and due date",
+      "ok": true
+     },
+     {
+      "label": "the query's reference is the point's section",
+      "ok": true
+     },
+     {
+      "label": "the query's kind, department and supplier are the point's (the encoder's labels, the case's supplier code)",
+      "ok": true,
+      "detail": {
+       "Kind_Label": "Question",
+       "Responsible_Department": "Regulatory Affairs",
+       "Supplier_Code": "ZZT-N21-R4-SUP-OP"
+      }
+     },
+     {
+      "label": "the query is at \"Supplier: respond\"",
+      "ok": true,
+      "detail": "Supplier: respond"
+     },
+     {
+      "label": "the query is assigned to exactly the point's portal contacts, which are the request's (the self contact among them)",
+      "ok": true,
+      "detail": {
+       "query": [
+        "UsRmmKatrin"
+       ],
+       "point": [
+        "UsRmmKatrin"
+       ],
+       "request": [
+        "UsRmmKatrin"
+       ]
+      }
+     },
+     {
+      "label": "read back = written (the screens' fields, roundtrip opKeys, and the raiser's edits)",
+      "ok": true
+     },
+     {
+      "label": "the writers' index holds the point's task at its department step",
+      "ok": true
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "raiseOpenPoint: hand-offs": [
+      {
+       "code": "op.round",
+       "status": "sent"
+      },
+      {
+       "code": "history.updated",
+       "status": "sent"
+      }
+     ],
+     "open point": {
+      "opId": "OP-OPR4-05",
+      "itemId": "PkOp69"
+     },
+     "op.round poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "kissflowCalls (estimated live)": 66,
+     "integration runs (offline fakes)": [
+      {
+       "code": "op.round",
+       "ok": true,
+       "detail": "created CIQP Query PkQry14 (round 1) and linked it on the point"
+      },
+      {
+       "code": "history.updated",
+       "ok": true,
+       "detail": "wrote Questions_History_JSON on CIQP Request PkReq1"
+      }
+     ]
+    }
+   },
+   "ms": 5,
+   "at": "2026-10-21T19:27:53.127Z"
+  },
+  {
+   "name": "P5 REG 2 edit: op.edited updates the query",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQP Query (raw)",
+      "value": {
+       "Query_Key": "OP-OPR4-05-R1",
+       "Round_No": 1,
+       "App_Open_Point_Id": "PkOp69",
+       "Case_Code": "ZZT-N21-R4-OPR4",
+       "Kind_Label": "Question",
+       "Responsible_Department": "Regulatory Affairs",
+       "Ref_Section_Key": "K6.1",
+       "Ref_Label": "K6.1 · EU REACH",
+       "Question_Text": "ZZT-N21-R4 REG P5: please confirm the specification limits for section K6.1, the test method and its detection limit.",
+       "Supplier_Justification": "ZZT-N21-R4 REG P5: needed for the REG review (detection limit added).",
+       "Supplier_Due_Date": "2026-11-11",
+       "Edited_At": "2026-10-21T19:27:53Z",
+       "Response_Kind": null,
+       "Response_Text": null,
+       "Assigned_Contacts": [
+        "UsRmmKatrin"
+       ],
+       "_status": "InProgress",
+       "_current_step": "Supplier: respond"
+      }
+     },
+     {
+      "what": "CIQ Open Point (raw)",
+      "value": {
+       "OP_Key": "OP-OPR4-05",
+       "OP_Dept": "REG",
+       "OP_Kind": "Query",
+       "Round_No": 1,
+       "Query_Key": "OP-OPR4-05-R1",
+       "OP_Progress": "Open",
+       "OP_Outcome": null,
+       "Question_Text": "ZZT-N21-R4 REG P5: please confirm the specification limits for section K6.1, the test method and its detection limit.",
+       "Supplier_Justification": "ZZT-N21-R4 REG P5: needed for the REG review (detection limit added).",
+       "Supplier_Due_Date": "2026-11-11",
+       "Portal_Query_Item_Id": "PkQry14",
+       "Response_Kind": null,
+       "Response_Text": null,
+       "Return_Reason": null,
+       "Outcome_Reason": null,
+       "Closed_At": null,
+       "Closed_By": [],
+       "Raiser_Assignee": [
+        "UsRmmKatrin"
+       ],
+       "Thread_JSON (entries)": 2,
+       "_status": "InProgress",
+       "_current_step": "Open point – Regulatory"
+      }
+     },
+     {
+      "what": "the open point as the raiser's screen maps it",
+      "value": {
+       "id": "OP-OPR4-05",
+       "dept": "REG",
+       "kind": "query",
+       "ref": {
+        "sectionId": "K6.1",
+        "label": "K6.1 · EU REACH"
+       },
+       "question": "ZZT-N21-R4 REG P5: please confirm the specification limits for section K6.1, the test method and its detection limit.",
+       "justification": "ZZT-N21-R4 REG P5: needed for the REG review (detection limit added).",
+       "responsibleId": "UsRmmKatrin",
+       "due": "2026-11-11",
+       "rounds": 1,
+       "status": "open",
+       "createdBy": "UsRmmKatrin",
+       "thread": [
+        {
+         "id": "ZZT-N21-R4-OPR4-m5-1",
+         "at": "2026-10-21T19:27:53.000Z",
+         "by": "UsRmmKatrin",
+         "side": "internal",
+         "action": "raised",
+         "text": "ZZT-N21-R4 REG P5: please confirm the specification limits for section K6.1 and name the test method."
+        },
+        {
+         "id": "OP-OPR4-05-m2",
+         "at": "2026-10-21T19:27:53.000Z",
+         "by": "UsRmmKatrin",
+         "side": "internal",
+         "action": "edited",
+         "text": "Question changed from “ZZT-N21-R4 REG P5: please confirm the specification limits for section K6.1 and name the test method.” to “ZZT-N21-R4 REG P5: please confirm the specification limits for section K6.1, the test method and its detection limit.”. Justification changed to “ZZT-N21-R4 REG P5: needed for the REG review (detection limit added).”. Due date changed from 4 Nov 2026 to 11 Nov 2026."
+        }
+       ],
+       "edits": [
+        {
+         "field": "question",
+         "from": "ZZT-N21-R4 REG P5: please confirm the specification limits for section K6.1 and name the test method.",
+         "to": "ZZT-N21-R4 REG P5: please confirm the specification limits for section K6.1, the test method and its detection limit.",
+         "by": "UsRmmKatrin",
+         "at": "2026-10-21T19:27:53.000Z"
+        },
+        {
+         "field": "justification",
+         "from": "ZZT-N21-R4 REG P5: needed for the REG review.",
+         "to": "ZZT-N21-R4 REG P5: needed for the REG review (detection limit added).",
+         "by": "UsRmmKatrin",
+         "at": "2026-10-21T19:27:53.000Z"
+        },
+        {
+         "field": "dueDate",
+         "from": "2026-11-04",
+         "to": "2026-11-11",
+         "by": "UsRmmKatrin",
+         "at": "2026-10-21T19:27:53.000Z"
+        }
+       ]
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "editOpenPoint: the writer reports ok",
+      "ok": true
+     },
+     {
+      "label": "an edit of an open point goes to its query (op.edited), no new round",
+      "ok": true
+     },
+     {
+      "label": "op.edited: the query has the new question",
+      "ok": true
+     },
+     {
+      "label": "op.edited: the query has the new note (justification) and due date",
+      "ok": true
+     },
+     {
+      "label": "op.edited: the query is marked as changed (Edited_At)",
+      "ok": true
+     },
+     {
+      "label": "the point holds the new question, note and due date",
+      "ok": true
+     },
+     {
+      "label": "read back = written (the screens' fields, roundtrip opKeys, and the raiser's edits)",
+      "ok": true
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "editOpenPoint: hand-offs": [
+      {
+       "code": "op.edited",
+       "status": "sent"
+      },
+      {
+       "code": "history.updated",
+       "status": "sent"
+      }
+     ],
+     "op.edited poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "kissflowCalls (estimated live)": 39,
+     "integration runs (offline fakes)": [
+      {
+       "code": "op.edited",
+       "ok": true,
+       "detail": "updated CIQP Query PkQry14"
+      },
+      {
+       "code": "history.updated",
+       "ok": true,
+       "detail": "wrote Questions_History_JSON on CIQP Request PkReq1"
+      }
+     ]
+    }
+   },
+   "ms": 4,
+   "at": "2026-10-21T19:27:53.133Z"
+  },
+  {
+   "name": "T1 thread: Thread_JSON holds every round's text",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "OP-OPR4-01 Thread_JSON",
+      "value": [
+       {
+        "side": "internal",
+        "action": "raised",
+        "text": "ZZT-N21-R4 QM P1: please confirm the specification limits for section K3 and name the test method."
+       }
+      ]
+     },
+     {
+      "what": "OP-OPR4-02 Thread_JSON",
+      "value": [
+       {
+        "side": "internal",
+        "action": "raised",
+        "text": "ZZT-N21-R4 SAF P2: please confirm the specification limits for section K2.2 and name the test method."
+       },
+       {
+        "side": "supplier",
+        "action": "answered",
+        "text": "ZZT-N21-R4 Supplier P2: the limits are in the specification of 12 Oct; method per Ph. Eur. 2.6.12."
+       },
+       {
+        "side": "internal",
+        "action": "returned",
+        "text": "ZZT-N21-R4 SAF P2: please add the detection limit of the method.",
+        "newRound": true
+       }
+      ]
+     },
+     {
+      "what": "OP-OPR4-03 Thread_JSON",
+      "value": [
+       {
+        "side": "internal",
+        "action": "raised",
+        "text": "ZZT-N21-R4 REG P3: please confirm the specification limits for section K6.1 and name the test method."
+       },
+       {
+        "side": "supplier",
+        "action": "answered",
+        "text": "ZZT-N21-R4 Supplier P3: the limits are in the specification of 12 Oct; method per Ph. Eur. 2.6.12."
+       },
+       {
+        "side": "internal",
+        "action": "accepted",
+        "text": "Accepted."
+       }
+      ]
+     },
+     {
+      "what": "OP-OPR4-04 Thread_JSON",
+      "value": [
+       {
+        "side": "internal",
+        "action": "raised",
+        "text": "ZZT-N21-R4 QM P4: please confirm the specification limits for section K3 and name the test method."
+       },
+       {
+        "side": "internal",
+        "action": "withdrawn",
+        "text": "Closed by Beiersdorf: no answer needed."
+       }
+      ]
+     },
+     {
+      "what": "OP-OPR4-05 Thread_JSON",
+      "value": [
+       {
+        "side": "internal",
+        "action": "raised",
+        "text": "ZZT-N21-R4 REG P5: please confirm the specification limits for section K6.1 and name the test method."
+       },
+       {
+        "side": "internal",
+        "action": "edited",
+        "text": "Question changed from “ZZT-N21-R4 REG P5: please confirm the specification limits for section K6.1 and name the test method.” to “ZZT-N21-R4 REG P5: please confirm the specification limits for section K6.1, the test method and its detection limit.”. Justification changed to “ZZT-N21-R4 REG P5: needed for the REG review (detection limit added).”. Due date changed from 4 Nov 2026 to 11 Nov 2026."
+       }
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "OP-OPR4-01: Thread_JSON parses as {thread, edits}",
+      "ok": true
+     },
+     {
+      "label": "OP-OPR4-01: Thread_JSON is the thread the screen last wrote",
+      "ok": true
+     },
+     {
+      "label": "OP-OPR4-01: every round's text is in it (question, answers, return reason)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "OP-OPR4-01: edits recorded (none)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "OP-OPR4-01: the edits are the ones the screen wrote (field, from, to, by, at)",
+      "ok": true
+     },
+     {
+      "label": "OP-OPR4-01: no stand-in id in it (self:, contact:, mail:, u-…)",
+      "ok": true
+     },
+     {
+      "label": "OP-OPR4-01: the raiser's screen shows the waiting answer (from Response_*)",
+      "ok": true
+     },
+     {
+      "label": "OP-OPR4-02: Thread_JSON parses as {thread, edits}",
+      "ok": true
+     },
+     {
+      "label": "OP-OPR4-02: Thread_JSON is the thread the screen last wrote",
+      "ok": true
+     },
+     {
+      "label": "OP-OPR4-02: every round's text is in it (question, answers, return reason)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "OP-OPR4-02: edits recorded (none)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "OP-OPR4-02: the edits are the ones the screen wrote (field, from, to, by, at)",
+      "ok": true
+     },
+     {
+      "label": "OP-OPR4-02: no stand-in id in it (self:, contact:, mail:, u-…)",
+      "ok": true
+     },
+     {
+      "label": "OP-OPR4-03: Thread_JSON parses as {thread, edits}",
+      "ok": true
+     },
+     {
+      "label": "OP-OPR4-03: Thread_JSON is the thread the screen last wrote",
+      "ok": true
+     },
+     {
+      "label": "OP-OPR4-03: every round's text is in it (question, answers, return reason)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "OP-OPR4-03: edits recorded (none)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "OP-OPR4-03: the edits are the ones the screen wrote (field, from, to, by, at)",
+      "ok": true
+     },
+     {
+      "label": "OP-OPR4-03: no stand-in id in it (self:, contact:, mail:, u-…)",
+      "ok": true
+     },
+     {
+      "label": "OP-OPR4-04: Thread_JSON parses as {thread, edits}",
+      "ok": true
+     },
+     {
+      "label": "OP-OPR4-04: Thread_JSON is the thread the screen last wrote",
+      "ok": true
+     },
+     {
+      "label": "OP-OPR4-04: every round's text is in it (question, answers, return reason)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "OP-OPR4-04: edits recorded (none)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "OP-OPR4-04: the edits are the ones the screen wrote (field, from, to, by, at)",
+      "ok": true
+     },
+     {
+      "label": "OP-OPR4-04: no stand-in id in it (self:, contact:, mail:, u-…)",
+      "ok": true
+     },
+     {
+      "label": "OP-OPR4-05: Thread_JSON parses as {thread, edits}",
+      "ok": true
+     },
+     {
+      "label": "OP-OPR4-05: Thread_JSON is the thread the screen last wrote",
+      "ok": true
+     },
+     {
+      "label": "OP-OPR4-05: every round's text is in it (question, answers, return reason)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "OP-OPR4-05: edits recorded (question, note, due date)",
+      "ok": true,
+      "detail": [
+       "question",
+       "justification",
+       "dueDate"
+      ]
+     },
+     {
+      "label": "OP-OPR4-05: the edits are the ones the screen wrote (field, from, to, by, at)",
+      "ok": true
+     },
+     {
+      "label": "OP-OPR4-05: no stand-in id in it (self:, contact:, mail:, u-…)",
+      "ok": true
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "kissflowCalls (estimated live)": 33,
+     "integration runs (offline fakes)": []
+    }
+   },
+   "ms": 2,
+   "at": "2026-10-21T19:27:53.138Z"
+  },
+  {
+   "name": "T2 thread: the questions history on the request",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQP Request questions history (per point)",
+      "value": [
+       {
+        "opId": "OP-OPR4-01",
+        "statusCode": "answered",
+        "rounds": 1,
+        "messages": 2
+       },
+       {
+        "opId": "OP-OPR4-02",
+        "statusCode": "open",
+        "rounds": 2,
+        "messages": 3
+       },
+       {
+        "opId": "OP-OPR4-03",
+        "statusCode": "accepted",
+        "rounds": 1,
+        "messages": 3
+       },
+       {
+        "opId": "OP-OPR4-04",
+        "statusCode": "closed",
+        "rounds": 1,
+        "messages": 2
+       },
+       {
+        "opId": "OP-OPR4-05",
+        "statusCode": "open",
+        "rounds": 1,
+        "messages": 2
+       }
+      ]
+     },
+     {
+      "what": "the points as the supplier's portal maps them",
+      "value": [
+       {
+        "id": "OP-OPR4-02",
+        "status": "open",
+        "rounds": 2,
+        "messages": 3
+       },
+       {
+        "id": "OP-OPR4-01",
+        "status": "in-progress",
+        "rounds": 1,
+        "messages": 2
+       },
+       {
+        "id": "OP-OPR4-03",
+        "status": "closed",
+        "rounds": 1,
+        "messages": 3
+       },
+       {
+        "id": "OP-OPR4-04",
+        "status": "closed",
+        "rounds": 1,
+        "messages": 2
+       },
+       {
+        "id": "OP-OPR4-05",
+        "status": "open",
+        "rounds": 1,
+        "messages": 3
+       }
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "Questions_History_JSON parses as a list",
+      "ok": true
+     },
+     {
+      "label": "it is the history the screen last sent (history.updated)",
+      "ok": true
+     },
+     {
+      "label": "OP-OPR4-01: on the request, answered, 1 round(s)",
+      "ok": true,
+      "detail": {
+       "statusCode": "answered",
+       "rounds": 1
+      }
+     },
+     {
+      "label": "OP-OPR4-01: the supplier sees every round's text",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "OP-OPR4-02: on the request, open, 2 round(s)",
+      "ok": true,
+      "detail": {
+       "statusCode": "open",
+       "rounds": 2
+      }
+     },
+     {
+      "label": "OP-OPR4-02: the supplier sees every round's text",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "OP-OPR4-03: on the request, accepted, 1 round(s)",
+      "ok": true,
+      "detail": {
+       "statusCode": "accepted",
+       "rounds": 1
+      }
+     },
+     {
+      "label": "OP-OPR4-03: the supplier sees every round's text",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "OP-OPR4-04: on the request, closed, 1 round(s)",
+      "ok": true,
+      "detail": {
+       "statusCode": "closed",
+       "rounds": 1
+      }
+     },
+     {
+      "label": "OP-OPR4-04: the supplier sees every round's text",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "OP-OPR4-05: on the request, open, 1 round(s)",
+      "ok": true,
+      "detail": {
+       "statusCode": "open",
+       "rounds": 1
+      }
+     },
+     {
+      "label": "OP-OPR4-05: the supplier sees every round's text",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "no internal reason reaches the supplier (close reasons)",
+      "ok": true
+     },
+     {
+      "label": "OP-OPR4-01: the supplier's portal shows it not closed, with every round's text",
+      "ok": true,
+      "detail": {
+       "status": "in-progress",
+       "rounds": 1
+      }
+     },
+     {
+      "label": "OP-OPR4-02: the supplier's portal shows it not closed, with every round's text",
+      "ok": true,
+      "detail": {
+       "status": "open",
+       "rounds": 2
+      }
+     },
+     {
+      "label": "OP-OPR4-03: the supplier's portal shows it closed, with every round's text",
+      "ok": true,
+      "detail": {
+       "status": "closed",
+       "rounds": 1
+      }
+     },
+     {
+      "label": "OP-OPR4-04: the supplier's portal shows it closed, with every round's text",
+      "ok": true,
+      "detail": {
+       "status": "closed",
+       "rounds": 1
+      }
+     },
+     {
+      "label": "OP-OPR4-05: the supplier's portal shows it not closed, with every round's text",
+      "ok": true,
+      "detail": {
+       "status": "open",
+       "rounds": 1
+      }
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "kissflowCalls (estimated live)": 11,
+     "integration runs (offline fakes)": []
+    }
+   },
+   "ms": 3,
+   "at": "2026-10-21T19:27:53.142Z"
+  },
+  {
+   "name": "R4 showcase: late portal items adopted, the ledger names each item's stage",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "portal items the sweep adopted (created after their poll gave up)",
+      "value": []
+     },
+     {
+      "what": "this suite's items and their stages (kept for Thomas)",
+      "value": [
+       {
+        "flow": "CIQ_Supplier_A00",
+        "id": "FmSup2",
+        "what": "Supplier_Code=ZZT-N21-R4-SUP-OP Supplier_Legal_Name=ZZT-N21-R4 S-OP Supplier GmbH",
+        "stage": "saved"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit4",
+        "what": "Event_Key=EV-LOG-20261021192753-lixm Action_Code=supplier.changed",
+        "stage": "saved"
+       },
+       {
+        "flow": "CIQ_Case_A00",
+        "id": "PkCase5",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 Supplier_Code=ZZT-N21-R4-SUP-OP",
+        "stage": "Beiersdorf review and final release, InProgress: started; the supplier's completeness recorded by I-2 (phase Review); reviews RMM, REG, SAF, QM, MIC, SUS started by ensureReviews; the open points are on their own lines"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit9",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 Event_Key=EV-ZZT-N21-R4-OPR4-20261021192753-u1tj",
+        "stage": "saved"
+       },
+       {
+        "flow": "CIQP_Request_A00",
+        "id": "PkReq1",
+        "what": "ZZT-N21-R4-OPR4 request (S-OP)",
+        "stage": "Supplier: keep the CIQ up to date, InProgress: completeness confirmed by the self contact; its questions history is the one the screen last sent (history.updated): 5 points with every round's text, as the supplier's portal maps them"
+       },
+       {
+        "flow": "CIQ_Review_A00",
+        "id": "PkRev11",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 Review_Key=ZZT-N21-R4-OPR4-RMM-1",
+        "stage": "Review – RMM, InProgress: started by ensureReviews"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit15",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 Event_Key=EV-ZZT-N21-R4-OPR4-20261021192753-2p4e",
+        "stage": "saved"
+       },
+       {
+        "flow": "CIQ_Review_A00",
+        "id": "PkRev16",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 Review_Key=ZZT-N21-R4-OPR4-REG-1",
+        "stage": "Review – Regulatory, InProgress: started by ensureReviews"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit20",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 Event_Key=EV-ZZT-N21-R4-OPR4-20261021192753-hbzt",
+        "stage": "saved"
+       },
+       {
+        "flow": "CIQ_Review_A00",
+        "id": "PkRev21",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 Review_Key=ZZT-N21-R4-OPR4-SAF-1",
+        "stage": "Review – Safety, InProgress: started by ensureReviews"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit25",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 Event_Key=EV-ZZT-N21-R4-OPR4-20261021192753-ozjy",
+        "stage": "saved"
+       },
+       {
+        "flow": "CIQ_Review_A00",
+        "id": "PkRev26",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 Review_Key=ZZT-N21-R4-OPR4-QM-1",
+        "stage": "Review – QM, InProgress: started by ensureReviews"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit30",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 Event_Key=EV-ZZT-N21-R4-OPR4-20261021192753-ptz7",
+        "stage": "saved"
+       },
+       {
+        "flow": "CIQ_Review_A00",
+        "id": "PkRev31",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 Review_Key=ZZT-N21-R4-OPR4-MIC-1",
+        "stage": "Review – Microbiology, InProgress: started by ensureReviews"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit35",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 Event_Key=EV-ZZT-N21-R4-OPR4-20261021192753-uar0",
+        "stage": "saved"
+       },
+       {
+        "flow": "CIQ_Review_A00",
+        "id": "PkRev36",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 Review_Key=ZZT-N21-R4-OPR4-SUS-1",
+        "stage": "Review – Sustainability, InProgress: started by ensureReviews"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit40",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 Event_Key=EV-ZZT-N21-R4-OPR4-20261021192753-9p1h",
+        "stage": "saved"
+       },
+       {
+        "flow": "CIQ_Scope_Run_A00",
+        "id": "FmScope42",
+        "what": "Case_Code=ZZT-N21-R4-OPR4",
+        "stage": "saved"
+       },
+       {
+        "flow": "CIQ_Open_Point_A00",
+        "id": "PkOp43",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 OP_Key=OP-OPR4-01",
+        "stage": "Open point – QM, InProgress: raised by QM (Thomas as raiser); answered by the supplier in round 1 (the portal's writer; I-4: Response_*, OP_Progress In progress), awaiting the raiser's decision"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit47",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 Event_Key=EV-ZZT-N21-R4-OPR4-20261021192753-abvq",
+        "stage": "saved"
+       },
+       {
+        "flow": "CIQP_Query_A00",
+        "id": "PkQry4",
+        "what": "OP-OPR4-01-R1 query (S-OP)",
+        "stage": "Completed: round-1 query of OP-OPR4-01, answered by the supplier (Supplier: respond submitted), ended"
+       },
+       {
+        "flow": "CIQ_Open_Point_A00",
+        "id": "PkOp48",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 OP_Key=OP-OPR4-02",
+        "stage": "Open point – Safety, InProgress: raised by SAF (Thomas as raiser); answered in round 1, returned by the raiser (the reason kept, Thread_JSON with both rounds): round 2 open at the supplier (op.round made a new query); history.updated"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit52",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 Event_Key=EV-ZZT-N21-R4-OPR4-20261021192753-5lw3",
+        "stage": "saved"
+       },
+       {
+        "flow": "CIQP_Query_A00",
+        "id": "PkQry6",
+        "what": "OP-OPR4-02-R1 query (S-OP)",
+        "stage": "Completed: round-1 query of OP-OPR4-02, answered by the supplier (Supplier: respond submitted), ended"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit54",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 Event_Key=EV-ZZT-N21-R4-OPR4-20261021192753-ccr3",
+        "stage": "saved"
+       },
+       {
+        "flow": "CIQP_Query_A00",
+        "id": "PkQry8",
+        "what": "OP-OPR4-02-R2 query (S-OP)",
+        "stage": "Supplier: respond, InProgress: round-2 query of OP-OPR4-02 (SAF), made by op.round after the return, assigned to the self contact, awaiting the supplier"
+       },
+       {
+        "flow": "CIQ_Open_Point_A00",
+        "id": "PkOp55",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 OP_Key=OP-OPR4-03",
+        "stage": "End, Completed: raised by REG (Thomas as raiser); answered by the supplier, accepted by the raiser: ended (OP_Outcome Accepted, Closed_At and Closed_By); history.updated wrote the request's questions history"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit59",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 Event_Key=EV-ZZT-N21-R4-OPR4-20261021192753-2dwc",
+        "stage": "saved"
+       },
+       {
+        "flow": "CIQP_Query_A00",
+        "id": "PkQry10",
+        "what": "OP-OPR4-03-R1 query (S-OP)",
+        "stage": "Completed: round-1 query of OP-OPR4-03, answered by the supplier (Supplier: respond submitted), ended"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit61",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 Event_Key=EV-ZZT-N21-R4-OPR4-20261021192753-o7ht",
+        "stage": "saved"
+       },
+       {
+        "flow": "CIQ_Open_Point_A00",
+        "id": "PkOp62",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 OP_Key=OP-OPR4-04",
+        "stage": "End, Completed: raised by QM (Thomas as raiser); closed by the raiser while its query was open: ended (OP_Outcome Withdrawn, the internal reason kept); history.updated"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit66",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 Event_Key=EV-ZZT-N21-R4-OPR4-20261021192753-wbm9",
+        "stage": "saved"
+       },
+       {
+        "flow": "CIQP_Query_A00",
+        "id": "PkQry12",
+        "what": "OP-OPR4-04-R1 query (S-OP)",
+        "stage": "Completed: round-1 query of OP-OPR4-04, ended unanswered by op.closed"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit68",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 Event_Key=EV-ZZT-N21-R4-OPR4-20261021192753-uf1a",
+        "stage": "saved"
+       },
+       {
+        "flow": "CIQ_Open_Point_A00",
+        "id": "PkOp69",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 OP_Key=OP-OPR4-05",
+        "stage": "Open point – Regulatory, InProgress: raised by REG (Thomas as raiser); its question, note and due date edited (Thread_JSON edits), op.edited updated its open query"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit73",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 Event_Key=EV-ZZT-N21-R4-OPR4-20261021192753-mc4a",
+        "stage": "saved"
+       },
+       {
+        "flow": "CIQP_Query_A00",
+        "id": "PkQry14",
+        "what": "OP-OPR4-05-R1 query (S-OP)",
+        "stage": "Supplier: respond, InProgress: round-1 query of OP-OPR4-05 (REG), edited by op.edited (question, note, due date; Edited_At), awaiting the supplier"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit75",
+        "what": "Case_Code=ZZT-N21-R4-OPR4 Event_Key=EV-ZZT-N21-R4-OPR4-20261021192753-81js",
+        "stage": "saved"
+       }
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "the sweep read every place a late item could be",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "every hand-off whose poll gave up has its portal item in the ledger now (else it may still come, outside the ledger)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "every item of the suite has a stage",
+      "ok": true
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "request: My items outside the ledger changed since the suite started": 0,
+     "query: My items outside the ledger changed since the suite started": 0,
+     "kissflowCalls (estimated live)": 27,
+     "integration runs (offline fakes)": []
+    }
+   },
+   "ms": 1,
+   "at": "2026-10-21T19:27:53.146Z"
+  }
+ ]
+}

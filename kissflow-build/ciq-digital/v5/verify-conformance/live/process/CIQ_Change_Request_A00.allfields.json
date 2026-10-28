@@ -1,0 +1,806 @@
+{
+ "status": 200,
+ "body": {
+  "CIQ_Change_Request_A00": {
+   "Id": "CIQ_Change_Request_A00",
+   "Name": "CIQ Change Request",
+   "Tables": [],
+   "Fields": [
+    {
+     "Id": "_current_step",
+     "Name": "Current step",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_current_assigned_to",
+     "Name": "Currently assigned to",
+     "Type": "UserGroupList",
+     "IsSystemField": true,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_status",
+     "Name": "Status",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": "Status",
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "CR_Key",
+     "Name": "CR Key",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Case_Code",
+     "Name": "Case Code",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Cycle_No",
+     "Name": "Cycle No",
+     "Type": "Number",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "Decimalpoint": null
+    },
+    {
+     "Id": "Supplier_Code",
+     "Name": "Supplier Code",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Change_Kind",
+     "Name": "Change Kind",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Section_Key",
+     "Name": "Section Key",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Field_Key",
+     "Name": "Field Key",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Row_Id",
+     "Name": "Row Id",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Current_Value_Text",
+     "Name": "Current Value Text",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Proposed_Value_JSON",
+     "Name": "Proposed Value JSON",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Change_Reason",
+     "Name": "Change Reason",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Portal_CR_Item_Id",
+     "Name": "Portal CR Item Id",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Raised_By_Portal_User",
+     "Name": "Raised By Portal User",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Case_Item_Id",
+     "Name": "Case Item Id",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Contact_Verified",
+     "Name": "Contact Verified",
+     "Type": "Select",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "CR_Outcome",
+     "Name": "CR Outcome",
+     "Type": "Select",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Triage_Note",
+     "Name": "Triage Note",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Scope_Run_Key",
+     "Name": "Scope Run Key",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Impact_REG",
+     "Name": "Impact REG",
+     "Type": "Select",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Impact_SAF",
+     "Name": "Impact SAF",
+     "Type": "Select",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Impact_QM",
+     "Name": "Impact QM",
+     "Type": "Select",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Impact_MIC",
+     "Name": "Impact MIC",
+     "Type": "Select",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Impact_SUS",
+     "Name": "Impact SUS",
+     "Type": "Select",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Notice_Key",
+     "Name": "Notice Key",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Notice_Kind",
+     "Name": "Notice Kind",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Notice_Title",
+     "Name": "Notice Title",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Supplier_Outcome_Text",
+     "Name": "Supplier Outcome Text",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Portal_Contact_Ids",
+     "Name": "Portal Contact Ids",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "REG_Assessment",
+     "Name": "REG Assessment",
+     "Type": "Select",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "REG_Assess_Note",
+     "Name": "REG Assess Note",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "REG_Assessed_By",
+     "Name": "REG Assessed By",
+     "Type": "User",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "SourceFlowId": "User",
+     "SourceFlowType": "User"
+    },
+    {
+     "Id": "REG_Assessed_At",
+     "Name": "REG Assessed At",
+     "Type": "DateTime",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "SAF_Assessment",
+     "Name": "SAF Assessment",
+     "Type": "Select",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "SAF_Assess_Note",
+     "Name": "SAF Assess Note",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "SAF_Assessed_By",
+     "Name": "SAF Assessed By",
+     "Type": "User",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "SourceFlowId": "User",
+     "SourceFlowType": "User"
+    },
+    {
+     "Id": "SAF_Assessed_At",
+     "Name": "SAF Assessed At",
+     "Type": "DateTime",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "QM_Assessment",
+     "Name": "QM Assessment",
+     "Type": "Select",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "QM_Assess_Note",
+     "Name": "QM Assess Note",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "QM_Assessed_By",
+     "Name": "QM Assessed By",
+     "Type": "User",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "SourceFlowId": "User",
+     "SourceFlowType": "User"
+    },
+    {
+     "Id": "QM_Assessed_At",
+     "Name": "QM Assessed At",
+     "Type": "DateTime",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "MIC_Assessment",
+     "Name": "MIC Assessment",
+     "Type": "Select",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "MIC_Assess_Note",
+     "Name": "MIC Assess Note",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "MIC_Assessed_By",
+     "Name": "MIC Assessed By",
+     "Type": "User",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "SourceFlowId": "User",
+     "SourceFlowType": "User"
+    },
+    {
+     "Id": "MIC_Assessed_At",
+     "Name": "MIC Assessed At",
+     "Type": "DateTime",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "SUS_Assessment",
+     "Name": "SUS Assessment",
+     "Type": "Select",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "SUS_Assess_Note",
+     "Name": "SUS Assess Note",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "SUS_Assessed_By",
+     "Name": "SUS Assessed By",
+     "Type": "User",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "SourceFlowId": "User",
+     "SourceFlowType": "User"
+    },
+    {
+     "Id": "SUS_Assessed_At",
+     "Name": "SUS Assessed At",
+     "Type": "DateTime",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "CR_Open_Num",
+     "Name": "CR Open Num",
+     "Type": "Number",
+     "IsSystemField": false,
+     "Model": "CIQ_Change_Request_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "Decimalpoint": null
+    }
+   ],
+   "System": [
+    {
+     "Id": "Name",
+     "Name": "Name",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "ProcessBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_created_by",
+     "Name": "Created by",
+     "Type": "User",
+     "IsSystemField": true,
+     "Model": "ProcessBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "SourceFlowId": "UserAbstract",
+     "SourceFlowType": null,
+     "Attributes": [
+      {
+       "Id": "Status",
+       "Name": "Status",
+       "Type": "DropdownList"
+      },
+      {
+       "Id": "FirstName",
+       "Name": "First name",
+       "Type": "Text"
+      },
+      {
+       "Id": "LastName",
+       "Name": "Last name",
+       "Type": "Text"
+      },
+      {
+       "Id": "ProfilePicture",
+       "Name": "Profile picture",
+       "Type": "ProfilePicture"
+      }
+     ]
+    },
+    {
+     "Id": "_modified_by",
+     "Name": "Modified by",
+     "Type": "User",
+     "IsSystemField": true,
+     "Model": "ProcessBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "SourceFlowId": "UserAbstract",
+     "SourceFlowType": null,
+     "Attributes": [
+      {
+       "Id": "Status",
+       "Name": "Status",
+       "Type": "DropdownList"
+      },
+      {
+       "Id": "FirstName",
+       "Name": "First name",
+       "Type": "Text"
+      },
+      {
+       "Id": "LastName",
+       "Name": "Last name",
+       "Type": "Text"
+      },
+      {
+       "Id": "ProfilePicture",
+       "Name": "Profile picture",
+       "Type": "ProfilePicture"
+      }
+     ]
+    },
+    {
+     "Id": "_created_at",
+     "Name": "Created at",
+     "Type": "DateTime",
+     "IsSystemField": true,
+     "Model": "ProcessBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_modified_at",
+     "Name": "Modified at",
+     "Type": "DateTime",
+     "IsSystemField": true,
+     "Model": "ProcessBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_deleted_at",
+     "Name": "Deleted at",
+     "Type": "DateTime",
+     "IsSystemField": true,
+     "Model": "ProcessBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true
+    },
+    {
+     "Id": "_deleted_by",
+     "Name": "Deleted by",
+     "Type": "User",
+     "IsSystemField": true,
+     "Model": "ProcessBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true,
+     "SourceFlowId": "UserAbstract",
+     "SourceFlowType": null,
+     "Attributes": [
+      {
+       "Id": "Status",
+       "Name": "Status",
+       "Type": "DropdownList"
+      },
+      {
+       "Id": "FirstName",
+       "Name": "First name",
+       "Type": "Text"
+      },
+      {
+       "Id": "LastName",
+       "Name": "Last name",
+       "Type": "Text"
+      },
+      {
+       "Id": "ProfilePicture",
+       "Name": "Profile picture",
+       "Type": "ProfilePicture"
+      }
+     ]
+    },
+    {
+     "Id": "_flow_name",
+     "Name": "Flow name",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "ProcessBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_doc_version",
+     "Name": "DocVersion",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "ProcessBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true
+    }
+   ],
+   "Workflow": [
+    {
+     "Id": "Activity_1o6v1xh",
+     "Name": "Triage",
+     "Fields": [
+      {
+       "Id": "ExpectedAt",
+       "Name": "Expected at",
+       "Type": "DateTime",
+       "IsSystemField": false,
+       "Model": "ActivityInstance",
+       "Widget": null,
+       "Required": false,
+       "IsInternal": false
+      }
+     ]
+    },
+    {
+     "Id": "Activity_l2hx24",
+     "Name": "Assess – Regulatory",
+     "Fields": [
+      {
+       "Id": "ExpectedAt",
+       "Name": "Expected at",
+       "Type": "DateTime",
+       "IsSystemField": false,
+       "Model": "ActivityInstance",
+       "Widget": null,
+       "Required": false,
+       "IsInternal": false
+      }
+     ]
+    },
+    {
+     "Id": "Activity_rvv4pm",
+     "Name": "Assess – Safety",
+     "Fields": [
+      {
+       "Id": "ExpectedAt",
+       "Name": "Expected at",
+       "Type": "DateTime",
+       "IsSystemField": false,
+       "Model": "ActivityInstance",
+       "Widget": null,
+       "Required": false,
+       "IsInternal": false
+      }
+     ]
+    },
+    {
+     "Id": "Activity_1v5xu30",
+     "Name": "Assess – QM",
+     "Fields": [
+      {
+       "Id": "ExpectedAt",
+       "Name": "Expected at",
+       "Type": "DateTime",
+       "IsSystemField": false,
+       "Model": "ActivityInstance",
+       "Widget": null,
+       "Required": false,
+       "IsInternal": false
+      }
+     ]
+    },
+    {
+     "Id": "Activity_1d278v1",
+     "Name": "Assess – Microbiology",
+     "Fields": [
+      {
+       "Id": "ExpectedAt",
+       "Name": "Expected at",
+       "Type": "DateTime",
+       "IsSystemField": false,
+       "Model": "ActivityInstance",
+       "Widget": null,
+       "Required": false,
+       "IsInternal": false
+      }
+     ]
+    },
+    {
+     "Id": "Activity_1awvxhf",
+     "Name": "Assess – Sustainability",
+     "Fields": [
+      {
+       "Id": "ExpectedAt",
+       "Name": "Expected at",
+       "Type": "DateTime",
+       "IsSystemField": false,
+       "Model": "ActivityInstance",
+       "Widget": null,
+       "Required": false,
+       "IsInternal": false
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

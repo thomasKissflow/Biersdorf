@@ -1,0 +1,44 @@
+N1 case PkEPW_MFtpCd complete; pausing the runner Thu Oct 22 02:31:19 IST 2026
+--- dry run Thu Oct 22 02:31:21 IST 2026
+CIQ final document, live harness: dev sandbox, case item PkEPW_MFtpCd, dry run (reads only), 8 s between calls
+  [CIQ-FD] case start {"caseItemId":"PkEPW_MFtpCd","caseCode":"ZZT-NT2-N1","attempt":1}
+  [CIQ-FD] read {"caseCode":"ZZT-NT2-N1","reviews":0,"openPoints":6,"auditRows":0,"supplierRows":0,"configRows":13}
+  [CIQ-FD] built {"caseCode":"ZZT-NT2-N1","seal":"b8f50dc59a8e8909","sections":28,"components":1,"evidence":0,"openPoints":6,"confirmations":2,"warnings":5,"bundle":"b2db62a76e950bdd"}
+  [CIQ-FD] case failed {"caseItemId":"PkEPW_MFtpCd","caseCode":"ZZT-NT2-N1","attempt":1,"error":"Cannot read properties of undefined (reading 'split')"}
+  [CIQ-FD] runOnce done {"caseItemId":"PkEPW_MFtpCd","ok":false,"status":"failed: Cannot read properties of undefined (reading 'split')"}
+
+Result: not done: failed: Cannot read properties of undefined (reading 'split')
+
+Planned writes (0; nothing was written):
+
+In Apps Script with MAIL_ENABLED on, the service also mails the RMM owner, and the audit row then carries Notify_Recipient and Notify_Channel.
+dry exit 0
+--- apply Thu Oct 22 02:34:42 IST 2026
+CIQ final document, live harness: dev sandbox, case item PkEPW_MFtpCd, APPLY (writes go to Kissflow), 8 s between calls
+  [CIQ-FD] case start {"caseItemId":"PkEPW_MFtpCd","caseCode":"ZZT-NT2-N1","attempt":1}
+  [CIQ-FD] read {"caseCode":"ZZT-NT2-N1","reviews":0,"openPoints":6,"auditRows":0,"supplierRows":0,"configRows":13}
+  [CIQ-FD] built {"caseCode":"ZZT-NT2-N1","seal":"b8f50dc59a8e8909","sections":28,"components":1,"evidence":0,"openPoints":6,"confirmations":2,"warnings":5,"bundle":"b2db62a76e950bdd"}
+  [CIQ-FD] case failed {"caseItemId":"PkEPW_MFtpCd","caseCode":"ZZT-NT2-N1","attempt":1,"error":"Cannot read properties of undefined (reading 'split')"}
+  [CIQ-FD] runOnce done {"caseItemId":"PkEPW_MFtpCd","ok":false,"status":"failed: Cannot read properties of undefined (reading 'split')"}
+
+Result: not done: failed: Cannot read properties of undefined (reading 'split')
+apply exit 0
+--- runner resumes Thu Oct 22 02:38:07 IST 2026
+=== second live run (after the displayCopy fix) Thu Oct 22 03:31:23 IST 2026; pausing the runner
+--- apply Thu Oct 22 03:31:25 IST 2026
+CIQ final document, live harness: dev sandbox, case item PkEPW_MFtpCd, APPLY (writes go to Kissflow), 8 s between calls
+  [CIQ-FD] case start {"caseItemId":"PkEPW_MFtpCd","caseCode":"ZZT-NT2-N1","attempt":2}
+  [CIQ-FD] read {"caseCode":"ZZT-NT2-N1","reviews":0,"openPoints":6,"auditRows":0,"supplierRows":0,"configRows":13}
+  [CIQ-FD] built {"caseCode":"ZZT-NT2-N1","seal":"b8f50dc59a8e8909","sections":28,"components":1,"evidence":0,"openPoints":6,"confirmations":2,"warnings":5,"bundle":"9d98d156c0975f99"}
+  [CIQ-FD] rendered {"caseCode":"ZZT-NT2-N1","file":"ZZT-NT2-N1-final-document.pdf","bytes":14136,"sha256":"eef91ebdb215fed46dca5f37c11a9963fa807084d5e27d79ff7bc8b5b93b113d"}
+  [CIQ-FD] attached {"caseCode":"ZZT-NT2-N1","attachmentId":"Attach-EPZQgIiKXH"}
+  [CIQ-FD] case fields written {"caseCode":"ZZT-NT2-N1","hash":"seal:b8f50dc59a8e8909 sha256:eef91ebdb215fed46dca5f37c11a9963fa807084d5e27d79ff7bc8b5b93b113d"}
+  [CIQ-FD] mail not sent {"caseCode":"ZZT-NT2-N1","rule":"","reason":"MAIL_ENABLED is off"}
+  [CIQ-FD] audit row written {"caseCode":"ZZT-NT2-N1","auditItemId":"PkEPZRMSQET0","found":false}
+  [CIQ-FD] case done {"caseItemId":"PkEPW_MFtpCd","caseCode":"ZZT-NT2-N1","where":"Final_PDF"}
+  [CIQ-FD] runOnce done {"caseItemId":"PkEPW_MFtpCd","ok":true,"status":"filed"}
+
+Result: ok: filed
+PDF: /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/kissflow-build/final-pdf/out/ZZT-NT2-N1-final-document.pdf (14136 bytes, SHA-256 eef91ebdb215fed46dca5f37c11a9963fa807084d5e27d79ff7bc8b5b93b113d)
+apply exit 0
+--- runner resumes Thu Oct 22 03:35:50 IST 2026

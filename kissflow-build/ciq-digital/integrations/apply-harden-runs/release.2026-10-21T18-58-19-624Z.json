@@ -1,0 +1,157 @@
+{
+ "key": "release",
+ "id": "CIQ_release_requested_Final_releas_A00",
+ "run": "GV99I",
+ "mode": "apply",
+ "startedAt": "2026-10-21T18:49:45.894Z",
+ "steps": [
+  {
+   "step": 1,
+   "what": "deactivate",
+   "at": "2026-10-21T18:50:59.815Z"
+  },
+  {
+   "step": 2,
+   "what": "harden-apply",
+   "at": "2026-10-21T18:51:06.444Z"
+  },
+  {
+   "step": 3,
+   "what": "capture",
+   "at": "2026-10-21T18:51:27.100Z"
+  },
+  {
+   "step": 4,
+   "what": "tests",
+   "at": "2026-10-21T18:51:40.396Z"
+  },
+  {
+   "step": 4,
+   "test": "Action_release_read_app_item",
+   "status": 200,
+   "pass": true,
+   "answer": "{\"_id\":\"CIQ_Case_A00\",\"Data\":[{\"_id\":\"PkEPVlrp7HwN\",\"_activity_instance_id\":[\"PkEPVlyvDYLc\"],\"_current_assigned_to\":[{\"_id\":\"RoEKl89I5nGx\",\"Name\":\"Integration service\",\"Kind\":\"AppRole\"}],\"_status\":\"InProgress\",\"Name\":\"CIQ Case from Thomas\",\"_created_at\":\"2026-10-21T18:16:38Z\",\"_created_by\":{\"_id\":\"UsEJUfjYLM8Y\",\"Name\":\"Thomas\",\"Kind\":\"User\"},\"Case_Code\":\"ZZT-N21-A3-FO2DM-C1\",\"Cycle_No\":1,\"Case_Title\":\"ZZT-N21-A3-FO2DM-C1 hardening apply test case (fictional)\",\"Trade_Name\":\"ZZT HardenGlow Ester (fictional)\",\"Main_INCI\":\"Caprylic/Capric Triglyceride\",\"BDF_Material_No\":\"ZZT-N21-A3-FO2DM-C1-RM\",\"SAP_Material_No\":\"ZZT-SAP-0001\",\"IRMA_Ref\":\"ZZT-IRMA-1\",\"Supplier_Code\":\"ZZT-SUP-A3\",\"Supplier_Legal_Name\":\"ZZT Apply Test Chemie GmbH (fictional)\",\"Owner_RMM\":{\"_id\":\"UsEJUfjYLM8Y\",\"Name\":\"Thomas\",\"Kind\":\"User\"},\"Target_Markets_Text\":\"EU\",\"Case_Test\":\"Yes\",\"BDF_Contact_Name\":\"ZZT RMM (fictional)\",\"BDF_Contact_Email\":\"rmm.a3.zzt@example.com\",\"Markets_Label\":\"EU\",\"Template_Label\":\"ZZT template (fictional)\",\"Supplier_Due_Date\":\"2026-11-04\",\"Case_Contacts_JSON\":\"[{\\\"id\\\":\\\"UsEJUfjYLM8Y\\\",\\\"name\\\":\\\"ZZT Contact (fictional)\\\",\\\"email\\\":\\\"zzt.supplier.a3@example.com\\\",\\\"title\\\":\\\"QA\\\",\\\"mayConfirm\\\":true}]\",\"Portal_Contact_Ids\":\"UsEJUfjYLM8Y\",\"Confirm_Contact_Ids\":\"UsEJUfjYLM8Y\",\"Supplier_Contact_Emails\":\"zzt.supplier.a3@example.com\",\"Release_Item_Id\":\"ZZT-REL-ITEM\",\"Release_Key\":\"ZZT-REL-A3\",\"Manifest_Hash\":\"zzt-manifest-hash\",\"Release_Manifest_JSON\":\"{\\\"zzt\\\":true}\",\"Rule_Set_Version\":\"ZZT-RS"
+  },
+  {
+   "step": 4,
+   "test": "Action_release_read_target",
+   "status": 200,
+   "pass": true,
+   "answer": "{\"_id\":\"CIQP_Request_A00\",\"Data\":[{\"_id\":\"PkEPVmEPu63E\",\"_activity_instance_id\":[\"PkEPVmEciJMQ\"],\"_current_assigned_to\":[{\"_id\":\"UsEJUfjYLM8Y\",\"Name\":\"Thomas\",\"Kind\":\"User\"}],\"_status\":\"InProgress\",\"Name\":\"CIQP Request from Thomas\",\"_created_at\":\"2026-10-21T18:17:00Z\",\"_created_by\":{\"_id\":\"UsEJUfjYLM8Y\",\"Name\":\"Thomas\",\"Kind\":\"User\"},\"Request_Key\":\"ZZT-N21-A3-FO2DM-C1|1\",\"Case_Code\":\"ZZT-N21-A3-FO2DM-C1\",\"Cycle_No\":1,\"Supplier_Code\":\"ZZT-SUP-A3\",\"App_Case_Item_Id\":\"PkEPVlrp7HwN\",\"Trade_Name\":\"ZZT HardenGlow Ester (fictional)\",\"Main_INCI\":\"Caprylic/Capric Triglyceride\",\"BDF_Material_No\":\"ZZT-N21-A3-FO2DM-C1-RM\",\"Supplier_Display_Name\":\"ZZT Apply Test Chemie GmbH (fictional)\",\"BDF_Contact_Name\":\"ZZT RMM (fictional)\",\"BDF_Contact_Email\":\"rmm.a3.zzt@example.com\",\"Markets_Label\":\"EU\",\"Template_Label\":\"ZZT template (fictional)\",\"Supplier_Due_Date\":\"2026-11-04\",\"Case_Contacts_JSON\":\"[{\\\"id\\\":\\\"UsEJUfjYLM8Y\\\",\\\"name\\\":\\\"ZZT Contact (fictional)\\\",\\\"email\\\":\\\"zzt.supplier.a3@example.com\\\",\\\"title\\\":\\\"QA\\\",\\\"mayConfirm\\\":true}]\",\"Assigned_Contacts\":[{\"_id\":\"UsEJUfjYLM8Y\",\"Name\":\"Thomas\",\"Kind\":\"User\"}],\"Rule_Set_Version\":\"ZZT-RS-A3\",\"Template_Version\":\"ZZT-TPL-A3\",\"Config_Bundle_JSON\":\"{\\\"format\\\":\\\"ciq-bundle/1\\\",\\\"zzt\\\":true,\\\"note\\\":\\\"hardening apply test\\\"}\",\"Config_Bundle_Hash\":\"zzt-bundle-a3\",\"BDF_Set_JSON\":\"{\\\"zzt\\\":true}\",\"Manual_Scope_JSON\":\"[]\",\"Case_Phase_Label\":\"Filling in\",\"Request_Locked\":\"No\",\"Questions_History_JSON\":\"[{\\\"opKey\\\":\\\"ZZT-N21-A3-GO4Z9-OP1\\\",\\\"round\\\":1,\\\"que"
+  },
+  {
+   "step": 4,
+   "test": "Action_release_pick",
+   "status": 200,
+   "pass": true,
+   "answer": "{\"caseId\":\"PkEPVlrp7HwN\",\"releaseRequestedAt\":\"2026-10-21T18:52:36Z\",\"_id\":\"PkEPVmEPu63E\",\"Release_Flag\":\"Requested\",\"Request_Locked\":\"Yes\",\"Case_Phase_Label\":\"Awaiting your final release\",\"Release_At\":null,\"Release_By_Name\":null,\"Release_By_Email\":null,\"Release_By_Role\":null,\"releaseContacts\":[{\"_id\":\"UsEJUfjYLM8Y\"}]}"
+  },
+  {
+   "step": 4,
+   "test": "Action_RR_stamp_case",
+   "status": 200,
+   "pass": true,
+   "answer": "{\"Release_Requested_At\":\"2026-10-21T18:52:36Z\",\"_modified_at\":\"2026-10-21T18:52:58Z\",\"_id\":\"PkEPVlrp7HwN\"}"
+  },
+  {
+   "step": 4,
+   "test": "Action_RR_update_request",
+   "status": 200,
+   "pass": true,
+   "answer": "{\"Case_Phase_Label\":\"Awaiting your final release\",\"Request_Locked\":\"Yes\",\"Release_By_Name\":null,\"Release_At\":null,\"Release_Flag\":\"Requested\",\"Release_By_Email\":null,\"Release_By_Role\":null,\"_modified_at\":\"2026-10-21T18:53:29Z\",\"_id\":\"PkEPVmEPu63E\"}"
+  },
+  {
+   "step": 5,
+   "what": "trigger sample",
+   "at": "2026-10-21T18:54:13.825Z"
+  },
+  {
+   "step": 6,
+   "what": "publish + activate",
+   "at": "2026-10-21T18:54:34.290Z"
+  }
+ ],
+ "checks": [
+  {
+   "label": "seed R1's four release fields again (admin PUT)",
+   "pass": true
+  },
+  {
+   "label": "release.requested on C1 → R1's four release fields empty, Release_Flag Requested: applied (shown after 13 s)",
+   "pass": true,
+   "detail": {
+    "webhook": 200
+   },
+   "kind": "accepted",
+   "code": "release.requested",
+   "sent": {
+    "caseItemId": "PkEPVlrp7HwN",
+    "idempotencyKey": "ZZT-N21-A3-release-mvih20hz-21"
+   }
+  },
+  {
+   "label": "seed R1's four release fields for the C2 check (admin PUT)",
+   "pass": true
+  },
+  {
+   "label": "release.requested on C2 (forged link to R1): refused, target(s) unchanged after 45 s",
+   "pass": true,
+   "detail": {
+    "webhook": 200,
+    "changed": []
+   },
+   "kind": "refused",
+   "code": "release.requested",
+   "sent": {
+    "caseItemId": "PkEPWEIOpHz2",
+    "idempotencyKey": "ZZT-N21-A3-release-mvih2vbn-22"
+   },
+   "expect": "CIQP Request PkEPVmEPu63E does not name case ZZT-N21-A3-GO4Z9-C2 (PkEPWEIOpHz2) back",
+   "verifiedBy": "target read-back (Run history is not readable over REST)"
+  },
+  {
+   "label": "release.requested on C1 with its Case_Phase \"Cancelled\" (the case-side backstop): refused, target(s) unchanged after 45 s",
+   "pass": true,
+   "detail": {
+    "webhook": 200,
+    "changed": []
+   },
+   "kind": "refused",
+   "code": "release.requested",
+   "sent": {
+    "caseItemId": "PkEPVlrp7HwN",
+    "idempotencyKey": "ZZT-N21-A3-release-mvih4pql-23"
+   },
+   "expect": "Case ZZT-N21-A3-FO2DM-C1 is cancelled: no final release",
+   "verifiedBy": "target read-back (Run history is not readable over REST)"
+  },
+  {
+   "label": "C1's Case_Phase put back to \"Supplier filling in the CIQ\" (admin PUT, read back)",
+   "pass": true,
+   "detail": 200
+  },
+  {
+   "label": "the 45-s refusal window is long enough: the slowest accepted hand-off here showed after 13 s (at most 23 s)",
+   "pass": true,
+   "detail": "a hand-off may take longer than the refusal window: a refused check above may have been read before a wrong write landed; re-read its target and check Run history"
+  }
+ ],
+ "backups": {
+  "preflight": "backups/CIQ_release_requested_Final_releas_A00.preflight.2026-10-21T18-49-59-101Z.json",
+  "unhardened": "backups/CIQ_release_requested_Final_releas_A00.before-harden.2026-10-21T18-51-12-996Z.json",
+  "beforeHarden": "backups/CIQ_release_requested_Final_releas_A00.before-harden.2026-10-21T18-51-12-996Z.json",
+  "beforeTests": "backups/CIQ_release_requested_Final_releas_A00.before-tests.2026-10-21T18-51-46-947Z.json"
+ },
+ "result": "done",
+ "fixture": {
+  "c1": "PkEPVlrp7HwN",
+  "c1code": "ZZT-N21-A3-FO2DM-C1",
+  "r1": "PkEPVmEPu63E",
+  "C2": "PkEPWEIOpHz2"
+ },
+ "liveChecks": "all passed",
+ "code": 0,
+ "calls": 61,
+ "hooks": 4,
+ "endedAt": "2026-10-21T18:58:19.623Z"
+}

@@ -1,0 +1,8 @@
+const pick = (rowsIn, idIn, what) => {
+  const id = String(idIn || "").trim();
+  let rows = rowsIn;
+  if (typeof rows === "string") { try { rows = JSON.parse(rows); } catch (e) { rows = []; } }
+  const row = (Array.isArray(rows) ? rows : []).find((r) => r && r._id === id);
+  if (!id || !row) throw new Error(`${what} ${id || "(no id)"} was not found`);
+  return row;
+};

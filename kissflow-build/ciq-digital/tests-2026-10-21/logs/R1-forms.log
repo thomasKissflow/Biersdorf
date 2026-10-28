@@ -1,0 +1,39 @@
+
+ RUN  v2.1.9 /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/prototype
+
+stdout | live/forms.live.ts > S-FORMS: supplier master, internal note, audit rows, configuration > run R1
+S-FORMS R1 (live): {"pass":10,"fail":2,"blocked":0,"not-run":1}; 188 REST calls; results /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/kissflow-build/ciq-digital/tests-2026-10-21/results/R1/S-FORMS.json
+
+ ❯ live/forms.live.ts (1 test | 1 failed) 571875ms
+   × S-FORMS: supplier master, internal note, audit rows, configuration > run R1 571874ms
+     → expected [ …(2) ] to deeply equal []
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  live/forms.live.ts > S-FORMS: supplier master, internal note, audit rows, configuration > run R1
+AssertionError: expected [ …(2) ] to deeply equal []
+
+- Expected
++ Received
+
+- Array []
++ Array [
++   "F7 supplier: the self contact's e-mail and title as the Business administrator (no 'already used' refusal): fail: updateContact (self contact) was refused before any write: This e-mail is already used by Thomas (ZZT-N21-R1 Supplier).",
++   "F11 audit: every writer's audit row: fail: failed: addSupplier (supplier.changed): the creator is the key user; updateContact (e-mail) (supplier.changed): the creator is the key user; addContact (supplier.changed): the creator is the key user; setContactActive (deactivate) (supplier.changed): the creator is the key user; createCase (case.created): the creator is the key user",
++ ]
+
+ ❯ live/forms.live.ts:796:73
+    794|     );
+    795|     const bad = rec.steps.filter((x) => !known.includes(x) && (x.statu…
+    796|     expect(bad.map((x) => `${x.name}: ${x.status}: ${x.reason ?? ""}`)…
+       |                                                                         ^
+    797|   });
+    798| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  05:19:18
+   Duration  573.09s (transform 531ms, setup 0ms, collect 1.01s, tests 571.87s, environment 0ms, prepare 34ms)
+

@@ -1,0 +1,163 @@
+{
+ "step": "B3-case-data",
+ "at": "2026-10-14T18:36:57.879Z",
+ "apply": true,
+ "offline": false,
+ "flow": "CIQ Case Data",
+ "type": "form",
+ "nameTaken": null,
+ "create": {
+  "status": 200,
+  "id": "CIQ_Case_Data_A00"
+ },
+ "id": "CIQ_Case_Data_A00",
+ "idAsExpected": true,
+ "preflight": {
+  "errors": [],
+  "warnings": []
+ },
+ "kinds": {
+  "Model": 5,
+  "Row": 38,
+  "Column": 81,
+  "Field": 76
+ },
+ "built": {
+  "fields": 43,
+  "required": [
+   "Case_Code"
+  ],
+  "children": [
+   {
+    "id": "CIQ_Case_Data_A00_Components",
+    "fields": [
+     "Comp_Row_Id",
+     "Comp_INCI",
+     "Comp_CAS_No",
+     "Comp_EC_No",
+     "Comp_Function",
+     "Comp_Is_Additive",
+     "Comp_Origin",
+     "Comp_Conc_Min",
+     "Comp_Conc_Max"
+    ]
+   },
+   {
+    "id": "CIQ_Case_Data_A00_Documents",
+    "fields": [
+     "Doc_Key",
+     "Doc_Section_Key",
+     "Doc_Field_Key",
+     "Doc_Row_Id",
+     "Doc_File_Name",
+     "Doc_Kind",
+     "Doc_Attachment_Id",
+     "Doc_Uploaded_By",
+     "Doc_Uploaded_At"
+    ]
+   },
+   {
+    "id": "CIQ_Case_Data_A00_Requested_Documents",
+    "fields": [
+     "Req_Key",
+     "Req_Doc_Name",
+     "Req_Section_Key",
+     "Req_Rule_Ids",
+     "Req_Why_Text",
+     "Req_Status",
+     "Req_Justification",
+     "Req_Added_Later",
+     "Req_Kept"
+    ]
+   },
+   {
+    "id": "CIQ_Case_Data_A00_Change_Reports",
+    "fields": [
+     "CR_Key",
+     "CR_Text",
+     "CR_By_Name",
+     "CR_By_Email",
+     "CR_At",
+     "CR_Follow_Up_Case"
+    ]
+   }
+  ],
+  "formulas": []
+ },
+ "write": {
+  "ok": true,
+  "putDraft": 200,
+  "publish": 200,
+  "publishedAt": "2026-10-14T18:37:02Z"
+ },
+ "readBack": {
+  "publishedAt": "2026-10-14T18:37:02Z",
+  "diffVsSent": {
+   "added": [
+    "PublishedBy User Thomas"
+   ],
+   "removed": [],
+   "changedCount": 0,
+   "changed": []
+  }
+ },
+ "published": {
+  "status": 200,
+  "fields": 43,
+  "missing": [],
+  "requiredPublished": [
+   "Case_Code"
+  ],
+  "tables": [
+   "CIQ_Case_Data_A00_Components",
+   "CIQ_Case_Data_A00_Documents",
+   "CIQ_Case_Data_A00_Requested_Documents",
+   "CIQ_Case_Data_A00_Change_Reports"
+  ],
+  "childColumns": {
+   "CIQ_Case_Data_A00_Components": [
+    "Comp_Row_Id",
+    "Comp_INCI",
+    "Comp_CAS_No",
+    "Comp_EC_No",
+    "Comp_Function",
+    "Comp_Is_Additive",
+    "Comp_Origin",
+    "Comp_Conc_Min",
+    "Comp_Conc_Max"
+   ],
+   "CIQ_Case_Data_A00_Documents": [
+    "Doc_Key",
+    "Doc_Section_Key",
+    "Doc_Field_Key",
+    "Doc_Row_Id",
+    "Doc_File_Name",
+    "Doc_Kind",
+    "Doc_Attachment_Id",
+    "Doc_Uploaded_By",
+    "Doc_Uploaded_At"
+   ],
+   "CIQ_Case_Data_A00_Requested_Documents": [
+    "Req_Key",
+    "Req_Doc_Name",
+    "Req_Section_Key",
+    "Req_Rule_Ids",
+    "Req_Why_Text",
+    "Req_Status",
+    "Req_Justification",
+    "Req_Added_Later",
+    "Req_Kept"
+   ],
+   "CIQ_Case_Data_A00_Change_Reports": [
+    "CR_Key",
+    "CR_Text",
+    "CR_By_Name",
+    "CR_By_Email",
+    "CR_At",
+    "CR_Follow_Up_Case"
+   ]
+  },
+  "workflow": []
+ },
+ "calls": 7
+}

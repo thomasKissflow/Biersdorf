@@ -1,0 +1,44 @@
+{
+ "probe": "P-RO admin PUT on ReadOnly fields",
+ "at": "2026-10-19T20:48:38.316Z",
+ "tag": "ZZT-PRO-10192048",
+ "create": {
+  "status": 200,
+  "item": "PkEOoCnj2Wwz"
+ },
+ "submitStart": {
+  "status": 200
+ },
+ "atDept": {
+  "status": "InProgress",
+  "ctx": [
+   {
+    "step": "Open point – Regulatory",
+    "act": "PkEOoCqVVins"
+   }
+  ]
+ },
+ "adminPutReadOnly": {
+  "status": 200,
+  "wrote": {
+   "Portal_Query_Item_Id": "ZZT-PQ-1",
+   "Response_Kind": "Answer",
+   "Response_Text": "ZZT fictional supplier answer",
+   "Response_Doc_Refs_JSON": "[]",
+   "Supplier_Responsible_Email": "zzt.contact@example.com"
+  },
+  "readBack": {
+   "Portal_Query_Item_Id": "ZZT-PQ-1",
+   "Response_Kind": "Answer",
+   "Response_Text": "ZZT fictional supplier answer",
+   "Response_Doc_Refs_JSON": "[]",
+   "Supplier_Responsible_Email": "zzt.contact@example.com"
+  }
+ },
+ "verdict": "ADMIN PUT WRITES READONLY FIELDS",
+ "cleanup": {
+  "withdraw": 200,
+  "delete": 200,
+  "getAfter": 404
+ }
+}

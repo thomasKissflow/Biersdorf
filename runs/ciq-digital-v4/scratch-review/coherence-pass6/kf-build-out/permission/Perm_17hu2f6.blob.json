@@ -1,0 +1,49 @@
+{
+  "Root": "Perm_17hu2f6",
+  "Perm_17hu2f6": {
+    "Id": "Perm_17hu2f6",
+    "Kind": "FlowPermission",
+    "Role": "ciq_qm_reviewer",
+    "RoleName": "CIQ QM Reviewer",
+    "Model": "Regulatory_Findings",
+    "Level": "ReadOnly",
+    "Scope": "all",
+    "FlowPermission::Permission": [
+      "Permission_nfqm3f",
+      "Permission_edft7j",
+      "Permission_l2ggyn",
+      "Permission_1r3vb07",
+      "Permission_1xgdxbn"
+    ]
+  },
+  "Permission_nfqm3f": {
+    "Id": "Permission_nfqm3f",
+    "Kind": "Permission",
+    "Column": "Findings_Text",
+    "Permission": "ReadOnly"
+  },
+  "Permission_edft7j": {
+    "Id": "Permission_edft7j",
+    "Kind": "Permission",
+    "Column": "Findings_Criterion_Code",
+    "Permission": "ReadOnly"
+  },
+  "Permission_l2ggyn": {
+    "Id": "Permission_l2ggyn",
+    "Kind": "Permission",
+    "Column": "Findings_Blocking",
+    "Permission": "ReadOnly"
+  },
+  "Permission_1r3vb07": {
+    "Id": "Permission_1r3vb07",
+    "Kind": "Permission",
+    "Column": "Findings_State",
+    "Permission": "ReadOnly"
+  },
+  "Permission_1xgdxbn": {
+    "Id": "Permission_1xgdxbn",
+    "Kind": "Permission",
+    "Column": "Findings_Linked_OP_Key",
+    "Permission": "ReadOnly"
+  }
+}

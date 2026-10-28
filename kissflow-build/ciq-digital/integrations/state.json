@@ -1,0 +1,88 @@
+{
+ "integrations": {
+  "opRound": {
+   "id": "CIQ_op_round_Open_point_question_t_A00",
+   "tId": "Trigger_opRound_webhook",
+   "s1": "Action_opRound_read_app_item",
+   "ps": "Action_opRound_pick",
+   "targets": [
+    "Action_OR_create_query",
+    "Action_OR_store_query_id"
+   ],
+   "tested": "every action passed (hardened draft)",
+   "active": true,
+   "hardened": "applied 2026-10-22: hardened, tested, published"
+  },
+  "opEdited": {
+   "id": "CIQ_op_edited_Open_point_question__A00",
+   "tId": "Trigger_opEdited_webhook",
+   "s1": "Action_opEdited_read_app_item",
+   "ps": "Action_opEdited_pick",
+   "targets": [
+    "Action_OE_update_query"
+   ],
+   "tested": "every action passed (hardened draft)",
+   "active": true,
+   "hardened": "applied 2026-10-21: hardened, tested, published"
+  },
+  "opClosed": {
+   "id": "CIQ_op_closed_Open_point_closed_A00",
+   "tId": "Trigger_opClosed_webhook",
+   "s1": "Action_opClosed_read_app_item",
+   "ps": "Action_opClosed_pick",
+   "targets": [
+    "Action_OC_complete_query"
+   ],
+   "tested": "every action passed (hardened draft)",
+   "active": true,
+   "hardened": "applied 2026-10-21: hardened, tested, published"
+  },
+  "release": {
+   "id": "CIQ_release_requested_Final_releas_A00",
+   "tId": "Trigger_release_webhook",
+   "s1": "Action_release_read_app_item",
+   "ps": "Action_release_pick",
+   "targets": [
+    "Action_RR_stamp_case",
+    "Action_RR_update_request"
+   ],
+   "tested": "every action passed (hardened draft)",
+   "active": true,
+   "hardened": "applied 2026-10-21: hardened, tested, published"
+  },
+  "history": {
+   "id": "CIQ_history_updated_Questions_hist_A00",
+   "tId": "Trigger_history_webhook",
+   "s1": "Action_history_read_app_item",
+   "ps": "Action_history_pick",
+   "targets": [
+    "Action_HU_update_request"
+   ],
+   "tested": "every action passed (hardened draft)",
+   "active": true,
+   "hardened": "applied 2026-10-21: hardened, tested, published"
+  },
+  "cancelled": {
+   "id": "CIQ_case_cancelled_Case_cancelled_A00",
+   "tId": "Trigger_cancelled_webhook",
+   "s1": "Action_cancelled_read_app_item",
+   "ps": "Action_cancelled_pick",
+   "targets": [
+    "Action_CC_update_request"
+   ],
+   "tested": "every action passed (hardened draft)",
+   "active": true,
+   "hardened": "applied 2026-10-21: hardened, tested, published"
+  }
+ },
+ "zzt": {
+  "queries": [
+   "PkEP2zdp4KRO",
+   "PkEP3OpUhR9G"
+  ],
+  "done": [
+   "PkEP1MOgdLkk"
+  ],
+  "opItemId": "PkEP3OPuXhMB"
+ }
+}

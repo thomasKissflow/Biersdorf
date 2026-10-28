@@ -1,0 +1,16 @@
+{
+  "name": "kf-author-engine",
+  "version": "1.3.0",
+  "type": "module",
+  "private": true,
+  "description": "Deterministic engine for app-agents: App-Spec IR \u2192 Kissflow metadata blobs, with structural/behavioral/coherence validators, a loader/importer for real exports, and a golden test suite. Zero dependencies.",
+  "bin": {
+    "kf-author": "./cli.mjs"
+  },
+  "scripts": {
+    "test": "node test/run.mjs",
+    "validate": "node cli.mjs validate",
+    "build": "node cli.mjs build",
+    "check": "node cli.mjs check"
+  }
+}

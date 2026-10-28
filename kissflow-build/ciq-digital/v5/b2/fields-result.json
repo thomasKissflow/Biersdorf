@@ -1,0 +1,567 @@
+{
+ "step": "B2-op-fields",
+ "flow": "CIQ_Open_Point_A00",
+ "what": "add the 5 §4.3 fields with explicit per-step levels; Start Mandatory/Editable and review-step Mandatory/Editable as §4.3; End all ReadOnly",
+ "at": "2026-10-15T02:56:56.356Z",
+ "apply": true,
+ "liveMetaVersion": "1792032993497068",
+ "livePublishedAt": "2026-10-15T02:56:33Z",
+ "mutation": {
+  "added": [
+   {
+    "id": "Raised_By_User",
+    "type": "User",
+    "column": "Column_grxljk",
+    "qd": [
+     {
+      "Id": "QueryDefinition_1k8sp52",
+      "Kind": "QueryDefinition",
+      "Field": "Raised_By_User",
+      "LHSModel": "User",
+      "FlowType": "User",
+      "LookupField": [],
+      "HiddenField": []
+     }
+    ]
+   },
+   {
+    "id": "Raised_By_Name",
+    "type": "Text",
+    "column": "Column_grrsia",
+    "qd": []
+   },
+   {
+    "id": "Thread_JSON",
+    "type": "Textarea",
+    "column": "Column_6a0d75",
+    "qd": []
+   },
+   {
+    "id": "Closed_At",
+    "type": "DateTime",
+    "column": "Column_1etbg3y",
+    "qd": []
+   },
+   {
+    "id": "Closed_By",
+    "type": "User",
+    "column": "Column_1etbg50",
+    "qd": [
+     {
+      "Id": "QueryDefinition_50gz3e",
+      "Kind": "QueryDefinition",
+      "Field": "Closed_By",
+      "LHSModel": "User",
+      "FlowType": "User",
+      "LookupField": [],
+      "HiddenField": []
+     }
+    ]
+   }
+  ],
+  "stripped": [
+   "SendBackToInitiator:Permission_mfuerz",
+   "SendBackToInitiator:Permission_mfpy91",
+   "SendBackToInitiator:Permission_1pdp42c",
+   "SendBackToInitiator:Permission_4unaws",
+   "SendBackToInitiator:Permission_4unawl"
+  ],
+  "formulaFields": [
+   "Open_Num",
+   "Start_Gate"
+  ],
+  "roundsTable": {
+   "Activity_uka3mx": "Editable",
+   "Activity_1kdump3": "Editable",
+   "Activity_1go37bt": "Editable",
+   "Activity_hha7u2": "Editable",
+   "Activity_y4af4g": "Editable",
+   "Activity_xc8fbb": "Editable"
+  },
+  "openNumWas": "IF(OP_Outcome=\"Accepted\",0,IF(OP_Outcome=\"Withdrawn\",0,1))",
+  "levelChangesOnExistingFields": 130,
+  "levelChangesSample": [
+   "Raise open point [Activity_18t0lhi]: Supplier_Justification Editable → Mandatory",
+   "Raise open point [Activity_18t0lhi]: Supplier_Due_Date Editable → Mandatory",
+   "Raise open point [Activity_18t0lhi]: OP_To_Supplier Mandatory → Editable",
+   "Raise open point [Activity_18t0lhi]: Internal_Justification Mandatory → Editable",
+   "Raise open point [Activity_18t0lhi]: Internal_Due_Date Mandatory → Editable",
+   "Raise open point [Activity_18t0lhi]: Response_Kind ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Response_Text ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Response_Doc_Refs_JSON ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Supplier_Responsible_Email ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Portal_Query_Item_Id ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: OP_Progress ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: OP_Outcome ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Outcome_Reason ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Return_Reason ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Accepted_Doc_File_Name ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Accepted_Doc_Uploaded_At ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Reviewed_By ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Reviewed_By_Email ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Reviewed_At ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Reviewed_Answers_Rev ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Late_Decision ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Late_Decision_Reason ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: On_Behalf_Of ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Start_Gate Mandatory → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Internal_Due_Date Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Portal_Contact_Ids Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Thread_Text Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Awaiting_Response Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Response_Kind Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Response_Text Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Response_Doc_Refs_JSON Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Accepted_Doc_File_Name Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Accepted_Doc_Uploaded_At Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Reviewed_By Mandatory → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Reviewed_By_Email Mandatory → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Reviewed_At Mandatory → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Reviewed_Answers_Rev Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Late_Decision Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Late_Decision_Reason Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: On_Behalf_Of Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Kind_Label ReadOnly → Editable",
+   "Open point – Regulatory [Activity_uka3mx]: Responsible_User ReadOnly → Editable",
+   "Open point – Regulatory [Activity_uka3mx]: Responsible_Name ReadOnly → Editable",
+   "Open point – Safety [Activity_1kdump3]: Internal_Due_Date Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Portal_Contact_Ids Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Thread_Text Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Awaiting_Response Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Response_Kind Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Response_Text Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Response_Doc_Refs_JSON Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Accepted_Doc_File_Name Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Accepted_Doc_Uploaded_At Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Reviewed_By Mandatory → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Reviewed_By_Email Mandatory → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Reviewed_At Mandatory → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Reviewed_Answers_Rev Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Late_Decision Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Late_Decision_Reason Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: On_Behalf_Of Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Kind_Label ReadOnly → Editable",
+   "Open point – Safety [Activity_1kdump3]: Responsible_User ReadOnly → Editable",
+   "Open point – Safety [Activity_1kdump3]: Responsible_Name ReadOnly → Editable",
+   "Open point – QM [Activity_1go37bt]: Internal_Due_Date Editable → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Portal_Contact_Ids Editable → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Thread_Text Editable → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Awaiting_Response Editable → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Response_Kind Editable → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Response_Text Editable → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Response_Doc_Refs_JSON Editable → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Accepted_Doc_File_Name Editable → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Accepted_Doc_Uploaded_At Editable → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Reviewed_By Mandatory → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Reviewed_By_Email Mandatory → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Reviewed_At Mandatory → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Reviewed_Answers_Rev Editable → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: On_Behalf_Of Editable → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Kind_Label ReadOnly → Editable",
+   "Open point – QM [Activity_1go37bt]: Responsible_User ReadOnly → Editable",
+   "Open point – QM [Activity_1go37bt]: Responsible_Name ReadOnly → Editable",
+   "Open point – Microbiology [Activity_hha7u2]: Internal_Due_Date Editable → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Portal_Contact_Ids Editable → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Thread_Text Editable → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Awaiting_Response Editable → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Response_Kind Editable → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Response_Text Editable → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Response_Doc_Refs_JSON Editable → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Accepted_Doc_File_Name Editable → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Accepted_Doc_Uploaded_At Editable → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Reviewed_By Mandatory → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Reviewed_By_Email Mandatory → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Reviewed_At Mandatory → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Reviewed_Answers_Rev Editable → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: On_Behalf_Of Editable → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Kind_Label ReadOnly → Editable",
+   "Open point – Microbiology [Activity_hha7u2]: Responsible_User ReadOnly → Editable",
+   "Open point – Microbiology [Activity_hha7u2]: Responsible_Name ReadOnly → Editable",
+   "Open point – Sustainability [Activity_y4af4g]: Internal_Due_Date Editable → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Portal_Contact_Ids Editable → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Thread_Text Editable → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Awaiting_Response Editable → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Response_Kind Editable → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Response_Text Editable → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Response_Doc_Refs_JSON Editable → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Accepted_Doc_File_Name Editable → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Accepted_Doc_Uploaded_At Editable → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Reviewed_By Mandatory → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Reviewed_By_Email Mandatory → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Reviewed_At Mandatory → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Reviewed_Answers_Rev Editable → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: On_Behalf_Of Editable → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Kind_Label ReadOnly → Editable",
+   "Open point – Sustainability [Activity_y4af4g]: Responsible_User ReadOnly → Editable",
+   "Open point – Sustainability [Activity_y4af4g]: Responsible_Name ReadOnly → Editable",
+   "Open point – RMM [Activity_xc8fbb]: Internal_Due_Date Editable → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Portal_Contact_Ids Editable → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Thread_Text Editable → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Awaiting_Response Editable → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Response_Kind Editable → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Response_Text Editable → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Response_Doc_Refs_JSON Editable → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Accepted_Doc_File_Name Editable → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Accepted_Doc_Uploaded_At Editable → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Reviewed_By Mandatory → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Reviewed_By_Email Mandatory → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Reviewed_At Mandatory → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Reviewed_Answers_Rev Editable → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: On_Behalf_Of Editable → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Kind_Label ReadOnly → Editable",
+   "Open point – RMM [Activity_xc8fbb]: Responsible_User ReadOnly → Editable",
+   "Open point – RMM [Activity_xc8fbb]: Responsible_Name ReadOnly → Editable"
+  ],
+  "matrixAfter": {
+   "Raise open point [Activity_18t0lhi]": {
+    "Mandatory": 16,
+    "Editable": 40,
+    "ReadOnly": 2
+   },
+   "Open point – Regulatory [Activity_uka3mx]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – Safety [Activity_1kdump3]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – QM [Activity_1go37bt]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – Microbiology [Activity_hha7u2]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – Sustainability [Activity_y4af4g]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – RMM [Activity_xc8fbb]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "End [Activity_i73i25]": {
+    "ReadOnly": 58
+   }
+  }
+ },
+ "diffSummary": {
+  "added": 62,
+  "removed": 11,
+  "changed": 148,
+  "addedByKind": {
+   "Row": 5,
+   "Column": 5,
+   "QueryDefinition": 2,
+   "Field": 5,
+   "Permission": 40,
+   "Node": 5
+  },
+  "removedByKind": {
+   "Node": 11
+  },
+  "changedByKind": {
+   "Model": 1,
+   "Column": 1,
+   "Field": 1,
+   "Expression": 1,
+   "Permission": 136,
+   "Activity": 8
+  }
+ },
+ "changedNonPermission": [
+  {
+   "entity": "CIQ_Open_Point_A00 Model CIQ Open Point",
+   "props": {
+    "Model::Field": {
+     "was": "[53]",
+     "now": "[58]"
+    }
+   }
+  },
+  {
+   "entity": "Column_waac5d Column Details",
+   "props": {
+    "Column::Row": {
+     "was": "[33]",
+     "now": "[38]"
+    }
+   }
+  },
+  {
+   "entity": "OP_Dept Field OP Dept",
+   "props": {
+    "Required": {
+     "now": true
+    }
+   }
+  },
+  {
+   "entity": "Expression_4nzy7r Expression",
+   "props": {
+    "ExpressionStr": {
+     "was": "IF(OP_Outcome=\"Accepted\",0,IF(OP_Outcome=\"Withdrawn\",0,1))",
+     "now": "IF(ISBLANK(OP_Outcome),1,0)"
+    },
+    "Expression::Node": {
+     "was": "[1]",
+     "now": "[1]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_18t0lhi Activity Raise open point",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_uka3mx Activity Open point – Regulatory",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_1kdump3 Activity Open point – Safety",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_1go37bt Activity Open point – QM",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_hha7u2 Activity Open point – Microbiology",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_y4af4g Activity Open point – Sustainability",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_xc8fbb Activity Open point – RMM",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_i73i25 Activity End",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  }
+ ],
+ "preflight": {
+  "errors": [],
+  "warnings": [
+   "NO_ID",
+   "ORPHAN_ENTITY"
+  ]
+ },
+ "dryCheck": {
+  "fields": 58,
+  "newFieldsPresent": [
+   "Raised_By_User:User qd=User",
+   "Raised_By_Name:Text",
+   "Thread_JSON:Textarea",
+   "Closed_At:DateTime",
+   "Closed_By:User qd=User"
+  ],
+  "startMandatoryExact": true,
+  "startEditableExact": true,
+  "reviewExact": [
+   "Activity_uka3mx: M=true E=true Rounds=ReadOnly",
+   "Activity_1kdump3: M=true E=true Rounds=ReadOnly",
+   "Activity_1go37bt: M=true E=true Rounds=ReadOnly",
+   "Activity_hha7u2: M=true E=true Rounds=ReadOnly",
+   "Activity_y4af4g: M=true E=true Rounds=ReadOnly",
+   "Activity_xc8fbb: M=true E=true Rounds=ReadOnly"
+  ],
+  "endAllReadOnly": true,
+  "openNum": {
+   "str": "IF(ISBLANK(OP_Outcome),1,0)",
+   "ok": true
+  },
+  "opDeptRequired": true,
+  "counts": {
+   "Raise open point [Activity_18t0lhi]": {
+    "Mandatory": 16,
+    "Editable": 40,
+    "ReadOnly": 2
+   },
+   "Open point – Regulatory [Activity_uka3mx]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – Safety [Activity_1kdump3]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – QM [Activity_1go37bt]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – Microbiology [Activity_hha7u2]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – Sustainability [Activity_y4af4g]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – RMM [Activity_xc8fbb]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "End [Activity_i73i25]": {
+    "ReadOnly": 58
+   }
+  },
+  "permsOnNonTaskActivities": [
+   "SendBackToInitiator:0"
+  ]
+ },
+ "write": {
+  "ok": true,
+  "putDraft": 200,
+  "publish": 200,
+  "publishedAt": "2026-10-15T02:56:59Z"
+ },
+ "readBack": {
+  "metaVersion": "1792033019441951",
+  "publishedAt": "2026-10-15T02:56:59Z",
+  "diffVsSent": {
+   "added": [],
+   "removed": [],
+   "changed": [],
+   "changedCount": 0
+  },
+  "check": {
+   "fields": 58,
+   "newFieldsPresent": [
+    "Raised_By_User:User qd=User",
+    "Raised_By_Name:Text",
+    "Thread_JSON:Textarea",
+    "Closed_At:DateTime",
+    "Closed_By:User qd=User"
+   ],
+   "startMandatoryExact": true,
+   "startEditableExact": true,
+   "reviewExact": [
+    "Activity_uka3mx: M=true E=true Rounds=ReadOnly",
+    "Activity_1kdump3: M=true E=true Rounds=ReadOnly",
+    "Activity_1go37bt: M=true E=true Rounds=ReadOnly",
+    "Activity_hha7u2: M=true E=true Rounds=ReadOnly",
+    "Activity_y4af4g: M=true E=true Rounds=ReadOnly",
+    "Activity_xc8fbb: M=true E=true Rounds=ReadOnly"
+   ],
+   "endAllReadOnly": true,
+   "openNum": {
+    "str": "IF(ISBLANK(OP_Outcome),1,0)",
+    "ok": true
+   },
+   "opDeptRequired": true,
+   "counts": {
+    "Raise open point [Activity_18t0lhi]": {
+     "Mandatory": 16,
+     "Editable": 40,
+     "ReadOnly": 2
+    },
+    "Open point – Regulatory [Activity_uka3mx]": {
+     "ReadOnly": 43,
+     "Editable": 14,
+     "Mandatory": 1
+    },
+    "Open point – Safety [Activity_1kdump3]": {
+     "ReadOnly": 43,
+     "Editable": 14,
+     "Mandatory": 1
+    },
+    "Open point – QM [Activity_1go37bt]": {
+     "ReadOnly": 43,
+     "Editable": 14,
+     "Mandatory": 1
+    },
+    "Open point – Microbiology [Activity_hha7u2]": {
+     "ReadOnly": 43,
+     "Editable": 14,
+     "Mandatory": 1
+    },
+    "Open point – Sustainability [Activity_y4af4g]": {
+     "ReadOnly": 43,
+     "Editable": 14,
+     "Mandatory": 1
+    },
+    "Open point – RMM [Activity_xc8fbb]": {
+     "ReadOnly": 43,
+     "Editable": 14,
+     "Mandatory": 1
+    },
+    "End [Activity_i73i25]": {
+     "ReadOnly": 58
+    }
+   },
+   "permsOnNonTaskActivities": [
+    "SendBackToInitiator:0"
+   ]
+  }
+ },
+ "publishedFields": {
+  "status": 200,
+  "count": 58,
+  "newIdsPublished": [
+   "Raised_By_User",
+   "Raised_By_Name",
+   "Thread_JSON",
+   "Closed_At",
+   "Closed_By"
+  ],
+  "missingFromPublished": []
+ },
+ "calls": 5
+}

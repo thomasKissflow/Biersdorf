@@ -1,0 +1,43 @@
+{
+  "at": "2026-10-14T17:58:36.258Z",
+  "results": [
+    {
+      "id": "S2d-at-supplier-step",
+      "pass": true,
+      "ev": {
+        "submit": 200,
+        "step": "Supplier: fill in the CIQ"
+      }
+    },
+    {
+      "id": "S2d-attach-at-supplier-step",
+      "pass": true,
+      "ev": {
+        "status": 200,
+        "att": {
+          "key": "CIQP_Request_A00/PkEMwUV0JdKo/Attach-EMwUZzL3IU/ZZT-SDS.pdf",
+          "id": "Attach-EMwUZzL3IU",
+          "name": "ZZT-SDS.pdf",
+          "size": 37,
+          "fileExtension": "pdf"
+        }
+      }
+    },
+    {
+      "id": "S2d-download",
+      "pass": true,
+      "ev": {
+        "status": 302,
+        "bytes": 37
+      }
+    },
+    {
+      "id": "S2d-cleanup",
+      "pass": true,
+      "ev": {
+        "del": 200,
+        "after": 404
+      }
+    }
+  ]
+}

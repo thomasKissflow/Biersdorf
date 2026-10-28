@@ -1,0 +1,125 @@
+{
+ "step": "B1-walk",
+ "at": "2026-10-14T18:08:38.638Z",
+ "tag": "ZZT-B1-10141808",
+ "olderItem": {
+  "id": "PkEKlr8g60Nj",
+  "status": "InProgress",
+  "ctx": [
+   {
+    "step": "Waiting for supplier: basic data",
+    "activity": "Activity_1kltjdn",
+    "act": "PkEKlr9JrJR8",
+    "assigned": [
+     "AppRole:CIQ RMM"
+    ]
+   }
+  ],
+  "current_assigned_to": [
+   {
+    "_id": "RoEKl83f9jPF",
+    "Name": "CIQ RMM",
+    "Kind": "AppRole"
+   }
+  ]
+ },
+ "create": {
+  "status": 200,
+  "item": "PkEMwdn0mGMK",
+  "metaVersion": "1792001250702463"
+ },
+ "item": "PkEMwdn0mGMK",
+ "atStart": {
+  "status": "Draft",
+  "ctx": [
+   {
+    "assigned": [
+     "User:Thomas"
+    ]
+   }
+  ],
+  "stored": {
+   "Template_Version": "ZZT-T-1",
+   "Priority": "Normal",
+   "Rule_Set_Version": "ZZT-RS-1",
+   "Target_Markets_Text": "DE"
+  }
+ },
+ "submitStart": {
+  "status": 200
+ },
+ "atS1": {
+  "status": "InProgress",
+  "ctx": [
+   {
+    "step": "Waiting for supplier: CIQ",
+    "activity": "Activity_1kltjdn",
+    "act": "PkEMwdpknTCm",
+    "assigned": [
+     "AppRole:CIQ Integration Service"
+    ]
+   }
+  ],
+  "current_assigned_to": [
+   {
+    "_id": "RoEKl89I5nGx",
+    "Name": "CIQ Integration Service",
+    "Kind": "AppRole"
+   }
+  ],
+  "adminPut": {
+   "status": 200,
+   "readBack": {
+    "Case_Phase": "Supplier filling in the CIQ",
+    "Undefined_Origin": "No",
+    "Case_Data_Item_Id": "ZZT-CD-B1",
+    "Portal_Release_Item_Id": "ZZT-PREL-B1"
+   }
+  },
+  "submit": {
+   "status": 200
+  }
+ },
+ "atS7": {
+  "status": "InProgress",
+  "ctx": [
+   {
+    "step": "Beiersdorf review and final release",
+    "activity": "Activity_gwgj5o",
+    "act": "PkEMwdvjtdwY",
+    "assigned": [
+     "AppRole:CIQ Integration Service"
+    ]
+   }
+  ],
+  "current_assigned_to": [
+   {
+    "_id": "RoEKl89I5nGx",
+    "Name": "CIQ Integration Service",
+    "Kind": "AppRole"
+   }
+  ],
+  "adminPut": {
+   "status": 200,
+   "readBack": {
+    "Case_Phase": "Completed",
+    "Release_Requested_At": "2026-10-14T18:08:50Z",
+    "Final_Document_Hash": "ZZT-sha256-doc",
+    "Final_Document_At": "2026-10-14T18:08:50Z"
+   }
+  },
+  "submit": {
+   "status": 200
+  }
+ },
+ "end": {
+  "status": "Completed",
+  "ctx": [
+   {
+    "assigned": []
+   }
+  ],
+  "Case_Phase": "Completed"
+ },
+ "pathText": " → Waiting for supplier: CIQ [AppRole:CIQ Integration Service] → Beiersdorf review and final release [AppRole:CIQ Integration Service] → Completed"
+}

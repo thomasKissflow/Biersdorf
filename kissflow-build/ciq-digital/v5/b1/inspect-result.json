@@ -1,0 +1,356 @@
+{
+ "at": "2026-10-14T18:03:27.805Z",
+ "appLists": [
+  "CIQ_Actor_Side_A00 | CIQ Actor Side | Live",
+  "CIQ_Event_Category_A00 | CIQ Event Category | Live",
+  "CIQ_Contact_Role_A00 | CIQ Contact Role | Live",
+  "CIQ_Country_Code_A00 | CIQ Country Code | Live",
+  "CIQ_Supplier_Kind_A00 | CIQ Supplier Kind | Live",
+  "CIQ_AI_State_A00 | CIQ AI State | Live",
+  "CIQ_RMES_Result_A00 | CIQ RMES Result | Live",
+  "CIQ_RMES_Part_A00 | CIQ RMES Part | Live",
+  "CIQ_Release_Stage_A00 | CIQ Release Stage | Live",
+  "CIQ_Review_Dept_A00 | CIQ Review Dept | Live",
+  "CIQ_Config_State_A00 | CIQ Config State | Live",
+  "CIQ_Config_Kind_A00 | CIQ Config Kind | Live",
+  "CIQ_Impact_Resolution_A00 | CIQ Impact Resolution | Live",
+  "CIQ_CR_Outcome_A00 | CIQ CR Outcome | Live",
+  "CIQ_Round_Outcome_A00 | CIQ Round Outcome | Live",
+  "CIQ_OP_Outcome_A00 | CIQ OP Outcome | Live",
+  "CIQ_OP_Progress_A00 | CIQ OP Progress | Live",
+  "CIQ_OP_Kind_A00 | CIQ OP Kind | Live",
+  "CIQ_Department_A00 | CIQ Department | Live",
+  "CIQ_Decision_A00 | CIQ Decision | Live",
+  "CIQ_Confirm_A00 | CIQ Confirm | Live",
+  "CIQ_Yes_No_A00 | CIQ Yes No | Live",
+  "CIQ_ZZ_Spike_Yes_No_A00 | CIQ ZZ Spike Yes No | Live",
+  "CIQ_ZZ_Spike_Decision_A00 | CIQ ZZ Spike Decision | Live"
+ ],
+ "newListsExisting": [
+  {
+   "name": "CIQ Case Phase",
+   "id": "CIQ_Case_Phase_A00",
+   "exists": false
+  },
+  {
+   "name": "CIQ Track Status",
+   "id": "CIQ_Track_Status_A00",
+   "exists": false
+  },
+  {
+   "name": "CIQ Priority",
+   "id": "CIQ_Priority_A00",
+   "exists": false
+  },
+  {
+   "name": "CIQ Rejection Handling",
+   "id": "CIQ_Rejection_Handling_A00",
+   "exists": false
+  },
+  {
+   "name": "CIQ Request Status",
+   "id": "CIQ_Request_Status_A00",
+   "exists": false
+  }
+ ],
+ "changedLists": {
+  "CIQ_OP_Kind_A00": [
+   "Query",
+   "Document request",
+   "Additional part",
+   "Internal review",
+   "Department review",
+   "Contact update"
+  ],
+  "CIQ_OP_Outcome_A00": [
+   "Accepted",
+   "Withdrawn"
+  ],
+  "CIQ_Event_Category_A00": [
+   "Case",
+   "Scope",
+   "Section",
+   "Section review",
+   "Snapshot",
+   "Open point",
+   "RMES",
+   "Change request",
+   "Configuration",
+   "Notification",
+   "Delegation",
+   "Assignment",
+   "Change attempt",
+   "Cancellation",
+   "Access",
+   "Item created",
+   "Final PDF"
+  ]
+ },
+ "case": {
+  "metaVersion": "1791484757297603",
+  "publishedAt": "2026-10-08T18:39:17Z",
+  "kinds": {
+   "Model": 1,
+   "Row": 76,
+   "Column": 126,
+   "Field": 125,
+   "QueryDefinition": 8,
+   "Expression": 19,
+   "Node": 155,
+   "ProcessDef": 7,
+   "Permission": 1875,
+   "Activity": 17,
+   "Resource": 13,
+   "Appearance": 1,
+   "Style": 1,
+   "User": 1
+  },
+  "steps": [
+   "Create case [Activity_p1i6xz] StartEvent  perms=125",
+   "Waiting for supplier: basic data [Activity_1kltjdn] UserTask AppRole:CIQ RMM perms=125",
+   "Scope check [Activity_1feompb] UserTask AppRole:CIQ RMM perms=125",
+   "Waiting for supplier: completeness PS-05 [Activity_1a281c6] UserTask AppRole:CIQ RMM perms=125",
+   "Part 2 – Beiersdorf review [Activity_on1xvu] Parallel  perms=0",
+   "  Review – Regulatory [Activity_xnbq22] UserTask AppRole:CIQ Regulatory Reviewer if Dept_REG_Active = \"Yes\" perms=125",
+   "  Review – Safety [Activity_1armoq0] UserTask AppRole:CIQ Safety Reviewer if Dept_SAF_Active = \"Yes\" perms=125",
+   "  Review – QM [Activity_1kxceje] UserTask AppRole:CIQ QM Reviewer if Dept_QM_Active = \"Yes\" perms=125",
+   "  Review – Microbiology [Activity_1252uy3] UserTask AppRole:CIQ Microbiology Reviewer if Dept_MIC_Active = \"Yes\" perms=125",
+   "  Review – Sustainability [Activity_h505sh] UserTask AppRole:CIQ Sustainability Reviewer if Dept_SUS_Active = \"Yes\" perms=125",
+   "  Review – RMM [Activity_vrfxbc] UserTask AppRole:CIQ RMM if Dept_RMM_Active = \"Yes\" perms=125",
+   "Open items check – before release request [Activity_1lo09cp] UserTask AppRole:CIQ RMM if Hold_For_Open_Items = \"Yes\" perms=125",
+   "Overall approval [Activity_dullxt] UserTask AppRole:CIQ Overall Approver if Overall_Approval_Required = \"Yes\" perms=125",
+   "Waiting for supplier: final release PS-11 [Activity_gwgj5o] UserTask AppRole:CIQ RMM if Overall_Decision != \"Rejected\" perms=125",
+   "Open items check – before close [Activity_luckcl] UserTask AppRole:CIQ RMM if Hold_For_Open_Items = \"Yes\" perms=125",
+   "End [Activity_ycf01a] EndEvent  perms=125"
+  ],
+  "fields": 125,
+  "nonTaskActivities": [
+   "Activity_on1xvu Parallel Part 2 – Beiersdorf review perms=0",
+   "SendBackToInitiator SendBackToInitiator undefined perms=0"
+  ],
+  "permCounts": {
+   "Create case [Activity_p1i6xz]": {
+    "Mandatory": 20,
+    "Editable": 9,
+    "ReadOnly": 96
+   },
+   "Waiting for supplier: basic data [Activity_1kltjdn]": {
+    "ReadOnly": 119,
+    "Editable": 5,
+    "Mandatory": 1
+   },
+   "Scope check [Activity_1feompb]": {
+    "ReadOnly": 101,
+    "Editable": 5,
+    "Mandatory": 19
+   },
+   "Waiting for supplier: completeness PS-05 [Activity_1a281c6]": {
+    "ReadOnly": 104,
+    "Editable": 19,
+    "Mandatory": 2
+   },
+   "Review – Regulatory [Activity_xnbq22]": {
+    "ReadOnly": 115,
+    "Mandatory": 6,
+    "Editable": 4
+   },
+   "Review – Safety [Activity_1armoq0]": {
+    "ReadOnly": 115,
+    "Mandatory": 6,
+    "Editable": 4
+   },
+   "Review – QM [Activity_1kxceje]": {
+    "ReadOnly": 118,
+    "Mandatory": 5,
+    "Editable": 2
+   },
+   "Review – Microbiology [Activity_1252uy3]": {
+    "ReadOnly": 118,
+    "Mandatory": 5,
+    "Editable": 2
+   },
+   "Review – Sustainability [Activity_h505sh]": {
+    "ReadOnly": 118,
+    "Mandatory": 5,
+    "Editable": 2
+   },
+   "Review – RMM [Activity_vrfxbc]": {
+    "ReadOnly": 118,
+    "Mandatory": 5,
+    "Editable": 2
+   },
+   "Open items check – before release request [Activity_1lo09cp]": {
+    "ReadOnly": 110,
+    "Editable": 13,
+    "Mandatory": 2
+   },
+   "Overall approval [Activity_dullxt]": {
+    "ReadOnly": 120,
+    "Editable": 3,
+    "Mandatory": 2
+   },
+   "Waiting for supplier: final release PS-11 [Activity_gwgj5o]": {
+    "ReadOnly": 111,
+    "Editable": 13,
+    "Mandatory": 1
+   },
+   "Open items check – before close [Activity_luckcl]": {
+    "ReadOnly": 112,
+    "Editable": 11,
+    "Mandatory": 2
+   },
+   "End [Activity_ycf01a]": {
+    "ReadOnly": 125
+   }
+  }
+ },
+ "myitems": {
+  "status": 200,
+  "count": 9,
+  "ids": [
+   "PkEKlr8g60Nj",
+   "PkEKlHThMeAX",
+   "PkEKlHMsjf0S",
+   "PkEKlFElmZjL",
+   "PkEKlEnI126X",
+   "PkEKlE9fNyrB",
+   "PkEKlDl3ZxcO",
+   "PkEKlBvLsKZf",
+   "PkEKlBX_AlUK"
+  ]
+ },
+ "items": [
+  {
+   "id": "PkEKlr8g60Nj",
+   "http": 200,
+   "status": "InProgress",
+   "name": "CIQ Case from Thomas",
+   "caseTitle": "ZZT-1009-WB-FILTER",
+   "created": "2026-10-08T19:24:34Z",
+   "steps": [
+    {
+     "step": "Waiting for supplier: basic data",
+     "activity": "Activity_1kltjdn",
+     "act": "PkEKlr9JrJR8"
+    }
+   ],
+   "onRemovedStep": false
+  },
+  {
+   "id": "PkEKlBX_AlUK",
+   "http": 200,
+   "status": "Completed",
+   "name": "CIQ Case from Thomas",
+   "caseCode": "ZZT-1008-1841-D",
+   "caseTitle": "ZZT-1008-1841-D acceptance test case",
+   "test": "Yes",
+   "created": "2026-10-08T18:42:14Z",
+   "steps": [
+    {}
+   ],
+   "onRemovedStep": false
+  },
+  {
+   "id": "PkEKlBvLsKZf",
+   "http": 200,
+   "status": "Draft",
+   "name": "CIQ Case from Thomas",
+   "caseCode": "ZZT-1008-1841-A",
+   "caseTitle": "ZZT-1008-1841-A acceptance test case",
+   "test": "Yes",
+   "created": "2026-10-08T18:42:37Z",
+   "steps": [
+    {}
+   ],
+   "onRemovedStep": false
+  },
+  {
+   "id": "PkEKlDl3ZxcO",
+   "http": 200,
+   "status": "Completed",
+   "name": "CIQ Case from Thomas",
+   "caseCode": "ZZT-1008-1843-D",
+   "caseTitle": "ZZT-1008-1843-D acceptance test case",
+   "test": "Yes",
+   "created": "2026-10-08T18:44:27Z",
+   "steps": [
+    {}
+   ],
+   "onRemovedStep": false
+  },
+  {
+   "id": "PkEKlE9fNyrB",
+   "http": 200,
+   "status": "Completed",
+   "name": "CIQ Case from Thomas",
+   "caseCode": "ZZT-1008-1843-A",
+   "caseTitle": "ZZT-1008-1843-A acceptance test case",
+   "test": "Yes",
+   "created": "2026-10-08T18:44:50Z",
+   "steps": [
+    {}
+   ],
+   "onRemovedStep": false
+  },
+  {
+   "id": "PkEKlEnI126X",
+   "http": 200,
+   "status": "Completed",
+   "name": "CIQ Case from Thomas",
+   "caseCode": "ZZT-1008-1843-B",
+   "caseTitle": "ZZT-1008-1843-B acceptance test case",
+   "test": "Yes",
+   "created": "2026-10-08T18:45:28Z",
+   "steps": [
+    {}
+   ],
+   "onRemovedStep": false
+  },
+  {
+   "id": "PkEKlFElmZjL",
+   "http": 200,
+   "status": "Completed",
+   "name": "CIQ Case from Thomas",
+   "caseCode": "ZZT-1008-1843-C",
+   "caseTitle": "ZZT-1008-1843-C acceptance test case",
+   "test": "Yes",
+   "created": "2026-10-08T18:45:54Z",
+   "steps": [
+    {}
+   ],
+   "onRemovedStep": false
+  },
+  {
+   "id": "PkEKlHMsjf0S",
+   "http": 200,
+   "status": "Rejected",
+   "name": "CIQ Case from Thomas",
+   "caseCode": "ZZT-1008-1843-H1",
+   "caseTitle": "ZZT-1008-1843-H1 acceptance test case",
+   "test": "Yes",
+   "created": "2026-10-08T18:48:01Z",
+   "steps": [
+    {
+     "step": "Waiting for supplier: basic data",
+     "activity": "Activity_1kltjdn",
+     "act": "PkEKlHO0ezQM"
+    }
+   ],
+   "onRemovedStep": false
+  },
+  {
+   "id": "PkEKlHThMeAX",
+   "http": 200,
+   "status": "Withdrawn",
+   "name": "CIQ Case from Thomas",
+   "caseCode": "ZZT-1008-1843-H2",
+   "caseTitle": "ZZT-1008-1843-H2 acceptance test case",
+   "test": "Yes",
+   "created": "2026-10-08T18:48:08Z",
+   "steps": [
+    {}
+   ],
+   "onRemovedStep": false
+  }
+ ]
+}

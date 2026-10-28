@@ -1,0 +1,168 @@
+{
+  "steps": [
+    {
+      "k": "before",
+      "step": "Spike prepare",
+      "status": "InProgress",
+      "ctx": [
+        {
+          "step": "Spike prepare",
+          "act": "PkEKIVlvJvbY",
+          "to": "CIQ ZZ Spike Role A"
+        }
+      ],
+      "flags": "A:Yes B:Yes C:Yes D:No E:No F:No",
+      "hold": "Yes",
+      "gate": "OK"
+    },
+    {
+      "k": "submit Spike prepare",
+      "act": "PkEKIVlvJvbY",
+      "status": 200,
+      "err": null
+    },
+    {
+      "k": "after prepare (fork)",
+      "step": "Spike review – A,Spike review – B,Spike review – C",
+      "ctx": [
+        {
+          "step": "Spike review – A",
+          "act": "PkEKO0AHyiHj",
+          "to": "CIQ ZZ Spike Role A"
+        },
+        {
+          "step": "Spike review – B",
+          "act": "PkEKO0AJhkGM",
+          "to": "CIQ ZZ Spike Role B"
+        },
+        {
+          "step": "Spike review – C",
+          "act": "PkEKO0ALVyR4",
+          "to": "CIQ ZZ Spike Role A"
+        }
+      ],
+      "branches": "ABC",
+      "pass": true
+    },
+    {
+      "k": "A and B together",
+      "A": {
+        "x": "A",
+        "act": "PkEKO0AHyiHj",
+        "update": 400,
+        "updErr": "You don't have permission to update the following fields: {fields}.",
+        "submit": 200,
+        "subErr": null,
+        "ms": 1446,
+        "startedAt": 1791394101016
+      },
+      "B": {
+        "x": "B",
+        "act": "PkEKO0AJhkGM",
+        "update": 400,
+        "updErr": "You don't have permission to update the following fields: {fields}.",
+        "submit": 200,
+        "subErr": null,
+        "ms": 2258,
+        "startedAt": 1791394101017
+      },
+      "startGapMs": 1
+    },
+    {
+      "k": "after A+B",
+      "step": "Spike review – C",
+      "ctx": [
+        {
+          "step": "Spike review – C",
+          "act": "PkEKO0ALVyR4",
+          "to": "CIQ ZZ Spike Role A"
+        }
+      ],
+      "A": {
+        "confirm": null,
+        "by": null,
+        "at": null,
+        "note": null
+      },
+      "B": {
+        "confirm": null,
+        "by": null,
+        "at": null,
+        "note": null
+      }
+    },
+    {
+      "k": "C",
+      "x": "C",
+      "act": "PkEKO0ALVyR4",
+      "update": 400,
+      "updErr": "You don't have permission to update the following fields: {fields}.",
+      "submit": 200,
+      "subErr": null,
+      "ms": 1216,
+      "startedAt": 1791394103802
+    },
+    {
+      "k": "after join",
+      "step": "Spike hold check",
+      "status": "InProgress",
+      "ctx": [
+        {
+          "step": "Spike hold check",
+          "act": "PkEKO0FEImqe",
+          "to": "CIQ ZZ Spike Role A"
+        }
+      ],
+      "hold": "Yes",
+      "gate": "OK",
+      "lanes": {
+        "A": {
+          "confirm": null,
+          "by": null,
+          "at": null,
+          "note": null
+        },
+        "B": {
+          "confirm": null,
+          "by": null,
+          "at": null,
+          "note": null
+        },
+        "C": {
+          "confirm": null,
+          "by": null,
+          "at": null,
+          "note": null
+        },
+        "D": {
+          "confirm": null,
+          "by": null,
+          "at": null,
+          "note": null
+        },
+        "E": {
+          "confirm": null,
+          "by": null,
+          "at": null,
+          "note": null
+        },
+        "F": {
+          "confirm": null,
+          "by": null,
+          "at": null,
+          "note": null
+        }
+      },
+      "lanesKept": false,
+      "dfUntouched": true
+    }
+  ],
+  "verdict": {
+    "K_PAR_fork_only_ABC": true,
+    "K_19P_concurrent_A_B_kept": false,
+    "all_lanes_kept": false,
+    "D_E_F_untouched": true,
+    "join_moved_on": true,
+    "next_step": "Spike hold check"
+  }
+}

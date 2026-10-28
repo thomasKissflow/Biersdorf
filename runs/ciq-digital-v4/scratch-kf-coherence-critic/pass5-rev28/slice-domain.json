@@ -1,0 +1,2079 @@
+{
+  "branch": "main",
+  "revision": 28,
+  "key": "domain",
+  "content": {
+    "summary": "CIQ Digital (CIQ_Digital_A00) is the internal Beiersdorf backend for the Cosmetic Ingredient Questionnaire. RMM creates a case for a supplier raw material, receives basic data from the supplier (portal), runs the scope rules and releases sections, obtains the PS-05 completeness confirmation, then the active departments (Regulatory, Safety, QM, Microbiology, Sustainability, optionally RMM) review in parallel, raising open points with the supplier and (Safety, Regulatory) filling one RMES sheet each. Open-items checks and an optional overall approval precede the single PS-11 final release; the end produces a PDF. Supplier change requests are triaged by RMM and assessed in parallel. v4 model: 11 flows (3 Processes, 8 Data Forms) with child tables Contacts, Components, Criteria, Findings, Rounds; 11 custom roles plus Admin/User; the supplier acts only in the separate portal. PART A rules bind: no aggregates (Number count fields + blank-safe formulas), no pages, exact step names, intra-app automations Z1–Z4 only.",
+    "source": {
+      "brd": "runs/ciq-digital-v4/brd.md",
+      "precedence": "PART A (L19-L67) > PART B v4 (L71-L436) > PART C portal contract (L440-L609) > PART D v3 field reference (L613+)",
+      "extracted_on": "2026-10-07",
+      "run": "ciq-digital-v4",
+      "app": "CIQ_Digital_A00",
+      "target": "Development sandbox 'Beiersdorf kf-dev'"
+    },
+    "scope": {
+      "in": "Backend: 11 flows (3 Processes, 8 Data Forms), child tables, ~20 lists, 11 custom roles + Admin/User, step permissions, grants, intra-app automations Z1–Z4",
+      "out": [
+        "Native pages and nav (--no-pages); Workbench custom UI is later",
+        "Supplier portal flows (CIQP *) and portal role",
+        "Cross-container integrations X1–X6, Y1, Y3–Y6 (portal session)",
+        "'CIQ ZZ Spike' test flows"
+      ],
+      "evidence": "brd.md L3-L8; brd.md L37-L39"
+    },
+    "personas": [
+      {
+        "id": "p_rmm",
+        "name": "Raw Material Manager (RMM)",
+        "kind": "internal",
+        "source_role": "CIQ RMM",
+        "description": "Owns the CIQ case end to end and is the single intermediary between the Beiersdorf departments and the supplier. Creates the case, holds every 'Waiting for supplier' step and every check, runs scope check, triages change requests, maintains suppliers and contacts, and owns the optional RMM review branch (off by default).",
+        "goals": [
+          "Create a case with all mandatory material, supplier, contact, owner and due-date data",
+          "Release the right scope (one section per Mandatory/Optional section, extend never reduce) and activate the right departments",
+          "Move the case through basic data, completeness PS-05, Part 2 review, optional overall approval and the single final release PS-11",
+          "Resolve leftovers at the two open-items checks, or override with an audited reason",
+          "Triage supplier change requests and refuse attempts after the final release",
+          "Cancel a case cleanly so no supplier task is left open; complete manually with a reason when needed",
+          "Keep supplier companies and their contacts (portal user ids) correct"
+        ],
+        "pain_points": [
+          "Kissflow has no field-change trigger, so supplier answer changes must arrive as change notices",
+          "Nobody may write the case during Part 2, so contact changes need their own open point",
+          "Native aggregates are unreliable, so gates depend on count fields written by the acting person"
+        ],
+        "evidence": "brd.md L143; brd.md L157; brd.md L184-L193; brd.md L270; brd.md L278"
+      },
+      {
+        "id": "p_reg_reviewer",
+        "name": "Regulatory Reviewer",
+        "kind": "internal",
+        "source_role": "CIQ Regulatory Reviewer",
+        "description": "Beiersdorf Regulatory department reviewer. Reviews the sections the department leads in its own Part 2 branch 'Review – Regulatory', raises and reviews its own open points, assesses change-request impact in 'Assess – Regulatory', fills the Regulatory RMES sheet and records the internal Regulatory RMES decision, and signs off only its own lane fields.",
+        "goals": [
+          "Review the Regulatory-led sections and sign off the REG lane (confirm, by, e-mail, time, on-behalf-of)",
+          "Ask the supplier specific, referenced questions and accept, withdraw or return each answer",
+          "Assess the impact of supplier change requests on earlier assessments",
+          "Fill the Regulatory RMES sheet (criteria, findings) and record the internal RMES decision with a reason"
+        ],
+        "pain_points": [
+          "Sign-off must be blocked while the department still has open points, unassessed change requests, RMES gaps or open findings"
+        ],
+        "evidence": "brd.md L144; brd.md L158; brd.md L189; brd.md L246; brd.md L271; brd.md L1238"
+      },
+      {
+        "id": "p_saf_reviewer",
+        "name": "Safety Reviewer",
+        "kind": "internal",
+        "source_role": "CIQ Safety Reviewer",
+        "description": "Beiersdorf Safety department reviewer. Reviews the sections the department leads in its own Part 2 branch 'Review – Safety', raises and reviews its own open points, assesses change-request impact in 'Assess – Safety', fills the Safety RMES sheet and records the internal Safety RMES decision, and signs off only its own lane fields.",
+        "goals": [
+          "Review the Safety-led sections and sign off the SAF lane (confirm, by, e-mail, time, on-behalf-of)",
+          "Ask the supplier specific, referenced questions and accept, withdraw or return each answer",
+          "Assess the impact of supplier change requests on earlier assessments",
+          "Fill the Safety RMES sheet (criteria, findings) and record the internal RMES decision with a reason"
+        ],
+        "pain_points": [
+          "Sign-off must be blocked while the department still has open points, unassessed change requests, RMES gaps or open findings"
+        ],
+        "evidence": "brd.md L144; brd.md L158; brd.md L189; brd.md L246; brd.md L271; brd.md L1238"
+      },
+      {
+        "id": "p_qm_reviewer",
+        "name": "QM Reviewer",
+        "kind": "internal",
+        "source_role": "CIQ QM Reviewer",
+        "description": "Beiersdorf QM department reviewer. Reviews the sections the department leads in its own Part 2 branch 'Review – QM', raises and reviews its own open points, assesses change-request impact in 'Assess – QM', and signs off only its own lane fields.",
+        "goals": [
+          "Review the QM-led sections and sign off the QM lane (confirm, by, e-mail, time, on-behalf-of)",
+          "Ask the supplier specific, referenced questions and accept, withdraw or return each answer",
+          "Assess the impact of supplier change requests on earlier assessments"
+        ],
+        "pain_points": [
+          "Sign-off must be blocked while the department still has open points, unassessed change requests"
+        ],
+        "evidence": "brd.md L144; brd.md L158; brd.md L189; brd.md L246; brd.md L271; brd.md L1238"
+      },
+      {
+        "id": "p_mic_reviewer",
+        "name": "Microbiology Reviewer",
+        "kind": "internal",
+        "source_role": "CIQ Microbiology Reviewer",
+        "description": "Beiersdorf Microbiology department reviewer. Reviews the sections the department leads in its own Part 2 branch 'Review – Microbiology', raises and reviews its own open points, assesses change-request impact in 'Assess – Microbiology', and signs off only its own lane fields.",
+        "goals": [
+          "Review the Microbiology-led sections and sign off the MIC lane (confirm, by, e-mail, time, on-behalf-of)",
+          "Ask the supplier specific, referenced questions and accept, withdraw or return each answer",
+          "Assess the impact of supplier change requests on earlier assessments"
+        ],
+        "pain_points": [
+          "Sign-off must be blocked while the department still has open points, unassessed change requests"
+        ],
+        "evidence": "brd.md L144; brd.md L158; brd.md L189; brd.md L246; brd.md L271; brd.md L1238"
+      },
+      {
+        "id": "p_sus_reviewer",
+        "name": "Sustainability Reviewer",
+        "kind": "internal",
+        "source_role": "CIQ Sustainability Reviewer",
+        "description": "Beiersdorf Sustainability department reviewer. Reviews the sections the department leads in its own Part 2 branch 'Review – Sustainability', raises and reviews its own open points, assesses change-request impact in 'Assess – Sustainability', and signs off only its own lane fields.",
+        "goals": [
+          "Review the Sustainability-led sections and sign off the SUS lane (confirm, by, e-mail, time, on-behalf-of)",
+          "Ask the supplier specific, referenced questions and accept, withdraw or return each answer",
+          "Assess the impact of supplier change requests on earlier assessments"
+        ],
+        "pain_points": [
+          "Sign-off must be blocked while the department still has open points, unassessed change requests"
+        ],
+        "evidence": "brd.md L144; brd.md L158; brd.md L189; brd.md L246; brd.md L271; brd.md L1238"
+      },
+      {
+        "id": "p_overall_approver",
+        "name": "Overall Approver",
+        "kind": "internal",
+        "source_role": "CIQ Overall Approver",
+        "description": "Gives the optional overall approval of a case after Part 2 and before the supplier's final release, only when the case's overall-approval switch is on (off by default).",
+        "goals": [
+          "Approve only when every required RMES decision is Approved",
+          "Reject with a neutral closing text to the supplier, which ends the case without a release request"
+        ],
+        "pain_points": [],
+        "evidence": "brd.md L145; brd.md L159; brd.md L191; brd.md L374"
+      },
+      {
+        "id": "p_business_admin",
+        "name": "Business Admin (configuration)",
+        "kind": "internal",
+        "source_role": "CIQ Business Admin",
+        "description": "Maintains the CIQ configuration without an IT ticket: templates, section definitions, rule sets, section ownership, RMES criteria, limits, texts, reminders, settings, and publishes Release rows that cases pin.",
+        "goals": [
+          "Draft and publish a new configuration version copy-on-write, never editing a published row",
+          "Publish a Release row holding the full frozen bundle and its hash",
+          "Download any configuration version"
+        ],
+        "pain_points": [
+          "Published configuration must not be editable or deletable"
+        ],
+        "evidence": "brd.md L146; brd.md L279; brd.md L375; brd.md L430"
+      },
+      {
+        "id": "p_reader",
+        "name": "Reader (Customs, Legal, Auditor, Process Owner)",
+        "kind": "internal",
+        "source_role": "CIQ Reader",
+        "description": "Read-only Beiersdorf stakeholders: Customs, Legal, Auditor and Process Owner. They inspect cases, sections, decisions and the audit trail; they take part in the internal chat but take no workflow step.",
+        "goals": [
+          "See case status, sections and outcomes",
+          "Inspect the tamper-evident audit trail",
+          "Post internal notes on a case"
+        ],
+        "pain_points": [],
+        "evidence": "brd.md L147; brd.md L284; brd.md L1241"
+      },
+      {
+        "id": "p_case_admin",
+        "name": "Case Admin",
+        "kind": "internal",
+        "source_role": "CIQ Case Admin",
+        "description": "Administers cases in exceptional situations: rejects (cancels) a case through the admin route while it is in Part 2 or overall approval, and ends a cancelled case's open open points and change requests. Becomes flow Admin over REST after generate. Its members also hold CIQ RMM (PART D).",
+        "goals": [
+          "Cancel a case at a step RMM does not hold",
+          "End the open P2/P3 items of a cancelled case"
+        ],
+        "pain_points": [
+          "App Builder cannot express flow Admin; it is set over REST after generate"
+        ],
+        "evidence": "brd.md L148; brd.md L215; brd.md L217; brd.md L416; brd.md L1242"
+      },
+      {
+        "id": "p_integration_service",
+        "name": "Integration Service (CIQ Sync Service + integrations)",
+        "kind": "system",
+        "source_role": "CIQ Integration Service",
+        "description": "The identity of the CIQ Sync Service (a small server-side service with API keys) and the integrations. Runs the close sweep, snapshots, PDF renderer, K2.1 component rebuild, portal-item creation as fallback for X2/X3, and the single-writer audit. It never acts on a human step after Start.",
+        "goals": [
+          "Leave no open supplier task after cancellation, overall rejection or manual completion",
+          "Render the final PDF",
+          "Rebuild K2.1 components from portal answers",
+          "Write audit events"
+        ],
+        "pain_points": [
+          "The account key cannot act after Start"
+        ],
+        "evidence": "brd.md L149; brd.md L280; brd.md L285; brd.md L318-L320; brd.md L357-L364; brd.md L406; brd.md L61-L62"
+      },
+      {
+        "id": "p_supplier",
+        "name": "Supplier contact (external)",
+        "kind": "external",
+        "source_role": "Supplier (portal role only; no app access)",
+        "description": "A supplier company's contact person. Acts only in the separate CIQ Supplier Portal: submits basic data, fills sections, answers queries, confirms completeness (PS-05), gives the single final release (PS-11), raises change requests and acknowledges notices. Has no role and no access in CIQ Digital; their actions reach the app only through the Y integrations.",
+        "goals": [
+          "Answer only what is asked, once, with clear references and due dates",
+          "Change configuration/metadata answers until the final release",
+          "Get an outcome for each change request"
+        ],
+        "pain_points": [
+          "Must never see internal notes, RMES, findings, lanes, internal due dates, the overall decision or the audit trail"
+        ],
+        "evidence": "brd.md L78; brd.md L160; brd.md L262; brd.md L265; brd.md L316; brd.md L455"
+      }
+    ],
+    "journeys": [
+      {
+        "id": "j01_create_case",
+        "persona": "p_rmm",
+        "name": "Create a CIQ case",
+        "trigger": "RMM decides to qualify a supplier raw material (a new case cycle)",
+        "steps": [
+          "Enter the material (trade name, main INCI, BDF, SAP and IRMA numbers) as plain case fields",
+          "Pick the supplier from CIQ Supplier and set the case contacts (contact list for display, portal contact ids, confirm contact ids, supplier contact e-mails)",
+          "Set owner and due dates",
+          "The pinned Release row (id, hash, manifest copy) is copied into the case",
+          "Submit; only after the submit succeeds the BASIC CIQ Section row is created (which creates the portal section)"
+        ],
+        "outcome": "A case at 'Waiting for supplier: basic data' with a pinned release and a BASIC section released to the portal",
+        "frequency": "per raw-material qualification (each case cycle)",
+        "success_criteria": [
+          "Missing mandatory data blocks creation",
+          "Contacts are fields on the case, never a child table",
+          "Exactly one BASIC section row per case"
+        ],
+        "evidence": "brd.md L184; brd.md L197-L199; brd.md L330; brd.md L335"
+      },
+      {
+        "id": "j02_basic_data",
+        "persona": "p_rmm",
+        "other_personas": [
+          "p_supplier",
+          "p_integration_service"
+        ],
+        "name": "Receive the supplier's basic data",
+        "trigger": "The case enters 'Waiting for supplier: basic data'",
+        "steps": [
+          "X1 creates the CIQP Request in the portal",
+          "The supplier submits basic data in the portal",
+          "Y1 sets 'basic data received' and the portal request id, and the step is approved",
+          "Fallback: RMM checks the portal and submits the step by hand"
+        ],
+        "outcome": "Case moves to Scope check",
+        "frequency": "once per case",
+        "success_criteria": [
+          "Supplier due date drives the step SLA and escalates to the owner"
+        ],
+        "evidence": "brd.md L185; brd.md L291; brd.md L296; brd.md L782"
+      },
+      {
+        "id": "j03_scope_check",
+        "persona": "p_rmm",
+        "name": "Scope check and section release",
+        "trigger": "Basic data received (case at 'Scope check')",
+        "steps": [
+          "Check BASIC answers (read through flow sharing); if incomplete, raise a query and wait",
+          "Run the scope rules into a CIQ Scope Run (every section incl. N.A., with rule and answer)",
+          "Optionally extend the scope with a justification (never reduce)",
+          "Release one CIQ Section row per Mandatory or Optional section (X2 creates each portal section)",
+          "Set which departments are active (Dept_<D>_Active) and the RMES key"
+        ],
+        "outcome": "Scope recorded, sections with the supplier, departments for Part 2 fixed; case moves to completeness PS-05",
+        "frequency": "once per case (plus later runs for extensions, change notices, additional parts)",
+        "success_criteria": [
+          "Additions only",
+          "N.A. sections get no section row but stay in the scope run with their rule",
+          "Scope-check SLA"
+        ],
+        "evidence": "brd.md L186; brd.md L280-L281; brd.md L783"
+      },
+      {
+        "id": "j04_completeness",
+        "persona": "p_rmm",
+        "other_personas": [
+          "p_supplier",
+          "p_integration_service"
+        ],
+        "name": "Obtain the completeness confirmation (PS-05)",
+        "trigger": "Case enters 'Waiting for supplier: completeness PS-05'",
+        "steps": [
+          "X4 creates the CIQP Completeness Confirmation",
+          "The supplier confirms (name, e-mail, role, time)",
+          "Y4 records the confirmation and RMES_Created_At (RMES header) and approves"
+        ],
+        "outcome": "Questionnaire confirmed complete (data stays editable); exactly one RMES record header per case; Part 2 starts",
+        "frequency": "once per case",
+        "success_criteria": [
+          "Supplier due-date SLA",
+          "Completeness confirmation is not the final release"
+        ],
+        "evidence": "brd.md L187; brd.md L203; brd.md L294; brd.md L298; brd.md L560"
+      },
+      {
+        "id": "j05_department_review",
+        "persona": "p_reg_reviewer",
+        "other_personas": [
+          "p_saf_reviewer",
+          "p_qm_reviewer",
+          "p_mic_reviewer",
+          "p_sus_reviewer",
+          "p_rmm"
+        ],
+        "name": "Department review and sign-off in Part 2",
+        "trigger": "The parallel block 'Part 2 – Beiersdorf review' starts; each active department's branch opens (RMM branch off by default)",
+        "steps": [
+          "Review the sections the department leads",
+          "Raise open points to the supplier or internally as needed",
+          "Safety and Regulatory fill their RMES sheet (see j06)",
+          "Workbench writes the department's open-item counts at its own step",
+          "Sign off only the own lane fields: confirm, by, e-mail, time, on-behalf-of (SAF/REG also internal RMES decision and reason)",
+          "Delegation recorded via on-behalf-of and an audit event"
+        ],
+        "outcome": "Every active department's branch is done; native join moves the case on",
+        "frequency": "once per active department per case",
+        "success_criteria": [
+          "Submit blocked while the department has open points, unassessed change requests, RMES gaps or open findings",
+          "Inactive department branches are skipped",
+          "Review SLA with reminder and escalation (REQ-RMES-019)"
+        ],
+        "evidence": "brd.md L188-L189; brd.md L201; brd.md L208-L212; brd.md L825"
+      },
+      {
+        "id": "j06_rmes_sheet",
+        "persona": "p_saf_reviewer",
+        "other_personas": [
+          "p_reg_reviewer"
+        ],
+        "name": "Fill the RMES sheet (Safety / Regulatory)",
+        "trigger": "First Safety (resp. Regulatory) session after PS-05",
+        "steps": [
+          "Create the department's single RMES row for the case, keyed by the case's RMES_Key, with a reference to the case",
+          "Take the edit lock (Editing_By / Editing_Since)",
+          "Record each criterion: applicability, source, prefill, result, comment, limit check, impact resolution, AI suggestion and who confirmed it",
+          "Record findings (text, criterion, blocking, state, linked open point)",
+          "Lift header counts (open criteria, open blocking findings) for the case gate",
+          "Record the internal RMES decision on the case lane"
+        ],
+        "outcome": "A complete RMES sheet per department per case whose counts allow the lane sign-off",
+        "frequency": "once per case per department (plus re-assessments)",
+        "success_criteria": [
+          "Only one Safety (resp. Regulatory) user writes at a time",
+          "Regulatory can read Safety but not edit it, and vice versa"
+        ],
+        "evidence": "brd.md L282-L283; brd.md L331; brd.md L376; brd.md L433"
+      },
+      {
+        "id": "j07_open_point_supplier",
+        "persona": "p_reg_reviewer",
+        "other_personas": [
+          "p_saf_reviewer",
+          "p_qm_reviewer",
+          "p_mic_reviewer",
+          "p_sus_reviewer",
+          "p_rmm",
+          "p_supplier"
+        ],
+        "name": "Clarify with the supplier through an open point",
+        "trigger": "A department (or RMM at Scope check) needs a query answered, a document, or an additional part",
+        "steps": [
+          "Raise the point: kind, owner department, to-supplier yes, reference (section, field, row or document by file name and upload date), question, supplier-facing justification, responsible person, internal and supplier due dates",
+          "Additional part: RMM or the sync service creates its CIQ Section row",
+          "X3 creates the portal query for the current round",
+          "Supplier responds; Y3 copies the answer, sets Awaiting_Response = No and approves",
+          "The owning department reviews: Accepted (records the accepted document), Withdrawn (with reason), or Return (round appended to Rounds, next question written, item sent back to 'Waiting for supplier')"
+        ],
+        "outcome": "The point is closed (Accepted or Withdrawn) with its full round history in one item",
+        "frequency": "many per case, mainly in Part 2",
+        "success_criteria": [
+          "Every open point blocks its department's sign-off and the release request until closed",
+          "Only the owning department reviews the answer",
+          "Responsible person and due dates are required"
+        ],
+        "evidence": "brd.md L224-L229; brd.md L236-L246; brd.md L249-L251"
+      },
+      {
+        "id": "j08_internal_points",
+        "persona": "p_rmm",
+        "other_personas": [
+          "p_reg_reviewer",
+          "p_saf_reviewer",
+          "p_qm_reviewer",
+          "p_mic_reviewer",
+          "p_sus_reviewer"
+        ],
+        "name": "Handle late and internal work through internal open points",
+        "trigger": "A department is activated after the fork, a completed department's basis changed, contacts must change after PS-05, or a co-review is wanted",
+        "steps": [
+          "Raise an internal open point (Department review / Contact update / Internal review); the supplier step is skipped",
+          "The owning department reviews and closes it",
+          "Its accepted outcome counts as the department's completion for that scope"
+        ],
+        "outcome": "Late work has a task with an owner, and the holds count it",
+        "frequency": "occasional",
+        "success_criteria": [
+          "No one writes the case during Part 2; contact changes go through a Contact update point"
+        ],
+        "evidence": "brd.md L231-L234; brd.md L210; brd.md L424; brd.md L426"
+      },
+      {
+        "id": "j09_open_items_checks",
+        "persona": "p_rmm",
+        "name": "Clear leftovers at the open-items checks",
+        "trigger": "After the Part 2 join (before release request) or after the final release step (before close), something is still open or a count is blank",
+        "steps": [
+          "Resolve late department reviews and contact updates",
+          "Copy late completions",
+          "Or override with a reason, which is audited"
+        ],
+        "outcome": "Nothing open blocks the release request or the close",
+        "frequency": "normally skipped",
+        "success_criteria": [
+          "A blank count holds; the gate never deadlocks",
+          "Normal path stays automatic"
+        ],
+        "evidence": "brd.md L190; brd.md L193; brd.md L32-L34"
+      },
+      {
+        "id": "j10_overall_approval",
+        "persona": "p_overall_approver",
+        "name": "Overall approval",
+        "trigger": "Case reaches 'Overall approval' and Overall_Approval_Required = Yes",
+        "steps": [
+          "Check every required RMES decision",
+          "Approve, or reject with a neutral closing text"
+        ],
+        "outcome": "Approved: the release request goes out. Rejected: the case ends without a release request and the close sweep runs",
+        "frequency": "per case when switched on (off by default)",
+        "success_criteria": [
+          "Approve only if every required RMES decision is Approved",
+          "Comes before the PS-11 release request"
+        ],
+        "evidence": "brd.md L191; brd.md L63; brd.md L220"
+      },
+      {
+        "id": "j11_final_release",
+        "persona": "p_rmm",
+        "other_personas": [
+          "p_supplier",
+          "p_integration_service"
+        ],
+        "name": "Final release (PS-11) and close",
+        "trigger": "Case enters 'Waiting for supplier: final release PS-11' (not overall-rejected)",
+        "steps": [
+          "X5 sends the single release request",
+          "Supplier releases; Y5 records the release (released revisions, evidence list) and approves",
+          "Or RMM completes manually with a reason",
+          "Open items check before close if something opened during this step",
+          "End: Z1 produces the PDF, e-mails the RMM owner and the supplier contacts, logs the notification"
+        ],
+        "outcome": "Case completed with a final PDF; nothing editable by the supplier afterwards",
+        "frequency": "once per case",
+        "success_criteria": [
+          "Exactly one release request per case (REQ-PROC-040)",
+          "Manual completion carries a reason (REQ-PROC-045)"
+        ],
+        "evidence": "brd.md L192-L194; brd.md L301; brd.md L62"
+      },
+      {
+        "id": "j12_cancel_case",
+        "persona": "p_rmm",
+        "other_personas": [
+          "p_case_admin",
+          "p_integration_service"
+        ],
+        "name": "Cancel a case",
+        "trigger": "The case must stop before completion",
+        "steps": [
+          "RMM rejects at its own steps; in Part 2 the Case Admin rejects through the admin route",
+          "A Cancellation audit event is written",
+          "The case's open open points and change requests are ended",
+          "The close sweep snapshots and withdraws every open portal item",
+          "Z2 sends a neutral e-mail to the supplier"
+        ],
+        "outcome": "Case cancelled with no supplier task left open (REQ-PROC-049)",
+        "frequency": "exceptional",
+        "success_criteria": [
+          "Same sweep after an overall rejection or a manual completion"
+        ],
+        "evidence": "brd.md L214-L220; brd.md L38; brd.md L413"
+      },
+      {
+        "id": "j13_change_request",
+        "persona": "p_rmm",
+        "other_personas": [
+          "p_supplier",
+          "p_reg_reviewer",
+          "p_saf_reviewer",
+          "p_qm_reviewer",
+          "p_mic_reviewer",
+          "p_sus_reviewer"
+        ],
+        "name": "Handle a supplier change request",
+        "trigger": "Supplier submits a change request or change notice in the portal (Y6 creates the app item; RMM by hand as fallback)",
+        "steps": [
+          "Triage: check the requester is a contact of the case",
+          "After PS-11: refuse and write a 'change attempt' audit event",
+          "Change notice: new scope run (additions only); new sections become section rows; a Department-review point for each new section's lead department",
+          "Set impact flags per department and the supplier-safe outcome text",
+          "Affected departments assess in parallel ('Assess – <dept>'), each writing only its own four fields; re-assessment goes into the RMES sheet",
+          "End: X6 sends the CIQP Notice with the outcome"
+        ],
+        "outcome": "Scope re-derived, affected departments informed and assessed, supplier notified",
+        "frequency": "whenever a supplier changes configuration/metadata answers or asks for a correction",
+        "success_criteria": [
+          "Every configuration answer change re-derives the scope (REQ-CFG-008, REQ-PROC-007)",
+          "Attempts after release refused and logged (REQ-PROC-043)",
+          "Affected departments informed (REQ-PROC-031)"
+        ],
+        "evidence": "brd.md L255-L272; brd.md L295; brd.md L299"
+      },
+      {
+        "id": "j14_supplier_master",
+        "persona": "p_rmm",
+        "name": "Maintain suppliers and their contacts",
+        "trigger": "A new supplier or contact is needed for a case, or contact data changes",
+        "steps": [
+          "Create or update the supplier (code, legal name, DUNS, kind, country, SAP and Teamcenter ids, active, test)",
+          "Add contacts as rows: name, e-mail, role, may confirm, portal user id, active, invite requested/invited",
+          "Write rows one at a time, re-read and merge",
+          "Keep the parent mirrors (contact portal ids for search, pending invites count)"
+        ],
+        "outcome": "Every contact on a case has a portal user id; suppliers are searchable",
+        "frequency": "ad hoc",
+        "success_criteria": [
+          "One portal user serving two suppliers gets a row under each",
+          "Supplier_Code is the isolation key on every portal item"
+        ],
+        "evidence": "brd.md L278; brd.md L329"
+      },
+      {
+        "id": "j15_configuration",
+        "persona": "p_business_admin",
+        "name": "Author and publish configuration",
+        "trigger": "Business wants to change templates, section definitions, rules, ownership, RMES criteria, limits, texts, reminders or settings",
+        "steps": [
+          "Write a new config version row per kind (copy-on-write; never edit a published row)",
+          "Publish a Release row with the full bundle and its hash",
+          "Each publish writes an audit event",
+          "Download any version"
+        ],
+        "outcome": "New cases pin the new release; pinned releases never change",
+        "frequency": "occasional",
+        "success_criteria": [
+          "No four-eyes (A3)",
+          "No delete for the writer (K-17)",
+          "REQ-CFG-001/-003"
+        ],
+        "evidence": "brd.md L279; brd.md L65; brd.md L375"
+      },
+      {
+        "id": "j16_internal_chat",
+        "persona": "p_rmm",
+        "other_personas": [
+          "p_reg_reviewer",
+          "p_saf_reviewer",
+          "p_qm_reviewer",
+          "p_mic_reviewer",
+          "p_sus_reviewer",
+          "p_overall_approver",
+          "p_business_admin",
+          "p_reader",
+          "p_case_admin"
+        ],
+        "name": "Discuss a case internally",
+        "trigger": "Any internal user wants to comment on a case, section, open point or finding",
+        "steps": [
+          "Post one message (case, optional link, text, author, department, time)",
+          "Author edits only their own messages, by convention"
+        ],
+        "outcome": "Internal discussion attached to the case, never visible to suppliers (REQ-PROC-020)",
+        "frequency": "frequent",
+        "success_criteria": [
+          "Never shared with the portal"
+        ],
+        "evidence": "brd.md L284; brd.md L316"
+      },
+      {
+        "id": "j17_audit_oversight",
+        "persona": "p_reader",
+        "other_personas": [
+          "p_rmm",
+          "p_integration_service"
+        ],
+        "name": "Inspect who did what and when",
+        "trigger": "Audit, legal, customs or process-owner inquiry",
+        "steps": [
+          "Read the audit events of a case or of configuration: who, what, when, old and new value, document by file name and upload date",
+          "Includes notifications, delegations, assignments, section-review marks, scope, configuration, change attempts, cancellations, snapshots, item created"
+        ],
+        "outcome": "A tamper-evident trail answers the inquiry (REQ-CTL-009, REQ-CTL-010)",
+        "frequency": "ad hoc",
+        "success_criteria": [
+          "Beiersdorf roles cannot delete audit rows"
+        ],
+        "evidence": "brd.md L285; brd.md L66; brd.md L431"
+      },
+      {
+        "id": "j18_find_cases",
+        "persona": "p_rmm",
+        "other_personas": [
+          "p_reg_reviewer",
+          "p_saf_reviewer",
+          "p_qm_reviewer",
+          "p_mic_reviewer",
+          "p_sus_reviewer",
+          "p_reader"
+        ],
+        "name": "Find cases by ingredient, origin or supplier",
+        "trigger": "A user needs every case containing an INCI/CAS, an origin type or a supplier (DUNS)",
+        "steps": [
+          "Search the K2.1 and BASIC section rows' search mirrors and the K2.1 Components rows",
+          "Components are rebuilt from portal answers whenever they change and once after the final release"
+        ],
+        "outcome": "Cases found without opening documents (REQ-PROC-006)",
+        "frequency": "ad hoc",
+        "success_criteria": [
+          "Search mirrors are on a Form row, writable at any time"
+        ],
+        "evidence": "brd.md L280; brd.md L332; brd.md L429"
+      },
+      {
+        "id": "j19_sync_service",
+        "persona": "p_integration_service",
+        "name": "Keep app and portal consistent (sync service)",
+        "trigger": "Case cancelled, overall-rejected, manually completed, completed, or portal answers changed; X2/X3 fallback needed",
+        "steps": [
+          "Close sweep: snapshot and withdraw every open portal item",
+          "Render the final PDF (option A)",
+          "Rebuild K2.1 Components",
+          "Create portal items as fallback for X2/X3",
+          "Write audit events"
+        ],
+        "outcome": "No orphan supplier task; PDF and components up to date",
+        "frequency": "event-driven",
+        "success_criteria": [
+          "Never acts on a human step after Start"
+        ],
+        "evidence": "brd.md L218; brd.md L318-L320; brd.md L357-L364; brd.md L406"
+      },
+      {
+        "id": "j20_reactivate_case",
+        "persona": "p_rmm",
+        "name": "Reactivate a case (new cycle)",
+        "trigger": "A cancelled case must be resumed within the period set in Settings",
+        "steps": [
+          "Create a new case item with the same case code and cycle + 1",
+          "A reactivation scope run is recorded",
+          "New sections carry the previous answers as prefill from section snapshots"
+        ],
+        "outcome": "A new cycle continues the earlier case",
+        "frequency": "exceptional",
+        "success_criteria": [
+          "Cycle is part of the case identity"
+        ],
+        "evidence": "brd.md L197; brd.md L281; brd.md L857"
+      },
+      {
+        "id": "j21_supplier_portal_side",
+        "persona": "p_supplier",
+        "name": "Supplier work in the portal (outside this app)",
+        "trigger": "A portal item is assigned to the supplier contact (X1-X6)",
+        "steps": [
+          "Submit basic data, fill sections, respond to queries, confirm completeness, give the final release, raise change requests, acknowledge notices — all in CIQ_Supplier_Portal_A00"
+        ],
+        "outcome": "Supplier actions return to the app through Y1, Y3, Y4, Y5, Y6",
+        "frequency": "per case",
+        "success_criteria": [
+          "No supplier access to CIQ Digital",
+          "Never model portal flows in this app"
+        ],
+        "in_app_scope": false,
+        "evidence": "brd.md L8; brd.md L78-L81; brd.md L444-L447"
+      }
+    ],
+    "entities": [
+      {
+        "id": "P1",
+        "name": "CIQ Case",
+        "flow_type": "Process",
+        "child_tables": [],
+        "description": "One CIQ case cycle from creation to the final PDF: supplier hand-offs, scope check, parallel department review, optional overall approval, final release. Holds the RMES header, the case contacts as fields and the PS-05/PS-11 confirmations.",
+        "key_attributes": [
+          "Identity: case code, cycle number",
+          "Material: Trade_Name, Main_INCI, BDF_Material_No (plain text, X1 reads them), SAP number, IRMA number",
+          "Supplier code and name",
+          "Owner (RMM) and due dates",
+          "Pinned release: row id, hash, manifest copy",
+          "Contacts: Case_Contacts_JSON, Portal_Contact_Ids, Confirm_Contact_Ids, Supplier_Contact_Emails (mandatory at Start)",
+          "Department active flags (REG, SAF, QM, MIC, SUS, RMM)",
+          "Six lanes: confirm, by, e-mail, time, on-behalf-of; SAF and REG also internal RMES decision and reason",
+          "PS-05 and PS-11 request and confirmation fields",
+          "RMES header: RMES_Key, RMES_Created_At",
+          "Late completions",
+          "Holds and gates: blank-safe Number count fields (e.g. Open_Items_Count, Open_CR_Count, <D>_Open_Count, <D>_RMES_Gaps) read by formulas",
+          "Overall approval switch and decision",
+          "Outcome: completion trigger, supplier closing text, final PDF"
+        ],
+        "lifecycle": [
+          "Create case",
+          "Waiting for supplier: basic data",
+          "Scope check",
+          "Waiting for supplier: completeness PS-05",
+          "Part 2 – Beiersdorf review (parallel: Review – Regulatory/Safety/QM/Microbiology/Sustainability/RMM)",
+          "Open items check – before release request (conditional)",
+          "Overall approval (conditional)",
+          "Waiting for supplier: final release PS-11 (skipped if overall-rejected)",
+          "Open items check – before close (conditional)",
+          "Completed | Rejected (cancelled)"
+        ],
+        "relationships": [
+          "A Case belongs to one Supplier",
+          "A Case pins one Release row of CIQ Config Version",
+          "A Case has many Sections",
+          "A Case has 1-4 Scope Runs",
+          "A Case has many Open Points and Change Requests",
+          "A Case has at most one RMES Safety row and one RMES Regulatory row",
+          "A Case has many Internal Notes and Audit Events",
+          "A Case is the app twin of CIQP Request and feeds CIQP Completeness Confirmation and CIQP Final Release"
+        ],
+        "journeys": [
+          "j01_create_case",
+          "j02_basic_data",
+          "j03_scope_check",
+          "j04_completeness",
+          "j05_department_review",
+          "j09_open_items_checks",
+          "j10_overall_approval",
+          "j11_final_release",
+          "j12_cancel_case",
+          "j20_reactivate_case"
+        ],
+        "evidence": "brd.md L119; brd.md L154-L220; brd.md L32-L33"
+      },
+      {
+        "id": "P2",
+        "name": "CIQ Open Point",
+        "flow_type": "Process",
+        "child_tables": [
+          "Rounds"
+        ],
+        "description": "One question, document request or additional part to the supplier, with every back-and-forth round inside the same item; also the internal kinds Department review, Contact update and Internal review.",
+        "key_attributes": [
+          "Case link, kind, owner department (OP_Dept), raised-by department, to-supplier yes/no",
+          "Reference: section, field, row, or document by file name and upload date",
+          "Current round as plain fields: key, round number, question, supplier-facing justification, due dates (internal and supplier), responsible person and department, reference, Portal_Contact_Ids, Thread_Text",
+          "Supplier response: kind, text, referenced documents; Awaiting_Response guard",
+          "Outcome: Accepted (accepted document), Withdrawn (reason), Return",
+          "Rounds child table: question, answer, outcome, reason, document, by, at"
+        ],
+        "lifecycle": [
+          "Raise open point",
+          "Waiting for supplier (only if to-supplier = Yes)",
+          "Review – <owning department> (exactly one runs)",
+          "Return → back to Waiting for supplier with next round",
+          "Closed: Accepted | Withdrawn"
+        ],
+        "relationships": [
+          "An Open Point belongs to one Case",
+          "An Open Point references one Section (or document)",
+          "An Open Point has many Rounds",
+          "An additional-part Open Point causes one new Section",
+          "A Finding may link to an Open Point",
+          "Each round has one CIQP Query twin in the portal"
+        ],
+        "journeys": [
+          "j07_open_point_supplier",
+          "j08_internal_points",
+          "j05_department_review",
+          "j09_open_items_checks"
+        ],
+        "evidence": "brd.md L120; brd.md L222-L251; brd.md L327-L328"
+      },
+      {
+        "id": "P3",
+        "name": "CIQ Change Request",
+        "flow_type": "Process",
+        "child_tables": [],
+        "description": "A change the supplier reports or requests: change notice, correction, or an attempt after release. RMM triages, affected departments assess in parallel, the supplier gets the outcome as a portal notice.",
+        "key_attributes": [
+          "From the portal: CR key, case code, cycle, supplier code, change kind, section/field/row, current value, proposed value, change reason, portal item id, raised by",
+          "Triage: case link, contact verified, outcome, triage note, scope run key, impact flag per department (REG, SAF, QM, MIC, SUS), supplier-safe outcome text, notice key and title",
+          "Per department: assessment, note, assessed by, assessed at (four fields)"
+        ],
+        "lifecycle": [
+          "Receive change request",
+          "Triage",
+          "Assess impact (parallel: Assess – Regulatory/Safety/QM/Microbiology/Sustainability, each only if impacted)",
+          "End (X6 notice)"
+        ],
+        "relationships": [
+          "A Change Request belongs to one Case",
+          "A change notice causes one Scope Run and possibly new Sections and Department-review Open Points",
+          "Twin of CIQP Change Request (in) and CIQP Notice (out)"
+        ],
+        "journeys": [
+          "j13_change_request"
+        ],
+        "evidence": "brd.md L121; brd.md L253-L272; brd.md L957-L966"
+      },
+      {
+        "id": "F1",
+        "name": "CIQ Supplier",
+        "flow_type": "Form",
+        "child_tables": [
+          "Contacts"
+        ],
+        "description": "One supplier company with its people.",
+        "key_attributes": [
+          "Supplier_Code (isolation key on every portal item)",
+          "Legal name, DUNS, supplier kind, supplier country, SAP id, Teamcenter id, active, test",
+          "Parent mirrors: Contact_Portal_Ids_Text (search), Pending_Invites (count)",
+          "Contacts child table: name, e-mail, contact role, may confirm, portal user id, active, invite requested, invited"
+        ],
+        "lifecycle": null,
+        "relationships": [
+          "A Supplier has many Contacts",
+          "A Supplier has many Cases"
+        ],
+        "journeys": [
+          "j14_supplier_master",
+          "j01_create_case",
+          "j18_find_cases"
+        ],
+        "evidence": "brd.md L122; brd.md L278; brd.md L329"
+      },
+      {
+        "id": "F2",
+        "name": "CIQ Config Version",
+        "flow_type": "Form",
+        "child_tables": [],
+        "description": "Every configuration version and kind: template, section definition, rule set, ownership (lead plus co-reviewers), RMES criteria, limits, texts, reminders, settings, and Release rows holding the full frozen bundle a case pins.",
+        "key_attributes": [
+          "Config key, config kind, version label, state",
+          "Payload; content hash",
+          "Release rows: Release_Bundle_JSON plus hash, release stage (Test/Live), change summary",
+          "Published by, published at"
+        ],
+        "lifecycle": [
+          "Draft",
+          "Published",
+          "Retired"
+        ],
+        "relationships": [
+          "A Release row bundles many config versions",
+          "Many Cases pin one Release row",
+          "Section definitions feed Section rows' Definition_JSON"
+        ],
+        "journeys": [
+          "j15_configuration",
+          "j01_create_case",
+          "j03_scope_check"
+        ],
+        "evidence": "brd.md L123; brd.md L279; brd.md L1140; brd.md L1218-L1219"
+      },
+      {
+        "id": "F3",
+        "name": "CIQ Section",
+        "flow_type": "Form",
+        "child_tables": [
+          "Components (K2.1 only)"
+        ],
+        "description": "One released section of a case: what was released, why, and for which department. App twin of the portal section. The K2.1 row carries the component list and the search fields.",
+        "key_attributes": [
+          "X2 set 1:1 with the portal: section item key, case code, cycle, supplier code, section key/code/title/sort, applicability, supplier reason, added later, origin, Definition_JSON and hash, due date, contacts",
+          "Internal: lead department, query owner, co-review departments, scope-run key, derivation kind, override justification",
+          "K2.1 and BASIC: search mirrors (INCI, CAS, origin types, DUNS), Source_Answers_Rev",
+          "Components child table: INCI, CAS, EC, function, additive, origin, min and max concentration"
+        ],
+        "lifecycle": [
+          "Released (row created) → portal section created; derived status open / in progress / with the supplier / reviewed / completed"
+        ],
+        "relationships": [
+          "A Section belongs to one Case",
+          "A Section comes from one Scope Run",
+          "A K2.1 Section has many Components",
+          "Twin of one CIQP Section; answers/uploads are read through flow sharing, not copied"
+        ],
+        "journeys": [
+          "j01_create_case",
+          "j03_scope_check",
+          "j05_department_review",
+          "j07_open_point_supplier",
+          "j18_find_cases"
+        ],
+        "evidence": "brd.md L124; brd.md L280; brd.md L332-L333; brd.md L1019-L1027"
+      },
+      {
+        "id": "F4",
+        "name": "CIQ Scope Run",
+        "flow_type": "Form",
+        "child_tables": [],
+        "description": "One run of the scope rules (initial, extension, change notice, additional part, reactivation), recording every section's classification including N.A., with the rule and answer behind it. Additions only.",
+        "key_attributes": [
+          "Trigger, rule-set version, input hash",
+          "Full result incl. N.A. with rule and answer",
+          "Added sections",
+          "Override justification",
+          "By, at"
+        ],
+        "lifecycle": null,
+        "relationships": [
+          "A Scope Run belongs to one Case (1-4 per case)",
+          "A Scope Run adds many Sections"
+        ],
+        "journeys": [
+          "j03_scope_check",
+          "j13_change_request",
+          "j20_reactivate_case"
+        ],
+        "evidence": "brd.md L125; brd.md L281; brd.md L334"
+      },
+      {
+        "id": "F5",
+        "name": "CIQ RMES Safety",
+        "flow_type": "Form",
+        "child_tables": [
+          "Criteria",
+          "Findings"
+        ],
+        "description": "Safety's RMES sheet for one case: all criteria and findings in one row.",
+        "key_attributes": [
+          "RMES_Key and a reference to the case",
+          "Header counts: open criteria, open blocking findings (feed the case gate)",
+          "Lock: Editing_By, Editing_Since",
+          "Criteria: code, part, title, applicability and basis, source (question, value, answer rev, or document by file name and upload date), prefill, result, comment, by, at, limit check, impact resolution, AI suggestion with source, who confirmed it",
+          "Findings: text, criterion, blocking, state, linked open point"
+        ],
+        "lifecycle": null,
+        "relationships": [
+          "One RMES Safety row per Case",
+          "Has many Criteria and Findings",
+          "A Finding may link to an Open Point"
+        ],
+        "journeys": [
+          "j06_rmes_sheet",
+          "j05_department_review",
+          "j13_change_request"
+        ],
+        "evidence": "brd.md L126; brd.md L282; brd.md L331"
+      },
+      {
+        "id": "F6",
+        "name": "CIQ RMES Regulatory",
+        "flow_type": "Form",
+        "child_tables": [
+          "Criteria",
+          "Findings"
+        ],
+        "description": "Regulatory's RMES sheet for one case; same shape as CIQ RMES Safety.",
+        "key_attributes": [
+          "Same as CIQ RMES Safety"
+        ],
+        "lifecycle": null,
+        "relationships": [
+          "One RMES Regulatory row per Case",
+          "Has many Criteria and Findings"
+        ],
+        "journeys": [
+          "j06_rmes_sheet",
+          "j05_department_review",
+          "j13_change_request"
+        ],
+        "evidence": "brd.md L127; brd.md L283"
+      },
+      {
+        "id": "F7",
+        "name": "CIQ Internal Note",
+        "flow_type": "Form",
+        "child_tables": [],
+        "description": "Internal chat, one message per row. Never visible to suppliers.",
+        "key_attributes": [
+          "Case",
+          "Optional link (section, open point, finding)",
+          "Text, author, department, time"
+        ],
+        "lifecycle": null,
+        "relationships": [
+          "A Note belongs to one Case",
+          "A Note may link to a Section, Open Point or Finding"
+        ],
+        "journeys": [
+          "j16_internal_chat"
+        ],
+        "evidence": "brd.md L128; brd.md L284; brd.md L337"
+      },
+      {
+        "id": "F8",
+        "name": "CIQ Audit Event",
+        "flow_type": "Form",
+        "child_tables": [],
+        "description": "Who did what and when, on which value and which document; also notifications, delegations, change attempts, cancellations and snapshots.",
+        "key_attributes": [
+          "Who, what, when",
+          "Old and new value",
+          "Document by file name and upload date",
+          "Category: notification, delegation, assignment, section-review mark, scope, configuration, change attempt, cancellation, snapshot, item created"
+        ],
+        "lifecycle": null,
+        "relationships": [
+          "An Audit Event concerns one Case (or configuration) and points to the owning record by key"
+        ],
+        "journeys": [
+          "j17_audit_oversight",
+          "j12_cancel_case",
+          "j13_change_request",
+          "j15_configuration",
+          "j09_open_items_checks"
+        ],
+        "evidence": "brd.md L129; brd.md L285; brd.md L337"
+      }
+    ],
+    "child_tables": [
+      {
+        "id": "F1.Contacts",
+        "parent": "CIQ Supplier",
+        "name": "Contacts",
+        "writer": "CIQ RMM (one writer, rows one at a time, re-read and merge)",
+        "evidence": "brd.md L278; brd.md L329"
+      },
+      {
+        "id": "F3.Components",
+        "parent": "CIQ Section (K2.1 row only)",
+        "name": "Components",
+        "writer": "CIQ RMM or the sync-service rebuild",
+        "evidence": "brd.md L280; brd.md L332"
+      },
+      {
+        "id": "F5.Criteria",
+        "parent": "CIQ RMES Safety",
+        "name": "Criteria",
+        "writer": "Safety only, one user at a time (lock)",
+        "evidence": "brd.md L282; brd.md L331"
+      },
+      {
+        "id": "F5.Findings",
+        "parent": "CIQ RMES Safety",
+        "name": "Findings",
+        "writer": "Safety only",
+        "evidence": "brd.md L282"
+      },
+      {
+        "id": "F6.Criteria",
+        "parent": "CIQ RMES Regulatory",
+        "name": "Criteria",
+        "writer": "Regulatory only",
+        "evidence": "brd.md L283"
+      },
+      {
+        "id": "F6.Findings",
+        "parent": "CIQ RMES Regulatory",
+        "name": "Findings",
+        "writer": "Regulatory only",
+        "evidence": "brd.md L283"
+      },
+      {
+        "id": "P2.Rounds",
+        "parent": "CIQ Open Point",
+        "name": "Rounds",
+        "writer": "Owning department at its own review step (one writer)",
+        "evidence": "brd.md L251; brd.md L327"
+      }
+    ],
+    "business_rules": [
+      {
+        "id": "BR-001",
+        "category": "modelling",
+        "statement": "A Process is used only when the record moves through steps that carry SLAs (built-in SLA notifications); otherwise a Data Form. No process without steps.",
+        "applies_to": [
+          "all flows"
+        ],
+        "evidence": "brd.md L22-L23; brd.md L94-L95"
+      },
+      {
+        "id": "BR-002",
+        "category": "modelling",
+        "statement": "No extra records: repeated detail lives in a child table inside its parent (or fields on the parent) when one writer, no integration on rows, few bounded rows and no cross-case search all hold; otherwise its own record.",
+        "applies_to": [
+          "all entities"
+        ],
+        "evidence": "brd.md L24; brd.md L96; brd.md L105-L111"
+      },
+      {
+        "id": "BR-003",
+        "category": "modelling",
+        "statement": "Exactly 11 flows: 3 Processes (CIQ Case, CIQ Open Point, CIQ Change Request) and 8 Data Forms; dropped entities (Raw Material, Case Contact, Supplier Contact, Component, Config Release, per-round items, per-criterion RMES rows) are not reintroduced.",
+        "applies_to": [
+          "all flows"
+        ],
+        "evidence": "brd.md L13; brd.md L115; brd.md L131-L138"
+      },
+      {
+        "id": "BR-004",
+        "category": "modelling",
+        "statement": "Use parallel steps where Kissflow supports them: Part 2 review on the case and Assess impact on the change request.",
+        "applies_to": [
+          "P1",
+          "P3"
+        ],
+        "evidence": "brd.md L25; brd.md L188; brd.md L271"
+      },
+      {
+        "id": "BR-005",
+        "category": "platform",
+        "statement": "Child-table step permissions name the child table only, never its columns.",
+        "applies_to": [
+          "P2.Rounds",
+          "all child tables"
+        ],
+        "evidence": "brd.md L30; brd.md L396"
+      },
+      {
+        "id": "BR-006",
+        "category": "platform",
+        "statement": "A child-table column never reuses a header field id; it gets a prefixed id (e.g. Rounds_Round_No).",
+        "applies_to": [
+          "all child tables"
+        ],
+        "evidence": "brd.md L31"
+      },
+      {
+        "id": "BR-007",
+        "category": "platform",
+        "statement": "No native aggregates are authored. Gates and holds use plain Number count fields written by the acting person's Workbench at their own step, read by server-side formulas.",
+        "applies_to": [
+          "P1",
+          "P2",
+          "P3",
+          "F5",
+          "F6"
+        ],
+        "evidence": "brd.md L32; brd.md L404"
+      },
+      {
+        "id": "BR-008",
+        "category": "platform",
+        "statement": "Gate and hold formulas are blank-safe: a blank count holds and never deadlocks.",
+        "applies_to": [
+          "P1"
+        ],
+        "evidence": "brd.md L34; brd.md L190"
+      },
+      {
+        "id": "BR-009",
+        "category": "naming",
+        "statement": "List ids are authored without the _A00 suffix.",
+        "applies_to": [
+          "value sets"
+        ],
+        "evidence": "brd.md L35; brd.md L408"
+      },
+      {
+        "id": "BR-010",
+        "category": "integration",
+        "statement": "Only intra-app automations are modelled: Z1 (case completed → PDF, e-mails, notification event), Z2 (case rejected/cancellation → neutral e-mail), Z3/Z4 (SLA breach on CIQ Case / CIQ Open Point → audit event). They come out incomplete and are finished over REST.",
+        "applies_to": [
+          "P1",
+          "P2",
+          "F8"
+        ],
+        "evidence": "brd.md L37-L38; brd.md L1305-L1307"
+      },
+      {
+        "id": "BR-011",
+        "category": "integration",
+        "statement": "Cross-container integrations X1–X6 and Y1/Y3–Y6 are documentation only (the portal session builds them); no automation points at a portal flow.",
+        "applies_to": [
+          "P1",
+          "P2",
+          "P3",
+          "F3"
+        ],
+        "evidence": "brd.md L39; brd.md L289-L299"
+      },
+      {
+        "id": "BR-012",
+        "category": "naming",
+        "statement": "No field is named Name, Status, Type, Country, Priority, Category, Currency or Project; generic words are owner-prefixed.",
+        "applies_to": [
+          "all fields"
+        ],
+        "evidence": "brd.md L41-L42"
+      },
+      {
+        "id": "BR-013",
+        "category": "naming",
+        "statement": "Every flow and list name starts with 'CIQ '.",
+        "applies_to": [
+          "all flows",
+          "value sets"
+        ],
+        "evidence": "brd.md L43"
+      },
+      {
+        "id": "BR-014",
+        "category": "naming",
+        "statement": "Step names are exact (en-dash U+2013 where shown): 'Waiting for supplier: basic data', 'Waiting for supplier: completeness PS-05', 'Waiting for supplier: final release PS-11', 'Part 2 – Beiersdorf review', 'Review – Regulatory/Safety/QM/Microbiology/Sustainability/RMM', 'Open items check – before release request', 'Overall approval', 'Open items check – before close'; Open Point 'Waiting for supplier'; Change Request 'Triage' then parallel 'Assess impact' with 'Assess – Regulatory' … 'Assess – Sustainability'. The portal triggers on these names.",
+        "applies_to": [
+          "P1",
+          "P2",
+          "P3"
+        ],
+        "evidence": "brd.md L44-L54; brd.md L343-L347"
+      },
+      {
+        "id": "BR-015",
+        "category": "security",
+        "statement": "Editable on a Process also grants item creation, and flow Admin cannot be expressed; both are fixed over REST after generate.",
+        "applies_to": [
+          "P1",
+          "P2",
+          "P3"
+        ],
+        "evidence": "brd.md L56; brd.md L416"
+      },
+      {
+        "id": "BR-016",
+        "category": "security",
+        "statement": "No pages are added (backend only, --no-pages): a page auto-grant turns readers into editors.",
+        "applies_to": [
+          "app"
+        ],
+        "evidence": "brd.md L6; brd.md L57"
+      },
+      {
+        "id": "BR-017",
+        "category": "platform",
+        "statement": "The account key cannot act after Start; every human step is done by a person (Workbench or native), never by the sync service.",
+        "applies_to": [
+          "P1",
+          "P2",
+          "P3"
+        ],
+        "evidence": "brd.md L58; brd.md L406"
+      },
+      {
+        "id": "BR-018",
+        "category": "decision",
+        "statement": "CIQ Sync Service is in scope: close sweep, snapshots, X2/X3 fallback, single-writer audit, component rebuild, PDF renderer (option A).",
+        "applies_to": [
+          "p_integration_service"
+        ],
+        "evidence": "brd.md L61-L62; brd.md L358-L364"
+      },
+      {
+        "id": "BR-019",
+        "category": "decision",
+        "statement": "Overall approval, when switched on, comes before the PS-11 release request.",
+        "applies_to": [
+          "P1"
+        ],
+        "evidence": "brd.md L63; brd.md L374"
+      },
+      {
+        "id": "BR-020",
+        "category": "decision",
+        "statement": "Safety and Regulatory reviewers record their internal RMES decision themselves; no separate approver roles.",
+        "applies_to": [
+          "P1",
+          "F5",
+          "F6"
+        ],
+        "evidence": "brd.md L64; brd.md L376"
+      },
+      {
+        "id": "BR-021",
+        "category": "decision",
+        "statement": "No four-eyes on configuration releases.",
+        "applies_to": [
+          "F2"
+        ],
+        "evidence": "brd.md L65; brd.md L375"
+      },
+      {
+        "id": "BR-022",
+        "category": "decision",
+        "statement": "The audit trail is claimed as 'tamper-evident'.",
+        "applies_to": [
+          "F8"
+        ],
+        "evidence": "brd.md L66; brd.md L285"
+      },
+      {
+        "id": "BR-023",
+        "category": "security",
+        "statement": "Roles are exactly the 11 custom roles plus the defaults Admin and User.",
+        "applies_to": [
+          "app"
+        ],
+        "evidence": "brd.md L67; brd.md L142-L150"
+      },
+      {
+        "id": "BR-024",
+        "category": "scope",
+        "statement": "Never model, reference or write portal (CIQP) flows or the 'CIQ ZZ Spike' test flows in this app.",
+        "applies_to": [
+          "app"
+        ],
+        "evidence": "brd.md L3; brd.md L8"
+      },
+      {
+        "id": "BR-025",
+        "category": "validation",
+        "statement": "Case creation requires material, supplier, case contacts (Portal_Contact_Ids, Confirm_Contact_Ids, Supplier_Contact_Emails mandatory at Start), owner and due dates; the pinned Release row is copied in.",
+        "applies_to": [
+          "P1",
+          "j01_create_case"
+        ],
+        "evidence": "brd.md L184; brd.md L199"
+      },
+      {
+        "id": "BR-026",
+        "category": "sequence",
+        "statement": "The BASIC section row is created only after the case submit succeeds.",
+        "applies_to": [
+          "P1",
+          "F3"
+        ],
+        "evidence": "brd.md L184; brd.md L781"
+      },
+      {
+        "id": "BR-027",
+        "category": "routing",
+        "statement": "CIQ RMM creates the case and holds every 'Waiting for supplier' step and both checks; after the K-FA test the basic-data step is assigned from Owner_RMM.",
+        "applies_to": [
+          "P1"
+        ],
+        "evidence": "brd.md L157; brd.md L185"
+      },
+      {
+        "id": "BR-028",
+        "category": "sla",
+        "statement": "Every case step carries an SLA whose duration Beiersdorf sets; supplier waiting steps use the supplier due date and escalate to the owner; review steps have a reminder and an escalation (REQ-RMES-019).",
+        "applies_to": [
+          "P1"
+        ],
+        "evidence": "brd.md L182-L193"
+      },
+      {
+        "id": "BR-029",
+        "category": "scope",
+        "statement": "Scope can be extended with a justification but never reduced; every scope run records additions only.",
+        "applies_to": [
+          "F4",
+          "j03_scope_check"
+        ],
+        "evidence": "brd.md L186; brd.md L281"
+      },
+      {
+        "id": "BR-030",
+        "category": "scope",
+        "statement": "One CIQ Section row per Mandatory or Optional section; N.A. sections get no row but stay in the scope run with their rule and answer.",
+        "applies_to": [
+          "F3",
+          "F4"
+        ],
+        "evidence": "brd.md L186; brd.md L125; brd.md L986"
+      },
+      {
+        "id": "BR-031",
+        "category": "routing",
+        "statement": "A Part 2 branch runs only when Dept_<D>_Active = 'Yes'; the RMM branch is off by default; the case moves on only when every active branch is done (native join).",
+        "applies_to": [
+          "P1"
+        ],
+        "evidence": "brd.md L188-L189"
+      },
+      {
+        "id": "BR-032",
+        "category": "gate",
+        "statement": "A department's Part 2 sign-off is blocked while it has open points, unassessed change requests, RMES gaps or open findings — by the Workbench and by a native gate field on count fields.",
+        "applies_to": [
+          "P1",
+          "j05_department_review"
+        ],
+        "evidence": "brd.md L189; brd.md L32"
+      },
+      {
+        "id": "BR-033",
+        "category": "concurrency",
+        "statement": "Each Part 2 branch writes only its own 5–7 lane fields and no child tables; nobody else writes the case during Part 2 (contact changes via a Contact-update point, assignments via audit events).",
+        "applies_to": [
+          "P1"
+        ],
+        "evidence": "brd.md L208-L210"
+      },
+      {
+        "id": "BR-034",
+        "category": "routing",
+        "statement": "'Open items check – before release request' and '– before close' run only if something is open (a blank count also holds); an override needs a reason and is audited.",
+        "applies_to": [
+          "P1"
+        ],
+        "evidence": "brd.md L190; brd.md L193"
+      },
+      {
+        "id": "BR-035",
+        "category": "approval",
+        "statement": "Overall approval runs only if Overall_Approval_Required = 'Yes' (off by default); approve only if every required RMES decision is Approved; on rejection the case ends without a release request and a neutral closing text goes to the supplier.",
+        "applies_to": [
+          "P1"
+        ],
+        "evidence": "brd.md L191"
+      },
+      {
+        "id": "BR-036",
+        "category": "routing",
+        "statement": "'Waiting for supplier: final release PS-11' is skipped if overall-rejected; X5 sends the single release request (REQ-PROC-040); RMM can complete manually with a reason (REQ-PROC-045).",
+        "applies_to": [
+          "P1"
+        ],
+        "evidence": "brd.md L192"
+      },
+      {
+        "id": "BR-037",
+        "category": "cancellation",
+        "statement": "Cancellation: RMM rejects at its own steps; in Part 2 the Case Admin rejects via the admin route; an audit Cancellation event is written; the case's open P2/P3 items are ended; the close sweep snapshots and withdraws every open portal item (REQ-PROC-049). The same sweep runs after an overall rejection or a manual completion.",
+        "applies_to": [
+          "P1",
+          "F8",
+          "j12_cancel_case"
+        ],
+        "evidence": "brd.md L214-L220"
+      },
+      {
+        "id": "BR-038",
+        "category": "sequence",
+        "statement": "End of the case triggers Z1: PDF, e-mails to the RMM owner and the supplier contacts, notification log.",
+        "applies_to": [
+          "P1"
+        ],
+        "evidence": "brd.md L194; brd.md L301"
+      },
+      {
+        "id": "BR-039",
+        "category": "data",
+        "statement": "Case identity and material fields are plain scalars (Trade_Name, Main_INCI, BDF_Material_No as Text that X1 reads); case contacts are fields, never a child table, because integrations can read only fields.",
+        "applies_to": [
+          "P1"
+        ],
+        "evidence": "brd.md L196-L199; brd.md L330"
+      },
+      {
+        "id": "BR-040",
+        "category": "data",
+        "statement": "RMES_Key plus RMES_Created_At from Y4 are the case's single RMES record header (REQ-PROC-021).",
+        "applies_to": [
+          "P1",
+          "F5",
+          "F6"
+        ],
+        "evidence": "brd.md L203"
+      },
+      {
+        "id": "BR-041",
+        "category": "switches",
+        "statement": "After generate: Case Send-back off on every step and Reject only on RMM steps; Open Point Send-back only at review steps; Change Request Send-back and Reject off.",
+        "applies_to": [
+          "P1",
+          "P2",
+          "P3"
+        ],
+        "evidence": "brd.md L412-L415"
+      },
+      {
+        "id": "BR-042",
+        "category": "validation",
+        "statement": "Raising an open point requires kind, owner department, to-supplier yes/no, reference, question, supplier-facing justification, responsible person, internal and supplier due dates (REQ-ADR-001).",
+        "applies_to": [
+          "P2"
+        ],
+        "evidence": "brd.md L240; brd.md L244"
+      },
+      {
+        "id": "BR-043",
+        "category": "gate",
+        "statement": "Every open point blocks its department's sign-off and the release request until closed (REQ-PROC-036).",
+        "applies_to": [
+          "P2",
+          "P1"
+        ],
+        "evidence": "brd.md L229"
+      },
+      {
+        "id": "BR-044",
+        "category": "routing",
+        "statement": "'Waiting for supplier' runs only when OP_To_Supplier = 'Yes'; internal kinds (Department review, Contact update, Internal review) skip it.",
+        "applies_to": [
+          "P2"
+        ],
+        "evidence": "brd.md L231; brd.md L245"
+      },
+      {
+        "id": "BR-045",
+        "category": "routing",
+        "statement": "Exactly one review step runs, chosen by OP_Dept; only the owning department reviews the answer (REQ-PROC-034).",
+        "applies_to": [
+          "P2"
+        ],
+        "evidence": "brd.md L239; brd.md L246"
+      },
+      {
+        "id": "BR-046",
+        "category": "lifecycle",
+        "statement": "Review outcomes: Accepted (records the accepted document), Withdrawn (with reason), or Return (round appended to Rounds, next question/justification/due date written, answer cleared, Awaiting_Response = 'Yes', item sent back to 'Waiting for supplier').",
+        "applies_to": [
+          "P2"
+        ],
+        "evidence": "brd.md L246"
+      },
+      {
+        "id": "BR-047",
+        "category": "integration",
+        "statement": "Y3 approves 'Waiting for supplier' only while Awaiting_Response = 'Yes'.",
+        "applies_to": [
+          "P2"
+        ],
+        "evidence": "brd.md L297"
+      },
+      {
+        "id": "BR-048",
+        "category": "concurrency",
+        "statement": "Only the owning department writes the Rounds child table, at its own step.",
+        "applies_to": [
+          "P2.Rounds"
+        ],
+        "evidence": "brd.md L251"
+      },
+      {
+        "id": "BR-049",
+        "category": "data",
+        "statement": "App_Open_Point_Id means the point, not the round; each round still gets its own CIQP Query with its round number.",
+        "applies_to": [
+          "P2"
+        ],
+        "evidence": "brd.md L348"
+      },
+      {
+        "id": "BR-050",
+        "category": "routing",
+        "statement": "An additional part asks RMM (or the sync service) to create its CIQ Section row.",
+        "applies_to": [
+          "P2",
+          "F3"
+        ],
+        "evidence": "brd.md L244"
+      },
+      {
+        "id": "BR-051",
+        "category": "routing",
+        "statement": "Change requests are created by Y6 from the portal (RMM by hand as fallback) and triaged by CIQ RMM, who checks the requester is a contact of the case.",
+        "applies_to": [
+          "P3"
+        ],
+        "evidence": "brd.md L269-L270"
+      },
+      {
+        "id": "BR-052",
+        "category": "validation",
+        "statement": "A change attempt after PS-11 is refused and logged as an audit 'change attempt' event (REQ-PROC-043).",
+        "applies_to": [
+          "P3",
+          "F8"
+        ],
+        "evidence": "brd.md L258; brd.md L270"
+      },
+      {
+        "id": "BR-053",
+        "category": "scope",
+        "statement": "A change notice writes a new scope run (additions only); new sections become section rows and a Department-review point is raised for each new section's lead department.",
+        "applies_to": [
+          "P3",
+          "F4",
+          "F3",
+          "P2"
+        ],
+        "evidence": "brd.md L256; brd.md L270"
+      },
+      {
+        "id": "BR-054",
+        "category": "routing",
+        "statement": "Each Assess branch runs only if Impact_<D> = 'Yes' and writes only its own four fields; re-assessment goes into that department's RMES sheet; the change request end sends X6 (CIQP Notice).",
+        "applies_to": [
+          "P3"
+        ],
+        "evidence": "brd.md L271-L272"
+      },
+      {
+        "id": "BR-055",
+        "category": "security",
+        "statement": "CIQ Supplier is written by CIQ RMM; Business Admin is Viewer unless BDF says otherwise; contact rows are written one at a time, re-read and merged.",
+        "applies_to": [
+          "F1"
+        ],
+        "evidence": "brd.md L278"
+      },
+      {
+        "id": "BR-056",
+        "category": "data",
+        "statement": "A portal user serving two suppliers gets a contact row under each supplier.",
+        "applies_to": [
+          "F1.Contacts"
+        ],
+        "evidence": "brd.md L278"
+      },
+      {
+        "id": "BR-057",
+        "category": "security",
+        "statement": "CIQ Config Version is written by CIQ Business Admin as member without Delete (K-17); copy-on-write: publishing never edits a row; each publish writes an audit event; versions are downloadable (REQ-CFG-001/-003).",
+        "applies_to": [
+          "F2"
+        ],
+        "evidence": "brd.md L279"
+      },
+      {
+        "id": "BR-058",
+        "category": "data",
+        "statement": "A Release row holds the full bundle plus hash so a pinned release never depends on rows that could change.",
+        "applies_to": [
+          "F2",
+          "P1"
+        ],
+        "evidence": "brd.md L279; brd.md L430"
+      },
+      {
+        "id": "BR-059",
+        "category": "security",
+        "statement": "CIQ Section is written only by CIQ RMM and CIQ Integration Service; reviewers are Viewers.",
+        "applies_to": [
+          "F3"
+        ],
+        "evidence": "brd.md L280"
+      },
+      {
+        "id": "BR-060",
+        "category": "data",
+        "statement": "K2.1 Components are rebuilt from the portal answers (read via sharing) whenever they change and once after the final release.",
+        "applies_to": [
+          "F3.Components"
+        ],
+        "evidence": "brd.md L280"
+      },
+      {
+        "id": "BR-061",
+        "category": "security",
+        "statement": "CIQ Scope Run rows are written by the session that ran the rules: RMM, or a department for an extension.",
+        "applies_to": [
+          "F4"
+        ],
+        "evidence": "brd.md L281"
+      },
+      {
+        "id": "BR-062",
+        "category": "security",
+        "statement": "CIQ RMES Safety is written by Safety only; Regulatory can read but not edit it, and vice versa for CIQ RMES Regulatory (REQ-CFG-004).",
+        "applies_to": [
+          "F5",
+          "F6"
+        ],
+        "evidence": "brd.md L282-L283"
+      },
+      {
+        "id": "BR-063",
+        "category": "concurrency",
+        "statement": "One RMES row per case and department, created by the first session after PS-05 and keyed by RMES_Key; the Editing_By/Editing_Since lock allows only one writer at a time.",
+        "applies_to": [
+          "F5",
+          "F6"
+        ],
+        "evidence": "brd.md L282; brd.md L433"
+      },
+      {
+        "id": "BR-064",
+        "category": "security",
+        "statement": "Every internal role writes CIQ Internal Note; the author edits only their own messages by convention; never visible to suppliers (REQ-PROC-020).",
+        "applies_to": [
+          "F7"
+        ],
+        "evidence": "brd.md L284"
+      },
+      {
+        "id": "BR-065",
+        "category": "security",
+        "statement": "CIQ Audit Event: recommended single writer CIQ Integration Service with every person Viewer; otherwise writers without Delete and the claim is 'tamper-evident' (REQ-CTL-009, REQ-CTL-010).",
+        "applies_to": [
+          "F8"
+        ],
+        "evidence": "brd.md L285; brd.md L66"
+      },
+      {
+        "id": "BR-066",
+        "category": "confidentiality",
+        "statement": "Never shared with the portal: department lanes and decisions, RMES, findings, internal notes, internal due dates, the overall decision, the audit trail.",
+        "applies_to": [
+          "P1",
+          "F5",
+          "F6",
+          "F7",
+          "F8"
+        ],
+        "evidence": "brd.md L316"
+      },
+      {
+        "id": "BR-067",
+        "category": "integration",
+        "statement": "Section answers and uploads are read from the portal through flow sharing, not copied.",
+        "applies_to": [
+          "F3"
+        ],
+        "evidence": "brd.md L300"
+      }
+    ],
+    "value_sets": [
+      {
+        "name": "CIQ Yes No",
+        "values": [
+          "Yes",
+          "No"
+        ],
+        "evidence": "brd.md L1207",
+        "used_for": "department flags, to-supplier, impact flags, criterion applicable"
+      },
+      {
+        "name": "CIQ Confirm",
+        "values": [
+          "Confirmed"
+        ],
+        "evidence": "brd.md L1208"
+      },
+      {
+        "name": "CIQ Department",
+        "values": [
+          "RMM",
+          "REG",
+          "SAF",
+          "QM",
+          "MIC",
+          "SUS",
+          "CUS",
+          "LEG"
+        ],
+        "evidence": "brd.md L1209"
+      },
+      {
+        "name": "CIQ Review Dept",
+        "values": [
+          "REG",
+          "SAF",
+          "QM",
+          "MIC",
+          "SUS",
+          "RMM"
+        ],
+        "evidence": "brd.md L1210"
+      },
+      {
+        "name": "CIQ Decision",
+        "values": [
+          "Approved",
+          "Rejected"
+        ],
+        "evidence": "brd.md L1211; brd.md L191"
+      },
+      {
+        "name": "CIQ OP Kind",
+        "values": [
+          "Query",
+          "Document request",
+          "Additional part",
+          "Internal review",
+          "Department review",
+          "Contact update"
+        ],
+        "evidence": "brd.md L226-L234; brd.md L1212",
+        "note": "v4 kinds; PART D 'Finding' omitted (findings live in RMES child tables in v4) — see open question Q2"
+      },
+      {
+        "name": "CIQ OP Progress",
+        "values": [
+          "Open",
+          "In progress"
+        ],
+        "evidence": "brd.md L1213"
+      },
+      {
+        "name": "CIQ OP Outcome",
+        "values": [
+          "Accepted",
+          "Returned",
+          "Withdrawn"
+        ],
+        "evidence": "brd.md L246; brd.md L1214"
+      },
+      {
+        "name": "CIQ CR Outcome",
+        "values": [
+          "Accepted",
+          "Accepted – scope extended",
+          "Refused – after final release",
+          "Refused – not valid"
+        ],
+        "evidence": "brd.md L1215"
+      },
+      {
+        "name": "CIQ Impact Resolution",
+        "values": [
+          "No impact confirmed",
+          "Re-assessed",
+          "Finding raised"
+        ],
+        "evidence": "brd.md L1216"
+      },
+      {
+        "name": "CIQ Config Kind",
+        "values": [
+          "Template",
+          "Section definition",
+          "Rule set",
+          "Section ownership",
+          "RMES criteria",
+          "Limit set",
+          "Text bundle",
+          "Reminders",
+          "Settings",
+          "Regression set",
+          "Release"
+        ],
+        "evidence": "brd.md L123; brd.md L279; brd.md L1217",
+        "note": "'Release' added: v4 moves Config Release into Release rows of CIQ Config Version"
+      },
+      {
+        "name": "CIQ Config State",
+        "values": [
+          "Draft",
+          "Published",
+          "Retired"
+        ],
+        "evidence": "brd.md L1218"
+      },
+      {
+        "name": "CIQ Release Stage",
+        "values": [
+          "Test",
+          "Live"
+        ],
+        "evidence": "brd.md L1219"
+      },
+      {
+        "name": "CIQ RMES Part",
+        "values": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "evidence": "brd.md L1220"
+      },
+      {
+        "name": "CIQ RMES Result",
+        "values": [
+          "Available",
+          "Not available",
+          "Plausible",
+          "Implausible",
+          "Listed",
+          "Not listed",
+          "Negative",
+          "Not applicable"
+        ],
+        "evidence": "brd.md L1221"
+      },
+      {
+        "name": "CIQ AI State",
+        "values": [
+          "Proposed",
+          "Confirmed",
+          "Discarded"
+        ],
+        "evidence": "brd.md L1222"
+      },
+      {
+        "name": "CIQ Supplier Kind",
+        "values": [
+          "Manufacturer",
+          "Distributor",
+          "Trader"
+        ],
+        "evidence": "brd.md L1223"
+      },
+      {
+        "name": "CIQ Contact Role",
+        "values": [
+          "Coordinator",
+          "Quality",
+          "Regulatory",
+          "Key account",
+          "Other"
+        ],
+        "evidence": "brd.md L1224"
+      },
+      {
+        "name": "CIQ Country Code",
+        "values": [
+          "ISO 3166 alpha-2 subset"
+        ],
+        "evidence": "brd.md L1225"
+      },
+      {
+        "name": "CIQ Event Category",
+        "values": [
+          "Case",
+          "Scope",
+          "Section",
+          "Section review",
+          "Snapshot",
+          "Open point",
+          "RMES",
+          "Change request",
+          "Configuration",
+          "Notification",
+          "Delegation",
+          "Assignment",
+          "Change attempt",
+          "Cancellation",
+          "Access",
+          "Item created"
+        ],
+        "evidence": "brd.md L285; brd.md L1226",
+        "note": "'Item created' added from v4 F8 categories"
+      },
+      {
+        "name": "CIQ Actor Side",
+        "values": [
+          "BDF",
+          "Supplier",
+          "System"
+        ],
+        "evidence": "brd.md L1227"
+      }
+    ],
+    "external_systems": [
+      {
+        "id": "x_supplier_portal",
+        "name": "CIQ Supplier Portal (CIQ_Supplier_Portal_A00)",
+        "in_scope": false,
+        "relation": "Separate container owned by the portal session. One role 'Supplier'. Flows CIQP Request, CIQP Section, CIQP Query, CIQP Completeness Confirmation, CIQP Final Release, CIQP Notice, CIQP Change Request, CIQP Help Article. Every portal item carries Case_Code, Cycle_No, Supplier_Code and its app twin id.",
+        "evidence": "brd.md L8; brd.md L440-L607"
+      },
+      {
+        "id": "x_sync_service",
+        "name": "CIQ Sync Service",
+        "in_scope": true,
+        "relation": "Server-side service with API keys for both containers; acts as CIQ Integration Service. Close sweep, snapshots, PDF renderer, component rebuild, X2/X3 fallback, audit writes. Built outside App Builder.",
+        "evidence": "brd.md L61-L62; brd.md L318-L320; brd.md L358-L364"
+      }
+    ],
+    "integrations": [
+      {
+        "id": "X1",
+        "direction": "app → portal",
+        "what": "CIQ Case enters 'Waiting for supplier: basic data' → CIQP Request",
+        "authored_here": false,
+        "evidence": "brd.md L291"
+      },
+      {
+        "id": "X2",
+        "direction": "app → portal",
+        "what": "CIQ Section row created → CIQP Section",
+        "authored_here": false,
+        "evidence": "brd.md L292"
+      },
+      {
+        "id": "X3/X3b",
+        "direction": "app → portal",
+        "what": "CIQ Open Point enters 'Waiting for supplier' (incl. after Return) or ItemSentBack → CIQP Query",
+        "authored_here": false,
+        "evidence": "brd.md L293"
+      },
+      {
+        "id": "X4/X5",
+        "direction": "app → portal",
+        "what": "CIQ Case enters PS-05 / PS-11 waiting step → Completeness Confirmation / Final Release",
+        "authored_here": false,
+        "evidence": "brd.md L294"
+      },
+      {
+        "id": "X6",
+        "direction": "app → portal",
+        "what": "CIQ Change Request ends → CIQP Notice",
+        "authored_here": false,
+        "evidence": "brd.md L295"
+      },
+      {
+        "id": "Y1",
+        "direction": "portal → app",
+        "what": "Basic data submitted → CIQ Case received + approve step 1",
+        "authored_here": false,
+        "evidence": "brd.md L296"
+      },
+      {
+        "id": "Y3",
+        "direction": "portal → app",
+        "what": "Supplier responded → CIQ Open Point response + approve (only while Awaiting_Response = Yes)",
+        "authored_here": false,
+        "evidence": "brd.md L297"
+      },
+      {
+        "id": "Y4/Y5",
+        "direction": "portal → app",
+        "what": "Supplier confirmed / released → CIQ Case + approve waiting step",
+        "authored_here": false,
+        "evidence": "brd.md L298"
+      },
+      {
+        "id": "Y6",
+        "direction": "portal → app",
+        "what": "CIQP Change Request submitted → create CIQ Change Request",
+        "authored_here": false,
+        "evidence": "brd.md L299"
+      },
+      {
+        "id": "Z1",
+        "direction": "intra-app",
+        "what": "CIQ Case completed → PDF, e-mail Owner_RMM and supplier contacts (with Supplier_Closing_Text), notification audit event",
+        "authored_here": true,
+        "evidence": "brd.md L38; brd.md L301; brd.md L1305"
+      },
+      {
+        "id": "Z2",
+        "direction": "intra-app",
+        "what": "Case rejected / cancellation → neutral e-mail to the supplier contacts",
+        "authored_here": true,
+        "evidence": "brd.md L38; brd.md L301; brd.md L1306"
+      },
+      {
+        "id": "Z3/Z4",
+        "direction": "intra-app",
+        "what": "SLA breached on CIQ Case / CIQ Open Point → create a Notification audit event",
+        "authored_here": true,
+        "evidence": "brd.md L38; brd.md L1307"
+      }
+    ],
+    "orphans": [
+      {
+        "item": "Platform roles Admin and User",
+        "note": "Required defaults (A3); no business journey in the source. Not personas."
+      },
+      {
+        "item": "CIQ Integration Service persona",
+        "note": "System identity, not a human; serves j19_sync_service and the writes in j11/j12/j17/j18."
+      }
+    ],
+    "counts": {
+      "personas": 12,
+      "journeys": 21,
+      "entities": 11,
+      "processes": 3,
+      "forms": 8,
+      "child_tables": 7,
+      "business_rules": 67,
+      "value_sets": 21
+    }
+  }
+}

@@ -1,0 +1,212 @@
+{
+  "Root": "CIQ_Supplier_Site_A00",
+  "CIQ_Supplier_Site_A00": {
+    "Id": "CIQ_Supplier_Site_A00",
+    "Name": "CIQ Supplier Site",
+    "Kind": "Model",
+    "FlowType": "Form",
+    "Description": "",
+    "Model::Row": [
+      "Row_11eg46m"
+    ],
+    "Model::Field": [
+      "Site_Code",
+      "Site_Supplier",
+      "Site_Kind",
+      "Site_Title",
+      "Site_Address",
+      "Site_Country_Code"
+    ]
+  },
+  "Row_11eg46m": {
+    "Id": "Row_11eg46m",
+    "Kind": "Row",
+    "Model": "CIQ_Supplier_Site_A00",
+    "Row::Column": [
+      "Column_11eg46m"
+    ]
+  },
+  "Column_11eg46m": {
+    "Id": "Column_11eg46m",
+    "Kind": "Column",
+    "Type": "Section",
+    "Name": "Details",
+    "Start": 0,
+    "End": 6,
+    "Row": "Row_11eg46m",
+    "Column::Row": [
+      "Row_11eew14",
+      "Row_11eew15",
+      "Row_11eew16",
+      "Row_11eew17"
+    ]
+  },
+  "Row_11eew14": {
+    "Id": "Row_11eew14",
+    "Kind": "Row",
+    "Column": "Column_11eg46m",
+    "Row::Column": [
+      "Column_b7gz02",
+      "Column_2r6orv"
+    ]
+  },
+  "Column_b7gz02": {
+    "Id": "Column_b7gz02",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_11eew14",
+    "Column::Field": [
+      "Site_Code"
+    ]
+  },
+  "Column_2r6orv": {
+    "Id": "Column_2r6orv",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_11eew14",
+    "Column::Field": [
+      "Site_Supplier"
+    ]
+  },
+  "Row_11eew15": {
+    "Id": "Row_11eew15",
+    "Kind": "Row",
+    "Column": "Column_11eg46m",
+    "Row::Column": [
+      "Column_b7n01p",
+      "Column_f0vok9"
+    ]
+  },
+  "Column_b7n01p": {
+    "Id": "Column_b7n01p",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_11eew15",
+    "Column::Field": [
+      "Site_Kind"
+    ]
+  },
+  "Column_f0vok9": {
+    "Id": "Column_f0vok9",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_11eew15",
+    "Column::Field": [
+      "Site_Title"
+    ]
+  },
+  "Row_11eew16": {
+    "Id": "Row_11eew16",
+    "Kind": "Row",
+    "Column": "Column_11eg46m",
+    "Row::Column": [
+      "Column_15c9izh"
+    ]
+  },
+  "Column_15c9izh": {
+    "Id": "Column_15c9izh",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 6,
+    "Row": "Row_11eew16",
+    "Column::Field": [
+      "Site_Address"
+    ]
+  },
+  "Row_11eew17": {
+    "Id": "Row_11eew17",
+    "Kind": "Row",
+    "Column": "Column_11eg46m",
+    "Row::Column": [
+      "Column_1xz0mjp"
+    ]
+  },
+  "Column_1xz0mjp": {
+    "Id": "Column_1xz0mjp",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_11eew17",
+    "Column::Field": [
+      "Site_Country_Code"
+    ]
+  },
+  "Site_Code": {
+    "Id": "Site_Code",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Site_Code",
+    "Model": "CIQ_Supplier_Site_A00",
+    "Column": "Column_b7gz02"
+  },
+  "QueryDefinition_2r6orv": {
+    "Id": "QueryDefinition_2r6orv",
+    "Kind": "QueryDefinition",
+    "Field": "Site_Supplier",
+    "LHSModel": "CIQ_Supplier_A00",
+    "FlowType": "Form",
+    "LookupField": [
+      {
+        "Id": "Supplier_Code",
+        "Name": "Supplier_Code",
+        "Type": "Text"
+      }
+    ],
+    "HiddenField": []
+  },
+  "Site_Supplier": {
+    "Id": "Site_Supplier",
+    "Kind": "Field",
+    "Type": "Reference",
+    "Name": "Site_Supplier",
+    "Model": "CIQ_Supplier_Site_A00",
+    "Column": "Column_2r6orv",
+    "Field::QueryDefinition": [
+      "QueryDefinition_2r6orv"
+    ]
+  },
+  "Site_Kind": {
+    "Id": "Site_Kind",
+    "Kind": "Field",
+    "Type": "Select",
+    "Name": "Site_Kind",
+    "Model": "CIQ_Supplier_Site_A00",
+    "Column": "Column_b7n01p",
+    "ReferredList": "CIQ_Site_Kind_A00"
+  },
+  "Site_Title": {
+    "Id": "Site_Title",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Site_Title",
+    "Model": "CIQ_Supplier_Site_A00",
+    "Column": "Column_f0vok9"
+  },
+  "Site_Address": {
+    "Id": "Site_Address",
+    "Kind": "Field",
+    "Type": "Textarea",
+    "Name": "Site_Address",
+    "Model": "CIQ_Supplier_Site_A00",
+    "Column": "Column_15c9izh"
+  },
+  "Site_Country_Code": {
+    "Id": "Site_Country_Code",
+    "Kind": "Field",
+    "Type": "Select",
+    "Name": "Site_Country_Code",
+    "Model": "CIQ_Supplier_Site_A00",
+    "Column": "Column_1xz0mjp",
+    "ReferredList": "CIQ_Country_Code_A00"
+  }
+}

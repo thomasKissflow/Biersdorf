@@ -1,0 +1,339 @@
+{
+ "at": "2026-10-14T17:17:07.017Z",
+ "CIQ_ZZ_Spike_Case_A00": {
+  "publishedAt": "2026-10-07T11:03:23Z",
+  "meta": "1791371003391978",
+  "kinds": {
+   "Model": 2,
+   "Row": 21,
+   "Column": 38,
+   "Field": 36,
+   "Criteria": 1,
+   "Condition": 1,
+   "QueryDefinition": 1,
+   "Expression": 10,
+   "Node": 44,
+   "ProcessDef": 7,
+   "Permission": 420,
+   "Activity": 14,
+   "Resource": 10,
+   "Appearance": 1,
+   "Style": 1,
+   "User": 1
+  },
+  "steps": {
+   "model": "CIQ_ZZ_Spike_Case_A00",
+   "processDef": "ProcessDef_jghtaj",
+   "order": [
+    {
+     "id": "Activity_18dgdbl",
+     "name": "Create spike case",
+     "type": "StartEvent",
+     "depth": 0,
+     "res": "",
+     "cond": "",
+     "perms": 35
+    },
+    {
+     "id": "Activity_194d12o",
+     "name": "Spike prepare",
+     "type": "UserTask",
+     "depth": 0,
+     "res": "AppRole:CIQ ZZ Spike Role A",
+     "cond": "",
+     "perms": 35
+    },
+    {
+     "id": "Activity_t7r746",
+     "name": "Spike review lanes",
+     "type": "Parallel",
+     "depth": 0,
+     "res": "",
+     "cond": "",
+     "perms": 0
+    },
+    {
+     "id": "Activity_7a5wvb",
+     "name": "Spike review – A",
+     "type": "UserTask",
+     "depth": 1,
+     "res": "AppRole:CIQ ZZ Spike Role A",
+     "cond": "Flag_A = \"Yes\"",
+     "perms": 35
+    },
+    {
+     "id": "Activity_7a5wvc",
+     "name": "Spike review – B",
+     "type": "UserTask",
+     "depth": 1,
+     "res": "AppRole:CIQ ZZ Spike Role B",
+     "cond": "Flag_B = \"Yes\"",
+     "perms": 35
+    },
+    {
+     "id": "Activity_7a5wvd",
+     "name": "Spike review – C",
+     "type": "UserTask",
+     "depth": 1,
+     "res": "AppRole:CIQ ZZ Spike Role A",
+     "cond": "Flag_C = \"Yes\"",
+     "perms": 35
+    },
+    {
+     "id": "Activity_7a5wve",
+     "name": "Spike review – D",
+     "type": "UserTask",
+     "depth": 1,
+     "res": "AppRole:CIQ ZZ Spike Role B",
+     "cond": "Flag_D = \"Yes\"",
+     "perms": 35
+    },
+    {
+     "id": "Activity_7a5wvf",
+     "name": "Spike review – E",
+     "type": "UserTask",
+     "depth": 1,
+     "res": "AppRole:CIQ ZZ Spike Role A",
+     "cond": "Flag_E = \"Yes\"",
+     "perms": 35
+    },
+    {
+     "id": "Activity_7a5wvg",
+     "name": "Spike review – F",
+     "type": "UserTask",
+     "depth": 1,
+     "res": "AppRole:CIQ ZZ Spike Role B",
+     "cond": "Flag_F = \"Yes\"",
+     "perms": 35
+    },
+    {
+     "id": "Activity_90lk5i",
+     "name": "Spike hold check",
+     "type": "UserTask",
+     "depth": 0,
+     "res": "AppRole:CIQ ZZ Spike Role A",
+     "cond": "Hold_Flag = \"Yes\"",
+     "perms": 35
+    },
+    {
+     "id": "Activity_1tuyhu",
+     "name": "Spike gated step",
+     "type": "UserTask",
+     "depth": 0,
+     "res": "AppRole:CIQ ZZ Spike Role A",
+     "cond": "",
+     "perms": 35
+    },
+    {
+     "id": "Activity_1uarf0z",
+     "name": "Spike not-equal step",
+     "type": "UserTask",
+     "depth": 0,
+     "res": "AppRole:CIQ ZZ Spike Role B",
+     "cond": "Spike_Decision != \"Rejected\"",
+     "perms": 35
+    },
+    {
+     "id": "Activity_1t24obg",
+     "name": "End",
+     "type": "EndEvent",
+     "depth": 0,
+     "res": "",
+     "cond": "",
+     "perms": 35
+    }
+   ]
+  },
+  "fields": [
+   "Flag_A:Select",
+   "Flag_B:Select",
+   "Flag_C:Select",
+   "Flag_D:Select",
+   "Flag_E:Select",
+   "Flag_F:Select",
+   "Lane_A_Confirm:Select",
+   "Lane_A_By:Text",
+   "Lane_A_At:DateTime",
+   "Lane_A_Note:Text",
+   "Lane_B_Confirm:Select",
+   "Lane_B_By:Text",
+   "Lane_B_At:DateTime",
+   "Lane_B_Note:Text",
+   "Lane_C_Confirm:Select",
+   "Lane_C_By:Text",
+   "Lane_C_At:DateTime",
+   "Lane_C_Note:Text",
+   "Lane_D_Confirm:Select",
+   "Lane_D_By:Text",
+   "Lane_D_At:DateTime",
+   "Lane_D_Note:Text",
+   "Lane_E_Confirm:Select",
+   "Lane_E_By:Text",
+   "Lane_E_At:DateTime",
+   "Lane_E_Note:Text",
+   "Lane_F_Confirm:Select",
+   "Lane_F_By:Text",
+   "Lane_F_At:DateTime",
+   "Lane_F_Note:Text",
+   "Spike_Decision:Select",
+   "Open_Count:Number",
+   "Hold_Flag:Text",
+   "Gate:Text"
+  ],
+  "publishedFieldsStatus": 200,
+  "publishedFieldIds": [
+   "Name",
+   "_created_by",
+   "_modified_by",
+   "_created_at",
+   "_modified_at",
+   "_flow_name",
+   "_current_step",
+   "_current_assigned_to",
+   "_status",
+   "_submitted_at",
+   "_request_number",
+   "_counter",
+   "_progress",
+   "Flag_A",
+   "Flag_B",
+   "Flag_C",
+   "Flag_D",
+   "Flag_E",
+   "Flag_F",
+   "Lane_A_Confirm",
+   "Lane_A_By",
+   "Lane_A_At",
+   "Lane_A_Note",
+   "Lane_B_Confirm",
+   "Lane_B_By",
+   "Lane_B_At",
+   "Lane_B_Note",
+   "Lane_C_Confirm",
+   "Lane_C_By",
+   "Lane_C_At",
+   "Lane_C_Note",
+   "Lane_D_Confirm",
+   "Lane_D_By",
+   "Lane_D_At",
+   "Lane_D_Note",
+   "Lane_E_Confirm",
+   "Lane_E_By",
+   "Lane_E_At",
+   "Lane_E_Note",
+   "Lane_F_Confirm",
+   "Lane_F_By",
+   "Lane_F_At",
+   "Lane_F_Note",
+   "Spike_Decision",
+   "Open_Count",
+   "Hold_Flag",
+   "Gate"
+  ]
+ },
+ "CIQ_ZZ_Spike_Point_A00": {
+  "publishedAt": "2026-10-07T17:42:59Z",
+  "meta": "1791394979552199",
+  "kinds": {
+   "Model": 2,
+   "Row": 9,
+   "Column": 12,
+   "Field": 10,
+   "ProcessDef": 1,
+   "Permission": 28,
+   "Activity": 5,
+   "Resource": 2,
+   "Expression": 1,
+   "Node": 3,
+   "Appearance": 1,
+   "Style": 1,
+   "User": 1
+  },
+  "steps": {
+   "model": "CIQ_ZZ_Spike_Point_A00",
+   "processDef": "ProcessDef_1vyjtg9",
+   "order": [
+    {
+     "id": "Activity_1wjqod",
+     "name": "Raise spike point",
+     "type": "StartEvent",
+     "depth": 0,
+     "res": "",
+     "cond": "",
+     "perms": 7
+    },
+    {
+     "id": "Activity_1nm6syq",
+     "name": "Spike waiting",
+     "type": "UserTask",
+     "depth": 0,
+     "res": "AppRole:CIQ ZZ Spike Role A",
+     "cond": "To_Supplier = \"Yes\"",
+     "perms": 7
+    },
+    {
+     "id": "Activity_2yluch",
+     "name": "Spike review",
+     "type": "UserTask",
+     "depth": 0,
+     "res": "AppRole:CIQ ZZ Spike Role B",
+     "cond": "",
+     "perms": 7
+    },
+    {
+     "id": "Activity_fdurmy",
+     "name": "End",
+     "type": "EndEvent",
+     "depth": 0,
+     "res": "",
+     "cond": "",
+     "perms": 7
+    }
+   ]
+  },
+  "fields": [
+   "Round_No:Number",
+   "Question_Text:Textarea",
+   "Awaiting_Response:Text",
+   "Response_Text:Textarea",
+   "Due_Date:Date",
+   "To_Supplier:Select"
+  ],
+  "publishedFieldsStatus": 200,
+  "publishedFieldIds": [
+   "Name",
+   "_created_by",
+   "_modified_by",
+   "_created_at",
+   "_modified_at",
+   "_flow_name",
+   "_current_step",
+   "_current_assigned_to",
+   "_status",
+   "_submitted_at",
+   "_request_number",
+   "_counter",
+   "_progress",
+   "Round_No",
+   "Question_Text",
+   "Awaiting_Response",
+   "Response_Text",
+   "Due_Date",
+   "To_Supplier"
+  ]
+ },
+ "CIQ_ZZ_Spike_Yes_No_A00": {
+  "status": 200,
+  "items": [
+   "Yes",
+   "No"
+  ]
+ },
+ "CIQ_ZZ_Spike_Decision_A00": {
+  "status": 200,
+  "items": [
+   "Approved",
+   "Rejected"
+  ]
+ }
+}

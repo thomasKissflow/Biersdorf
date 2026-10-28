@@ -1,0 +1,58 @@
+{
+  "tag": "ZZT-114155b",
+  "caseId": "PkEKIVlB5ZUn",
+  "tests": [
+    {
+      "id": "T1a' header-only Register create+submit",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "id": "PkEKIWgLrm1d"
+      }
+    },
+    {
+      "id": "T1d integration 'register created' fired (Dataform ItemCreated → Log row)",
+      "ok": true,
+      "detail": {
+        "Log_Source": "Register",
+        "Log_Event": "created",
+        "Log_Item_Id": "PkEKIWgLrm1d",
+        "itemIdMatches": true,
+        "seconds": "≤120"
+      }
+    },
+    {
+      "id": "T1e child rows via REST update route",
+      "ok": false,
+      "detail": {
+        "update": 404,
+        "err": "The field Spike_Lines does not exist in the flow CIQ ZZ Spike Register."
+      }
+    },
+    {
+      "id": "T3a' linked Register (header-only) created",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "id": "PkEKIWtnoX7B"
+      }
+    },
+    {
+      "id": "T3a'' add a line with Line_Open=1 via update",
+      "ok": false,
+      "detail": {
+        "update": 404,
+        "err": "The field Spike_Lines does not exist in the flow CIQ ZZ Spike Register."
+      }
+    },
+    {
+      "id": "T3b cross-flow SUM Case.Open_Count after graft",
+      "ok": false,
+      "detail": {
+        "Hold_Flag": "Yes",
+        "Gate": "OK",
+        "linkedRegisterLines": "not written"
+      }
+    }
+  ]
+}

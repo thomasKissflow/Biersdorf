@@ -1,0 +1,421 @@
+{
+ "area": "Edge-case catalogue for the final app (process lifecycle, open points, supplier master, data, permissions, audit, final document, notifications, time, empty start)",
+ "summary": "Sources: context/analysis/05 and 06, the BRM acceptance criteria (v1 rows r7–r52, v2 changes) and the 9 Oct decisions with the 12 Oct answers. I checked each case against the prototype code; I read the code only and ran no tests. Paths are relative to /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/prototype.\n\n**Already handled, with tests:**\n- The scope only grows after the completeness confirmation (src/domain/rules.ts:150-171).\n- A late metadata change reopens the lead's review and gives the supplier a task (src/domain/actions.ts:171-207).\n- A late origin without rules flags the case and reopens RMM's review (actions.ts:174-185).\n- Only a department adds a section, in Part 2 (actions.ts:215-236).\n- The final release waits for RMM and every department (actions.ts:533-546).\n- Completeness blocks on mandatory fields and the K5.1 waiver (src/domain/selectors.ts:111-131).\n- Rule-set and template versions are pinned per case.\n\n**The main gaps:**\n1. AS-08 is missing. There is no edit or withdraw action for the person who raised an open point, and no actor check: REQ-PROC-034 says a user without responsibility cannot change a point's status.\n2. Most actions check neither the phase nor the actor. Cancelling a completed case is possible, and uploads, the composition table and justifications are accepted on frozen cases. REQ-PROC-043 says such a change attempt must be refused and logged.\n3. The final release re-checks nothing. A mandatory field cleared in Part 2 reaches the frozen CIQ, and a change made after the reviews completed can be released without anyone reviewing it.\n4. There is no inbox (R-1) and no final-document object (R-2/AS-12). Today they are an audit line and a disabled 'PDF not generated' note.\n5. There is no supplier master, contact management or DUNS/e-mail validation. Contacts are frozen at case creation, and the supplier personas are hard-coded.\n6. The audit trail has holes:\n   - Part 1 answers are not logged.\n   - Composition rows and justifications are never logged.\n   - Metadata answers have no who/when.\n   - Configuration and supplier-master changes are not logged.\n7. Demo risks:\n   - The seed still holds 36 cases and 10 suppliers, and the stored data version (SCHEMA) is still 6, so stale browser data survives.\n   - Two open tabs overwrite each other's data in localStorage.\n   - Success toasts appear even when an action was refused.\n   - With zero cases, the KPIs show '0 days' and '0 %'.\n8. Composition row ids are reused, and a row can be deleted while an open point refers to it.\n9. A Rejected RMES decision can reach the supplier's final-release request before RMM has decided anything (AS-02).\n10. Section ownership claims to apply to new cases only, but it changes running cases.",
+ "items": [
+  {
+   "id": "EC-SM-01",
+   "kind": "data",
+   "title": "Demo start state: no cases, all role holders, exactly one fictional supplier with its contacts",
+   "current": "src/domain/seed.ts:67-78 (10 suppliers), seed.ts:111-198 (36 SPECS replayed by buildSeed seed.ts:412-419), seed.ts:28 SCHEMA=6; src/store/store.tsx:27-39 keeps any stored state whose schema matches; src/domain/seed.test.ts:28 expects 36 cases; src/features/rmm/attention.test.ts:6 and src/features/supplier/lib.test.ts:8 depend on seeded cases",
+   "decision": "change",
+   "details": "Expected: buildSeed() returns cases: [], all 15 internal users, ONE supplier (keep Solvaro s1, DUNS 471203958, contacts u-sup-1 Elena Márquez and u-sup-2 Ravi Menon), the templates, the rule sets, ownership and reminders. Bump SCHEMA so Thomas's browser drops yesterday's 36 cases on first load. 'Reset demo data' (src/layout/Shells.tsx:105-106) restores exactly this state and also wipes suppliers added during the demo. Move the SPECS replay (play(), seed.ts:270-383) into a test-only fixture so the domain tests and the portal fixtures keep a rich dataset. Test, unit: buildSeed has 0 cases, 1 supplier and the contact users; the stored state is rejected when the schema is old. Test, E2E: fresh context, every persona's landing page shows its empty state, and the supplier home shows 'No requests yet'.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-LC-01",
+   "kind": "edge-case",
+   "title": "Cancel in every phase (supplier-input, review, final-release); refused when completed or already cancelled",
+   "current": "src/domain/actions.ts:577-586: no phase guard; open points are withdrawn, but review tracks keep their status (in-review or waiting-supplier). The UI hides the button on closed cases only (src/features/rmm/CaseDetail.tsx:161-165). The dialog requires a reason (src/features/rmm/CaseActions.tsx:29-75).",
+   "decision": "change",
+   "details": "Expected: only RMM can cancel (decide: any RMM or only the owner), and only in supplier-input, review or final-release. The reason is mandatory (REQ-PROC-049). Cancelling ends every task: unresolved open points become withdrawn, every track becomes inactive (no queue entry, no 'waiting' status) and the supplier's fill-in or release task is removed. The supplier gets one neutral 'request withdrawn' mail without the reason. The audit names the ended tasks, and a 'cancellation' confirmation is stored. cancelCase on a completed or cancelled case returns the state unchanged with a toast. Test, unit: in each of the 3 phases, after cancel supplierTasks() is empty, reviewQueue(dept) has no entry, every open point is closed/withdrawn and the confirmation exists; cancelling a completed case and cancelling twice are both refused. Test, E2E: RMM cancels a case in review; the supplier sees the 'withdrawn' banner and no tasks; the department's 'My reviews' list is empty.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-LC-02",
+   "kind": "edge-case",
+   "title": "Reactivate: back to the phase before the cancellation, inside the 12-month window, with consistent task state",
+   "current": "src/domain/actions.ts:588-596 restores the phase but has no window guard (the UI checks it: CaseDetail.tsx:155, CaseActions.tsx:12-16). Tracks left in 'waiting-supplier' by cancelCase stay that way, so waitingOn() (src/domain/selectors.ts:49-57) reports 'supplier' with nothing open. Withdrawn points stay closed (CaseActions.tsx:106). src/store/store.tsx:159 always toasts 'reactivated', even when nothing happened.",
+   "decision": "change",
+   "details": "Expected: reactivation is allowed only for a cancelled case within 365 days, enforced in the domain. The case returns to its previous phase. A waiting-supplier track with no unresolved point goes back to in-review. Withdrawn points stay closed and reviewers re-raise if needed. If the case due date has passed, the dialog asks for a new due date. The supplier gets a 'request reopened' mail and its task again. Audit entry. The toast reflects the domain result. Test, unit: cancel a review case that has a waiting-supplier track, then reactivate: no track is waiting-supplier without an open point, and waitingOn is 'bdf'. Reactivation at day 366 is refused. Reactivating a case that was never cancelled is refused with no success toast. Test, E2E: cancel and reactivate once per phase and check the stepper and the supplier task list.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-LC-03",
+   "kind": "requirement",
+   "title": "Phase × action guard matrix; change attempts on a frozen CIQ refused and logged (REQ-PROC-043)",
+   "current": "src/domain/actions.ts:250-252 (setComponents), 254-261 (setJustification) and 263-279 (uploadDocument) have no isClosed check. setAnswer silently ignores the call (240). raiseOpenPoint 388-413, supplierRespond 415-437, reviewResponse 439-462 and reopenReview 550-555 have no phase or status guards. Only the UI hides the controls (e.g. src/features/supplier/SupplierCase.tsx:107-118, Questionnaire locked).",
+   "decision": "change",
+   "details": "Expected: every domain action checks its allowed phases and object state and otherwise returns the state unchanged with an explaining toast.\n- Supplier-data writes (answers, components, justifications, uploads, metadata): supplier-input, review and final-release only. On completed or cancelled cases they are refused, with an audit event 'Change attempt refused (CIQ frozen)'.\n- raiseOpenPoint: review only, and only for the raiser's own active track.\n- supplierRespond: only on status 'open'.\n- reviewResponse: only on 'in-progress'.\n- reopenReview: review or final-release only, with a mandatory reason.\n- completeReview and finalRelease: already guarded; keep.\nTest, unit: one table-driven test (phases × actions) asserting the case is deep-equal before and after, plus a toast, plus the frozen-attempt audit where it applies.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-LC-04",
+   "kind": "edge-case",
+   "title": "Late metadata change after completeness: the scope only grows, the lead's review reopens, the supplier gets a task",
+   "current": "Handled: src/domain/actions.ts:171-207 (growScope, ensureTracks, additional-part point), 327-344 (a final-release case goes back to review); tests in src/domain/seed.test.ts:173-232 and src/domain/rules.test.ts:77-110. Gap: saveConfig never sets answeredBy for metadata answers (147-208).",
+   "decision": "keep",
+   "details": "Expected (keep): after completeness, a changed SF answer only adds or upgrades sections. Kept sections are labelled 'kept although no longer derived'. The added section's lead track is activated or reopened. One additional-part point goes to the supplier. A final-release case returns to review. Add: record answeredBy (who/when) per SF answer; send an inbox mail to the affected reviewer (REQ-PROC-031); the supplier sees the section-delta notice. Test, E2E: in review the supplier sets SF-07 to Yes; A4 appears marked 'Added later', the Safety track shows 'reopened', the supplier gets the task 'Complete an additional section', and the Safety inbox has a mail.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-LC-05",
+   "kind": "edge-case",
+   "title": "Part 1: sections open and close freely; answers in closed sections and hidden conditional fields are kept but never count, never show to reviewers, never reach the final document",
+   "current": "Handled for completeness and review: src/domain/selectors.ts:95-131 (only scoped, visible fields), src/features/review/SectionContent.tsx:115 and src/features/rmm/tabs/QuestionnaireTab.tsx:75 (isVisible); test seed.test.ts:126. The final document does not exist yet. The Documents tab lists files of hidden fields.",
+   "decision": "keep",
+   "details": "Expected: answers in an N.A. section, or in a field hidden by showWhen, stay in c.answers (they come back if the section reopens). They are excluded from completeness, the review views, the RMES pre-fill, reports and the final document. Documents attached to hidden fields are marked 'no longer applies' in the Documents tab. Test, unit: fill A1, switch SF-01 to mineral before completeness, confirm, release; the final-document builder contains no A1 field, and selectors.completenessBlockers ignores A1.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-LC-06",
+   "kind": "edge-case",
+   "title": "Section added by a department during the review; the supplier completes it before the point can close",
+   "current": "src/domain/actions.ts:215-236 (phase, dept and justification guards; lead and asker tracks; additional-part point); src/features/review/shared.tsx EXTENDABLE_PHASES; test seed.test.ts:234-249. Gap: the supplier closes the additional-part point with free text only (src/features/supplier/AnswerDrawer.tsx:58); nothing checks that the added section is filled.",
+   "decision": "change",
+   "details": "Expected: only a reviewing department with an active, non-completed track can add a section, with a justification (REQ-ADR-002). The section shows 'Added later'. The lead's track is activated or reopened, and the asker owns the point. For an additional-part point the supplier's response is 'Section completed', enabled only when that section has no completeness blockers; the raiser sees the section progress and then accepts or returns. Adding a section that is already mandatory gives an info toast and nothing else. Test, unit: extendScope with the asker's track completed is refused; supplierRespond on an additional-part point is refused while the section has blockers. Test, E2E: QM adds A3; the supplier fills A3 and responds; QM accepts; QM can complete.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-LC-07",
+   "kind": "edge-case",
+   "title": "Open point on a section or field that later closes or becomes hidden",
+   "current": "Open points exist only in Part 2 (the review workspace needs tracks: src/features/review/ReviewWorkspace.tsx:56-60), and growScope never lowers a section (src/domain/rules.ts:150-171), so a section cannot close under an open point. But raiseOpenPoint has no phase, section or visibility guard (src/domain/actions.ts:388-413). A requested field hidden by a changed controlling answer disappears for the supplier: src/features/supplier/SectionPanel.tsx:34 filters by isVisible, although lib.ts requestedRefs marks the field as requested.",
+   "decision": "change",
+   "details": "Expected: raiseOpenPoint is refused outside review, on an N.A. section, or on a field that is not visible. If a Part 2 answer change hides a field that an unresolved point refers to, the field stays shown to the supplier, marked 'Beiersdorf asked about this; it no longer applies to your answers'. The raiser gets an inbox mail and can withdraw the point (AS-08). Test, unit: a property test that, after completeness, no sequence of saveConfig calls makes a section with an unresolved point N.A. A unit test that raising on an N.A. section or in supplier-input is refused. Test, E2E: REG asks about FLD-A4-103 (shown when A4-102 is 'Own value'); the supplier switches A4-102 to 'Not available'; the field stays visible with the notice.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-LC-08",
+   "kind": "edge-case",
+   "title": "Origin without rules (waste, CCU, chemical recycling) chosen late",
+   "current": "Handled: src/domain/selectors.ts:183-186 (rmmFlags, derived), src/domain/actions.ts:174-185 (flag and reopen RMM after completeness), 370 (flag at completeness); src/features/rmm/attention.test.ts:33; seed.test.ts:211-232.",
+   "decision": "keep",
+   "details": "Expected (keep): in Part 1 the flag follows SF-01 live and disappears if the origin is removed. After completeness, a newly chosen origin without rules flags the case, reopens a completed RMM review and pulls a final-release case back to review. The flag never blocks RMM's completion, but RMM's completion note records 'flag reviewed'. The supplier never sees the flag. Test, E2E: the supplier adds 'CCU' in review after RMM completed; RMM's attention list shows the flag and 'My review' is reopened.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-LC-09",
+   "kind": "edge-case",
+   "title": "RMES 'Rejected' by Safety or Regulatory (AS-02): internal; RMM decides between cancel and continue before the release request",
+   "current": "src/domain/actions.ts:499-508 (a reason is mandatory for a rejection; all criteria need results); src/features/rmm/attention.ts:47-54 (an RMM attention item); actions.ts:533-546 sends the final-release request automatically once every track is completed, even when RMM completed before the rejection.",
+   "decision": "change",
+   "details": "Expected: a Rejected decision reopens a completed RMM review (system, audited). RMM's completion on a case with a Rejected decision requires an explicit choice, (a) 'Continue to final release, agreed with <dept>' with a note, or (b) 'Cancel case' with a reason. The supplier never sees the decision in the portal, mails or the final document. The decision can be changed only until that department completes. Test, unit: REG rejects after RMM completed, so the RMM track is reopened and the phase stays review; completeReview('RMM') without the continue note is refused; with it, the case reaches final-release. Test, E2E leak scan: no 'Rejected' or 'Approved' text on any supplier screen or in any supplier mail.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-LC-10",
+   "kind": "edge-case",
+   "title": "Final release refused while anything is still open (tracks, open points, blockers, a wrong actor); no correction-request flow before the release",
+   "current": "src/domain/actions.ts:565-575 checks only phase === 'final-release'. The live portal has a CIQP Change Request (src/portal/supplier/CorrectionRequest.tsx; kissflow-build/ciq-supplier-portal/portal-spec.mjs:133-141) with no prototype twin. src/store/portalCaps.tsx:17 lets every contact act.",
+   "decision": "change",
+   "details": "Expected: finalRelease is refused unless all of the following hold:\n- every track is completed;\n- no open point is open or in-progress, including points the supplier answered that Beiersdorf has not yet decided;\n- completenessBlockers(c) is empty;\n- the actor is an active supplier contact of the case's supplier.\nThe release dialog lists the blockers with jump links. Under BRM v2 the supplier edits directly until the release, so the final app has no correction-request screen before the release. After the release, any change attempt is refused and logged, and a later change means a new case (src/features/supplier/PhaseViews.tsx:240). Test, unit: each blocker type alone makes finalRelease return the state unchanged with a toast; an internal user and a deactivated contact are refused. Test, E2E: the release button shows the blocker list.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-LC-11",
+   "kind": "edge-case",
+   "title": "Mandatory field cleared after the completeness confirmation",
+   "current": "src/features/supplier/FieldRenderer.tsx:71,76 commit(null) on an empty input; src/domain/actions.ts:238-248 accepts null in review and final-release (it only audits); nothing re-runs completenessBlockers before the release (565-575).",
+   "decision": "change",
+   "details": "Expected: in Part 2, clearing a mandatory visible field is allowed only with a written justification (the REQ-PROC-012 rule, minimum length, no trivial strings). Without one, the field shows an inline error and the change is not stored. The lead reviewer of that section gets the change notice (REQ-PROC-031). finalRelease re-checks the blockers (EC-LC-10). Test, unit: setAnswer(null) on a mandatory field in review without a justification is refused; with a justification it is stored and audited. Test, E2E: after the reviews complete, the supplier clears K1 › CoA; the release is blocked with the field named.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-LC-12",
+   "kind": "edge-case",
+   "title": "Supplier changes data or uploads after the owning review completed, or while the release request is pending",
+   "current": "src/domain/actions.ts:243-245: setAnswer in review or final-release only writes an audit line. Nothing goes to the reviewer, nothing marks the change, nothing reopens, so the supplier can change and release at once. Upload (263-279), components (250-252) and justifications (254-261) are not even audited.",
+   "decision": "change",
+   "details": "Recommended default (decision for Thomas, since AS-03 leaves reopen-or-confirm open):\n- A change in a section whose lead track is completed marks the section 'Changed since your completion', with old → new, name and time. It sends an inbox mail to that reviewer and the RMM owner. The reviewer can reopen.\n- Any change or upload during final-release withdraws the release request: the case goes back to review, the affected lead gets 'Confirm no impact or reopen', and the supplier is told the release request was withdrawn (E-P-50).\n- The release dialog lists every change made since the completeness confirmation (E-P-67).\nTest, unit: setAnswer during final-release returns the case to review and gives the lead track a confirm-or-reopen state; an upload after the lead completed creates the marker and one mail.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-LC-13",
+   "kind": "edge-case",
+   "title": "Duplicate case, or a case created with missing or invalid data",
+   "current": "src/features/rmm/NewCase.tsx:57-66 checks mandatory fields and a future due date in the UI only. src/domain/actions.ts:69-124 createCase has no validation and no duplicate check, and a missing supplier gives the audit text '(undefined)' (line 120).",
+   "decision": "change",
+   "details": "Expected: the domain refuses a case without supplier, an active contact, trade name, INCI, material number, at least one market or a future due date (REQ-PROC-001). It also refuses contacts that do not belong to the supplier or are inactive. A warning appears when an open or recently completed case exists for the same supplier and material number, or the same normalised trade name (E-P-01). Continuing then needs a justification, which is audited. Test, unit: createCase with each missing field is refused; a duplicate material number returns a warning flag. Test, E2E: create the same material twice and see the warning.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-LC-14",
+   "kind": "action",
+   "title": "Correct case header data after creation (trade name, INCI, material no., due date, owner, priority, markets)",
+   "current": "missing: no edit action in src/domain/actions.ts; markets (SF-11) are fixed at createCase (line 79); the GEN pre-fill is a snapshot (98-104).",
+   "decision": "add",
+   "details": "Expected: RMM can correct the header fields until the final release, each change audited old → new. The GEN pre-fill for the supplier updates. A market change re-derives the scope: live in Part 1, grow-only in Part 2 with the same additional-part handling as EC-LC-04. A due-date change reaches the supplier task. Owner reassignment moves RMM's review track. This is a demo safety net: a typo at creation otherwise forces a cancel. Test, unit: change markets in Part 2 adds K6.2 and A11 for UK without removing anything; the audit has old → new. Test, E2E: edit the trade name; the supplier's request shows the new name.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-LC-15",
+   "kind": "edge-case",
+   "title": "Double submits, and success toasts after a refused action",
+   "current": "Phase-guarded: confirmCompleteness actions.ts:354, completeReview 517, finalRelease 568. Not guarded: createCase and raiseOpenPoint (a double click creates two items; the NewCase submit button is not disabled, NewCase.tsx:238-240). src/store/store.tsx:147, 148 and 159 append a success toast even when the domain refused the action (e.g. an empty question).",
+   "decision": "change",
+   "details": "Expected: every submit button is disabled while its action runs. The store shows a success toast only when the domain changed the state; otherwise it shows the domain's refusal toast alone. Repeating confirm, complete, release or cancel is a no-op with an info toast (E-D-73). Test, unit: the store wrapper adds no success toast when A.raiseOpenPoint returns the same state; calling confirmCompleteness twice leaves exactly one completeness confirmation. Test, E2E: a double-click on 'Create case' creates one case.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-LC-16",
+   "kind": "edge-case",
+   "title": "Department reopens its completed review (and the release request is withdrawn)",
+   "current": "src/domain/actions.ts:550-555: no reason check, no phase or actor guard; final-release → review (553). UI: src/features/review/CompletePanel.tsx asks for a reason, but only for non-closed cases.",
+   "decision": "change",
+   "details": "Expected: only the track's own department (RMM for its lane) can reopen, in review or final-release only, with a mandatory reason. In final-release the supplier's release task disappears and the supplier gets one mail saying the release request was withdrawn. The release request is sent again exactly once when all tracks have completed (REQ-PROC-040). Test, unit: reopenReview with an empty reason, on a completed case, or by another department is refused; after reopen and re-complete, the audit shows exactly two release-request notifications in total.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-OP-01",
+   "kind": "action",
+   "title": "AS-08: the raiser edits its open point (question, justification, due date, reference)",
+   "current": "missing: no edit action in src/domain/actions.ts; src/features/review/OpenPointsPanel.tsx:135 offers no action while a point is 'open'; the Message action union in src/domain/types.ts:222 has no 'edited'.",
+   "decision": "add",
+   "details": "Expected: only the raiser can edit, while the point is open or in-progress. The raiser is createdBy; for system-raised additional-part points it is responsibleId. An edit appends a thread entry 'Question changed' that keeps the old text. The supplier sees the current question with 'changed on <date>'. One inbox mail goes to the supplier contacts, and the edit is audited. A changed due date resets the overdue state. Closed points cannot be edited. In Kissflow this edit must update the portal twin (AS-08 API call). Test, unit: edit by a non-raiser is refused; edit on a closed point is refused; the thread keeps both texts; one mail per active contact. Test, E2E: REG edits the question; the supplier drawer shows the new text and 'changed'.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-OP-02",
+   "kind": "action",
+   "title": "AS-08: the raiser closes or withdraws its open point at any time",
+   "current": "missing: outcome 'withdrawn' exists (src/domain/types.ts:238) but only cancelCase sets it (src/domain/actions.ts:580); a point that is 'open' with the supplier cannot be closed by the reviewer (OpenPointsPanel.tsx:135), so a reviewer whose question became moot is blocked until the supplier answers.",
+   "decision": "add",
+   "details": "Expected: the raiser can close a point in any unresolved state with outcome 'withdrawn' and an internal reason. The point stops blocking its track (REQ-PROC-036). The supplier's task disappears, and one mail says 'closed, no action needed' without the reason. The point stays in the supplier's list as 'Closed by Beiersdorf'. The full thread is kept and goes into the final document. Test, unit: withdraw unblocks completeReview; the supplier's tasks drop the point; the reason never appears in supplier-visible fields or mails.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-OP-03",
+   "kind": "edge-case",
+   "title": "Point edited or closed by its raiser while the supplier is writing the answer",
+   "current": "src/features/supplier/AnswerDrawer.tsx:156 shows the composer only while the point is 'open', from the state at render time. src/domain/actions.ts:415-437 supplierRespond accepts any status and has no question-version check.",
+   "decision": "add",
+   "details": "Expected: the drawer remembers the question version it showed. On send, a closed or withdrawn point refuses the answer with 'Beiersdorf closed this question on <date>', and the typed text and file stay in the drawer to copy. An edited point shows 'The question changed, please review' with the new text, and the supplier sends again. In Kissflow the portal write must check the same version. Test, unit: supplierRespond with a stale version or on a closed point returns the state unchanged with a toast. Test, E2E (sequential personas): the supplier opens the drawer and types; then REG withdraws the point; the supplier sends and the refusal message appears with the text kept.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-OP-04",
+   "kind": "requirement",
+   "title": "Only the raiser or responsible reviewer decides on, edits or closes a point (REQ-PROC-034)",
+   "current": "src/domain/actions.ts:439-462 reviewResponse has no actor check. The UI gates by department track only (OpenPointsPanel.tsx:133 canAct comes from ReviewWorkspace.tsx:72). Other departments' points are read-only in the UI (OpenPointsPanel.tsx:189-221).",
+   "decision": "change",
+   "details": "Expected: accept, return, not-accepted, edit and withdraw are refused for any user other than the raiser or responsibleId (documented reassignment is out of the MVP). Other departments and RMM see the point read-only. Every status change records person, time and result. Test, unit: SAF calling reviewResponse on a REG point is refused; u-reg-2 on a point raised by u-reg is refused unless responsible (decision: department-level or person-level; default person-level as AS-08 says 'the one who raised').",
+   "priority": "must"
+  },
+  {
+   "id": "EC-OP-05",
+   "kind": "edge-case",
+   "title": "Repeated clarification loop, cannot-provide, and 'not accepted' (deadlock exit)",
+   "current": "Handled: src/domain/actions.ts:439-462 (return increments the rounds and sets a fresh due date of at least 7 days, lines 450-452; not-accepted closes with an internal note), src/features/supplier/lib.ts:168 (internal notes are filtered from the supplier thread); test seed.test.ts:309-319.",
+   "decision": "keep",
+   "details": "Expected (keep): the loop repeats any number of times without losing history (REQ-PROC-035). A return needs a reason, which the supplier sees. 'Close as not accepted' needs an internal reason, which the supplier never sees (it only shows 'Closed'). Each return and close sends one supplier mail (EC-NT-01). Test, unit: three return rounds give rounds=3 and keep the thread; the not-accepted reason is absent from visibleThread and from supplier mails.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-OP-06",
+   "kind": "edge-case",
+   "title": "Stable composition row ids; deleting a row that an open point refers to",
+   "current": "src/features/supplier/ComponentTable.tsx:55-58 creates the new id as max+1, so deleting c3 and adding a row reuses c3. Lines 124-128 allow removing any row while the section is not locked, including in Part 2, even when an open point has ref.rowId on it. src/domain/actions.ts:250-252 replaces the whole array and writes no audit.",
+   "decision": "change",
+   "details": "Expected: row ids are never reused (counter kept on the case, or a uid). Deleting a row that an unresolved point refers to is refused with 'Beiersdorf asked about this component'. Row changes are stored per row (add, update, remove) with who and when, and audited in Part 2 (REQ-PROC-031). Test, unit: add c1-c3, delete c3, add a row: the new id is c4; removing a row referenced by an open point is refused; a Part 2 row edit creates an audit event.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-NT-01",
+   "kind": "requirement",
+   "title": "R-1: an inbox per person; one mail per open-point raise, answer, edit and close; never internal content",
+   "current": "missing: no mail model. src/features/admin/EmailPreviews.tsx:11-25 is a static table with 'no e-mail is sent'. The audit writes 'Notified supplier' only at createCase (src/domain/actions.ts:122) and raiseOpenPoint (410).",
+   "decision": "add",
+   "details": "Expected: an inbox for every user (internal and supplier).\n- Raise, edit, return, accept, not-accepted and withdraw: one mail to each active assigned supplier contact of the case.\n- A supplier answer or cannot-provide: one mail to the raiser (responsibleId for system points); decide whether the RMM owner gets a copy.\n- Every mail names the material, the case ID, the item reference and a deep link. It never contains internal reasons, finding text, RMES results or decisions, internal notes or department statuses.\n- Each mail is logged on the case (REQ-CTL-010). Deactivated contacts get nothing, and events are idempotent (one mail per event per recipient).\nTest, unit: a mail builder test per event (recipients, count) plus a leak scan of supplier mail bodies against the case's internal strings. Test, E2E: after each action, the expected inbox shows the mail and the deep link opens the right item.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-NT-02",
+   "kind": "requirement",
+   "title": "Lifecycle mails: invitation, the single final-release request, final document to RMM, cancellation notice, release request withdrawn",
+   "current": "Audit text only: src/domain/actions.ts:122 (invitation), 538-544 ('Exactly one notification…'), 560 (PDF e-mailed). No cancellation notice.",
+   "decision": "add",
+   "details": "Expected: the invitation goes to all invited contacts at creation. Exactly ONE release-request mail goes out after the last track completes, even with 6 tracks, and none per individual completion (REQ-PROC-040). A final-document mail with a link goes to the RMM owner at release (REQ-PROC-046). A neutral 'request withdrawn' mail goes out on cancel, and a 'release request withdrawn' mail on reopen. Test, unit: completing 6 tracks in any order gives exactly one supplier release mail; a reopen and re-complete gives a second one, not more.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-TM-01",
+   "kind": "edge-case",
+   "title": "Due dates, overdue and reminders",
+   "current": "Case due date must be in the future in the UI only (src/features/rmm/NewCase.tsx:65). Open-point due date must be today or later (src/features/review/AskModals.tsx:48). A returned point gets at least 7 more days (src/domain/actions.ts:450-452); system additional parts get 14 days (201). The final-release task inherits the case due date (src/domain/selectors.ts:220), so it can be born overdue. Overdue shows in CaseDetail.tsx:57,90-91, OpenPointsPanel.tsx:110 and the supplier DueText. Reminders are configuration only (src/domain/seed.ts:398-404) and never run. Due dates are stored at 16:00Z or 17:00Z.",
+   "decision": "change",
+   "details": "Expected: the domain validates due dates (not in the past). The final-release task gets its own due date (request + N days, reminder rem-5). The raiser can change a point's due date through the AS-08 edit, and RMM can change the case due date (REQ-ADR-001: it stays flexible); both are audited and mailed. Overdue counts agree between the dashboard, the case and the supplier view. Reminders show as derived, idempotent inbox entries once a task passes its threshold (one per threshold), with an escalation copy to the RMM owner. A due date means the end of the user's local day. Test, unit (actions and isOverdue take 'at'): with at = due + 1 day the point is overdue everywhere; the release task due date is request + N; the reminder entry count stays at one after repeated evaluation.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-SM-02",
+   "kind": "screen",
+   "title": "Supplier master: view suppliers and add a new supplier with validation",
+   "current": "missing: no supplier screen, route or action (src/App.tsx:62-75; src/domain/actions.ts has no addSupplier). Validators exist only as questionnaire fields: DUNS in src/domain/catalog.ts:222, e-mail in catalog.ts:220.",
+   "decision": "add",
+   "details": "Expected: a suppliers list and detail page (name, DUNS, country, type, contacts, open and closed cases) for internal users; RMM and Admin can add. Validation:\n- Name required, trimmed; a duplicate normalised name ('BASF SE' vs 'Basf') gives a warning (E-D-36).\n- DUNS stored as text with exactly 9 digits after stripping spaces and dashes; leading zeros are kept ('087342615'); letters or 8/10 digits are refused; a duplicate DUNS is refused, naming the existing supplier (E-D-35).\n- Country and type required.\n- At least one contact, each with name and a valid e-mail (E-D-51). A duplicate e-mail within the supplier is refused, and across suppliers too by default (E-D-77; decision).\n- Every create or edit is audited (a global log).\nThe new supplier can be picked in New case, and its contacts appear as supplier personas in the role switcher (today the personas are static: src/layout/RoleSwitcher.tsx:27-28, src/domain/catalog.ts:430-456). Test, unit: a validator table test (9 digits ok, '12345678' refused, '12345678A' refused, '087342615' keeps its leading zero, duplicate refused, 'a@b' refused). Test, E2E: add a supplier, start a case for it, switch to its new contact and see the request.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-SM-03",
+   "kind": "edge-case",
+   "title": "Contact added, edited or removed in the supplier master while assigned to running cases",
+   "current": "missing. supplierContactIds is frozen at createCase (src/domain/actions.ts:89), and GEN-008/009 are snapshots (101-102). Portal access is by supplierId, not by assignment (src/features/supplier/lib.ts:17-23), and every contact may act (src/store/portalCaps.tsx:17).",
+   "decision": "add",
+   "details": "Expected: contacts are deactivated, never deleted; answers and confirmations keep the name. Deactivating is refused when it would leave an open case of that supplier with no active contact (REQ-CTL-003); the error lists the cases. A deactivated contact loses portal access at once (its persona shows 'no access'), receives no mails and cannot confirm or release, while its tasks stay with the remaining contacts. A new contact joins the supplier's open cases. Default: every active contact of the supplier sees all its cases (decision; the alternative is per-case assignment). Edits and deactivations are audited in the master and on each affected case. Test, unit: deactivating the only contact of a supplier with an open case is refused; after deactivating u-sup-2, finalRelease by u-sup-2 is refused and its inbox gets no new mails. Test, E2E: deactivate a contact, switch to it, see no requests.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-SM-04",
+   "kind": "edge-case",
+   "title": "Supplier name or DUNS changed in the master while cases are running",
+   "current": "Snapshot at creation: src/domain/actions.ts:87, 98-104 (manufacturer, FLD-GEN-002 and FLD-GEN-003 copied).",
+   "decision": "add",
+   "details": "Expected: running cases keep their snapshot and show 'Supplier master changed on <date>: <old> → <new>' to RMM. Completed cases and their final document never change. The case list and supplier reports group by supplier id, not by name (E-P-84). Test, unit: a master DUNS change leaves c.answers['FLD-GEN-003'] of a completed case unchanged.",
+   "priority": "nice"
+  },
+  {
+   "id": "EC-SM-05",
+   "kind": "copy",
+   "title": "New case for a supplier with no active contact",
+   "current": "src/features/rmm/NewCase.tsx:59 shows 'Select at least one supplier contact to invite.' with no way forward.",
+   "decision": "change",
+   "details": "Expected: a supplier without active contacts shows 'This supplier has no active contact. Add one in Suppliers' with a link (RMM and Admin). The submit stays blocked. Test, E2E: a supplier with only a deactivated contact cannot be used to start a case.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-DT-01",
+   "kind": "edge-case",
+   "title": "Two supplier contacts editing the same section (REQ-CTL-001)",
+   "current": "Field writes are per field with attribution (src/domain/actions.ts:238-248, answeredBy; shown via src/features/supplier/parts.tsx:79 and src/features/review/SectionContent.tsx:101). The K2.1 table is one array write (250-252) with one answeredBy key. Justifications are not attributed in the audit.",
+   "decision": "change",
+   "details": "Expected: each answer, justification, row and upload is written on its own: no write replaces data it did not change. When two contacts change the same field, the later one wins and both changes are in the audit with name and time. Every answer and document shows who and when. Kissflow note: the portal stores Answers_JSON per CIQP Section, so concurrent saves on one section would overwrite each other. Merge per field or use optimistic locking, and give the same 'changed by X a moment ago' message. Test, unit: u-sup-1 sets field A and u-sup-2 sets field B in the same section, interleaved, and both persist with their own answeredBy; u-sup-1 edits row c1 while u-sup-2 adds a row, and both persist (needs row-level actions, EC-OP-06).",
+   "priority": "must"
+  },
+  {
+   "id": "EC-DT-02",
+   "kind": "edge-case",
+   "title": "Two browser tabs or windows overwrite each other (demo risk: RMM and supplier side by side)",
+   "current": "src/store/store.tsx:41-47 and 105-109: every commit writes the whole state to localStorage. Nothing listens to 'storage' events, so a stale tab's next action wipes the other tab's changes.",
+   "decision": "change",
+   "details": "Expected: the store listens to 'storage' (or a BroadcastChannel) and reloads the newer state before applying the next action, or shows 'Updated in another window' and refreshes. No action is lost when Thomas runs the RMM in one window and the supplier in another. Test, E2E: two pages in one context; page A (RMM) creates a case; page B (supplier) answers SF-01; page A raises nothing and reloads: the case and the answer both exist; then each page acts once more and both changes persist.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-DT-03",
+   "kind": "edge-case",
+   "title": "Component origin not covered by the SF-01 answer (blends, AS-04)",
+   "current": "src/features/supplier/ComponentTable.tsx:36 limits the origin choices to SF-01, but line 146 keeps a row's old origin after SF-01 changes, so a component can carry an origin that SF-01 no longer has.",
+   "decision": "add",
+   "details": "Expected: a completeness blocker or warning 'Component 2 (Lanolin) has origin Animal, which is not in your origin answer (SF-01)', with a jump link. Fixing either side clears it. Test, unit: SF-01=[vegetable] plus a row with origin animal gives a blocker; adding animal to SF-01 clears it and opens the animal rules.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-DT-04",
+   "kind": "copy",
+   "title": "No review version and no document versioning (BRM v2 REQ-PROC-016/-029/-034)",
+   "current": "src/features/rmm/CaseDetail.tsx:104-108 'Review v1' badge; document labels 'v{n}' in src/features/review/OpenPointsPanel.tsx:31, src/features/review/shared.tsx fieldTarget/docTarget, src/features/supplier/AnswerDrawer.tsx:144; audit 'Review version v1 fixed' src/domain/actions.ts:368; the 9 Oct decisions file notes this v1 wording is still open (context/decisions/2026-10-09-client-call.md:71).",
+   "decision": "change",
+   "details": "Expected: no 'review version' anywhere. Documents are referenced by file name and upload date ('CoA_2408.pdf, uploaded 12 Oct 2026'). New uploads are added next to earlier ones and suppliers cannot delete. The audit and the final document use the same references. Test, E2E: no 'Review v' and no ' v1'/' v2' document badges on any screen (text scan).",
+   "priority": "should"
+  },
+  {
+   "id": "EC-PM-01",
+   "kind": "requirement",
+   "title": "The supplier never sees internal content (REQ-CTL-002, REQ-PROC-040, REQ-RMES-015)",
+   "current": "Filters exist: src/features/supplier/lib.ts:168 (no internal notes in threads), 182 (no finding justification), the PhaseViews header comment, and src/App.tsx:21-26 SideGuard. But src/features/supplier/PhaseViews.tsx:232-235 shows a (disabled) supplier 'Download PDF' of the final document.",
+   "decision": "change",
+   "details": "Expected: on every supplier screen, toast and mail, none of the following appear: internal notes, RMES criteria or results, finding texts, Approved/Rejected decisions, not-accepted or withdraw reasons, department track statuses, cancellation reasons, or any internal due target. Decision: the supplier does not get the final document in the MVP (REQ-PROC-046 sends it to RMM). The supplier sees a release receipt (released by, when, CIQ ID). If Thomas wants supplier access, the document must be built only from supplier-visible content. Test, E2E leak scan: seed one case with internal notes, findings, a Rejected decision, a not-accepted reason and a withdraw reason, each with a unique marker string; visit every supplier route and inbox as both contacts and assert no marker appears in the DOM text.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-PM-02",
+   "kind": "requirement",
+   "title": "Supplier isolation: own company only; deactivated contacts see nothing",
+   "current": "src/features/supplier/lib.ts:17-23 filters by supplierId; src/features/supplier/SupplierCase.tsx:21-35 answers 'not available' for other companies' cases; access does not depend on activity or assignment.",
+   "decision": "change",
+   "details": "Expected: a supplier contact sees only its own supplier's cases, and only while active. Deep links to another supplier's case, or to an internal route, show 'not available' or redirect to the portal home. Test, E2E: add a second supplier in the master and start a case for it; supplier 1's contact opens /#/portal/case/<that id> and sees 'This request is not available'; it also opens /#/cases and lands on /portal.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-PM-03",
+   "kind": "requirement",
+   "title": "Departments act only on their own tracks and sections but can read every case",
+   "current": "UI: the department review queue (src/features/review/ReviewQueue.tsx:36-52); CaseDetail read-only badge (src/features/rmm/CaseDetail.tsx:179-191); the workspace is refused without a track (src/features/review/ReviewWorkspace.tsx:62-69); asking only on own sections (src/features/review/SectionContent.tsx:114). The domain has no actor checks: completeReview (src/domain/actions.ts:511), raiseOpenPoint (388) and recordCriterion (464) accept any user.",
+   "decision": "change",
+   "details": "Expected: the domain refuses completeReview, raiseOpenPoint, recordCriterion, addFinding and closeFinding by a user whose department is not the track's (RMM lane: RMM users; decision: owner only or any RMM). rmesDecision already checks (502). Read access for all internal users stays. Test, unit: completeReview(caseId,'SAF') by u-qm is refused; raiseOpenPoint with dept 'REG' by u-saf is refused; recordCriterion by u-qm is refused.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-PM-04",
+   "kind": "requirement",
+   "title": "Customs and Legal are read-only; who may write internal notes",
+   "current": "Informed list (src/features/review/InformedList.tsx); NotReviewer guard (src/features/review/ReviewWorkspace.tsx:55). src/features/rmm/tabs/NotesTab.tsx:14 lets every internal persona except the Auditor write notes, including Admin, Business owner, Customs and Legal, on closed cases too; addInternalNote (src/domain/actions.ts:598-601) has no checks.",
+   "decision": "change",
+   "details": "Expected (default, decision): Customs and Legal can read every case and post in the internal discussion (REQ-PROC-020 is between departments), but have no review, ask or complete actions. Admin, Business owner and Auditor are read-only in the discussion. No posting on cancelled or completed cases. Empty notes are refused. Notes are never visible to the supplier. Test, unit: addInternalNote by u-admin, u-owner or u-auditor, or with empty text, is refused. Test, E2E: as Customs, no 'Ask supplier', 'Complete' or 'Add section' control exists anywhere.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-PM-05",
+   "kind": "requirement",
+   "title": "Beiersdorf never edits CIQ data; suppliers never act on internal steps",
+   "current": "No internal screen calls setAnswer, setComponents, setJustification, uploadDocument or saveConfig (checked with grep over src/features/rmm, review, admin and reports), but the domain accepts any actor (src/domain/actions.ts:147, 238, 250, 254, 263, 351, 565).",
+   "decision": "change",
+   "details": "Expected: supplier-data writes, confirmCompleteness and finalRelease are refused for internal users (REQ-PROC-016 v2: BDF roles have no edit rights). Every review, RMES, case-management and admin action is refused for supplier users. Test, unit: setAnswer by u-rmm is refused; completeReview by u-sup-1 is refused; finalRelease by u-rmm is refused.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-PM-06",
+   "kind": "requirement",
+   "title": "Route-level access matches each role's menu",
+   "current": "src/App.tsx:62-71: /rmm, /cases, /review, /informed, /reports, /audit and /understanding have no role gate. Only the admin pages use AdminGate (72-75), NewCase checks for RMM (src/features/rmm/NewCase.tsx:43-50), and the internal/supplier split is in SideGuard (21-26).",
+   "decision": "change",
+   "details": "Expected: one role × route matrix. A route outside a role's menu redirects to that role's landing page with a short notice; detail pages are allowed where the menu has their list (e.g. a department may open /cases/:id). The /understanding route is removed from the app (the stand-alone /#/understanding/call stays). Test, E2E: loop every persona over every route and assert either the page renders or a redirect to the landing page, with no console error.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-PM-07",
+   "kind": "edge-case",
+   "title": "Section ownership changed while cases are running (E-P-86)",
+   "current": "src/domain/actions.ts:614-616 says 'applies to new cases', but departmentsForScope at completeness (357), reviewDeptOf in saveConfig and extendScope (179, 189, 224) and sectionsOwnedBy in the workspace (src/features/review/ReviewWorkspace.tsx:76) all read the current state.ownership.",
+   "decision": "change",
+   "details": "Expected: the case pins its section ownership at creation, like the template and rule set (stored on the case and shown in Scope). Running cases are unaffected by an Admin change, and new cases use it. The change is audited in the global configuration log. Test, unit: create a case, change K6.9's lead from SAF to REG, confirm completeness: the SAF track exists and REG gets none for K6.9; a new case uses REG.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-AU-01",
+   "kind": "requirement",
+   "title": "Audit completeness: every change recorded with name and time",
+   "current": "Gaps:\n- setAnswer is audited only in review and final-release (src/domain/actions.ts:243).\n- setComponents (250-252) and setJustification (254-261) are never audited.\n- saveConfig in Part 1 is audited only when the scope changes, and records no answeredBy (163-168).\n- addInternalNote (598-601) is not audited.\n- publishTemplateV2, setOwnership and updateReminder (605-620) write no audit at all.\n- Frozen change attempts are not logged.\n- Notifications are only partly logged.\nThe Audit trail flattens case events only (src/features/reports/auditData.ts:15-32).",
+   "decision": "change",
+   "details": "Expected: every committed change appends one event with actor, time, action, object (section, field or row), and old → new where it applies. That covers answers in both parts, metadata, rows, justifications, uploads, open-point raise, edit, answer, decision and withdraw, track changes, confirmations, cancel and reactivate, header edits, mails sent, and refused frozen attempts. Configuration and supplier-master changes go to a global log shown in the Audit trail next to the case events. The UI may group consecutive Part 1 edits by the same person, but the data keeps each one. Test, unit: run each action once through the scenario builder and assert the audit grows by one or more events, each with a non-empty by and a valid ISO at; config changes appear in the global log. Test, E2E: after a full demo run the Auditor filters by case and sees the events in order, with no 'undefined'.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-AU-02",
+   "kind": "requirement",
+   "title": "Audit is append-only and reconstructs who assessed what, when, on which data and document",
+   "current": "Handled: case audit ids are sequential (src/domain/actions.ts:41-43); Reconstruct (src/features/reports/Reconstruct.tsx) answers the auditor questions; its default case falls back to '' with zero cases (Reconstruct.tsx:16-22).",
+   "decision": "keep",
+   "details": "Expected (keep): no action edits or removes an audit event. Reconstruct shows the scope with its rule-set version, the confirmations, the reviews, the RMES results with the data value and document (file name and upload date, REQ-CTL-009 v2), the open points and the final document. Test, unit: after any action sequence the earlier audit prefix is unchanged and ids are unique. Test, E2E: Reconstruct with zero cases shows an empty state, not an empty select.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-FD-01",
+   "kind": "requirement",
+   "title": "Final document generated automatically once at the final release, immutable, on screen (R-2, AS-12, REQ-PROC-046)",
+   "current": "missing: complete() only writes an audit line (src/domain/actions.ts:557-562); the RMM banner says 'PDF not generated in the prototype' (src/features/rmm/CaseDetail.tsx:234-241); the supplier 'Download PDF' button is disabled (src/features/supplier/PhaseViews.tsx:232-235).",
+   "decision": "add",
+   "details": "Expected: finalRelease creates c.finalDocument exactly once (id, generatedAt, content hash, frozen content snapshot) with no user action. Content:\n- CIQ ID, material, supplier (DUNS), template and rule-set versions;\n- the released answers of active sections (visible fields only), the K2.1 table and the justifications;\n- the evidence list (file name, upload date, uploader);\n- every open point's full thread in order (question, answers, returns, edits, close), with who, when and the section/field/row reference, attachments by file name only, never embedded;\n- the confirmations (completeness, each review completion including RMM's, the final release) with name, e-mail and time.\nIt excludes internal notes, RMES records, findings, decisions and internal reasons. It is shown to RMM and the Auditor on the case and sent to the RMM owner's inbox. Nothing can regenerate or change it: finalRelease again, cancel, reopen and edits are all refused. Test, unit: the builder includes all threads (including withdrawn ones) and excludes internal marker strings; the hash is stable; a second finalRelease and any later write leave finalDocument deep-equal. Test, E2E: release, open the document, and find each open-point thread text.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-EM-01",
+   "kind": "edge-case",
+   "title": "Zero cases: every list, KPI, chart and report renders a clear empty state",
+   "current": "Empty states exist in CaseList.tsx:141, Dashboard.tsx:136, 267 and 301, ReviewQueue.tsx:108, InformedList.tsx:163, SupplierHome.tsx:44, SupplierTasks.tsx:47, 63 and 103, and LeadTimeCards.tsx:12. Misleading with zero data:\n- the Dashboard KPIs 'Average lead time 0 days' and 'First-time-right 0 %' (src/features/rmm/Dashboard.tsx:56-57);\n- the ValueCard '0 d average', '0 % / 100 %' and 'from 0 d to 0 d' (src/features/reports/ValueCard.tsx:22-28, 59);\n- the EventLog 'No event matches these filters' with no events at all (src/features/reports/EventLog.tsx:100-103);\n- the Reports subtitle 'all 0 CIQ cases' (src/features/reports/Reports.tsx:49);\n- an empty Reconstruct select.",
+   "decision": "change",
+   "details": "Expected: averages and percentages with no basis show '—' with 'No completed case yet'. Reports and Audit trail have page-level empty states ('No CIQ case yet. Reports fill in as cases run.'). The event log says 'No events yet' when there are no events at all. The admin publish text handles 0 running cases. There is no NaN, 'undefined' or 'Infinity' anywhere. Test, unit: kpis() and the reportData views on an empty state return null or '—' markers instead of 0 averages. Test, E2E: from the empty start, visit every route as every persona; assert no NaN, undefined, Infinity or '0 d average' text and no console errors.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-EM-02",
+   "kind": "edge-case",
+   "title": "Empty within a case: no open points, documents, notes, RMES or sections yet",
+   "current": "Mostly handled: OpenPointsPanel.tsx:164-166 and 200-202, ReconstructEvidence.tsx:17, 98 and 135, ReconstructSections.tsx:38, 93 and 123, ReviewWorkspace.tsx:166 ('No section in scope'), CaseDetail tab counts hidden at 0 (src/features/rmm/CaseDetail.tsx:122-127).",
+   "decision": "keep",
+   "details": "Expected (keep): each case tab shows a one-line empty state that explains when content appears. For example, 'Review tracks are created at the completeness confirmation' on a freshly created case. Test, E2E: create a case and open every CaseDetail tab as RMM, and the review workspace link as REG ('review has not started yet', ReviewWorkspace.tsx:56-60).",
+   "priority": "should"
+  }
+ ],
+ "proposals": "TEST PLAN (the overnight gate: typecheck, vitest, build, build:portal, harness-portal, plus a new prototype harness)\n\n1. Fixtures. buildSeed() becomes the empty demo start (EC-SM-01). Move the SPECS replay (src/domain/seed.ts:111-383) into a test-only fixture module, e.g. src/domain/fixtures.ts with buildRichFixture(). The existing tests (seed.test.ts, attention.test.ts, lib.test.ts) and the portal fixtures (scripts/portal-fixtures.ts) then keep a rich dataset. Add a small scenario builder for new tests, for example:\n   `sc().supplier('s1').create({markets:['EU','UK']}).answerAllMetadata({SF01:['vegetable']}).fillMandatory().confirm().raise('REG',{field:'FLD-K1-002'}).answer('u-sup-2').accept().completeAll().release()`\n   It uses the pure actions with explicit 'at' timestamps, so due-date and reminder tests are deterministic.\n\n2. Invariants. Add a pure checkInvariants(state) in src/domain and call it after every step of every scenario test. Optionally also run it in dev builds and log any violation with console.error, so the E2E harness fails on it.\n   - final-release ⇒ every track completed and no unresolved open point;\n   - completed ⇒ exactly one finalDocument and one final-release confirmation;\n   - cancelled ⇒ supplierTasks empty, no active track, no unresolved point;\n   - no completed track with an unresolved point of its own department;\n   - no unresolved point on an N.A. section;\n   - every open point's department has a track;\n   - every audit event has a by and an ISO at;\n   - supplier-facing mails contain no internal marker strings;\n   - deactivated contacts have no task, inbox entry or action after deactivation;\n   - every open case has at least one active contact.\n\n3. Unit test files to add, all vitest and all domain-level:\n   - guards.test.ts: the phase × action matrix (EC-LC-03) and the actor checks (EC-PM-03, EC-PM-05, EC-OP-04).\n   - openpoints.test.ts: AS-08 edit and withdraw; the race with a stale version (EC-OP-03); the loop; row-id stability (EC-OP-06).\n   - lifecycle.test.ts: cancel and reactivate in each phase; the 12-month window; a stale waiting-supplier track; release blockers; a mandatory field cleared in Part 2; a change during final-release; the RMES Rejected gate.\n   - supplierMaster.test.ts: the DUNS and e-mail validators; duplicate rules; contact deactivation with open cases.\n   - notify.test.ts: recipients and counts per event; exactly one release request; the leak scan.\n   - finalDocument.test.ts: content, exclusions, once-only, immutability.\n   - audit.test.ts: every action appends an event; the global configuration log.\n   - metrics-empty.test.ts: zero-case KPIs give '—', not 0.\n\n4. E2E harness: scripts/harness-prototype.mjs, modelled on scripts/harness-portal.mjs. Reuse its playwright-core path (harness-portal.mjs:16, borrowed from /Users/thomas/Documents/Kissflow Projects/POC/Promotion Management/app/node_modules/playwright-core). Serve the built dist on a local port. Every scenario gets a fresh browser context (empty localStorage) and switches personas through the real role switcher. Every scenario asserts no console errors, no 'NaN', 'undefined' or 'Infinity' text, and checkInvariants clean. Scenarios:\n   - S0: empty start × every persona × every route, using the role-route matrix (EC-EM-01, EC-PM-06).\n   - S1: the full happy path from nothing. Add a supplier, create the case, both contacts fill different sections, confirm completeness, RMM and the departments raise, answer, accept and complete, release, open the final document, check the inboxes.\n   - S2: late metadata change in review (EC-LC-04).\n   - S3: a department adds a section, and the supplier completes it (EC-LC-06).\n   - S4: AS-08 edit and withdraw, including the race with the drawer open (EC-OP-01 to EC-OP-03).\n   - S5: RMES Rejected after RMM completed (EC-LC-09).\n   - S6: cancel and reactivate once per phase (EC-LC-01, EC-LC-02).\n   - S7: release blocked by a mandatory field cleared in Part 2 (EC-LC-10, EC-LC-11).\n   - S8: supplier-master validation and contact deactivation (EC-SM-02, EC-SM-03).\n   - S9: supplier leak scan with marker strings (EC-PM-01).\n   - S10: two pages in one context (EC-DT-02).\n   - S11: final document immutability (EC-FD-01).\n   - S12: morning check. A fresh load shows 0 cases, 1 supplier and its 2 contacts, and 'Reset demo data' returns exactly that.\n\nDECISIONS FOR THOMAS (each with the default used in the catalogue)\n- (a) Contact access. Default: every active contact of the supplier sees and acts on all its cases. Alternative: only the contacts assigned per case (REQ-CTL-001 says the supplier assigns its own tasks).\n- (b) Supplier answer mails. Default: to the raiser only; the RMM owner sees the answer in the app. Alternative: also copy the RMM owner, as EmailPreviews says today.\n- (c) A change during final-release. Default: it withdraws the release request and asks the lead to confirm no impact or reopen. Alternative: notify only.\n- (d) Final document for the supplier. Default: no; the supplier gets a release receipt.\n- (e) Who may cancel and reactivate. Default: any RMM; the case owner is shown.\n- (f) Who may decide, edit or withdraw an open point. Default: the person who raised it (AS-08 wording). Alternative: anyone in the raising department.\n- (g) An e-mail used by contacts of two suppliers. Default: refused.\n- (h) The internal discussion. Default: Customs and Legal may post; Admin, Business owner and Auditor read only.\n- (i) Correction requests. Default: the portal's CIQP Change Request is not in the final app before the release, since the supplier edits directly. After the release, a change means a new case.\n- (j) RMES Rejected. Default: it reopens RMM's review, and RMM must explicitly choose 'continue' (with a note) or cancel.\n\nNOTES FOR THE KISSFLOW BUILD (from the same edge cases)\n- Concurrent edits: the portal's per-section Answers_JSON needs field-level merge or optimistic locking (EC-DT-01).\n- AS-08 edits and withdrawals must update the portal twin through the integration API (EC-OP-01, EC-OP-02).\n- The final document is produced by the external script on the release webhook (AS-12). It must build its text only from data that may be shown and must store a hash (EC-FD-01).\n- Section ownership and template/rule-set versions must be pinned on the case record (EC-PM-07)."
+}

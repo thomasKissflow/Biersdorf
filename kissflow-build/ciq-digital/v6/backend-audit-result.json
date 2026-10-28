@@ -1,0 +1,60 @@
+{
+ "target": "audit",
+ "flow": "CIQ_Audit_Event_A00",
+ "at": "2026-10-19T20:52:34.708Z",
+ "apply": true,
+ "changes": [
+  "add field Ref_Flow_Id (Text)",
+  "add field Ref_Item_Id (Text)",
+  "add field Ref_Activity_Instance_Id (Text)"
+ ],
+ "conflicts": [],
+ "already": [],
+ "backup": "v6/backups/CIQ_Audit_Event_A00.before-v6.2026-10-19T2052.json",
+ "diffSummary": {
+  "added": [
+   "Row_10ahgyl Row",
+   "Column_10ahgyl Column",
+   "Ref_Flow_Id Field Ref Flow Id",
+   "Row_yb7wr8 Row",
+   "Column_yb7wr8 Column",
+   "Ref_Item_Id Field Ref Item Id",
+   "Row_z6bm9y Row",
+   "Column_z6bm9y Column",
+   "Ref_Activity_Instance_Id Field Ref Activity Instance Id"
+  ],
+  "removed": [],
+  "changed": 2,
+  "kindsBefore": {
+   "Model": 1,
+   "Row": 20,
+   "Column": 32,
+   "Field": 31,
+   "User": 1
+  },
+  "kindsAfter": {
+   "Model": 1,
+   "Row": 23,
+   "Column": 35,
+   "Field": 34,
+   "User": 1
+  }
+ },
+ "write": {
+  "ok": true,
+  "putDraft": 200,
+  "publish": 200,
+  "publishedAt": "2026-10-19T20:52:37Z"
+ },
+ "readBack": [
+  "Ref_Flow_Id: Text OK",
+  "Ref_Item_Id: Text OK",
+  "Ref_Activity_Instance_Id: Text OK"
+ ],
+ "readBackFails": 0,
+ "serverSideDiff": {
+  "added": 0,
+  "removed": 0,
+  "changed": 0
+ }
+}

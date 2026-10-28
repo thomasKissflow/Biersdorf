@@ -1,0 +1,49 @@
+{
+  "Root": "Perm_1g5arbt",
+  "Perm_1g5arbt": {
+    "Id": "Perm_1g5arbt",
+    "Kind": "FlowPermission",
+    "Role": "ciq_sustainability_reviewer",
+    "RoleName": "CIQ Sustainability Reviewer",
+    "Model": "Regulatory_Findings",
+    "Level": "ReadOnly",
+    "Scope": "all",
+    "FlowPermission::Permission": [
+      "Permission_1nsqhku",
+      "Permission_1vtj79e",
+      "Permission_augdqa",
+      "Permission_1jhu8e2",
+      "Permission_1k09w8m"
+    ]
+  },
+  "Permission_1nsqhku": {
+    "Id": "Permission_1nsqhku",
+    "Kind": "Permission",
+    "Column": "Findings_Text",
+    "Permission": "ReadOnly"
+  },
+  "Permission_1vtj79e": {
+    "Id": "Permission_1vtj79e",
+    "Kind": "Permission",
+    "Column": "Findings_Criterion_Code",
+    "Permission": "ReadOnly"
+  },
+  "Permission_augdqa": {
+    "Id": "Permission_augdqa",
+    "Kind": "Permission",
+    "Column": "Findings_Blocking",
+    "Permission": "ReadOnly"
+  },
+  "Permission_1jhu8e2": {
+    "Id": "Permission_1jhu8e2",
+    "Kind": "Permission",
+    "Column": "Findings_State",
+    "Permission": "ReadOnly"
+  },
+  "Permission_1k09w8m": {
+    "Id": "Permission_1k09w8m",
+    "Kind": "Permission",
+    "Column": "Findings_Linked_OP_Key",
+    "Permission": "ReadOnly"
+  }
+}

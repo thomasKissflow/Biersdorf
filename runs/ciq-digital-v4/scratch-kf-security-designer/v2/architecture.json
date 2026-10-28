@@ -1,0 +1,2880 @@
+{
+  "branch": "main",
+  "revision": 15,
+  "key": "architecture",
+  "content": {
+    "app_name": "CIQ Digital",
+    "app_id": "CIQ_Digital_A00",
+    "description": "Internal Beiersdorf backend for the Cosmetic Ingredient Questionnaire (CIQ): cases from creation to the final PDF with a parallel department review, open points, change requests, suppliers, versioned configuration, released sections, scope runs, RMES sheets, internal notes and a tamper-evident audit trail. Suppliers work only in the separate portal.",
+    "source": {
+      "domain_revision": 2,
+      "brd": "runs/ciq-digital-v4/brd.md",
+      "run": "ciq-digital-v4",
+      "precedence": "PART A > PART B (v4) > PART C > PART D (field-level only, where it agrees with v4)",
+      "open_questions": "runs/ciq-digital-v4/open-questions.md Q1-Q7: defaults accepted; none adds a flow, role or step",
+      "decisions": "runs/ciq-digital-v4/decisions.md D5-D9 (stage 2, kf-architect)"
+    },
+    "mechanism_selection": {
+      "case_board_flows": 0,
+      "dataset_flows": 0,
+      "note": "No Case/Board or Dataset flows. All three Processes need role-assigned steps, step conditions, parallel blocks and per-step field permissions; the process mechanism supports all of them, and the case mechanism supports none (capabilities workflow.mechanisms.case: false). Every other entity only stores data: a Data Form (A1 L22-L23)."
+    },
+    "roles": [
+      {
+        "id": "admin",
+        "name": "Admin",
+        "kind": "default",
+        "personas": [],
+        "journeys": [],
+        "rationale": "Platform default required by A3 (brd.md L67). Reused, never created. No business journey."
+      },
+      {
+        "id": "user",
+        "name": "User",
+        "kind": "default",
+        "personas": [],
+        "journeys": [],
+        "rationale": "Platform default required by A3 (brd.md L67). Reused, never created. No business journey."
+      },
+      {
+        "id": "ciq_rmm",
+        "name": "CIQ RMM",
+        "kind": "custom",
+        "personas": [
+          "p_rmm"
+        ],
+        "journeys": [
+          "j01_create_case",
+          "j02_basic_data",
+          "j03_scope_check",
+          "j04_completeness",
+          "j05_department_review",
+          "j07_open_point_supplier",
+          "j08_internal_points",
+          "j09_open_items_checks",
+          "j11_final_release",
+          "j12_cancel_case",
+          "j13_change_request",
+          "j14_supplier_master",
+          "j16_internal_chat",
+          "j18_find_cases",
+          "j20_reactivate_case"
+        ],
+        "rationale": "Creates the case and holds every 'Waiting for supplier' step, Scope check, both open-items checks and the RMM branch of Part 2 (brd.md L157, L184-L193). Holds 'Waiting for supplier' and 'Review – RMM' on CIQ Open Point and Triage on CIQ Change Request (L245-L246, L270). Writes CIQ Supplier, CIQ Section and CIQ Scope Run (L278-L281)."
+      },
+      {
+        "id": "ciq_regulatory_reviewer",
+        "name": "CIQ Regulatory Reviewer",
+        "kind": "custom",
+        "personas": [
+          "p_reg_reviewer"
+        ],
+        "journeys": [
+          "j05_department_review",
+          "j06_rmes_sheet",
+          "j07_open_point_supplier",
+          "j08_internal_points",
+          "j13_change_request",
+          "j16_internal_chat",
+          "j18_find_cases"
+        ],
+        "rationale": "Owns 'Review – Regulatory' on CIQ Case and on CIQ Open Point, and 'Assess – Regulatory' on CIQ Change Request (brd.md L144, L189, L246, L271). Raises open points (L237). Sole editor of CIQ RMES Regulatory and records its own internal RMES decision (A3 L64; L282-L283)."
+      },
+      {
+        "id": "ciq_safety_reviewer",
+        "name": "CIQ Safety Reviewer",
+        "kind": "custom",
+        "personas": [
+          "p_saf_reviewer"
+        ],
+        "journeys": [
+          "j05_department_review",
+          "j06_rmes_sheet",
+          "j07_open_point_supplier",
+          "j08_internal_points",
+          "j13_change_request",
+          "j16_internal_chat",
+          "j18_find_cases"
+        ],
+        "rationale": "Owns 'Review – Safety' on CIQ Case and on CIQ Open Point, and 'Assess – Safety' on CIQ Change Request (brd.md L144, L189, L246, L271). Raises open points (L237). Sole editor of CIQ RMES Safety and records its own internal RMES decision (A3 L64; L282-L283)."
+      },
+      {
+        "id": "ciq_qm_reviewer",
+        "name": "CIQ QM Reviewer",
+        "kind": "custom",
+        "personas": [
+          "p_qm_reviewer"
+        ],
+        "journeys": [
+          "j05_department_review",
+          "j07_open_point_supplier",
+          "j08_internal_points",
+          "j13_change_request",
+          "j16_internal_chat",
+          "j18_find_cases"
+        ],
+        "rationale": "Owns 'Review – QM' on CIQ Case and on CIQ Open Point, and 'Assess – QM' on CIQ Change Request (brd.md L144, L189, L246, L271). Raises open points (L237)."
+      },
+      {
+        "id": "ciq_microbiology_reviewer",
+        "name": "CIQ Microbiology Reviewer",
+        "kind": "custom",
+        "personas": [
+          "p_mic_reviewer"
+        ],
+        "journeys": [
+          "j05_department_review",
+          "j07_open_point_supplier",
+          "j08_internal_points",
+          "j13_change_request",
+          "j16_internal_chat",
+          "j18_find_cases"
+        ],
+        "rationale": "Owns 'Review – Microbiology' on CIQ Case and on CIQ Open Point, and 'Assess – Microbiology' on CIQ Change Request (brd.md L144, L189, L246, L271). Raises open points (L237)."
+      },
+      {
+        "id": "ciq_sustainability_reviewer",
+        "name": "CIQ Sustainability Reviewer",
+        "kind": "custom",
+        "personas": [
+          "p_sus_reviewer"
+        ],
+        "journeys": [
+          "j05_department_review",
+          "j07_open_point_supplier",
+          "j08_internal_points",
+          "j13_change_request",
+          "j16_internal_chat",
+          "j18_find_cases"
+        ],
+        "rationale": "Owns 'Review – Sustainability' on CIQ Case and on CIQ Open Point, and 'Assess – Sustainability' on CIQ Change Request (brd.md L144, L189, L246, L271). Raises open points (L237)."
+      },
+      {
+        "id": "ciq_overall_approver",
+        "name": "CIQ Overall Approver",
+        "kind": "custom",
+        "personas": [
+          "p_overall_approver"
+        ],
+        "journeys": [
+          "j10_overall_approval",
+          "j16_internal_chat"
+        ],
+        "rationale": "Owns 'Overall approval' on CIQ Case, which runs only when switched on (brd.md L145, L159, L191; A3 L63)."
+      },
+      {
+        "id": "ciq_business_admin",
+        "name": "CIQ Business Admin",
+        "kind": "custom",
+        "personas": [
+          "p_business_admin"
+        ],
+        "journeys": [
+          "j15_configuration",
+          "j16_internal_chat"
+        ],
+        "rationale": "Writes CIQ Config Version, including Release rows, with no four-eyes (brd.md L146, L279; A3 L65)."
+      },
+      {
+        "id": "ciq_reader",
+        "name": "CIQ Reader",
+        "kind": "custom",
+        "personas": [
+          "p_reader"
+        ],
+        "journeys": [
+          "j17_audit_oversight",
+          "j18_find_cases",
+          "j16_internal_chat"
+        ],
+        "rationale": "One read-only role for Customs, Legal, Auditor and Process Owner (brd.md L147; PART D L1241). It may post internal notes (open question Q7 default)."
+      },
+      {
+        "id": "ciq_case_admin",
+        "name": "CIQ Case Admin",
+        "kind": "custom",
+        "personas": [
+          "p_case_admin"
+        ],
+        "journeys": [
+          "j12_cancel_case"
+        ],
+        "rationale": "Ends a case during Part 2 through the admin route and ends the case's open points and change requests (brd.md L148, L215, L217). Flow Admin is set over REST after generate (A2 L56; L416). Its members also hold CIQ RMM (PART D L1242)."
+      },
+      {
+        "id": "ciq_integration_service",
+        "name": "CIQ Integration Service",
+        "kind": "custom",
+        "personas": [
+          "p_integration_service"
+        ],
+        "journeys": [
+          "j19_sync_service",
+          "j13_change_request",
+          "j11_final_release",
+          "j12_cancel_case",
+          "j17_audit_oversight",
+          "j18_find_cases"
+        ],
+        "rationale": "The CIQ Sync Service and the integrations: creates CIQ Change Request at Start (Y6), writes CIQ Section and CIQ Audit Event (brd.md L149, L269, L280, L285; A3 L61). Never acts on a human step after Start (A2 L58)."
+      }
+    ],
+    "flows": [
+      {
+        "id": "CIQ_Case_A00",
+        "name": "CIQ Case",
+        "type": "Process",
+        "flowType": "Process",
+        "from_entity": "P1",
+        "description": "One CIQ case cycle, from creation to the final PDF: supplier hand-offs, scope check, the parallel department review, optional overall approval and the single final release. Holds the material identity, the case contacts as fields, the six department lanes, the PS-05/PS-11 confirmations, the RMES header and the gate/hold counts.",
+        "child_tables": [],
+        "serves_journeys": [
+          "j01_create_case",
+          "j02_basic_data",
+          "j03_scope_check",
+          "j04_completeness",
+          "j05_department_review",
+          "j06_rmes_sheet",
+          "j09_open_items_checks",
+          "j10_overall_approval",
+          "j11_final_release",
+          "j12_cancel_case",
+          "j20_reactivate_case"
+        ],
+        "rationale": "Moves between RMM, five departments in parallel and the Overall Approver through steps that carry SLAs: a Process (A1 L22; brd.md L119, L154-L194). Typed now because a Form can't gain a workflow later (LESSONS 1).",
+        "requiredCapabilities": {
+          "roleRestrictedTransitions": true,
+          "conditionalTransitions": true,
+          "perStatusFieldPermissions": true
+        },
+        "mechanism": "process",
+        "build_stage": "generate (complete; a published Process can't be edited, LESSONS 1b)"
+      },
+      {
+        "id": "CIQ_Open_Point_A00",
+        "name": "CIQ Open Point",
+        "type": "Process",
+        "flowType": "Process",
+        "from_entity": "P2",
+        "description": "One question, document request or additional part to the supplier, with every back-and-forth round inside the same item. Also the internal kinds Department review, Contact update and Internal review, which skip the supplier step.",
+        "child_tables": [
+          {
+            "id": "Rounds",
+            "name": "Rounds",
+            "embedded": true,
+            "column_id_prefix": "Rounds_",
+            "step_permission_key": "Rounds",
+            "writer": "Only the owning department writes it, at its own review step (L251).",
+            "evidence": "brd.md L120; L251; L327; A2 L31 (example Rounds_Round_No)"
+          }
+        ],
+        "serves_journeys": [
+          "j07_open_point_supplier",
+          "j08_internal_points",
+          "j05_department_review",
+          "j09_open_items_checks",
+          "j12_cancel_case"
+        ],
+        "rationale": "Raised by a department, waits for the supplier, then reviewed by exactly one owning department, with SLAs on each step: a Process (brd.md L120, L222-L247). Its own item, not a case child table: six departments raise points at the same time in Part 2 (L328, C2/C3).",
+        "requiredCapabilities": {
+          "roleRestrictedTransitions": true,
+          "conditionalTransitions": true,
+          "perStatusFieldPermissions": true
+        },
+        "mechanism": "process",
+        "build_stage": "generate (complete; a published Process can't be edited, LESSONS 1b)"
+      },
+      {
+        "id": "CIQ_Change_Request_A00",
+        "name": "CIQ Change Request",
+        "type": "Process",
+        "flowType": "Process",
+        "from_entity": "P3",
+        "description": "A change the supplier reports or requests (change notice, correction, attempt after the final release). RMM triages it, the affected departments assess it in parallel, and the supplier gets the outcome as a portal notice.",
+        "child_tables": [],
+        "serves_journeys": [
+          "j13_change_request",
+          "j12_cancel_case"
+        ],
+        "rationale": "Triage by RMM, then a parallel assessment by the impacted departments, each with an SLA: a Process (brd.md L121, L253-L272).",
+        "requiredCapabilities": {
+          "roleRestrictedTransitions": true,
+          "conditionalTransitions": true,
+          "perStatusFieldPermissions": true
+        },
+        "mechanism": "process",
+        "build_stage": "generate (complete; a published Process can't be edited, LESSONS 1b)"
+      },
+      {
+        "id": "CIQ_Supplier_A00",
+        "name": "CIQ Supplier",
+        "type": "Form",
+        "flowType": "Form",
+        "from_entity": "F1",
+        "description": "One supplier company with its people. Supplier_Code is the isolation key on every portal item.",
+        "child_tables": [
+          {
+            "id": "Contacts",
+            "name": "Contacts",
+            "embedded": true,
+            "column_id_prefix": "Contacts_",
+            "step_permission_key": "n/a (Form; no steps)",
+            "writer": "CIQ RMM writes rows one at a time, re-reads and merges (L278).",
+            "evidence": "brd.md L122; L278; L329"
+          }
+        ],
+        "serves_journeys": [
+          "j14_supplier_master",
+          "j01_create_case",
+          "j18_find_cases"
+        ],
+        "rationale": "Master data with no routing: a Data Form (A1 L23; brd.md L122, L278). Contacts are a child table: one writer, small, parent mirrors cover search (L329).",
+        "build_stage": "generate (Form; editable after publish)"
+      },
+      {
+        "id": "CIQ_Config_Version_A00",
+        "name": "CIQ Config Version",
+        "type": "Form",
+        "flowType": "Form",
+        "from_entity": "F2",
+        "description": "Every configuration version and kind (template, section definition, rule set, ownership, RMES criteria, limits, texts, reminders, settings), plus Release rows holding the full frozen bundle a case pins. Copy-on-write.",
+        "child_tables": [],
+        "serves_journeys": [
+          "j15_configuration",
+          "j01_create_case",
+          "j03_scope_check"
+        ],
+        "rationale": "Stored data with no steps (no four-eyes, A3 L65): a Data Form (brd.md L123, L279). CIQ Config Release is folded into Release rows (L136).",
+        "build_stage": "generate (Form; editable after publish)"
+      },
+      {
+        "id": "CIQ_Section_A00",
+        "name": "CIQ Section",
+        "type": "Form",
+        "flowType": "Form",
+        "from_entity": "F3",
+        "description": "One released section of a case: what was released, why, and for which department. The app twin of the portal section. The K2.1 row carries the component list; K2.1 and BASIC rows carry the search mirrors.",
+        "child_tables": [
+          {
+            "id": "Components",
+            "name": "Components",
+            "embedded": true,
+            "column_id_prefix": "Components_",
+            "step_permission_key": "n/a (Form; no steps)",
+            "writer": "K2.1 row only. CIQ RMM or the sync-service rebuild writes it (L280, L332).",
+            "evidence": "brd.md L124; L280; L332"
+          }
+        ],
+        "serves_journeys": [
+          "j01_create_case",
+          "j03_scope_check",
+          "j05_department_review",
+          "j07_open_point_supplier",
+          "j13_change_request",
+          "j18_find_cases",
+          "j19_sync_service",
+          "j20_reactivate_case"
+        ],
+        "rationale": "Written once per release and later by the component rebuild, with no steps: a Data Form (brd.md L124, L280). Own rows, not a case child table: each row fires X2 and rows are added when RMM holds no case step (L333, C1/C3).",
+        "build_stage": "generate (Form; editable after publish)"
+      },
+      {
+        "id": "CIQ_Scope_Run_A00",
+        "name": "CIQ Scope Run",
+        "type": "Form",
+        "flowType": "Form",
+        "from_entity": "F4",
+        "description": "One run of the scope rules (initial, extension, change notice, additional part, reactivation), with every section's classification including N.A. and the rule and answer behind it. Additions only.",
+        "child_tables": [],
+        "serves_journeys": [
+          "j03_scope_check",
+          "j13_change_request",
+          "j07_open_point_supplier",
+          "j20_reactivate_case"
+        ],
+        "rationale": "Stored data with no steps: a Data Form (brd.md L125, L281). Own rows: runs come from different people at different times (L334, C3).",
+        "build_stage": "generate (Form; editable after publish)"
+      },
+      {
+        "id": "CIQ_RMES_Safety_A00",
+        "name": "CIQ RMES Safety",
+        "type": "Form",
+        "flowType": "Form",
+        "from_entity": "F5",
+        "description": "Safety's RMES sheet for one case: all criteria and findings in one row, with header counts that feed the case gate and an edit lock.",
+        "child_tables": [
+          {
+            "id": "Safety_Criteria",
+            "name": "Criteria",
+            "embedded": true,
+            "column_id_prefix": "Criteria_",
+            "step_permission_key": "n/a (Form; no steps)",
+            "writer": "Safety only, one user at a time (Editing_By / Editing_Since lock, L282).",
+            "evidence": "brd.md L126; L282; L331"
+          },
+          {
+            "id": "Safety_Findings",
+            "name": "Findings",
+            "embedded": true,
+            "column_id_prefix": "Findings_",
+            "step_permission_key": "n/a (Form; no steps)",
+            "writer": "Safety only (L282).",
+            "evidence": "brd.md L126; L282"
+          }
+        ],
+        "serves_journeys": [
+          "j06_rmes_sheet",
+          "j05_department_review",
+          "j10_overall_approval",
+          "j13_change_request"
+        ],
+        "rationale": "Working data with no steps: a Data Form (brd.md L126, L282). A separate Form from Regulatory so Safety and Regulatory can't edit each other (REQ-CFG-004, L331, C4).",
+        "build_stage": "generate (Form; editable after publish)"
+      },
+      {
+        "id": "CIQ_RMES_Regulatory_A00",
+        "name": "CIQ RMES Regulatory",
+        "type": "Form",
+        "flowType": "Form",
+        "from_entity": "F6",
+        "description": "Regulatory's RMES sheet for one case; same shape as CIQ RMES Safety.",
+        "child_tables": [
+          {
+            "id": "Regulatory_Criteria",
+            "name": "Criteria",
+            "embedded": true,
+            "column_id_prefix": "Criteria_",
+            "step_permission_key": "n/a (Form; no steps)",
+            "writer": "Regulatory only (L283).",
+            "evidence": "brd.md L127; L283; L331"
+          },
+          {
+            "id": "Regulatory_Findings",
+            "name": "Findings",
+            "embedded": true,
+            "column_id_prefix": "Findings_",
+            "step_permission_key": "n/a (Form; no steps)",
+            "writer": "Regulatory only (L283).",
+            "evidence": "brd.md L127; L283"
+          }
+        ],
+        "serves_journeys": [
+          "j06_rmes_sheet",
+          "j05_department_review",
+          "j10_overall_approval",
+          "j13_change_request"
+        ],
+        "rationale": "As CIQ RMES Safety, for Regulatory (brd.md L127, L283, L331).",
+        "build_stage": "generate (Form; editable after publish)"
+      },
+      {
+        "id": "CIQ_Internal_Note_A00",
+        "name": "CIQ Internal Note",
+        "type": "Form",
+        "flowType": "Form",
+        "from_entity": "F7",
+        "description": "Internal chat, one message per row. Never visible to suppliers.",
+        "child_tables": [],
+        "serves_journeys": [
+          "j16_internal_chat"
+        ],
+        "rationale": "Stored data with no steps: a Data Form (brd.md L128, L284). One row per message because many people post at any time (L337, C2).",
+        "build_stage": "generate (Form; editable after publish)"
+      },
+      {
+        "id": "CIQ_Audit_Event_A00",
+        "name": "CIQ Audit Event",
+        "type": "Form",
+        "flowType": "Form",
+        "from_entity": "F8",
+        "description": "Who did what and when, on which value and which document. Also notifications, delegations, assignments, section-review marks, scope, configuration, change attempts, cancellations, snapshots and item-created events.",
+        "child_tables": [],
+        "serves_journeys": [
+          "j17_audit_oversight",
+          "j12_cancel_case",
+          "j13_change_request",
+          "j15_configuration",
+          "j09_open_items_checks",
+          "j05_department_review",
+          "j11_final_release",
+          "j19_sync_service"
+        ],
+        "rationale": "Stored data with no steps: a Data Form (brd.md L129, L285). Tamper-evident claim (A3 L66). Target of Z1/Z3/Z4 and source of Z2 (open questions Q1, Q5).",
+        "build_stage": "generate (Form; editable after publish)"
+      }
+    ],
+    "lists": [
+      {
+        "id": "CIQ_Yes_No",
+        "name": "CIQ Yes No",
+        "items": [
+          "Yes",
+          "No"
+        ],
+        "item_source": "domain.value_sets (brd.md L1207)",
+        "used_by": [
+          "CIQ Case Dept_<D>_Active (6)",
+          "CIQ Open Point OP_To_Supplier",
+          "CIQ Change Request Impact_<D> (5)",
+          "Criteria applicability column",
+          "other Yes/No flags kf-data-architect keeps as Selects"
+        ],
+        "populate": "create and populate in the same apply; values in use can't be removed (PART D L1203)"
+      },
+      {
+        "id": "CIQ_Confirm",
+        "name": "CIQ Confirm",
+        "items": [
+          "Confirmed"
+        ],
+        "item_source": "domain.value_sets (brd.md L1208)",
+        "used_by": [
+          "CIQ Case <D>_Review_Confirm lane fields (6)"
+        ],
+        "populate": "create and populate in the same apply; values in use can't be removed (PART D L1203)"
+      },
+      {
+        "id": "CIQ_Department",
+        "name": "CIQ Department",
+        "items": [
+          "RMM",
+          "REG",
+          "SAF",
+          "QM",
+          "MIC",
+          "SUS",
+          "CUS",
+          "LEG"
+        ],
+        "item_source": "domain.value_sets (brd.md L1209)",
+        "used_by": [
+          "CIQ Section lead department",
+          "CIQ Audit Event actor department",
+          "CIQ Internal Note author department"
+        ],
+        "populate": "create and populate in the same apply; values in use can't be removed (PART D L1203)"
+      },
+      {
+        "id": "CIQ_Review_Dept",
+        "name": "CIQ Review Dept",
+        "items": [
+          "REG",
+          "SAF",
+          "QM",
+          "MIC",
+          "SUS",
+          "RMM"
+        ],
+        "item_source": "domain.value_sets (brd.md L1210)",
+        "used_by": [
+          "CIQ Open Point OP_Dept and raised-by department (routing)",
+          "CIQ Section query owner"
+        ],
+        "populate": "create and populate in the same apply; values in use can't be removed (PART D L1203)"
+      },
+      {
+        "id": "CIQ_Decision",
+        "name": "CIQ Decision",
+        "items": [
+          "Approved",
+          "Rejected"
+        ],
+        "item_source": "domain.value_sets (brd.md L1211; brd.md L191)",
+        "used_by": [
+          "CIQ Case SAF/REG internal RMES decision",
+          "CIQ Case Overall_Decision"
+        ],
+        "populate": "create and populate in the same apply; values in use can't be removed (PART D L1203)"
+      },
+      {
+        "id": "CIQ_OP_Kind",
+        "name": "CIQ OP Kind",
+        "items": [
+          "Query",
+          "Document request",
+          "Additional part",
+          "Internal review",
+          "Department review",
+          "Contact update"
+        ],
+        "item_source": "domain.value_sets (brd.md L226-L234; brd.md L1212)",
+        "used_by": [
+          "CIQ Open Point kind"
+        ],
+        "populate": "create and populate in the same apply; values in use can't be removed (PART D L1203)"
+      },
+      {
+        "id": "CIQ_OP_Progress",
+        "name": "CIQ OP Progress",
+        "items": [
+          "Open",
+          "In progress"
+        ],
+        "item_source": "domain.value_sets (brd.md L1213)",
+        "used_by": [
+          "CIQ Open Point progress"
+        ],
+        "populate": "create and populate in the same apply; values in use can't be removed (PART D L1203)"
+      },
+      {
+        "id": "CIQ_OP_Outcome",
+        "name": "CIQ OP Outcome",
+        "items": [
+          "Accepted",
+          "Returned",
+          "Withdrawn"
+        ],
+        "item_source": "domain.value_sets (brd.md L246; brd.md L1214)",
+        "used_by": [
+          "CIQ Open Point outcome",
+          "Rounds outcome column"
+        ],
+        "populate": "create and populate in the same apply; values in use can't be removed (PART D L1203)"
+      },
+      {
+        "id": "CIQ_CR_Outcome",
+        "name": "CIQ CR Outcome",
+        "items": [
+          "Accepted",
+          "Accepted – scope extended",
+          "Refused – after final release",
+          "Refused – not valid"
+        ],
+        "item_source": "domain.value_sets (brd.md L1215)",
+        "used_by": [
+          "CIQ Change Request outcome"
+        ],
+        "populate": "create and populate in the same apply; values in use can't be removed (PART D L1203)"
+      },
+      {
+        "id": "CIQ_Impact_Resolution",
+        "name": "CIQ Impact Resolution",
+        "items": [
+          "No impact confirmed",
+          "Re-assessed",
+          "Finding raised"
+        ],
+        "item_source": "domain.value_sets (brd.md L1216)",
+        "used_by": [
+          "CIQ Change Request <D>_Assessment (5)",
+          "Criteria impact resolution column"
+        ],
+        "populate": "create and populate in the same apply; values in use can't be removed (PART D L1203)"
+      },
+      {
+        "id": "CIQ_Config_Kind",
+        "name": "CIQ Config Kind",
+        "items": [
+          "Template",
+          "Section definition",
+          "Rule set",
+          "Section ownership",
+          "RMES criteria",
+          "Limit set",
+          "Text bundle",
+          "Reminders",
+          "Settings",
+          "Regression set",
+          "Release"
+        ],
+        "item_source": "domain.value_sets (brd.md L123; brd.md L279; brd.md L1217)",
+        "used_by": [
+          "CIQ Config Version kind"
+        ],
+        "populate": "create and populate in the same apply; values in use can't be removed (PART D L1203)"
+      },
+      {
+        "id": "CIQ_Config_State",
+        "name": "CIQ Config State",
+        "items": [
+          "Draft",
+          "Published",
+          "Retired"
+        ],
+        "item_source": "domain.value_sets (brd.md L1218)",
+        "used_by": [
+          "CIQ Config Version state"
+        ],
+        "populate": "create and populate in the same apply; values in use can't be removed (PART D L1203)"
+      },
+      {
+        "id": "CIQ_Release_Stage",
+        "name": "CIQ Release Stage",
+        "items": [
+          "Test",
+          "Live"
+        ],
+        "item_source": "domain.value_sets (brd.md L1219)",
+        "used_by": [
+          "CIQ Config Version release stage (Release rows)"
+        ],
+        "populate": "create and populate in the same apply; values in use can't be removed (PART D L1203)"
+      },
+      {
+        "id": "CIQ_RMES_Part",
+        "name": "CIQ RMES Part",
+        "items": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "item_source": "domain.value_sets (brd.md L1220)",
+        "used_by": [
+          "Criteria part column"
+        ],
+        "populate": "create and populate in the same apply; values in use can't be removed (PART D L1203)"
+      },
+      {
+        "id": "CIQ_RMES_Result",
+        "name": "CIQ RMES Result",
+        "items": [
+          "Available",
+          "Not available",
+          "Plausible",
+          "Implausible",
+          "Listed",
+          "Not listed",
+          "Negative",
+          "Not applicable"
+        ],
+        "item_source": "domain.value_sets (brd.md L1221)",
+        "used_by": [
+          "Criteria result column"
+        ],
+        "populate": "create and populate in the same apply; values in use can't be removed (PART D L1203)"
+      },
+      {
+        "id": "CIQ_AI_State",
+        "name": "CIQ AI State",
+        "items": [
+          "Proposed",
+          "Confirmed",
+          "Discarded"
+        ],
+        "item_source": "domain.value_sets (brd.md L1222)",
+        "used_by": [
+          "Criteria AI state column"
+        ],
+        "populate": "create and populate in the same apply; values in use can't be removed (PART D L1203)"
+      },
+      {
+        "id": "CIQ_Supplier_Kind",
+        "name": "CIQ Supplier Kind",
+        "items": [
+          "Manufacturer",
+          "Distributor",
+          "Trader"
+        ],
+        "item_source": "domain.value_sets (brd.md L1223)",
+        "used_by": [
+          "CIQ Supplier kind"
+        ],
+        "populate": "create and populate in the same apply; values in use can't be removed (PART D L1203)"
+      },
+      {
+        "id": "CIQ_Contact_Role",
+        "name": "CIQ Contact Role",
+        "items": [
+          "Coordinator",
+          "Quality",
+          "Regulatory",
+          "Key account",
+          "Other"
+        ],
+        "item_source": "domain.value_sets (brd.md L1224)",
+        "used_by": [
+          "Contacts role column"
+        ],
+        "populate": "create and populate in the same apply; values in use can't be removed (PART D L1203)"
+      },
+      {
+        "id": "CIQ_Country_Code",
+        "name": "CIQ Country Code",
+        "items": [
+          "AT",
+          "BE",
+          "BG",
+          "HR",
+          "CY",
+          "CZ",
+          "DK",
+          "EE",
+          "FI",
+          "FR",
+          "DE",
+          "GR",
+          "HU",
+          "IE",
+          "IT",
+          "LV",
+          "LT",
+          "LU",
+          "MT",
+          "NL",
+          "PL",
+          "PT",
+          "RO",
+          "SK",
+          "SI",
+          "ES",
+          "SE",
+          "GB",
+          "TR",
+          "CN",
+          "US",
+          "CA"
+        ],
+        "item_source": "PART D L1225 says 'ISO 3166 alpha-2 subset' without naming it. Seeded with the 32-code subset of runs/ciq-digital decision D7 (EU-27, GB, TR, CN, US, CA); append-only, so codes can be added. See decisions.md D8.",
+        "used_by": [
+          "CIQ Supplier country code"
+        ],
+        "populate": "create and populate in the same apply; values in use can't be removed (PART D L1203)"
+      },
+      {
+        "id": "CIQ_Event_Category",
+        "name": "CIQ Event Category",
+        "items": [
+          "Case",
+          "Scope",
+          "Section",
+          "Section review",
+          "Snapshot",
+          "Open point",
+          "RMES",
+          "Change request",
+          "Configuration",
+          "Notification",
+          "Delegation",
+          "Assignment",
+          "Change attempt",
+          "Cancellation",
+          "Access",
+          "Item created"
+        ],
+        "item_source": "domain.value_sets (brd.md L285; brd.md L1226)",
+        "used_by": [
+          "CIQ Audit Event category"
+        ],
+        "populate": "create and populate in the same apply; values in use can't be removed (PART D L1203)"
+      },
+      {
+        "id": "CIQ_Actor_Side",
+        "name": "CIQ Actor Side",
+        "items": [
+          "BDF",
+          "Supplier",
+          "System"
+        ],
+        "item_source": "domain.value_sets (brd.md L1227)",
+        "used_by": [
+          "CIQ Audit Event actor side"
+        ],
+        "populate": "create and populate in the same apply; values in use can't be removed (PART D L1203)"
+      }
+    ],
+    "id_reservations": {
+      "note": "Flow ids are the name-derived ids we expect (name with underscores + _A00); the platform assigns the real ids, read back after generate. List ids carry NO _A00 suffix so display names stay clean (A2 L35). Role ids are stable IR slugs; live role _ids are read back. Step ids are prefixed per flow (CASE_, OPNT_, CHRQ_) so they can't collide with field ids such as OP_Key or CR_Key.",
+      "app_id": "CIQ_Digital_A00",
+      "role_ids": {
+        "Admin": "admin",
+        "User": "user",
+        "CIQ RMM": "ciq_rmm",
+        "CIQ Regulatory Reviewer": "ciq_regulatory_reviewer",
+        "CIQ Safety Reviewer": "ciq_safety_reviewer",
+        "CIQ QM Reviewer": "ciq_qm_reviewer",
+        "CIQ Microbiology Reviewer": "ciq_microbiology_reviewer",
+        "CIQ Sustainability Reviewer": "ciq_sustainability_reviewer",
+        "CIQ Overall Approver": "ciq_overall_approver",
+        "CIQ Business Admin": "ciq_business_admin",
+        "CIQ Reader": "ciq_reader",
+        "CIQ Case Admin": "ciq_case_admin",
+        "CIQ Integration Service": "ciq_integration_service"
+      },
+      "flow_ids": {
+        "CIQ Case": "CIQ_Case_A00",
+        "CIQ Open Point": "CIQ_Open_Point_A00",
+        "CIQ Change Request": "CIQ_Change_Request_A00",
+        "CIQ Supplier": "CIQ_Supplier_A00",
+        "CIQ Config Version": "CIQ_Config_Version_A00",
+        "CIQ Section": "CIQ_Section_A00",
+        "CIQ Scope Run": "CIQ_Scope_Run_A00",
+        "CIQ RMES Safety": "CIQ_RMES_Safety_A00",
+        "CIQ RMES Regulatory": "CIQ_RMES_Regulatory_A00",
+        "CIQ Internal Note": "CIQ_Internal_Note_A00",
+        "CIQ Audit Event": "CIQ_Audit_Event_A00"
+      },
+      "list_ids": {
+        "CIQ Yes No": "CIQ_Yes_No",
+        "CIQ Confirm": "CIQ_Confirm",
+        "CIQ Department": "CIQ_Department",
+        "CIQ Review Dept": "CIQ_Review_Dept",
+        "CIQ Decision": "CIQ_Decision",
+        "CIQ OP Kind": "CIQ_OP_Kind",
+        "CIQ OP Progress": "CIQ_OP_Progress",
+        "CIQ OP Outcome": "CIQ_OP_Outcome",
+        "CIQ CR Outcome": "CIQ_CR_Outcome",
+        "CIQ Impact Resolution": "CIQ_Impact_Resolution",
+        "CIQ Config Kind": "CIQ_Config_Kind",
+        "CIQ Config State": "CIQ_Config_State",
+        "CIQ Release Stage": "CIQ_Release_Stage",
+        "CIQ RMES Part": "CIQ_RMES_Part",
+        "CIQ RMES Result": "CIQ_RMES_Result",
+        "CIQ AI State": "CIQ_AI_State",
+        "CIQ Supplier Kind": "CIQ_Supplier_Kind",
+        "CIQ Contact Role": "CIQ_Contact_Role",
+        "CIQ Country Code": "CIQ_Country_Code",
+        "CIQ Event Category": "CIQ_Event_Category",
+        "CIQ Actor Side": "CIQ_Actor_Side"
+      },
+      "child_table_ids": {
+        "CIQ Supplier / Contacts": {
+          "parent": "CIQ_Supplier_A00",
+          "id": "Contacts",
+          "name": "Contacts",
+          "column_id_prefix": "Contacts_"
+        },
+        "CIQ Open Point / Rounds": {
+          "parent": "CIQ_Open_Point_A00",
+          "id": "Rounds",
+          "name": "Rounds",
+          "column_id_prefix": "Rounds_"
+        },
+        "CIQ Section / Components": {
+          "parent": "CIQ_Section_A00",
+          "id": "Components",
+          "name": "Components",
+          "column_id_prefix": "Components_"
+        },
+        "CIQ RMES Safety / Criteria": {
+          "parent": "CIQ_RMES_Safety_A00",
+          "id": "Safety_Criteria",
+          "name": "Criteria",
+          "column_id_prefix": "Criteria_"
+        },
+        "CIQ RMES Safety / Findings": {
+          "parent": "CIQ_RMES_Safety_A00",
+          "id": "Safety_Findings",
+          "name": "Findings",
+          "column_id_prefix": "Findings_"
+        },
+        "CIQ RMES Regulatory / Criteria": {
+          "parent": "CIQ_RMES_Regulatory_A00",
+          "id": "Regulatory_Criteria",
+          "name": "Criteria",
+          "column_id_prefix": "Criteria_"
+        },
+        "CIQ RMES Regulatory / Findings": {
+          "parent": "CIQ_RMES_Regulatory_A00",
+          "id": "Regulatory_Findings",
+          "name": "Findings",
+          "column_id_prefix": "Findings_"
+        }
+      },
+      "field_prefix_by_flow": {
+        "CIQ_Case_A00": {
+          "prefix": null,
+          "lane_prefix": "<D>_ for D in REG, SAF, QM, MIC, SUS, RMM",
+          "reserved_names": [
+            "Case_Code",
+            "Cycle_No",
+            "Trade_Name",
+            "Main_INCI",
+            "BDF_Material_No",
+            "Supplier_Code",
+            "Owner_RMM",
+            "Case_Contacts_JSON",
+            "Portal_Contact_Ids",
+            "Confirm_Contact_Ids",
+            "Supplier_Contact_Emails",
+            "Dept_REG_Active",
+            "Dept_SAF_Active",
+            "Dept_QM_Active",
+            "Dept_MIC_Active",
+            "Dept_SUS_Active",
+            "Dept_RMM_Active",
+            "RMES_Key",
+            "RMES_Created_At",
+            "Overall_Approval_Required",
+            "Overall_Decision",
+            "Hold_For_Open_Items"
+          ],
+          "rule": "v4 names first (L197-L206, L189, L191), then PART D L733-L782 where it agrees with v4. Material fields are plain Text on the case (no CIQ Raw Material, L132). Contacts are fields, never a child table (L330). Gate and hold counts are plain Number fields written by the acting person's Workbench (A2 L32-L33, e.g. Open_Items_Count, Open_CR_Count, <D>_Open_Count, <D>_RMES_Gaps) read by blank-safe formulas; no aggregates. The step-condition fields above are reserved."
+        },
+        "CIQ_Open_Point_A00": {
+          "prefix": "OP_ for routing and identity",
+          "reserved_names": [
+            "OP_Key",
+            "OP_Kind",
+            "OP_Dept",
+            "OP_To_Supplier",
+            "Awaiting_Response",
+            "Round_No",
+            "Responsible_User",
+            "Portal_Contact_Ids",
+            "Thread_Text"
+          ],
+          "rule": "v4 L244-L251, then PART D L887-L912 where it agrees (one item per point, not per round). Case-scoped records carry the case's text keys Case_Item_Id (the case item _id), Case_Code and Cycle_No (PART D L722-L724, used where v4 is silent). Rounds columns use the Rounds_ prefix (A2 L31)."
+        },
+        "CIQ_Change_Request_A00": {
+          "prefix": "CR_ for identity and outcome; Impact_<D> and <D>_ assessment fields for D in REG, SAF, QM, MIC, SUS",
+          "reserved_names": [
+            "CR_Key",
+            "Impact_REG",
+            "Impact_SAF",
+            "Impact_QM",
+            "Impact_MIC",
+            "Impact_SUS"
+          ],
+          "rule": "v4 L267-L272, then PART D L957-L966. Case-scoped records carry the case's text keys Case_Item_Id (the case item _id), Case_Code and Cycle_No (PART D L722-L724, used where v4 is silent). Y6 fills the case keys it has (Case_Code, Cycle_No); RMM sets Case_Item_Id at Triage."
+        },
+        "CIQ_Supplier_A00": {
+          "prefix": "Supplier_ for company fields",
+          "reserved_names": [
+            "Supplier_Code",
+            "Contact_Portal_Ids_Text",
+            "Pending_Invites"
+          ],
+          "rule": "v4 L278, then PART D L1109. Contacts columns use the Contacts_ prefix (A2 L31). Never 'Country': use Supplier_Country_Code."
+        },
+        "CIQ_Config_Version_A00": {
+          "prefix": "Config_ for version fields; Release_ for Release-row fields",
+          "reserved_names": [
+            "Release_Bundle_JSON"
+          ],
+          "rule": "v4 L279, then PART D L1140 and the Release fields of PART D P5 (L1043-L1048), which v4 folds into Release rows."
+        },
+        "CIQ_Section_A00": {
+          "prefix": "Section_ for section fields",
+          "reserved_names": [
+            "Definition_JSON",
+            "Source_Answers_Rev"
+          ],
+          "rule": "v4 L280 and the X2 set 1:1 with the portal CIQP Section (PART C), then PART D L991-L1012. Case-scoped records carry the case's text keys Case_Item_Id (the case item _id), Case_Code and Cycle_No (PART D L722-L724, used where v4 is silent). Components columns use the Components_ prefix (A2 L31)."
+        },
+        "CIQ_Scope_Run_A00": {
+          "prefix": "Run_ / Scope_",
+          "reserved_names": [],
+          "rule": "v4 L281, then PART D L1067. Case-scoped records carry the case's text keys Case_Item_Id (the case item _id), Case_Code and Cycle_No (PART D L722-L724, used where v4 is silent)."
+        },
+        "CIQ_RMES_Safety_A00": {
+          "prefix": null,
+          "reserved_names": [
+            "RMES_Key",
+            "Result_Case",
+            "Editing_By",
+            "Editing_Since"
+          ],
+          "rule": "v4 L282: one row per case keyed by the case's RMES_Key, a Reference to the case (Result_Case, PART D L1166), header counts (open criteria, open blocking findings), the lock. Case-scoped records carry the case's text keys Case_Item_Id (the case item _id), Case_Code and Cycle_No (PART D L722-L724, used where v4 is silent). Criteria columns use Criteria_, Findings columns use Findings_ (A2 L31)."
+        },
+        "CIQ_RMES_Regulatory_A00": {
+          "prefix": null,
+          "reserved_names": [
+            "RMES_Key",
+            "Result_Case",
+            "Editing_By",
+            "Editing_Since"
+          ],
+          "rule": "Same schema as CIQ RMES Safety (v4 L283)."
+        },
+        "CIQ_Internal_Note_A00": {
+          "prefix": "Note_",
+          "reserved_names": [],
+          "rule": "v4 L284, then PART D L1199 (Note_Key, Case_Code, Cycle_No, Linked_Kind, Linked_Key, Note_Text, Note_Author, Note_Dept, Note_At)."
+        },
+        "CIQ_Audit_Event_A00": {
+          "prefix": "Event_ / Actor_ / Object_",
+          "reserved_names": [],
+          "rule": "v4 L285, then PART D L1092-L1097. Notification and delegation fields included (categories L285)."
+        }
+      },
+      "global_field_rules": [
+        "Never author Name; never name a field Status, Type, Country, Priority, Category, Currency or Project; owner-prefix generic words (A2 L41-L42).",
+        "No aggregates of any kind (A2 L32). Gates and holds: plain Number count fields plus blank-safe formulas; a blank count holds and never deadlocks (A2 L33-L34).",
+        "A child column never reuses a header field id: prefix it with its table's column_id_prefix, same label (A2 L31).",
+        "A field an integration copies has the same type as its portal counterpart (Text, Number, Date, DateTime, Email), never a Select (PART D L733).",
+        "Fields beyond v4 only where PART D gives field-level detail that agrees with v4, or where PART A requires them (Number count fields for gates)."
+      ],
+      "step_prefix_by_flow": {
+        "CIQ_Case_A00": {
+          "prefix": "CASE_",
+          "frozen_by": "A2 L44-L49; brd.md L182-L194",
+          "steps": [
+            {
+              "id": "CASE_S0",
+              "name": "Create case",
+              "kind": "Start",
+              "actor": "CIQ RMM",
+              "actor_role_id": "ciq_rmm",
+              "condition": null,
+              "sla": false,
+              "note": "Start (v4 L184). Initiator: CIQ RMM. The pinned Release row is copied in; the BASIC CIQ Section row is created only after the submit succeeds."
+            },
+            {
+              "id": "CASE_S1",
+              "name": "Waiting for supplier: basic data",
+              "kind": "UserTask",
+              "actor": "CIQ RMM",
+              "actor_role_id": "ciq_rmm",
+              "condition": null,
+              "sla": true,
+              "note": "X1 trigger step name (L344). Y1 approves (Q6 default) or RMM submits by hand. After the K-FA test the owner becomes the Owner_RMM field (L185)."
+            },
+            {
+              "id": "CASE_S2",
+              "name": "Scope check",
+              "kind": "UserTask",
+              "actor": "CIQ RMM",
+              "actor_role_id": "ciq_rmm",
+              "condition": null,
+              "sla": true
+            },
+            {
+              "id": "CASE_S3",
+              "name": "Waiting for supplier: completeness PS-05",
+              "kind": "UserTask",
+              "actor": "CIQ RMM",
+              "actor_role_id": "ciq_rmm",
+              "condition": null,
+              "sla": true,
+              "note": "X4 trigger step name (L345). Y4 records the confirmation and RMES_Created_At, then approves."
+            },
+            {
+              "id": "CASE_PAR",
+              "name": "Part 2 – Beiersdorf review",
+              "kind": "Parallel",
+              "actor": null,
+              "actor_role_id": null,
+              "condition": null,
+              "note": "One-level fork with six single-step branches and a native all-join before the next step (L188; capabilities replay.parallel). Arm name = step name, as in the zz-spike shape that compiled and published.",
+              "branches": [
+                {
+                  "name": "Review – Regulatory",
+                  "steps": [
+                    {
+                      "id": "CASE_B_REG",
+                      "name": "Review – Regulatory",
+                      "kind": "UserTask",
+                      "actor": "CIQ Regulatory Reviewer",
+                      "actor_role_id": "ciq_regulatory_reviewer",
+                      "condition": "Dept_REG_Active = \"Yes\"",
+                      "sla": true,
+                      "writes": "only its own REG_* lane fields; no child tables (L209)",
+                      "note": null
+                    }
+                  ]
+                },
+                {
+                  "name": "Review – Safety",
+                  "steps": [
+                    {
+                      "id": "CASE_B_SAF",
+                      "name": "Review – Safety",
+                      "kind": "UserTask",
+                      "actor": "CIQ Safety Reviewer",
+                      "actor_role_id": "ciq_safety_reviewer",
+                      "condition": "Dept_SAF_Active = \"Yes\"",
+                      "sla": true,
+                      "writes": "only its own SAF_* lane fields; no child tables (L209)",
+                      "note": null
+                    }
+                  ]
+                },
+                {
+                  "name": "Review – QM",
+                  "steps": [
+                    {
+                      "id": "CASE_B_QM",
+                      "name": "Review – QM",
+                      "kind": "UserTask",
+                      "actor": "CIQ QM Reviewer",
+                      "actor_role_id": "ciq_qm_reviewer",
+                      "condition": "Dept_QM_Active = \"Yes\"",
+                      "sla": true,
+                      "writes": "only its own QM_* lane fields; no child tables (L209)",
+                      "note": null
+                    }
+                  ]
+                },
+                {
+                  "name": "Review – Microbiology",
+                  "steps": [
+                    {
+                      "id": "CASE_B_MIC",
+                      "name": "Review – Microbiology",
+                      "kind": "UserTask",
+                      "actor": "CIQ Microbiology Reviewer",
+                      "actor_role_id": "ciq_microbiology_reviewer",
+                      "condition": "Dept_MIC_Active = \"Yes\"",
+                      "sla": true,
+                      "writes": "only its own MIC_* lane fields; no child tables (L209)",
+                      "note": null
+                    }
+                  ]
+                },
+                {
+                  "name": "Review – Sustainability",
+                  "steps": [
+                    {
+                      "id": "CASE_B_SUS",
+                      "name": "Review – Sustainability",
+                      "kind": "UserTask",
+                      "actor": "CIQ Sustainability Reviewer",
+                      "actor_role_id": "ciq_sustainability_reviewer",
+                      "condition": "Dept_SUS_Active = \"Yes\"",
+                      "sla": true,
+                      "writes": "only its own SUS_* lane fields; no child tables (L209)",
+                      "note": null
+                    }
+                  ]
+                },
+                {
+                  "name": "Review – RMM",
+                  "steps": [
+                    {
+                      "id": "CASE_B_RMM",
+                      "name": "Review – RMM",
+                      "kind": "UserTask",
+                      "actor": "CIQ RMM",
+                      "actor_role_id": "ciq_rmm",
+                      "condition": "Dept_RMM_Active = \"Yes\"",
+                      "sla": true,
+                      "writes": "only its own RMM_* lane fields; no child tables (L209)",
+                      "note": "Off by default (Dept_RMM_Active from Settings, L189)."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "CASE_S5",
+              "name": "Open items check – before release request",
+              "kind": "UserTask",
+              "actor": "CIQ RMM",
+              "actor_role_id": "ciq_rmm",
+              "condition": "Hold_For_Open_Items = \"Yes\"",
+              "sla": true,
+              "note": "Runs only if something is open; a blank count also holds (L190; A2 L32-L34). Hold_For_Open_Items is a blank-safe Text formula over the PART A Number count fields (e.g. Open_Items_Count, Open_CR_Count); kf-data-architect owns the formula and its exact name."
+            },
+            {
+              "id": "CASE_S6",
+              "name": "Overall approval",
+              "kind": "UserTask",
+              "actor": "CIQ Overall Approver",
+              "actor_role_id": "ciq_overall_approver",
+              "condition": "Overall_Approval_Required = \"Yes\"",
+              "sla": true,
+              "note": "Off by default; before the PS-11 request (L191; A3 L63)."
+            },
+            {
+              "id": "CASE_S7",
+              "name": "Waiting for supplier: final release PS-11",
+              "kind": "UserTask",
+              "actor": "CIQ RMM",
+              "actor_role_id": "ciq_rmm",
+              "condition": "Overall_Decision != \"Rejected\"",
+              "sla": true,
+              "note": "X5 trigger step name (L346). Skipped if overall-rejected; a blank decision runs the step (PART D L789). Y5 approves, or RMM completes manually with a reason (L192)."
+            },
+            {
+              "id": "CASE_S8",
+              "name": "Open items check – before close",
+              "kind": "UserTask",
+              "actor": "CIQ RMM",
+              "actor_role_id": "ciq_rmm",
+              "condition": "Hold_For_Open_Items = \"Yes\"",
+              "sla": true,
+              "note": "Catches work opened during step 7; normally skipped so completion stays automatic (L193)."
+            },
+            {
+              "id": "CASE_END",
+              "name": "End",
+              "kind": "End",
+              "actor": null,
+              "actor_role_id": null,
+              "condition": null,
+              "note": "Z1 fires on completion (L194)."
+            }
+          ]
+        },
+        "CIQ_Open_Point_A00": {
+          "prefix": "OPNT_",
+          "frozen_by": "A2 L53; brd.md L242-L247",
+          "steps": [
+            {
+              "id": "OPNT_S0",
+              "name": "Raise open point",
+              "kind": "Start",
+              "actor": "CIQ RMM",
+              "actor_role_id": "ciq_rmm",
+              "condition": null,
+              "sla": false,
+              "note": "Start (L244). Initiators: CIQ RMM and the five department Reviewer roles (L237). The Start actor isn't enforced by the platform (LESSONS 18)."
+            },
+            {
+              "id": "OPNT_S1",
+              "name": "Waiting for supplier",
+              "kind": "UserTask",
+              "actor": "CIQ RMM",
+              "actor_role_id": "ciq_rmm",
+              "condition": "OP_To_Supplier = \"Yes\"",
+              "sla": true,
+              "note": "X3 trigger step name (L347). Internal kinds skip it. Y3 approves only while Awaiting_Response = \"Yes\". After the K-FA test the owner becomes Responsible_User (L245)."
+            },
+            {
+              "id": "OPNT_R_REG",
+              "name": "Review – Regulatory",
+              "kind": "UserTask",
+              "actor": "CIQ Regulatory Reviewer",
+              "actor_role_id": "ciq_regulatory_reviewer",
+              "condition": "OP_Dept = \"REG\"",
+              "sla": true,
+              "note": "Sequential conditional steps, not a parallel block: exactly one runs (L246). Return sends the item back to 'Waiting for supplier' (native send-back, L246); Rounds is editable here only."
+            },
+            {
+              "id": "OPNT_R_SAF",
+              "name": "Review – Safety",
+              "kind": "UserTask",
+              "actor": "CIQ Safety Reviewer",
+              "actor_role_id": "ciq_safety_reviewer",
+              "condition": "OP_Dept = \"SAF\"",
+              "sla": true,
+              "note": "Sequential conditional steps, not a parallel block: exactly one runs (L246). Return sends the item back to 'Waiting for supplier' (native send-back, L246); Rounds is editable here only."
+            },
+            {
+              "id": "OPNT_R_QM",
+              "name": "Review – QM",
+              "kind": "UserTask",
+              "actor": "CIQ QM Reviewer",
+              "actor_role_id": "ciq_qm_reviewer",
+              "condition": "OP_Dept = \"QM\"",
+              "sla": true,
+              "note": "Sequential conditional steps, not a parallel block: exactly one runs (L246). Return sends the item back to 'Waiting for supplier' (native send-back, L246); Rounds is editable here only."
+            },
+            {
+              "id": "OPNT_R_MIC",
+              "name": "Review – Microbiology",
+              "kind": "UserTask",
+              "actor": "CIQ Microbiology Reviewer",
+              "actor_role_id": "ciq_microbiology_reviewer",
+              "condition": "OP_Dept = \"MIC\"",
+              "sla": true,
+              "note": "Sequential conditional steps, not a parallel block: exactly one runs (L246). Return sends the item back to 'Waiting for supplier' (native send-back, L246); Rounds is editable here only."
+            },
+            {
+              "id": "OPNT_R_SUS",
+              "name": "Review – Sustainability",
+              "kind": "UserTask",
+              "actor": "CIQ Sustainability Reviewer",
+              "actor_role_id": "ciq_sustainability_reviewer",
+              "condition": "OP_Dept = \"SUS\"",
+              "sla": true,
+              "note": "Sequential conditional steps, not a parallel block: exactly one runs (L246). Return sends the item back to 'Waiting for supplier' (native send-back, L246); Rounds is editable here only."
+            },
+            {
+              "id": "OPNT_R_RMM",
+              "name": "Review – RMM",
+              "kind": "UserTask",
+              "actor": "CIQ RMM",
+              "actor_role_id": "ciq_rmm",
+              "condition": "OP_Dept = \"RMM\"",
+              "sla": true,
+              "note": "Sequential conditional steps, not a parallel block: exactly one runs (L246). Return sends the item back to 'Waiting for supplier' (native send-back, L246); Rounds is editable here only."
+            },
+            {
+              "id": "OPNT_END",
+              "name": "End",
+              "kind": "End",
+              "actor": null,
+              "actor_role_id": null,
+              "condition": null
+            }
+          ]
+        },
+        "CIQ_Change_Request_A00": {
+          "prefix": "CHRQ_",
+          "frozen_by": "A2 L54; brd.md L267-L272",
+          "steps": [
+            {
+              "id": "CHRQ_S0",
+              "name": "Receive change request",
+              "kind": "Start",
+              "actor": "CIQ Integration Service",
+              "actor_role_id": "ciq_integration_service",
+              "condition": null,
+              "sla": false,
+              "note": "Start (L269). Created by Y6 as CIQ Integration Service; CIQ RMM creates it by hand as the fallback. Both are initiators."
+            },
+            {
+              "id": "CHRQ_S1",
+              "name": "Triage",
+              "kind": "UserTask",
+              "actor": "CIQ RMM",
+              "actor_role_id": "ciq_rmm",
+              "condition": null,
+              "sla": true
+            },
+            {
+              "id": "CHRQ_PAR",
+              "name": "Assess impact",
+              "kind": "Parallel",
+              "actor": null,
+              "actor_role_id": null,
+              "condition": null,
+              "note": "One-level fork with five single-step branches and a native all-join (L271). No RMM branch. All five branches are skipped on a refused request (every Impact flag 'No', L270): the all-skipped join must be proven at runtime (K-PAR).",
+              "branches": [
+                {
+                  "name": "Assess – Regulatory",
+                  "steps": [
+                    {
+                      "id": "CHRQ_B_REG",
+                      "name": "Assess – Regulatory",
+                      "kind": "UserTask",
+                      "actor": "CIQ Regulatory Reviewer",
+                      "actor_role_id": "ciq_regulatory_reviewer",
+                      "condition": "Impact_REG = \"Yes\"",
+                      "sla": true,
+                      "writes": "only its own four REG_* assessment fields (L271)"
+                    }
+                  ]
+                },
+                {
+                  "name": "Assess – Safety",
+                  "steps": [
+                    {
+                      "id": "CHRQ_B_SAF",
+                      "name": "Assess – Safety",
+                      "kind": "UserTask",
+                      "actor": "CIQ Safety Reviewer",
+                      "actor_role_id": "ciq_safety_reviewer",
+                      "condition": "Impact_SAF = \"Yes\"",
+                      "sla": true,
+                      "writes": "only its own four SAF_* assessment fields (L271)"
+                    }
+                  ]
+                },
+                {
+                  "name": "Assess – QM",
+                  "steps": [
+                    {
+                      "id": "CHRQ_B_QM",
+                      "name": "Assess – QM",
+                      "kind": "UserTask",
+                      "actor": "CIQ QM Reviewer",
+                      "actor_role_id": "ciq_qm_reviewer",
+                      "condition": "Impact_QM = \"Yes\"",
+                      "sla": true,
+                      "writes": "only its own four QM_* assessment fields (L271)"
+                    }
+                  ]
+                },
+                {
+                  "name": "Assess – Microbiology",
+                  "steps": [
+                    {
+                      "id": "CHRQ_B_MIC",
+                      "name": "Assess – Microbiology",
+                      "kind": "UserTask",
+                      "actor": "CIQ Microbiology Reviewer",
+                      "actor_role_id": "ciq_microbiology_reviewer",
+                      "condition": "Impact_MIC = \"Yes\"",
+                      "sla": true,
+                      "writes": "only its own four MIC_* assessment fields (L271)"
+                    }
+                  ]
+                },
+                {
+                  "name": "Assess – Sustainability",
+                  "steps": [
+                    {
+                      "id": "CHRQ_B_SUS",
+                      "name": "Assess – Sustainability",
+                      "kind": "UserTask",
+                      "actor": "CIQ Sustainability Reviewer",
+                      "actor_role_id": "ciq_sustainability_reviewer",
+                      "condition": "Impact_SUS = \"Yes\"",
+                      "sla": true,
+                      "writes": "only its own four SUS_* assessment fields (L271)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "CHRQ_END",
+              "name": "End",
+              "kind": "End",
+              "actor": null,
+              "actor_role_id": null,
+              "condition": null,
+              "note": "X6 fires on completion (portal session, L272)."
+            }
+          ]
+        }
+      },
+      "page_prefix_by_role": {},
+      "page_rule": "pages = [] and no nav (brd.md L7; A2 L57). Generate with --no-pages."
+    },
+    "er_map": [
+      {
+        "id": "ER01",
+        "kind": "reference",
+        "native_reference": true,
+        "from": "CIQ_RMES_Safety_A00",
+        "from_name": "CIQ RMES Safety",
+        "to": "CIQ_Case_A00",
+        "to_name": "CIQ Case",
+        "ref_holder": "CIQ_RMES_Safety_A00",
+        "via_field": "Result_Case (Reference); hard key RMES_Key = the case's RMES_Key",
+        "cardinality": "N:1 (one live row per case by convention; duplicates voided)",
+        "rationale": "v4 names this Reference: 'keyed by the case's RMES_Key, with a Reference to the case' (L282), and the case Reference feeds the gates and the dashboard (L428). Field name from PART D L1166.",
+        "evidence": "brd.md L282; L331; L428"
+      },
+      {
+        "id": "ER02",
+        "kind": "reference",
+        "native_reference": true,
+        "from": "CIQ_RMES_Regulatory_A00",
+        "from_name": "CIQ RMES Regulatory",
+        "to": "CIQ_Case_A00",
+        "to_name": "CIQ Case",
+        "ref_holder": "CIQ_RMES_Regulatory_A00",
+        "via_field": "Result_Case (Reference); hard key RMES_Key",
+        "cardinality": "N:1 (one live row per case by convention)",
+        "rationale": "Same as ER01 for Regulatory (L283).",
+        "evidence": "brd.md L283; L331; L428"
+      },
+      {
+        "id": "ER03",
+        "kind": "child_table",
+        "native_reference": false,
+        "from": "CIQ_Supplier_A00",
+        "from_name": "CIQ Supplier",
+        "to": "Contacts",
+        "to_name": "Contacts",
+        "ref_holder": "CIQ_Supplier_A00",
+        "cardinality": "1:N (embedded)",
+        "rationale": "CIQ RMM writes rows one at a time, re-reads and merges (L278). Passes the v4 child-table check (L105-L109, L323-L337).",
+        "evidence": "brd.md L122; L278; L329"
+      },
+      {
+        "id": "ER04",
+        "kind": "child_table",
+        "native_reference": false,
+        "from": "CIQ_Open_Point_A00",
+        "from_name": "CIQ Open Point",
+        "to": "Rounds",
+        "to_name": "Rounds",
+        "ref_holder": "CIQ_Open_Point_A00",
+        "cardinality": "1:N (embedded)",
+        "rationale": "Only the owning department writes it, at its own review step (L251). Passes the v4 child-table check (L105-L109, L323-L337).",
+        "evidence": "brd.md L120; L251; L327; A2 L31 (example Rounds_Round_No)"
+      },
+      {
+        "id": "ER05",
+        "kind": "child_table",
+        "native_reference": false,
+        "from": "CIQ_Section_A00",
+        "from_name": "CIQ Section",
+        "to": "Components",
+        "to_name": "Components",
+        "ref_holder": "CIQ_Section_A00",
+        "cardinality": "1:N (embedded) — K2.1 row only",
+        "rationale": "K2.1 row only. CIQ RMM or the sync-service rebuild writes it (L280, L332). Passes the v4 child-table check (L105-L109, L323-L337).",
+        "evidence": "brd.md L124; L280; L332"
+      },
+      {
+        "id": "ER06",
+        "kind": "child_table",
+        "native_reference": false,
+        "from": "CIQ_RMES_Safety_A00",
+        "from_name": "CIQ RMES Safety",
+        "to": "Safety_Criteria",
+        "to_name": "Criteria",
+        "ref_holder": "CIQ_RMES_Safety_A00",
+        "cardinality": "1:N (embedded)",
+        "rationale": "Safety only, one user at a time (Editing_By / Editing_Since lock, L282). Passes the v4 child-table check (L105-L109, L323-L337).",
+        "evidence": "brd.md L126; L282; L331"
+      },
+      {
+        "id": "ER07",
+        "kind": "child_table",
+        "native_reference": false,
+        "from": "CIQ_RMES_Safety_A00",
+        "from_name": "CIQ RMES Safety",
+        "to": "Safety_Findings",
+        "to_name": "Findings",
+        "ref_holder": "CIQ_RMES_Safety_A00",
+        "cardinality": "1:N (embedded)",
+        "rationale": "Safety only (L282). Passes the v4 child-table check (L105-L109, L323-L337).",
+        "evidence": "brd.md L126; L282"
+      },
+      {
+        "id": "ER08",
+        "kind": "child_table",
+        "native_reference": false,
+        "from": "CIQ_RMES_Regulatory_A00",
+        "from_name": "CIQ RMES Regulatory",
+        "to": "Regulatory_Criteria",
+        "to_name": "Criteria",
+        "ref_holder": "CIQ_RMES_Regulatory_A00",
+        "cardinality": "1:N (embedded)",
+        "rationale": "Regulatory only (L283). Passes the v4 child-table check (L105-L109, L323-L337).",
+        "evidence": "brd.md L127; L283; L331"
+      },
+      {
+        "id": "ER09",
+        "kind": "child_table",
+        "native_reference": false,
+        "from": "CIQ_RMES_Regulatory_A00",
+        "from_name": "CIQ RMES Regulatory",
+        "to": "Regulatory_Findings",
+        "to_name": "Findings",
+        "ref_holder": "CIQ_RMES_Regulatory_A00",
+        "cardinality": "1:N (embedded)",
+        "rationale": "Regulatory only (L283). Passes the v4 child-table check (L105-L109, L323-L337).",
+        "evidence": "brd.md L127; L283"
+      }
+    ],
+    "text_key_links": [
+      {
+        "id": "TK01",
+        "kind": "text_key",
+        "native_reference": false,
+        "from": "CIQ_Case_A00",
+        "from_name": "CIQ Case",
+        "to": "CIQ_Supplier_A00",
+        "to_name": "CIQ Supplier",
+        "ref_holder": "CIQ_Case_A00",
+        "via_field": "Supplier_Code (+ supplier name mirror)",
+        "cardinality": "N:1",
+        "rationale": "v4 lists 'supplier code and name' as plain case fields that X1 reads (L184, L197). No Reference is named; the Workbench picks the supplier from CIQ Supplier and writes the code. kf-data-architect must NOT turn it into a Reference (D6).",
+        "evidence": "brd.md L184; L197; L291"
+      },
+      {
+        "id": "TK02",
+        "kind": "text_key",
+        "native_reference": false,
+        "from": "CIQ_Case_A00",
+        "from_name": "CIQ Case",
+        "to": "CIQ_Config_Version_A00",
+        "to_name": "CIQ Config Version",
+        "ref_holder": "CIQ_Case_A00",
+        "via_field": "pinned release row id + hash + manifest copy",
+        "cardinality": "N:1 (Release row)",
+        "rationale": "'Pinned release: row id, hash and manifest copy' (L198). A frozen copy, never a live link, so a pinned release can't change (L279).",
+        "evidence": "brd.md L184; L198; L279"
+      },
+      {
+        "id": "TK03",
+        "kind": "text_key",
+        "native_reference": false,
+        "from": "CIQ_Section_A00",
+        "from_name": "CIQ Section",
+        "to": "CIQ_Case_A00",
+        "to_name": "CIQ Case",
+        "ref_holder": "CIQ_Section_A00",
+        "via_field": "Case_Item_Id, Case_Code, Cycle_No",
+        "cardinality": "N:1",
+        "rationale": "Each section row is one portal section; X2 copies the keys 1:1 (L292). v4 names no Reference.",
+        "evidence": "brd.md L280; L292; PART D L991"
+      },
+      {
+        "id": "TK04",
+        "kind": "text_key",
+        "native_reference": false,
+        "from": "CIQ_Section_A00",
+        "from_name": "CIQ Section",
+        "to": "CIQ_Scope_Run_A00",
+        "to_name": "CIQ Scope Run",
+        "ref_holder": "CIQ_Section_A00",
+        "via_field": "Scope_Run_Key",
+        "cardinality": "N:1",
+        "rationale": "The run that released the section (L280).",
+        "evidence": "brd.md L280; PART D L991"
+      },
+      {
+        "id": "TK05",
+        "kind": "text_key",
+        "native_reference": false,
+        "from": "CIQ_Section_A00",
+        "from_name": "CIQ Section",
+        "to": "CIQ_Config_Version_A00",
+        "to_name": "CIQ Config Version",
+        "ref_holder": "CIQ_Section_A00",
+        "via_field": "section definition key + Definition_JSON and hash copy",
+        "cardinality": "N:1",
+        "rationale": "Definitions reach the section as copies (L280; PART D L1139).",
+        "evidence": "brd.md L280"
+      },
+      {
+        "id": "TK06",
+        "kind": "text_key",
+        "native_reference": false,
+        "from": "CIQ_Scope_Run_A00",
+        "from_name": "CIQ Scope Run",
+        "to": "CIQ_Case_A00",
+        "to_name": "CIQ Case",
+        "ref_holder": "CIQ_Scope_Run_A00",
+        "via_field": "Case_Item_Id, Case_Code, Cycle_No",
+        "cardinality": "N:1 (1-4 runs per case)",
+        "rationale": "v4 L334; PART D L1061.",
+        "evidence": "brd.md L281; L334"
+      },
+      {
+        "id": "TK07",
+        "kind": "text_key",
+        "native_reference": false,
+        "from": "CIQ_Scope_Run_A00",
+        "from_name": "CIQ Scope Run",
+        "to": "CIQ_Config_Version_A00",
+        "to_name": "CIQ Config Version",
+        "ref_holder": "CIQ_Scope_Run_A00",
+        "via_field": "rule-set version (+ pinned release row id)",
+        "cardinality": "N:1",
+        "rationale": "Rule-set version recorded per run (L281).",
+        "evidence": "brd.md L281"
+      },
+      {
+        "id": "TK08",
+        "kind": "text_key",
+        "native_reference": false,
+        "from": "CIQ_Open_Point_A00",
+        "from_name": "CIQ Open Point",
+        "to": "CIQ_Case_A00",
+        "to_name": "CIQ Case",
+        "ref_holder": "CIQ_Open_Point_A00",
+        "via_field": "Case_Item_Id, Case_Code, Cycle_No",
+        "cardinality": "N:1",
+        "rationale": "v4 names no Reference on the open point. PART D's Point_Case Reference existed only to feed native cross-flow aggregates, which PART A forbids (A2 L32). See D6.",
+        "evidence": "brd.md L120; L250; L32"
+      },
+      {
+        "id": "TK09",
+        "kind": "text_key",
+        "native_reference": false,
+        "from": "CIQ_Open_Point_A00",
+        "from_name": "CIQ Open Point",
+        "to": "CIQ_Section_A00",
+        "to_name": "CIQ Section",
+        "ref_holder": "CIQ_Open_Point_A00",
+        "via_field": "reference tuple section key; new-section key for an additional part",
+        "cardinality": "N:0..1",
+        "rationale": "The questionnaire reference (section, field, row, or document) and the additional part's new section (L244).",
+        "evidence": "brd.md L244; PART D L874-L878"
+      },
+      {
+        "id": "TK10",
+        "kind": "text_key",
+        "native_reference": false,
+        "from": "CIQ_Change_Request_A00",
+        "from_name": "CIQ Change Request",
+        "to": "CIQ_Case_A00",
+        "to_name": "CIQ Case",
+        "ref_holder": "CIQ_Change_Request_A00",
+        "via_field": "Case_Code + Cycle_No (from Y6), Case_Item_Id (set at Triage)",
+        "cardinality": "N:1",
+        "rationale": "v4 names no Reference. PART D's CR_Case was set only at triage because Y6 can't fill a Reference (PART D L947). See D6.",
+        "evidence": "brd.md L121; L270; PART D L947"
+      },
+      {
+        "id": "TK11",
+        "kind": "text_key",
+        "native_reference": false,
+        "from": "CIQ_Change_Request_A00",
+        "from_name": "CIQ Change Request",
+        "to": "CIQ_Scope_Run_A00",
+        "to_name": "CIQ Scope Run",
+        "ref_holder": "CIQ_Change_Request_A00",
+        "via_field": "Scope_Run_Key",
+        "cardinality": "1:0..1",
+        "rationale": "A change notice writes a new scope run (L270).",
+        "evidence": "brd.md L270"
+      },
+      {
+        "id": "TK12",
+        "kind": "text_key",
+        "native_reference": false,
+        "from": "CIQ_RMES_Safety_A00",
+        "from_name": "CIQ RMES Safety",
+        "to": "CIQ_Open_Point_A00",
+        "to_name": "CIQ Open Point",
+        "ref_holder": "CIQ_RMES_Safety_A00",
+        "via_field": "Findings linked open point key (OP_Key)",
+        "cardinality": "N:0..1",
+        "rationale": "'linked open point' on each finding (L282). Same for CIQ RMES Regulatory.",
+        "evidence": "brd.md L282"
+      },
+      {
+        "id": "TK13",
+        "kind": "text_key",
+        "native_reference": false,
+        "from": "CIQ_Internal_Note_A00",
+        "from_name": "CIQ Internal Note",
+        "to": "CIQ_Case_A00",
+        "to_name": "CIQ Case",
+        "ref_holder": "CIQ_Internal_Note_A00",
+        "via_field": "Case_Code + Cycle_No; Linked_Kind + Linked_Key for the optional section / open point / finding link",
+        "cardinality": "N:1",
+        "rationale": "v4 L284: case, optional link (section, open point, finding).",
+        "evidence": "brd.md L284; PART D L1197"
+      },
+      {
+        "id": "TK14",
+        "kind": "text_key",
+        "native_reference": false,
+        "from": "CIQ_Audit_Event_A00",
+        "from_name": "CIQ Audit Event",
+        "to": "CIQ_Case_A00",
+        "to_name": "CIQ Case",
+        "ref_holder": "CIQ_Audit_Event_A00",
+        "via_field": "Case_Code (or CONFIG), Case_Item_Id; Object_Kind + Object_Key + Object_Item_Id for the owning record",
+        "cardinality": "N:1",
+        "rationale": "Events point to the record that owns the data, by key (L285; PART D L1081).",
+        "evidence": "brd.md L285"
+      },
+      {
+        "id": "TK15",
+        "kind": "text_key",
+        "native_reference": false,
+        "from": "CIQ_Case_A00",
+        "from_name": "CIQ Case",
+        "to": "CIQ_Case_A00",
+        "to_name": "CIQ Case",
+        "ref_holder": "CIQ_Case_A00",
+        "via_field": "same Case_Code, Cycle_No + 1",
+        "cardinality": "1:0..1 (reactivation)",
+        "rationale": "A reactivation is a new case item with the same case code and the next cycle (journey j20; PART D L857).",
+        "evidence": "brd.md L197; L281"
+      }
+    ],
+    "external_links": [
+      {
+        "id": "XL01",
+        "app_flow": "CIQ_Case_A00",
+        "portal_flows": [
+          "CIQP Request",
+          "CIQP Completeness Confirmation",
+          "CIQP Final Release"
+        ],
+        "integrations": [
+          "X1",
+          "X4",
+          "X5",
+          "Y1",
+          "Y4",
+          "Y5"
+        ],
+        "authored_here": false,
+        "evidence": "brd.md L119; L291-L298"
+      },
+      {
+        "id": "XL02",
+        "app_flow": "CIQ_Open_Point_A00",
+        "portal_flows": [
+          "CIQP Query (one per round)"
+        ],
+        "integrations": [
+          "X3",
+          "X3b",
+          "Y3"
+        ],
+        "authored_here": false,
+        "evidence": "brd.md L120; L293; L297"
+      },
+      {
+        "id": "XL03",
+        "app_flow": "CIQ_Change_Request_A00",
+        "portal_flows": [
+          "CIQP Change Request (in)",
+          "CIQP Notice (out)"
+        ],
+        "integrations": [
+          "Y6",
+          "X6"
+        ],
+        "authored_here": false,
+        "evidence": "brd.md L121; L295; L299"
+      },
+      {
+        "id": "XL04",
+        "app_flow": "CIQ_Section_A00",
+        "portal_flows": [
+          "CIQP Section"
+        ],
+        "integrations": [
+          "X2",
+          "read of answers and uploads through flow sharing"
+        ],
+        "authored_here": false,
+        "evidence": "brd.md L124; L292; L300"
+      },
+      {
+        "id": "XL05",
+        "app_flow": "CIQ_Supplier_A00",
+        "portal_flows": [
+          "Supplier_Code and contact portal user ids on every portal item"
+        ],
+        "integrations": [],
+        "authored_here": false,
+        "evidence": "brd.md L122"
+      }
+    ],
+    "journey_flow_map": [
+      {
+        "journey": "j01_create_case",
+        "persona": "p_rmm",
+        "roles": [
+          "CIQ RMM"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_Supplier_A00",
+            "flow_name": "CIQ Supplier",
+            "action": "read: pick the supplier; take Supplier_Code and the contacts' portal user ids"
+          },
+          {
+            "flow": "CIQ_Config_Version_A00",
+            "flow_name": "CIQ Config Version",
+            "action": "read: the current Release row (row id, hash, manifest copy)"
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "flow_name": "CIQ Case",
+            "action": "initiate with material, supplier, contacts, owner, due dates, pinned release",
+            "step": "Create case",
+            "role": "CIQ RMM"
+          },
+          {
+            "flow": "CIQ_Section_A00",
+            "flow_name": "CIQ Section",
+            "action": "create the BASIC row only after the case submit succeeds (X2 to the portal)",
+            "role": "CIQ RMM"
+          },
+          {
+            "flow": "CIQ_Audit_Event_A00",
+            "flow_name": "CIQ Audit Event",
+            "action": "create an item-created event"
+          }
+        ]
+      },
+      {
+        "journey": "j02_basic_data",
+        "persona": "p_rmm",
+        "roles": [
+          "CIQ RMM",
+          "CIQ Integration Service"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_Case_A00",
+            "flow_name": "CIQ Case",
+            "action": "wait for basic data; Y1 records it and approves (Q6), or RMM submits by hand",
+            "step": "Waiting for supplier: basic data",
+            "role": "CIQ RMM"
+          }
+        ]
+      },
+      {
+        "journey": "j03_scope_check",
+        "persona": "p_rmm",
+        "roles": [
+          "CIQ RMM"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_Section_A00",
+            "flow_name": "CIQ Section",
+            "action": "read the BASIC row (answers read through portal sharing)"
+          },
+          {
+            "flow": "CIQ_Open_Point_A00",
+            "flow_name": "CIQ Open Point",
+            "action": "optional: raise a Query on BASIC if incomplete",
+            "step": "Raise open point",
+            "role": "CIQ RMM"
+          },
+          {
+            "flow": "CIQ_Scope_Run_A00",
+            "flow_name": "CIQ Scope Run",
+            "action": "create the scope run (every section incl. N.A.)",
+            "role": "CIQ RMM"
+          },
+          {
+            "flow": "CIQ_Section_A00",
+            "flow_name": "CIQ Section",
+            "action": "create one row per Mandatory or Optional section (X2)",
+            "role": "CIQ RMM"
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "flow_name": "CIQ Case",
+            "action": "set Dept_<D>_Active and RMES_Key; submit",
+            "step": "Scope check",
+            "role": "CIQ RMM"
+          }
+        ]
+      },
+      {
+        "journey": "j04_completeness",
+        "persona": "p_rmm",
+        "roles": [
+          "CIQ RMM",
+          "CIQ Integration Service"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_Case_A00",
+            "flow_name": "CIQ Case",
+            "action": "wait for PS-05; Y4 records the confirmation and RMES_Created_At, then approves",
+            "step": "Waiting for supplier: completeness PS-05",
+            "role": "CIQ RMM"
+          }
+        ]
+      },
+      {
+        "journey": "j05_department_review",
+        "persona": "p_reg_reviewer",
+        "roles": [
+          "CIQ Regulatory Reviewer",
+          "CIQ Safety Reviewer",
+          "CIQ QM Reviewer",
+          "CIQ Microbiology Reviewer",
+          "CIQ Sustainability Reviewer",
+          "CIQ RMM"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_Section_A00",
+            "flow_name": "CIQ Section",
+            "action": "read the sections the department leads"
+          },
+          {
+            "flow": "CIQ_Open_Point_A00",
+            "flow_name": "CIQ Open Point",
+            "action": "raise open points as needed",
+            "step": "Raise open point"
+          },
+          {
+            "flow": "CIQ_RMES_Safety_A00",
+            "flow_name": "CIQ RMES Safety",
+            "action": "SAF only: fill the RMES sheet (j06)"
+          },
+          {
+            "flow": "CIQ_RMES_Regulatory_A00",
+            "flow_name": "CIQ RMES Regulatory",
+            "action": "REG only: fill the RMES sheet (j06)"
+          },
+          {
+            "flow": "CIQ_Audit_Event_A00",
+            "flow_name": "CIQ Audit Event",
+            "action": "create assignment / delegation / section-review-mark events"
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "flow_name": "CIQ Case",
+            "action": "write the department's count fields, sign off its own lane (SAF/REG also the RMES decision); submit",
+            "step": "Review – <Dept> (branch of Part 2 – Beiersdorf review)",
+            "role": "the department's Reviewer role (CIQ RMM for the RMM branch)"
+          }
+        ]
+      },
+      {
+        "journey": "j06_rmes_sheet",
+        "persona": "p_saf_reviewer",
+        "roles": [
+          "CIQ Safety Reviewer",
+          "CIQ Regulatory Reviewer"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_Case_A00",
+            "flow_name": "CIQ Case",
+            "action": "read RMES_Key"
+          },
+          {
+            "flow": "CIQ_RMES_Safety_A00",
+            "flow_name": "CIQ RMES Safety",
+            "action": "Safety: create the case's single row (Reference to the case), take the lock, fill Criteria and Findings, lift header counts",
+            "role": "CIQ Safety Reviewer"
+          },
+          {
+            "flow": "CIQ_RMES_Regulatory_A00",
+            "flow_name": "CIQ RMES Regulatory",
+            "action": "Regulatory: the same on its own Form",
+            "role": "CIQ Regulatory Reviewer"
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "flow_name": "CIQ Case",
+            "action": "record the internal RMES decision on the own lane",
+            "step": "Review – Safety / Review – Regulatory"
+          }
+        ]
+      },
+      {
+        "journey": "j07_open_point_supplier",
+        "persona": "p_reg_reviewer",
+        "roles": [
+          "CIQ Regulatory Reviewer",
+          "CIQ Safety Reviewer",
+          "CIQ QM Reviewer",
+          "CIQ Microbiology Reviewer",
+          "CIQ Sustainability Reviewer",
+          "CIQ RMM",
+          "CIQ Integration Service"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_Open_Point_A00",
+            "flow_name": "CIQ Open Point",
+            "action": "initiate with kind, owner department, to-supplier Yes, reference, question, justification, responsible person, due dates",
+            "step": "Raise open point",
+            "role": "a department Reviewer role or CIQ RMM"
+          },
+          {
+            "flow": "CIQ_Section_A00",
+            "flow_name": "CIQ Section",
+            "action": "additional part only: create its row (RMM or the sync service)"
+          },
+          {
+            "flow": "CIQ_Scope_Run_A00",
+            "flow_name": "CIQ Scope Run",
+            "action": "additional part only: record an additional-part run"
+          },
+          {
+            "flow": "CIQ_Open_Point_A00",
+            "flow_name": "CIQ Open Point",
+            "action": "X3 sends the current round; Y3 copies the answer and approves",
+            "step": "Waiting for supplier",
+            "role": "CIQ RMM"
+          },
+          {
+            "flow": "CIQ_Open_Point_A00",
+            "flow_name": "CIQ Open Point",
+            "action": "Accepted / Withdrawn ends the item; Return appends to Rounds and sends the item back",
+            "step": "Review – <owning Dept>",
+            "role": "the owning department's role"
+          },
+          {
+            "flow": "CIQ_Open_Point_A00",
+            "flow_name": "CIQ Open Point",
+            "action": "complete",
+            "step": "End"
+          }
+        ]
+      },
+      {
+        "journey": "j08_internal_points",
+        "persona": "p_rmm",
+        "roles": [
+          "CIQ RMM",
+          "CIQ Regulatory Reviewer",
+          "CIQ Safety Reviewer",
+          "CIQ QM Reviewer",
+          "CIQ Microbiology Reviewer",
+          "CIQ Sustainability Reviewer"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_Open_Point_A00",
+            "flow_name": "CIQ Open Point",
+            "action": "initiate an internal kind (OP_To_Supplier = No)",
+            "step": "Raise open point"
+          },
+          {
+            "flow": "CIQ_Open_Point_A00",
+            "flow_name": "CIQ Open Point",
+            "action": "skipped",
+            "step": "Waiting for supplier"
+          },
+          {
+            "flow": "CIQ_Open_Point_A00",
+            "flow_name": "CIQ Open Point",
+            "action": "review and close",
+            "step": "Review – <owning Dept>"
+          },
+          {
+            "flow": "CIQ_Open_Point_A00",
+            "flow_name": "CIQ Open Point",
+            "action": "complete",
+            "step": "End"
+          }
+        ]
+      },
+      {
+        "journey": "j09_open_items_checks",
+        "persona": "p_rmm",
+        "roles": [
+          "CIQ RMM"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_Open_Point_A00",
+            "flow_name": "CIQ Open Point",
+            "action": "resolve leftover Department review / Contact update points"
+          },
+          {
+            "flow": "CIQ_Audit_Event_A00",
+            "flow_name": "CIQ Audit Event",
+            "action": "override: create an audited event with the reason"
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "flow_name": "CIQ Case",
+            "action": "act only when Hold_For_Open_Items = Yes",
+            "step": "Open items check – before release request / Open items check – before close",
+            "role": "CIQ RMM"
+          }
+        ]
+      },
+      {
+        "journey": "j10_overall_approval",
+        "persona": "p_overall_approver",
+        "roles": [
+          "CIQ Overall Approver"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_RMES_Safety_A00",
+            "flow_name": "CIQ RMES Safety",
+            "action": "read"
+          },
+          {
+            "flow": "CIQ_RMES_Regulatory_A00",
+            "flow_name": "CIQ RMES Regulatory",
+            "action": "read"
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "flow_name": "CIQ Case",
+            "action": "approve only if every required RMES decision is Approved; or reject with a neutral closing text",
+            "step": "Overall approval",
+            "role": "CIQ Overall Approver"
+          }
+        ]
+      },
+      {
+        "journey": "j11_final_release",
+        "persona": "p_rmm",
+        "roles": [
+          "CIQ RMM",
+          "CIQ Integration Service"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_Case_A00",
+            "flow_name": "CIQ Case",
+            "action": "X5 sends the single release request; Y5 approves, or RMM completes manually with a reason",
+            "step": "Waiting for supplier: final release PS-11",
+            "role": "CIQ RMM"
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "flow_name": "CIQ Case",
+            "action": "only if something opened",
+            "step": "Open items check – before close",
+            "role": "CIQ RMM"
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "flow_name": "CIQ Case",
+            "action": "complete; Z1 runs",
+            "step": "End"
+          },
+          {
+            "flow": "CIQ_Audit_Event_A00",
+            "flow_name": "CIQ Audit Event",
+            "action": "Z1 creates the notification event"
+          }
+        ]
+      },
+      {
+        "journey": "j12_cancel_case",
+        "persona": "p_rmm",
+        "roles": [
+          "CIQ RMM",
+          "CIQ Case Admin",
+          "CIQ Integration Service"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_Audit_Event_A00",
+            "flow_name": "CIQ Audit Event",
+            "action": "create the Cancellation event; Z2 sends the neutral e-mail (Q5)",
+            "role": "CIQ RMM / CIQ Case Admin"
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "flow_name": "CIQ Case",
+            "action": "native Reject at an RMM step; in Part 2 the Case Admin rejects through the admin route (flow Admin set after generate)",
+            "role": "CIQ RMM / CIQ Case Admin"
+          },
+          {
+            "flow": "CIQ_Open_Point_A00",
+            "flow_name": "CIQ Open Point",
+            "action": "end the case's open points (admin route)",
+            "role": "CIQ Case Admin"
+          },
+          {
+            "flow": "CIQ_Change_Request_A00",
+            "flow_name": "CIQ Change Request",
+            "action": "end the case's open change requests (admin route)",
+            "role": "CIQ Case Admin"
+          },
+          {
+            "flow": "CIQ_Audit_Event_A00",
+            "flow_name": "CIQ Audit Event",
+            "action": "the sync service snapshots and withdraws open portal items (close sweep)",
+            "role": "CIQ Integration Service"
+          }
+        ]
+      },
+      {
+        "journey": "j13_change_request",
+        "persona": "p_rmm",
+        "roles": [
+          "CIQ RMM",
+          "CIQ Integration Service",
+          "CIQ Regulatory Reviewer",
+          "CIQ Safety Reviewer",
+          "CIQ QM Reviewer",
+          "CIQ Microbiology Reviewer",
+          "CIQ Sustainability Reviewer"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_Change_Request_A00",
+            "flow_name": "CIQ Change Request",
+            "action": "created by Y6, or by RMM by hand",
+            "step": "Receive change request",
+            "role": "CIQ Integration Service / CIQ RMM"
+          },
+          {
+            "flow": "CIQ_Audit_Event_A00",
+            "flow_name": "CIQ Audit Event",
+            "action": "after PS-11: create a change-attempt event"
+          },
+          {
+            "flow": "CIQ_Scope_Run_A00",
+            "flow_name": "CIQ Scope Run",
+            "action": "change notice: create a run (additions only)"
+          },
+          {
+            "flow": "CIQ_Section_A00",
+            "flow_name": "CIQ Section",
+            "action": "change notice: create rows for new sections"
+          },
+          {
+            "flow": "CIQ_Open_Point_A00",
+            "flow_name": "CIQ Open Point",
+            "action": "change notice: raise a Department-review point per new section's lead department"
+          },
+          {
+            "flow": "CIQ_Change_Request_A00",
+            "flow_name": "CIQ Change Request",
+            "action": "set impact flags and the supplier-safe outcome; submit",
+            "step": "Triage",
+            "role": "CIQ RMM"
+          },
+          {
+            "flow": "CIQ_RMES_Safety_A00",
+            "flow_name": "CIQ RMES Safety",
+            "action": "re-assessment if impacted"
+          },
+          {
+            "flow": "CIQ_RMES_Regulatory_A00",
+            "flow_name": "CIQ RMES Regulatory",
+            "action": "re-assessment if impacted"
+          },
+          {
+            "flow": "CIQ_Change_Request_A00",
+            "flow_name": "CIQ Change Request",
+            "action": "each impacted department writes its four fields",
+            "step": "Assess – <Dept> (branch of Assess impact)",
+            "role": "the department's Reviewer role"
+          },
+          {
+            "flow": "CIQ_Change_Request_A00",
+            "flow_name": "CIQ Change Request",
+            "action": "complete; X6 sends the notice",
+            "step": "End"
+          }
+        ]
+      },
+      {
+        "journey": "j14_supplier_master",
+        "persona": "p_rmm",
+        "roles": [
+          "CIQ RMM"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_Supplier_A00",
+            "flow_name": "CIQ Supplier",
+            "action": "create or edit the supplier and its Contacts rows (one at a time, re-read, merge)",
+            "role": "CIQ RMM"
+          }
+        ]
+      },
+      {
+        "journey": "j15_configuration",
+        "persona": "p_business_admin",
+        "roles": [
+          "CIQ Business Admin"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_Config_Version_A00",
+            "flow_name": "CIQ Config Version",
+            "action": "create new version rows (copy-on-write) and a Release row with the full bundle and hash",
+            "role": "CIQ Business Admin"
+          },
+          {
+            "flow": "CIQ_Audit_Event_A00",
+            "flow_name": "CIQ Audit Event",
+            "action": "create a configuration event per publish"
+          }
+        ]
+      },
+      {
+        "journey": "j16_internal_chat",
+        "persona": "p_rmm",
+        "roles": [
+          "CIQ RMM",
+          "CIQ Regulatory Reviewer",
+          "CIQ Safety Reviewer",
+          "CIQ QM Reviewer",
+          "CIQ Microbiology Reviewer",
+          "CIQ Sustainability Reviewer",
+          "CIQ Overall Approver",
+          "CIQ Business Admin",
+          "CIQ Reader",
+          "CIQ Case Admin"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_Case_A00",
+            "flow_name": "CIQ Case",
+            "action": "read the case to discuss"
+          },
+          {
+            "flow": "CIQ_Internal_Note_A00",
+            "flow_name": "CIQ Internal Note",
+            "action": "post a message (case, optional link, text, author, department, time)"
+          }
+        ]
+      },
+      {
+        "journey": "j17_audit_oversight",
+        "persona": "p_reader",
+        "roles": [
+          "CIQ Reader",
+          "CIQ RMM"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_Audit_Event_A00",
+            "flow_name": "CIQ Audit Event",
+            "action": "read events of a case or of configuration"
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "flow_name": "CIQ Case",
+            "action": "read"
+          }
+        ]
+      },
+      {
+        "journey": "j18_find_cases",
+        "persona": "p_rmm",
+        "roles": [
+          "CIQ RMM",
+          "CIQ Regulatory Reviewer",
+          "CIQ Safety Reviewer",
+          "CIQ QM Reviewer",
+          "CIQ Microbiology Reviewer",
+          "CIQ Sustainability Reviewer",
+          "CIQ Reader"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_Section_A00",
+            "flow_name": "CIQ Section",
+            "action": "search the K2.1 / BASIC mirrors and Components rows"
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "flow_name": "CIQ Case",
+            "action": "open the matching cases"
+          }
+        ]
+      },
+      {
+        "journey": "j19_sync_service",
+        "persona": "p_integration_service",
+        "roles": [
+          "CIQ Integration Service"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_Case_A00",
+            "flow_name": "CIQ Case",
+            "action": "read (PDF render, sweep triggers); never acts on a step after Start"
+          },
+          {
+            "flow": "CIQ_Section_A00",
+            "flow_name": "CIQ Section",
+            "action": "create rows (X2 fallback) and rebuild Components",
+            "role": "CIQ Integration Service"
+          },
+          {
+            "flow": "CIQ_Audit_Event_A00",
+            "flow_name": "CIQ Audit Event",
+            "action": "create audit, snapshot and notification events",
+            "role": "CIQ Integration Service"
+          }
+        ]
+      },
+      {
+        "journey": "j20_reactivate_case",
+        "persona": "p_rmm",
+        "roles": [
+          "CIQ RMM"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_Audit_Event_A00",
+            "flow_name": "CIQ Audit Event",
+            "action": "read the section snapshots of the cancelled cycle"
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "flow_name": "CIQ Case",
+            "action": "initiate a new item with the same Case_Code and Cycle_No + 1",
+            "step": "Create case",
+            "role": "CIQ RMM"
+          },
+          {
+            "flow": "CIQ_Scope_Run_A00",
+            "flow_name": "CIQ Scope Run",
+            "action": "create a reactivation run"
+          },
+          {
+            "flow": "CIQ_Section_A00",
+            "flow_name": "CIQ Section",
+            "action": "create rows with the previous answers as prefill"
+          }
+        ]
+      },
+      {
+        "journey": "j21_supplier_portal_side",
+        "persona": "p_supplier",
+        "roles": [],
+        "in_app_scope": false,
+        "path": [],
+        "note": "Portal only (CIQ_Supplier_Portal_A00); returns to the app through Y1, Y3, Y4, Y5, Y6. No app flow, role or access."
+      }
+    ],
+    "build_order": [
+      {
+        "seq": 1,
+        "layer": "lists",
+        "artifacts": [
+          "CIQ Yes No",
+          "CIQ Confirm",
+          "CIQ Department",
+          "CIQ Review Dept",
+          "CIQ Decision",
+          "CIQ OP Kind",
+          "CIQ OP Progress",
+          "CIQ OP Outcome",
+          "CIQ CR Outcome",
+          "CIQ Impact Resolution",
+          "CIQ Config Kind",
+          "CIQ Config State",
+          "CIQ Release Stage",
+          "CIQ RMES Part",
+          "CIQ RMES Result",
+          "CIQ AI State",
+          "CIQ Supplier Kind",
+          "CIQ Contact Role",
+          "CIQ Country Code",
+          "CIQ Event Category",
+          "CIQ Actor Side"
+        ],
+        "rationale": "Selects need populated lists. Ids without _A00 (A2 L35). Create and populate in the same apply."
+      },
+      {
+        "seq": 2,
+        "layer": "roles",
+        "artifacts": [
+          "CIQ RMM",
+          "CIQ Regulatory Reviewer",
+          "CIQ Safety Reviewer",
+          "CIQ QM Reviewer",
+          "CIQ Microbiology Reviewer",
+          "CIQ Sustainability Reviewer",
+          "CIQ Overall Approver",
+          "CIQ Business Admin",
+          "CIQ Reader",
+          "CIQ Case Admin",
+          "CIQ Integration Service"
+        ],
+        "rationale": "Steps and grants reference them. Reuse Admin and User; never recreate them."
+      },
+      {
+        "seq": 3,
+        "layer": "flow shells (engine PASS 1)",
+        "artifacts": [
+          "CIQ Case",
+          "CIQ Open Point",
+          "CIQ Change Request",
+          "CIQ Supplier",
+          "CIQ Config Version",
+          "CIQ Section",
+          "CIQ Scope Run",
+          "CIQ RMES Safety",
+          "CIQ RMES Regulatory",
+          "CIQ Internal Note",
+          "CIQ Audit Event"
+        ],
+        "rationale": "The engine creates every shell before any body, so ER01/ER02 never dangle by id."
+      },
+      {
+        "seq": 4,
+        "layer": "masters (Forms, no outgoing Reference)",
+        "artifacts": [
+          "CIQ Supplier (+ Contacts)",
+          "CIQ Config Version"
+        ],
+        "depends_on": [
+          "lists"
+        ],
+        "rationale": "Text-key targets of the case; nothing they hold depends on another flow."
+      },
+      {
+        "seq": 5,
+        "layer": "case process",
+        "artifacts": [
+          "CIQ Case (Part 2 – Beiersdorf review parallel block, hold/gate formulas over Number count fields)"
+        ],
+        "depends_on": [
+          "lists",
+          "roles"
+        ],
+        "rationale": "Referenced natively by both RMES Forms (ER01, ER02), so it comes before them. Must be complete at generate: a published Process can't be edited (LESSONS 1b)."
+      },
+      {
+        "seq": 6,
+        "layer": "other processes",
+        "artifacts": [
+          "CIQ Open Point (+ Rounds)",
+          "CIQ Change Request (Assess impact parallel block)"
+        ],
+        "depends_on": [
+          "lists",
+          "roles"
+        ],
+        "rationale": "Only text keys to the case. Complete at generate."
+      },
+      {
+        "seq": 7,
+        "layer": "case-scoped Forms",
+        "artifacts": [
+          "CIQ Section (+ Components)",
+          "CIQ Scope Run",
+          "CIQ RMES Safety (+ Criteria, Findings; Reference to CIQ Case)",
+          "CIQ RMES Regulatory (+ Criteria, Findings; Reference to CIQ Case)",
+          "CIQ Internal Note",
+          "CIQ Audit Event"
+        ],
+        "depends_on": [
+          "CIQ Case"
+        ],
+        "rationale": "ER01/ER02 point at CIQ Case. CIQ Audit Event is the target of Z1, Z3 and Z4."
+      },
+      {
+        "seq": 8,
+        "layer": "permissions and grants",
+        "artifacts": [
+          "flow members and initiators",
+          "per-step field permissions (child tables by table key only)"
+        ],
+        "depends_on": [
+          "all flows",
+          "roles"
+        ],
+        "rationale": "Keyed by role id. Finish with a re-grant pass for 423 locks (LESSONS 16)."
+      },
+      {
+        "seq": 9,
+        "layer": "intra-app automations",
+        "artifacts": [
+          "Z1",
+          "Z2",
+          "Z3",
+          "Z4"
+        ],
+        "depends_on": [
+          "CIQ Case",
+          "CIQ Open Point",
+          "CIQ Audit Event"
+        ],
+        "rationale": "Only Z1-Z4 (A2 L38). App Builder creates them incomplete; they are finished over REST. X/Y are documentation only."
+      },
+      {
+        "seq": 10,
+        "layer": "pages and nav",
+        "artifacts": [],
+        "rationale": "None. Generate with --no-pages: a page auto-grant turns readers into editors (A2 L57; brd.md L7)."
+      },
+      {
+        "seq": 11,
+        "layer": "after generate (REST / by hand, outside the IR)",
+        "artifacts": [
+          "Send-back and Reject switches per step (L412-L415)",
+          "flow Admin for CIQ Case Admin (L416)",
+          "SLA durations (L417)",
+          "field-assigned owners after K-FA (L418)",
+          "Editable-implies-InitiateItems resets (A2 L56)",
+          "complete Z1-Z4 over REST; switch them on in the builder (L397-L399)"
+        ],
+        "rationale": "App Builder can't express these (A2 L56; L411-L418). The portal session builds X1-X6 and Y1/Y3-Y6."
+      }
+    ],
+    "flow_build_sequence": [
+      {
+        "seq": 1,
+        "name": "CIQ Supplier",
+        "id": "CIQ_Supplier_A00",
+        "type": "Form"
+      },
+      {
+        "seq": 2,
+        "name": "CIQ Config Version",
+        "id": "CIQ_Config_Version_A00",
+        "type": "Form"
+      },
+      {
+        "seq": 3,
+        "name": "CIQ Case",
+        "id": "CIQ_Case_A00",
+        "type": "Process"
+      },
+      {
+        "seq": 4,
+        "name": "CIQ Open Point",
+        "id": "CIQ_Open_Point_A00",
+        "type": "Process"
+      },
+      {
+        "seq": 5,
+        "name": "CIQ Change Request",
+        "id": "CIQ_Change_Request_A00",
+        "type": "Process"
+      },
+      {
+        "seq": 6,
+        "name": "CIQ Section",
+        "id": "CIQ_Section_A00",
+        "type": "Form"
+      },
+      {
+        "seq": 7,
+        "name": "CIQ Scope Run",
+        "id": "CIQ_Scope_Run_A00",
+        "type": "Form"
+      },
+      {
+        "seq": 8,
+        "name": "CIQ RMES Safety",
+        "id": "CIQ_RMES_Safety_A00",
+        "type": "Form"
+      },
+      {
+        "seq": 9,
+        "name": "CIQ RMES Regulatory",
+        "id": "CIQ_RMES_Regulatory_A00",
+        "type": "Form"
+      },
+      {
+        "seq": 10,
+        "name": "CIQ Internal Note",
+        "id": "CIQ_Internal_Note_A00",
+        "type": "Form"
+      },
+      {
+        "seq": 11,
+        "name": "CIQ Audit Event",
+        "id": "CIQ_Audit_Event_A00",
+        "type": "Form"
+      }
+    ],
+    "deferred_grafts": [],
+    "deferred_grafts_note": "None. PART A forbids aggregates (A2 L32), so the gates and holds are plain Number count fields and formulas that compile at generate. A native cross-flow count would come back only as a REST graft after a builder-made aggregate is proven (L404, L407).",
+    "pages": [],
+    "hard_rules": [
+      {
+        "id": "HR01",
+        "owner": "all",
+        "rule": "Exactly 11 flows (Processes CIQ Case, CIQ Open Point, CIQ Change Request; Forms CIQ Supplier, CIQ Config Version, CIQ Section, CIQ Scope Run, CIQ RMES Safety, CIQ RMES Regulatory, CIQ Internal Note, CIQ Audit Event), 7 embedded child tables, 2 native References (ER01, ER02), 21 lists, 11 custom roles plus Admin and User reused. No portal (CIQP) flow, no 'CIQ ZZ Spike' flow, no CIQ Raw Material / Case Contact / Supplier Contact / Component / Config Release / per-round / Item Register flow. Every flow and list name starts with 'CIQ '.",
+        "evidence": "brd.md L3, L8, L13, L113-L150; A2 L43; BR-003, BR-013, BR-024"
+      },
+      {
+        "id": "HR02",
+        "owner": "kf-workflow-designer",
+        "rule": "Step ids, names, kinds, owners and conditions exactly as id_reservations.step_prefix_by_flow, byte-exact with the en-dash U+2013. First and last steps unconditioned. 'Part 2 – Beiersdorf review' is one Parallel step with six single-step branches; 'Assess impact' is one Parallel step with five. The six Open Point review steps are sequential conditional steps (exactly one runs), not a parallel block. No explicit Reject/Cancel steps (native reject and send-back, LESSONS 13). Every human step carries an SLA; durations are set by BDF after generate. No step is assigned to CIQ Integration Service after Start.",
+        "evidence": "A2 L44-L58; brd.md L182-L272; BR-014, BR-017, BR-028"
+      },
+      {
+        "id": "HR03",
+        "owner": "kf-data-architect",
+        "rule": "Field names per id_reservations.field_prefix_by_flow and global_field_rules. Native References only ER01 and ER02 (Result_Case on both RMES Forms); every other link is a Text key (text_key_links) and must NOT become a Reference. Child tables use the reserved child_table_ids and display names; columns use the column_id_prefix. Author the 21 lists with the reserved list ids (no _A00) and items. The reserved step-condition fields (Dept_<D>_Active, OP_To_Supplier, OP_Dept, Impact_<D>, Overall_Approval_Required, Overall_Decision, Hold_For_Open_Items) must exist with values that match the conditions.",
+        "evidence": "A2 L29-L42; brd.md L189-L192, L245-L246, L271"
+      },
+      {
+        "id": "HR04",
+        "owner": "kf-security-designer",
+        "rule": "Initiators: CIQ Case = CIQ RMM; CIQ Open Point = CIQ RMM and the five Reviewer roles; CIQ Change Request = CIQ Integration Service and CIQ RMM. Name the trade-off that Editable on a Process grants InitiateItems (A2 L56; LESSONS 18). CIQ RMES Safety editable by CIQ Safety Reviewer only, CIQ RMES Regulatory by CIQ Regulatory Reviewer only. Child-table step permissions by table key only. Flow Admin for CIQ Case Admin and no-Delete members are post-generate items. Every role in journey_flow_map must be able to read each flow on its path.",
+        "evidence": "A2 L30, L55-L56; brd.md L237, L269, L278-L285; open questions Q3, Q4, Q7"
+      },
+      {
+        "id": "HR05",
+        "owner": "kf-experience-designer",
+        "rule": "pages = [], no nav, no cards, no custom UI. The generate passes --no-pages.",
+        "evidence": "brd.md L7; A2 L57"
+      },
+      {
+        "id": "HR06",
+        "owner": "kf-integration-analyst",
+        "rule": "automations: Z1 (CIQ Case completed → PDF, e-mails, notification event in CIQ Audit Event), Z2 (Cancellation event in CIQ Audit Event → neutral e-mail, Q5), Z3 (CIQ Case SLA breach → CIQ Audit Event), Z4 (CIQ Open Point SLA breach → CIQ Audit Event). X1-X6 and Y1/Y3-Y6 are documentation only; never point an automation at a CIQP flow. A Form-source automation omits source.on.",
+        "evidence": "A2 L36-L39; brd.md L289-L301; open questions Q1, Q5"
+      }
+    ],
+    "risks": [
+      {
+        "id": "AR01",
+        "owner": "kf-workflow-designer / kf-verifier",
+        "risk": "A parallel block whose branches are all skipped: 'Assess impact' on every refused change request (all Impact flags 'No', L270), and Part 2 if no department is active. Runtime fork/join is still being tested (A2 L28, K-PAR). If an all-skipped join doesn't advance, the item hangs.",
+        "evidence": "brd.md L28, L188, L270-L271"
+      },
+      {
+        "id": "AR02",
+        "owner": "kf-workflow-designer",
+        "risk": "Return on CIQ Open Point is a native send-back from a review step to 'Waiting for supplier'; whether a send-back re-fires X3 is K-09h (fallback X3b on ItemSentBack). Send-back must be on only at the review steps (L414).",
+        "evidence": "brd.md L246, L381, L414"
+      }
+    ],
+    "coverage": {
+      "entities_mapped": "11/11 (P1-P3, F1-F8)",
+      "child_tables_mapped": "7/7",
+      "journeys_with_path": "20/20 in scope; j21 is portal-side and out of scope",
+      "roles": "13 (11 custom + Admin, User); every custom role serves at least one journey; Admin and User serve none by design (A3)",
+      "personas_to_roles": "11 internal/system personas → 11 custom roles 1:1; p_supplier → no app role",
+      "orphan_masters": "none: CIQ Supplier is the case's supplier (TK01); CIQ Config Version is pinned by the case and feeds sections and runs (TK02, TK05, TK07)",
+      "lists": "21/21 domain value sets",
+      "step_names": "every PART A step name reserved once per flow, byte-exact"
+    }
+  }
+}

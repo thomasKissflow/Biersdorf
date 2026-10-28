@@ -1,0 +1,324 @@
+[
+ {
+  "verdict": "FIX-FIRST",
+  "issues": [
+   {
+    "severity": "must-fix",
+    "issue": "Gate formula fields are treated as writable step inputs. StepForm and the write guard would render and send Start_Gate, <D>_Gate and Open_Items_Gate_Release/_Close.",
+    "evidence": "WORKBENCH-DESIGN.md:805 says StepForm 'renders inputs for a step's Mandatory and Editable fields from permsAt(step)'. §4.2 STEPS.perms and §4.5 isWritableAt are built straight from field_permissions. In the spec these gates are Mandatory at their steps (spec:security.field_permissions.CIQ_Case_A00.CASE_B_SAF.SAF_Gate = Mandatory; …CASE_S5.Open_Items_Gate_Release; …CIQ_Open_Point_A00.OPNT_S0.Start_Gate), and they are formulas (spec:data_model.flows.CIQ_Case_A00.fields[SAF_Gate].formula). A formula write that comes back as 050313 also hits §7.2 line 508 (isFieldRefusal → markKwbRefused), which falsely sends the whole step to the K-WB fallback for the session. Whether a formula write is refused live is [unverified].",
+    "fix": "In the generator, mark FIELDS with formula as computed. Make isWritableAt/assertWritable return false for them, and have StepForm and KwbFallback show them read-only (server value plus the client-mirror explanation). Keep them only in the submitStep Mandatory/gate check (§7.3 step 3). Add a T0 unit test: assertWritable(CASE_B_SAF, ['SAF_Gate']) throws, and a StepForm snapshot shows no input for any formula field."
+   },
+   {
+    "severity": "must-fix",
+    "issue": "OPNT_S1 has no Workbench path when a reviewer raises a supplier point. RaisePointDialog sets Responsible_User = the raiser, and the planned K-FA switch assigns OPNT_S1 from Responsible_User. The OPNT_S1 task (the manual Y3 record) then lands with a reviewer, but every OPNT_S1 surface is limited to RMM.",
+    "evidence": "spec:workflow.meta.after_generate_switches.other_after_generate[2] reads 'CASE_S1 -> Owner_RMM, OPNT_S1 -> Responsible_User' (also brd:L245, L915). WORKBENCH-DESIGN.md:895 sets 'Responsible_User = me'. My work (L689) lists OPNT_S1 for RMM only. The review queue (L844) filters to CASE_B_/OPNT_R_/CHRQ_B_ steps, so a reviewer's OPNT_S1 task appears nowhere. The point-detail action (L913) is labelled 'OPNT_S1 (RMM)', and actsAt in §5.3 is role-based. The harness already models this (L1146, kfa=on).",
+    "fix": "Gate step actions on task possession (the TaskVM from getMyTasksItems), not on ownerRole. Show any OPNT_S1 task the user holds in a 'Record supplier response (manual)' group in My work and in the reviewer queue, and allow the S1 panel for whoever holds the task. Alternatively, agree with Thomas that Responsible_User for a supplier point defaults to the case's Owner_RMM. Add a harness P1 scenario: kfa=on, user=jo raises a SAF supplier point, then jo records the manual response."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "F8 rows can be edited through createFormRow's re-apply step, which breaks the design's own 'never edit an F8 row' invariant. The guard test would also block it, so a partly kept F8 row has no defined recovery. Because the cancel flow stops when its F8 row is not verified, a cancel then dead-ends.",
+    "evidence": "WORKBENCH-DESIGN.md:600 (createFormRow: 'Re-apply any missing fields with updateFormRow (up to 3 times)') against L45 (ground rule 9: never edit an F8 row) and L650 ('No F8 update or delete exists in the code (guard test)'). §7.7 L619: if the Cancellation row is not verified, the reject is not sent.",
+    "fix": "Give createFormRow an option of { reapply: false } for CIQ_Audit_Event_A00. When an F8 row is missing fields, write one new F8 row (Action_Code '<code>.correction', Object_Key = the first Event_Key) and verify it. Never update the first row. For the cancel flow, treat a verified correction row as verified. Add both cases to the audit.ts tests."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "Withdraw at OPNT_R_<D> leaves the step's Mandatory review fields blank, so submitStep blocks it. A point that was already withdrawn at OPNT_S1 also has no fitting action when it reaches R_<D>.",
+    "evidence": "spec:security.field_permissions.CIQ_Open_Point_A00.OPNT_R_REG makes Reviewed_By, Reviewed_By_Email and Reviewed_At Mandatory (same at every R_*). WORKBENCH-DESIGN.md:909 Withdraw sets only Outcome_Reason, a Rounds row and OP_Outcome. Accept (L908) sets Reviewed_*. L915: an OPNT_S1 withdrawal 'still routes to R_<OP_Dept>', but the R_* actions are only Accept, Withdraw and Return.",
+    "fix": "Have Withdraw also set Reviewed_By = me, Reviewed_By_Email and Reviewed_At = now. At R_<D>, when OP_Outcome is already 'Withdrawn', offer only 'Confirm withdrawal' (Reviewed_*, a Rounds row with Withdrawn, then submit) and hide Accept and Return. Extend the T2 builder tests and harness S21 to cover the R-step submit."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "Change requests are linked to cases by an undefined key. Case_Item_Id on a CR is blank until Triage, so filtering CRs by Case_Item_Id misses every untriaged and manual CR, both in the case bundle and in openCrCount (Open_CR_Count, which feeds the S5/S8 holds).",
+    "evidence": "spec:architecture.text_key_links[TK10] reads 'Case_Code + Cycle_No (from Y6), Case_Item_Id (set at Triage)'. Case_Item_Id is missing from spec:security.field_permissions.CIQ_Change_Request_A00.CHRQ_S0 and is Mandatory only at CHRQ_S1. WORKBENCH-DESIGN.md:460 says 'filtered by Case_Item_Id', and L663 openCrCount says only 'open CRs of the case'. The CR_Open_Num formula counts a blank CR_Outcome as open (spec:data_model.flows.CIQ_Change_Request_A00.fields[CR_Open_Num]).",
+    "fix": "In map.ts, define crBelongsTo(case) = Case_Item_Id == case._id OR (Case_Item_Id blank AND Case_Code == case.Case_Code AND Cycle_No == case.Cycle_No). Use it in useCaseBundle, openCrCount and laneOpenCount. Alternatively, state in the design that untriaged CRs are excluded per BRD R19 (brd:L995) and label the count that way."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "The design never defines when a count is 'complete'. A count built from the 'mine+tasks' read rung (or the F8 index) can look complete and write a value that is too low, so the gate passes wrongly. That is exactly what WB-5 is meant to prevent.",
+    "evidence": "WORKBENCH-DESIGN.md:57 (WB-5), L655 ('Each takes the readable items plus their read quality'), L408 (list quality: 'admin'|'viewer'|'mine+tasks'). Nothing ties confidence to the list quality. The gates are server formulas over these Workbench-written numbers (spec:data_model.flows.CIQ_Case_A00.fields[SAF_Gate].formula; brd:L32).",
+    "fix": "State the rule outright: confidence = 'complete' only when every list the count depends on came from rung 1 (admin) or a verified viewer rung, and every matched item has readQuality 'full' or 'row' with Open_Num/CR_Open_Num present. 'mine+tasks' or index-only always gives 'partial'. Add a counts.ts unit test for this."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "At CASE_S7, a partial count refresh leaves the stale S5 counts on the case. If S5 wrote 0/0, Hold_For_Open_Items = 'No', CASE_S8 is skipped, and the case completes even though items opened during S6/S7 (the residual risk R-02). At S7 the design fails open.",
+    "evidence": "WORKBENCH-DESIGN.md:813 (S7: 'Refresh counts first') and L673 (on partial 'the write is refused'). Open_Items_Count and Open_CR_Count are Editable at S7 (spec:security.field_permissions.CIQ_Case_A00.CASE_S7). The S8 condition is Hold_For_Open_Items = 'Yes' (spec:workflow.processes.CIQ_Case_A00.steps[8].condition), and the Hold formula returns 'Yes' on blank (spec:data_model.flows.CIQ_Case_A00.fields[Hold_For_Open_Items].formula). R-02: spec:coherence.risks[R-02].",
+    "fix": "When the S7 refresh is partial, CLEAR Open_Items_Count and Open_CR_Count (writeVerified with CLEAR) before the submit, so the hold formula gives 'Yes' and S8 runs. Show 'counts could not be confirmed; the close check will run'. Add this to harness S26."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "The Overall approver cannot follow its spec journey. The design blocks every RMES read for non-editors and ignores the rule that a later Department-review decision takes precedence.",
+    "evidence": "spec:architecture.journey_flow_map[j10_overall_approval].path[0..1] says read CIQ_RMES_Safety_A00 / CIQ_RMES_Regulatory_A00. spec:security.data_scope.rule: 'isolation is by write grant only (the other department reads)'. EXP-HR3 (spec:experience.hard_rules[2]) applies to surfaces 'that use native page bindings', which the Workbench does not use. Yet WORKBENCH-DESIGN.md:43 and L931 deny any read. L973 checks only <D>_RMES_Decision, while brd:L788 adds 'with any later Department-review decision taking precedence' (Late_Decision is Editable at OPNT_R_REG/SAF in spec:security.field_permissions.CIQ_Open_Point_A00).",
+    "fix": "Add a read-only RMES summary for the approver on the S6 screen (header counts, criteria results, findings; no edit, no lock). Narrow ground rule 7 to editing surfaces. Compute the effective SAF/REG decision as the Late_Decision of the newest accepted 'Department review' point for that department, if one exists, otherwise <D>_RMES_Decision. Extend the BR-035 unit test and harness S25."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "CASE_S5 has a dead end. If an active lane reads incomplete after the join (for example, lane values lost under K-19P), the S5 extra check blocks the submit for good: the lane fields are ReadOnly at S5 and no recovery path is defined.",
+    "evidence": "WORKBENCH-DESIGN.md:812 requires 'every active lane complete' before S5 submits. The <D>_* lane fields are only Editable/Mandatory at CASE_B_<D> (spec:security.field_permissions.CIQ_Case_A00.CASE_S5 lists none of them). The spec's recovery is a 'Department review' point whose accepted outcome counts as that department's completion, copied into Late_Completions_Text (brd:L930; Late_Completions_Text is Editable at CASE_S5).",
+    "fix": "Let a lane check pass when either (a) <D>_Review_Confirm = Confirmed and <D>_Completed_At is set, or (b) an accepted Department-review OP with OP_Dept = D exists for the case and its completion is recorded in Late_Completions_Text. Offer 'Raise department review for <D>' from the S5 panel."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "Raising an 'Additional part' point has no section path. Reviewers can pick that kind, but nothing creates the F3 section, the F4 run, or New_Section_Item_Key, and reviewers can't write F3 anyway.",
+    "evidence": "spec:architecture.journey_flow_map[j07_open_point_supplier].path[1..2]: 'additional part only: create its row (RMM or the sync service)' plus an additional-part run. spec:security.roles.ciq_safety_reviewer.flows.CIQ_Section_A00 = V. New_Section_Item_Key is Editable at OPNT_S0 (spec:security.field_permissions.CIQ_Open_Point_A00.OPNT_S0). WORKBENCH-DESIGN.md:887-902 never mentions F3, F4 or New_Section_Item_Key.",
+    "fix": "Either remove 'Additional part' from the dialog for the MVP and say so, or: (a) when RMM raises it, create the F4 run (Scope_Trigger 'Additional part') and the F3 row (Section_Origin 'Additional', Added_Later 'Yes', Created_By_Key = OP_Key) before submitting the point, and set New_Section_Item_Key; (b) when a reviewer raises it, put a 'Section needed for additional part' card in RMM's My work."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "'Accepted – scope extended' is a stretch goal, but the Triage panel would still offer it as a CR_Outcome value. Choosing it without the F4 run, F3 rows and Department-review points records an outcome whose side effects never happened.",
+    "evidence": "WORKBENCH-DESIGN.md:833-836 (stretch) against L825 (CR_Outcome is an input). The list is spec:data_model.flows.CIQ_CR_Outcome.items[1]. BR-053 (spec:domain.business_rules[BR-053]) requires the run, the sections and the points.",
+    "fix": "Hide or disable 'Accepted – scope extended' in the CHRQ_S1 select until T1 delivers the stretch. Add a unit test that the Triage options exclude it while the feature flag is off."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "The writeVerified target { kind: 'admin' } writes through the admin route, which ignores step permissions, and the design never restricts what it may write. The spec says Case Admin only rejects and writes no fields, and D35 depends on nothing else writing the case during Part 2.",
+    "evidence": "WORKBENCH-DESIGN.md:495 ('rung-1 only, Case Admin paths'); the local guard at L502 runs only for kind 'task'. SPIKES.md:143 shows the admin route writes any field regardless of step permission [verified]. brd:L838 (Part D): 'Case Admin only rejects; it writes no fields'. dec:L482 (D35): 'nothing else writes the case during Part 2'. SEC-HR2 (spec:security.hard_rules[1]).",
+    "fix": "Drop the 'admin' write target. If one is ever needed, give it an explicit allow-list in generated.ts (empty for CIQ_Case_A00) and a guard test that fails on updateAdminItem outside kf/sdk.ts."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "The manual S3 record stamps Completeness_At and RMES_Created_At with 'now'. Y4 sets both from the supplier's Confirmed_At, so 'now' records the time of data entry rather than the supplier's confirmation.",
+    "evidence": "WORKBENCH-DESIGN.md:811 ('Mandatory, now'). brd:L1302 (Y4: 'Completeness_At and RMES_Created_At ← Confirmed_At'); brd:L752-753.",
+    "fix": "Add a required 'Supplier confirmed at' DateTime input (default now, editable, no ms) and write that value to both fields. Show 'manual record' next to it. The harness checks that the value written equals the input."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "The 'after final release' test for CR triage depends on Final_Release_At, which the manual S7 panel leaves optional. A case past S7 (for example at S8) with that field blank is not treated as released, so a CR after PS-11 is not forced to 'Refused – after final release' (BR-052).",
+    "evidence": "WORKBENCH-DESIGN.md:828 ('the case has Final_Release_At, or is Completed') and L813 (S7 'Optional Final_Release_*'). Final_Release_At is Editable, not Mandatory, at CASE_S7 (spec:security.field_permissions.CIQ_Case_A00.CASE_S7). BR-052: spec:domain.business_rules[BR-052].",
+    "fix": "Make Final_Release_At required on the S7 manual panel (client rule, as 'supplier released at'). Also treat 'current step is CASE_S8 or the case is Completed after S7' as released. Add CR3-at-S8 to harness S27."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "A failed Form create can leave the user's single per-user draft open. That draft then blocks every later F3, F7 and F8 create by the same user, including the F8 Cancellation row that the cancel flow needs.",
+    "evidence": "SPIKES.md:158: a Form create opens the user's single draft_<userId>, so parallel creates collide (409 / 404 on submit) [verified]. WORKBENCH-DESIGN.md:596-600 (createFormRow) has no settle or discard step, unlike createProcessItem at L594.",
+    "fix": "Add the createProcessItem settle logic to createFormRow: if submit fails or times out, page getItems by keyField. If the row is absent, call discardItem on the draft and rethrow, and surface a failed discard. Add a unit test plus a harness mode where the Form submit fails."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "For D = RMM, the lane count formula points at fields that do not exist (Impact_RMM, RMM_Assessment), so it does not use real ids.",
+    "evidence": "WORKBENCH-DESIGN.md:664: '…plus CRs of the case with Impact_<D> = Yes and a blank <D>_Assessment', applied to every lane including B_RMM (L815, L856). CIQ_Change_Request_A00 has Impact_REG/SAF/QM/MIC/SUS and REG..SUS_Assessment only (spec:data_model.flows.CIQ_Change_Request_A00.fields).",
+    "fix": "Define laneOpenCount(case, 'RMM') = open OPs with OP_Dept/Raised_By_Dept = RMM (Contact update excluded), with no CR term. Generate the per-department CR field map from FIELDS so a missing id fails the build. Add a test."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "Blocker 4 of the department completion gate (a section that D leads with no 'Section reviewed' mark) is dropped entirely, although only its staleness part depends on the unreadable answer revisions (K-14).",
+    "evidence": "brd:L809-L817 item 4. WORKBENCH-DESIGN.md:868 ('Section review marks: informational only') and L664. The design itself writes the marks as F8 'Section review' rows (L645), and reviewers can read F8 (spec:security.roles.ciq_*_reviewer.flows.CIQ_Audit_Event_A00 = E).",
+    "fix": "Keep 'every section D leads has at least one Section review F8 row for this case and cycle' as a client blocker, and drop only the Source_Answers_Rev staleness comparison, labelled as such. If Thomas prefers informational only, record that as a WB decision with his name."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "Several backend claims cite 'the contract' / 'Backend contract §n', which is not a file in the project and has no citation key. They cannot be checked.",
+    "evidence": "WORKBENCH-DESIGN.md:62 ('Backend contract §5'), L444 ('§2.2 of the contract'), L585 ('contract §8'), L651, L665 ('contract §6.1'), L915 ('contract §8'), L1462 ('contract §6.4'). The §0.1 key table (L13-21) has no 'contract' key, and no such file exists under the project root.",
+    "fix": "Add the contract file's path to §0.1 and cite file:line. Otherwise replace each claim with the matching spec JSON path or brd line, or tag it [unverified]."
+   },
+   {
+    "severity": "nice",
+    "issue": "Rule_Set_Version (Mandatory at S2) has no defined source when the scope check is manual.",
+    "evidence": "spec:security.field_permissions.CIQ_Case_A00.CASE_S2.Rule_Set_Version = Mandatory. WORKBENCH-DESIGN.md:64 (WB-12, manual evaluator) and L810 (writes Rule_Set_Version) never say what value goes in.",
+    "fix": "Write the pinned release's 'Rule set' Config_Key/Version_Label if the manifest has one, otherwise the literal 'none (manual-wb-1)'. Use the same value in F4.Rule_Set_Version."
+   },
+   {
+    "severity": "nice",
+    "issue": "Two step panels describe fields loosely enough to include fields that are ReadOnly at that step, which would trip the local guard.",
+    "evidence": "WORKBENCH-DESIGN.md:813 (S7 'Optional Final_Release_*') would include Final_Release_Due_Date, _Request_Key, _Declaration_Text and _Text_Key, none Editable at CASE_S7. L814 (S8 'like S5') would carry over Final_Release_Due_Date and Origin_Types, which are not Editable at CASE_S8 (spec:security.field_permissions.CIQ_Case_A00.CASE_S7 / CASE_S8).",
+    "fix": "List the exact ids: S7 → Final_Release_Confirm, _By_Name, _By_Email, _By_Role, _At, Released_Revs_JSON, Evidence_List_Text. S8 → its own list from field_permissions. Build every panel's optional set from editableAt(step)."
+   },
+   {
+    "severity": "nice",
+    "issue": "createFormRow does not check the Form fields marked required before creating a row.",
+    "evidence": "spec:data_model.flows.CIQ_Section_A00.fields has 11 required=True fields; also Note_Text, Event_Category, Config_Key/Kind, Run_Key, RMES_Key, Supplier_Code/Legal_Name. WORKBENCH-DESIGN.md:596-600 has no required check, and server enforcement for Forms is unknown (SPIKES.md:144 covers only process submits by the key).",
+    "fix": "Before createItem, check FIELDS[flow][*].required client-side, listing problems by label as submitStep does."
+   },
+   {
+    "severity": "nice",
+    "issue": "My work shows the wrong due date for OPNT_S1. That step waits on the supplier, so its SLA is the point's Supplier_Due_Date, not Internal_Due_Date.",
+    "evidence": "WORKBENCH-DESIGN.md:696 ('OP Internal_Due_Date'); spec:workflow.processes.CIQ_Open_Point_A00.steps[1].sla.kind = 'Supplier due date'.",
+    "fix": "OPNT_S1 → OP.Supplier_Due_Date; OPNT_R_* → Internal_Due_Date."
+   },
+   {
+    "severity": "nice",
+    "issue": "Case_Code and Request_Key are Mandatory at S0 but depend on the new _id, so 'check mandatoryAt(CASE_S0) before any create' cannot pass literally. Only Case_Code is said to be written after the create.",
+    "evidence": "WORKBENCH-DESIGN.md:754 and L756; Request_Key format '<Case_Code>-C<Cycle>-REQ' (L255). spec:security.field_permissions.CIQ_Case_A00.CASE_S0 makes both Mandatory.",
+    "fix": "Exclude _id-derived keys (Case_Code, Request_Key) from the pre-create check, write both in the Start writeVerified, and run the full Mandatory check before submit (§7.6 step 3)."
+   },
+   {
+    "severity": "nice",
+    "issue": "Small citation and test-expectation slips: (a) the AppRoles evidence is cited as UI-LOG:L48, but L48 is the stack line; the AppRoles table is at L50. (b) The harness formula test points to SPIKES:L75, where Gate = 'OK' on blank comes from the spike's own formula; v4's gates return '' on blank.",
+    "evidence": "WORKBENCH-DESIGN.md:316 and L1446 against kissflow-supplier-portal/UI-LOG.md:48/50. WORKBENCH-DESIGN.md:1122 against SPIKES.md:75 and runs/zz-spike/app-spec.json (Gate = IF(IF(ISBLANK(Open_Count),0,Open_Count)=0,'OK','')) against spec:data_model.flows.CIQ_Case_A00.fields[SAF_Gate].formula.",
+    "fix": "Cite UI-LOG:L50. For the formula tests, cite SPIKES:L75 only as proof that ISBLANK is true for a blank Number (Hold_Flag), and assert v4's result: <D>_Gate = '' when the count is blank."
+   },
+   {
+    "severity": "nice",
+    "issue": "Retire changes Config_State on a Published F2 row, which conflicts with 'copy-on-write: publishing never edits a row'. The design also does not say who writes Contacts_Portal_User_Id, which a new case needs (S0 requires a confirm contact with a portal user id).",
+    "evidence": "WORKBENCH-DESIGN.md:989 against spec:domain.business_rules[BR-057]. WORKBENCH-DESIGN.md:737 and L1009-1013 against spec:data_model.flows.CIQ_Supplier_A00.child_tables[Contacts].fields[Contacts_Portal_User_Id].",
+    "fix": "Either record Retire as an accepted exception to BR-057 with an F8 row (state change only, payload untouched), or model retirement as a new superseding row. State that RMM types Contacts_Portal_User_Id as given by Thomas (portal user management), labelled 'manual', and that the Workbench never generates it."
+   }
+  ]
+ },
+ {
+  "verdict": "FIX-FIRST",
+  "issues": [
+   {
+    "severity": "must-fix",
+    "issue": "The design never says what count confidence a list read through rung 3 (\"mine + my tasks\") gets. Either the gate fails open, or no non-admin reviewer can ever sign off a lane. The harness lane scenarios contradict the design whichever reading is taken.",
+    "evidence": "WB-5 (WORKBENCH-DESIGN.md:L57) writes a count only when \"every item it depends on was readable\", and §7.9 L673 refuses the write when confidence is partial. On rung 3 (L403) the Workbench cannot list the items it cannot see, so completeness can't be proven. Two outcomes are possible: (a) the visible subset counts as complete, which fails open, or (b) the count is always partial, so lane sign-off is blocked for every non-admin reviewer. No viewer route exists (K-14; UI-LOG:L113 Participated fails). The harness gives Jo (Safety, non-admin) rung 3 by default (`adminList` L1139). Yet S11 and S12 (L1246-L1247) expect \"Refresh counts writes SAF_Open_Count = 1\" and a successful submit for user=jo. Open question 13.3 #1 (L1459) is left unresolved. As written, T2 and T4 will diverge, or T4 will make the host lenient and hide the problem. Thomas holds rung 1 plus every role (dec:L486), so demos never show it.",
+    "fix": "State in §6.2 and §7.9 that any list not read through rung 1 (or a viewer rung proven by Diagnostics) gives confidence \"partial\". Split S11 and S12 into two variants: (a) user=jo on rung 3, which expects the blocked state with the gap named and no SUBMIT_ITEM; (b) an admin-rung variant, which expects the counts to be written. Get Thomas's decision on 13.3 #1 before T2 starts. Options: a Workbench-written F8 \"Open point\" index, a flow-level grant, or accepting that only Case Admins sign off lanes."
+   },
+   {
+    "severity": "must-fix",
+    "issue": "F8 audit rows would be edited after creation, which contradicts ground rule 9 and the planned F8 guard test.",
+    "evidence": "Ground rule 9 (L45) says never edit an F8 row, and §7.8 (L650) says \"No F8 update or delete exists in the code (guard test)\". But createFormRow step 4 (L600) re-applies missing fields with updateFormRow up to 3 times. writeAudit is a createFormRow (L1398), and rejectCase depends on the row being \"verified\" (L619). Either the guard test fails at T0 acceptance or F8 rows get edited. The harness global checks (L1172-L1178) check only F2/F8 deletes, not F8 updates.",
+    "fix": "Give writeAudit a create-only path: create → submit → verify. If a field is missing, write a new correcting F8 row (Object_Key = the first row's Event_Key) or report failure. Never call updateFormRow on F8. Add a harness global check that fails on DATAFORM_UPDATE_ITEM to CIQ_Audit_Event_A00, and on updates to Published F2 rows."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "The harness assumes by default that field writes after Start succeed (kwb=ok), so the path most likely to run live is tested at only one step.",
+    "evidence": "The key got 050313 for every field after Start (SPIKES.md:L141), and a real user's session is unverified (dec:L484). The harness defaults to `kwb=ok` (L1163). Only S16 (L1251) exercises refusal, at CASE_B_REG. The S2 scope panel (about 20 Mandatory fields), S5/S8 counts and override, the S6 decision, point Accept and the Return have never been run through KwbFallback, openForm, nativeSave and Re-read.",
+    "fix": "Run every P1 step scenario a second time with `kwb=refuse` (a matrix run). Each should expect the fallback panel listing the pending values, PROCESS_OPEN_FORM with the right _id and act, then nativeSave → Re-read → submit, and no data loss."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "The design doesn't say what the Return does when the round write itself is refused (K-WB), and its fallback text would then be false.",
+    "evidence": "In §7.5, step 2 (L569-L579) writes the Rounds add row plus about 10 header fields at OPNT_R_*, before any send-back. Step 5 (L582) tells the user \"The new round is already saved\". If step 2 returns kwb-refused, nothing is saved, and the sequence is undefined. S17 and S18 (L1252-L1253) assume the round write succeeds.",
+    "fix": "If step 2 is refused, go straight to KwbFallback. Show the Rounds row values (Round_No, Outcome Returned, Reason, Reviewed_By/_At) and the header values, then tell the user to make the native edit and the native Send back. Only show \"already saved\" after a verified write. Add an S18 variant with kwb=refuse."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "openForm can hang forever. The fallback only covers it throwing, and the panel says the form \"is opening now\".",
+    "evidence": "In the SDK, `_postMessageAsync` has no timeout (kfsdk.es.js, BaseSDK), and Process.openForm posts PROCESS_OPEN_FORM through it. §7.4 (L558) only handles \"If openForm throws\", and only then gives the My Tasks instruction. openForm inside an Application component is unverified (L1451). The harness has no openForm mode (L1161-L1170).",
+    "fix": "Bound openForm to 5–10 s. Always show the copy-values sheet and the \"open it from Kissflow My Tasks\" instruction, whatever openForm does. Open the form from a button rather than automatically. Persist the pending values in sessionStorage (try/catch) keyed by _id|act, because openForm may navigate away or unload the iframe. Add harness modes openForm=hang and openForm=refuse."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "A write that times out frees the item's queue while the SDK write is still in flight, which breaks D32's one-write-in-flight rule.",
+    "evidence": "bounded() only races the call against 30 s (§6.1 L374; portal client.ts:63-69). The postMessage itself is not cancelled and can still land later. writeVerified then returns kind \"timeout\" (L509), so the chain moves on and the next write to the same item overlaps. Lost updates happen inside about 0.1 s (SPIKES.md:L152-L153), and D32 requires one write in flight per item (dec:L458). Submit settle and discard of a draft (L594) have the same race.",
+    "fix": "On a write timeout, mark the item \"uncertain\" and block further writes to it until a read-back reconciles or the user reloads. Add a harness scenario where writeDelay exceeds the call timeout and a second save follows: __kfOverlaps must stay empty."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "In Part 2, the step resolver can match a task to the wrong lane, which then falsely marks a step as K-WB-refused for the whole session.",
+    "evidence": "STEP_KEYS (L427) includes the item-level `_current_step`. A case in Part 2 has up to 6 open branches. The item-level value may be the block name \"Part 2 – Beiersdorf review\" (spec:workflow.processes.CIQ_Case_A00.steps[CASE_PAR].name, a known step name) or another branch's name. Thomas holds every role, so a SAF task row can resolve to REG. The resulting 050313 then marks REG `kwb:refused` for the session (WB-9, L61). The harness `stepkey` mode (L1141) doesn't model item-level values on branch rows.",
+    "fix": "Never resolve to a Parallel step. Use item-level keys only when the item has a single open activity for this user. Mark K-WB only when the step was resolved from activity-level evidence (the activity filter, or getProgress matched by activityInstanceId) and the 050313 field list covers every key sent. Add a harness stepkey mode that puts the block name, or the first branch's name, on every branch row."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "The builder probe is tagged [verified], but getRoles is documented to resolve for any user in a Development account, which is where BDF tests the MVP.",
+    "evidence": "sdk.d.ts:L1297 and L1317 say getRoles and switchRole are \"Only available in a Development account\". master.md:L571 warns that a builder-permission staff login also passes the probe. Every build lives in the Development sandbox (CLAUDE.md:17). UI-LOG:L104 only shows the call resolving for Thomas, and \"so this is a builder session\" is an inference. The design tags it [verified] (L337) and claims real users get no switcher (WB-8, L60). Harness S05 dev=0 assumes the call is refused.",
+    "fix": "Retag the probe [unverified]. The lens is UI-only, so this is acceptable. Make the lens also downgrade the read rung (skip rung 1 when the chosen role has no flow Admin), so Thomas's demos show what real reviewers see. Add an S05 variant where a non-builder user gets an answer from getRoles."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "Admin list rows carry no current step, but the design reads step and status from list rows, and the harness doesn't reproduce the omission.",
+    "evidence": "UI-LOG:L43 (CAFM D55, live): the admin list has no current step and must be read per open item. The design takes status from `_status` and `_current_step` (§6.4 L438) for the Cases list step column (L713), Upcoming approvals (L968) and the stray-item tiles (L697-L699). The harness list modes (L1135-L1142) leave out an omission the portal harness did emulate.",
+    "fix": "On rung 1, read the step per open item with getAdminItem (pool of 4). Make the harness admin lists omit `_current_step` by default."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "The delete ban has holes: the guard misses kf.api DELETE, and the harness only catches some delete commands.",
+    "evidence": "Rule 9 (L45) says no delete call at all. The guard only bans `deleteItem(` outside kf/sdk.ts (L1101). The portal client being copied contains `adminDelete` through `kf.api(..., {method:\"DELETE\"})` (src/portal/data/client.ts:186-188), which that guard does not catch, plus `formDelete` (client.ts:200-201). The harness fails only on Dataform deletes on F2/F8 (L1155).",
+    "fix": "Don't copy adminDelete or formDelete. Ban the DELETE method string and `deleteItem(` everywhere except the facade's type declaration. Make the harness fail on any *_DELETE_ITEM command and on any API call with method DELETE. Discarding one's own draft stays allowed."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "Kissflow keeps one Form draft per user, so createFormRow can submit stale fields from an earlier draft.",
+    "evidence": "SPIKES.md:L158: a Form create opens the user's single draft (`draft_<userId>`), and parallel creates gave a 409, a 404 on submit and mixed data. createFormRow (L596-L600) verifies only its own fields after submit. Leftover values from an interrupted create, or from a native-form draft, would end up in F3 or F8 rows. The harness models only the 409 (L1168).",
+    "fix": "Before createItem, call Dataform discardItem(), which takes no itemId and discards the user's draft. Or read the returned draft and clear every non-payload, non-system field before submit. Add a harness drafts=sticky mode that returns the old draft with leftover values."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "RMES gaps can fail open if the child-row formula is blank live, and the single-write save described in §8.11 cannot include server-computed counts.",
+    "evidence": "§7.9 (L666) sets Open_Criteria_Count = Σ Criteria_Open_Num \"as read back from the server\". Criteria_Open_Num is a child-column formula on a Form (spec:data_model.flows.CIQ_RMES_Safety_A00.child_tables[Safety_Criteria].fields[Criteria_Open_Num]). Only Process header formulas are verified (SPIKES.md:L75, L105), and embedded aggregates were unreliable (L103). If the formula is blank, the sum is 0, so <D>_RMES_Gaps = 0 and the gate passes. Separately, §8.11 (L960) writes rows and header counts in one updateFormRow. The harness formula.ts (L1122) always computes the formula, which would mask a live blank.",
+    "fix": "Treat a blank Criteria_Open_Num on an applicable row as 1 (or as \"unknown\", which blocks the count). Save in two phases: rows → read back → header counts → verify. Add a harness mode childFormula=off."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "For Process creates, the data sent with createItem is never fully verified.",
+    "evidence": "§7.6 (L589-L594) verifies only fields written after create (step 2) and Mandatory fields (step 3). Editable fields preset in createItem (Case_Title, SAP_Material_No, Target_Markets_Text, Case_Test) and the unverified User/Date shapes (L471-L473) could be dropped silently. D32 (dec:L457) says every Workbench save is write-then-verify.",
+    "fix": "Compare the full create payload against the read-back at Start, and re-apply anything missing with updateItem at Start. That write route is not affected by K-WB (SPIKES.md:L102)."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "The client-side Mandatory check before a case is created cannot pass, because two Mandatory keys only exist after create.",
+    "evidence": "§8.3 (L754) checks mandatoryAt(CASE_S0) before any create. Case_Code and Request_Key are Mandatory at S0 (spec:security.field_permissions.CIQ_Case_A00.CASE_S0), and both derive from the new `_id` (L253-L254). Yet Request_Key is listed among the values derived before create (L751). S06 will fail, or T1 will improvise.",
+    "fix": "Exempt keys derived after create from the pre-check. Write Case_Code and Request_Key at step 3. Run the full S0 Mandatory check before submit."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "If a lane value is lost after the lane is submitted, the case stops at S5 and the design gives no repair path.",
+    "evidence": "D35 (dec:L482) uses the S5 check as the backstop for lost lane values, and §8.5 (L812) blocks S5 when any active lane is incomplete. But lane fields are ReadOnly at CASE_S5 (spec field_permissions CIQ_Case_A00.CASE_S5). Non-admin reviewers can't re-read after submit (L417), and the lane snapshot exists only in memory (L540). The only way past is a native submit, which skips the check because the server doesn't enforce Mandatory (SPIKES.md:L144).",
+    "fix": "At lane completion, write the lane snapshot to F8 (\"lane.completed\" with Snapshot_JSON). Define either a Case Admin repair (restore from the F8 snapshot with updateAdminItem, plus an F8 row) or an RMM override with a reason. Add a harness scenario where a race drops a lane value after submit: S5 should show it, and the repair should fix it."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "The admin write target has no defined scope, and it bypasses step permissions and the local guard.",
+    "evidence": "Target kind \"admin\" (L495) is described as \"rung-1 only, Case Admin paths\", but no screen says which writes use it. The admin route writes any field regardless of step permission (SPIKES.md:L143), assertWritable runs only for the task kind (L502), and lost updates were measured on this route (L152). Thomas holds rung 1 and every role, so using it as a convenience or as a K-WB workaround would hide K-WB in every demo.",
+    "fix": "Allow-list the exact admin actions (for example the lane repair above), each with an F8 row. Never use it as a fallback for kwb-refused. Add a guard test that updateAdminItem is referenced only from that module, and make the harness refuse admin writes from users without flow Admin."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "Child-table writes through the SDK are tagged [verified], but only the REST route with the account key was tested. A host that ignores client row ids would turn the re-apply loop into duplicate rows.",
+    "evidence": "L604 cites SPIKES.md:L88-L91 and L100-L101, which were REST calls with the account key (SPIKES.md:L68, L94-L96). SDK updateItem with `Table::` keys and client-supplied row `_id`s is untested. If the host assigns its own ids, verify-by-_id (L512) re-adds the same rows up to 3 more times, duplicating Rounds, Criteria or Contacts.",
+    "fix": "Retag as [verified REST; SDK unverified]. Before re-adding a missing row, also match by a natural key (Rounds_Round_No, criterion code, contact email). Add a harness mode childIds=server in which the host assigns its own row ids."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "File ownership leaves no one to change foundation files during the parallel phase, and T2's acceptance depends on T4's parallel work.",
+    "evidence": "§12 (L1273-L1275): only T0 edits data/kf/schema/shell/ui/pages/domain, and other builders must \"ask T5\", but T5 starts only after T1–T4 finish. T2's acceptance needs parity with T4's formula.ts (L1338, L1352), which is built at the same time.",
+    "fix": "Keep the T0 builder on as foundation owner through the parallel phase, with a change-request file that T0 owns. Put shared formula sample vectors in T0's schema/ (for example schema/formulaSamples.ts) so T2 and T4 test against the same data without importing each other."
+   },
+   {
+    "severity": "should-fix",
+    "issue": "Lists longer than one page are proven only in a stretch scenario, yet counts and gates depend on reading every page.",
+    "evidence": "S33 (L1268, P2) is the only harness check of lists past 50 rows and of the other envelopes. Live lists report no total, and paging ends on a short page (UI-LOG.md:L39, L108). WB-5's \"complete\" counts and the gate decisions depend on it.",
+    "fix": "Make S33 (extra=120, envelope=live) a P1 scenario. Include task rows with several activities on one _id that straddle a page boundary."
+   },
+   {
+    "severity": "nice",
+    "issue": "Two fixture names belong to well-known real people.",
+    "evidence": "\"Kim Novak\" (L1191) is a famous actress, and \"Pat Quinn\" (L1195) is a former US governor. Ground rule 11 (L47) and CLAUDE.md require fictional people.",
+    "fix": "Replace them with clearly invented names."
+   },
+   {
+    "severity": "nice",
+    "issue": "A wrong-container load is meant to be read-only, but nothing enforces that in the write layer, and the harness never tests it.",
+    "evidence": "§5.1 (L305) says screens render read-only when the app id doesn't match, but writeQueue doesn't enforce it. The harness handshake always answers CIQ_Digital_A00 (L1132).",
+    "fix": "Refuse every write in writeQueue when the app id is not APP_ID. Add a scenario with appId=CIQ_Supplier_Portal_A00."
+   },
+   {
+    "severity": "nice",
+    "issue": "The toISOString guard can't be checked statically, conflicts with where kfDateTime lives, and the millisecond check misses child-table DateTimes.",
+    "evidence": "The rule \"toISOString() used for a write outside normalize.ts\" (L1102) can't be decided by a source scan, and kfDateTime stays in kf/sdk.ts (L394; portal sdk.ts:153 uses toISOString). The harness millisecond refusal (L1152) doesn't mention DateTime columns inside Table:: rows, such as Rounds_Reviewed_At and Criteria_Recorded_At.",
+    "fix": "Move kfDateTime into normalize.ts and ban `toISOString(` everywhere else (harness excluded). Apply the millisecond check to child-row DateTime columns as well."
+   },
+   {
+    "severity": "nice",
+    "issue": "The Workbench shares its type-check and test runs with the portal, and relies on a portal-owned type declaration file.",
+    "evidence": "tsconfig.json includes all of src, vite.config.ts runs every `src/**/*.test.*`, and build:portal runs `tsc -b` (package.json). Stubs or in-progress errors in src/workbench would break the portal session's build:portal and npm test. WB-3 (L55) also depends on src/portal/kf/kfsdk.d.ts.",
+    "fix": "Add tsconfig.workbench.json and a vitest.workbench config (new files) and point the Workbench scripts at them. Record the kfsdk.d.ts dependency in the README."
+   },
+   {
+    "severity": "nice",
+    "issue": "Writing the Cancellation row before the reject will e-mail the supplier on a failed cancel once Z2 is live.",
+    "evidence": "Z2's trigger is the F8 Cancellation row (dec:L476). The design writes that row before rejectItem (L610-L621), and a \"case.cancel.failed\" row does not stop Z2.",
+    "fix": "Tell the Z2 builder to also condition on the case status, or write the row after a successful reject and rely on the \"Ended without cancellation event\" tile (L699) as the safety net."
+   },
+   {
+    "severity": "nice",
+    "issue": "\"Copy diagnostics JSON\" would bring real BDF names and e-mails into project files.",
+    "evidence": "Diagnostics (L1042, L1047-L1048) copies raw rows, user names and e-mails. Pasted into internal files, this would put real people in them, against the fictional-data rule.",
+    "fix": "Redact names and e-mails in the copied JSON by default."
+   },
+   {
+    "severity": "nice",
+    "issue": "Post-submit reads are impossible for non-admin users, so S12 and the Re-read steps expect checks that can't happen.",
+    "evidence": "getItem with a closed activity instance fails with \"moved out of your queue\" (SPIKES.md:L118). Yet S12 (L1247) expects the pre- and post-submit reads to be equal for user=jo. The Return Re-read (L582) and a native submit after openForm hit the same failure.",
+    "fix": "Expect the \"could not read the item with your access\" note for rung-3 users in S12 and S18. When Re-read gets \"moved out of your queue\", treat it as \"submitted in Kissflow\" and reload the tasks."
+   },
+   {
+    "severity": "nice",
+    "issue": "Minor citation and robustness fixes.",
+    "evidence": "The AppRoles row is UI-LOG:L50, not L48. SPIKES.md:L100-L101 show `Table::Spike_Lines` working on an App-Builder-made form, which supports `Table::<spec id>` (L233). navigator.locks can reject in a sandboxed or opaque-origin frame (L487).",
+    "fix": "Correct the citation, note the SPIKES evidence next to `Table::<spec id>`, and wrap navigator.locks.request in try/catch with the in-memory lane as fallback."
+   }
+  ]
+ }
+]

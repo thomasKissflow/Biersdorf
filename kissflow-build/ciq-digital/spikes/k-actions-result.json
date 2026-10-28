@@ -1,0 +1,99 @@
+{
+  "sendback": {
+    "id": "PkEKIVxRRM9x",
+    "start": [
+      {
+        "step": "Spike waiting",
+        "act": "PkEKIVy36dIs"
+      }
+    ],
+    "atReview": true,
+    "attempts": [
+      {
+        "path": "…/PkEKIVxRRM9x/PkEKOBbhxEYH/sendback",
+        "body": "StepId,Comment",
+        "status": 500,
+        "msg": "An unexpected error has occurred. Please contact our support team.",
+        "code": "process"
+      },
+      {
+        "path": "…/PkEKIVxRRM9x/PkEKOBbhxEYH/sendback",
+        "body": "stepId,comment",
+        "status": 500,
+        "msg": "An unexpected error has occurred. Please contact our support team.",
+        "code": "process"
+      },
+      {
+        "path": "…/PkEKIVxRRM9x/PkEKOBbhxEYH/sendback",
+        "body": "_step_id,_comment",
+        "status": 500,
+        "msg": "An unexpected error has occurred. Please contact our support team.",
+        "code": "process"
+      },
+      {
+        "path": "…/PkEKIVxRRM9x/PkEKOBbhxEYH/send_back",
+        "body": "StepId,Comment",
+        "status": 404,
+        "msg": "Resource not found. Verify the request URL and try again.",
+        "code": "KISSFLOW_ERROR_00137"
+      },
+      {
+        "path": "…/PkEKIVxRRM9x/PkEKOBbhxEYH/sendBack",
+        "body": "StepId,Comment",
+        "status": 404,
+        "msg": "Resource not found. Verify the request URL and try again.",
+        "code": "KISSFLOW_ERROR_00137"
+      }
+    ],
+    "after": {
+      "status": "InProgress",
+      "ctx": [
+        {
+          "step": "Spike review",
+          "act": "PkEKOBbhxEYH"
+        }
+      ]
+    }
+  },
+  "reject": {
+    "id": "PkEKOBk_pH7S",
+    "attempts": [
+      {
+        "path": "…/PkEKOBk_pH7S/PkEKOBlQwYaw/reject",
+        "body": "Comment",
+        "status": 200,
+        "msg": null,
+        "code": null
+      }
+    ],
+    "after": {
+      "status": "Rejected",
+      "ctx": [
+        {
+          "step": "Spike review",
+          "act": "PkEKOBlQwYaw"
+        }
+      ],
+      "logRows": []
+    }
+  },
+  "withdraw": {
+    "id": "PkEKOC02SXyx",
+    "attempts": [
+      {
+        "path": "…/PkEKOC02SXyx/withdraw",
+        "body": "Comment",
+        "status": 200,
+        "msg": null,
+        "code": null
+      }
+    ],
+    "after": {
+      "status": "Withdrawn",
+      "ctx": [
+        {}
+      ],
+      "logRows": []
+    }
+  }
+}

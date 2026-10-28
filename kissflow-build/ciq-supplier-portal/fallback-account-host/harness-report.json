@@ -1,0 +1,2055 @@
+{
+  "results": [
+    {
+      "name": "outside",
+      "pass": true,
+      "checks": [
+        {
+          "label": "sees \"Not running inside Kissflow\"",
+          "pass": true
+        },
+        {
+          "label": "says so at once when opened directly (no SDK wait)",
+          "pass": true,
+          "detail": "183 ms"
+        },
+        {
+          "label": "sees \"Preview of the supplier view with demo data\"",
+          "pass": true
+        },
+        {
+          "label": "demo opened outside Kissflow has no admin link",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "no-answer",
+      "pass": true,
+      "checks": [
+        {
+          "label": "branded loader while connecting",
+          "pass": true
+        },
+        {
+          "label": "loader shows the Beiersdorf logo",
+          "pass": true
+        },
+        {
+          "label": "says so when Kissflow does not answer",
+          "pass": true
+        },
+        {
+          "label": "Try again connects once the host answers",
+          "pass": true
+        },
+        {
+          "label": "two handshakes were sent (first unanswered, then Retry)",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "none",
+      "pass": true,
+      "checks": [
+        {
+          "label": "sees \"No access to the supplier portal\"",
+          "pass": true
+        },
+        {
+          "label": "no case data shown",
+          "pass": true
+        },
+        {
+          "label": "no item reads",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "empty-start",
+      "pass": true,
+      "checks": [
+        {
+          "label": "an empty start says 'No requests yet'",
+          "pass": true
+        },
+        {
+          "label": "sees \"No requests yet\"",
+          "pass": true
+        },
+        {
+          "label": "nothing is written",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "supplier",
+      "pass": true,
+      "checks": [
+        {
+          "label": "sees \"OLIVIA Pure 100\"",
+          "pass": true
+        },
+        {
+          "label": "admin route redirects a supplier to /portal",
+          "pass": true
+        },
+        {
+          "label": "light theme by default although the OS prefers dark",
+          "pass": true,
+          "detail": {
+            "theme": "light",
+            "bg": 0.975
+          }
+        },
+        {
+          "label": "the tasks are on My requests (A-32)",
+          "pass": true
+        },
+        {
+          "label": "task: questionnaire for ZZT-0001",
+          "pass": true
+        },
+        {
+          "label": "task: questionnaire for ZZT-0002",
+          "pass": true
+        },
+        {
+          "label": "task: final-release for ZZT-0004",
+          "pass": true
+        },
+        {
+          "label": "one task per open question of ZZT-0003",
+          "pass": true
+        },
+        {
+          "label": "INCI from the request",
+          "pass": true
+        },
+        {
+          "label": "Beiersdorf material number from the request",
+          "pass": true
+        },
+        {
+          "label": "closed requests stay listed (the request is held at 'keep the CIQ up to date')",
+          "pass": true
+        },
+        {
+          "label": "the supplier's name",
+          "pass": true
+        },
+        {
+          "label": "live view has no demo badge",
+          "pass": true
+        },
+        {
+          "label": "no Notices page any more",
+          "pass": true
+        },
+        {
+          "label": "no Corrections page any more",
+          "pass": true
+        },
+        {
+          "label": "no admin reads",
+          "pass": true,
+          "detail": []
+        },
+        {
+          "label": "never asks for the participated list (it fails platform-wide)",
+          "pass": true
+        },
+        {
+          "label": "My tasks is read per supplier step (activity filter; the release is a step of the request since 16 Oct)",
+          "pass": true,
+          "detail": [
+            "CIQP_Request_A00:Activity_15rz7z2",
+            "CIQP_Request_A00:Activity_1mhx3t7",
+            "CIQP_Query_A00:Activity_qohzey",
+            "CIQP_Request_A00:Activity_wlo2cfxnqa",
+            "CIQP_Request_A00:Activity_vngcws1q8w"
+          ]
+        },
+        {
+          "label": "full reads carry the item's own current activity instance",
+          "pass": true,
+          "detail": [
+            [
+              "PkReq1",
+              "ActReq1"
+            ],
+            [
+              "PkReq2",
+              "ActReq2"
+            ],
+            [
+              "PkReq3",
+              "ActReq3"
+            ],
+            [
+              "PkReq6",
+              "ActReq6"
+            ],
+            [
+              "PkQ3a",
+              "ActQ3a"
+            ],
+            [
+              "PkQ3b",
+              "ActQ3b"
+            ],
+            [
+              "PkReq4",
+              "ActReq4"
+            ],
+            [
+              "PkReq5",
+              "ActReq5"
+            ]
+          ]
+        },
+        {
+          "label": "Kissflow refused no command",
+          "pass": true,
+          "detail": []
+        },
+        {
+          "label": "no partial-read warning",
+          "pass": true
+        },
+        {
+          "label": "nothing is written by looking",
+          "pass": true
+        },
+        {
+          "label": "theme switch turns dark",
+          "pass": true
+        },
+        {
+          "label": "the dark choice is remembered",
+          "pass": true
+        },
+        {
+          "label": "help reads the live articles",
+          "pass": true
+        },
+        {
+          "label": "the Beiersdorf contact per open request",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "fill-live-scope",
+      "pass": true,
+      "checks": [
+        {
+          "label": "the CIQ opens on the metadata questions",
+          "pass": true
+        },
+        {
+          "label": "before any answer: no origin annex",
+          "pass": true
+        },
+        {
+          "label": "Vegetable opens Annex 2 live, before anything is saved",
+          "pass": true
+        },
+        {
+          "label": "switching to Animal closes Annex 2 live",
+          "pass": true
+        },
+        {
+          "label": "saved through the request's task at 'fill in the CIQ'",
+          "pass": true,
+          "detail": [
+            "UPDATE_ITEM PkReq1 [Answered_By_JSON,Answers_Changed_At,Answers_Changed_By_Email,Answers_Rev,Config_Answers_JSON,Editing_By,Editing_Since,Requested_Docs_JSON,Scope_JSON]"
+          ]
+        },
+        {
+          "label": "one save carries the metadata, the scope and the requested documents together",
+          "pass": true,
+          "detail": [
+            "Answered_By_JSON,Answers_Changed_At,Answers_Changed_By_Email,Answers_Rev,Config_Answers_JSON,Editing_By,Editing_Since,Requested_Docs_JSON,Scope_JSON"
+          ]
+        },
+        {
+          "label": "DateTimes without milliseconds",
+          "pass": true
+        },
+        {
+          "label": "Config_Answers_JSON holds the last answer",
+          "pass": true,
+          "detail": "{\"SF01\":[\"animal\"]}"
+        },
+        {
+          "label": "Scope_JSON: Annex 2 closed again, supplier wording only (no rule ids, no SF codes)",
+          "pass": true,
+          "detail": "[{\"sectionId\":\"GEN\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.3"
+        },
+        {
+          "label": "Answered_By_JSON names who answered",
+          "pass": true
+        },
+        {
+          "label": "no submit while filling in",
+          "pass": true
+        },
+        {
+          "label": "no save error",
+          "pass": true
+        },
+        {
+          "label": "the answer is still there after a reload",
+          "pass": true
+        },
+        {
+          "label": "and Annex 2 stays closed",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "completeness",
+      "pass": true,
+      "checks": [
+        {
+          "label": "shows completeness-bar",
+          "pass": true
+        },
+        {
+          "label": "nothing blocks: 0 blockers",
+          "pass": true
+        },
+        {
+          "label": "success only after the write and the submit",
+          "pass": true
+        },
+        {
+          "label": "confirm = the Completeness_* fields (read back), then the submit of 'fill in the CIQ', both through its task",
+          "pass": true,
+          "detail": [
+            "UPDATE_ITEM PkReq2 [Completeness_At,Completeness_By_Email,Completeness_By_Name,Completeness_By_Role,Completeness_Confirm,Requested_Docs_JSON,Scope_JSON]",
+            "SUBMIT_ITEM PkReq2"
+          ]
+        },
+        {
+          "label": "recorded with name, e-mail, role and time",
+          "pass": true,
+          "detail": [
+            "Elena Márquez",
+            "2026-10-22T04:54:21Z"
+          ]
+        },
+        {
+          "label": "the request now sits at 'keep the CIQ up to date'",
+          "pass": true
+        },
+        {
+          "label": "the page moves to the review phase",
+          "pass": true
+        },
+        {
+          "label": "no second confirmation",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "handoffs-dev",
+      "pass": true,
+      "checks": [
+        {
+          "label": "shows questions-for-you",
+          "pass": true
+        },
+        {
+          "label": "a save posts request.changed with only the request id, by the browser's fetch (text/plain) to the sandbox's own host",
+          "pass": true,
+          "detail": [
+            "dev/AcDOSunMEpSA → dev-beiersdorf.kissflow.eu",
+            "text/plain",
+            "{\"portalRequestItemId\":\"PkReq3\",\"idempotencyKey\":\"HO-requestChanged-mvj2gsvo-5pwllz\"}"
+          ]
+        },
+        {
+          "label": "the answer is sent",
+          "pass": true
+        },
+        {
+          "label": "an answer posts query.answered (I-4) with only the query id, after the submit of 'respond'",
+          "pass": true,
+          "detail": [
+            "dev/AcDOSunMEpSA → dev-beiersdorf.kissflow.eu",
+            "{\"portalQueryItemId\":\"PkQ3a\",\"idempotencyKey\":\"HO-queryAnswered-mvj2gtmg-0lioib\"}",
+            23
+          ]
+        },
+        {
+          "label": "shows completeness-bar",
+          "pass": true
+        },
+        {
+          "label": "completeness is confirmed",
+          "pass": true
+        },
+        {
+          "label": "confirming completeness posts completeness.confirmed (I-2) with only the request id, after the submit",
+          "pass": true,
+          "detail": [
+            "dev/AcDOSunMEpSA → dev-beiersdorf.kissflow.eu",
+            "{\"portalRequestItemId\":\"PkReq2\",\"idempotencyKey\":\"HO-completenessConfirmed-mvj2guq5-5qq296\"}",
+            21
+          ]
+        },
+        {
+          "label": "shows final-release-card",
+          "pass": true
+        },
+        {
+          "label": "the release is recorded",
+          "pass": true
+        },
+        {
+          "label": "the final release posts release.given (I-7) with only the request id, after the submit of the release step",
+          "pass": true,
+          "detail": [
+            "dev/AcDOSunMEpSA → dev-beiersdorf.kissflow.eu",
+            "{\"portalRequestItemId\":\"PkReq4\",\"idempotencyKey\":\"HO-releaseGiven-mvj2gvu7-5un4uj\"}",
+            21
+          ]
+        },
+        {
+          "label": "exactly four POSTs, one to each of four integrations, each with only an id and a key",
+          "pass": true,
+          "detail": [
+            "requestChanged",
+            "queryAnswered",
+            "completenessConfirmed",
+            "releaseGiven"
+          ]
+        },
+        {
+          "label": "each hand-off is exactly the stored sandbox URL of its own kind (sha256)",
+          "pass": true,
+          "detail": [
+            "requestChanged: same",
+            "queryAnswered: same",
+            "completenessConfirmed: same",
+            "releaseGiven: same"
+          ]
+        },
+        {
+          "label": "shows questions-for-you",
+          "pass": true
+        },
+        {
+          "label": "framed by the sandbox's own page a save POSTs (the browser's, text/plain) exactly the stored sandbox URL of request.changed (sha256), on the sandbox's host",
+          "pass": true,
+          "detail": "dev/AcDOSunMEpSA → dev-beiersdorf.kissflow.eu [page on dev-beiersdorf.kissflow.eu]"
+        },
+        {
+          "label": "shows questions-for-you",
+          "pass": true
+        },
+        {
+          "label": "framed by the portal's own domain a save POSTs (the browser's, text/plain) exactly the stored sandbox URL of request.changed (sha256), on the sandbox's host",
+          "pass": true,
+          "detail": "dev/AcDOSunMEpSA → dev-beiersdorf.kissflow.eu [page on ciq-portal-harness.kissflow.eu]"
+        },
+        {
+          "label": "shows questions-for-you",
+          "pass": true
+        },
+        {
+          "label": "framed by a page off Kissflow a save POSTs (the browser's, text/plain) exactly the stored sandbox URL of request.changed (sha256), on the sandbox's host",
+          "pass": true,
+          "detail": "dev/AcDOSunMEpSA → dev-beiersdorf.kissflow.eu [page on supplier-portal.harness.test]"
+        },
+        {
+          "label": "one POST per action and save",
+          "pass": true,
+          "detail": [
+            "dev/AcDOSunMEpSA → dev-beiersdorf.kissflow.eu",
+            "dev/AcDOSunMEpSA → dev-beiersdorf.kissflow.eu",
+            "dev/AcDOSunMEpSA → dev-beiersdorf.kissflow.eu",
+            "dev/AcDOSunMEpSA → dev-beiersdorf.kissflow.eu",
+            "dev/AcDOSunMEpSA → dev-beiersdorf.kissflow.eu [page on dev-beiersdorf.kissflow.eu]",
+            "dev/AcDOSunMEpSA → dev-beiersdorf.kissflow.eu [page on ciq-portal-harness.kissflow.eu]",
+            "dev/AcDOSunMEpSA → dev-beiersdorf.kissflow.eu [page on supplier-portal.harness.test]"
+          ]
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "handoffs-prod",
+      "pass": true,
+      "checks": [
+        {
+          "label": "shows questions-for-you",
+          "pass": true
+        },
+        {
+          "label": "shows questions-for-you",
+          "pass": true
+        },
+        {
+          "label": "shows questions-for-you",
+          "pass": true
+        },
+        {
+          "label": "shows questions-for-you",
+          "pass": true
+        },
+        {
+          "label": "shows questions-for-you",
+          "pass": true
+        },
+        {
+          "label": "in the sandbox a save posts request.changed by the browser's fetch to the sandbox's host: exactly the stored URL (sha256)",
+          "pass": true,
+          "detail": "dev/AcDOSunMEpSA → dev-beiersdorf.kissflow.eu"
+        },
+        {
+          "label": "in production the same save posts to production's own host, on production's account, with the same token",
+          "pass": true,
+          "detail": "prod/AcHARNESS → beiersdorf.kissflow.eu"
+        },
+        {
+          "label": "that token is the stored sandbox URL's of request.changed (sha256)",
+          "pass": true,
+          "detail": [
+            "dev/AcDOSunMEpSA → dev-beiersdorf.kissflow.eu",
+            "prod/AcHARNESS → beiersdorf.kissflow.eu"
+          ]
+        },
+        {
+          "label": "in production framed by a Kissflow page, the portal's own domain or a page off Kissflow, the save POSTs the same URL to production's host, never to that page",
+          "pass": true,
+          "detail": [
+            "prod/AcHARNESS → beiersdorf.kissflow.eu [page on ciq-prod-harness.kissflow.com]",
+            "prod/AcHARNESS → beiersdorf.kissflow.eu [page on ciq-portal-harness.kissflow.eu]",
+            "prod/AcHARNESS → beiersdorf.kissflow.eu [page on supplier-portal.harness.test]"
+          ]
+        },
+        {
+          "label": "production's POSTs carry only the request id and a key",
+          "pass": true,
+          "detail": [
+            "{\"portalRequestItemId\":\"PkReq3\",\"idempotencyKey\":\"HO-requestChanged-mvj2h2z4-j8pbk4\"}",
+            "{\"portalRequestItemId\":\"PkReq3\",\"idempotencyKey\":\"HO-requestChanged-mvj2h4dv-fk2ccd\"}",
+            "{\"portalRequestItemId\":\"PkReq3\",\"idempotencyKey\":\"HO-requestChanged-mvj2h5ra-ixskqt\"}",
+            "{\"portalRequestItemId\":\"PkReq3\",\"idempotencyKey\":\"HO-requestChanged-mvj2h74k-d4kuvn\"}"
+          ]
+        },
+        {
+          "label": "nothing reaches the sandbox's host or account from production",
+          "pass": true,
+          "detail": [
+            "dev/AcDOSunMEpSA → dev-beiersdorf.kissflow.eu",
+            "prod/AcHARNESS → beiersdorf.kissflow.eu",
+            "prod/AcHARNESS → beiersdorf.kissflow.eu [page on ciq-prod-harness.kissflow.com]",
+            "prod/AcHARNESS → beiersdorf.kissflow.eu [page on ciq-portal-harness.kissflow.eu]",
+            "prod/AcHARNESS → beiersdorf.kissflow.eu [page on supplier-portal.harness.test]"
+          ]
+        },
+        {
+          "label": "one POST per save",
+          "pass": true,
+          "detail": [
+            "dev/AcDOSunMEpSA → dev-beiersdorf.kissflow.eu",
+            "prod/AcHARNESS → beiersdorf.kissflow.eu",
+            "prod/AcHARNESS → beiersdorf.kissflow.eu [page on ciq-prod-harness.kissflow.com]",
+            "prod/AcHARNESS → beiersdorf.kissflow.eu [page on ciq-portal-harness.kissflow.eu]",
+            "prod/AcHARNESS → beiersdorf.kissflow.eu [page on supplier-portal.harness.test]"
+          ]
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "harness-local-posts",
+      "pass": true,
+      "checks": [
+        {
+          "label": "the shell opens",
+          "pass": true
+        },
+        {
+          "label": "a POST from the UI to its own origin, and from the host page to its own, are both recorded (route fetch, host 127.0.0.1)",
+          "pass": true,
+          "detail": [
+            "prod/AcHARNESS → 127.0.0.1",
+            "prod/AcHARNESS → 127.0.0.1"
+          ]
+        },
+        {
+          "label": "the local servers refuse them (405)",
+          "pass": true,
+          "detail": {
+            "ui": 405,
+            "host": 405
+          }
+        },
+        {
+          "label": "both count as gone astray (a host no page is given)",
+          "pass": true,
+          "detail": [
+            "prod/AcHARNESS → 127.0.0.1",
+            "prod/AcHARNESS → 127.0.0.1"
+          ]
+        },
+        {
+          "label": "nothing else was posted",
+          "pass": true,
+          "detail": []
+        },
+        {
+          "label": "the browser logged both refusals",
+          "pass": true,
+          "detail": [
+            "console: Failed to load resource: the server responded with a status of 405 (Method Not Allowed)",
+            "console: Failed to load resource: the server responded with a status of 405 (Method Not Allowed)"
+          ]
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "who-confirms",
+      "pass": true,
+      "checks": [
+        {
+          "label": "shows completeness-bar",
+          "pass": true
+        },
+        {
+          "label": "no 'Confirm completeness' for a contact who may not confirm (B-11)",
+          "pass": true
+        },
+        {
+          "label": "says who can",
+          "pass": true
+        },
+        {
+          "label": "shows final-release-card",
+          "pass": true
+        },
+        {
+          "label": "no release button for him either",
+          "pass": true
+        },
+        {
+          "label": "says who can release",
+          "pass": true
+        },
+        {
+          "label": "nothing written",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "questions",
+      "pass": true,
+      "checks": [
+        {
+          "label": "shows questions-for-you",
+          "pass": true
+        },
+        {
+          "label": "two questions wait for an answer",
+          "pass": true,
+          "detail": [
+            "answer-OP-0003-01",
+            "answer-OP-0003-02"
+          ]
+        },
+        {
+          "label": "the returned round reads 'more information needed'",
+          "pass": true
+        },
+        {
+          "label": "the accepted one is closed",
+          "pass": true
+        },
+        {
+          "label": "sent only after the write",
+          "pass": true
+        },
+        {
+          "label": "answer = Response_* + responsible e-mail, then submit, through the query's task",
+          "pass": true,
+          "detail": [
+            "UPDATE_ITEM PkQ3a [Response_Kind,Response_Text,Supplier_Responsible_Email]",
+            "SUBMIT_ITEM PkQ3a"
+          ]
+        },
+        {
+          "label": "sent after the upload and the answer",
+          "pass": true
+        },
+        {
+          "label": "upload → Supplier_Files → Uploads row → the file list (Documents_JSON, plan v6 §4.2) → the answer with its reference → submit (no Answers_Rev signal)",
+          "pass": true,
+          "detail": [
+            "FILE_UPLOAD",
+            "UPDATE_ITEM PkReq3 [Supplier_Files]",
+            "INIT_FORM PkReq3",
+            "ADD_TABLE_ROW PkReq3",
+            "UPDATE_ITEM PkReq3 [Documents_JSON]",
+            "UPDATE_ITEM PkQ3b [Response_Doc_Refs_JSON,Response_Kind,Response_Text,Supplier_Responsible_Email]",
+            "SUBMIT_ITEM PkQ3b"
+          ]
+        },
+        {
+          "label": "a Document answer that references the Upload_Id and the Attach- id",
+          "pass": true,
+          "detail": "[{\"uploadId\":\"UP-20261022045444-ejtnh\",\"attachmentId\":\"Attach-1\",\"fileName\":\"plant-address.pdf\",\"sectionKey\":\"GEN\"}]"
+        },
+        {
+          "label": "the file is added next to the others in Supplier_Files",
+          "pass": true,
+          "detail": 8
+        },
+        {
+          "label": "its Uploads row points at the file and the question's place",
+          "pass": true
+        },
+        {
+          "label": "Kissflow refused no command",
+          "pass": true,
+          "detail": []
+        },
+        {
+          "label": "both answered questions now read 'With Beiersdorf'",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "final-release",
+      "pass": true,
+      "checks": [
+        {
+          "label": "shows final-release-card",
+          "pass": true
+        },
+        {
+          "label": "nothing blocks the release (B-33)",
+          "pass": true
+        },
+        {
+          "label": "the request item is locked by the service (Request_Locked Yes)",
+          "pass": true
+        },
+        {
+          "label": "the questionnaire heading says it is locked, with the plain note",
+          "pass": true
+        },
+        {
+          "label": "the questionnaire is read-only: no editable field, no enabled upload",
+          "pass": true,
+          "detail": 0
+        },
+        {
+          "label": "the section says why it is locked",
+          "pass": true
+        },
+        {
+          "label": "success only after the writes",
+          "pass": true
+        },
+        {
+          "label": "release = Release_By_Name, _By_Email, _By_Role + Release_At on the request (read back), then the submit of its release step",
+          "pass": true,
+          "detail": [
+            "UPDATE_ITEM PkReq4 [Release_At,Release_By_Email,Release_By_Name,Release_By_Role]",
+            "SUBMIT_ITEM PkReq4"
+          ]
+        },
+        {
+          "label": "Release_At without milliseconds",
+          "pass": true
+        },
+        {
+          "label": "the request is held at 'view the released CIQ' (Release_Flag 'Requested', not 'Reopened': the go-to step is skipped)",
+          "pass": true,
+          "detail": [
+            "Supplier: view the released CIQ",
+            "Elena Márquez"
+          ]
+        },
+        {
+          "label": "who released is recorded with e-mail and role (REQ-PROC-042)",
+          "pass": true,
+          "detail": [
+            "elena.marquez@solvaro.example",
+            "Supplier contact"
+          ]
+        },
+        {
+          "label": "after a reload the released request is still listed (held step, plan v6 D-11)",
+          "pass": true
+        },
+        {
+          "label": "the request reads as released while Beiersdorf files it",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "completed-report",
+      "pass": true,
+      "checks": [
+        {
+          "label": "the released request shows its confirmations",
+          "pass": true
+        },
+        {
+          "label": "sees \"Your released questionnaire\"",
+          "pass": true
+        },
+        {
+          "label": "the earlier report and its receipt",
+          "pass": true
+        },
+        {
+          "label": "read-only: no upload and no confirm",
+          "pass": true
+        },
+        {
+          "label": "success only after the write",
+          "pass": true
+        },
+        {
+          "label": "report = Change_Report_Text, _Rev + 1, _By_Email and _At together, on the request's task",
+          "pass": true,
+          "detail": [
+            "UPDATE_ITEM PkReq5 [Change_Report_At,Change_Report_By_Email,Change_Report_Rev,Change_Report_Text]"
+          ]
+        },
+        {
+          "label": "the rev counts up from the last receipt",
+          "pass": true,
+          "detail": [
+            2,
+            "2026-10-22T04:54:48Z"
+          ]
+        },
+        {
+          "label": "'Sending your report…' until its receipt arrives",
+          "pass": true
+        },
+        {
+          "label": "no second 'Report a change' meanwhile",
+          "pass": true
+        },
+        {
+          "label": "'Report a change' is offered again after the receipt",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "cancelled",
+      "pass": true,
+      "checks": [
+        {
+          "label": "a neutral banner",
+          "pass": true
+        },
+        {
+          "label": "read-only: no confirm, no report, no upload",
+          "pass": true
+        },
+        {
+          "label": "shows portal-request-ZZT-0006",
+          "pass": true
+        },
+        {
+          "label": "no task for the cancelled request",
+          "pass": true
+        },
+        {
+          "label": "nothing written",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "two-contacts",
+      "pass": true,
+      "checks": [
+        {
+          "label": "shows q-field-FLD-GEN-004",
+          "pass": true
+        },
+        {
+          "label": "the lost save is noticed on read-back and re-applied: 2 writes",
+          "pass": true,
+          "detail": [
+            "UPDATE_ITEM PkReq2 [Answered_By_JSON,Answers_Changed_At,Answers_Changed_By_Email,Answers_JSON,Answers_Rev,Editing_By,Editing_Since,Requested_Docs_JSON,Scope_JSON]",
+            "UPDATE_ITEM PkReq2 [Answered_By_JSON,Answers_Changed_At,Answers_Changed_By_Email,Answers_JSON,Answers_Rev,Editing_By,Editing_Since,Requested_Docs_JSON,Scope_JSON]"
+          ]
+        },
+        {
+          "label": "both answers are kept: Elena's and Ravi's (merge per key, never a blind overwrite)",
+          "pass": true,
+          "detail": {
+            "004": "Solvaro Oleochemicals S.A., 43006 Tarragona (Elena)",
+            "005": "Plant 2, Tarragona (Ravi)"
+          }
+        },
+        {
+          "label": "and both stamps",
+          "pass": true
+        },
+        {
+          "label": "no error for the contact",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "locked-refusal",
+      "pass": true,
+      "checks": [
+        {
+          "label": "shows q-field-FLD-GEN-004",
+          "pass": true
+        },
+        {
+          "label": "the write is refused with a clear message",
+          "pass": true
+        },
+        {
+          "label": "no write reached the locked request",
+          "pass": true,
+          "detail": []
+        },
+        {
+          "label": "and the page shows it released and read-only",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "release-lock-refusal",
+      "pass": true,
+      "checks": [
+        {
+          "label": "shows q-field-FLD-GEN-004",
+          "pass": true
+        },
+        {
+          "label": "the write is refused with the plain lock message",
+          "pass": true
+        },
+        {
+          "label": "no write reached the locked request",
+          "pass": true,
+          "detail": []
+        },
+        {
+          "label": "the page now shows the final release, read-only",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "reopen-unlocks",
+      "pass": true,
+      "checks": [
+        {
+          "label": "shows final-release-card",
+          "pass": true
+        },
+        {
+          "label": "locked while the release is requested",
+          "pass": true
+        },
+        {
+          "label": "the screen submits the release step once, without writing the release fields",
+          "pass": true,
+          "detail": [
+            "SUBMIT_ITEM PkReq4"
+          ]
+        },
+        {
+          "label": "the go-to returned the request to 'keep the CIQ up to date', unreleased",
+          "pass": true,
+          "detail": [
+            "Supplier: keep the CIQ up to date",
+            null
+          ]
+        },
+        {
+          "label": "back to review: no release card, the questionnaire editable again",
+          "pass": true
+        },
+        {
+          "label": "the change is saved on the request again",
+          "pass": true,
+          "detail": [
+            "UPDATE_ITEM PkReq4 [Answered_By_JSON,Answers_Changed_At,Answers_Changed_By_Email,Answers_JSON,Answers_Rev,Editing_By,Editing_Since,Requested_Docs_JSON,Scope_JSON]"
+          ]
+        },
+        {
+          "label": "no save error",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "release-requested",
+      "pass": true,
+      "checks": [
+        {
+          "label": "shows questions-for-you",
+          "pass": true
+        },
+        {
+          "label": "the screen submits 'keep' once, through its task, with no field written",
+          "pass": true,
+          "detail": [
+            "SUBMIT_ITEM PkReq3"
+          ]
+        },
+        {
+          "label": "the request is at 'give the final release'",
+          "pass": true
+        },
+        {
+          "label": "the page offers the final release",
+          "pass": true
+        },
+        {
+          "label": "the questionnaire is read-only",
+          "pass": true,
+          "detail": 0
+        },
+        {
+          "label": "another reload moves nothing more",
+          "pass": true,
+          "detail": [
+            "SUBMIT_ITEM PkReq3"
+          ]
+        },
+        {
+          "label": "Kissflow refused no command",
+          "pass": true,
+          "detail": []
+        },
+        {
+          "label": "no move warning",
+          "pass": true
+        },
+        {
+          "label": "after a reopen on the same page the reload submits the release step once, through its own task",
+          "pass": true,
+          "detail": [
+            "SUBMIT_ITEM PkReq3"
+          ]
+        },
+        {
+          "label": "the request is back at 'keep the CIQ up to date', unreleased",
+          "pass": true,
+          "detail": [
+            "Supplier: keep the CIQ up to date",
+            null
+          ]
+        },
+        {
+          "label": "back to review: no release card, the questionnaire unlocked",
+          "pass": true
+        },
+        {
+          "label": "no move warning after the reopen",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "upload-preview",
+      "pass": true,
+      "checks": [
+        {
+          "label": "shows q-upload-FLD-K1-001",
+          "pass": true
+        },
+        {
+          "label": "the upload box shows 'Uploading sds-2026.pdf…' with a spinner",
+          "pass": true
+        },
+        {
+          "label": "the box names the file",
+          "pass": true
+        },
+        {
+          "label": "the section header says a file is uploading",
+          "pass": true
+        },
+        {
+          "label": "success only after the writes",
+          "pass": true
+        },
+        {
+          "label": "the spinner is gone after the upload",
+          "pass": true
+        },
+        {
+          "label": "the uploaded file offers 'Preview'",
+          "pass": true
+        },
+        {
+          "label": "Preview opens Kissflow's own file preview with the stored file",
+          "pass": true,
+          "detail": [
+            {
+              "files": [
+                {
+                  "id": "Attach-1",
+                  "key": "CIQP_Request_A00/x/Attach-1/sds-2026.pdf",
+                  "name": "sds-2026.pdf",
+                  "size": 16,
+                  "fileExtension": "pdf",
+                  "uploaded": 100,
+                  "_created_at": "2026-10-22T04:55:05Z"
+                }
+              ],
+              "indexOfFile": 0
+            }
+          ]
+        },
+        {
+          "label": "no save error",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "k21-typing",
+      "pass": true,
+      "checks": [
+        {
+          "label": "shows q-component-add",
+          "pass": true
+        },
+        {
+          "label": "the CAS number typed during the save is still in the box",
+          "pass": true,
+          "detail": "7695-91-2"
+        },
+        {
+          "label": "and the INCI name too",
+          "pass": true
+        },
+        {
+          "label": "both values are saved on the request",
+          "pass": true,
+          "detail": {
+            "id": "c2",
+            "inci": "Tocopheryl Acetate",
+            "cas": "7695-91-2",
+            "fn": "",
+            "additive": false,
+            "origin": "vegetable",
+            "concMin": 0,
+            "concMax": 0
+          }
+        },
+        {
+          "label": "each save is one write (no re-applied write lost to a reload)",
+          "pass": true,
+          "detail": [
+            "UPDATE_ITEM PkReq2 [Answered_By_JSON,Answers_Changed_At,Answers_Changed_By_Email,Answers_Rev,Components_JSON,Editing_By,Editing_Since,Requested_Docs_JSON,Scope_JSON]",
+            "UPDATE_ITEM PkReq2 [Answered_By_JSON,Answers_Changed_At,Answers_Changed_By_Email,Answers_Rev,Components_JSON,Editing_By,Editing_Since,Requested_Docs_JSON,Scope_JSON]"
+          ]
+        },
+        {
+          "label": "autosaves don't read every task list again (only the first load did: one list per supplier step)",
+          "pass": true,
+          "detail": 5
+        },
+        {
+          "label": "no save error",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "remove-upload",
+      "pass": true,
+      "checks": [
+        {
+          "label": "shows q-upload-FLD-K1-001",
+          "pass": true
+        },
+        {
+          "label": "uploaded first",
+          "pass": true
+        },
+        {
+          "label": "the contact's own upload offers 'Remove'",
+          "pass": true
+        },
+        {
+          "label": "success only after Kissflow kept it",
+          "pass": true
+        },
+        {
+          "label": "the Uploads row stays, marked removed by the contact",
+          "pass": true,
+          "detail": {
+            "_id": "row-3",
+            "Upload_Id": "UP-20261022045525-3err3",
+            "Upload_Section_Key": "K1",
+            "Upload_Field_Key": "FLD-K1-001",
+            "Upload_Doc_Kind": "SDS",
+            "Upload_File_Name": "wrong-file.pdf",
+            "Uploaded_By_Email": "elena.marquez@solvaro.example",
+            "Uploaded_At": "2026-10-22T04:55:25Z",
+            "Upload_Attachment_Id": "Attach-1",
+            "Upload_Removed_At": "2026-10-22T04:55:26Z",
+            "Upload_Removed_By_Email": "elena.marquez@solvaro.example"
+          }
+        },
+        {
+          "label": "the file is no longer listed",
+          "pass": true
+        },
+        {
+          "label": "'Remove' only on the contact's own uploads, never on a colleague's",
+          "pass": true,
+          "detail": 0
+        },
+        {
+          "label": "no error",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "presence",
+      "pass": true,
+      "checks": [
+        {
+          "label": "shows completeness-bar",
+          "pass": true
+        },
+        {
+          "label": "no hint while nobody else is working on it",
+          "pass": true
+        },
+        {
+          "label": "a colleague who saved minutes ago is named (B-12)",
+          "pass": true
+        },
+        {
+          "label": "sees \"Ravi Menon also worked on this questionnaire\"",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "diagnostics",
+      "pass": true,
+      "checks": [
+        {
+          "label": "the S-1 write tests are offered to the builder",
+          "pass": true
+        },
+        {
+          "label": "sees \"Supplier task lists\"",
+          "pass": true
+        },
+        {
+          "label": "Diagnostics shows the page around the UI (none on Kissflow here) and the hand-offs' host (production's own), and no hook URL",
+          "pass": true,
+          "detail": "Kissflow page around this UI not a Kissflow page, or not known Hand-offs (webhooks) go to beiersdorf.kissflow.eu Container CIQ_Supplier_Portal_A00 k"
+        },
+        {
+          "label": "test 1 PASS",
+          "pass": true,
+          "detail": "PASS ZZT-S1-A: updateItem accepted; Editing_By, Editing_Since (2026-10-22T04:55:27Z) and Answers_JSON read back."
+        },
+        {
+          "label": "test 2 PASS",
+          "pass": true,
+          "detail": "PASS ZZT-S1-A: uploaded Attach-1; Supplier_Files now holds 8 file(s), the earlier ones kept."
+        },
+        {
+          "label": "test 3 PASS",
+          "pass": true,
+          "detail": "PASS ZZT-S1-A: row ZZT-S1-1792644927827 added through the item's form (initForm → addRow) and read back."
+        },
+        {
+          "label": "test 4 PASS (after asking)",
+          "pass": true,
+          "detail": "PASS ZZT-S1-A: Completeness_* written and read back; submit accepted; the request is now listed at “keep the CIQ up to date” (Answers_Rev 36)."
+        },
+        {
+          "label": "test 5 PASS (after asking)",
+          "pass": true,
+          "detail": "PASS ZZT-S1-B: Response_* written and read back; submit of “Supplier: respond” accepted."
+        },
+        {
+          "label": "only ZZT- test items were written",
+          "pass": true,
+          "detail": [
+            "ZZT-S1-A",
+            "ZZT-S1-B"
+          ]
+        },
+        {
+          "label": "the non-test item DEMO-0099 was never touched",
+          "pass": true
+        },
+        {
+          "label": "test 4 moved its request to 'keep the CIQ up to date'",
+          "pass": true
+        },
+        {
+          "label": "test 5 completed its query",
+          "pass": true
+        },
+        {
+          "label": "sees \"Hand-offs (webhooks) go to\"",
+          "pass": true
+        },
+        {
+          "label": "in the sandbox framed by the portal's domain, Diagnostics shows that page and the sandbox's host for the hand-offs",
+          "pass": true,
+          "detail": "Kissflow page around this UI ciq-portal-harness.kissflow.eu Hand-offs (webhooks) go to dev-beiersdorf.kissflow.eu Container CIQ_Supplier_Portal_A00 "
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "admin",
+      "pass": true,
+      "checks": [
+        {
+          "label": "sees \"Overview\"",
+          "pass": true
+        },
+        {
+          "label": "admin lands on /admin",
+          "pass": true
+        },
+        {
+          "label": "sees \"Requests\"",
+          "pass": true
+        },
+        {
+          "label": "the flows plan v5 no longer uses are hidden from the admin view (16 Oct)",
+          "pass": true
+        },
+        {
+          "label": "sees \"ZZT-0001-REQ\"",
+          "pass": true
+        },
+        {
+          "label": "current step filled from the item's own admin read (not in the admin list)",
+          "pass": true
+        },
+        {
+          "label": "drawer shows the item's fields",
+          "pass": true
+        },
+        {
+          "label": "sees \"Saved and read back (1 field)\"",
+          "pass": true
+        },
+        {
+          "label": "edit = one SDK admin update with only the changed field",
+          "pass": true,
+          "detail": [
+            {
+              "seq": 12,
+              "command": "PROCESS_UPDATE_ADMIN_ITEM",
+              "flowId": "CIQP_Request_A00",
+              "instanceId": "PkReq2",
+              "data": "{\"Trade_Name\":\"SOLVASOFT 300 (edited)\"}",
+              "keys": "Trade_Name"
+            }
+          ]
+        },
+        {
+          "label": "delete = one admin DELETE for that item",
+          "pass": true,
+          "detail": [
+            {
+              "seq": 16,
+              "command": "API",
+              "url": "/process/2/AcHARNESS/admin/CIQP_Request_A00/PkReq2?_application_id=CIQ_Supplier_Portal_A00",
+              "method": "DELETE",
+              "data": "null",
+              "keys": ""
+            }
+          ]
+        },
+        {
+          "label": "deleted item is gone from the table",
+          "pass": true
+        },
+        {
+          "label": "sees \"How do I fill in the CIQ?\"",
+          "pass": true
+        },
+        {
+          "label": "sees \"Harness article\"",
+          "pass": true
+        },
+        {
+          "label": "new article = form create + submit",
+          "pass": true
+        },
+        {
+          "label": "grants show the Admin role's level",
+          "pass": true
+        },
+        {
+          "label": "sees \"Overview\"",
+          "pass": true
+        },
+        {
+          "label": "no 'Preview supplier view' any more (16 Oct)",
+          "pass": true
+        },
+        {
+          "label": "the theme switch sits in the sidebar",
+          "pass": true
+        },
+        {
+          "label": "Roles & grants redirects Kissflow to the manage page",
+          "pass": true,
+          "detail": [
+            "https://beiersdorf.kissflow.eu/view/portal/administration/CIQ_Supplier_Portal_A00/manage"
+          ]
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "sparse",
+      "pass": true,
+      "checks": [
+        {
+          "label": "names come from the full reads",
+          "pass": true
+        },
+        {
+          "label": "also for a completed request (held at 'keep the CIQ up to date')",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "nofilter",
+      "pass": true,
+      "checks": [
+        {
+          "label": "shows portal-request-ZZT-0003",
+          "pass": true
+        },
+        {
+          "label": "ZZT-0003 is still in review",
+          "pass": true
+        },
+        {
+          "label": "ZZT-0001 is still filling in",
+          "pass": true
+        },
+        {
+          "label": "Kissflow refused no command",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "envelope-data",
+      "pass": true,
+      "checks": [
+        {
+          "label": "lists also read when the host answers { Data } (a bare array after the SDK)",
+          "pass": true
+        },
+        {
+          "label": "sees \"ZZT-0001-REQ\"",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "phone",
+      "pass": true,
+      "checks": [
+        {
+          "label": "sees \"How it works\"",
+          "pass": true
+        },
+        {
+          "label": "on a phone the menu is the icon rail (64 px)",
+          "pass": true,
+          "detail": {
+            "x": 0,
+            "y": 0,
+            "width": 64,
+            "height": 800
+          }
+        },
+        {
+          "label": "the current page (Help) is in view and marked current",
+          "pass": true,
+          "detail": {
+            "x": 12,
+            "y": 102,
+            "width": 39,
+            "height": 40
+          }
+        },
+        {
+          "label": "no page scrolls sideways",
+          "pass": true,
+          "detail": [
+            390,
+            390
+          ]
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "dev-role-switch",
+      "pass": true,
+      "checks": [
+        {
+          "label": "dev: the top bar is there",
+          "pass": true
+        },
+        {
+          "label": "the supplier screens show",
+          "pass": true
+        },
+        {
+          "label": "acts as Supplier",
+          "pass": true
+        },
+        {
+          "label": "the person chip names the signed-in contact and the role",
+          "pass": true,
+          "detail": "EM Elena Márquez Supplier"
+        },
+        {
+          "label": "nothing asked for the roles before the menu opens",
+          "pass": true
+        },
+        {
+          "label": "the switcher lists the portal roles",
+          "pass": true
+        },
+        {
+          "label": "the switcher is a menu button, now expanded",
+          "pass": true
+        },
+        {
+          "label": "two options, Supplier (checked) and Portal admin, as menu radio items",
+          "pass": true,
+          "detail": [
+            [
+              "switch-role-supplier",
+              "menuitemradio",
+              "true",
+              "Supplier"
+            ],
+            [
+              "switch-role-admin",
+              "menuitemradio",
+              "false",
+              "Portal admin"
+            ]
+          ]
+        },
+        {
+          "label": "the open menu asked Kissflow for the roles (GET_ROLES)",
+          "pass": true
+        },
+        {
+          "label": "a role not held asks for confirmation first",
+          "pass": true
+        },
+        {
+          "label": "the confirmation names the role the user leaves",
+          "pass": true,
+          "detail": "Switch your Kissflow role to Portal admin? You leave: Supplier.\n\nSwitch role\nCancel"
+        },
+        {
+          "label": "nothing switched before the confirmation",
+          "pass": true
+        },
+        {
+          "label": "the admin console shows after the switch",
+          "pass": true
+        },
+        {
+          "label": "with the portal's flows",
+          "pass": true
+        },
+        {
+          "label": "one SWITCH_ROLE call",
+          "pass": true,
+          "detail": [
+            "SWITCH_ROLE"
+          ]
+        },
+        {
+          "label": "Kissflow moved the user from Supplier to Admin",
+          "pass": true,
+          "detail": [
+            {
+              "from": [
+                "supplier"
+              ],
+              "to": "admin"
+            }
+          ]
+        },
+        {
+          "label": "the portal now acts as Portal admin",
+          "pass": true
+        },
+        {
+          "label": "on the admin console (not the demo preview)",
+          "pass": true,
+          "detail": "#/admin"
+        },
+        {
+          "label": "the admin console reads as Admin now (Kissflow allows the admin lists)",
+          "pass": true,
+          "detail": []
+        },
+        {
+          "label": "in dev, Roles & grants redirects Kissflow to the Development sandbox's manage page",
+          "pass": true,
+          "detail": [
+            "https://dev-beiersdorf.kissflow.eu/view/application/CIQ_Supplier_Portal_A00/manage"
+          ]
+        },
+        {
+          "label": "shows nav-admin",
+          "pass": true
+        },
+        {
+          "label": "holding both roles, the portal acts as Portal admin first",
+          "pass": true
+        },
+        {
+          "label": "shows role-menu",
+          "pass": true
+        },
+        {
+          "label": "Supplier is marked held",
+          "pass": true
+        },
+        {
+          "label": "the supplier screens show",
+          "pass": true
+        },
+        {
+          "label": "a held role switches the screens only (no SWITCH_ROLE)",
+          "pass": true,
+          "detail": [
+            "GET_ROLES",
+            "PROCESS_GET_MY_TASKS_ITEMS",
+            "DATAFORM_GET_ITEMS",
+            "PROCESS_GET_MY_TASKS_ITEMS",
+            "PROCESS_GET_MY_TASKS_ITEMS",
+            "PROCESS_GET_MY_TASKS_ITEMS",
+            "PROCESS_GET_MY_TASKS_ITEMS",
+            "PROCESS_GET_ITEM",
+            "PROCESS_GET_ITEM",
+            "PROCESS_GET_ITEM",
+            "PROCESS_GET_ITEM"
+          ]
+        },
+        {
+          "label": "now acts as Supplier, on My requests",
+          "pass": true
+        },
+        {
+          "label": "the supplier task lists were read for the new role",
+          "pass": true
+        },
+        {
+          "label": "Escape closes the menu",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "prod-no-topbar",
+      "pass": true,
+      "checks": [
+        {
+          "label": "the shell opens",
+          "pass": true
+        },
+        {
+          "label": "sees \"OLIVIA Pure 100\"",
+          "pass": true
+        },
+        {
+          "label": "no top bar",
+          "pass": true
+        },
+        {
+          "label": "no role switcher and no person chip",
+          "pass": true
+        },
+        {
+          "label": "no GET_ROLES / SWITCH_ROLE call",
+          "pass": true
+        },
+        {
+          "label": "Reload and the status note sit in the left pane's footer",
+          "pass": true
+        },
+        {
+          "label": "the note reads 'Updated …' once nothing runs",
+          "pass": true,
+          "detail": "Updated 10:25 AM"
+        },
+        {
+          "label": "the theme toggle is there too",
+          "pass": true
+        },
+        {
+          "label": "My requests carries the open-task count",
+          "pass": true,
+          "detail": {
+            "badge": "5",
+            "tasks": 5
+          }
+        },
+        {
+          "label": "the left pane starts expanded (244 px)",
+          "pass": true,
+          "detail": 244
+        },
+        {
+          "label": "the left pane collapses to an icon rail (64 px)",
+          "pass": true,
+          "detail": 64
+        },
+        {
+          "label": "collapsed, Reload keeps its name and the menu entries theirs",
+          "pass": true
+        },
+        {
+          "label": "and expands again",
+          "pass": true,
+          "detail": 244
+        },
+        {
+          "label": "shows nav-admin",
+          "pass": true
+        },
+        {
+          "label": "admin: no top bar",
+          "pass": true
+        },
+        {
+          "label": "admin: no phone-only page picker",
+          "pass": true
+        },
+        {
+          "label": "admin: Roles & grants is a button in the pane",
+          "pass": true
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "paging",
+      "pass": true,
+      "checks": [
+        {
+          "label": "every request read across pages of 50",
+          "pass": true
+        },
+        {
+          "label": "pages 1, 2 and 3 were asked for",
+          "pass": true,
+          "detail": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "label": "no page errors",
+          "pass": true
+        },
+        {
+          "label": "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)",
+          "pass": true
+        }
+      ]
+    }
+  ]
+}

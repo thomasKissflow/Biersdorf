@@ -1,0 +1,1044 @@
+{
+ "at": "2026-10-14T18:11:50.707Z",
+ "op": {
+  "metaVersion": "1791485991666407",
+  "publishedAt": "2026-10-08T18:59:51Z",
+  "kinds": {
+   "Model": 2,
+   "Row": 37,
+   "Column": 65,
+   "Field": 63,
+   "QueryDefinition": 3,
+   "Expression": 9,
+   "Node": 80,
+   "ProcessDef": 1,
+   "Permission": 486,
+   "Activity": 10,
+   "Resource": 7,
+   "Appearance": 1,
+   "Style": 1,
+   "User": 1
+  },
+  "steps": [
+   "Raise open point [Activity_18t0lhi] StartEvent  perms=54",
+   "Waiting for supplier [Activity_4k7uck] UserTask AppRole:CIQ RMM if OP_To_Supplier = \"Yes\" perms=54",
+   "Review – Regulatory [Activity_uka3mx] UserTask AppRole:CIQ Regulatory Reviewer if OP_Dept = \"REG\" perms=54",
+   "Review – Safety [Activity_1kdump3] UserTask AppRole:CIQ Safety Reviewer if OP_Dept = \"SAF\" perms=54",
+   "Review – QM [Activity_1go37bt] UserTask AppRole:CIQ QM Reviewer if OP_Dept = \"QM\" perms=54",
+   "Review – Microbiology [Activity_hha7u2] UserTask AppRole:CIQ Microbiology Reviewer if OP_Dept = \"MIC\" perms=54",
+   "Review – Sustainability [Activity_y4af4g] UserTask AppRole:CIQ Sustainability Reviewer if OP_Dept = \"SUS\" perms=54",
+   "Review – RMM [Activity_xc8fbb] UserTask AppRole:CIQ RMM if OP_Dept = \"RMM\" perms=54",
+   "End [Activity_i73i25] EndEvent  perms=54"
+  ],
+  "fields": 53,
+  "fieldTypes": {
+   "OP_Key": "Text",
+   "Round_No": "Number",
+   "Query_Key": "Text",
+   "Case_Code": "Text",
+   "Cycle_No": "Number",
+   "Supplier_Code": "Text",
+   "Case_Item_Id": "Text",
+   "OP_Kind": "Select→CIQ_OP_Kind_A00",
+   "OP_Dept": "Select→CIQ_Review_Dept_A00",
+   "Raised_By_Dept": "Select→CIQ_Review_Dept_A00",
+   "OP_To_Supplier": "Select→CIQ_Yes_No_A00",
+   "Ref_Kind": "Text",
+   "Ref_Section_Key": "Text",
+   "Ref_Field_Key": "Text",
+   "Ref_Row_Id": "Text",
+   "Ref_Doc_Id": "Text",
+   "Ref_Doc_File_Name": "Text",
+   "Ref_Doc_Uploaded_At": "DateTime",
+   "Ref_Label": "Text",
+   "Ref_Internal_Key": "Text",
+   "Kind_Label": "Text",
+   "Question_Text": "Textarea",
+   "Supplier_Justification": "Textarea",
+   "Internal_Justification": "Textarea",
+   "Responsible_User": "User",
+   "Responsible_Name": "Text",
+   "Responsible_Dept_Label": "Text",
+   "Internal_Due_Date": "Date",
+   "Supplier_Due_Date": "Date",
+   "New_Section_Item_Key": "Text",
+   "Portal_Contact_Ids": "Text",
+   "Thread_Text": "Textarea",
+   "Awaiting_Response": "Text",
+   "Response_Kind": "Text",
+   "Response_Text": "Textarea",
+   "Response_Doc_Refs_JSON": "Textarea",
+   "Supplier_Responsible_Email": "Text",
+   "Portal_Query_Item_Id": "Text",
+   "OP_Progress": "Select→CIQ_OP_Progress_A00",
+   "OP_Outcome": "Select→CIQ_OP_Outcome_A00",
+   "Outcome_Reason": "Textarea",
+   "Return_Reason": "Textarea",
+   "Accepted_Doc_File_Name": "Text",
+   "Accepted_Doc_Uploaded_At": "DateTime",
+   "Reviewed_By": "User",
+   "Reviewed_By_Email": "Email",
+   "Reviewed_At": "DateTime",
+   "Reviewed_Answers_Rev": "Number",
+   "Late_Decision": "Select→CIQ_Decision_A00",
+   "Late_Decision_Reason": "Textarea",
+   "On_Behalf_Of": "Text",
+   "Open_Num": "Number (formula)",
+   "Start_Gate": "Text (formula)"
+  },
+  "nonTaskActivities": [
+   "SendBackToInitiator SendBackToInitiator undefined perms=0"
+  ],
+  "permCounts": {
+   "Raise open point [Activity_18t0lhi]": {
+    "Mandatory": 17,
+    "Editable": 17,
+    "ReadOnly": 19
+   },
+   "Waiting for supplier [Activity_4k7uck]": {
+    "ReadOnly": 45,
+    "Editable": 7,
+    "Mandatory": 1
+   },
+   "Review – Regulatory [Activity_uka3mx]": {
+    "ReadOnly": 28,
+    "Editable": 21,
+    "Mandatory": 4
+   },
+   "Review – Safety [Activity_1kdump3]": {
+    "ReadOnly": 28,
+    "Editable": 21,
+    "Mandatory": 4
+   },
+   "Review – QM [Activity_1go37bt]": {
+    "ReadOnly": 30,
+    "Editable": 19,
+    "Mandatory": 4
+   },
+   "Review – Microbiology [Activity_hha7u2]": {
+    "ReadOnly": 30,
+    "Editable": 19,
+    "Mandatory": 4
+   },
+   "Review – Sustainability [Activity_y4af4g]": {
+    "ReadOnly": 30,
+    "Editable": 19,
+    "Mandatory": 4
+   },
+   "Review – RMM [Activity_xc8fbb]": {
+    "ReadOnly": 30,
+    "Editable": 19,
+    "Mandatory": 4
+   },
+   "End [Activity_i73i25]": {
+    "ReadOnly": 53
+   }
+  },
+  "permMatrix": {
+   "Raise open point [Activity_18t0lhi]": {
+    "Mandatory": [
+     "OP_Key",
+     "Round_No",
+     "Case_Code",
+     "Cycle_No",
+     "Supplier_Code",
+     "Case_Item_Id",
+     "OP_Kind",
+     "OP_Dept",
+     "Raised_By_Dept",
+     "OP_To_Supplier",
+     "Ref_Kind",
+     "Ref_Label",
+     "Question_Text",
+     "Internal_Justification",
+     "Responsible_User",
+     "Internal_Due_Date",
+     "Start_Gate"
+    ],
+    "Editable": [
+     "Query_Key",
+     "Ref_Section_Key",
+     "Ref_Field_Key",
+     "Ref_Row_Id",
+     "Ref_Doc_Id",
+     "Ref_Doc_File_Name",
+     "Ref_Doc_Uploaded_At",
+     "Ref_Internal_Key",
+     "Kind_Label",
+     "Supplier_Justification",
+     "Responsible_Name",
+     "Responsible_Dept_Label",
+     "Supplier_Due_Date",
+     "New_Section_Item_Key",
+     "Portal_Contact_Ids",
+     "Thread_Text",
+     "Awaiting_Response"
+    ],
+    "ReadOnly": [
+     "Response_Kind",
+     "Response_Text",
+     "Response_Doc_Refs_JSON",
+     "Supplier_Responsible_Email",
+     "Portal_Query_Item_Id",
+     "OP_Progress",
+     "OP_Outcome",
+     "Outcome_Reason",
+     "Return_Reason",
+     "Accepted_Doc_File_Name",
+     "Accepted_Doc_Uploaded_At",
+     "Reviewed_By",
+     "Reviewed_By_Email",
+     "Reviewed_At",
+     "Reviewed_Answers_Rev",
+     "Late_Decision",
+     "Late_Decision_Reason",
+     "On_Behalf_Of",
+     "Open_Num"
+    ]
+   },
+   "Waiting for supplier [Activity_4k7uck]": {
+    "ReadOnly": [
+     "OP_Key",
+     "Round_No",
+     "Query_Key",
+     "Case_Code",
+     "Cycle_No",
+     "Supplier_Code",
+     "Case_Item_Id",
+     "OP_Kind",
+     "OP_Dept",
+     "Raised_By_Dept",
+     "OP_To_Supplier",
+     "Ref_Kind",
+     "Ref_Section_Key",
+     "Ref_Field_Key",
+     "Ref_Row_Id",
+     "Ref_Doc_Id",
+     "Ref_Doc_File_Name",
+     "Ref_Doc_Uploaded_At",
+     "Ref_Label",
+     "Ref_Internal_Key",
+     "Kind_Label",
+     "Question_Text",
+     "Supplier_Justification",
+     "Internal_Justification",
+     "Responsible_User",
+     "Responsible_Name",
+     "Responsible_Dept_Label",
+     "Internal_Due_Date",
+     "Supplier_Due_Date",
+     "New_Section_Item_Key",
+     "Portal_Contact_Ids",
+     "Thread_Text",
+     "OP_Progress",
+     "Return_Reason",
+     "Accepted_Doc_File_Name",
+     "Accepted_Doc_Uploaded_At",
+     "Reviewed_By",
+     "Reviewed_By_Email",
+     "Reviewed_At",
+     "Reviewed_Answers_Rev",
+     "Late_Decision",
+     "Late_Decision_Reason",
+     "On_Behalf_Of",
+     "Open_Num",
+     "Start_Gate"
+    ],
+    "Editable": [
+     "Awaiting_Response",
+     "Response_Text",
+     "Response_Doc_Refs_JSON",
+     "Supplier_Responsible_Email",
+     "Portal_Query_Item_Id",
+     "OP_Outcome",
+     "Outcome_Reason"
+    ],
+    "Mandatory": [
+     "Response_Kind"
+    ]
+   },
+   "Review – Regulatory [Activity_uka3mx]": {
+    "ReadOnly": [
+     "OP_Key",
+     "Case_Code",
+     "Cycle_No",
+     "Supplier_Code",
+     "Case_Item_Id",
+     "OP_Kind",
+     "OP_Dept",
+     "Raised_By_Dept",
+     "OP_To_Supplier",
+     "Ref_Kind",
+     "Ref_Section_Key",
+     "Ref_Field_Key",
+     "Ref_Row_Id",
+     "Ref_Doc_Id",
+     "Ref_Doc_File_Name",
+     "Ref_Doc_Uploaded_At",
+     "Ref_Label",
+     "Ref_Internal_Key",
+     "Kind_Label",
+     "Internal_Justification",
+     "Responsible_User",
+     "Responsible_Name",
+     "Responsible_Dept_Label",
+     "New_Section_Item_Key",
+     "Supplier_Responsible_Email",
+     "Portal_Query_Item_Id",
+     "Open_Num",
+     "Start_Gate"
+    ],
+    "Editable": [
+     "Round_No",
+     "Query_Key",
+     "Question_Text",
+     "Supplier_Justification",
+     "Internal_Due_Date",
+     "Supplier_Due_Date",
+     "Portal_Contact_Ids",
+     "Thread_Text",
+     "Awaiting_Response",
+     "Response_Kind",
+     "Response_Text",
+     "Response_Doc_Refs_JSON",
+     "OP_Progress",
+     "Outcome_Reason",
+     "Return_Reason",
+     "Accepted_Doc_File_Name",
+     "Accepted_Doc_Uploaded_At",
+     "Reviewed_Answers_Rev",
+     "Late_Decision",
+     "Late_Decision_Reason",
+     "On_Behalf_Of"
+    ],
+    "Mandatory": [
+     "OP_Outcome",
+     "Reviewed_By",
+     "Reviewed_By_Email",
+     "Reviewed_At"
+    ]
+   },
+   "Review – Safety [Activity_1kdump3]": {
+    "ReadOnly": [
+     "OP_Key",
+     "Case_Code",
+     "Cycle_No",
+     "Supplier_Code",
+     "Case_Item_Id",
+     "OP_Kind",
+     "OP_Dept",
+     "Raised_By_Dept",
+     "OP_To_Supplier",
+     "Ref_Kind",
+     "Ref_Section_Key",
+     "Ref_Field_Key",
+     "Ref_Row_Id",
+     "Ref_Doc_Id",
+     "Ref_Doc_File_Name",
+     "Ref_Doc_Uploaded_At",
+     "Ref_Label",
+     "Ref_Internal_Key",
+     "Kind_Label",
+     "Internal_Justification",
+     "Responsible_User",
+     "Responsible_Name",
+     "Responsible_Dept_Label",
+     "New_Section_Item_Key",
+     "Supplier_Responsible_Email",
+     "Portal_Query_Item_Id",
+     "Open_Num",
+     "Start_Gate"
+    ],
+    "Editable": [
+     "Round_No",
+     "Query_Key",
+     "Question_Text",
+     "Supplier_Justification",
+     "Internal_Due_Date",
+     "Supplier_Due_Date",
+     "Portal_Contact_Ids",
+     "Thread_Text",
+     "Awaiting_Response",
+     "Response_Kind",
+     "Response_Text",
+     "Response_Doc_Refs_JSON",
+     "OP_Progress",
+     "Outcome_Reason",
+     "Return_Reason",
+     "Accepted_Doc_File_Name",
+     "Accepted_Doc_Uploaded_At",
+     "Reviewed_Answers_Rev",
+     "Late_Decision",
+     "Late_Decision_Reason",
+     "On_Behalf_Of"
+    ],
+    "Mandatory": [
+     "OP_Outcome",
+     "Reviewed_By",
+     "Reviewed_By_Email",
+     "Reviewed_At"
+    ]
+   },
+   "Review – QM [Activity_1go37bt]": {
+    "ReadOnly": [
+     "OP_Key",
+     "Case_Code",
+     "Cycle_No",
+     "Supplier_Code",
+     "Case_Item_Id",
+     "OP_Kind",
+     "OP_Dept",
+     "Raised_By_Dept",
+     "OP_To_Supplier",
+     "Ref_Kind",
+     "Ref_Section_Key",
+     "Ref_Field_Key",
+     "Ref_Row_Id",
+     "Ref_Doc_Id",
+     "Ref_Doc_File_Name",
+     "Ref_Doc_Uploaded_At",
+     "Ref_Label",
+     "Ref_Internal_Key",
+     "Kind_Label",
+     "Internal_Justification",
+     "Responsible_User",
+     "Responsible_Name",
+     "Responsible_Dept_Label",
+     "New_Section_Item_Key",
+     "Supplier_Responsible_Email",
+     "Portal_Query_Item_Id",
+     "Late_Decision",
+     "Late_Decision_Reason",
+     "Open_Num",
+     "Start_Gate"
+    ],
+    "Editable": [
+     "Round_No",
+     "Query_Key",
+     "Question_Text",
+     "Supplier_Justification",
+     "Internal_Due_Date",
+     "Supplier_Due_Date",
+     "Portal_Contact_Ids",
+     "Thread_Text",
+     "Awaiting_Response",
+     "Response_Kind",
+     "Response_Text",
+     "Response_Doc_Refs_JSON",
+     "OP_Progress",
+     "Outcome_Reason",
+     "Return_Reason",
+     "Accepted_Doc_File_Name",
+     "Accepted_Doc_Uploaded_At",
+     "Reviewed_Answers_Rev",
+     "On_Behalf_Of"
+    ],
+    "Mandatory": [
+     "OP_Outcome",
+     "Reviewed_By",
+     "Reviewed_By_Email",
+     "Reviewed_At"
+    ]
+   },
+   "Review – Microbiology [Activity_hha7u2]": {
+    "ReadOnly": [
+     "OP_Key",
+     "Case_Code",
+     "Cycle_No",
+     "Supplier_Code",
+     "Case_Item_Id",
+     "OP_Kind",
+     "OP_Dept",
+     "Raised_By_Dept",
+     "OP_To_Supplier",
+     "Ref_Kind",
+     "Ref_Section_Key",
+     "Ref_Field_Key",
+     "Ref_Row_Id",
+     "Ref_Doc_Id",
+     "Ref_Doc_File_Name",
+     "Ref_Doc_Uploaded_At",
+     "Ref_Label",
+     "Ref_Internal_Key",
+     "Kind_Label",
+     "Internal_Justification",
+     "Responsible_User",
+     "Responsible_Name",
+     "Responsible_Dept_Label",
+     "New_Section_Item_Key",
+     "Supplier_Responsible_Email",
+     "Portal_Query_Item_Id",
+     "Late_Decision",
+     "Late_Decision_Reason",
+     "Open_Num",
+     "Start_Gate"
+    ],
+    "Editable": [
+     "Round_No",
+     "Query_Key",
+     "Question_Text",
+     "Supplier_Justification",
+     "Internal_Due_Date",
+     "Supplier_Due_Date",
+     "Portal_Contact_Ids",
+     "Thread_Text",
+     "Awaiting_Response",
+     "Response_Kind",
+     "Response_Text",
+     "Response_Doc_Refs_JSON",
+     "OP_Progress",
+     "Outcome_Reason",
+     "Return_Reason",
+     "Accepted_Doc_File_Name",
+     "Accepted_Doc_Uploaded_At",
+     "Reviewed_Answers_Rev",
+     "On_Behalf_Of"
+    ],
+    "Mandatory": [
+     "OP_Outcome",
+     "Reviewed_By",
+     "Reviewed_By_Email",
+     "Reviewed_At"
+    ]
+   },
+   "Review – Sustainability [Activity_y4af4g]": {
+    "ReadOnly": [
+     "OP_Key",
+     "Case_Code",
+     "Cycle_No",
+     "Supplier_Code",
+     "Case_Item_Id",
+     "OP_Kind",
+     "OP_Dept",
+     "Raised_By_Dept",
+     "OP_To_Supplier",
+     "Ref_Kind",
+     "Ref_Section_Key",
+     "Ref_Field_Key",
+     "Ref_Row_Id",
+     "Ref_Doc_Id",
+     "Ref_Doc_File_Name",
+     "Ref_Doc_Uploaded_At",
+     "Ref_Label",
+     "Ref_Internal_Key",
+     "Kind_Label",
+     "Internal_Justification",
+     "Responsible_User",
+     "Responsible_Name",
+     "Responsible_Dept_Label",
+     "New_Section_Item_Key",
+     "Supplier_Responsible_Email",
+     "Portal_Query_Item_Id",
+     "Late_Decision",
+     "Late_Decision_Reason",
+     "Open_Num",
+     "Start_Gate"
+    ],
+    "Editable": [
+     "Round_No",
+     "Query_Key",
+     "Question_Text",
+     "Supplier_Justification",
+     "Internal_Due_Date",
+     "Supplier_Due_Date",
+     "Portal_Contact_Ids",
+     "Thread_Text",
+     "Awaiting_Response",
+     "Response_Kind",
+     "Response_Text",
+     "Response_Doc_Refs_JSON",
+     "OP_Progress",
+     "Outcome_Reason",
+     "Return_Reason",
+     "Accepted_Doc_File_Name",
+     "Accepted_Doc_Uploaded_At",
+     "Reviewed_Answers_Rev",
+     "On_Behalf_Of"
+    ],
+    "Mandatory": [
+     "OP_Outcome",
+     "Reviewed_By",
+     "Reviewed_By_Email",
+     "Reviewed_At"
+    ]
+   },
+   "Review – RMM [Activity_xc8fbb]": {
+    "ReadOnly": [
+     "OP_Key",
+     "Case_Code",
+     "Cycle_No",
+     "Supplier_Code",
+     "Case_Item_Id",
+     "OP_Kind",
+     "OP_Dept",
+     "Raised_By_Dept",
+     "OP_To_Supplier",
+     "Ref_Kind",
+     "Ref_Section_Key",
+     "Ref_Field_Key",
+     "Ref_Row_Id",
+     "Ref_Doc_Id",
+     "Ref_Doc_File_Name",
+     "Ref_Doc_Uploaded_At",
+     "Ref_Label",
+     "Ref_Internal_Key",
+     "Kind_Label",
+     "Internal_Justification",
+     "Responsible_User",
+     "Responsible_Name",
+     "Responsible_Dept_Label",
+     "New_Section_Item_Key",
+     "Supplier_Responsible_Email",
+     "Portal_Query_Item_Id",
+     "Late_Decision",
+     "Late_Decision_Reason",
+     "Open_Num",
+     "Start_Gate"
+    ],
+    "Editable": [
+     "Round_No",
+     "Query_Key",
+     "Question_Text",
+     "Supplier_Justification",
+     "Internal_Due_Date",
+     "Supplier_Due_Date",
+     "Portal_Contact_Ids",
+     "Thread_Text",
+     "Awaiting_Response",
+     "Response_Kind",
+     "Response_Text",
+     "Response_Doc_Refs_JSON",
+     "OP_Progress",
+     "Outcome_Reason",
+     "Return_Reason",
+     "Accepted_Doc_File_Name",
+     "Accepted_Doc_Uploaded_At",
+     "Reviewed_Answers_Rev",
+     "On_Behalf_Of"
+    ],
+    "Mandatory": [
+     "OP_Outcome",
+     "Reviewed_By",
+     "Reviewed_By_Email",
+     "Reviewed_At"
+    ]
+   },
+   "End [Activity_i73i25]": {
+    "ReadOnly": [
+     "OP_Key",
+     "Round_No",
+     "Query_Key",
+     "Case_Code",
+     "Cycle_No",
+     "Supplier_Code",
+     "Case_Item_Id",
+     "OP_Kind",
+     "OP_Dept",
+     "Raised_By_Dept",
+     "OP_To_Supplier",
+     "Ref_Kind",
+     "Ref_Section_Key",
+     "Ref_Field_Key",
+     "Ref_Row_Id",
+     "Ref_Doc_Id",
+     "Ref_Doc_File_Name",
+     "Ref_Doc_Uploaded_At",
+     "Ref_Label",
+     "Ref_Internal_Key",
+     "Kind_Label",
+     "Question_Text",
+     "Supplier_Justification",
+     "Internal_Justification",
+     "Responsible_User",
+     "Responsible_Name",
+     "Responsible_Dept_Label",
+     "Internal_Due_Date",
+     "Supplier_Due_Date",
+     "New_Section_Item_Key",
+     "Portal_Contact_Ids",
+     "Thread_Text",
+     "Awaiting_Response",
+     "Response_Kind",
+     "Response_Text",
+     "Response_Doc_Refs_JSON",
+     "Supplier_Responsible_Email",
+     "Portal_Query_Item_Id",
+     "OP_Progress",
+     "OP_Outcome",
+     "Outcome_Reason",
+     "Return_Reason",
+     "Accepted_Doc_File_Name",
+     "Accepted_Doc_Uploaded_At",
+     "Reviewed_By",
+     "Reviewed_By_Email",
+     "Reviewed_At",
+     "Reviewed_Answers_Rev",
+     "Late_Decision",
+     "Late_Decision_Reason",
+     "On_Behalf_Of",
+     "Open_Num",
+     "Start_Gate"
+    ]
+   }
+  },
+  "activities": [
+   {
+    "id": "Activity_18t0lhi",
+    "name": "Raise open point",
+    "type": "StartEvent",
+    "sendback": null,
+    "resources": [],
+    "expressions": []
+   },
+   {
+    "id": "Activity_4k7uck",
+    "name": "Waiting for supplier",
+    "type": "UserTask",
+    "sendback": null,
+    "resources": [
+     {
+      "Id": "Resource_1b09qui",
+      "Kind": "Resource",
+      "ValueType": "AppRole",
+      "DisplayValue": "CIQ RMM",
+      "Value": "RoEKl83f9jPF",
+      "Activity": "Activity_4k7uck"
+     }
+    ],
+    "expressions": [
+     "OP_To_Supplier = \"Yes\""
+    ]
+   },
+   {
+    "id": "Activity_uka3mx",
+    "name": "Review – Regulatory",
+    "type": "UserTask",
+    "sendback": null,
+    "resources": [
+     {
+      "Id": "Resource_i2izd6",
+      "Kind": "Resource",
+      "ValueType": "AppRole",
+      "DisplayValue": "CIQ Regulatory Reviewer",
+      "Value": "RoEKl84Hca4w",
+      "Activity": "Activity_uka3mx"
+     }
+    ],
+    "expressions": [
+     "OP_Dept = \"REG\""
+    ]
+   },
+   {
+    "id": "Activity_1kdump3",
+    "name": "Review – Safety",
+    "type": "UserTask",
+    "sendback": null,
+    "resources": [
+     {
+      "Id": "Resource_1vfqnna",
+      "Kind": "Resource",
+      "ValueType": "AppRole",
+      "DisplayValue": "CIQ Safety Reviewer",
+      "Value": "RoEKl84xAFRW",
+      "Activity": "Activity_1kdump3"
+     }
+    ],
+    "expressions": [
+     "OP_Dept = \"SAF\""
+    ]
+   },
+   {
+    "id": "Activity_1go37bt",
+    "name": "Review – QM",
+    "type": "UserTask",
+    "sendback": null,
+    "resources": [
+     {
+      "Id": "Resource_1t0uxa0",
+      "Kind": "Resource",
+      "ValueType": "AppRole",
+      "DisplayValue": "CIQ QM Reviewer",
+      "Value": "RoEKl85WB1yE",
+      "Activity": "Activity_1go37bt"
+     }
+    ],
+    "expressions": [
+     "OP_Dept = \"QM\""
+    ]
+   },
+   {
+    "id": "Activity_hha7u2",
+    "name": "Review – Microbiology",
+    "type": "UserTask",
+    "sendback": null,
+    "resources": [
+     {
+      "Id": "Resource_9libvk",
+      "Kind": "Resource",
+      "ValueType": "AppRole",
+      "DisplayValue": "CIQ Microbiology Reviewer",
+      "Value": "RoEKl8647K2u",
+      "Activity": "Activity_hha7u2"
+     }
+    ],
+    "expressions": [
+     "OP_Dept = \"MIC\""
+    ]
+   },
+   {
+    "id": "Activity_y4af4g",
+    "name": "Review – Sustainability",
+    "type": "UserTask",
+    "sendback": null,
+    "resources": [
+     {
+      "Id": "Resource_jkxckg",
+      "Kind": "Resource",
+      "ValueType": "AppRole",
+      "DisplayValue": "CIQ Sustainability Reviewer",
+      "Value": "RoEKl86bQQrO",
+      "Activity": "Activity_y4af4g"
+     }
+    ],
+    "expressions": [
+     "OP_Dept = \"SUS\""
+    ]
+   },
+   {
+    "id": "Activity_xc8fbb",
+    "name": "Review – RMM",
+    "type": "UserTask",
+    "sendback": null,
+    "resources": [
+     {
+      "Id": "Resource_jtxnpq",
+      "Kind": "Resource",
+      "ValueType": "AppRole",
+      "DisplayValue": "CIQ RMM",
+      "Value": "RoEKl83f9jPF",
+      "Activity": "Activity_xc8fbb"
+     }
+    ],
+    "expressions": [
+     "OP_Dept = \"RMM\""
+    ]
+   },
+   {
+    "id": "Activity_i73i25",
+    "name": "End",
+    "type": "EndEvent",
+    "sendback": null,
+    "resources": [],
+    "expressions": []
+   },
+   {
+    "id": "SendBackToInitiator",
+    "type": "SendBackToInitiator",
+    "sendback": null,
+    "resources": [],
+    "expressions": []
+   }
+  ],
+  "childModels": [
+   {
+    "id": "Rounds",
+    "name": "Rounds",
+    "fields": 10
+   }
+  ],
+  "nonFieldColumns": [
+   "Column_1je59z6 Model"
+  ],
+  "userFieldShapes": [
+   {
+    "field": {
+     "Id": "Responsible_User",
+     "Kind": "Field",
+     "Type": "User",
+     "Name": "Responsible User",
+     "Model": "CIQ_Open_Point_A00",
+     "Column": "Column_hc3mca",
+     "Field::QueryDefinition": [
+      "QueryDefinition_hc3mca"
+     ]
+    },
+    "qd": [
+     {
+      "Id": "QueryDefinition_hc3mca",
+      "Kind": "QueryDefinition",
+      "Field": "Responsible_User",
+      "LHSModel": "User",
+      "FlowType": "User",
+      "LookupField": [],
+      "HiddenField": []
+     }
+    ]
+   },
+   {
+    "field": {
+     "Id": "Reviewed_By",
+     "Kind": "Field",
+     "Type": "User",
+     "Name": "Reviewed By",
+     "Model": "CIQ_Open_Point_A00",
+     "Column": "Column_1d7azyj",
+     "Field::QueryDefinition": [
+      "QueryDefinition_1d7azyj"
+     ]
+    },
+    "qd": [
+     {
+      "Id": "QueryDefinition_1d7azyj",
+      "Kind": "QueryDefinition",
+      "Field": "Reviewed_By",
+      "LHSModel": "User",
+      "FlowType": "User",
+      "LookupField": [],
+      "HiddenField": []
+     }
+    ]
+   },
+   {
+    "field": {
+     "Id": "Rounds_Reviewed_By",
+     "Kind": "Field",
+     "Type": "User",
+     "Name": "Reviewed By",
+     "Model": "Rounds",
+     "Column": "Column_1odow4p",
+     "Field::QueryDefinition": [
+      "QueryDefinition_1odow4p"
+     ]
+    },
+    "qd": [
+     {
+      "Id": "QueryDefinition_1odow4p",
+      "Kind": "QueryDefinition",
+      "Field": "Rounds_Reviewed_By",
+      "LHSModel": "User",
+      "FlowType": "User",
+      "LookupField": [],
+      "HiddenField": []
+     }
+    ]
+   }
+  ]
+ },
+ "myitems": {
+  "status": 200,
+  "count": 6,
+  "ids": [
+   "PkEKlGQ0v8tU",
+   "PkEKlGHTyLTo",
+   "PkEKlG8uBVi2",
+   "PkEKlG0gqvMW",
+   "PkEKlFsUhTZb",
+   "PkEKlFeSYb_8"
+  ]
+ },
+ "items": [
+  {
+   "id": "PkEKlFeSYb_8",
+   "http": 200,
+   "status": "Completed",
+   "name": "CIQ Open Point from Thomas",
+   "opKey": "ZZT-1008-1843-E-REG",
+   "dept": "REG",
+   "toSupplier": "Yes",
+   "question": "ZZT: please provide the fictional CoA.",
+   "created": "2026-10-08T18:46:20Z",
+   "steps": [
+    {
+     "assigned": []
+    }
+   ],
+   "onRemovedStep": false
+  },
+  {
+   "id": "PkEKlFsUhTZb",
+   "http": 200,
+   "status": "Completed",
+   "name": "CIQ Open Point from Thomas",
+   "opKey": "ZZT-1008-1843-E-SAF",
+   "dept": "SAF",
+   "toSupplier": "No",
+   "question": "ZZT: please provide the fictional CoA.",
+   "created": "2026-10-08T18:46:33Z",
+   "steps": [
+    {
+     "assigned": []
+    }
+   ],
+   "onRemovedStep": false
+  },
+  {
+   "id": "PkEKlG0gqvMW",
+   "http": 200,
+   "status": "Completed",
+   "name": "CIQ Open Point from Thomas",
+   "opKey": "ZZT-1008-1843-E-QM",
+   "dept": "QM",
+   "toSupplier": "No",
+   "question": "ZZT: please provide the fictional CoA.",
+   "created": "2026-10-08T18:46:41Z",
+   "steps": [
+    {
+     "assigned": []
+    }
+   ],
+   "onRemovedStep": false
+  },
+  {
+   "id": "PkEKlG8uBVi2",
+   "http": 200,
+   "status": "Completed",
+   "name": "CIQ Open Point from Thomas",
+   "opKey": "ZZT-1008-1843-E-MIC",
+   "dept": "MIC",
+   "toSupplier": "No",
+   "question": "ZZT: please provide the fictional CoA.",
+   "created": "2026-10-08T18:46:48Z",
+   "steps": [
+    {
+     "assigned": []
+    }
+   ],
+   "onRemovedStep": false
+  },
+  {
+   "id": "PkEKlGHTyLTo",
+   "http": 200,
+   "status": "Completed",
+   "name": "CIQ Open Point from Thomas",
+   "opKey": "ZZT-1008-1843-E-SUS",
+   "dept": "SUS",
+   "toSupplier": "No",
+   "question": "ZZT: please provide the fictional CoA.",
+   "created": "2026-10-08T18:46:57Z",
+   "steps": [
+    {
+     "assigned": []
+    }
+   ],
+   "onRemovedStep": false
+  },
+  {
+   "id": "PkEKlGQ0v8tU",
+   "http": 200,
+   "status": "Completed",
+   "name": "CIQ Open Point from Thomas",
+   "opKey": "ZZT-1008-1843-E-RMM",
+   "dept": "RMM",
+   "toSupplier": "No",
+   "question": "ZZT: please provide the fictional CoA.",
+   "created": "2026-10-08T18:47:05Z",
+   "steps": [
+    {
+     "assigned": []
+    }
+   ],
+   "onRemovedStep": false
+  }
+ ],
+ "calls": 8
+}

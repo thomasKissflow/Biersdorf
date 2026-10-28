@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style type="text/tailwindcss">
+@import "tailwindcss/theme.css";
+@import "tailwindcss/utilities.css";
+@theme {
+  --color-card: #131722;
+  --color-brand: #00aaff;
+  --color-muted-foreground: #8b93a7;
+  --color-border: #232838;
+}
+</style>
+</head>
+<body class="p-4 px-6 py-3 m-2 mt-4 flex grid gap-4 items-center justify-between rounded-lg rounded-xl shadow-sm border-b border-border font-semibold text-lg w-full h-10 max-w-md grid-cols-3 hover:bg-brand md:flex lg:grid col-span-2 space-y-4 overflow-hidden relative z-10 transition bg-card text-muted-foreground">
+<nav id="rail" class="p-4 px-6 flex items-center gap-4 border-b border-border shadow-sm font-semibold text-lg rounded-lg w-full justify-between md:flex lg:grid grid-cols-3 space-y-4 bg-card">Vendor Ops</nav>
+<div id="switcher" class="p-3 m-2 rounded-xl bg-card hover:bg-brand transition col-span-2 max-w-md overflow-hidden relative z-10 text-muted-foreground">roles</div>
+<!-- @PART:role-buyer -->
+<!-- @PART:role-approver -->
+<script>var SEED = {};</script>
+</body>
+</html>

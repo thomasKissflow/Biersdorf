@@ -1,0 +1,347 @@
+{
+ "Root": "CIQ_history_updated_Questions_hist_A00",
+ "CIQ_history_updated_Questions_hist_A00": {
+  "Id": "CIQ_history_updated_Questions_hist_A00",
+  "Description": "Plan v6 §4.1 history.updated: the app posts {caseItemId, questionsHistoryJson}; the case's request gets Questions_History_JSON.",
+  "Name": "CIQ history.updated Questions history to supplier",
+  "Kind": "Integration",
+  "FlowType": "Integration",
+  "Integration::Trigger": [
+   "Trigger_history_webhook"
+  ],
+  "Integration::Action": [
+   "Action_history_read_app_item",
+   "Action_history_pick",
+   "Action_HU_update_request"
+  ],
+  "_application_id": "CIQ_Digital_A00"
+ },
+ "PublishedAt": "2026-10-20T10:29:49Z",
+ "PublishedBy": {
+  "_id": "UsEJUfjYLM8Y",
+  "Name": "Thomas",
+  "Kind": "User"
+ },
+ "_meta_version": "1792492189266978",
+ "Trigger_history_webhook": {
+  "Id": "Trigger_history_webhook",
+  "Kind": "Trigger",
+  "Type": "Create",
+  "Name": "Catch a webhook (POST)",
+  "IsInternalAuth": true,
+  "Connection": {},
+  "Integration": "CIQ_history_updated_Questions_hist_A00",
+  "Connector": {
+   "_id": "Coowt2xE4WH9S",
+   "Name": "Webhooks by Kissflow",
+   "Version": "1.0.0",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/Coowt2xE4WH9S/1.0.0/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/Coowt2xE4WH9S/1.0.0/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/Coowt2xE4WH9S/1.0.0/Logo/Webhook.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "TriggerId": "WebhookTrigger",
+   "TriggerName": "Catch a webhook (POST)"
+  }
+ },
+ "Action_history_read_app_item": {
+  "Id": "Action_history_read_app_item",
+  "Kind": "Action",
+  "Type": "Search",
+  "Name": "Search an item",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQ_history_updated_Questions_hist_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "Action_Kh4Jb2AoG",
+   "ActionName": "Search an item "
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_jke2l1",
+   "FieldMapping_jke2l3"
+  ]
+ },
+ "Action_history_pick": {
+  "Id": "Action_history_pick",
+  "Kind": "Action",
+  "Type": "Create",
+  "Name": "Run JavaScript",
+  "IsInternalAuth": true,
+  "Connection": {},
+  "Integration": "CIQ_history_updated_Questions_hist_A00",
+  "Connector": {
+   "_id": "Co4m9q4JUbkV",
+   "Name": "Run script",
+   "Version": "1.0.0",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/Runscript.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "RunJSCode",
+   "ActionName": "Run JavaScript"
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_jkfm67",
+   "FieldMapping_jkfm6e"
+  ]
+ },
+ "Action_HU_update_request": {
+  "Id": "Action_HU_update_request",
+  "Kind": "Action",
+  "Type": "Update",
+  "Name": "Update an item",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQ_history_updated_Questions_hist_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "UpdateAnItem",
+   "ActionName": "Update an item"
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_jkfm65"
+  ]
+ },
+ "FieldMapping_jke2l1": {
+  "Id": "FieldMapping_jke2l1",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Field_FfgdBFhZt",
+  "Label": "Choose a process",
+  "Name": "process_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Action": "Action_history_read_app_item",
+  "SelectedDropdown": [
+   {
+    "FieldId": "CIQ_Case_A00",
+    "FieldName": "CIQ Case - CIQ Digital",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_jke2l2"
+  ]
+ },
+ "Property_jke2l2": {
+  "Id": "Property_jke2l2",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jke2l1",
+  "Type": "Value",
+  "Value": [
+   "CIQ_Case_A00"
+  ],
+  "Name": "process_id"
+ },
+ "FieldMapping_jke2l3": {
+  "Id": "FieldMapping_jke2l3",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Field_1D8EgGqhG",
+  "Label": "Search term",
+  "Name": "lookupValue",
+  "IsRequired": true,
+  "Action": "Action_history_read_app_item",
+  "FieldMapping::Property": [
+   "Property_jke2l4"
+  ]
+ },
+ "Property_jke2l4": {
+  "Id": "Property_jke2l4",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jke2l3",
+  "Type": "Field",
+  "Field": "context.Trigger_history_webhook.caseItemId",
+  "Name": "lookupValue"
+ },
+ "FieldMapping_jkfm65": {
+  "Id": "FieldMapping_jkfm65",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField002",
+  "Label": "Choose a process",
+  "Name": "process_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Action": "Action_HU_update_request",
+  "SelectedDropdown": [
+   {
+    "FieldId": "CIQP_Request_A00",
+    "FieldName": "CIQP Request - CIQ Supplier Portal",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_jkfm66"
+  ]
+ },
+ "Property_jkfm66": {
+  "Id": "Property_jkfm66",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jkfm65",
+  "Type": "Value",
+  "Value": [
+   "CIQP_Request_A00"
+  ],
+  "Name": "process_id"
+ },
+ "FieldMapping_jkfm67": {
+  "Id": "FieldMapping_jkfm67",
+  "Kind": "FieldMapping",
+  "Type": "Object",
+  "FieldId": "InputFields",
+  "Label": "Input data",
+  "Name": "input_fields",
+  "IsDropdown": false,
+  "IsPaginated": false,
+  "HelpText": "Specify the input data that should be provided to your code",
+  "AutoRefresh": false,
+  "Action": "Action_history_pick",
+  "FieldMapping::FieldMapping": [
+   "FieldMapping_jkfm68",
+   "FieldMapping_jkfm6a",
+   "FieldMapping_jkfm6c"
+  ]
+ },
+ "FieldMapping_jkfm68": {
+  "Id": "FieldMapping_jkfm68",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "IsVisible": true,
+  "FieldMapping": "FieldMapping_jkfm67",
+  "Name": "caseItemId",
+  "Label": "caseItemId",
+  "FieldMapping::Property": [
+   "Property_jkfm69"
+  ]
+ },
+ "Property_jkfm69": {
+  "Id": "Property_jkfm69",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jkfm68",
+  "Type": "Field",
+  "Field": "context.Trigger_history_webhook.caseItemId",
+  "Name": "caseItemId"
+ },
+ "FieldMapping_jkfm6a": {
+  "Id": "FieldMapping_jkfm6a",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "IsVisible": true,
+  "FieldMapping": "FieldMapping_jkfm67",
+  "Name": "rows",
+  "Label": "rows",
+  "FieldMapping::Property": [
+   "Property_jkfm6b"
+  ]
+ },
+ "Property_jkfm6b": {
+  "Id": "Property_jkfm6b",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jkfm6a",
+  "Type": "Field",
+  "Field": "context.Action_history_read_app_item.Data",
+  "Name": "rows"
+ },
+ "FieldMapping_jkfm6c": {
+  "Id": "FieldMapping_jkfm6c",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "IsVisible": true,
+  "FieldMapping": "FieldMapping_jkfm67",
+  "Name": "questionsHistoryJson",
+  "Label": "questionsHistoryJson",
+  "FieldMapping::Property": [
+   "Property_jkfm6d"
+  ]
+ },
+ "Property_jkfm6d": {
+  "Id": "Property_jkfm6d",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jkfm6c",
+  "Type": "Field",
+  "Field": "context.Trigger_history_webhook.questionsHistoryJson",
+  "Name": "questionsHistoryJson"
+ },
+ "FieldMapping_jkfm6e": {
+  "Id": "FieldMapping_jkfm6e",
+  "Kind": "FieldMapping",
+  "Type": "Code",
+  "FieldId": "JSCode",
+  "Label": "JavaScript code",
+  "Name": "js_code",
+  "IsRequired": true,
+  "IsDropdown": false,
+  "IsPaginated": false,
+  "AutoRefresh": false,
+  "CodeLanguage": "javascript",
+  "Action": "Action_history_pick",
+  "FieldMapping::Property": [
+   "Property_jkfm6f"
+  ]
+ },
+ "Property_jkfm6f": {
+  "Id": "Property_jkfm6f",
+  "Kind": "Property",
+  "Type": "Code",
+  "Name": "js_code",
+  "Code": "// history.updated · the case the app's screen named; its supplier request (Portal_Request_Item_Id, written only by the\n// case.started integration) gets the supplier-visible question history the screen built (the only value it sends).\nconst id = String(inputData.caseItemId || \"\").trim();\nlet rows = inputData.rows;\nif (typeof rows === \"string\") { try { rows = JSON.parse(rows); } catch (e) { rows = []; } }\nconst row = (Array.isArray(rows) ? rows : []).find((r) => r && r._id === id);\nif (!id || !row) throw new Error(`CIQ Case ${id || \"(no id)\"} was not found`);\nif (!row.Portal_Request_Item_Id) throw new Error(`Case ${row.Case_Code} has no supplier request`);\nlet hist = inputData.questionsHistoryJson;\nif (typeof hist !== \"string\") hist = JSON.stringify(hist ?? []);\nlet parsed;\ntry { parsed = JSON.parse(hist); } catch (e) { throw new Error(\"questionsHistoryJson is not JSON\"); }\nif (!Array.isArray(parsed)) throw new Error(\"questionsHistoryJson is not a list\");\nreturn { _id: row.Portal_Request_Item_Id, Questions_History_JSON: hist };\n",
+  "FieldMapping": "FieldMapping_jkfm6e"
+ }
+}

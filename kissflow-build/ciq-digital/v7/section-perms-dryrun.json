@@ -1,0 +1,3150 @@
+{
+ "at": "2026-10-21T10:14:31.732Z",
+ "mode": "dryrun",
+ "flows": {
+  "review": {
+   "flow": "CIQ_Review_A00",
+   "backup": "v7/backups/CIQ_Review_A00.dryrun.2026-10-21T101431731Z.json",
+   "live": {
+    "PublishedAt": "2026-10-21T10:05:36Z",
+    "_meta_version": "1792577137141898",
+    "kinds": {
+     "Model": 1,
+     "Row": 20,
+     "Column": 31,
+     "Field": 30,
+     "QueryDefinition": 2,
+     "Node": 33,
+     "Expression": 7,
+     "ProcessDef": 1,
+     "Permission": 246,
+     "Activity": 9,
+     "Resource": 6,
+     "Appearance": 1,
+     "Style": 1,
+     "User": 1
+    }
+   },
+   "section": {
+    "id": "Column_lys1rs",
+    "name": "Details",
+    "fields": 30,
+    "tablesInside": []
+   },
+   "steps": [
+    {
+     "step": "Review – Regulatory",
+     "activity": "Activity_1wb6scg",
+     "existing": [
+      "Permission_spmvhy52ug0: Editable"
+     ],
+     "opens": [
+      {
+       "field": "Review_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Cycle_No",
+       "type": "Number",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Item_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Supplier_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Trade_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Review_Dept",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "step condition: Review – Regulatory",
+        "step condition: Review – Safety",
+        "step condition: Review – QM",
+        "step condition: Review – Microbiology",
+        "step condition: Review – Sustainability",
+        "step condition: Review – RMM"
+       ]
+      },
+      {
+       "field": "Round_No",
+       "type": "Number",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Activation_Kind",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Activation_Reason",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Activated_By_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Track_Status",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Rejection_Handling",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Rejection_Note",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Rejected_Depts_Covered",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      }
+     ],
+     "formulasInSection": [
+      "Review_Gate (Mandatory, computed)"
+     ],
+     "alreadyWritable": [
+      "Assignee_User",
+      "Assignee_Name",
+      "Assignee_Email",
+      "Reassign_Reason",
+      "Open_Count",
+      "RMES_Gaps",
+      "Review_Confirm",
+      "Completed_By",
+      "Completed_By_Name",
+      "Completed_By_Email",
+      "Completed_At",
+      "RMES_Decision",
+      "RMES_Decision_Reason",
+      "On_Behalf_Of"
+     ]
+    },
+    {
+     "step": "Review – Safety",
+     "activity": "Activity_116f3su",
+     "existing": [
+      "Permission_spmvhy52ug1: Editable"
+     ],
+     "opens": [
+      {
+       "field": "Review_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Cycle_No",
+       "type": "Number",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Item_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Supplier_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Trade_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Review_Dept",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "step condition: Review – Regulatory",
+        "step condition: Review – Safety",
+        "step condition: Review – QM",
+        "step condition: Review – Microbiology",
+        "step condition: Review – Sustainability",
+        "step condition: Review – RMM"
+       ]
+      },
+      {
+       "field": "Round_No",
+       "type": "Number",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Activation_Kind",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Activation_Reason",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Activated_By_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Track_Status",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Rejection_Handling",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Rejection_Note",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Rejected_Depts_Covered",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      }
+     ],
+     "formulasInSection": [
+      "Review_Gate (Mandatory, computed)"
+     ],
+     "alreadyWritable": [
+      "Assignee_User",
+      "Assignee_Name",
+      "Assignee_Email",
+      "Reassign_Reason",
+      "Open_Count",
+      "RMES_Gaps",
+      "Review_Confirm",
+      "Completed_By",
+      "Completed_By_Name",
+      "Completed_By_Email",
+      "Completed_At",
+      "RMES_Decision",
+      "RMES_Decision_Reason",
+      "On_Behalf_Of"
+     ]
+    },
+    {
+     "step": "Review – QM",
+     "activity": "Activity_12d3ab4",
+     "existing": [
+      "Permission_spmvhy52ug2: Editable"
+     ],
+     "opens": [
+      {
+       "field": "Review_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Cycle_No",
+       "type": "Number",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Item_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Supplier_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Trade_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Review_Dept",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "step condition: Review – Regulatory",
+        "step condition: Review – Safety",
+        "step condition: Review – QM",
+        "step condition: Review – Microbiology",
+        "step condition: Review – Sustainability",
+        "step condition: Review – RMM"
+       ]
+      },
+      {
+       "field": "Round_No",
+       "type": "Number",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Activation_Kind",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Activation_Reason",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Activated_By_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Track_Status",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "RMES_Decision",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "RMES_Decision_Reason",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Rejection_Handling",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Rejection_Note",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Rejected_Depts_Covered",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      }
+     ],
+     "formulasInSection": [
+      "Review_Gate (Mandatory, computed)"
+     ],
+     "alreadyWritable": [
+      "Assignee_User",
+      "Assignee_Name",
+      "Assignee_Email",
+      "Reassign_Reason",
+      "Open_Count",
+      "RMES_Gaps",
+      "Review_Confirm",
+      "Completed_By",
+      "Completed_By_Name",
+      "Completed_By_Email",
+      "Completed_At",
+      "On_Behalf_Of"
+     ]
+    },
+    {
+     "step": "Review – Microbiology",
+     "activity": "Activity_1wkxybl",
+     "existing": [
+      "Permission_spmvhy52ug3: Editable"
+     ],
+     "opens": [
+      {
+       "field": "Review_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Cycle_No",
+       "type": "Number",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Item_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Supplier_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Trade_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Review_Dept",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "step condition: Review – Regulatory",
+        "step condition: Review – Safety",
+        "step condition: Review – QM",
+        "step condition: Review – Microbiology",
+        "step condition: Review – Sustainability",
+        "step condition: Review – RMM"
+       ]
+      },
+      {
+       "field": "Round_No",
+       "type": "Number",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Activation_Kind",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Activation_Reason",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Activated_By_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Track_Status",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "RMES_Decision",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "RMES_Decision_Reason",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Rejection_Handling",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Rejection_Note",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Rejected_Depts_Covered",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      }
+     ],
+     "formulasInSection": [
+      "Review_Gate (Mandatory, computed)"
+     ],
+     "alreadyWritable": [
+      "Assignee_User",
+      "Assignee_Name",
+      "Assignee_Email",
+      "Reassign_Reason",
+      "Open_Count",
+      "RMES_Gaps",
+      "Review_Confirm",
+      "Completed_By",
+      "Completed_By_Name",
+      "Completed_By_Email",
+      "Completed_At",
+      "On_Behalf_Of"
+     ]
+    },
+    {
+     "step": "Review – Sustainability",
+     "activity": "Activity_1um3oo7",
+     "existing": [
+      "Permission_spmvhy52ug4: Editable"
+     ],
+     "opens": [
+      {
+       "field": "Review_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Cycle_No",
+       "type": "Number",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Item_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Supplier_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Trade_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Review_Dept",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "step condition: Review – Regulatory",
+        "step condition: Review – Safety",
+        "step condition: Review – QM",
+        "step condition: Review – Microbiology",
+        "step condition: Review – Sustainability",
+        "step condition: Review – RMM"
+       ]
+      },
+      {
+       "field": "Round_No",
+       "type": "Number",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Activation_Kind",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Activation_Reason",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Activated_By_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Track_Status",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "RMES_Decision",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "RMES_Decision_Reason",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Rejection_Handling",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Rejection_Note",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Rejected_Depts_Covered",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      }
+     ],
+     "formulasInSection": [
+      "Review_Gate (Mandatory, computed)"
+     ],
+     "alreadyWritable": [
+      "Assignee_User",
+      "Assignee_Name",
+      "Assignee_Email",
+      "Reassign_Reason",
+      "Open_Count",
+      "RMES_Gaps",
+      "Review_Confirm",
+      "Completed_By",
+      "Completed_By_Name",
+      "Completed_By_Email",
+      "Completed_At",
+      "On_Behalf_Of"
+     ]
+    },
+    {
+     "step": "Review – RMM",
+     "activity": "Activity_1mh3ji6",
+     "existing": [
+      "Permission_spmvhy52ug5: Editable"
+     ],
+     "opens": [
+      {
+       "field": "Review_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Cycle_No",
+       "type": "Number",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Item_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Supplier_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Trade_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Review_Dept",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "step condition: Review – Regulatory",
+        "step condition: Review – Safety",
+        "step condition: Review – QM",
+        "step condition: Review – Microbiology",
+        "step condition: Review – Sustainability",
+        "step condition: Review – RMM"
+       ]
+      },
+      {
+       "field": "Round_No",
+       "type": "Number",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Activation_Kind",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Activation_Reason",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Activated_By_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Track_Status",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "RMES_Decision",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "RMES_Decision_Reason",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      }
+     ],
+     "formulasInSection": [
+      "Review_Gate (Mandatory, computed)"
+     ],
+     "alreadyWritable": [
+      "Assignee_User",
+      "Assignee_Name",
+      "Assignee_Email",
+      "Reassign_Reason",
+      "Open_Count",
+      "RMES_Gaps",
+      "Review_Confirm",
+      "Completed_By",
+      "Completed_By_Name",
+      "Completed_By_Email",
+      "Completed_At",
+      "Rejection_Handling",
+      "Rejection_Note",
+      "Rejected_Depts_Covered",
+      "On_Behalf_Of"
+     ]
+    }
+   ],
+   "added": [],
+   "refs": [],
+   "conflicts": [],
+   "childTables": [],
+   "preflight": {
+    "errors": [],
+    "warnings": [
+     "NO_ID: entity missing Id",
+     "ORPHAN_ENTITY: entity 'SendBackToInitiator' unreachable from Root"
+    ]
+   },
+   "otherThanV6": {
+    "base": "v6/backups/CIQ_Review_A00.before-v6.2026-10-19T2052.json",
+    "publishedAt": "2026-10-19T20:52:24Z",
+    "v6Changes": "22/22 re-applied",
+    "failed": [],
+    "added": [
+     {
+      "id": "Permission_spmvhy52ug0",
+      "what": "permission Review – Regulatory · section Details",
+      "entity": {
+       "Id": "Permission_spmvhy52ug0",
+       "Kind": "Permission",
+       "Column": "Column_lys1rs",
+       "Permission": "Editable",
+       "Activity": "Activity_1wb6scg"
+      }
+     },
+     {
+      "id": "Permission_spmvhy52ug1",
+      "what": "permission Review – Safety · section Details",
+      "entity": {
+       "Id": "Permission_spmvhy52ug1",
+       "Kind": "Permission",
+       "Column": "Column_lys1rs",
+       "Permission": "Editable",
+       "Activity": "Activity_116f3su"
+      }
+     },
+     {
+      "id": "Permission_spmvhy52ug2",
+      "what": "permission Review – QM · section Details",
+      "entity": {
+       "Id": "Permission_spmvhy52ug2",
+       "Kind": "Permission",
+       "Column": "Column_lys1rs",
+       "Permission": "Editable",
+       "Activity": "Activity_12d3ab4"
+      }
+     },
+     {
+      "id": "Permission_spmvhy52ug3",
+      "what": "permission Review – Microbiology · section Details",
+      "entity": {
+       "Id": "Permission_spmvhy52ug3",
+       "Kind": "Permission",
+       "Column": "Column_lys1rs",
+       "Permission": "Editable",
+       "Activity": "Activity_1wkxybl"
+      }
+     },
+     {
+      "id": "Permission_spmvhy52ug4",
+      "what": "permission Review – Sustainability · section Details",
+      "entity": {
+       "Id": "Permission_spmvhy52ug4",
+       "Kind": "Permission",
+       "Column": "Column_lys1rs",
+       "Permission": "Editable",
+       "Activity": "Activity_1um3oo7"
+      }
+     },
+     {
+      "id": "Permission_spmvhy52ug5",
+      "what": "permission Review – RMM · section Details",
+      "entity": {
+       "Id": "Permission_spmvhy52ug5",
+       "Kind": "Permission",
+       "Column": "Column_lys1rs",
+       "Permission": "Editable",
+       "Activity": "Activity_1mh3ji6"
+      }
+     }
+    ],
+    "removed": [],
+    "changed": [
+     {
+      "id": "Column_lys1rs",
+      "what": "column section Details",
+      "props": {
+       "Column::Permission": {
+        "added": [
+         "Permission_spmvhy52ug0",
+         "Permission_spmvhy52ug1",
+         "Permission_spmvhy52ug2",
+         "Permission_spmvhy52ug3",
+         "Permission_spmvhy52ug4",
+         "Permission_spmvhy52ug5"
+        ],
+        "removed": [],
+        "reordered": false
+       }
+      }
+     },
+     {
+      "id": "Activity_1wb6scg",
+      "what": "step Review – Regulatory",
+      "props": {
+       "Activity::Permission": {
+        "added": [
+         "Permission_spmvhy52ug0"
+        ],
+        "removed": [],
+        "reordered": false
+       }
+      }
+     },
+     {
+      "id": "Activity_116f3su",
+      "what": "step Review – Safety",
+      "props": {
+       "Activity::Permission": {
+        "added": [
+         "Permission_spmvhy52ug1"
+        ],
+        "removed": [],
+        "reordered": false
+       }
+      }
+     },
+     {
+      "id": "Activity_12d3ab4",
+      "what": "step Review – QM",
+      "props": {
+       "Activity::Permission": {
+        "added": [
+         "Permission_spmvhy52ug2"
+        ],
+        "removed": [],
+        "reordered": false
+       }
+      }
+     },
+     {
+      "id": "Activity_1wkxybl",
+      "what": "step Review – Microbiology",
+      "props": {
+       "Activity::Permission": {
+        "added": [
+         "Permission_spmvhy52ug3"
+        ],
+        "removed": [],
+        "reordered": false
+       }
+      }
+     },
+     {
+      "id": "Activity_1um3oo7",
+      "what": "step Review – Sustainability",
+      "props": {
+       "Activity::Permission": {
+        "added": [
+         "Permission_spmvhy52ug4"
+        ],
+        "removed": [],
+        "reordered": false
+       }
+      }
+     },
+     {
+      "id": "Activity_1mh3ji6",
+      "what": "step Review – RMM",
+      "props": {
+       "Activity::Permission": {
+        "added": [
+         "Permission_spmvhy52ug5"
+        ],
+        "removed": [],
+        "reordered": false
+       }
+      }
+     }
+    ],
+    "publishedSinceV6": "yes: live PublishedAt 2026-10-21T10:05:36Z, v6 2026-10-19T20:52:24Z",
+    "besidesThisChange": {
+     "added": [
+      "Permission_spmvhy52ug0 Permission",
+      "Permission_spmvhy52ug1 Permission",
+      "Permission_spmvhy52ug2 Permission",
+      "Permission_spmvhy52ug3 Permission",
+      "Permission_spmvhy52ug4 Permission",
+      "Permission_spmvhy52ug5 Permission"
+     ],
+     "removed": [
+      "Permission_sec1wb6scg Permission",
+      "Permission_sec116f3su Permission",
+      "Permission_sec12d3ab4 Permission",
+      "Permission_sec1wkxybl Permission",
+      "Permission_sec1um3oo7 Permission",
+      "Permission_sec1mh3ji6 Permission"
+     ],
+     "changed": [
+      "Column_lys1rs Column Details",
+      "Activity_1wb6scg Activity Review – Regulatory",
+      "Activity_116f3su Activity Review – Safety",
+      "Activity_12d3ab4 Activity Review – QM",
+      "Activity_1wkxybl Activity Review – Microbiology",
+      "Activity_1um3oo7 Activity Review – Sustainability",
+      "Activity_1mh3ji6 Activity Review – RMM"
+     ]
+    }
+   },
+   "applyWould": "nothing"
+  },
+  "op": {
+   "flow": "CIQ_Open_Point_A00",
+   "backup": "v7/backups/CIQ_Open_Point_A00.dryrun.2026-10-21T101431731Z.json",
+   "live": {
+    "PublishedAt": "2026-10-21T10:05:22Z",
+    "_meta_version": "1792577122716018",
+    "kinds": {
+     "Model": 2,
+     "Row": 43,
+     "Column": 71,
+     "Field": 69,
+     "QueryDefinition": 6,
+     "Expression": 8,
+     "Node": 71,
+     "ProcessDef": 1,
+     "Permission": 486,
+     "Activity": 9,
+     "Resource": 6,
+     "Appearance": 1,
+     "Style": 1,
+     "User": 1
+    }
+   },
+   "section": {
+    "id": "Column_waac5d",
+    "name": "Details",
+    "fields": 59,
+    "tablesInside": []
+   },
+   "steps": [
+    {
+     "step": "Open point – Regulatory",
+     "activity": "Activity_uka3mx",
+     "existing": [
+      "Permission_spmvhy4rpn0: Editable"
+     ],
+     "opens": [
+      {
+       "field": "OP_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Cycle_No",
+       "type": "Number",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Supplier_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Item_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "OP_Kind",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "OP_Dept",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "step condition: Open point – Regulatory",
+        "step condition: Open point – Safety",
+        "step condition: Open point – QM",
+        "step condition: Open point – Microbiology",
+        "step condition: Open point – Sustainability",
+        "step condition: Open point – RMM"
+       ]
+      },
+      {
+       "field": "Raised_By_Dept",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "OP_To_Supplier",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Kind",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Section_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Field_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Row_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Doc_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Doc_File_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Doc_Uploaded_At",
+       "type": "DateTime",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Label",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Internal_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Internal_Justification",
+       "type": "Textarea",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Responsible_Dept_Label",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Internal_Due_Date",
+       "type": "Date",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "New_Section_Item_Key",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Portal_Contact_Ids",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Thread_Text",
+       "type": "Textarea",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Awaiting_Response",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Response_Kind",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Response_Text",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Response_Doc_Refs_JSON",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Supplier_Responsible_Email",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Portal_Query_Item_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Accepted_Doc_File_Name",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Accepted_Doc_Uploaded_At",
+       "type": "DateTime",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_By",
+       "type": "User",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_By_Email",
+       "type": "Email",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_At",
+       "type": "DateTime",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_Answers_Rev",
+       "type": "Number",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Late_Decision",
+       "type": "Select",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Late_Decision_Reason",
+       "type": "Textarea",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "On_Behalf_Of",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Raised_By_User",
+       "type": "User",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Raised_By_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Raiser_Assignee",
+       "type": "MultiUser",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "assigns: Open point – Regulatory",
+        "assigns: Open point – Safety",
+        "assigns: Open point – QM",
+        "assigns: Open point – Microbiology",
+        "assigns: Open point – Sustainability",
+        "assigns: Open point – RMM"
+       ]
+      }
+     ],
+     "formulasInSection": [
+      "Open_Num (ReadOnly, computed)",
+      "Start_Gate (Hidden, computed)"
+     ],
+     "alreadyWritable": [
+      "Round_No",
+      "Query_Key",
+      "Kind_Label",
+      "Question_Text",
+      "Supplier_Justification",
+      "Responsible_User",
+      "Responsible_Name",
+      "Supplier_Due_Date",
+      "OP_Progress",
+      "OP_Outcome",
+      "Outcome_Reason",
+      "Return_Reason",
+      "Thread_JSON",
+      "Closed_At",
+      "Closed_By"
+     ]
+    },
+    {
+     "step": "Open point – Safety",
+     "activity": "Activity_1kdump3",
+     "existing": [
+      "Permission_spmvhy4rpn1: Editable"
+     ],
+     "opens": [
+      {
+       "field": "OP_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Cycle_No",
+       "type": "Number",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Supplier_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Item_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "OP_Kind",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "OP_Dept",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "step condition: Open point – Regulatory",
+        "step condition: Open point – Safety",
+        "step condition: Open point – QM",
+        "step condition: Open point – Microbiology",
+        "step condition: Open point – Sustainability",
+        "step condition: Open point – RMM"
+       ]
+      },
+      {
+       "field": "Raised_By_Dept",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "OP_To_Supplier",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Kind",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Section_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Field_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Row_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Doc_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Doc_File_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Doc_Uploaded_At",
+       "type": "DateTime",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Label",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Internal_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Internal_Justification",
+       "type": "Textarea",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Responsible_Dept_Label",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Internal_Due_Date",
+       "type": "Date",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "New_Section_Item_Key",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Portal_Contact_Ids",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Thread_Text",
+       "type": "Textarea",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Awaiting_Response",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Response_Kind",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Response_Text",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Response_Doc_Refs_JSON",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Supplier_Responsible_Email",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Portal_Query_Item_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Accepted_Doc_File_Name",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Accepted_Doc_Uploaded_At",
+       "type": "DateTime",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_By",
+       "type": "User",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_By_Email",
+       "type": "Email",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_At",
+       "type": "DateTime",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_Answers_Rev",
+       "type": "Number",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Late_Decision",
+       "type": "Select",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Late_Decision_Reason",
+       "type": "Textarea",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "On_Behalf_Of",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Raised_By_User",
+       "type": "User",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Raised_By_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Raiser_Assignee",
+       "type": "MultiUser",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "assigns: Open point – Regulatory",
+        "assigns: Open point – Safety",
+        "assigns: Open point – QM",
+        "assigns: Open point – Microbiology",
+        "assigns: Open point – Sustainability",
+        "assigns: Open point – RMM"
+       ]
+      }
+     ],
+     "formulasInSection": [
+      "Open_Num (ReadOnly, computed)",
+      "Start_Gate (Hidden, computed)"
+     ],
+     "alreadyWritable": [
+      "Round_No",
+      "Query_Key",
+      "Kind_Label",
+      "Question_Text",
+      "Supplier_Justification",
+      "Responsible_User",
+      "Responsible_Name",
+      "Supplier_Due_Date",
+      "OP_Progress",
+      "OP_Outcome",
+      "Outcome_Reason",
+      "Return_Reason",
+      "Thread_JSON",
+      "Closed_At",
+      "Closed_By"
+     ]
+    },
+    {
+     "step": "Open point – QM",
+     "activity": "Activity_1go37bt",
+     "existing": [
+      "Permission_spmvhy4rpo2: Editable"
+     ],
+     "opens": [
+      {
+       "field": "OP_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Cycle_No",
+       "type": "Number",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Supplier_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Item_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "OP_Kind",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "OP_Dept",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "step condition: Open point – Regulatory",
+        "step condition: Open point – Safety",
+        "step condition: Open point – QM",
+        "step condition: Open point – Microbiology",
+        "step condition: Open point – Sustainability",
+        "step condition: Open point – RMM"
+       ]
+      },
+      {
+       "field": "Raised_By_Dept",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "OP_To_Supplier",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Kind",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Section_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Field_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Row_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Doc_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Doc_File_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Doc_Uploaded_At",
+       "type": "DateTime",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Label",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Internal_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Internal_Justification",
+       "type": "Textarea",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Responsible_Dept_Label",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Internal_Due_Date",
+       "type": "Date",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "New_Section_Item_Key",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Portal_Contact_Ids",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Thread_Text",
+       "type": "Textarea",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Awaiting_Response",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Response_Kind",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Response_Text",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Response_Doc_Refs_JSON",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Supplier_Responsible_Email",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Portal_Query_Item_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Accepted_Doc_File_Name",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Accepted_Doc_Uploaded_At",
+       "type": "DateTime",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_By",
+       "type": "User",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_By_Email",
+       "type": "Email",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_At",
+       "type": "DateTime",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_Answers_Rev",
+       "type": "Number",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Late_Decision",
+       "type": "Select",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Late_Decision_Reason",
+       "type": "Textarea",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "On_Behalf_Of",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Raised_By_User",
+       "type": "User",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Raised_By_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Raiser_Assignee",
+       "type": "MultiUser",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "assigns: Open point – Regulatory",
+        "assigns: Open point – Safety",
+        "assigns: Open point – QM",
+        "assigns: Open point – Microbiology",
+        "assigns: Open point – Sustainability",
+        "assigns: Open point – RMM"
+       ]
+      }
+     ],
+     "formulasInSection": [
+      "Open_Num (ReadOnly, computed)",
+      "Start_Gate (Hidden, computed)"
+     ],
+     "alreadyWritable": [
+      "Round_No",
+      "Query_Key",
+      "Kind_Label",
+      "Question_Text",
+      "Supplier_Justification",
+      "Responsible_User",
+      "Responsible_Name",
+      "Supplier_Due_Date",
+      "OP_Progress",
+      "OP_Outcome",
+      "Outcome_Reason",
+      "Return_Reason",
+      "Thread_JSON",
+      "Closed_At",
+      "Closed_By"
+     ]
+    },
+    {
+     "step": "Open point – Microbiology",
+     "activity": "Activity_hha7u2",
+     "existing": [
+      "Permission_spmvhy4rpo3: Editable"
+     ],
+     "opens": [
+      {
+       "field": "OP_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Cycle_No",
+       "type": "Number",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Supplier_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Item_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "OP_Kind",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "OP_Dept",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "step condition: Open point – Regulatory",
+        "step condition: Open point – Safety",
+        "step condition: Open point – QM",
+        "step condition: Open point – Microbiology",
+        "step condition: Open point – Sustainability",
+        "step condition: Open point – RMM"
+       ]
+      },
+      {
+       "field": "Raised_By_Dept",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "OP_To_Supplier",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Kind",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Section_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Field_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Row_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Doc_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Doc_File_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Doc_Uploaded_At",
+       "type": "DateTime",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Label",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Internal_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Internal_Justification",
+       "type": "Textarea",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Responsible_Dept_Label",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Internal_Due_Date",
+       "type": "Date",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "New_Section_Item_Key",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Portal_Contact_Ids",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Thread_Text",
+       "type": "Textarea",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Awaiting_Response",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Response_Kind",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Response_Text",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Response_Doc_Refs_JSON",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Supplier_Responsible_Email",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Portal_Query_Item_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Accepted_Doc_File_Name",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Accepted_Doc_Uploaded_At",
+       "type": "DateTime",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_By",
+       "type": "User",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_By_Email",
+       "type": "Email",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_At",
+       "type": "DateTime",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_Answers_Rev",
+       "type": "Number",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Late_Decision",
+       "type": "Select",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Late_Decision_Reason",
+       "type": "Textarea",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "On_Behalf_Of",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Raised_By_User",
+       "type": "User",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Raised_By_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Raiser_Assignee",
+       "type": "MultiUser",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "assigns: Open point – Regulatory",
+        "assigns: Open point – Safety",
+        "assigns: Open point – QM",
+        "assigns: Open point – Microbiology",
+        "assigns: Open point – Sustainability",
+        "assigns: Open point – RMM"
+       ]
+      }
+     ],
+     "formulasInSection": [
+      "Open_Num (ReadOnly, computed)",
+      "Start_Gate (Hidden, computed)"
+     ],
+     "alreadyWritable": [
+      "Round_No",
+      "Query_Key",
+      "Kind_Label",
+      "Question_Text",
+      "Supplier_Justification",
+      "Responsible_User",
+      "Responsible_Name",
+      "Supplier_Due_Date",
+      "OP_Progress",
+      "OP_Outcome",
+      "Outcome_Reason",
+      "Return_Reason",
+      "Thread_JSON",
+      "Closed_At",
+      "Closed_By"
+     ]
+    },
+    {
+     "step": "Open point – Sustainability",
+     "activity": "Activity_y4af4g",
+     "existing": [
+      "Permission_spmvhy4rpo4: Editable"
+     ],
+     "opens": [
+      {
+       "field": "OP_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Cycle_No",
+       "type": "Number",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Supplier_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Item_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "OP_Kind",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "OP_Dept",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "step condition: Open point – Regulatory",
+        "step condition: Open point – Safety",
+        "step condition: Open point – QM",
+        "step condition: Open point – Microbiology",
+        "step condition: Open point – Sustainability",
+        "step condition: Open point – RMM"
+       ]
+      },
+      {
+       "field": "Raised_By_Dept",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "OP_To_Supplier",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Kind",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Section_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Field_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Row_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Doc_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Doc_File_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Doc_Uploaded_At",
+       "type": "DateTime",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Label",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Internal_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Internal_Justification",
+       "type": "Textarea",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Responsible_Dept_Label",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Internal_Due_Date",
+       "type": "Date",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "New_Section_Item_Key",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Portal_Contact_Ids",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Thread_Text",
+       "type": "Textarea",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Awaiting_Response",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Response_Kind",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Response_Text",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Response_Doc_Refs_JSON",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Supplier_Responsible_Email",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Portal_Query_Item_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Accepted_Doc_File_Name",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Accepted_Doc_Uploaded_At",
+       "type": "DateTime",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_By",
+       "type": "User",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_By_Email",
+       "type": "Email",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_At",
+       "type": "DateTime",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_Answers_Rev",
+       "type": "Number",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Late_Decision",
+       "type": "Select",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Late_Decision_Reason",
+       "type": "Textarea",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "On_Behalf_Of",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Raised_By_User",
+       "type": "User",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Raised_By_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Raiser_Assignee",
+       "type": "MultiUser",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "assigns: Open point – Regulatory",
+        "assigns: Open point – Safety",
+        "assigns: Open point – QM",
+        "assigns: Open point – Microbiology",
+        "assigns: Open point – Sustainability",
+        "assigns: Open point – RMM"
+       ]
+      }
+     ],
+     "formulasInSection": [
+      "Open_Num (ReadOnly, computed)",
+      "Start_Gate (Hidden, computed)"
+     ],
+     "alreadyWritable": [
+      "Round_No",
+      "Query_Key",
+      "Kind_Label",
+      "Question_Text",
+      "Supplier_Justification",
+      "Responsible_User",
+      "Responsible_Name",
+      "Supplier_Due_Date",
+      "OP_Progress",
+      "OP_Outcome",
+      "Outcome_Reason",
+      "Return_Reason",
+      "Thread_JSON",
+      "Closed_At",
+      "Closed_By"
+     ]
+    },
+    {
+     "step": "Open point – RMM",
+     "activity": "Activity_xc8fbb",
+     "existing": [
+      "Permission_spmvhy4rpo5: Editable"
+     ],
+     "opens": [
+      {
+       "field": "OP_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Cycle_No",
+       "type": "Number",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Supplier_Code",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Case_Item_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "OP_Kind",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "OP_Dept",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "step condition: Open point – Regulatory",
+        "step condition: Open point – Safety",
+        "step condition: Open point – QM",
+        "step condition: Open point – Microbiology",
+        "step condition: Open point – Sustainability",
+        "step condition: Open point – RMM"
+       ]
+      },
+      {
+       "field": "Raised_By_Dept",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "OP_To_Supplier",
+       "type": "Select",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Kind",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Section_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Field_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Row_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Doc_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Doc_File_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Doc_Uploaded_At",
+       "type": "DateTime",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Ref_Label",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Ref_Internal_Key",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Internal_Justification",
+       "type": "Textarea",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Responsible_Dept_Label",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Internal_Due_Date",
+       "type": "Date",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "New_Section_Item_Key",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Portal_Contact_Ids",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Thread_Text",
+       "type": "Textarea",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Awaiting_Response",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": [
+        "formula input: Start_Gate"
+       ]
+      },
+      {
+       "field": "Response_Kind",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Response_Text",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Response_Doc_Refs_JSON",
+       "type": "Textarea",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Supplier_Responsible_Email",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Portal_Query_Item_Id",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Accepted_Doc_File_Name",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Accepted_Doc_Uploaded_At",
+       "type": "DateTime",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_By",
+       "type": "User",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_By_Email",
+       "type": "Email",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_At",
+       "type": "DateTime",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Reviewed_Answers_Rev",
+       "type": "Number",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Late_Decision",
+       "type": "Select",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Late_Decision_Reason",
+       "type": "Textarea",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "On_Behalf_Of",
+       "type": "Text",
+       "fieldPermission": "Hidden",
+       "drives": []
+      },
+      {
+       "field": "Raised_By_User",
+       "type": "User",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Raised_By_Name",
+       "type": "Text",
+       "fieldPermission": "ReadOnly",
+       "drives": []
+      },
+      {
+       "field": "Raiser_Assignee",
+       "type": "MultiUser",
+       "fieldPermission": "ReadOnly",
+       "drives": [
+        "assigns: Open point – Regulatory",
+        "assigns: Open point – Safety",
+        "assigns: Open point – QM",
+        "assigns: Open point – Microbiology",
+        "assigns: Open point – Sustainability",
+        "assigns: Open point – RMM"
+       ]
+      }
+     ],
+     "formulasInSection": [
+      "Open_Num (ReadOnly, computed)",
+      "Start_Gate (Hidden, computed)"
+     ],
+     "alreadyWritable": [
+      "Round_No",
+      "Query_Key",
+      "Kind_Label",
+      "Question_Text",
+      "Supplier_Justification",
+      "Responsible_User",
+      "Responsible_Name",
+      "Supplier_Due_Date",
+      "OP_Progress",
+      "OP_Outcome",
+      "Outcome_Reason",
+      "Return_Reason",
+      "Thread_JSON",
+      "Closed_At",
+      "Closed_By"
+     ]
+    }
+   ],
+   "added": [],
+   "refs": [],
+   "conflicts": [],
+   "childTables": [
+    {
+     "table": "table Rounds",
+     "column": "Column_1je59z6",
+     "inDetails": false,
+     "fields": 10,
+     "perStep": {
+      "Open point – Regulatory": "Hidden",
+      "Open point – Safety": "Hidden",
+      "Open point – QM": "Hidden",
+      "Open point – Microbiology": "Hidden",
+      "Open point – Sustainability": "Hidden",
+      "Open point – RMM": "Hidden"
+     }
+    }
+   ],
+   "preflight": {
+    "errors": [],
+    "warnings": [
+     "NO_ID: entity missing Id",
+     "ORPHAN_ENTITY: entity 'SendBackToInitiator' unreachable from Root"
+    ]
+   },
+   "otherThanV6": {
+    "base": "v6/backups/CIQ_Open_Point_A00.before-v6.2026-10-19T2052.json",
+    "publishedAt": "2026-10-19T20:52:30Z",
+    "v6Changes": "11/11 re-applied",
+    "failed": [],
+    "added": [
+     {
+      "id": "Permission_spmvhy4rpn0",
+      "what": "permission Open point – Regulatory · section Details",
+      "entity": {
+       "Id": "Permission_spmvhy4rpn0",
+       "Kind": "Permission",
+       "Column": "Column_waac5d",
+       "Permission": "Editable",
+       "Activity": "Activity_uka3mx"
+      }
+     },
+     {
+      "id": "Permission_spmvhy4rpn1",
+      "what": "permission Open point – Safety · section Details",
+      "entity": {
+       "Id": "Permission_spmvhy4rpn1",
+       "Kind": "Permission",
+       "Column": "Column_waac5d",
+       "Permission": "Editable",
+       "Activity": "Activity_1kdump3"
+      }
+     },
+     {
+      "id": "Permission_spmvhy4rpo2",
+      "what": "permission Open point – QM · section Details",
+      "entity": {
+       "Id": "Permission_spmvhy4rpo2",
+       "Kind": "Permission",
+       "Column": "Column_waac5d",
+       "Permission": "Editable",
+       "Activity": "Activity_1go37bt"
+      }
+     },
+     {
+      "id": "Permission_spmvhy4rpo3",
+      "what": "permission Open point – Microbiology · section Details",
+      "entity": {
+       "Id": "Permission_spmvhy4rpo3",
+       "Kind": "Permission",
+       "Column": "Column_waac5d",
+       "Permission": "Editable",
+       "Activity": "Activity_hha7u2"
+      }
+     },
+     {
+      "id": "Permission_spmvhy4rpo4",
+      "what": "permission Open point – Sustainability · section Details",
+      "entity": {
+       "Id": "Permission_spmvhy4rpo4",
+       "Kind": "Permission",
+       "Column": "Column_waac5d",
+       "Permission": "Editable",
+       "Activity": "Activity_y4af4g"
+      }
+     },
+     {
+      "id": "Permission_spmvhy4rpo5",
+      "what": "permission Open point – RMM · section Details",
+      "entity": {
+       "Id": "Permission_spmvhy4rpo5",
+       "Kind": "Permission",
+       "Column": "Column_waac5d",
+       "Permission": "Editable",
+       "Activity": "Activity_xc8fbb"
+      }
+     }
+    ],
+    "removed": [],
+    "changed": [
+     {
+      "id": "Column_waac5d",
+      "what": "column section Details",
+      "props": {
+       "Column::Permission": {
+        "added": [
+         "Permission_spmvhy4rpn0",
+         "Permission_spmvhy4rpn1",
+         "Permission_spmvhy4rpo2",
+         "Permission_spmvhy4rpo3",
+         "Permission_spmvhy4rpo4",
+         "Permission_spmvhy4rpo5"
+        ],
+        "removed": [],
+        "reordered": false
+       }
+      }
+     },
+     {
+      "id": "Activity_uka3mx",
+      "what": "step Open point – Regulatory",
+      "props": {
+       "Activity::Permission": {
+        "added": [
+         "Permission_spmvhy4rpn0"
+        ],
+        "removed": [],
+        "reordered": false
+       }
+      }
+     },
+     {
+      "id": "Activity_1kdump3",
+      "what": "step Open point – Safety",
+      "props": {
+       "Activity::Permission": {
+        "added": [
+         "Permission_spmvhy4rpn1"
+        ],
+        "removed": [],
+        "reordered": false
+       }
+      }
+     },
+     {
+      "id": "Activity_1go37bt",
+      "what": "step Open point – QM",
+      "props": {
+       "Activity::Permission": {
+        "added": [
+         "Permission_spmvhy4rpo2"
+        ],
+        "removed": [],
+        "reordered": false
+       }
+      }
+     },
+     {
+      "id": "Activity_hha7u2",
+      "what": "step Open point – Microbiology",
+      "props": {
+       "Activity::Permission": {
+        "added": [
+         "Permission_spmvhy4rpo3"
+        ],
+        "removed": [],
+        "reordered": false
+       }
+      }
+     },
+     {
+      "id": "Activity_y4af4g",
+      "what": "step Open point – Sustainability",
+      "props": {
+       "Activity::Permission": {
+        "added": [
+         "Permission_spmvhy4rpo4"
+        ],
+        "removed": [],
+        "reordered": false
+       }
+      }
+     },
+     {
+      "id": "Activity_xc8fbb",
+      "what": "step Open point – RMM",
+      "props": {
+       "Activity::Permission": {
+        "added": [
+         "Permission_spmvhy4rpo5"
+        ],
+        "removed": [],
+        "reordered": false
+       }
+      }
+     }
+    ],
+    "publishedSinceV6": "yes: live PublishedAt 2026-10-21T10:05:22Z, v6 2026-10-19T20:52:30Z",
+    "besidesThisChange": {
+     "added": [
+      "Permission_spmvhy4rpn0 Permission",
+      "Permission_spmvhy4rpn1 Permission",
+      "Permission_spmvhy4rpo2 Permission",
+      "Permission_spmvhy4rpo3 Permission",
+      "Permission_spmvhy4rpo4 Permission",
+      "Permission_spmvhy4rpo5 Permission"
+     ],
+     "removed": [
+      "Permission_secuka3mx Permission",
+      "Permission_sec1kdump3 Permission",
+      "Permission_sec1go37bt Permission",
+      "Permission_sechha7u2 Permission",
+      "Permission_secy4af4g Permission",
+      "Permission_secxc8fbb Permission"
+     ],
+     "changed": [
+      "Column_waac5d Column Details",
+      "Activity_uka3mx Activity Open point – Regulatory",
+      "Activity_1kdump3 Activity Open point – Safety",
+      "Activity_1go37bt Activity Open point – QM",
+      "Activity_hha7u2 Activity Open point – Microbiology",
+      "Activity_y4af4g Activity Open point – Sustainability",
+      "Activity_xc8fbb Activity Open point – RMM"
+     ]
+    }
+   },
+   "applyWould": "nothing"
+  }
+ },
+ "calls": [
+  "GET draft CIQ_Review_A00 → 200",
+  "GET draft CIQ_Open_Point_A00 → 200"
+ ]
+}

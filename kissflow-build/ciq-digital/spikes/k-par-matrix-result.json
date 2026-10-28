@@ -1,0 +1,223 @@
+{
+  "cases": [
+    {
+      "label": "ALL six, simultaneous branch submits, Decision=Approved",
+      "id": "PkEKO9BRmG4z",
+      "path": [
+        "Spike prepare",
+        "Spike review – A | Spike review – B | Spike review – C | Spike review – D | Spike review – E | Spike review – F",
+        "Spike hold check",
+        "Spike gated step",
+        "Spike not-equal step",
+        ""
+      ],
+      "submits": [
+        {
+          "step": "Spike prepare",
+          "status": 200,
+          "msg": null
+        },
+        {
+          "step": "Spike review – A",
+          "status": 200,
+          "msg": null
+        },
+        {
+          "step": "Spike review – B",
+          "status": 200,
+          "msg": null
+        },
+        {
+          "step": "Spike review – C",
+          "status": 200,
+          "msg": null
+        },
+        {
+          "step": "Spike review – D",
+          "status": 200,
+          "msg": null
+        },
+        {
+          "step": "Spike review – E",
+          "status": 200,
+          "msg": null
+        },
+        {
+          "step": "Spike review – F",
+          "status": 200,
+          "msg": null
+        },
+        {
+          "step": "Spike hold check",
+          "status": 200,
+          "msg": null
+        },
+        {
+          "step": "Spike gated step",
+          "status": 200,
+          "msg": null
+        },
+        {
+          "step": "Spike not-equal step",
+          "status": 200,
+          "msg": null
+        }
+      ],
+      "final": {
+        "status": "Completed",
+        "step": null,
+        "Hold_Flag": "Yes",
+        "Gate": "OK",
+        "Spike_Decision": "Approved"
+      }
+    },
+    {
+      "label": "ONE (F), Decision blank",
+      "id": "PkEKO9ZHq6LV",
+      "path": [
+        "Spike prepare",
+        "Spike review – F",
+        "Spike hold check",
+        "Spike gated step",
+        "Spike not-equal step",
+        ""
+      ],
+      "submits": [
+        {
+          "step": "Spike prepare",
+          "status": 200,
+          "msg": null
+        },
+        {
+          "step": "Spike review – F",
+          "status": 200,
+          "msg": null
+        },
+        {
+          "step": "Spike hold check",
+          "status": 200,
+          "msg": null
+        },
+        {
+          "step": "Spike gated step",
+          "status": 200,
+          "msg": null
+        },
+        {
+          "step": "Spike not-equal step",
+          "status": 200,
+          "msg": null
+        }
+      ],
+      "final": {
+        "status": "Completed",
+        "step": null,
+        "Hold_Flag": "Yes",
+        "Gate": "OK",
+        "Spike_Decision": null
+      }
+    },
+    {
+      "label": "NONE flagged, Decision=Rejected",
+      "id": "PkEKO9rhUVOf",
+      "path": [
+        "Spike prepare",
+        "Spike hold check",
+        "Spike gated step",
+        ""
+      ],
+      "submits": [
+        {
+          "step": "Spike prepare",
+          "status": 200,
+          "msg": null
+        },
+        {
+          "step": "Spike hold check",
+          "status": 200,
+          "msg": null
+        },
+        {
+          "step": "Spike gated step",
+          "status": 200,
+          "msg": null
+        }
+      ],
+      "final": {
+        "status": "Completed",
+        "step": null,
+        "Hold_Flag": "Yes",
+        "Gate": "OK",
+        "Spike_Decision": "Rejected"
+      }
+    },
+    {
+      "label": "earlier case 1 (Decision=Approved), from hold check",
+      "id": "PkEKIVlB5ZUn",
+      "path": [
+        "Spike hold check",
+        "Spike gated step",
+        "Spike not-equal step",
+        ""
+      ],
+      "submits": [
+        {
+          "step": "Spike hold check",
+          "status": 200,
+          "msg": null
+        },
+        {
+          "step": "Spike gated step",
+          "status": 200,
+          "msg": null
+        },
+        {
+          "step": "Spike not-equal step",
+          "status": 200,
+          "msg": null
+        }
+      ],
+      "final": {
+        "status": "Completed",
+        "step": null,
+        "Hold_Flag": "Yes",
+        "Gate": "OK",
+        "Spike_Decision": "Approved"
+      }
+    },
+    {
+      "label": "earlier case 2 (Decision blank), from hold check",
+      "id": "PkEKO1pn5eI1",
+      "path": [
+        "Spike hold check",
+        "Spike gated step",
+        "Spike not-equal step",
+        ""
+      ],
+      "submits": [
+        {
+          "step": "Spike hold check",
+          "status": 200,
+          "msg": null
+        },
+        {
+          "step": "Spike gated step",
+          "status": 200,
+          "msg": null
+        },
+        {
+          "step": "Spike not-equal step",
+          "status": 200,
+          "msg": null
+        }
+      ],
+      "final": {
+        "status": "Completed",
+        "step": null,
+        "Hold_Flag": "Yes",
+        "Gate": "OK",
+        "Spike_Decision": null
+      }
+    }
+  ]
+}

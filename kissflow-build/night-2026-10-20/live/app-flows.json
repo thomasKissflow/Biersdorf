@@ -1,0 +1,1560 @@
+[
+ {
+  "_id": "CIQ_Case_Thomas_A00",
+  "_created_at": "2026-10-15T14:24:51Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-16T14:28:51Z",
+  "Name": "CIQ Case - Thomas",
+  "Description": "For Claude to refer and understand the idea",
+  "Type": "Process",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEKl83f9jPF",
+    "Name": "Raw Material Manager (RMM)",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "InitiateItems"
+    ]
+   },
+   {
+    "_id": "RoEKl84Hca4w",
+    "Name": "Regulatory Affairs reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl84xAFRW",
+    "Name": "Product Safety reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl85WB1yE",
+    "Name": "Quality Management reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl8647K2u",
+    "Name": "Microbiology reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl86bQQrO",
+    "Name": "Sustainability reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl87f38Xw",
+    "Name": "Business administrator",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl88CJiLP",
+    "Name": "Auditor",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl88jv4dv",
+    "Name": "Case administrator",
+    "Kind": "AppRole",
+    "Role": "Admin",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl89I5nGx",
+    "Name": "Integration service",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "InitiateItems"
+    ]
+   },
+   {
+    "_id": "RoEKwv6pxX3g",
+    "Name": "Customs & Trade Compliance",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKwvH8qaxG",
+    "Name": "Legal / IP",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKwvR_cPvv",
+    "Name": "Business owner (reports)",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   }
+  ],
+  "LastPublishedAt": "2026-10-16T09:14:13Z",
+  "AllowedFlows": []
+ },
+ {
+  "_id": "CIQ_Review_A00",
+  "_created_at": "2026-10-15T02:58:10Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-16T08:05:24Z",
+  "Name": "CIQ Review",
+  "Description": "One department review track of one case (one item per activation: completeness, added later, reopened, reactivated). Started by the CIQ Sync Service; the department completes it.",
+  "Type": "Process",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEKl83f9jPF",
+    "Name": "CIQ RMM",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl84Hca4w",
+    "Name": "CIQ Regulatory Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl84xAFRW",
+    "Name": "CIQ Safety Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl85WB1yE",
+    "Name": "CIQ QM Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl8647K2u",
+    "Name": "CIQ Microbiology Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl86bQQrO",
+    "Name": "CIQ Sustainability Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKwv6pxX3g",
+    "Name": "Customs & Trade Compliance",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKwvH8qaxG",
+    "Name": "Legal / IP",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl87f38Xw",
+    "Name": "CIQ Business Admin",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl88CJiLP",
+    "Name": "CIQ Reader",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKwvR_cPvv",
+    "Name": "Business owner (reports)",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl88jv4dv",
+    "Name": "CIQ Case Admin",
+    "Kind": "AppRole",
+    "Role": "Admin",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl89I5nGx",
+    "Name": "CIQ Integration Service",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "InitiateItems"
+    ]
+   }
+  ],
+  "LastPublishedAt": "2026-10-15T02:58:15Z",
+  "AllowedFlows": [
+   {
+    "Name": "CIQ Supplier Portal",
+    "Type": "Portal",
+    "_id": "CIQ_Supplier_Portal_A00",
+    "AllowAllFields": true,
+    "AllowedFields": [],
+    "Permission": [
+     "Lookup"
+    ]
+   }
+  ]
+ },
+ {
+  "_id": "CIQ_Case_Data_A00",
+  "_created_at": "2026-10-14T18:36:59Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-15T13:09:08Z",
+  "Name": "CIQ Case Data",
+  "Description": "The Workbench's read model and the supplier-data mirror: one row per case, written only by the CIQ Sync Service.",
+  "Type": "Form",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEKl83f9jPF",
+    "Name": "CIQ RMM",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl84Hca4w",
+    "Name": "CIQ Regulatory Reviewer",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl84xAFRW",
+    "Name": "CIQ Safety Reviewer",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl85WB1yE",
+    "Name": "CIQ QM Reviewer",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl8647K2u",
+    "Name": "CIQ Microbiology Reviewer",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl86bQQrO",
+    "Name": "CIQ Sustainability Reviewer",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKwv6pxX3g",
+    "Name": "Customs & Trade Compliance",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKwvH8qaxG",
+    "Name": "Legal / IP",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl87f38Xw",
+    "Name": "CIQ Business Admin",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl88CJiLP",
+    "Name": "CIQ Reader",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKwvR_cPvv",
+    "Name": "Business owner (reports)",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl88jv4dv",
+    "Name": "CIQ Case Admin",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl89I5nGx",
+    "Name": "CIQ Integration Service",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   }
+  ],
+  "LastPublishedAt": "2026-10-15T13:09:08Z",
+  "AllowedFlows": []
+ },
+ {
+  "_id": "CIQ_Service_Request_A00",
+  "_created_at": "2026-10-14T18:36:50Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-15T02:59:08Z",
+  "Name": "CIQ Service Request",
+  "Description": "The Workbench's command channel: a user states a request in a row; the CIQ Sync Service checks it and acts (Done / Refused / Failed).",
+  "Type": "Form",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEKl83f9jPF",
+    "Name": "CIQ RMM",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl84Hca4w",
+    "Name": "CIQ Regulatory Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl84xAFRW",
+    "Name": "CIQ Safety Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl85WB1yE",
+    "Name": "CIQ QM Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl8647K2u",
+    "Name": "CIQ Microbiology Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl86bQQrO",
+    "Name": "CIQ Sustainability Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKwv6pxX3g",
+    "Name": "Customs & Trade Compliance",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKwvH8qaxG",
+    "Name": "Legal / IP",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl87f38Xw",
+    "Name": "CIQ Business Admin",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl88CJiLP",
+    "Name": "CIQ Reader",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl88jv4dv",
+    "Name": "CIQ Case Admin",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl89I5nGx",
+    "Name": "CIQ Integration Service",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   }
+  ],
+  "LastPublishedAt": "2026-10-14T18:36:54Z",
+  "AllowedFlows": []
+ },
+ {
+  "_id": "CIQ_Mail_Outbox_A00",
+  "_created_at": "2026-10-14T18:36:33Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-15T02:59:05Z",
+  "Name": "CIQ Mail Outbox",
+  "Description": "One row = one e-mail (R-1). Written only by the CIQ Sync Service; the integration 'CIQ Mail – send outbox mail' sends it and sets Sent_Status.",
+  "Type": "Form",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEKl88CJiLP",
+    "Name": "CIQ Reader",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl88jv4dv",
+    "Name": "CIQ Case Admin",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl89I5nGx",
+    "Name": "CIQ Integration Service",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   }
+  ],
+  "LastPublishedAt": "2026-10-14T18:36:36Z",
+  "AllowedFlows": []
+ },
+ {
+  "_id": "CIQ_Audit_Event_A00",
+  "_created_at": "2026-10-08T18:39:10Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-15T03:00:16Z",
+  "Name": "CIQ Audit Event",
+  "Description": "",
+  "Type": "Form",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEKl83f9jPF",
+    "Name": "CIQ RMM",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl84Hca4w",
+    "Name": "CIQ Regulatory Reviewer",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl84xAFRW",
+    "Name": "CIQ Safety Reviewer",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl85WB1yE",
+    "Name": "CIQ QM Reviewer",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl8647K2u",
+    "Name": "CIQ Microbiology Reviewer",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl86bQQrO",
+    "Name": "CIQ Sustainability Reviewer",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl87f38Xw",
+    "Name": "CIQ Business Admin",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl88CJiLP",
+    "Name": "CIQ Reader",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl88jv4dv",
+    "Name": "CIQ Case Admin",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl89I5nGx",
+    "Name": "CIQ Integration Service",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKwv6pxX3g",
+    "Name": "Customs & Trade Compliance",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKwvH8qaxG",
+    "Name": "Legal / IP",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKwvR_cPvv",
+    "Name": "Business owner (reports)",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   }
+  ],
+  "LastPublishedAt": "2026-10-08T18:39:21Z",
+  "AllowedFlows": []
+ },
+ {
+  "_id": "CIQ_Internal_Note_A00",
+  "_created_at": "2026-10-08T18:39:10Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-15T03:00:11Z",
+  "Name": "CIQ Internal Note",
+  "Description": "",
+  "Type": "Form",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEKl83f9jPF",
+    "Name": "CIQ RMM",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl84Hca4w",
+    "Name": "CIQ Regulatory Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl84xAFRW",
+    "Name": "CIQ Safety Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl85WB1yE",
+    "Name": "CIQ QM Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl8647K2u",
+    "Name": "CIQ Microbiology Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl86bQQrO",
+    "Name": "CIQ Sustainability Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl87f38Xw",
+    "Name": "CIQ Business Admin",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl88CJiLP",
+    "Name": "CIQ Reader",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl88jv4dv",
+    "Name": "CIQ Case Admin",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKwv6pxX3g",
+    "Name": "Customs & Trade Compliance",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKwvH8qaxG",
+    "Name": "Legal / IP",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKwvR_cPvv",
+    "Name": "Business owner (reports)",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl89I5nGx",
+    "Name": "CIQ Integration Service",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   }
+  ],
+  "LastPublishedAt": "2026-10-14T18:37:48Z",
+  "AllowedFlows": []
+ },
+ {
+  "_id": "CIQ_RMES_Regulatory_A00",
+  "_created_at": "2026-10-08T18:39:10Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-15T03:00:06Z",
+  "Name": "CIQ RMES Regulatory",
+  "Description": "",
+  "Type": "Form",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEKl84Hca4w",
+    "Name": "CIQ Regulatory Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl88CJiLP",
+    "Name": "CIQ Reader",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl88jv4dv",
+    "Name": "CIQ Case Admin",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl89I5nGx",
+    "Name": "CIQ Integration Service",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   }
+  ],
+  "LastPublishedAt": "2026-10-14T18:37:42Z",
+  "AllowedFlows": []
+ },
+ {
+  "_id": "CIQ_RMES_Safety_A00",
+  "_created_at": "2026-10-08T18:39:10Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-15T02:59:50Z",
+  "Name": "CIQ RMES Safety",
+  "Description": "",
+  "Type": "Form",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEKl84xAFRW",
+    "Name": "CIQ Safety Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl88CJiLP",
+    "Name": "CIQ Reader",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl88jv4dv",
+    "Name": "CIQ Case Admin",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl89I5nGx",
+    "Name": "CIQ Integration Service",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   }
+  ],
+  "LastPublishedAt": "2026-10-14T18:37:35Z",
+  "AllowedFlows": []
+ },
+ {
+  "_id": "CIQ_Scope_Run_A00",
+  "_created_at": "2026-10-08T18:39:09Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-15T02:59:35Z",
+  "Name": "CIQ Scope Run",
+  "Description": "",
+  "Type": "Form",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEKl83f9jPF",
+    "Name": "CIQ RMM",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl84Hca4w",
+    "Name": "CIQ Regulatory Reviewer",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl84xAFRW",
+    "Name": "CIQ Safety Reviewer",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl85WB1yE",
+    "Name": "CIQ QM Reviewer",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl8647K2u",
+    "Name": "CIQ Microbiology Reviewer",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl86bQQrO",
+    "Name": "CIQ Sustainability Reviewer",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl87f38Xw",
+    "Name": "CIQ Business Admin",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl88CJiLP",
+    "Name": "CIQ Reader",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl88jv4dv",
+    "Name": "CIQ Case Admin",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKwv6pxX3g",
+    "Name": "Customs & Trade Compliance",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKwvH8qaxG",
+    "Name": "Legal / IP",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKwvR_cPvv",
+    "Name": "Business owner (reports)",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl89I5nGx",
+    "Name": "CIQ Integration Service",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   }
+  ],
+  "LastPublishedAt": "2026-10-08T18:39:17Z",
+  "AllowedFlows": []
+ },
+ {
+  "_id": "CIQ_Section_A00",
+  "_created_at": "2026-10-08T18:39:09Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-15T03:00:36Z",
+  "Name": "CIQ Section",
+  "Description": "",
+  "Type": "Form",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEKl88jv4dv",
+    "Name": "CIQ Case Admin",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   }
+  ],
+  "LastPublishedAt": "2026-10-08T18:39:17Z",
+  "AllowedFlows": []
+ },
+ {
+  "_id": "CIQ_Config_Version_A00",
+  "_created_at": "2026-10-08T18:39:09Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-15T02:59:30Z",
+  "Name": "CIQ Config Version",
+  "Description": "",
+  "Type": "Form",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEKl83f9jPF",
+    "Name": "CIQ RMM",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl84Hca4w",
+    "Name": "CIQ Regulatory Reviewer",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl84xAFRW",
+    "Name": "CIQ Safety Reviewer",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl85WB1yE",
+    "Name": "CIQ QM Reviewer",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl8647K2u",
+    "Name": "CIQ Microbiology Reviewer",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl86bQQrO",
+    "Name": "CIQ Sustainability Reviewer",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl87f38Xw",
+    "Name": "CIQ Business Admin",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl88CJiLP",
+    "Name": "CIQ Reader",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl88jv4dv",
+    "Name": "CIQ Case Admin",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKwv6pxX3g",
+    "Name": "Customs & Trade Compliance",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKwvH8qaxG",
+    "Name": "Legal / IP",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKwvR_cPvv",
+    "Name": "Business owner (reports)",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl89I5nGx",
+    "Name": "CIQ Integration Service",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   }
+  ],
+  "LastPublishedAt": "2026-10-08T18:39:15Z",
+  "AllowedFlows": []
+ },
+ {
+  "_id": "CIQ_Supplier_A00",
+  "_created_at": "2026-10-08T18:39:09Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-16T14:28:51Z",
+  "Name": "CIQ Supplier",
+  "Description": "",
+  "Type": "Form",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEKl83f9jPF",
+    "Name": "CIQ RMM",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl87f38Xw",
+    "Name": "CIQ Business Admin",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl88jv4dv",
+    "Name": "CIQ Case Admin",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl89I5nGx",
+    "Name": "CIQ Integration Service",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   }
+  ],
+  "LastPublishedAt": "2026-10-16T07:42:32Z",
+  "AllowedFlows": [
+   {
+    "Name": "CIQ Supplier Portal",
+    "Type": "Portal",
+    "_id": "CIQ_Supplier_Portal_A00",
+    "AllowAllFields": true,
+    "AllowedFields": [],
+    "Permission": [
+     "Lookup"
+    ]
+   }
+  ]
+ },
+ {
+  "_id": "CIQ_Change_Request_A00",
+  "_created_at": "2026-10-08T18:39:09Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-15T14:39:40Z",
+  "Name": "CIQ Change Request",
+  "Description": "",
+  "Type": "Process",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEKl88jv4dv",
+    "Name": "CIQ Case Admin",
+    "Kind": "AppRole",
+    "Role": "Admin",
+    "Permission": []
+   }
+  ],
+  "LastPublishedAt": "2026-10-08T18:39:20Z",
+  "AllowedFlows": []
+ },
+ {
+  "_id": "CIQ_Open_Point_A00",
+  "_created_at": "2026-10-08T18:39:09Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-16T08:05:24Z",
+  "Name": "CIQ Open Point",
+  "Description": "",
+  "Type": "Process",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEKl83f9jPF",
+    "Name": "CIQ RMM",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl84Hca4w",
+    "Name": "CIQ Regulatory Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl84xAFRW",
+    "Name": "CIQ Safety Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl85WB1yE",
+    "Name": "CIQ QM Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl8647K2u",
+    "Name": "CIQ Microbiology Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl86bQQrO",
+    "Name": "CIQ Sustainability Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl87f38Xw",
+    "Name": "CIQ Business Admin",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl88CJiLP",
+    "Name": "CIQ Reader",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl88jv4dv",
+    "Name": "CIQ Case Admin",
+    "Kind": "AppRole",
+    "Role": "Admin",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl89I5nGx",
+    "Name": "CIQ Integration Service",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "InitiateItems"
+    ]
+   },
+   {
+    "_id": "RoEKwv6pxX3g",
+    "Name": "Customs & Trade Compliance",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKwvH8qaxG",
+    "Name": "Legal / IP",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKwvR_cPvv",
+    "Name": "Business owner (reports)",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   }
+  ],
+  "LastPublishedAt": "2026-10-15T03:38:04Z",
+  "AllowedFlows": [
+   {
+    "Name": "CIQ Supplier Portal",
+    "Type": "Portal",
+    "_id": "CIQ_Supplier_Portal_A00",
+    "AllowAllFields": true,
+    "AllowedFields": [],
+    "Permission": [
+     "Lookup"
+    ]
+   }
+  ]
+ },
+ {
+  "_id": "CIQ_Case_A00",
+  "_created_at": "2026-10-08T18:39:09Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-16T14:28:51Z",
+  "Name": "CIQ Case",
+  "Description": "",
+  "Type": "Process",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEKl83f9jPF",
+    "Name": "CIQ RMM",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "InitiateItems"
+    ]
+   },
+   {
+    "_id": "RoEKl84Hca4w",
+    "Name": "CIQ Regulatory Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl84xAFRW",
+    "Name": "CIQ Safety Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl85WB1yE",
+    "Name": "CIQ QM Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl8647K2u",
+    "Name": "CIQ Microbiology Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl86bQQrO",
+    "Name": "CIQ Sustainability Reviewer",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl87f38Xw",
+    "Name": "CIQ Business Admin",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl88CJiLP",
+    "Name": "CIQ Reader",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKl88jv4dv",
+    "Name": "CIQ Case Admin",
+    "Kind": "AppRole",
+    "Role": "Admin",
+    "Permission": []
+   },
+   {
+    "_id": "RoEKl89I5nGx",
+    "Name": "CIQ Integration Service",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "InitiateItems"
+    ]
+   },
+   {
+    "_id": "RoEKwv6pxX3g",
+    "Name": "Customs & Trade Compliance",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKwvH8qaxG",
+    "Name": "Legal / IP",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   },
+   {
+    "_id": "RoEKwvR_cPvv",
+    "Name": "Business owner (reports)",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "View"
+    ]
+   }
+  ],
+  "LastPublishedAt": "2026-10-15T02:58:25Z",
+  "AllowedFlows": [
+   {
+    "Name": "CIQ Supplier Portal",
+    "Type": "Portal",
+    "_id": "CIQ_Supplier_Portal_A00",
+    "AllowAllFields": true,
+    "AllowedFields": [],
+    "Permission": [
+     "Lookup"
+    ]
+   }
+  ]
+ },
+ {
+  "_id": "CIQ_ZZ_Spike_Log_A00",
+  "_created_at": "2026-10-07T10:31:08Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-09T06:39:22Z",
+  "Name": "CIQ ZZ Spike Log",
+  "Description": "",
+  "Type": "Form",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "SharedWith": [],
+  "LastPublishedAt": "2026-10-07T10:31:11Z",
+  "AllowedFlows": []
+ },
+ {
+  "_id": "CIQ_ZZ_Spike_Case_A00",
+  "_created_at": "2026-10-07T10:31:08Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-15T14:37:22Z",
+  "Name": "CIQ ZZ Spike Case",
+  "Description": "",
+  "Type": "Process",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "SharedWith": [],
+  "LastPublishedAt": "2026-10-14T17:56:36Z",
+  "AllowedFlows": []
+ },
+ {
+  "_id": "CIQ_ZZ_Spike_Register_A00",
+  "_created_at": "2026-10-07T10:31:08Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-09T06:39:22Z",
+  "Name": "CIQ ZZ Spike Register",
+  "Description": "",
+  "Type": "Form",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "SharedWith": [],
+  "LastPublishedAt": "2026-10-07T12:00:13Z",
+  "AllowedFlows": []
+ },
+ {
+  "_id": "CIQ_ZZ_Spike_Point_A00",
+  "_created_at": "2026-10-07T10:31:08Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-15T03:49:26Z",
+  "Name": "CIQ ZZ Spike Point",
+  "Description": "",
+  "Type": "Process",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "SharedWith": [],
+  "LastPublishedAt": "2026-10-14T17:56:55Z",
+  "AllowedFlows": []
+ }
+]

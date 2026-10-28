@@ -1,0 +1,896 @@
+
+== N1.1 ZZT-NT2-N1: case created, started; I-1 creates the request (+ twins guard)
+  ok   N1.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   N1.1 case draft is at 'Create case'
+  ok   N1.1 Start submit accepted
+  ok   N1.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   N1.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   N1.1 case fields unchanged by the submit
+  ok   N1.1 case.started (I-1) → the case links its new request
+  ok   N1.1 case phase 'Supplier filling in the CIQ'
+  ok   N1.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   N1.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   N1.1 request has no Release_Flag yet
+  ok   N1.1 two more case.started posts create no second request (idempotent)
+  ok   N1.1 the case still links its first request
+
+== N1.2 ZZT-NT2-N1: the supplier saves three revisions, uploads and removes a file; request.changed
+  ok   N1.2 Rev 1: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   N1.2 Rev 1: the request reads back every answer field exactly
+  ok   N1.2 Rev 1: every JSON field parses and no time has milliseconds
+  ok   N1.2 Rev 1: request.changed → the case has Rev 1
+  ok   N1.2 Rev 1: the case's 15 synced fields equal the request's
+  ok   N1.2 Rev 2: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   N1.2 Rev 2: the request reads back every answer field exactly
+  ok   N1.2 Rev 2: every JSON field parses and no time has milliseconds
+  ok   N1.2 Rev 2: request.changed → the case has Rev 2
+  ok   N1.2 Rev 2: the case's 15 synced fields equal the request's
+  ok   N1.2 Rev 3: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   N1.2 Rev 3: the request reads back every answer field exactly
+  ok   N1.2 Rev 3: every JSON field parses and no time has milliseconds
+  ok   N1.2 Rev 3: request.changed → the case has Rev 3 (posted twice back to back)
+  ok   N1.2 Rev 3: the case's 15 synced fields equal the request's
+  ok   N1.2 upload row ZZT-NT2-N1-UP1: the write is accepted
+  ok   N1.2 upload row ZZT-NT2-N1-UP2: the write is accepted
+  ok   N1.2 both upload rows are stored with every field
+  ok   N1.2 removing a file marks its row (Upload_Removed_At / _By_Email), keeps the row and adds none
+  ok   N1.2 the other upload row is untouched
+  ok   N1.2 the screen's Documents_JSON (Rev 4) is accepted
+  ok   N1.2 request.changed after the upload/removal → the case's Documents_JSON
+  ok   N1.2 the case's Documents_JSON equals the request's
+  ok   N1.2 not covered: the attachment file itself (Upload_File) needs the browser's upload API
+
+== N1.3 ZZT-NT2-N1: completeness confirmed and submitted; I-2
+  ok   N1.3 the supplier's completeness confirmation is accepted at fill-in
+  ok   N1.3 the fill-in submit moves the request to 'keep the CIQ up to date'
+  ok   N1.3 the request reads back the confirmation
+  ok   N1.3 completeness.confirmed (I-2) → the case records the confirmation
+  ok   N1.3 the case's Completeness_* fields equal the request's
+  ok   N1.3 the case's 15 synced fields equal the request's
+  ok   N1.3 the case phase is 'Review'
+  ok   N1.3 I-2's Approve moves the case to 'Beiersdorf review and final release' (needs Thomas in the role Integration service)
+  ok   N1.3 a second completeness.confirmed is refused (the case already has it): the case is unchanged
+
+== N1.3b ZZT-NT2-N1: the supplier keeps the CIQ up to date (Rev 5)
+  ok   N1.3b Rev 5 at 'keep the CIQ up to date': the screen's write at 'Supplier: keep the CIQ up to date' is accepted (user route)
+  ok   N1.3b Rev 5: the request reads back every answer field
+  ok   N1.3b Rev 5: request.changed → the case in review has Rev 5
+  ok   N1.3b Rev 5: the case's 15 synced fields equal the request's, and its completeness is kept
+
+== N1.4 ZZT-NT2-N1: open point(s) RMM + MIC: two rounds, edit, answer, close; history.updated
+  ok   N1.4 RMM: the open point draft reads back every Start field
+  ok   N1.4 RMM: the raise moves the point to 'Open point – RMM', assigned to the raiser
+  ok   N1.4 RMM: op.round → the point links its round-1 query
+  ok   N1.4 RMM: the query carries every field of the point
+  ok   N1.4 RMM: the query is at 'Supplier: respond', assigned to the portal contact
+  ok   N1.4 RMM: the raiser's edit: the screen's write at 'Open point – RMM' is accepted (user route)
+  ok   N1.4 RMM: the raiser's edit is accepted at the point's step
+  ok   N1.4 RMM: op.edited → the open query shows the edit
+  ok   N1.4 RMM: the query has the edited justification, due date and an Edited_At without milliseconds
+  ok   N1.4 RMM: the supplier's answer: the screen's write at 'Supplier: respond' is accepted (user route)
+  ok   N1.4 RMM: the supplier's answer is accepted at 'Supplier: respond'
+  ok   N1.4 RMM: the respond submit completes the query
+  ok   N1.4 RMM: query.answered (I-4) → the point has the answer
+  ok   N1.4 RMM: the point has all four answer fields and OP_Progress 'In progress'
+  ok   N1.4 RMM: the return (round 2): the screen's write at 'Open point – RMM' is accepted (user route)
+  ok   N1.4 RMM: the return (round 2) is accepted at the point's step
+  ok   N1.4 RMM: op.round → the point links its round-2 query
+  ok   N1.4 RMM: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond'
+  ok   N1.4 RMM: the answered round-1 query stays completed with its answer
+  ok   N1.4 RMM: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   N1.4 RMM: op.closed while the point has no outcome is refused (its query stays)
+  ok   N1.4 RMM: the close: the screen's write at 'Open point – RMM' is accepted (user route)
+  ok   N1.4 RMM: closing (outcome + submit) completes the point
+  ok   N1.4 RMM: op.closed → the open round-2 query is completed
+  ok   N1.4 RMM: op.edited on the closed point is refused
+  ok   N1.4 RMM: op.round on the closed point is refused (no new query)
+  ok   N1.4 RMM: exactly two queries exist for the point
+  ok   N1.4 MIC: the open point draft reads back every Start field
+  ok   N1.4 MIC: the raise moves the point to 'Open point – Microbiology', assigned to the raiser
+  ok   N1.4 MIC: op.round → the point links its round-1 query
+  ok   N1.4 MIC: the query carries every field of the point
+  ok   N1.4 MIC: the query is at 'Supplier: respond', assigned to the portal contact
+  ok   N1.4 MIC: the raiser's edit: the screen's write at 'Open point – Microbiology' is accepted (user route)
+  ok   N1.4 MIC: the raiser's edit is accepted at the point's step
+  ok   N1.4 MIC: op.edited → the open query shows the edit
+  ok   N1.4 MIC: the query has the edited justification, due date and an Edited_At without milliseconds
+  ok   N1.4 MIC: the supplier's answer: the screen's write at 'Supplier: respond' is accepted (user route)
+  ok   N1.4 MIC: the supplier's answer is accepted at 'Supplier: respond'
+  ok   N1.4 MIC: the respond submit completes the query
+  ok   N1.4 MIC: query.answered (I-4) → the point has the answer
+  ok   N1.4 MIC: the point has all four answer fields and OP_Progress 'In progress'
+  ok   N1.4 MIC: the return (round 2): the screen's write at 'Open point – Microbiology' is accepted (user route)
+  ok   N1.4 MIC: the return (round 2) is accepted at the point's step
+  ok   N1.4 MIC: op.round → the point links its round-2 query
+  ok   N1.4 MIC: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond'
+  ok   N1.4 MIC: the answered round-1 query stays completed with its answer
+  ok   N1.4 MIC: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   N1.4 MIC: op.closed while the point has no outcome is refused (its query stays)
+  ok   N1.4 MIC: the close: the screen's write at 'Open point – Microbiology' is accepted (user route)
+  ok   N1.4 MIC: closing (outcome + submit) completes the point
+  ok   N1.4 MIC: op.closed → the open round-2 query is completed
+  ok   N1.4 MIC: op.edited on the closed point is refused
+  ok   N1.4 MIC: op.round on the closed point is refused (no new query)
+  ok   N1.4 MIC: exactly two queries exist for the point
+  ok   N1.4 history.updated → the request's Questions_History_JSON
+  ok   N1.4 the history reads back exactly and parses
+RATE LIMITED: 429 on GET /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPW_q07_js. Stop 20 minutes, then rerun.
+paused 20 min after a rate limit (Thu Oct 22 01:04:39 IST 2026)
+skip N1.1 (done)
+skip N1.2 (done)
+skip N1.3 (done)
+skip N1.3b (done)
+
+== N1.4 ZZT-NT2-N1: open point(s) RMM + MIC: two rounds, edit, answer, close; history.updated
+  ok   N1.4 RMM: the open point draft reads back every Start field
+  ok   N1.4 RMM: the raise moves the point to 'Open point – RMM', assigned to the raiser
+  ok   N1.4 RMM: op.round → the point links its round-1 query
+  ok   N1.4 RMM: the query carries every field of the point
+  ok   N1.4 RMM: the query is at 'Supplier: respond', assigned to the portal contact
+  ok   N1.4 RMM: the raiser's edit: the screen's write at 'Open point – RMM' is accepted (user route)
+  ok   N1.4 RMM: the raiser's edit is accepted at the point's step
+  ok   N1.4 RMM: op.edited → the open query shows the edit
+  ok   N1.4 RMM: the query has the edited justification, due date and an Edited_At without milliseconds
+  ok   N1.4 RMM: the supplier's answer: the screen's write at 'Supplier: respond' is accepted (user route)
+  ok   N1.4 RMM: the supplier's answer is accepted at 'Supplier: respond'
+  ok   N1.4 RMM: the respond submit completes the query
+  ok   N1.4 RMM: query.answered (I-4) → the point has the answer
+  ok   N1.4 RMM: the point has all four answer fields and OP_Progress 'In progress'
+  ok   N1.4 RMM: the return (round 2): the screen's write at 'Open point – RMM' is accepted (user route)
+  ok   N1.4 RMM: the return (round 2) is accepted at the point's step
+  ok   N1.4 RMM: op.round → the point links its round-2 query
+  ok   N1.4 RMM: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond'
+  ok   N1.4 RMM: the answered round-1 query stays completed with its answer
+  ok   N1.4 RMM: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   N1.4 RMM: op.closed while the point has no outcome is refused (its query stays)
+  ok   N1.4 RMM: the close: the screen's write at 'Open point – RMM' is accepted (user route)
+  ok   N1.4 RMM: closing (outcome + submit) completes the point
+  ok   N1.4 RMM: op.closed → the open round-2 query is completed
+  ok   N1.4 RMM: op.edited on the closed point is refused
+  ok   N1.4 RMM: op.round on the closed point is refused (no new query)
+  ok   N1.4 RMM: exactly two queries exist for the point
+  ok   N1.4 MIC: the open point draft reads back every Start field
+  ok   N1.4 MIC: the raise moves the point to 'Open point – Microbiology', assigned to the raiser
+  ok   N1.4 MIC: op.round → the point links its round-1 query
+  ok   N1.4 MIC: the query carries every field of the point
+  ok   N1.4 MIC: the query is at 'Supplier: respond', assigned to the portal contact
+  ok   N1.4 MIC: the raiser's edit: the screen's write at 'Open point – Microbiology' is accepted (user route)
+  ok   N1.4 MIC: the raiser's edit is accepted at the point's step
+  ok   N1.4 MIC: op.edited → the open query shows the edit
+  ok   N1.4 MIC: the query has the edited justification, due date and an Edited_At without milliseconds
+  ok   N1.4 MIC: the supplier's answer: the screen's write at 'Supplier: respond' is accepted (user route)
+  ok   N1.4 MIC: the supplier's answer is accepted at 'Supplier: respond'
+  ok   N1.4 MIC: the respond submit completes the query
+  ok   N1.4 MIC: query.answered (I-4) → the point has the answer
+  ok   N1.4 MIC: the point has all four answer fields and OP_Progress 'In progress'
+  ok   N1.4 MIC: the return (round 2): the screen's write at 'Open point – Microbiology' is accepted (user route)
+  ok   N1.4 MIC: the return (round 2) is accepted at the point's step
+  ok   N1.4 MIC: op.round → the point links its round-2 query
+  ok   N1.4 MIC: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond'
+  ok   N1.4 MIC: the answered round-1 query stays completed with its answer
+  ok   N1.4 MIC: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   N1.4 MIC: op.closed while the point has no outcome is refused (its query stays)
+  ok   N1.4 MIC: the close: the screen's write at 'Open point – Microbiology' is accepted (user route)
+  ok   N1.4 MIC: closing (outcome + submit) completes the point
+  ok   N1.4 MIC: op.closed → the open round-2 query is completed
+  ok   N1.4 MIC: op.edited on the closed point is refused
+  ok   N1.4 MIC: op.round on the closed point is refused (no new query)
+  ok   N1.4 MIC: exactly two queries exist for the point
+  ok   N1.4 history.updated → the request's Questions_History_JSON
+  ok   N1.4 the history reads back exactly and parses
+  ok   N1.4 history.updated with text that is not JSON is refused
+  ok   N1.4 history.updated with a JSON object (not a list) is refused
+
+== N1.5 ZZT-NT2-N1: release.requested (I-5) and the supplier's move to the release step
+  ok   N1.5 seeded an earlier round's Release_At / Release_By_Name on the request (admin) to prove the clear
+  ok   N1.5 release.requested (I-5) → the request asks for the final release
+  ok   N1.5 the request is locked, labelled, has its release contact and no earlier release
+  ok   N1.5 the case has Release_Requested_At (now, no milliseconds)
+  FAIL N1.5 the supplier's move (submit only: Keep_Open_Gate is a formula, P-2) takes the request to 'give the final release', assigned to the release contact — {"submit":400,"to":"Supplier: give the final release","body":{"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050302","en_message":"You don't have permission to submit this item anymore.","message":"You don't have permission to submit this item anymore.","_id":"44c8e23d-6200-4d3a-a54d-baf
+
+== N1.7 ZZT-NT2-N1: the supplier's final release; I-7 completes the case
+  ok   N1.7 the supplier's final release: the screen's write at 'Supplier: give the final release' is accepted (user route)
+  FAIL N1.7 the supplier's release (fields + submit) takes the request to 'view the released CIQ' — {"put":200,"submit":400,"to":"Supplier: view the released CIQ","body":{"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050302","en_message":"You don't have permission to submit this item anymore.","message":"You don't have permission to submit this item anymore.","_id":"47c2f738-d701-4969
+  ok   N1.7 the request reads back the release
+  ok   N1.7 release.given (I-7) → the case is completed
+  ok   N1.7 the case has Final_Release_* and phase 'Completed'
+  ok   N1.7 a second release.given is refused (the case is completed)
+
+== N1.8 ZZT-NT2-N1: a change report after the release; request.changed on the completed case
+  ok   N1.8 after the release an upload is refused (the Uploads table is ReadOnly at 'view the released CIQ')
+  ok   N1.8 the supplier's change report: the screen's write at 'Supplier: view the released CIQ' is accepted (user route)
+  ok   N1.8 request.changed after the release → the completed case has the change report
+  ok   N1.8 the case's change-report fields equal the request's and the case stays completed
+
+== N2.1 ZZT-NT2-N2: case created, started; I-1 creates the request (+ twins guard)
+  ok   N2.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   N2.1 case draft is at 'Create case'
+  ok   N2.1 Start submit accepted
+  ok   N2.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   N2.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   N2.1 case fields unchanged by the submit
+  ok   N2.1 case.started (I-1) → the case links its new request
+  ok   N2.1 case phase 'Supplier filling in the CIQ'
+  ok   N2.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   N2.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   N2.1 request has no Release_Flag yet
+  ok   N2.1 two more case.started posts create no second request (idempotent)
+  ok   N2.1 the case still links its first request
+
+== N2.2 ZZT-NT2-N2: the supplier saves three revisions (Rev 2 ~30 KB), uploads and removes a file; request.changed
+  ok   N2.2 Rev 1: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   N2.2 Rev 1: the request reads back every answer field exactly
+  ok   N2.2 Rev 1: every JSON field parses and no time has milliseconds
+  ok   N2.2 Rev 1: request.changed → the case has Rev 1
+  ok   N2.2 Rev 1: the case's 15 synced fields equal the request's
+  ok   N2.2 Rev 2 (~30 KB answers): the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   N2.2 Rev 2: the request reads back every answer field exactly
+  ok   N2.2 Rev 2: every JSON field parses and no time has milliseconds
+  ok   N2.2 Rev 2: request.changed → the case has Rev 2
+  ok   N2.2 Rev 2: the case's 15 synced fields equal the request's
+  ok   N2.2 Rev 3: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   N2.2 Rev 3: the request reads back every answer field exactly
+  ok   N2.2 Rev 3: every JSON field parses and no time has milliseconds
+  ok   N2.2 Rev 3: request.changed → the case has Rev 3 (posted twice back to back)
+  ok   N2.2 Rev 3: the case's 15 synced fields equal the request's
+  ok   N2.2 after Rev 3 the case holds Rev 3, not the ~30 KB Rev 2 (no stale overwrite)
+  ok   N2.2 upload row ZZT-NT2-N2-UP1: the write is accepted
+  ok   N2.2 upload row ZZT-NT2-N2-UP2: the write is accepted
+  ok   N2.2 both upload rows are stored with every field
+  ok   N2.2 removing a file marks its row (Upload_Removed_At / _By_Email), keeps the row and adds none
+  ok   N2.2 the other upload row is untouched
+  ok   N2.2 the screen's Documents_JSON (Rev 4) is accepted
+  ok   N2.2 request.changed after the upload/removal → the case's Documents_JSON
+  ok   N2.2 the case's Documents_JSON equals the request's
+  ok   N2.2 not covered: the attachment file itself (Upload_File) needs the browser's upload API
+
+== N2.3 ZZT-NT2-N2: completeness confirmed and submitted; I-2
+  ok   N2.3 the supplier's completeness confirmation is accepted at fill-in
+he case's Documents_JSON equals the request's
+  ok   N2.2 not covered: the attachment file itself (Upload_File) needs the browser's upload API
+
+== N2.3 ZZT-NT2-N2: completeness confirmed and submitted; I-2
+  ok   N2.3 the supplier's completeness confirmation is accepted at fill-in
+skip N1.1 (done)
+skip N1.2 (done)
+skip N1.3 (done)
+skip N1.3b (done)
+skip N1.4 (done)
+skip N1.5 (done)
+skip N1.7 (done)
+skip N1.8 (done)
+skip N2.1 (done)
+skip N2.2 (done)
+
+== N2.3 ZZT-NT2-N2: completeness confirmed and submitted; I-2
+  ok   N2.3 the supplier's completeness confirmation is accepted at fill-in
+  FAIL N2.3 the fill-in submit moves the request to 'keep the CIQ up to date' — {"status":200,"to":"Supplier: give the final release"}
+  ok   N2.3 the request reads back the confirmation
+  ok   N2.3 completeness.confirmed (I-2) → the case records the confirmation
+  ok   N2.3 the case's Completeness_* fields equal the request's
+  ok   N2.3 the case's 15 synced fields equal the request's
+  ok   N2.3 the case phase is 'Review'
+  ok   N2.3 I-2's Approve moves the case to 'Beiersdorf review and final release' (needs Thomas in the role Integration service)
+  ok   N2.3 a second completeness.confirmed is refused (the case already has it): the case is unchanged
+
+== N2.3b ZZT-NT2-N2: the supplier keeps the CIQ up to date (Rev 5)
+  ok   N2.3b Rev 5 at 'keep the CIQ up to date': the screen's write at 'Supplier: give the final release' is accepted (user route)
+  ok   N2.3b Rev 5: the request reads back every answer field
+  ok   N2.3b Rev 5: request.changed → the case in review has Rev 5
+  ok   N2.3b Rev 5: the case's 15 synced fields equal the request's, and its completeness is kept
+
+== N2.4 ZZT-NT2-N2: open point(s) REG + QM: two rounds, edit, answer, close; history.updated
+  ok   N2.4 REG: the open point draft reads back every Start field
+  ok   N2.4 REG: the raise moves the point to 'Open point – Regulatory', assigned to the raiser
+  ok   N2.4 REG: op.round → the point links its round-1 query
+  ok   N2.4 REG: the query carries every field of the point
+  ok   N2.4 REG: the query is at 'Supplier: respond', assigned to the portal contact
+  ok   N2.4 REG: the raiser's edit: the screen's write at 'Open point – Regulatory' is accepted (user route)
+  ok   N2.4 REG: the raiser's edit is accepted at the point's step
+  ok   N2.4 REG: op.edited → the open query shows the edit
+  ok   N2.4 REG: the query has the edited justification, due date and an Edited_At without milliseconds
+  ok   N2.4 REG: the supplier's answer: the screen's write at 'Supplier: respond' is accepted (user route)
+  ok   N2.4 REG: the supplier's answer is accepted at 'Supplier: respond'
+  ok   N2.4 REG: the respond submit completes the query
+  ok   N2.4 REG: query.answered (I-4) → the point has the answer
+  ok   N2.4 REG: the point has all four answer fields and OP_Progress 'In progress'
+  ok   N2.4 REG: the return (round 2): the screen's write at 'Open point – Regulatory' is accepted (user route)
+  ok   N2.4 REG: the return (round 2) is accepted at the point's step
+  ok   N2.4 REG: op.round → the point links its round-2 query
+  ok   N2.4 REG: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond'
+  ok   N2.4 REG: the answered round-1 query stays completed with its answer
+  ok   N2.4 REG: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   N2.4 REG: op.closed while the point has no outcome is refused (its query stays)
+  ok   N2.4 REG: the close: the screen's write at 'Open point – Regulatory' is accepted (user route)
+  ok   N2.4 REG: closing (outcome + submit) completes the point
+  ok   N2.4 REG: op.closed → the open round-2 query is completed
+  ok   N2.4 REG: op.edited on the closed point is refused
+  ok   N2.4 REG: op.round on the closed point is refused (no new query)
+  ok   N2.4 REG: exactly two queries exist for the point
+  ok   N2.4 QM: the open point draft reads back every Start field
+  ok   N2.4 QM: the raise moves the point to 'Open point – QM', assigned to the raiser
+  ok   N2.4 QM: op.round → the point links its round-1 query
+  ok   N2.4 QM: the query carries every field of the point
+  ok   N2.4 QM: the query is at 'Supplier: respond', assigned to the portal contact
+  ok   N2.4 QM: the raiser's edit: the screen's write at 'Open point – QM' is accepted (user route)
+  ok   N2.4 QM: the raiser's edit is accepted at the point's step
+  ok   N2.4 QM: op.edited → the open query shows the edit
+  ok   N2.4 QM: the query has the edited justification, due date and an Edited_At without milliseconds
+  ok   N2.4 QM: the supplier's answer: the screen's write at 'Supplier: respond' is accepted (user route)
+  ok   N2.4 QM: the supplier's answer is accepted at 'Supplier: respond'
+  ok   N2.4 QM: the respond submit completes the query
+  ok   N2.4 QM: query.answered (I-4) → the point has the answer
+  ok   N2.4 QM: the point has all four answer fields and OP_Progress 'In progress'
+  ok   N2.4 QM: the return (round 2): the screen's write at 'Open point – QM' is accepted (user route)
+  ok   N2.4 QM: the return (round 2) is accepted at the point's step
+  ok   N2.4 QM: op.round → the point links its round-2 query
+  ok   N2.4 QM: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond'
+  ok   N2.4 QM: the answered round-1 query stays completed with its answer
+  ok   N2.4 QM: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   N2.4 QM: op.closed while the point has no outcome is refused (its query stays)
+  ok   N2.4 QM: the close: the screen's write at 'Open point – QM' is accepted (user route)
+  ok   N2.4 QM: closing (outcome + submit) completes the point
+  ok   N2.4 QM: op.closed → the open round-2 query is completed
+  ok   N2.4 QM: op.edited on the closed point is refused
+  ok   N2.4 QM: op.round on the closed point is refused (no new query)
+  ok   N2.4 QM: exactly two queries exist for the point
+  ok   N2.4 history.updated → the request's Questions_History_JSON
+  ok   N2.4 the history reads back exactly and parses
+  ok   N2.4 history.updated with text that is not JSON is refused
+  ok   N2.4 history.updated with a JSON object (not a list) is refused
+
+== N2.5 ZZT-NT2-N2: release.requested (I-5) and the supplier's move to the release step
+  ok   N2.5 seeded an earlier round's Release_At / Release_By_Name on the request (admin) to prove the clear
+skip N1.1 (done)
+skip N1.2 (done)
+skip N1.3 (done)
+skip N1.3b (done)
+skip N1.4 (done)
+skip N1.5 (done)
+skip N1.7 (done)
+skip N1.8 (done)
+skip N2.1 (done)
+skip N2.2 (done)
+skip N2.3 (done)
+skip N2.3b (done)
+skip N2.4 (done)
+
+== N2.5 ZZT-NT2-N2: release.requested (I-5) and the supplier's move to the release step
+  ok   N2.5 seeded an earlier round's Release_At / Release_By_Name on the request (admin) to prove the clear
+  ok   N2.5 release.requested (I-5) → the request asks for the final release
+  ok   N2.5 the request is locked, labelled, has its release contact and no earlier release
+  ok   N2.5 the case has Release_Requested_At (now, no milliseconds)
+  FAIL N2.5 the supplier's move (submit only: Keep_Open_Gate is a formula, P-2) takes the request to 'give the final release', assigned to the release contact — {"submit":200,"to":"Supplier: view the released CIQ"}
+
+== N2.6 ZZT-NT2-N2: review.reopened (I-6), the go-to back, and a second release.requested
+  ok   N2.6 review.reopened (I-6) → the request is flagged Reopened, unlocked, 'With Beiersdorf'
+  ok   N2.6 the request is unlocked and labelled 'With Beiersdorf'
+  ok   N2.6 a second review.reopened is refused (the release is no longer requested)
+  ok   N2.6 the reopen marker at the release step: the screen's write at 'Supplier: view the released CIQ' is accepted (user route)
+  FAIL N2.6 submitting 'give the final release' while Reopened takes the go-to back to 'keep the CIQ up to date' — {"put":200,"submit":200}
+  ok   N2.6 release.given while Reopened is refused: the case stays open
+  ok   N2.6 round 2: seeded an earlier round's Release_At / Release_By_Name on the request (admin) to prove the clear
+  ok   N2.6 round 2: release.requested (I-5) → the request asks for the final release
+  ok   N2.6 round 2: the request is locked, labelled, has its release contact and no earlier release
+  ok   N2.6 round 2: the case has Release_Requested_At (now, no milliseconds)
+  FAIL N2.6 round 2: the supplier's move (submit only: Keep_Open_Gate is a formula, P-2) takes the request to 'give the final release', assigned to the release contact — {"submit":400,"body":{"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050201","en_message":"This item has moved out of your queue.","message":"This item has moved out of your queue.","_id":"e0ad39cf-4b3a-47b8-8a35-e083da4272cf","args":{"item_name":"CIQP Request from Thomas","process_name"
+
+== N2.7 ZZT-NT2-N2: the supplier's final release; I-7 completes the case
+  FAIL N2.7 the supplier's final release: the screen's write at 'undefined' is accepted (user route) — {"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050202","en_message":"You don't have permission to submit this item anymore.","message":"You don't have permission to submit this item anymore.","_id":"55adc611-f0f0-47ed-a0ff-ae5fef946afb","args":{"item_name":"CIQP Request from Thomas","pr
+  FAIL N2.7 the supplier's release (fields + submit) takes the request to 'view the released CIQ' — {"put":400,"submit":400,"body":{"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050201","en_message":"This item has moved out of your queue.","message":"This item has moved out of your queue.","_id":"03bd000c-af12-48e2-9777-b4ad9019a53e","args":{"item_name":"CIQP Request from Thomas","pro
+  FAIL N2.7 the request reads back the release — {"Release_By_Name":{"want":"ZZT Supplier Nacht (fictional)"},"Release_At":{"want":"2026-10-21T22:11:02Z"},"Release_By_Email":{"want":"zzt.supplier.night@example.com"},"Release_By_Role":{"want":"Coordinator"}}
+  FAIL N2.7 release.given (I-7) → the case is completed — {"webhook":200,"last":{"_status":"InProgress","_current_step":"Beiersdorf review and final release","assigned":"RoEKl89I5nGx"}}
+  ok   N2.7 a second release.given is refused (the case is completed)
+
+== N2.8 ZZT-NT2-N2: a change report after the release; request.changed on the completed case
+  ok   N2.8 after the release an upload is refused (the Uploads table is ReadOnly at 'view the released CIQ')
+  FAIL N2.8 the supplier's change report: the screen's write at 'undefined' is accepted (user route) — {"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050202","en_message":"You don't have permission to submit this item anymore.","message":"You don't have permission to submit this item anymore.","_id":"c64cb896-b8de-4861-b6aa-5d7833338757","args":{"item_name":"CIQP Request from Thomas","pr
+  FAIL N2.8 request.changed after the release → the completed case has the change report — {"webhook":200,"last":{"_status":"InProgress","_current_step":"Beiersdorf review and final release","assigned":"RoEKl89I5nGx"}}
+
+== NX1.1 ZZT-NT2-NX1: case started + I-1 (to be cancelled while filling in)
+  ok   NX1.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   NX1.1 case draft is at 'Create case'
+  ok   NX1.1 Start submit accepted
+  ok   NX1.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   NX1.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   NX1.1 case fields unchanged by the submit
+  ok   NX1.1 case.started (I-1) → the case links its new request
+  ok   NX1.1 case phase 'Supplier filling in the CIQ'
+  ok   NX1.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   NX1.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   NX1.1 request has no Release_Flag yet
+
+== NX1.2 ZZT-NT2-NX1: case.cancelled guards, the cancel, and every supplier hand-off refused afterwards
+  ok   NX1.2 case.cancelled with phaseLabel 'Completed' is refused
+  ok   NX1.2 case.cancelled with locked 'No' is refused
+  ok   NX1.2 case.cancelled → the request is labelled Cancelled and locked
+  ok   NX1.2 seeded the cancelled request with answers, a confirmation and a release (admin) so each guard is really exercised
+  ok   NX1.2 request.changed on a cancelled request is refused: the case is unchanged
+  ok   NX1.2 completeness.confirmed on a cancelled request is refused
+  ok   NX1.2 release.given on a cancelled request is refused: the case stays open
+  ok   NX1.2 review.reopened on a cancelled request is refused
+
+== NX2.1 ZZT-NT2-NX2: case started + I-1 (to be cancelled in review)
+  ok   NX2.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   NX2.1 case draft is at 'Create case'
+  ok   NX2.1 Start submit accepted
+  ok   NX2.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   NX2.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   NX2.1 case fields unchanged by the submit
+  ok   NX2.1 case.started (I-1) → the case links its new request
+  ok   NX2.1 case phase 'Supplier filling in the CIQ'
+  ok   NX2.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   NX2.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   NX2.1 request has no Release_Flag yet
+  ok   NX2.1 the supplier's completeness confirmation is accepted at fill-in
+  ok   NX2.1 the fill-in submit moves the request to 'keep the CIQ up to date'
+  ok   NX2.1 the request reads back the confirmation
+  ok   NX2.1 completeness.confirmed (I-2) → the case records the confirmation
+  ok   NX2.1 the case's Completeness_* fields equal the request's
+  ok   NX2.1 the case's 15 synced fields equal the request's
+  ok   NX2.1 the case phase is 'Review'
+  ok   NX2.1 I-2's Approve moves the case to 'Beiersdorf review and final release' (needs Thomas in the role Integration service)
+  ok   NX2.1 a second completeness.confirmed is refused (the case already has it): the case is unchanged
+
+== NX2.2 ZZT-NT2-NX2: case.cancelled guards, the cancel, and every supplier hand-off refused afterwards
+  ok   NX2.2 case.cancelled with phaseLabel 'Completed' is refused
+  ok   NX2.2 case.cancelled with locked 'No' is refused
+  ok   NX2.2 case.cancelled → the request is labelled Cancelled and locked
+  ok   NX2.2 seeded the cancelled request with answers, a confirmation and a release (admin) so each guard is really exercised
+  ok   NX2.2 request.changed on a cancelled request is refused: the case is unchanged
+  ok   NX2.2 release.given on a cancelled request is refused: the case stays open
+  ok   NX2.2 review.reopened on a cancelled request is refused
+
+== NF1.1 ZZT-NT2-NF1: a case in review whose release Beiersdorf never asked for
+  ok   NF1.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   NF1.1 case draft is at 'Create case'
+  ok   NF1.1 Start submit accepted
+  ok   NF1.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   NF1.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   NF1.1 case fields unchanged by the submit
+  ok   NF1.1 case.started (I-1) → the case links its new request
+  ok   NF1.1 case phase 'Supplier filling in the CIQ'
+  ok   NF1.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   NF1.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   NF1.1 request has no Release_Flag yet
+  ok   NF1.1 the supplier's completeness confirmation is accepted at fill-in
+  ok   NF1.1 the fill-in submit moves the request to 'keep the CIQ up to date'
+  ok   NF1.1 the request reads back the confirmation
+  ok   NF1.1 completeness.confirmed (I-2) → the case records the confirmation
+  ok   NF1.1 the case's Completeness_* fields equal the request's
+  ok   NF1.1 the case's 15 synced fields equal the request's
+  ok   NF1.1 the case phase is 'Review'
+  ok   NF1.1 I-2's Approve moves the case to 'Beiersdorf review and final release' (needs Thomas in the role Integration service)
+  ok   NF1.1 a second completeness.confirmed is refused (the case already has it): the case is unchanged
+
+== NF1.2 ZZT-NT2-NF1: forged release, forged case link, unknown ids, I-1 on a draft and without contacts
+  ok   NF1.2 seeded a forged release on the request (admin): flag, name and time, but no Release_Requested_At on the case
+  ok   NF1.2 release.given without Beiersdorf's request is refused: the case stays open and unchanged
+  ok   NF1.2 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   NF1.2 case draft is at 'Create case'
+  ok   NF1.2 Start submit accepted
+  ok   NF1.2 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   NF1.2 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   NF1.2 case fields unchanged by the submit
+  ok   NF1.2 case.started (I-1) → the case links its new request
+  ok   NF1.2 case phase 'Supplier filling in the CIQ'
+  ok   NF1.2 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   NF1.2 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   NF1.2 request has no Release_Flag yet
+  ok   NF1.2 re-pointed the forged request at another case (admin)
+  ok   NF1.2 request.changed from a request the other case does not link is refused: that case is unchanged
+  ok   NF1.2 restored the request's own case link and cleared the forged release (admin)
+  ok   NF1.2 request.changed with an unknown id changes nothing
+  ok   NF1.2 release.given with an unknown id changes nothing
+  ok   NF1.2 case.started with an unknown id changes nothing
+  ok   NF1.2 release.requested with an unknown id changes nothing
+  ok   NF1.2 history.updated with an unknown id changes nothing
+  ok   NF1.2 op.round with an unknown id changes nothing
+  ok   NF1.2 query.answered with an unknown id changes nothing
+  ok   NF1.2 case.cancelled with an unknown id changes nothing
+  ok   NF1.2 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   NF1.2 case draft is at 'Create case'
+  ok   NF1.2 case.started for a draft case (never submitted) creates no request
+  ok   NF1.2 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   NF1.2 case draft is at 'Create case'
+  ok   NF1.2 Start submit accepted
+  ok   NF1.2 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   NF1.2 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   NF1.2 case fields unchanged by the submit
+restart after the 05:13 pause, 12 s Thu Oct 22 05:34:01 IST 2026
+skip N1.1 (done)
+skip N1.2 (done)
+skip N1.3 (done)
+skip N1.3b (done)
+skip N1.4 (done)
+skip N1.5 (done)
+skip N1.7 (done)
+skip N1.8 (done)
+skip N2.1 (done)
+skip N2.2 (done)
+skip N2.3 (done)
+skip N2.3b (done)
+skip N2.4 (done)
+skip N2.5 (done)
+skip N2.6 (done)
+skip N2.7 (done)
+skip N2.8 (done)
+skip NX1.1 (done)
+skip NX1.2 (done)
+skip NX2.1 (done)
+skip NX2.2 (done)
+skip NF1.1 (done)
+
+== NF1.2 ZZT-NT2-NF1: forged release, forged case link, unknown ids, I-1 on a draft and without contacts
+  ok   NF1.2 seeded a forged release on the request (admin): flag, name and time, but no Release_Requested_At on the case
+  ok   NF1.2 release.given without Beiersdorf's request is refused: the case stays open and unchanged
+  ok   NF1.2 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   NF1.2 case draft is at 'Create case'
+  ok   NF1.2 Start submit accepted
+  ok   NF1.2 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   NF1.2 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   NF1.2 case fields unchanged by the submit
+  ok   NF1.2 case.started (I-1) → the case links its new request
+  ok   NF1.2 case phase 'Supplier filling in the CIQ'
+  ok   NF1.2 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   NF1.2 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   NF1.2 request has no Release_Flag yet
+  ok   NF1.2 re-pointed the forged request at another case (admin)
+  ok   NF1.2 request.changed from a request the other case does not link is refused: that case is unchanged
+  ok   NF1.2 restored the request's own case link and cleared the forged release (admin)
+  ok   NF1.2 request.changed with an unknown id changes nothing
+  ok   NF1.2 release.given with an unknown id changes nothing
+  ok   NF1.2 case.started with an unknown id changes nothing
+  ok   NF1.2 release.requested with an unknown id changes nothing
+  ok   NF1.2 history.updated with an unknown id changes nothing
+  ok   NF1.2 op.round with an unknown id changes nothing
+  ok   NF1.2 query.answered with an unknown id changes nothing
+  ok   NF1.2 case.cancelled with an unknown id changes nothing
+  ok   NF1.2 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   NF1.2 case draft is at 'Create case'
+  ok   NF1.2 case.started for a draft case (never submitted) creates no request
+  ok   NF1.2 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   NF1.2 case draft is at 'Create case'
+  ok   NF1.2 Start submit accepted
+  ok   NF1.2 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   NF1.2 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   NF1.2 case fields unchanged by the submit
+  ok   NF1.2 case.started for a case with no portal contact creates no request
+
+== NG1.1 ZZT-NT2-STAGE1-STARTED: case created, started; I-1 creates the request (+ twins guard)
+  ok   NG1.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   NG1.1 case draft is at 'Create case'
+  ok   NG1.1 Start submit accepted
+  ok   NG1.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   NG1.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   NG1.1 case fields unchanged by the submit
+  ok   NG1.1 case.started (I-1) → the case links its new request
+  ok   NG1.1 case phase 'Supplier filling in the CIQ'
+  ok   NG1.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   NG1.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   NG1.1 request has no Release_Flag yet
+  ok   NG1.1 two more case.started posts create no second request (idempotent)
+  ok   NG1.1 the case still links its first request
+
+== NG2.1 ZZT-NT2-STAGE2-FILLED: case created, started; I-1 creates the request (+ twins guard)
+  ok   NG2.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   NG2.1 case draft is at 'Create case'
+  ok   NG2.1 Start submit accepted
+  ok   NG2.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   NG2.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   NG2.1 case fields unchanged by the submit
+  ok   NG2.1 case.started (I-1) → the case links its new request
+  ok   NG2.1 case phase 'Supplier filling in the CIQ'
+  ok   NG2.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   NG2.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   NG2.1 request has no Release_Flag yet
+  ok   NG2.1 two more case.started posts create no second request (idempotent)
+  ok   NG2.1 the case still links its first request
+
+== NG2.2 ZZT-NT2-STAGE2-FILLED: the supplier saves three revisions, uploads and removes a file; request.changed
+  ok   NG2.2 Rev 1: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   NG2.2 Rev 1: the request reads back every answer field exactly
+  ok   NG2.2 Rev 1: every JSON field parses and no time has milliseconds
+  ok   NG2.2 Rev 1: request.changed → the case has Rev 1
+  ok   NG2.2 Rev 1: the case's 15 synced fields equal the request's
+  ok   NG2.2 Rev 2: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   NG2.2 Rev 2: the request reads back every answer field exactly
+  ok   NG2.2 Rev 2: every JSON field parses and no time has milliseconds
+  ok   NG2.2 Rev 2: request.changed → the case has Rev 2
+  ok   NG2.2 Rev 2: the case's 15 synced fields equal the request's
+paused 06:25 for the app session's 429 at 06:24:18 (both stop until 06:45)
+restart after the app session's 06:24 429, 12 s Thu Oct 22 06:45:12 IST 2026
+skip N1.1 (done)
+skip N1.2 (done)
+skip N1.3 (done)
+skip N1.3b (done)
+skip N1.4 (done)
+skip N1.5 (done)
+skip N1.7 (done)
+skip N1.8 (done)
+skip N2.1 (done)
+skip N2.2 (done)
+skip N2.3 (done)
+skip N2.3b (done)
+skip N2.4 (done)
+skip N2.5 (done)
+skip N2.6 (done)
+skip N2.7 (done)
+skip N2.8 (done)
+skip NX1.1 (done)
+skip NX1.2 (done)
+skip NX2.1 (done)
+skip NX2.2 (done)
+skip NF1.1 (done)
+skip NF1.2 (done)
+skip NG1.1 (done)
+skip NG2.1 (done)
+
+== NG2.2 ZZT-NT2-STAGE2-FILLED: the supplier saves three revisions, uploads and removes a file; request.changed
+  ok   NG2.2 Rev 1: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   NG2.2 Rev 1: the request reads back every answer field exactly
+  ok   NG2.2 Rev 1: every JSON field parses and no time has milliseconds
+  ok   NG2.2 Rev 1: request.changed → the case has Rev 1
+  ok   NG2.2 Rev 1: the case's 15 synced fields equal the request's
+  ok   NG2.2 Rev 2: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   NG2.2 Rev 2: the request reads back every answer field exactly
+  ok   NG2.2 Rev 2: every JSON field parses and no time has milliseconds
+  ok   NG2.2 Rev 2: request.changed → the case has Rev 2
+  ok   NG2.2 Rev 2: the case's 15 synced fields equal the request's
+  ok   NG2.2 Rev 3: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   NG2.2 Rev 3: the request reads back every answer field exactly
+  ok   NG2.2 Rev 3: every JSON field parses and no time has milliseconds
+  ok   NG2.2 Rev 3: request.changed → the case has Rev 3 (posted twice back to back)
+  ok   NG2.2 Rev 3: the case's 15 synced fields equal the request's
+  ok   NG2.2 upload row ZZT-NT2-STAGE2-FILLED-UP1: the write is accepted
+  ok   NG2.2 upload row ZZT-NT2-STAGE2-FILLED-UP2: the write is accepted
+  ok   NG2.2 both upload rows are stored with every field
+  ok   NG2.2 removing a file marks its row (Upload_Removed_At / _By_Email), keeps the row and adds none
+  ok   NG2.2 the other upload row is untouched
+  ok   NG2.2 the screen's Documents_JSON (Rev 4) is accepted
+  ok   NG2.2 request.changed after the upload/removal → the case's Documents_JSON
+  ok   NG2.2 the case's Documents_JSON equals the request's
+  ok   NG2.2 not covered: the attachment file itself (Upload_File) needs the browser's upload API
+
+== NG3.1 ZZT-NT2-STAGE3-IN-REVIEW: case created, started; I-1 creates the request (+ twins guard)
+  ok   NG3.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   NG3.1 case draft is at 'Create case'
+  ok   NG3.1 Start submit accepted
+  ok   NG3.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   NG3.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   NG3.1 case fields unchanged by the submit
+  ok   NG3.1 case.started (I-1) → the case links its new request
+  ok   NG3.1 case phase 'Supplier filling in the CIQ'
+  ok   NG3.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   NG3.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   NG3.1 request has no Release_Flag yet
+  ok   NG3.1 two more case.started posts create no second request (idempotent)
+  ok   NG3.1 the case still links its first request
+
+== NG3.2 ZZT-NT2-STAGE3-IN-REVIEW: the supplier saves three revisions, uploads and removes a file; request.changed
+  ok   NG3.2 Rev 1: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   NG3.2 Rev 1: the request reads back every answer field exactly
+  ok   NG3.2 Rev 1: every JSON field parses and no time has milliseconds
+  ok   NG3.2 Rev 1: request.changed → the case has Rev 1
+  ok   NG3.2 Rev 1: the case's 15 synced fields equal the request's
+  ok   NG3.2 Rev 2: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   NG3.2 Rev 2: the request reads back every answer field exactly
+  ok   NG3.2 Rev 2: every JSON field parses and no time has milliseconds
+  ok   NG3.2 Rev 2: request.changed → the case has Rev 2
+  ok   NG3.2 Rev 2: the case's 15 synced fields equal the request's
+  ok   NG3.2 Rev 3: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   NG3.2 Rev 3: the request reads back every answer field exactly
+  ok   NG3.2 Rev 3: every JSON field parses and no time has milliseconds
+  ok   NG3.2 Rev 3: request.changed → the case has Rev 3 (posted twice back to back)
+  ok   NG3.2 Rev 3: the case's 15 synced fields equal the request's
+  ok   NG3.2 upload row ZZT-NT2-STAGE3-IN-REVIEW-UP1: the write is accepted
+  ok   NG3.2 upload row ZZT-NT2-STAGE3-IN-REVIEW-UP2: the write is accepted
+  ok   NG3.2 both upload rows are stored with every field
+  ok   NG3.2 removing a file marks its row (Upload_Removed_At / _By_Email), keeps the row and adds none
+  ok   NG3.2 the other upload row is untouched
+  ok   NG3.2 the screen's Documents_JSON (Rev 4) is accepted
+  ok   NG3.2 request.changed after the upload/removal → the case's Documents_JSON
+  ok   NG3.2 the case's Documents_JSON equals the request's
+  ok   NG3.2 not covered: the attachment file itself (Upload_File) needs the browser's upload API
+
+== NG3.3 ZZT-NT2-STAGE3-IN-REVIEW: completeness confirmed and submitted; I-2
+  ok   NG3.3 the supplier's completeness confirmation is accepted at fill-in
+  ok   NG3.3 the fill-in submit moves the request to 'keep the CIQ up to date'
+  ok   NG3.3 the request reads back the confirmation
+  ok   NG3.3 completeness.confirmed (I-2) → the case records the confirmation
+  ok   NG3.3 the case's Completeness_* fields equal the request's
+  ok   NG3.3 the case's 15 synced fields equal the request's
+  ok   NG3.3 the case phase is 'Review'
+  ok   NG3.3 I-2's Approve moves the case to 'Beiersdorf review and final release' (needs Thomas in the role Integration service)
+  ok   NG3.3 a second completeness.confirmed is refused (the case already has it): the case is unchanged
+
+== NG4.1 ZZT-NT2-STAGE4-RELEASE-ASKED: case created, started; I-1 creates the request (+ twins guard)
+  ok   NG4.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   NG4.1 case draft is at 'Create case'
+  ok   NG4.1 Start submit accepted
+  ok   NG4.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   NG4.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   NG4.1 case fields unchanged by the submit
+  ok   NG4.1 case.started (I-1) → the case links its new request
+  ok   NG4.1 case phase 'Supplier filling in the CIQ'
+  ok   NG4.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   NG4.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   NG4.1 request has no Release_Flag yet
+  ok   NG4.1 two more case.started posts create no second request (idempotent)
+  ok   NG4.1 the case still links its first request
+
+== NG4.2 ZZT-NT2-STAGE4-RELEASE-ASKED: the supplier saves three revisions, uploads and removes a file; request.changed
+  ok   NG4.2 Rev 1: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   NG4.2 Rev 1: the request reads back every answer field exactly
+  ok   NG4.2 Rev 1: every JSON field parses and no time has milliseconds
+  ok   NG4.2 Rev 1: request.changed → the case has Rev 1
+  ok   NG4.2 Rev 1: the case's 15 synced fields equal the request's
+  ok   NG4.2 Rev 2: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   NG4.2 Rev 2: the request reads back every answer field exactly
+  ok   NG4.2 Rev 2: every JSON field parses and no time has milliseconds
+  ok   NG4.2 Rev 2: request.changed → the case has Rev 2
+  ok   NG4.2 Rev 2: the case's 15 synced fields equal the request's
+  ok   NG4.2 Rev 3: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   NG4.2 Rev 3: the request reads back every answer field exactly
+  ok   NG4.2 Rev 3: every JSON field parses and no time has milliseconds
+  ok   NG4.2 Rev 3: request.changed → the case has Rev 3 (posted twice back to back)
+  ok   NG4.2 Rev 3: the case's 15 synced fields equal the request's
+  ok   NG4.2 upload row ZZT-NT2-STAGE4-RELEASE-ASKED-UP1: the write is accepted
+  ok   NG4.2 upload row ZZT-NT2-STAGE4-RELEASE-ASKED-UP2: the write is accepted
+  ok   NG4.2 both upload rows are stored with every field
+  ok   NG4.2 removing a file marks its row (Upload_Removed_At / _By_Email), keeps the row and adds none
+  ok   NG4.2 the other upload row is untouched
+  ok   NG4.2 the screen's Documents_JSON (Rev 4) is accepted
+  ok   NG4.2 request.changed after the upload/removal → the case's Documents_JSON
+  ok   NG4.2 the case's Documents_JSON equals the request's
+  ok   NG4.2 not covered: the attachment file itself (Upload_File) needs the browser's upload API
+
+== NG4.3 ZZT-NT2-STAGE4-RELEASE-ASKED: completeness confirmed and submitted; I-2
+  ok   NG4.3 the supplier's completeness confirmation is accepted at fill-in
+  ok   NG4.3 the fill-in submit moves the request to 'keep the CIQ up to date'
+  ok   NG4.3 the request reads back the confirmation
+  ok   NG4.3 completeness.confirmed (I-2) → the case records the confirmation
+  ok   NG4.3 the case's Completeness_* fields equal the request's
+  ok   NG4.3 the case's 15 synced fields equal the request's
+  ok   NG4.3 the case phase is 'Review'
+  ok   NG4.3 I-2's Approve moves the case to 'Beiersdorf review and final release' (needs Thomas in the role Integration service)
+  ok   NG4.3 a second completeness.confirmed is refused (the case already has it): the case is unchanged
+
+== NG4.3b ZZT-NT2-STAGE4-RELEASE-ASKED: the supplier keeps the CIQ up to date (Rev 5)
+  ok   NG4.3b Rev 5 at 'keep the CIQ up to date': the screen's write at 'Supplier: keep the CIQ up to date' is accepted (user route)
+  ok   NG4.3b Rev 5: the request reads back every answer field
+  ok   NG4.3b Rev 5: request.changed → the case in review has Rev 5
+  ok   NG4.3b Rev 5: the case's 15 synced fields equal the request's, and its completeness is kept
+
+== NG4.4 ZZT-NT2-STAGE4-RELEASE-ASKED: open point(s) SAF: two rounds, edit, answer, close; history.updated
+  ok   NG4.4 SAF: the open point draft reads back every Start field
+  ok   NG4.4 SAF: the raise moves the point to 'Open point – Safety', assigned to the raiser
+  ok   NG4.4 SAF: op.round → the point links its round-1 query
+  ok   NG4.4 SAF: the query carries every field of the point
+  ok   NG4.4 SAF: the query is at 'Supplier: respond', assigned to the portal contact
+  ok   NG4.4 SAF: the raiser's edit: the screen's write at 'Open point – Safety' is accepted (user route)
+  ok   NG4.4 SAF: the raiser's edit is accepted at the point's step
+  ok   NG4.4 SAF: op.edited → the open query shows the edit
+  ok   NG4.4 SAF: the query has the edited justification, due date and an Edited_At without milliseconds
+  ok   NG4.4 SAF: the supplier's answer: the screen's write at 'Supplier: respond' is accepted (user route)
+  ok   NG4.4 SAF: the supplier's answer is accepted at 'Supplier: respond'
+  ok   NG4.4 SAF: the respond submit completes the query
+  ok   NG4.4 SAF: query.answered (I-4) → the point has the answer
+  ok   NG4.4 SAF: the point has all four answer fields and OP_Progress 'In progress'
+  ok   NG4.4 SAF: the return (round 2): the screen's write at 'Open point – Safety' is accepted (user route)
+  ok   NG4.4 SAF: the return (round 2) is accepted at the point's step
+  ok   NG4.4 SAF: op.round → the point links its round-2 query
+  ok   NG4.4 SAF: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond'
+  ok   NG4.4 SAF: the answered round-1 query stays completed with its answer
+  ok   NG4.4 SAF: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   NG4.4 SAF: op.closed while the point has no outcome is refused (its query stays)
+  ok   NG4.4 SAF: the close: the screen's write at 'Open point – Safety' is accepted (user route)
+  ok   NG4.4 SAF: closing (outcome + submit) completes the point
+  ok   NG4.4 SAF: op.closed → the open round-2 query is completed
+  ok   NG4.4 SAF: op.edited on the closed point is refused
+  ok   NG4.4 SAF: op.round on the closed point is refused (no new query)
+  ok   NG4.4 SAF: exactly two queries exist for the point
+  ok   NG4.4 history.updated → the request's Questions_History_JSON
+  ok   NG4.4 the history reads back exactly and parses
+  ok   NG4.4 history.updated with text that is not JSON is refused
+  ok   NG4.4 history.updated with a JSON object (not a list) is refused
+
+== NG4.5 ZZT-NT2-STAGE4-RELEASE-ASKED: release.requested (I-5) and the supplier's move to the release step
+  ok   NG4.5 seeded an earlier round's Release_At / Release_By_Name on the request (admin) to prove the clear
+  ok   NG4.5 release.requested (I-5) → the request asks for the final release
+  ok   NG4.5 the request is locked, labelled, has its release contact and no earlier release
+  FAIL NG4.5 the case has Release_Requested_At (now, no milliseconds) — "2026-10-22T02:28:32Z"
+  ok   NG4.5 the supplier's move (submit only: Keep_Open_Gate is a formula, P-2) takes the request to 'give the final release', assigned to the release contact
+
+== NG5.1 ZZT-NT2-STAGE5-REOPENED: case created, started; I-1 creates the request (+ twins guard)
+swapped after NG4.5 done (Thu Oct 22 08:30:48 IST 2026): restart with the HOLD-aware gate
+skip N1.1 (done)
+skip N1.2 (done)
+skip N1.3 (done)
+skip N1.3b (done)
+skip N1.4 (done)
+skip N1.5 (done)
+skip N1.7 (done)
+skip N1.8 (done)
+skip N2.1 (done)
+skip N2.2 (done)
+skip N2.3 (done)
+skip N2.3b (done)
+skip N2.4 (done)
+skip N2.5 (done)
+skip N2.6 (done)
+skip N2.7 (done)
+skip N2.8 (done)
+skip NX1.1 (done)
+skip NX1.2 (done)
+skip NX2.1 (done)
+skip NX2.2 (done)
+skip NF1.1 (done)
+skip NF1.2 (done)
+skip NG1.1 (done)
+skip NG2.1 (done)
+skip NG2.2 (done)
+skip NG3.1 (done)
+skip NG3.2 (done)
+skip NG3.3 (done)
+skip NG4.1 (done)
+skip NG4.2 (done)
+skip NG4.3 (done)
+skip NG4.3b (done)
+skip NG4.4 (done)
+skip NG4.5 (done)
+
+== NG5.1 ZZT-NT2-STAGE5-REOPENED: case created, started; I-1 creates the request (+ twins guard)
+  ok   NG5.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   NG5.1 case draft is at 'Create case'
+  ok   NG5.1 Start submit accepted
+  ok   NG5.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   NG5.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   NG5.1 case fields unchanged by the submit
+  ok   NG5.1 case.started (I-1) → the case links its new request
+  ok   NG5.1 case phase 'Supplier filling in the CIQ'
+HOLD set Thu Oct 22 08:31:59 IST 2026 (Thomas: pause the work)
+HOLD removed Thu Oct 22 10:26:42 IST 2026 (Thomas pushes to prod without the dev checks; his dev roles unchanged)
+  ok   NG5.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   NG5.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   NG5.1 request has no Release_Flag yet
+  ok   NG5.1 two more case.started posts create no second request (idempotent)
+  ok   NG5.1 the case still links its first request
+
+== NG5.2 ZZT-NT2-STAGE5-REOPENED: the supplier saves three revisions, uploads and removes a file; request.changed
+  ok   NG5.2 Rev 1: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   NG5.2 Rev 1: the request reads back every answer field exactly
+  ok   NG5.2 Rev 1: every JSON field parses and no time has milliseconds
+  ok   NG5.2 Rev 1: request.changed → the case has Rev 1
+  ok   NG5.2 Rev 1: the case's 15 synced fields equal the request's
+  ok   NG5.2 Rev 2: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   NG5.2 Rev 2: the request reads back every answer field exactly
+  ok   NG5.2 Rev 2: every JSON field parses and no time has milliseconds
+  ok   NG5.2 Rev 2: request.changed → the case has Rev 2
+  ok   NG5.2 Rev 2: the case's 15 synced fields equal the request's
+  ok   NG5.2 Rev 3: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   NG5.2 Rev 3: the request reads back every answer field exactly
+  ok   NG5.2 Rev 3: every JSON field parses and no time has milliseconds
+  ok   NG5.2 Rev 3: request.changed → the case has Rev 3 (posted twice back to back)
+  ok   NG5.2 Rev 3: the case's 15 synced fields equal the request's
+  ok   NG5.2 upload row ZZT-NT2-STAGE5-REOPENED-UP1: the write is accepted
+  ok   NG5.2 upload row ZZT-NT2-STAGE5-REOPENED-UP2: the write is accepted
+  ok   NG5.2 both upload rows are stored with every field
+  ok   NG5.2 removing a file marks its row (Upload_Removed_At / _By_Email), keeps the row and adds none
+  ok   NG5.2 the other upload row is untouched
+  ok   NG5.2 the screen's Documents_JSON (Rev 4) is accepted
+  ok   NG5.2 request.changed after the upload/removal → the case's Documents_JSON
+  ok   NG5.2 the case's Documents_JSON equals the request's
+  ok   NG5.2 not covered: the attachment file itself (Upload_File) needs the browser's upload API
+
+== NG5.3 ZZT-NT2-STAGE5-REOPENED: completeness confirmed and submitted; I-2
+  ok   NG5.3 the supplier's completeness confirmation is accepted at fill-in
+  ok   NG5.3 the fill-in submit moves the request to 'keep the CIQ up to date'
+  ok   NG5.3 the request reads back the confirmation
+  ok   NG5.3 completeness.confirmed (I-2) → the case records the confirmation
+  ok   NG5.3 the case's Completeness_* fields equal the request's
+  ok   NG5.3 the case's 15 synced fields equal the request's
+  ok   NG5.3 the case phase is 'Review'
+  FAIL NG5.3 I-2's Approve moves the case to 'Beiersdorf review and final release' (needs Thomas in the role Integration service) — {"_status":"InProgress","_current_step":"Waiting for supplier: CIQ","assigned":"RoEKl89I5nGx"}
+HOLD set Thu Oct 22 10:42:21 IST 2026 (NG5.3 I-2 Approve failed: checking Integration service)
+runner stopped for good Thu Oct 22 14:22:31 IST 2026 (Thomas: option c, stop dev testing)

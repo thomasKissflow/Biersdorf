@@ -1,0 +1,233 @@
+LIVE RUN · run tag ZZT-1008-1843 · journeys d,a,b,c,e,f,g,h
+readback: 439 pass · 0 fail · 22 warn
+
+== journey d: FIRST CHECK (D35/F3): a fresh case reads Open_Items_Count blank (not 0) and Hold = Yes; after 0/0 via the admin route Hold = No, S5 and S8 are skipped
+   roles needed: CIQ RMM, CIQ Sustainability Reviewer
+  + item CIQ Case PkEKlDl3ZxcO (ZZT-1008-1843-D)
+  PASS (probe) read at Start (draft): Open_Items_Count blank and Hold_For_Open_Items = Yes · Open_Items_Count=undefined Hold="Yes"
+  PASS FIRST CHECK at S1: Open_Items_Count is blank (not 0) · Open_Items_Count=undefined Open_CR_Count=undefined
+  PASS FIRST CHECK at S1: Hold_For_Open_Items = Yes · Hold="Yes"
+  PASS after 0/0: Open_Items_Count reads 0 (a number, not blank) · 0
+  PASS after 0/0: Hold_For_Open_Items = No, both gates OK · Hold=No Release=OK Close=OK
+  PASS Review – Sustainability: SUS_Gate = OK before submit · SUS_Gate="OK"
+  PASS S7: Hold_For_Open_Items = No with Open_Items_Count 0 · Hold=No
+  PASS step path = expected · got Create case → Waiting for supplier: basic data → Scope check → Waiting for supplier: completeness PS-05 → Review – Sustainability → Waiting for supplier: final release PS-11 → (Completed)
+  PASS case Completed · Completed
+   → journey d: OK (9/9 checks)
+
+== journey a: CIQ Case happy path: REG + SAF + RMM lanes (simultaneous submits), overall approval on (S6 runs), S7 and S8 run, End
+   roles needed: CIQ RMM, CIQ Regulatory Reviewer, CIQ Safety Reviewer, CIQ Overall Approver
+  + item CIQ Case PkEKlE9fNyrB (ZZT-1008-1843-A)
+  PASS Review – Regulatory: REG_Gate = OK before submit · REG_Gate="OK"
+  PASS Review – Safety: SAF_Gate = OK before submit · SAF_Gate="OK"
+  PASS Review – RMM: RMM_Gate = OK before submit · RMM_Gate="OK"
+  PASS 3 parallel branches submitted at the same moment · Review – Regulatory: 200; Review – Safety: 200; Review – RMM: 200
+  PASS S5: after RMM writes 0/0, Hold_For_Open_Items = No and Open_Items_Gate_Release = OK · Hold=No Gate=OK
+  PASS S7: Hold_For_Open_Items = Yes with Open_Items_Count 1 · Hold=Yes
+  PASS S8: Open_Items_Gate_Close = OK after 0/0 · Gate=OK
+  PASS step path = expected · got Create case → Waiting for supplier: basic data → Scope check → Waiting for supplier: completeness PS-05 → Review – RMM | Review – Regulatory | Review – Safety → Open items check – before release request → Overall approval → Waiting for supplier: final rele…
+  PASS case Completed with Overall_Decision Approved and Completion_Trigger 'Supplier final release' · Completed · Approved · Supplier final release
+  PASS lane gates kept: REG_Gate, SAF_Gate, RMM_Gate = OK at End · REG=OK SAF=OK RMM=OK
+   → journey a: OK (10/10 checks)
+
+== journey b: CIQ Case with one department (QM), no overall approval: S6 skipped
+   roles needed: CIQ RMM, CIQ QM Reviewer
+  + item CIQ Case PkEKlEnI126X (ZZT-1008-1843-B)
+  PASS Review – QM: QM_Gate = OK before submit · QM_Gate="OK"
+  PASS S5: after RMM writes 0/0, Hold_For_Open_Items = No and Open_Items_Gate_Release = OK · Hold=No Gate=OK
+  PASS S7: Hold_For_Open_Items = No with Open_Items_Count 0 · Hold=No
+  PASS step path = expected · got Create case → Waiting for supplier: basic data → Scope check → Waiting for supplier: completeness PS-05 → Review – QM → Open items check – before release request → Waiting for supplier: final release PS-11 → (Completed)
+  PASS case Completed, Overall_Decision blank · Completed · undefined
+   → journey b: OK (5/5 checks)
+
+== journey c: CIQ Case with Overall_Decision = Rejected: S7 (and S8) skipped, the case still reaches End
+   roles needed: CIQ RMM, CIQ Safety Reviewer, CIQ Overall Approver
+  + item CIQ Case PkEKlFElmZjL (ZZT-1008-1843-C)
+  PASS Review – Safety: SAF_Gate = OK before submit · SAF_Gate="OK"
+  PASS S5: after RMM writes 0/0, Hold_For_Open_Items = No and Open_Items_Gate_Release = OK · Hold=No Gate=OK
+  PASS step path = expected · got Create case → Waiting for supplier: basic data → Scope check → Waiting for supplier: completeness PS-05 → Review – Safety → Open items check – before release request → Overall approval → (Completed)
+  PASS case Completed with Overall_Decision Rejected, SAF_RMES_Decision Rejected, Completion_Trigger 'Overall rejection' · Completed · Rejected · Rejected · Overall rejection
+   → journey c: OK (4/4 checks)
+
+== journey e: CIQ Open Point: To_Supplier Yes (REG) vs No (SAF, QM, MIC, SUS, RMM); routing to all 6 review steps; Rounds child rows at Start and via the admin route; OP_Outcome Accepted
+   roles needed: CIQ RMM, CIQ Regulatory Reviewer, CIQ Safety Reviewer, CIQ QM Reviewer, CIQ Microbiology Reviewer, CIQ Sustainability Reviewer
+ · point REG (to supplier: Yes)
+  + item CIQ Open Point PkEKlFeSYb_8 (ZZT-1008-1843-E-REG)
+  PASS (probe) REG: read at Start (draft): Start_Gate = OK and Open_Num = 1 · Start_Gate="OK" Open_Num=1
+  PASS (probe) Rounds child row written at Start through the assignee route (Rounds is ReadOnly at Start in the plan) · status 200  · rows ["Rounds_wabYDWQWHR"]
+  PASS REG: after Start, Start_Gate = OK and Open_Num = 1 (formulas computed server-side) · Start_Gate="OK" Open_Num=1
+  PASS REG: Open_Num = 0 once OP_Outcome = Accepted · Open_Num=0
+  PASS (probe) Rounds child row modified through the admin route at "Review – Regulatory" · status 200  · row {"_id":"Rounds_wabYDWQWHR","_created_by":{"_id":"UsEJUfjYLM8Y","Name":"Thomas","Kind":"User"},"_modified_by":{"_id":"UsEJUfjYLM8Y","Name":"Thomas","Kind":"User"…
+  PASS REG: step path Raise open point → Waiting for supplier → Review – Regulatory → (Completed) · got Raise open point → Waiting for supplier → Review – Regulatory → (Completed)
+  PASS REG: point Completed with OP_Outcome Accepted · Completed · Accepted
+ · point SAF (to supplier: No)
+  + item CIQ Open Point PkEKlFsUhTZb (ZZT-1008-1843-E-SAF)
+  PASS (probe) SAF: read at Start (draft): Start_Gate = OK and Open_Num = 1 · Start_Gate="OK" Open_Num=1
+  PASS SAF: after Start, Start_Gate = OK and Open_Num = 1 (formulas computed server-side) · Start_Gate="OK" Open_Num=1
+  PASS SAF: Open_Num = 0 once OP_Outcome = Accepted · Open_Num=0
+  PASS SAF: step path Raise open point → Review – Safety → (Completed) · got Raise open point → Review – Safety → (Completed)
+  PASS SAF: point Completed with OP_Outcome Accepted · Completed · Accepted
+ · point QM (to supplier: No)
+  + item CIQ Open Point PkEKlG0gqvMW (ZZT-1008-1843-E-QM)
+  PASS (probe) QM: read at Start (draft): Start_Gate = OK and Open_Num = 1 · Start_Gate="OK" Open_Num=1
+  PASS QM: after Start, Start_Gate = OK and Open_Num = 1 (formulas computed server-side) · Start_Gate="OK" Open_Num=1
+  PASS QM: Open_Num = 0 once OP_Outcome = Accepted · Open_Num=0
+  PASS QM: step path Raise open point → Review – QM → (Completed) · got Raise open point → Review – QM → (Completed)
+  PASS QM: point Completed with OP_Outcome Accepted · Completed · Accepted
+ · point MIC (to supplier: No)
+  + item CIQ Open Point PkEKlG8uBVi2 (ZZT-1008-1843-E-MIC)
+  PASS (probe) MIC: read at Start (draft): Start_Gate = OK and Open_Num = 1 · Start_Gate="OK" Open_Num=1
+  PASS MIC: after Start, Start_Gate = OK and Open_Num = 1 (formulas computed server-side) · Start_Gate="OK" Open_Num=1
+  PASS MIC: Open_Num = 0 once OP_Outcome = Accepted · Open_Num=0
+  PASS MIC: step path Raise open point → Review – Microbiology → (Completed) · got Raise open point → Review – Microbiology → (Completed)
+  PASS MIC: point Completed with OP_Outcome Accepted · Completed · Accepted
+ · point SUS (to supplier: No)
+  + item CIQ Open Point PkEKlGHTyLTo (ZZT-1008-1843-E-SUS)
+  PASS (probe) SUS: read at Start (draft): Start_Gate = OK and Open_Num = 1 · Start_Gate="OK" Open_Num=1
+  PASS SUS: after Start, Start_Gate = OK and Open_Num = 1 (formulas computed server-side) · Start_Gate="OK" Open_Num=1
+  PASS SUS: Open_Num = 0 once OP_Outcome = Accepted · Open_Num=0
+  PASS SUS: step path Raise open point → Review – Sustainability → (Completed) · got Raise open point → Review – Sustainability → (Completed)
+  PASS SUS: point Completed with OP_Outcome Accepted · Completed · Accepted
+ · point RMM (to supplier: No)
+  + item CIQ Open Point PkEKlGQ0v8tU (ZZT-1008-1843-E-RMM)
+  PASS (probe) RMM: read at Start (draft): Start_Gate = OK and Open_Num = 1 · Start_Gate="OK" Open_Num=1
+  PASS RMM: after Start, Start_Gate = OK and Open_Num = 1 (formulas computed server-side) · Start_Gate="OK" Open_Num=1
+  PASS RMM: Open_Num = 0 once OP_Outcome = Accepted · Open_Num=0
+  PASS RMM: step path Raise open point → Review – RMM → (Completed) · got Raise open point → Review – RMM → (Completed)
+  PASS RMM: point Completed with OP_Outcome Accepted · Completed · Accepted
+   → journey e: OK (32/32 checks)
+
+== journey f: CIQ Change Request: create at CHRQ_S0, triage, Impact flags fan out to all 5 Assess branches (simultaneous), join, End; plus a refused request (all branches skipped)
+   roles needed: CIQ Integration Service, CIQ RMM, CIQ Regulatory Reviewer, CIQ Safety Reviewer, CIQ QM Reviewer, CIQ Microbiology Reviewer, CIQ Sustainability Reviewer
+ · change request 1 (accepted, all five impacts)
+  + item CIQ Change Request PkEKlGYGNnAR (ZZT-1008-1843-F-1)
+  PASS CR 1: CR_Open_Num = 5 after triage · CR_Open_Num=5
+  PASS 5 parallel branches submitted at the same moment · Assess – Regulatory: 200; Assess – Safety: 200; Assess – QM: 200; Assess – Microbiology: 200; Assess – Sustainability: 200
+  PASS CR 1: step path Receive change request → Triage → Assess – Microbiology | Assess – QM | Assess – Regulatory | Assess – Safety | Assess – Sustainability → (Completed) · got Receive change request → Triage → Assess – Microbiology | Assess – QM | Assess – Regulatory | Assess – Safety | Assess – Sustainability → (Completed)
+  PASS CR 1: Completed with CR_Open_Num = 0 · Completed · CR_Open_Num=0
+ · change request 2 (refused, no impact)
+  + item CIQ Change Request PkEKlGpAJSvL (ZZT-1008-1843-F-2)
+  PASS CR 2: CR_Open_Num = 0 after triage · CR_Open_Num=0
+  PASS CR 2: step path Receive change request → Triage → (Completed) · got Receive change request → Triage → (Completed)
+  PASS CR 2: Completed with CR_Open_Num = 0 · Completed · CR_Open_Num=0
+   → journey f: OK (7/7 checks)
+
+== journey g: Every Form: one item each (serially), child-table add/modify where present, read back, formula columns computed
+   roles needed: CIQ RMM, CIQ Business Admin, CIQ Safety Reviewer, CIQ Regulatory Reviewer
+ · CIQ Supplier
+  + item CIQ Supplier PkEKlGxMH6VA (ZZT-SUP-1008-1843)
+  PASS CIQ Supplier: header read back after create · 9 fields
+  FAIL CIQ Supplier: 1 Contacts row(s) stored at create · 1 row(s) read
+  PASS CIQ Supplier: header + child-row modify read back · status 200 
+  PASS CIQ Supplier: child row added on the submitted item · status 200  · rows now Contacts=3
+ · CIQ Config Version
+  + item CIQ Config Version PkEKlH1AwS7r (ZZT-1008-1843-G-CFG)
+  PASS CIQ Config Version: header read back after create · 7 fields
+  PASS CIQ Config Version: header + child-row modify read back · status 200 
+ · CIQ Section
+  + item CIQ Section PkEKlH3soCeq (ZZT-1008-1843-G-SEC)
+  PASS CIQ Section: header read back after create · 15 fields
+  FAIL CIQ Section: 1 Components row(s) stored at create · 1 row(s) read
+  PASS CIQ Section: header + child-row modify read back · status 200 
+  PASS CIQ Section: child row added on the submitted item · status 200  · rows now Components=3
+ · CIQ Scope Run
+  + item CIQ Scope Run PkEKlH7fmsbM (ZZT-1008-1843-G-RUN)
+  PASS CIQ Scope Run: header read back after create · 11 fields
+  PASS CIQ Scope Run: header + child-row modify read back · status 200 
+ · CIQ RMES Safety
+  + item CIQ RMES Safety PkEKlHAXWos6 (ZZT-1008-1843-G-SAF)
+  PASS CIQ RMES Safety: header read back after create · 8 fields
+  FAIL CIQ RMES Safety: 4 Safety_Criteria row(s) stored at create · 4 row(s) read
+  FAIL CIQ RMES Safety: 1 Safety_Findings row(s) stored at create · 1 row(s) read
+  FAIL CIQ RMES Safety: Criteria_Open_Num computed per row = [0,1,0,1] · [null,null,null,null]
+  PASS CIQ RMES Safety: header + child-row modify read back · status 200 
+  PASS CIQ RMES Safety: child row added on the submitted item · status 200  · rows now Safety_Findings=2
+  FAIL CIQ RMES Safety: Criteria_Open_Num recomputed to 0 once the comment is set · 1
+ · CIQ RMES Regulatory
+  + item CIQ RMES Regulatory PkEKlHEe2t7F (ZZT-1008-1843-G-REG)
+  PASS CIQ RMES Regulatory: header read back after create · 8 fields
+  FAIL CIQ RMES Regulatory: 4 Regulatory_Criteria row(s) stored at create · 4 row(s) read
+  FAIL CIQ RMES Regulatory: 1 Regulatory_Findings row(s) stored at create · 1 row(s) read
+  FAIL CIQ RMES Regulatory: Criteria_Open_Num computed per row = [0,1,0,1] · [null,null,null,null]
+  PASS CIQ RMES Regulatory: header + child-row modify read back · status 200 
+  PASS CIQ RMES Regulatory: child row added on the submitted item · status 200  · rows now Regulatory_Findings=2
+  FAIL CIQ RMES Regulatory: Criteria_Open_Num recomputed to 0 once the comment is set · 1
+ · CIQ Internal Note
+  + item CIQ Internal Note PkEKlHIam6H2 (ZZT-1008-1843-G-NOTE)
+  PASS CIQ Internal Note: header read back after create · 9 fields
+  PASS CIQ Internal Note: header + child-row modify read back · status 200 
+ · CIQ Audit Event
+  + item CIQ Audit Event PkEKlHLlH49K (ZZT-1008-1843-G-EVT)
+  PASS CIQ Audit Event: header read back after create · 12 fields
+   → journey g: NOT OK (19/29 checks)
+
+== journey h: Reject a case at an RMM step (with Comment) and withdraw another; record statuses
+   roles needed: CIQ RMM
+ · reject
+  + item CIQ Case PkEKlHMsjf0S (ZZT-1008-1843-H1)
+  PASS reject accepted at "Waiting for supplier: basic data" (an RMM step) · 200 
+  PASS H1: path Create case → Waiting for supplier: basic data → (Rejected) · got Create case → Waiting for supplier: basic data → (Rejected)
+  PASS H1: status Rejected and no open task · status Rejected · open 0
+ · withdraw
+  + item CIQ Case PkEKlHThMeAX (ZZT-1008-1843-H2)
+  PASS withdraw accepted at "Waiting for supplier: basic data" (an RMM step) · 200 
+  PASS H2: path Create case → Waiting for supplier: basic data → (Withdrawn) · got Create case → Waiting for supplier: basic data → (Withdrawn)
+  PASS H2: status Withdrawn and no open task · status Withdrawn · open 0
+   → journey h: OK (6/6 checks)
+
+== SUMMARY 
+journey | ok  | checks (fail/total) | items | path
+d       | yes |    0/9              |     1 | Create case → Waiting for supplier: basic data → Scope check → Waiting for supplier: completeness PS-05 → Review – Sustainability → Waiting for suppli…
+a       | yes |    0/10             |     1 | Create case → Waiting for supplier: basic data → Scope check → Waiting for supplier: completeness PS-05 → Review – RMM | Review – Regulatory | Review …
+b       | yes |    0/5              |     1 | Create case → Waiting for supplier: basic data → Scope check → Waiting for supplier: completeness PS-05 → Review – QM → Open items check – before rele…
+c       | yes |    0/4              |     1 | Create case → Waiting for supplier: basic data → Scope check → Waiting for supplier: completeness PS-05 → Review – Safety → Open items check – before …
+e       | yes |    0/32             |     6 | Raise open point → Waiting for supplier → Review – Regulatory → (Completed) → Raise open point → Review – Safety → (Completed) → Raise open point → Re…
+f       | yes |    0/7              |     2 | Receive change request → Triage → Assess – Microbiology | Assess – QM | Assess – Regulatory | Assess – Safety | Assess – Sustainability → (Completed) …
+g       | NO  |   10/29             |     8 | 
+h       | yes |    0/6              |     2 | Create case → Waiting for supplier: basic data → (Rejected) → Create case → Waiting for supplier: basic data → (Withdrawn)
+  g: FAIL CIQ Supplier: 1 Contacts row(s) stored at create · 1 row(s) read
+  g: FAIL CIQ Section: 1 Components row(s) stored at create · 1 row(s) read
+  g: FAIL CIQ RMES Safety: 4 Safety_Criteria row(s) stored at create · 4 row(s) read
+  g: FAIL CIQ RMES Safety: 1 Safety_Findings row(s) stored at create · 1 row(s) read
+  g: FAIL CIQ RMES Safety: Criteria_Open_Num computed per row = [0,1,0,1] · [null,null,null,null]
+  g: FAIL CIQ RMES Safety: Criteria_Open_Num recomputed to 0 once the comment is set · 1
+  g: FAIL CIQ RMES Regulatory: 4 Regulatory_Criteria row(s) stored at create · 4 row(s) read
+  g: FAIL CIQ RMES Regulatory: 1 Regulatory_Findings row(s) stored at create · 1 row(s) read
+  g: FAIL CIQ RMES Regulatory: Criteria_Open_Num computed per row = [0,1,0,1] · [null,null,null,null]
+  g: FAIL CIQ RMES Regulatory: Criteria_Open_Num recomputed to 0 once the comment is set · 1
+  d: note · Open_Items_Count/Open_CR_Count written at S1 through the admin route although ReadOnly there (deliberate probe; the sync service path, D33)
+  d: note · User-type fields left blank (fictional data only; Mandatory is not enforced for the key, D33): Owner_RMM, SUS_Completed_By
+  a: note · User-type fields left blank (fictional data only; Mandatory is not enforced for the key, D33): Owner_RMM, REG_Completed_By, SAF_Completed_By, RMM_Completed_By, Overall_Decided_By
+  b: note · User-type fields left blank (fictional data only; Mandatory is not enforced for the key, D33): Owner_RMM, QM_Completed_By
+  c: note · User-type fields left blank (fictional data only; Mandatory is not enforced for the key, D33): Owner_RMM, SAF_Completed_By, Overall_Decided_By
+  e: note · Table::Rounds written at "Raise open point" where the table is ReadOnly (probe)
+  e: note · User-type fields left blank (fictional data only; Mandatory is not enforced for the key, D33): Responsible_User, Reviewed_By
+  f: note · User-type fields left blank (fictional data only; Mandatory is not enforced for the key, D33): REG_Assessed_By, SAF_Assessed_By, QM_Assessed_By, MIC_Assessed_By, SUS_Assessed_By
+  h: note · User-type fields left blank (fictional data only; Mandatory is not enforced for the key, D33): Owner_RMM
+
+ITEMS CREATED (22; delete them from the front end, the scripts never delete):
+  d · CIQ Case · PkEKlDl3ZxcO · ZZT-1008-1843-D · Completed
+  a · CIQ Case · PkEKlE9fNyrB · ZZT-1008-1843-A · Completed
+  b · CIQ Case · PkEKlEnI126X · ZZT-1008-1843-B · Completed
+  c · CIQ Case · PkEKlFElmZjL · ZZT-1008-1843-C · Completed
+  e · CIQ Open Point · PkEKlFeSYb_8 · ZZT-1008-1843-E-REG · Completed
+  e · CIQ Open Point · PkEKlFsUhTZb · ZZT-1008-1843-E-SAF · Completed
+  e · CIQ Open Point · PkEKlG0gqvMW · ZZT-1008-1843-E-QM · Completed
+  e · CIQ Open Point · PkEKlG8uBVi2 · ZZT-1008-1843-E-MIC · Completed
+  e · CIQ Open Point · PkEKlGHTyLTo · ZZT-1008-1843-E-SUS · Completed
+  e · CIQ Open Point · PkEKlGQ0v8tU · ZZT-1008-1843-E-RMM · Completed
+  f · CIQ Change Request · PkEKlGYGNnAR · ZZT-1008-1843-F-1 · Completed
+  f · CIQ Change Request · PkEKlGpAJSvL · ZZT-1008-1843-F-2 · Completed
+  g · CIQ Supplier · PkEKlGxMH6VA · ZZT-SUP-1008-1843 · submitted
+  g · CIQ Config Version · PkEKlH1AwS7r · ZZT-1008-1843-G-CFG · submitted
+  g · CIQ Section · PkEKlH3soCeq · ZZT-1008-1843-G-SEC · submitted
+  g · CIQ Scope Run · PkEKlH7fmsbM · ZZT-1008-1843-G-RUN · submitted
+  g · CIQ RMES Safety · PkEKlHAXWos6 · ZZT-1008-1843-G-SAF · submitted
+  g · CIQ RMES Regulatory · PkEKlHEe2t7F · ZZT-1008-1843-G-REG · submitted
+  g · CIQ Internal Note · PkEKlHIam6H2 · ZZT-1008-1843-G-NOTE · submitted
+  g · CIQ Audit Event · PkEKlHLlH49K · ZZT-1008-1843-G-EVT · submitted
+  h · CIQ Case · PkEKlHMsjf0S · ZZT-1008-1843-H1 · Rejected
+  h · CIQ Case · PkEKlHThMeAX · ZZT-1008-1843-H2 · Withdrawn
+
+ACCEPTANCE NOT OK · 228 s → /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/kissflow-build/ciq-digital/postgen/acceptance-result.json
+exit 1

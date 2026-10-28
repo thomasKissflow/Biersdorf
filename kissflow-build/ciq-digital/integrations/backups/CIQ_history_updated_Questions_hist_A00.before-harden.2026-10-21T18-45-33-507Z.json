@@ -1,0 +1,1076 @@
+{
+ "Root": "CIQ_history_updated_Questions_hist_A00",
+ "CIQ_history_updated_Questions_hist_A00": {
+  "Id": "CIQ_history_updated_Questions_hist_A00",
+  "Description": "Plan v6 §4.1 history.updated: the app posts {caseItemId, questionsHistoryJson}; the case's request gets Questions_History_JSON.",
+  "Name": "CIQ history.updated Questions history to supplier",
+  "Kind": "Integration",
+  "FlowType": "Integration",
+  "Integration::Trigger": [
+   "Trigger_history_webhook"
+  ],
+  "Integration::Action": [
+   "Action_history_read_app_item",
+   "Action_history_pick",
+   "Action_HU_update_request"
+  ],
+  "_application_id": "CIQ_Digital_A00"
+ },
+ "PublishedAt": "2026-10-20T12:25:30Z",
+ "PublishedBy": {
+  "_id": "UsEJUfjYLM8Y",
+  "Name": "Thomas",
+  "Kind": "User"
+ },
+ "_meta_version": "1792499130782086",
+ "Trigger_history_webhook": {
+  "Id": "Trigger_history_webhook",
+  "Kind": "Trigger",
+  "Type": "Create",
+  "Name": "Catch a webhook (POST)",
+  "IsInternalAuth": true,
+  "Connection": {},
+  "Integration": "CIQ_history_updated_Questions_hist_A00",
+  "Connector": {
+   "_id": "Coowt2xE4WH9S",
+   "Name": "Webhooks by Kissflow",
+   "Version": "1.0.0",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/Coowt2xE4WH9S/1.0.0/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/Coowt2xE4WH9S/1.0.0/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/Coowt2xE4WH9S/1.0.0/Logo/Webhook.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "TriggerId": "WebhookTrigger",
+   "TriggerName": "Catch a webhook (POST)"
+  },
+  "Output": {
+   "caseItemId": "PkEP0tis9hWG",
+   "questionsHistoryJson": "[]",
+   "idempotencyKey": "ZZT-INT-5"
+  },
+  "IsTested": true
+ },
+ "Action_history_read_app_item": {
+  "Id": "Action_history_read_app_item",
+  "Kind": "Action",
+  "Type": "Search",
+  "Name": "Search an item",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQ_history_updated_Questions_hist_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "Action_Kh4Jb2AoG",
+   "ActionName": "Search an item "
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_jke2l1",
+   "FieldMapping_jke2l3"
+  ],
+  "Output": {
+   "_id": "CIQ_Case_A00",
+   "Data": [
+    {
+     "_id": "PkEP0tis9hWG",
+     "_activity_instance_id": [
+      "PkEP0tlEeRUB"
+     ],
+     "_current_assigned_to": [
+      {
+       "_id": "RoEKl89I5nGx",
+       "Name": "Integration service",
+       "Kind": "AppRole"
+      }
+     ],
+     "_status": "InProgress",
+     "Name": "CIQ Case from Thomas",
+     "_created_at": "2026-10-20T10:03:35Z",
+     "_created_by": {
+      "_id": "UsEJUfjYLM8Y",
+      "Name": "Thomas",
+      "Kind": "User"
+     },
+     "Case_Code": "ZZT-I1E",
+     "Cycle_No": 1,
+     "Case_Title": "ZZT I-1 test case (fictional)",
+     "Trade_Name": "ZZT test material (fictional)",
+     "Main_INCI": "Tocopherol",
+     "BDF_Material_No": "ZZT-RM-I1E",
+     "Supplier_Code": "ZZT-SUP-DEV",
+     "Supplier_Legal_Name": "ZZT Dev Supplier (fictional)",
+     "Case_Test": "Yes",
+     "BDF_Contact_Name": "ZZT RMM (fictional)",
+     "BDF_Contact_Email": "rmm.zzt@example.com",
+     "Markets_Label": "EU",
+     "Template_Label": "ZZT template (fictional)",
+     "Supplier_Due_Date": "2026-11-03",
+     "Case_Contacts_JSON": "[{\"id\":\"UsEJUfjYLM8Y\",\"name\":\"ZZT Contact (fictional)\",\"email\":\"zzt.contact@example.com\",\"title\":\"\",\"mayConfirm\":true}]",
+     "Rule_Set_Version": "ZZT-RS",
+     "Portal_Request_Item_Id": "PkEP13vfhEiE",
+     "Hold_For_Open_Items": "Yes",
+     "Open_Items_Gate_Release": "",
+     "Open_Items_Gate_Close": "",
+     "REG_Gate": "",
+     "SAF_Gate": "",
+     "QM_Gate": "",
+     "MIC_Gate": "",
+     "SUS_Gate": "",
+     "RMM_Gate": "",
+     "Template_Version": "ZZT-TPL",
+     "Config_Bundle_JSON": "{\"format\":\"ciq-bundle/1\",\"zzt\":true}",
+     "Config_Bundle_Hash": "zzt-test",
+     "BDF_Set_JSON": "{}",
+     "Portal_Assignees_JSON": "[{\"_id\":\"UsEJUfjYLM8Y\"}]",
+     "Release_Assignees_JSON": "[{\"_id\":\"UsEJUfjYLM8Y\"}]",
+     "Config_Answers_JSON": "{}",
+     "Answers_JSON": "{\"FLD-ZZT-001\":\"ZZT answer v4 (fictional)\"}",
+     "Answered_By_JSON": "{}",
+     "Components_JSON": "[]",
+     "Scope_JSON": "[]",
+     "Requested_Docs_JSON": "[]",
+     "Documents_JSON": "[]",
+     "Answers_Rev": 5,
+     "Answers_Changed_At": "2026-10-20T10:18:22Z",
+     "Answers_Changed_By_Email": "zzt.contact@example.com",
+     "Change_Report_Text": "ZZT change report (fictional)",
+     "Change_Report_Rev": 1
+    }
+   ]
+  },
+  "IsTested": true
+ },
+ "Action_history_pick": {
+  "Id": "Action_history_pick",
+  "Kind": "Action",
+  "Type": "Create",
+  "Name": "Run JavaScript",
+  "IsInternalAuth": true,
+  "Connection": {},
+  "Integration": "CIQ_history_updated_Questions_hist_A00",
+  "Connector": {
+   "_id": "Co4m9q4JUbkV",
+   "Name": "Run script",
+   "Version": "1.0.0",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/Runscript.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "RunJSCode",
+   "ActionName": "Run JavaScript"
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_jkfm67",
+   "FieldMapping_jkfm6e"
+  ],
+  "Output": {
+   "_id": "PkEP13vfhEiE",
+   "Questions_History_JSON": "[]"
+  },
+  "IsTested": true
+ },
+ "Action_HU_update_request": {
+  "Id": "Action_HU_update_request",
+  "Kind": "Action",
+  "Type": "Update",
+  "Name": "Update an item",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQ_history_updated_Questions_hist_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "UpdateAnItem",
+   "ActionName": "Update an item"
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_jkfm65",
+   "FieldMapping_jlzb31",
+   "FieldMapping_jlzb33",
+   "FieldMapping_jlzb34",
+   "FieldMapping_jlzb45",
+   "FieldMapping_jlzb46",
+   "FieldMapping_jlzb47",
+   "FieldMapping_jlzb48",
+   "FieldMapping_jlzb49",
+   "FieldMapping_jlzb4a",
+   "FieldMapping_jlzb4b",
+   "FieldMapping_jlzb4c",
+   "FieldMapping_jlzb4d",
+   "FieldMapping_jlzb4e",
+   "FieldMapping_jlzb4f",
+   "FieldMapping_jlzb4g",
+   "FieldMapping_jlzb4h",
+   "FieldMapping_jlzb4i",
+   "FieldMapping_jlzb4j",
+   "FieldMapping_jlzb4k",
+   "FieldMapping_jlzb4l",
+   "FieldMapping_jlzb4m",
+   "FieldMapping_jlzb4n",
+   "FieldMapping_jlzb4o",
+   "FieldMapping_jlzb4p",
+   "FieldMapping_jlzb4q",
+   "FieldMapping_jlzb4r",
+   "FieldMapping_jlzb4s",
+   "FieldMapping_jlzb4t",
+   "FieldMapping_jlzb4u",
+   "FieldMapping_jlzb4v",
+   "FieldMapping_jlzb4w",
+   "FieldMapping_jlzb4x",
+   "FieldMapping_jlzb4y",
+   "FieldMapping_jlzb4z",
+   "FieldMapping_jlzb410",
+   "FieldMapping_jlzb411",
+   "FieldMapping_jlzb412",
+   "FieldMapping_jlzb413",
+   "FieldMapping_jlzb414",
+   "FieldMapping_jlzb415",
+   "FieldMapping_jlzb416",
+   "FieldMapping_jlzb417",
+   "FieldMapping_jlzb418",
+   "FieldMapping_jlzb41a",
+   "FieldMapping_jlzb41b",
+   "FieldMapping_jlzb41c",
+   "FieldMapping_jlzb41d",
+   "FieldMapping_jlzb41e",
+   "FieldMapping_jlzb41f",
+   "FieldMapping_jlzb41g",
+   "FieldMapping_jlzb41h",
+   "FieldMapping_jlzb41i",
+   "FieldMapping_jlzb41j",
+   "FieldMapping_jlzb41k",
+   "FieldMapping_jlzb41l",
+   "FieldMapping_jlzb41m"
+  ],
+  "Output": {
+   "Questions_History_JSON": "[]",
+   "_modified_at": "2026-10-20T12:25:05Z",
+   "_id": "PkEP13vfhEiE"
+  },
+  "IsTested": true
+ },
+ "FieldMapping_jke2l1": {
+  "Id": "FieldMapping_jke2l1",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Field_FfgdBFhZt",
+  "Label": "Choose a process",
+  "Name": "process_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Action": "Action_history_read_app_item",
+  "SelectedDropdown": [
+   {
+    "FieldId": "CIQ_Case_A00",
+    "FieldName": "CIQ Case - CIQ Digital",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_jke2l2"
+  ]
+ },
+ "Property_jke2l2": {
+  "Id": "Property_jke2l2",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jke2l1",
+  "Type": "Value",
+  "Value": [
+   "CIQ_Case_A00"
+  ],
+  "Name": "process_id"
+ },
+ "FieldMapping_jke2l3": {
+  "Id": "FieldMapping_jke2l3",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Field_1D8EgGqhG",
+  "Label": "Search term",
+  "Name": "lookupValue",
+  "IsRequired": true,
+  "Action": "Action_history_read_app_item",
+  "FieldMapping::Property": [
+   "Property_jke2l4"
+  ]
+ },
+ "Property_jke2l4": {
+  "Id": "Property_jke2l4",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jke2l3",
+  "Type": "Field",
+  "Field": "context.Trigger_history_webhook.caseItemId",
+  "Name": "lookupValue"
+ },
+ "FieldMapping_jkfm65": {
+  "Id": "FieldMapping_jkfm65",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField002",
+  "Label": "Choose a process",
+  "Name": "process_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Action": "Action_HU_update_request",
+  "SelectedDropdown": [
+   {
+    "FieldId": "CIQP_Request_A00",
+    "FieldName": "CIQP Request - CIQ Supplier Portal",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_jkfm66"
+  ]
+ },
+ "Property_jkfm66": {
+  "Id": "Property_jkfm66",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jkfm65",
+  "Type": "Value",
+  "Value": [
+   "CIQP_Request_A00"
+  ],
+  "Name": "process_id"
+ },
+ "FieldMapping_jkfm67": {
+  "Id": "FieldMapping_jkfm67",
+  "Kind": "FieldMapping",
+  "Type": "Object",
+  "FieldId": "InputFields",
+  "Label": "Input data",
+  "Name": "input_fields",
+  "IsDropdown": false,
+  "IsPaginated": false,
+  "HelpText": "Specify the input data that should be provided to your code",
+  "AutoRefresh": false,
+  "Action": "Action_history_pick",
+  "FieldMapping::FieldMapping": [
+   "FieldMapping_jkfm68",
+   "FieldMapping_jkfm6a",
+   "FieldMapping_jkfm6c"
+  ]
+ },
+ "FieldMapping_jkfm68": {
+  "Id": "FieldMapping_jkfm68",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "IsVisible": true,
+  "FieldMapping": "FieldMapping_jkfm67",
+  "Name": "caseItemId",
+  "Label": "caseItemId",
+  "FieldMapping::Property": [
+   "Property_jkfm69"
+  ]
+ },
+ "Property_jkfm69": {
+  "Id": "Property_jkfm69",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jkfm68",
+  "Type": "Field",
+  "Field": "context.Trigger_history_webhook.caseItemId",
+  "Name": "caseItemId"
+ },
+ "FieldMapping_jkfm6a": {
+  "Id": "FieldMapping_jkfm6a",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "IsVisible": true,
+  "FieldMapping": "FieldMapping_jkfm67",
+  "Name": "rows",
+  "Label": "rows",
+  "FieldMapping::Property": [
+   "Property_jkfm6b"
+  ]
+ },
+ "Property_jkfm6b": {
+  "Id": "Property_jkfm6b",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jkfm6a",
+  "Type": "Field",
+  "Field": "context.Action_history_read_app_item.Data",
+  "Name": "rows"
+ },
+ "FieldMapping_jkfm6c": {
+  "Id": "FieldMapping_jkfm6c",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "IsVisible": true,
+  "FieldMapping": "FieldMapping_jkfm67",
+  "Name": "questionsHistoryJson",
+  "Label": "questionsHistoryJson",
+  "FieldMapping::Property": [
+   "Property_jkfm6d"
+  ]
+ },
+ "Property_jkfm6d": {
+  "Id": "Property_jkfm6d",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jkfm6c",
+  "Type": "Field",
+  "Field": "context.Trigger_history_webhook.questionsHistoryJson",
+  "Name": "questionsHistoryJson"
+ },
+ "FieldMapping_jkfm6e": {
+  "Id": "FieldMapping_jkfm6e",
+  "Kind": "FieldMapping",
+  "Type": "Code",
+  "FieldId": "JSCode",
+  "Label": "JavaScript code",
+  "Name": "js_code",
+  "IsRequired": true,
+  "IsDropdown": false,
+  "IsPaginated": false,
+  "AutoRefresh": false,
+  "CodeLanguage": "javascript",
+  "Action": "Action_history_pick",
+  "FieldMapping::Property": [
+   "Property_jkfm6f"
+  ]
+ },
+ "Property_jkfm6f": {
+  "Id": "Property_jkfm6f",
+  "Kind": "Property",
+  "Type": "Code",
+  "Name": "js_code",
+  "Code": "// history.updated · the case the app's screen named; its supplier request (Portal_Request_Item_Id, written only by the\n// case.started integration) gets the supplier-visible question history the screen built (the only value it sends).\nconst id = String(inputData.caseItemId || \"\").trim();\nlet rows = inputData.rows;\nif (typeof rows === \"string\") { try { rows = JSON.parse(rows); } catch (e) { rows = []; } }\nconst row = (Array.isArray(rows) ? rows : []).find((r) => r && r._id === id);\nif (!id || !row) throw new Error(`CIQ Case ${id || \"(no id)\"} was not found`);\nif (!row.Portal_Request_Item_Id) throw new Error(`Case ${row.Case_Code} has no supplier request`);\nlet hist = inputData.questionsHistoryJson;\nif (typeof hist !== \"string\") hist = JSON.stringify(hist ?? []);\nlet parsed;\ntry { parsed = JSON.parse(hist); } catch (e) { throw new Error(\"questionsHistoryJson is not JSON\"); }\nif (!Array.isArray(parsed)) throw new Error(\"questionsHistoryJson is not a list\");\nreturn { _id: row.Portal_Request_Item_Id, Questions_History_JSON: hist };\n",
+  "FieldMapping": "FieldMapping_jkfm6e"
+ },
+ "FieldMapping_jlzb31": {
+  "Id": "FieldMapping_jlzb31",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField003",
+  "Label": "Select process instance ID",
+  "Name": "_id",
+  "IsRequired": true,
+  "Action": "Action_HU_update_request",
+  "FieldMapping::Property": [
+   "Property_jlzb32"
+  ]
+ },
+ "Property_jlzb32": {
+  "Id": "Property_jlzb32",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jlzb31",
+  "Type": "Field",
+  "Field": "context.Action_history_pick._id",
+  "Name": "_id"
+ },
+ "FieldMapping_jlzb33": {
+  "Id": "FieldMapping_jlzb33",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Request_Key",
+  "Label": "Request Key",
+  "Name": "Request_Key",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb34": {
+  "Id": "FieldMapping_jlzb34",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Case_Code",
+  "Label": "Case Code",
+  "Name": "Case_Code",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb45": {
+  "Id": "FieldMapping_jlzb45",
+  "Kind": "FieldMapping",
+  "Type": "Number",
+  "FieldId": "Cycle_No",
+  "Label": "Cycle No",
+  "Name": "Cycle_No",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb46": {
+  "Id": "FieldMapping_jlzb46",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Supplier_Code",
+  "Label": "Supplier Code",
+  "Name": "Supplier_Code",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb47": {
+  "Id": "FieldMapping_jlzb47",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "App_Case_Item_Id",
+  "Label": "App Case Item Id",
+  "Name": "App_Case_Item_Id",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb48": {
+  "Id": "FieldMapping_jlzb48",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Trade_Name",
+  "Label": "Trade Name",
+  "Name": "Trade_Name",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb49": {
+  "Id": "FieldMapping_jlzb49",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Main_INCI",
+  "Label": "Main INCI",
+  "Name": "Main_INCI",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4a": {
+  "Id": "FieldMapping_jlzb4a",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "BDF_Material_No",
+  "Label": "BDF Material No",
+  "Name": "BDF_Material_No",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4b": {
+  "Id": "FieldMapping_jlzb4b",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Supplier_Display_Name",
+  "Label": "Supplier Display Name",
+  "Name": "Supplier_Display_Name",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4c": {
+  "Id": "FieldMapping_jlzb4c",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "BDF_Contact_Name",
+  "Label": "BDF Contact Name",
+  "Name": "BDF_Contact_Name",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4d": {
+  "Id": "FieldMapping_jlzb4d",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "BDF_Contact_Email",
+  "Label": "BDF Contact Email",
+  "Name": "BDF_Contact_Email",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4e": {
+  "Id": "FieldMapping_jlzb4e",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Markets_Label",
+  "Label": "Markets Label",
+  "Name": "Markets_Label",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4f": {
+  "Id": "FieldMapping_jlzb4f",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Template_Label",
+  "Label": "Template Label",
+  "Name": "Template_Label",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4g": {
+  "Id": "FieldMapping_jlzb4g",
+  "Kind": "FieldMapping",
+  "Type": "Date",
+  "FieldId": "Supplier_Due_Date",
+  "Label": "Supplier Due Date",
+  "Name": "Supplier_Due_Date",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4h": {
+  "Id": "FieldMapping_jlzb4h",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Case_Contacts_JSON",
+  "Label": "Case Contacts JSON",
+  "Name": "Case_Contacts_JSON",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4i": {
+  "Id": "FieldMapping_jlzb4i",
+  "Kind": "FieldMapping",
+  "Type": "Object",
+  "FieldId": "Assigned_Contacts",
+  "Label": "Assigned Contacts",
+  "Name": "Assigned_Contacts",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request",
+  "IsMultiValue": true
+ },
+ "FieldMapping_jlzb4j": {
+  "Id": "FieldMapping_jlzb4j",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Rule_Set_Version",
+  "Label": "Rule Set Version",
+  "Name": "Rule_Set_Version",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4k": {
+  "Id": "FieldMapping_jlzb4k",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Template_Version",
+  "Label": "Template Version",
+  "Name": "Template_Version",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4l": {
+  "Id": "FieldMapping_jlzb4l",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Config_Bundle_JSON",
+  "Label": "Config Bundle JSON",
+  "Name": "Config_Bundle_JSON",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4m": {
+  "Id": "FieldMapping_jlzb4m",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Config_Bundle_Hash",
+  "Label": "Config Bundle Hash",
+  "Name": "Config_Bundle_Hash",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4n": {
+  "Id": "FieldMapping_jlzb4n",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "BDF_Set_JSON",
+  "Label": "BDF Set JSON",
+  "Name": "BDF_Set_JSON",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4o": {
+  "Id": "FieldMapping_jlzb4o",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Config_Answers_JSON",
+  "Label": "Config Answers JSON",
+  "Name": "Config_Answers_JSON",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4p": {
+  "Id": "FieldMapping_jlzb4p",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Answers_JSON",
+  "Label": "Answers JSON",
+  "Name": "Answers_JSON",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4q": {
+  "Id": "FieldMapping_jlzb4q",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Answered_By_JSON",
+  "Label": "Answered By JSON",
+  "Name": "Answered_By_JSON",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4r": {
+  "Id": "FieldMapping_jlzb4r",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Justifications_JSON",
+  "Label": "Justifications JSON",
+  "Name": "Justifications_JSON",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4s": {
+  "Id": "FieldMapping_jlzb4s",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Components_JSON",
+  "Label": "Components JSON",
+  "Name": "Components_JSON",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4t": {
+  "Id": "FieldMapping_jlzb4t",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Scope_JSON",
+  "Label": "Scope JSON",
+  "Name": "Scope_JSON",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4u": {
+  "Id": "FieldMapping_jlzb4u",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Manual_Scope_JSON",
+  "Label": "Manual Scope JSON",
+  "Name": "Manual_Scope_JSON",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4v": {
+  "Id": "FieldMapping_jlzb4v",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Requested_Docs_JSON",
+  "Label": "Requested Docs JSON",
+  "Name": "Requested_Docs_JSON",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4w": {
+  "Id": "FieldMapping_jlzb4w",
+  "Kind": "FieldMapping",
+  "Type": "Number",
+  "FieldId": "Answers_Rev",
+  "Label": "Answers Rev",
+  "Name": "Answers_Rev",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4x": {
+  "Id": "FieldMapping_jlzb4x",
+  "Kind": "FieldMapping",
+  "Type": "Datetime",
+  "FieldId": "Answers_Changed_At",
+  "Label": "Answers Changed At",
+  "Name": "Answers_Changed_At",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4y": {
+  "Id": "FieldMapping_jlzb4y",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Answers_Changed_By_Email",
+  "Label": "Answers Changed By Email",
+  "Name": "Answers_Changed_By_Email",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb4z": {
+  "Id": "FieldMapping_jlzb4z",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Editing_By",
+  "Label": "Editing By",
+  "Name": "Editing_By",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb410": {
+  "Id": "FieldMapping_jlzb410",
+  "Kind": "FieldMapping",
+  "Type": "Datetime",
+  "FieldId": "Editing_Since",
+  "Label": "Editing Since",
+  "Name": "Editing_Since",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb411": {
+  "Id": "FieldMapping_jlzb411",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Completeness_Confirm",
+  "Label": "Completeness Confirm",
+  "Name": "Completeness_Confirm",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb412": {
+  "Id": "FieldMapping_jlzb412",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Completeness_By_Name",
+  "Label": "Completeness By Name",
+  "Name": "Completeness_By_Name",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb413": {
+  "Id": "FieldMapping_jlzb413",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Completeness_By_Email",
+  "Label": "Completeness By Email",
+  "Name": "Completeness_By_Email",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb414": {
+  "Id": "FieldMapping_jlzb414",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Completeness_By_Role",
+  "Label": "Completeness By Role",
+  "Name": "Completeness_By_Role",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb415": {
+  "Id": "FieldMapping_jlzb415",
+  "Kind": "FieldMapping",
+  "Type": "Datetime",
+  "FieldId": "Completeness_At",
+  "Label": "Completeness At",
+  "Name": "Completeness_At",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb416": {
+  "Id": "FieldMapping_jlzb416",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Case_Phase_Label",
+  "Label": "Case Phase Label",
+  "Name": "Case_Phase_Label",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb417": {
+  "Id": "FieldMapping_jlzb417",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Request_Locked",
+  "Label": "Request Locked",
+  "Name": "Request_Locked",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb418": {
+  "Id": "FieldMapping_jlzb418",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Questions_History_JSON",
+  "Label": "Questions History JSON",
+  "Name": "Questions_History_JSON",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request",
+  "FieldMapping::Property": [
+   "Property_jlzb419"
+  ]
+ },
+ "Property_jlzb419": {
+  "Id": "Property_jlzb419",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jlzb418",
+  "Type": "Field",
+  "Field": "context.Action_history_pick.Questions_History_JSON",
+  "Name": "Questions_History_JSON"
+ },
+ "FieldMapping_jlzb41a": {
+  "Id": "FieldMapping_jlzb41a",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Release_By_Name",
+  "Label": "Release By Name",
+  "Name": "Release_By_Name",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb41b": {
+  "Id": "FieldMapping_jlzb41b",
+  "Kind": "FieldMapping",
+  "Type": "Datetime",
+  "FieldId": "Release_At",
+  "Label": "Release At",
+  "Name": "Release_At",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb41c": {
+  "Id": "FieldMapping_jlzb41c",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Change_Report_Text",
+  "Label": "Change Report Text",
+  "Name": "Change_Report_Text",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb41d": {
+  "Id": "FieldMapping_jlzb41d",
+  "Kind": "FieldMapping",
+  "Type": "Number",
+  "FieldId": "Change_Report_Rev",
+  "Label": "Change Report Rev",
+  "Name": "Change_Report_Rev",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb41e": {
+  "Id": "FieldMapping_jlzb41e",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Change_Report_By_Email",
+  "Label": "Change Report By Email",
+  "Name": "Change_Report_By_Email",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb41f": {
+  "Id": "FieldMapping_jlzb41f",
+  "Kind": "FieldMapping",
+  "Type": "Datetime",
+  "FieldId": "Change_Report_At",
+  "Label": "Change Report At",
+  "Name": "Change_Report_At",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb41g": {
+  "Id": "FieldMapping_jlzb41g",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Change_Reports_JSON",
+  "Label": "Change Reports JSON",
+  "Name": "Change_Reports_JSON",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb41h": {
+  "Id": "FieldMapping_jlzb41h",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Keep_Open_Gate",
+  "Label": "Keep Open Gate",
+  "Name": "Keep_Open_Gate",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb41i": {
+  "Id": "FieldMapping_jlzb41i",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Supplier_Files",
+  "Label": "Supplier Files",
+  "Name": "Supplier_Files",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb41j": {
+  "Id": "FieldMapping_jlzb41j",
+  "Kind": "FieldMapping",
+  "Type": "Object",
+  "FieldId": "Release_Contacts",
+  "Label": "Release Contacts",
+  "Name": "Release_Contacts",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request",
+  "IsMultiValue": true
+ },
+ "FieldMapping_jlzb41k": {
+  "Id": "FieldMapping_jlzb41k",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Release_Flag",
+  "Label": "Release Flag",
+  "Name": "Release_Flag",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb41l": {
+  "Id": "FieldMapping_jlzb41l",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Documents_JSON",
+  "Label": "Documents JSON",
+  "Name": "Documents_JSON",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request"
+ },
+ "FieldMapping_jlzb41m": {
+  "Id": "FieldMapping_jlzb41m",
+  "Kind": "FieldMapping",
+  "Type": "Object",
+  "FieldId": "CIQP_Request_A00_Uploads",
+  "Label": "CIQP Request Uploads",
+  "Name": "Table::CIQP_Request_A00_Uploads",
+  "IsRequired": false,
+  "Action": "Action_HU_update_request",
+  "IsMultiValue": true
+ }
+}

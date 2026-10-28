@@ -1,0 +1,148 @@
+{
+ "step": "B2-walk",
+ "at": "2026-10-15T02:57:20.531Z",
+ "tag": "ZZT-B2-10150257",
+ "walks": [
+  {
+   "dept": "REG",
+   "expectStep": "Open point – Regulatory",
+   "create": {
+    "status": 200,
+    "item": "PkEN55nNHTuV"
+   },
+   "atStart": {
+    "status": "Draft",
+    "ctx": [],
+    "stored": {
+     "Raised_By_User": {
+      "_id": "UsEJUfjYLM8Y",
+      "Name": "Thomas",
+      "Kind": "User"
+     },
+     "Raised_By_Name": "ZZT Rita Raiser",
+     "Thread_JSON": "set",
+     "OP_Progress": "Open"
+    }
+   },
+   "submitStart": {
+    "status": 200
+   },
+   "atReview": {
+    "status": "InProgress",
+    "ctx": [
+     {
+      "step": "Open point – Regulatory",
+      "activity": "Activity_uka3mx",
+      "act": "PkEN55q4KQCE",
+      "assigned": [
+       "AppRole:CIQ Regulatory Reviewer"
+      ]
+     }
+    ],
+    "current_assigned_to": [
+     {
+      "_id": "RoEKl84Hca4w",
+      "Name": "CIQ Regulatory Reviewer",
+      "Kind": "AppRole"
+     }
+    ],
+    "stepOk": true,
+    "adminPut": {
+     "status": 200,
+     "readBack": {
+      "OP_Outcome": "Accepted",
+      "Closed_At": "2026-10-15T02:57:27Z",
+      "Closed_By": {
+       "_id": "UsEJUfjYLM8Y",
+       "Name": "Thomas",
+       "Kind": "User"
+      },
+      "Thread_JSON": "2 entries"
+     }
+    }
+   },
+   "submitReview": {
+    "status": 200
+   },
+   "end": {
+    "status": "Completed",
+    "OP_Outcome": "Accepted"
+   },
+   "pathText": " → Open point – Regulatory [AppRole:CIQ Regulatory Reviewer] → Completed"
+  },
+  {
+   "dept": "RMM",
+   "expectStep": "Open point – RMM",
+   "create": {
+    "status": 200,
+    "item": "PkEN55zlPexH"
+   },
+   "atStart": {
+    "status": "Draft",
+    "ctx": [],
+    "stored": {
+     "Raised_By_User": {
+      "_id": "UsEJUfjYLM8Y",
+      "Name": "Thomas",
+      "Kind": "User"
+     },
+     "Raised_By_Name": "ZZT Rita Raiser",
+     "Thread_JSON": "set",
+     "OP_Progress": "Open"
+    }
+   },
+   "submitStart": {
+    "status": 200
+   },
+   "atReview": {
+    "status": "InProgress",
+    "ctx": [
+     {
+      "step": "Open point – RMM",
+      "activity": "Activity_xc8fbb",
+      "act": "PkEN562Psdr5",
+      "assigned": [
+       "AppRole:CIQ RMM"
+      ]
+     }
+    ],
+    "current_assigned_to": [
+     {
+      "_id": "RoEKl83f9jPF",
+      "Name": "CIQ RMM",
+      "Kind": "AppRole"
+     }
+    ],
+    "stepOk": true,
+    "adminPut": {
+     "status": 200,
+     "readBack": {
+      "OP_Outcome": "Not accepted",
+      "Closed_At": "2026-10-15T02:57:38Z",
+      "Closed_By": {
+       "_id": "UsEJUfjYLM8Y",
+       "Name": "Thomas",
+       "Kind": "User"
+      },
+      "Thread_JSON": "2 entries"
+     }
+    }
+   },
+   "submitReview": {
+    "status": 200
+   },
+   "end": {
+    "status": "Completed",
+    "OP_Outcome": "Not accepted"
+   },
+   "pathText": " → Open point – RMM [AppRole:CIQ RMM] → Completed"
+  }
+ ],
+ "olderItem": {
+  "id": "PkEKlFeSYb_8",
+  "status": "Completed",
+  "OP_To_Supplier": "Yes",
+  "current_step": null
+ },
+ "calls": 17
+}

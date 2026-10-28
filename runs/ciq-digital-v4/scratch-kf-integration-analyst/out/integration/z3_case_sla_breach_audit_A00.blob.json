@@ -1,0 +1,65 @@
+{
+  "Root": "z3_case_sla_breach_audit_A00",
+  "z3_case_sla_breach_audit_A00": {
+    "_id": "z3_case_sla_breach_audit_A00",
+    "Id": "z3_case_sla_breach_audit_A00",
+    "Kind": "Integration",
+    "Name": "CIQ Z3 Case SLA breached – audit event",
+    "Type": "Integration",
+    "Status": "Draft",
+    "IsActive": true,
+    "_application_id": "CIQ_Digital_A00",
+    "Connectors": [
+      "Connector_1upujom"
+    ],
+    "Integration::Trigger": [
+      "Trigger_1qbxeac"
+    ],
+    "Integration::Action": [
+      "Action_1qbxe9t"
+    ]
+  },
+  "Connector_1upujom": {
+    "_id": "Connector_1upujom",
+    "Id": "Connector_1upujom",
+    "Kind": "Connector",
+    "Name": "CIQ Z3 Case SLA breached – audit event connector",
+    "Entities": [
+      "Trigger_1qbxeac",
+      "Action_1qbxe9t"
+    ]
+  },
+  "Trigger_1qbxeac": {
+    "_id": "Trigger_1qbxeac",
+    "Id": "Trigger_1qbxeac",
+    "Kind": "Trigger",
+    "Version": 1,
+    "Name": "CIQ_Case_A00 · updated",
+    "Flow": "CIQ_Case_A00",
+    "On": null,
+    "Event": "updated"
+  },
+  "Action_1qbxe9t": {
+    "_id": "Action_1qbxe9t",
+    "Id": "Action_1qbxe9t",
+    "Kind": "Action",
+    "Version": 1,
+    "Name": "create → CIQ_Audit_Event_A00",
+    "ActionType": "create",
+    "TargetFlow": "CIQ_Audit_Event_A00",
+    "FieldMap": {
+      "Event_Category": "'Notification'",
+      "Action_Code": "'Z3 SLA breached'",
+      "Actor_Side": "'System'",
+      "Case_Code": "Case_Code",
+      "Cycle_No": "Cycle_No",
+      "Case_Item_Id": "_id",
+      "Object_Kind": "'CIQ Case'",
+      "Object_Key": "Case_Code",
+      "Object_Item_Id": "_id",
+      "Object_State": "'SLA breached'",
+      "Notify_Channel": "'Kissflow SLA'"
+    },
+    "Condition": null
+  }
+}

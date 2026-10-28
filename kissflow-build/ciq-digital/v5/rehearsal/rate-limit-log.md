@@ -1,0 +1,4 @@
+- 2026-10-14T17:29:01Z 429 (Cloudflare 'Just a moment…' HTML) on GET draft CIQ_ZZ_Spike_Case_A00 at 17:26:43Z and 17:27:05Z (R2 dry run); poll 17:28:53Z still 429. Backing off 3 min per poll.
+- 17:28:53Z and 17:32:02Z: my own backoff polls (one GET each, 3 min apart) still got 429. Polling STOPPED at ~17:33Z on the coordinator's order: no Kissflow call until the coordinator's go (after the portal session's 23:25 IST probe).
+- Guards added to the rehearsal scripts: any HTML body (challenge) or 429 throws; a draft is only used when GET = 200 + JSON object with Root = its model id; list items only when 200 + JSON string array; putPublish refuses a blob without its model id.
+- 2026-10-14T17:55:10Z GO from the coordinator (portal probe 200 JSON at 23:24 IST). Resumed at 1 s pacing.

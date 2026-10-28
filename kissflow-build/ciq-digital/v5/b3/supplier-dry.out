@@ -1,0 +1,86 @@
+{
+ "step": "B3-supplier",
+ "at": "2026-10-14T18:37:15.422Z",
+ "apply": false,
+ "offline": false,
+ "flow": "CIQ_Supplier_A00",
+ "livePublishedAt": "2026-10-08T18:39:15Z",
+ "liveMetaVersion": "1791484755257430",
+ "mutation": {
+  "header": [
+   {
+    "id": "Supplier_City",
+    "type": "Text",
+    "column": "Column_1fekjtx",
+    "stepPermissions": 0
+   }
+  ],
+  "child": [
+   {
+    "id": "Contacts_Key",
+    "type": "Text",
+    "column": "Column_wrb26d",
+    "model": "Contacts"
+   },
+   {
+    "id": "Contacts_Title",
+    "type": "Text",
+    "column": "Column_gph3xa",
+    "model": "Contacts"
+   },
+   {
+    "id": "Contacts_Deactivated_At",
+    "type": "DateTime",
+    "column": "Column_1rx8z72",
+    "model": "Contacts"
+   }
+  ]
+ },
+ "diffSummary": {
+  "added": [
+   "Row_1fekjtx Row",
+   "Column_1fekjtx Column",
+   "Supplier_City Field Supplier City",
+   "Column_wrb26d Column",
+   "Contacts_Key Field Contact Key",
+   "Column_gph3xa Column",
+   "Contacts_Title Field Contact Title",
+   "Column_1rx8z72 Column",
+   "Contacts_Deactivated_At Field Deactivated At"
+  ],
+  "changed": [
+   {
+    "entity": "CIQ_Supplier_A00 Model CIQ Supplier",
+    "props": [
+     "Model::Field"
+    ]
+   },
+   {
+    "entity": "Column_1gfoc3e Column Details",
+    "props": [
+     "Column::Row"
+    ]
+   },
+   {
+    "entity": "Contacts Model Contacts",
+    "props": [
+     "Model::Field"
+    ]
+   },
+   {
+    "entity": "Row_1qfn8dy Row",
+    "props": [
+     "Row::Column"
+    ]
+   }
+  ],
+  "removed": []
+ },
+ "preflight": {
+  "errors": [],
+  "warnings": [
+   "NO_ID"
+  ]
+ },
+ "calls": 1
+}

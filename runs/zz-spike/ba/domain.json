@@ -1,0 +1,829 @@
+{
+  "summary": "Throwaway test harness \"zz-spike\" for CIQ Digital (CIQ_Digital_A00), approved by Thomas on 2026-10-07. Four flows prove Kissflow behaviours before the real app is generated: Process \"CIQ ZZ Spike Case\" (Start, prepare, a 6-branch PARALLEL block with flag conditions and branch-scoped lane fields, a formula-conditioned hold check, a step with a Mandatory formula gate, and a not-equal condition step); Process \"CIQ ZZ Spike Point\" (Start, a Select-conditioned waiting step, a review step with a step-scoped child table); Form \"CIQ ZZ Spike Register\" (child table with a header SUM, referencing a case, feeding the case's cross-flow SUM Open_Count); Form \"CIQ ZZ Spike Log\" (target for separately created integration tests). Two roles (A, B), both Editable on all four flows, no members. Two lists. No pages, nav, UI or automations in the IR. Extracted exactly as specified; nothing added.",
+  "source": {
+    "brd": "runs/current/brd.md",
+    "run": "zz-spike",
+    "app": "CIQ_Digital_A00",
+    "extracted_on": "2026-10-07",
+    "approval": "Thomas approved the spike flows on 2026-10-07 (brd.md L3)",
+    "precedence": "brd.md is the only requirement source; SPIKES.md is cited only for the purpose of each flow, never for content"
+  },
+  "scope": {
+    "in": "4 flows (2 Processes, 2 Forms), 2 lists, 2 custom roles, grants Role A + Role B Editable on all four flows",
+    "out": [
+      "Pages, nav, any UI (brd.md L60)",
+      "Automations/integrations in the IR; the test integrations are created separately (brd.md L61)",
+      "Role membership; Thomas adds the people (brd.md L56)"
+    ],
+    "evidence": "brd.md L3-6; brd.md L55-61"
+  },
+  "personas": [
+    {
+      "id": "p_tester_a",
+      "name": "Spike tester A",
+      "kind": "internal",
+      "source_role": "CIQ ZZ Spike Role A",
+      "description": "Test user holding CIQ ZZ Spike Role A. Creates and prepares spike cases, owns branches A, C and E, the hold check and the gated step; raises spike points and owns the waiting step.",
+      "goals": [
+        "Drive a spike case and a spike point through every step so the harness proves the Kissflow behaviours",
+        "Maintain register rows and lines that feed the case aggregate",
+        "Inspect log rows written by the integration tests"
+      ],
+      "pain_points": [],
+      "evidence": "brd.md L5; brd.md L13-14; brd.md L16; brd.md L19; brd.md L22; brd.md L31-32; brd.md L56-57"
+    },
+    {
+      "id": "p_tester_b",
+      "name": "Spike tester B",
+      "kind": "internal",
+      "source_role": "CIQ ZZ Spike Role B",
+      "description": "Test user holding CIQ ZZ Spike Role B. Owns parallel branches B, D and F, the not-equal step on a spike case, and the review step on a spike point.",
+      "goals": [
+        "Act on the Role B steps of a spike case and a spike point",
+        "Edit any of the four flows (Editable grant)"
+      ],
+      "pain_points": [],
+      "evidence": "brd.md L16; brd.md L23; brd.md L33; brd.md L56-57"
+    }
+  ],
+  "journeys": [
+    {
+      "id": "j01_run_spike_case",
+      "persona": "p_tester_a",
+      "other_personas": [
+        "p_tester_b"
+      ],
+      "name": "Run a spike case end to end",
+      "trigger": "A tester starts a test of the parallel, formula-condition and gate behaviours",
+      "steps": [
+        "Role A creates the case at \"Create spike case\"",
+        "Role A sets Flag_A–Flag_F and Spike_Decision (default placement, OQ-02/OQ-03) and the \"Spike Case Notes\" rows (stated) at \"Spike prepare\"",
+        "The PARALLEL block runs the branches whose Flag_X = \"Yes\"; each branch owner fills only its own lane fields (Lane_X_Confirm is Mandatory); branches A, C, E belong to Role A and B, D, F to Role B",
+        "After the join, \"Spike hold check\" (Role A) runs only when Hold_Flag = \"Yes\" (Open_Count blank or not 0)",
+        "\"Spike gated step\" (Role A) can only be submitted when Gate = \"OK\", i.e. Open_Count is blank or 0",
+        "\"Spike not-equal step\" (Role B) runs only when Spike_Decision != \"Rejected\"",
+        "End"
+      ],
+      "outcome": "The case reaches End along the path the flags, Hold_Flag, Gate and Spike_Decision dictate",
+      "frequency": "Ad hoc, during spike testing",
+      "success_criteria": [
+        "Unflagged branches are skipped and the join still completes",
+        "A branch cannot edit another lane",
+        "A branch cannot submit without its Lane_X_Confirm",
+        "Hold check runs exactly when Hold_Flag = \"Yes\"",
+        "Gated step refuses submit while Gate is blank",
+        "Not-equal step is skipped when Spike_Decision = \"Rejected\""
+      ],
+      "serves_entities": [
+        "e_spike_case",
+        "e_spike_register"
+      ],
+      "evidence": "brd.md L10-26; kissflow-build/ciq-digital/SPIKES.md L19-21 (purpose only)"
+    },
+    {
+      "id": "j02_run_spike_point",
+      "persona": "p_tester_a",
+      "other_personas": [
+        "p_tester_b"
+      ],
+      "name": "Run a spike point end to end",
+      "trigger": "A tester raises a spike point",
+      "steps": [
+        "Role A raises the point at \"Raise spike point\" and sets To_Supplier and the scalar fields (default placement, OQ-05)",
+        "\"Spike waiting\" (Role A) runs only when To_Supplier = \"Yes\"; Response_Text is Editable there",
+        "\"Spike review\" (Role B); the \"Spike Rounds\" child table is editable only here",
+        "End"
+      ],
+      "outcome": "The point reaches End, with or without the waiting step",
+      "frequency": "Ad hoc, during spike testing",
+      "success_criteria": [
+        "Waiting step is skipped when To_Supplier is not \"Yes\"",
+        "Response_Text editable at \"Spike waiting\"",
+        "Spike Rounds editable only at \"Spike review\""
+      ],
+      "serves_entities": [
+        "e_spike_point"
+      ],
+      "evidence": "brd.md L28-43"
+    },
+    {
+      "id": "j03_maintain_spike_register",
+      "persona": "p_tester_a",
+      "other_personas": [
+        "p_tester_b"
+      ],
+      "name": "Maintain a spike register for a case",
+      "trigger": "A tester needs open lines against a spike case (to drive Open_Count, Hold_Flag and Gate)",
+      "steps": [
+        "Create a register row with Register_Key and Register_Case pointing at a spike case",
+        "Add or edit \"Spike Lines\" rows with Line_Open values",
+        "Open_Lines recalculates as the SUM of Line_Open, and the case Open_Count as the SUM of Open_Lines over its registers"
+      ],
+      "outcome": "The case aggregate reflects the register lines",
+      "frequency": "Ad hoc, during spike testing",
+      "success_criteria": [
+        "Register_Key is required",
+        "Open_Lines = SUM of Spike Lines.Line_Open",
+        "Case Open_Count = SUM of Open_Lines of registers referencing the case"
+      ],
+      "serves_entities": [
+        "e_spike_register",
+        "e_spike_case"
+      ],
+      "evidence": "brd.md L21; brd.md L45-49; brd.md L57"
+    },
+    {
+      "id": "j04_inspect_spike_log",
+      "persona": "p_tester_a",
+      "other_personas": [
+        "p_tester_b"
+      ],
+      "name": "Inspect integration test log rows",
+      "trigger": "A separately created test integration writes to the log",
+      "steps": [
+        "The test integration (outside this IR) creates or updates a \"CIQ ZZ Spike Log\" row",
+        "A tester opens the log rows to check the result"
+      ],
+      "outcome": "Integration test results are visible as log rows",
+      "frequency": "Ad hoc, during spike testing",
+      "success_criteria": [
+        "Log rows are readable and editable by Role A and Role B"
+      ],
+      "serves_entities": [
+        "e_spike_log"
+      ],
+      "evidence": "brd.md L51-53; brd.md L57; brd.md L61"
+    }
+  ],
+  "entities": [
+    {
+      "id": "e_spike_case",
+      "name": "CIQ ZZ Spike Case",
+      "flow_type": "Process",
+      "description": "Test case that exercises a 6-branch parallel block, flag conditions, branch-scoped Editable/Mandatory lane fields, a formula condition, a Mandatory formula gate and a not-equal condition.",
+      "key_attributes": [
+        "Flag_A (Select, list \"CIQ ZZ Spike Yes No\"; condition of branch \"Spike review – A\")",
+        "Flag_B (Select, list \"CIQ ZZ Spike Yes No\"; condition of branch \"Spike review – B\")",
+        "Flag_C (Select, list \"CIQ ZZ Spike Yes No\"; condition of branch \"Spike review – C\")",
+        "Flag_D (Select, list \"CIQ ZZ Spike Yes No\"; condition of branch \"Spike review – D\")",
+        "Flag_E (Select, list \"CIQ ZZ Spike Yes No\"; condition of branch \"Spike review – E\")",
+        "Flag_F (Select, list \"CIQ ZZ Spike Yes No\"; condition of branch \"Spike review – F\")",
+        "Lane_A_Confirm (Mandatory at \"Spike review – A\")",
+        "Lane_A_By",
+        "Lane_A_At",
+        "Lane_A_Note",
+        "Lane_B_Confirm (Mandatory at \"Spike review – B\")",
+        "Lane_B_By",
+        "Lane_B_At",
+        "Lane_B_Note",
+        "Lane_C_Confirm (Mandatory at \"Spike review – C\")",
+        "Lane_C_By",
+        "Lane_C_At",
+        "Lane_C_Note",
+        "Lane_D_Confirm (Mandatory at \"Spike review – D\")",
+        "Lane_D_By",
+        "Lane_D_At",
+        "Lane_D_Note",
+        "Lane_E_Confirm (Mandatory at \"Spike review – E\")",
+        "Lane_E_By",
+        "Lane_E_At",
+        "Lane_E_Note",
+        "Lane_F_Confirm (Mandatory at \"Spike review – F\")",
+        "Lane_F_By",
+        "Lane_F_At",
+        "Lane_F_Note",
+        "Open_Count (cross-flow SUM aggregate of \"CIQ ZZ Spike Register\".Open_Lines over the registers whose Register_Case = this case)",
+        "Hold_Flag (formula, Text) = IF(ISBLANK(Open_Count),\"Yes\",IF(Open_Count=0,\"No\",\"Yes\"))",
+        "Gate (formula) = IF(IF(ISBLANK(Open_Count),0,Open_Count)=0,\"OK\",\"\") ; Mandatory at \"Spike gated step\"",
+        "Spike_Decision (Select, list \"CIQ ZZ Spike Decision\": Approved, Rejected)"
+      ],
+      "child_tables": [
+        {
+          "name": "Spike Case Notes",
+          "columns": [
+            "Note_Text",
+            "Note_By"
+          ],
+          "editable_at": [
+            "Spike prepare"
+          ],
+          "evidence": "brd.md L26"
+        }
+      ],
+      "lifecycle": "Start \"Create spike case\" (Role A) → \"Spike prepare\" (Role A) → PARALLEL [\"Spike review – A\" (A) | \"– B\" (B) | \"– C\" (A) | \"– D\" (B) | \"– E\" (A) | \"– F\" (B)], each if Flag_X = \"Yes\" → join → \"Spike hold check\" (Role A) if Hold_Flag = \"Yes\" → \"Spike gated step\" (Role A; Gate Mandatory) → \"Spike not-equal step\" (Role B) if Spike_Decision != \"Rejected\" → End",
+      "relationships": [
+        "A Spike Case has many Spike Registers (via Register.Register_Case)",
+        "A Spike Case has many Spike Case Notes rows (child table)"
+      ],
+      "serves_journeys": [
+        "j01_run_spike_case",
+        "j03_maintain_spike_register"
+      ],
+      "evidence": "brd.md L10-26"
+    },
+    {
+      "id": "e_spike_point",
+      "name": "CIQ ZZ Spike Point",
+      "flow_type": "Process",
+      "description": "Test point that exercises a Select-conditioned step, a step-scoped Editable field and a step-scoped child table.",
+      "key_attributes": [
+        "Round_No (Number)",
+        "Question_Text (Textarea)",
+        "Awaiting_Response (Text)",
+        "Response_Text (Textarea; Editable at \"Spike waiting\")",
+        "Due_Date (Date)",
+        "To_Supplier (Select; condition of \"Spike waiting\")"
+      ],
+      "child_tables": [
+        {
+          "name": "Spike Rounds",
+          "columns": [
+            "Round_No",
+            "Question",
+            "Response",
+            "Outcome"
+          ],
+          "editable_at": [
+            "Spike review"
+          ],
+          "evidence": "brd.md L43"
+        }
+      ],
+      "lifecycle": "Start \"Raise spike point\" (Role A) → \"Spike waiting\" (Role A) if To_Supplier = \"Yes\" → \"Spike review\" (Role B) → End",
+      "relationships": [
+        "A Spike Point has many Spike Rounds rows (child table)"
+      ],
+      "serves_journeys": [
+        "j02_run_spike_point"
+      ],
+      "evidence": "brd.md L28-43"
+    },
+    {
+      "id": "e_spike_register",
+      "name": "CIQ ZZ Spike Register",
+      "flow_type": "Form",
+      "description": "Register of open lines against a spike case; feeds the case aggregate Open_Count.",
+      "key_attributes": [
+        "Register_Key (Text, required)",
+        "Register_Case (Reference → CIQ ZZ Spike Case)",
+        "Open_Lines (header aggregate = SUM of Spike Lines.Line_Open)"
+      ],
+      "child_tables": [
+        {
+          "name": "Spike Lines",
+          "columns": [
+            "Line_Text",
+            "Line_Open (Number)"
+          ],
+          "evidence": "brd.md L48"
+        }
+      ],
+      "relationships": [
+        "A Spike Register belongs to one Spike Case (Register_Case)",
+        "A Spike Register has many Spike Lines rows (child table)"
+      ],
+      "serves_journeys": [
+        "j03_maintain_spike_register",
+        "j01_run_spike_case"
+      ],
+      "evidence": "brd.md L45-49"
+    },
+    {
+      "id": "e_spike_log",
+      "name": "CIQ ZZ Spike Log",
+      "flow_type": "Form",
+      "description": "Target form for the separately created integration tests.",
+      "key_attributes": [
+        "Log_Key",
+        "Log_Source",
+        "Log_Event",
+        "Log_Item_Id",
+        "Log_At (DateTime)",
+        "Log_Payload (Textarea)"
+      ],
+      "child_tables": [],
+      "relationships": [
+        "No modelled relationship; Log_Item_Id holds the id of the item an integration acted on (as text)"
+      ],
+      "serves_journeys": [
+        "j04_inspect_spike_log"
+      ],
+      "evidence": "brd.md L51-53"
+    }
+  ],
+  "roles": [
+    {
+      "name": "CIQ ZZ Spike Role A",
+      "persona": "p_tester_a",
+      "members": "none; Thomas adds the people",
+      "grants": {
+        "CIQ ZZ Spike Case": "Editable",
+        "CIQ ZZ Spike Point": "Editable",
+        "CIQ ZZ Spike Register": "Editable",
+        "CIQ ZZ Spike Log": "Editable"
+      },
+      "evidence": "brd.md L56-57"
+    },
+    {
+      "name": "CIQ ZZ Spike Role B",
+      "persona": "p_tester_b",
+      "members": "none; Thomas adds the people",
+      "grants": {
+        "CIQ ZZ Spike Case": "Editable",
+        "CIQ ZZ Spike Point": "Editable",
+        "CIQ ZZ Spike Register": "Editable",
+        "CIQ ZZ Spike Log": "Editable"
+      },
+      "evidence": "brd.md L56-57"
+    }
+  ],
+  "value_sets": [
+    {
+      "name": "CIQ ZZ Spike Yes No",
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "used_by": [
+        "CIQ ZZ Spike Case Flag_A–Flag_F"
+      ],
+      "evidence": "brd.md L17"
+    },
+    {
+      "name": "CIQ ZZ Spike Decision",
+      "values": [
+        "Approved",
+        "Rejected"
+      ],
+      "used_by": [
+        "CIQ ZZ Spike Case Spike_Decision"
+      ],
+      "evidence": "brd.md L23"
+    }
+  ],
+  "process_contract": {
+    "note": "Exact step names, owners, conditions and per-step field rules as stated. Step names use the en-dash \"–\" (U+2013).",
+    "processes": [
+      {
+        "flow": "CIQ ZZ Spike Case",
+        "steps": [
+          {
+            "order": 0,
+            "name": "Create spike case",
+            "kind": "Start",
+            "owner": "CIQ ZZ Spike Role A",
+            "condition": null,
+            "evidence": "brd.md L13",
+            "defaulted_editable_fields": {
+              "fields": [],
+              "basis": "default, not stated (OQ-06)"
+            }
+          },
+          {
+            "order": 1,
+            "name": "Spike prepare",
+            "kind": "Step",
+            "owner": "CIQ ZZ Spike Role A",
+            "condition": null,
+            "evidence": "brd.md L14",
+            "editable_child_tables": [
+              "Spike Case Notes"
+            ],
+            "defaulted_editable_fields": {
+              "fields": [
+                "Flag_A",
+                "Flag_B",
+                "Flag_C",
+                "Flag_D",
+                "Flag_E",
+                "Flag_F",
+                "Spike_Decision"
+              ],
+              "basis": "default, not stated (OQ-02, OQ-03)"
+            }
+          },
+          {
+            "order": 2,
+            "name": null,
+            "kind": "Parallel",
+            "owner": null,
+            "condition": null,
+            "note": "Fork into 6 branches, then join. A branch whose flag is not \"Yes\" is skipped.",
+            "branches": [
+              {
+                "name": "Spike review – A",
+                "owner": "CIQ ZZ Spike Role A",
+                "condition": "Flag_A = \"Yes\"",
+                "editable_fields": [
+                  "Lane_A_Confirm",
+                  "Lane_A_By",
+                  "Lane_A_At",
+                  "Lane_A_Note"
+                ],
+                "mandatory_fields": [
+                  "Lane_A_Confirm"
+                ],
+                "ownership_assumption": "alternation starts with Role A (see OQ-01)"
+              },
+              {
+                "name": "Spike review – B",
+                "owner": "CIQ ZZ Spike Role B",
+                "condition": "Flag_B = \"Yes\"",
+                "editable_fields": [
+                  "Lane_B_Confirm",
+                  "Lane_B_By",
+                  "Lane_B_At",
+                  "Lane_B_Note"
+                ],
+                "mandatory_fields": [
+                  "Lane_B_Confirm"
+                ]
+              },
+              {
+                "name": "Spike review – C",
+                "owner": "CIQ ZZ Spike Role A",
+                "condition": "Flag_C = \"Yes\"",
+                "editable_fields": [
+                  "Lane_C_Confirm",
+                  "Lane_C_By",
+                  "Lane_C_At",
+                  "Lane_C_Note"
+                ],
+                "mandatory_fields": [
+                  "Lane_C_Confirm"
+                ]
+              },
+              {
+                "name": "Spike review – D",
+                "owner": "CIQ ZZ Spike Role B",
+                "condition": "Flag_D = \"Yes\"",
+                "editable_fields": [
+                  "Lane_D_Confirm",
+                  "Lane_D_By",
+                  "Lane_D_At",
+                  "Lane_D_Note"
+                ],
+                "mandatory_fields": [
+                  "Lane_D_Confirm"
+                ]
+              },
+              {
+                "name": "Spike review – E",
+                "owner": "CIQ ZZ Spike Role A",
+                "condition": "Flag_E = \"Yes\"",
+                "editable_fields": [
+                  "Lane_E_Confirm",
+                  "Lane_E_By",
+                  "Lane_E_At",
+                  "Lane_E_Note"
+                ],
+                "mandatory_fields": [
+                  "Lane_E_Confirm"
+                ]
+              },
+              {
+                "name": "Spike review – F",
+                "owner": "CIQ ZZ Spike Role B",
+                "condition": "Flag_F = \"Yes\"",
+                "editable_fields": [
+                  "Lane_F_Confirm",
+                  "Lane_F_By",
+                  "Lane_F_At",
+                  "Lane_F_Note"
+                ],
+                "mandatory_fields": [
+                  "Lane_F_Confirm"
+                ]
+              }
+            ],
+            "evidence": "brd.md L15-18",
+            "label": "PARALLEL block (container only; the BRD names no block step)"
+          },
+          {
+            "order": 3,
+            "name": "Spike hold check",
+            "kind": "Step",
+            "owner": "CIQ ZZ Spike Role A",
+            "condition": "Hold_Flag = \"Yes\"",
+            "evidence": "brd.md L19-21",
+            "defaulted_editable_fields": {
+              "fields": [],
+              "basis": "default, not stated (OQ-06)"
+            }
+          },
+          {
+            "order": 4,
+            "name": "Spike gated step",
+            "kind": "Step",
+            "owner": "CIQ ZZ Spike Role A",
+            "condition": null,
+            "mandatory_fields": [
+              "Gate"
+            ],
+            "evidence": "brd.md L22",
+            "defaulted_editable_fields": {
+              "fields": [],
+              "basis": "default, not stated (OQ-06); Gate is a formula and only its Mandatory rule is stated"
+            }
+          },
+          {
+            "order": 5,
+            "name": "Spike not-equal step",
+            "kind": "Step",
+            "owner": "CIQ ZZ Spike Role B",
+            "condition": "Spike_Decision != \"Rejected\"",
+            "evidence": "brd.md L23",
+            "defaulted_editable_fields": {
+              "fields": [],
+              "basis": "default, not stated (OQ-06)"
+            }
+          },
+          {
+            "order": 6,
+            "name": "End",
+            "kind": "End",
+            "owner": null,
+            "condition": null,
+            "evidence": "brd.md L24"
+          }
+        ]
+      },
+      {
+        "flow": "CIQ ZZ Spike Point",
+        "steps": [
+          {
+            "order": 0,
+            "name": "Raise spike point",
+            "kind": "Start",
+            "owner": "CIQ ZZ Spike Role A",
+            "condition": null,
+            "evidence": "brd.md L31",
+            "defaulted_editable_fields": {
+              "fields": [
+                "Round_No",
+                "Question_Text",
+                "Awaiting_Response",
+                "Due_Date",
+                "To_Supplier"
+              ],
+              "basis": "default, not stated (OQ-05)"
+            }
+          },
+          {
+            "order": 1,
+            "name": "Spike waiting",
+            "kind": "Step",
+            "owner": "CIQ ZZ Spike Role A",
+            "condition": "To_Supplier = \"Yes\"",
+            "editable_fields": [
+              "Response_Text"
+            ],
+            "evidence": "brd.md L32; brd.md L40"
+          },
+          {
+            "order": 2,
+            "name": "Spike review",
+            "kind": "Step",
+            "owner": "CIQ ZZ Spike Role B",
+            "condition": null,
+            "editable_child_tables": [
+              "Spike Rounds"
+            ],
+            "evidence": "brd.md L33; brd.md L43"
+          },
+          {
+            "order": 3,
+            "name": "End",
+            "kind": "End",
+            "owner": null,
+            "condition": null,
+            "evidence": "brd.md L34"
+          }
+        ]
+      }
+    ]
+  },
+  "business_rules": [
+    {
+      "id": "BR-01",
+      "statement": "Every flow, list and role name starts with \"CIQ ZZ Spike\".",
+      "applies_to": [
+        "all flows",
+        "all value sets",
+        "all roles"
+      ],
+      "evidence": "brd.md L4",
+      "category": "naming"
+    },
+    {
+      "id": "BR-02",
+      "statement": "Keep the harness minimal and exactly as specified; it is a throwaway test harness, not a business app.",
+      "applies_to": [
+        "all"
+      ],
+      "evidence": "brd.md L3; brd.md L6",
+      "category": "scope"
+    },
+    {
+      "id": "BR-03",
+      "statement": "After \"Spike prepare\", CIQ ZZ Spike Case runs a PARALLEL block of 6 branches \"Spike review – A\" … \"Spike review – F\", owned alternately by Role A and Role B, and joins before \"Spike hold check\".",
+      "applies_to": [
+        "e_spike_case",
+        "j01_run_spike_case"
+      ],
+      "evidence": "brd.md L15-16; brd.md L19",
+      "category": "workflow"
+    },
+    {
+      "id": "BR-04",
+      "statement": "Each branch \"Spike review – X\" runs only when its own Select flag Flag_X = \"Yes\" (list \"CIQ ZZ Spike Yes No\").",
+      "applies_to": [
+        "e_spike_case",
+        "j01_run_spike_case"
+      ],
+      "evidence": "brd.md L17",
+      "category": "condition"
+    },
+    {
+      "id": "BR-05",
+      "statement": "Each branch edits ONLY its own lane fields Lane_X_Confirm, Lane_X_By, Lane_X_At, Lane_X_Note; Lane_X_Confirm is Mandatory there.",
+      "applies_to": [
+        "e_spike_case",
+        "j01_run_spike_case"
+      ],
+      "evidence": "brd.md L18",
+      "category": "field-permission"
+    },
+    {
+      "id": "BR-06",
+      "statement": "\"Spike hold check\" (Role A) runs after the join only when Hold_Flag = \"Yes\".",
+      "applies_to": [
+        "e_spike_case",
+        "j01_run_spike_case"
+      ],
+      "evidence": "brd.md L19",
+      "category": "condition"
+    },
+    {
+      "id": "BR-07",
+      "statement": "Hold_Flag is a formula Text field: IF(ISBLANK(Open_Count),\"Yes\",IF(Open_Count=0,\"No\",\"Yes\")).",
+      "applies_to": [
+        "e_spike_case"
+      ],
+      "evidence": "brd.md L19-20",
+      "category": "computed"
+    },
+    {
+      "id": "BR-08",
+      "statement": "Open_Count is a cross-flow SUM aggregate of \"CIQ ZZ Spike Register\".Open_Lines over the registers whose Reference Register_Case = this case.",
+      "applies_to": [
+        "e_spike_case",
+        "e_spike_register",
+        "j03_maintain_spike_register"
+      ],
+      "evidence": "brd.md L21",
+      "category": "computed"
+    },
+    {
+      "id": "BR-09",
+      "statement": "Gate is a formula field IF(IF(ISBLANK(Open_Count),0,Open_Count)=0,\"OK\",\"\") and is Mandatory at \"Spike gated step\" (Role A).",
+      "applies_to": [
+        "e_spike_case",
+        "j01_run_spike_case"
+      ],
+      "evidence": "brd.md L22",
+      "category": "validation"
+    },
+    {
+      "id": "BR-10",
+      "statement": "\"Spike not-equal step\" (Role B) runs only when Spike_Decision != \"Rejected\" (Select, list \"CIQ ZZ Spike Decision\": Approved, Rejected).",
+      "applies_to": [
+        "e_spike_case",
+        "j01_run_spike_case"
+      ],
+      "evidence": "brd.md L23",
+      "category": "condition"
+    },
+    {
+      "id": "BR-11",
+      "statement": "Child table \"Spike Case Notes\" (Note_Text, Note_By) is editable only at \"Spike prepare\".",
+      "applies_to": [
+        "e_spike_case",
+        "j01_run_spike_case"
+      ],
+      "evidence": "brd.md L26",
+      "category": "field-permission"
+    },
+    {
+      "id": "BR-12",
+      "statement": "\"Spike waiting\" (Role A) runs only when To_Supplier = \"Yes\" (a Select).",
+      "applies_to": [
+        "e_spike_point",
+        "j02_run_spike_point"
+      ],
+      "evidence": "brd.md L32",
+      "category": "condition"
+    },
+    {
+      "id": "BR-13",
+      "statement": "Response_Text is Editable at \"Spike waiting\".",
+      "applies_to": [
+        "e_spike_point",
+        "j02_run_spike_point"
+      ],
+      "evidence": "brd.md L40",
+      "category": "field-permission"
+    },
+    {
+      "id": "BR-14",
+      "statement": "Child table \"Spike Rounds\" (Round_No, Question, Response, Outcome) is editable only at \"Spike review\".",
+      "applies_to": [
+        "e_spike_point",
+        "j02_run_spike_point"
+      ],
+      "evidence": "brd.md L43",
+      "category": "field-permission"
+    },
+    {
+      "id": "BR-15",
+      "statement": "Register_Key is required on CIQ ZZ Spike Register.",
+      "applies_to": [
+        "e_spike_register",
+        "j03_maintain_spike_register"
+      ],
+      "evidence": "brd.md L46",
+      "category": "validation"
+    },
+    {
+      "id": "BR-16",
+      "statement": "Open_Lines is a header aggregate = SUM of \"Spike Lines\".Line_Open.",
+      "applies_to": [
+        "e_spike_register",
+        "j03_maintain_spike_register"
+      ],
+      "evidence": "brd.md L49",
+      "category": "computed"
+    },
+    {
+      "id": "BR-17",
+      "statement": "CIQ ZZ Spike Log is the target of the integration tests; those integrations are created separately and are not in the IR.",
+      "applies_to": [
+        "e_spike_log",
+        "j04_inspect_spike_log"
+      ],
+      "evidence": "brd.md L53; brd.md L61",
+      "category": "integration-boundary"
+    },
+    {
+      "id": "BR-18",
+      "statement": "Roles CIQ ZZ Spike Role A and CIQ ZZ Spike Role B have no members; Thomas adds the people.",
+      "applies_to": [
+        "all roles"
+      ],
+      "evidence": "brd.md L56",
+      "category": "access"
+    },
+    {
+      "id": "BR-19",
+      "statement": "Role A and Role B are Editable on all four flows.",
+      "applies_to": [
+        "e_spike_case",
+        "e_spike_point",
+        "e_spike_register",
+        "e_spike_log"
+      ],
+      "evidence": "brd.md L57",
+      "category": "access"
+    },
+    {
+      "id": "BR-20",
+      "statement": "No pages, no nav, no UI.",
+      "applies_to": [
+        "all"
+      ],
+      "evidence": "brd.md L60",
+      "category": "scope"
+    },
+    {
+      "id": "BR-21",
+      "statement": "No automations in the IR.",
+      "applies_to": [
+        "all"
+      ],
+      "evidence": "brd.md L61",
+      "category": "scope"
+    }
+  ],
+  "orphans": [],
+  "defaulted_assumptions": "See runs/current/open-questions.md (OQ-01 …); none of the defaults adds a flow, list, role, step or field.",
+  "counts": {
+    "personas": 2,
+    "journeys": 4,
+    "entities": 4,
+    "forms": 2,
+    "processes": 2,
+    "roles": 2,
+    "value_sets": 2,
+    "business_rules": 21
+  }
+}

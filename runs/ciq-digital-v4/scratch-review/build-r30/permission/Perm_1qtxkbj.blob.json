@@ -1,0 +1,49 @@
+{
+  "Root": "Perm_1qtxkbj",
+  "Perm_1qtxkbj": {
+    "Id": "Perm_1qtxkbj",
+    "Kind": "FlowPermission",
+    "Role": "ciq_overall_approver",
+    "RoleName": "CIQ Overall Approver",
+    "Model": "Regulatory_Findings",
+    "Level": "ReadOnly",
+    "Scope": "all",
+    "FlowPermission::Permission": [
+      "Permission_nvdhv1",
+      "Permission_8w32b5",
+      "Permission_1ck094h",
+      "Permission_6eqdc9",
+      "Permission_1briuth"
+    ]
+  },
+  "Permission_nvdhv1": {
+    "Id": "Permission_nvdhv1",
+    "Kind": "Permission",
+    "Column": "Findings_Text",
+    "Permission": "ReadOnly"
+  },
+  "Permission_8w32b5": {
+    "Id": "Permission_8w32b5",
+    "Kind": "Permission",
+    "Column": "Findings_Criterion_Code",
+    "Permission": "ReadOnly"
+  },
+  "Permission_1ck094h": {
+    "Id": "Permission_1ck094h",
+    "Kind": "Permission",
+    "Column": "Findings_Blocking",
+    "Permission": "ReadOnly"
+  },
+  "Permission_6eqdc9": {
+    "Id": "Permission_6eqdc9",
+    "Kind": "Permission",
+    "Column": "Findings_State",
+    "Permission": "ReadOnly"
+  },
+  "Permission_1briuth": {
+    "Id": "Permission_1briuth",
+    "Kind": "Permission",
+    "Column": "Findings_Linked_OP_Key",
+    "Permission": "ReadOnly"
+  }
+}

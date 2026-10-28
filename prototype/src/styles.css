@@ -1,0 +1,193 @@
+@import "tailwindcss";
+
+@source "./";
+
+/* Design tokens. Beiersdorf blue (#0032A1, sampled from the logo) is the single brand accent.
+   Components use ONLY the semantic classes below (bg-surface, text-ink, border-line, …). */
+:root {
+  --bg: oklch(0.975 0.004 255);
+  --surface: oklch(1 0 0);
+  --surface-2: oklch(0.965 0.006 255);
+  --surface-3: oklch(0.93 0.01 255);
+  --line: oklch(0.905 0.01 255);
+  --line-strong: oklch(0.84 0.015 255);
+  --ink: oklch(0.24 0.04 262);
+  --ink-2: oklch(0.43 0.03 262);
+  --ink-3: oklch(0.58 0.02 262);
+  --brand: oklch(0.38 0.19 262); /* ≈ #0032A1 */
+  --brand-hover: oklch(0.33 0.18 262);
+  --brand-soft: oklch(0.95 0.03 262);
+  --brand-ink: oklch(0.99 0 0);
+  --ok: oklch(0.55 0.13 155);
+  --ok-soft: oklch(0.95 0.04 155);
+  --warn: oklch(0.66 0.15 70);
+  --warn-soft: oklch(0.96 0.05 85);
+  --bad: oklch(0.56 0.19 25);
+  --bad-soft: oklch(0.95 0.035 25);
+  --info: oklch(0.55 0.13 235);
+  --info-soft: oklch(0.95 0.03 235);
+  --violet: oklch(0.52 0.16 295);
+  --violet-soft: oklch(0.95 0.03 295);
+  --chart-1: oklch(0.42 0.19 262);
+  --chart-2: oklch(0.66 0.12 200);
+  --chart-3: oklch(0.72 0.14 75);
+  --chart-4: oklch(0.58 0.15 300);
+  --chart-5: oklch(0.62 0.15 25);
+  --chart-6: oklch(0.6 0.1 150);
+  --shadow: 0 1px 2px oklch(0.24 0.04 262 / 0.06), 0 1px 1px oklch(0.24 0.04 262 / 0.04);
+  --shadow-lg: 0 12px 32px oklch(0.24 0.04 262 / 0.14), 0 2px 6px oklch(0.24 0.04 262 / 0.08);
+  --radius: 10px;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: oklch(0.18 0.02 262);
+    --surface: oklch(0.22 0.025 262);
+    --surface-2: oklch(0.25 0.025 262);
+    --surface-3: oklch(0.3 0.03 262);
+    --line: oklch(0.32 0.03 262);
+    --line-strong: oklch(0.4 0.03 262);
+    --ink: oklch(0.95 0.01 262);
+    --ink-2: oklch(0.8 0.02 262);
+    --ink-3: oklch(0.66 0.02 262);
+    --brand: oklch(0.68 0.15 262);
+    --brand-hover: oklch(0.74 0.13 262);
+    --brand-soft: oklch(0.3 0.07 262);
+    --brand-ink: oklch(0.16 0.03 262);
+    --ok: oklch(0.72 0.14 155);
+    --ok-soft: oklch(0.3 0.06 155);
+    --warn: oklch(0.8 0.14 80);
+    --warn-soft: oklch(0.32 0.06 80);
+    --bad: oklch(0.7 0.17 25);
+    --bad-soft: oklch(0.32 0.07 25);
+    --info: oklch(0.72 0.12 235);
+    --info-soft: oklch(0.3 0.06 235);
+    --violet: oklch(0.72 0.14 295);
+    --violet-soft: oklch(0.3 0.06 295);
+    --chart-1: oklch(0.7 0.15 262);
+    --chart-2: oklch(0.75 0.11 200);
+    --chart-3: oklch(0.8 0.13 80);
+    --chart-4: oklch(0.72 0.14 300);
+    --chart-5: oklch(0.72 0.15 25);
+    --chart-6: oklch(0.74 0.11 150);
+    --shadow: 0 1px 2px oklch(0 0 0 / 0.4);
+    --shadow-lg: 0 12px 32px oklch(0 0 0 / 0.5);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: oklch(0.18 0.02 262);
+  --surface: oklch(0.22 0.025 262);
+  --surface-2: oklch(0.25 0.025 262);
+  --surface-3: oklch(0.3 0.03 262);
+  --line: oklch(0.32 0.03 262);
+  --line-strong: oklch(0.4 0.03 262);
+  --ink: oklch(0.95 0.01 262);
+  --ink-2: oklch(0.8 0.02 262);
+  --ink-3: oklch(0.66 0.02 262);
+  --brand: oklch(0.68 0.15 262);
+  --brand-hover: oklch(0.74 0.13 262);
+  --brand-soft: oklch(0.3 0.07 262);
+  --brand-ink: oklch(0.16 0.03 262);
+  --ok: oklch(0.72 0.14 155);
+  --ok-soft: oklch(0.3 0.06 155);
+  --warn: oklch(0.8 0.14 80);
+  --warn-soft: oklch(0.32 0.06 80);
+  --bad: oklch(0.7 0.17 25);
+  --bad-soft: oklch(0.32 0.07 25);
+  --info: oklch(0.72 0.12 235);
+  --info-soft: oklch(0.3 0.06 235);
+  --violet: oklch(0.72 0.14 295);
+  --violet-soft: oklch(0.3 0.06 295);
+  --chart-1: oklch(0.7 0.15 262);
+  --chart-2: oklch(0.75 0.11 200);
+  --chart-3: oklch(0.8 0.13 80);
+  --chart-4: oklch(0.72 0.14 300);
+  --chart-5: oklch(0.72 0.15 25);
+  --chart-6: oklch(0.74 0.11 150);
+  --shadow: 0 1px 2px oklch(0 0 0 / 0.4);
+  --shadow-lg: 0 12px 32px oklch(0 0 0 / 0.5);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-ink: var(--brand-ink);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-violet: var(--violet);
+  --color-violet-soft: var(--violet-soft);
+  --radius-card: var(--radius);
+  --shadow-card: var(--shadow);
+  --shadow-pop: var(--shadow-lg);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "tnum" 1;
+}
+
+/* In the base layer so component utilities (inputs' own focus ring, focus:outline-none) can override it.
+   Unlayered, it beat every utility and also squared off rounded controls on focus. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+}
+
+/* The logo is a blue wordmark: render it white on dark grounds. */
+:root[data-theme="dark"] .logo-adaptive {
+  filter: brightness(0) invert(1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .logo-adaptive {
+    filter: brightness(0) invert(1);
+  }
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

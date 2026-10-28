@@ -1,0 +1,472 @@
+{
+ "at": "2026-10-19T20:50:00.734Z",
+ "mode": "apply",
+ "editWithDelete": false,
+ "flows": [
+  {
+   "flow": "Review",
+   "id": "CIQ_Review_A00",
+   "type": "process",
+   "liveMembers": [
+    "Raw Material Manager (RMM):AppRole:Member[InitiateItems,View]",
+    "Regulatory Affairs reviewer:AppRole:Member[View]",
+    "Product Safety reviewer:AppRole:Member[View]",
+    "Quality Management reviewer:AppRole:Member[View]",
+    "Microbiology reviewer:AppRole:Member[View]",
+    "Sustainability reviewer:AppRole:Member[View]",
+    "Customs & Trade Compliance:AppRole:Member[View]",
+    "Legal / IP:AppRole:Member[View]",
+    "Business administrator:AppRole:Member[View]",
+    "Auditor:AppRole:Member[View]",
+    "Business owner (reports):AppRole:Member[View]",
+    "Case administrator:AppRole:Admin",
+    "Integration service:AppRole:Member[InitiateItems]"
+   ],
+   "batch": [
+    "CIQ RMM → Member[InitiateItems,View]",
+    "CIQ Regulatory Reviewer → Member[View]",
+    "CIQ Safety Reviewer → Member[View]",
+    "CIQ QM Reviewer → Member[View]",
+    "CIQ Microbiology Reviewer → Member[View]",
+    "CIQ Sustainability Reviewer → Member[View]",
+    "Customs & Trade Compliance → Member[View]",
+    "Legal / IP → Member[View]",
+    "CIQ Business Admin → Member[View]",
+    "CIQ Reader → Member[View]",
+    "Business owner (reports) → Member[View]",
+    "CIQ Case Admin → Admin",
+    "CIQ Integration Service → Member[InitiateItems]"
+   ],
+   "changes": [],
+   "removals": [],
+   "untouched": [],
+   "batchStatus": 200,
+   "readBackDiffs": []
+  },
+  {
+   "flow": "OpenPoint",
+   "id": "CIQ_Open_Point_A00",
+   "type": "process",
+   "liveMembers": [
+    "CIQ RMM:AppRole:Member[View]",
+    "CIQ Regulatory Reviewer:AppRole:Member[View]",
+    "CIQ Safety Reviewer:AppRole:Member[View]",
+    "CIQ QM Reviewer:AppRole:Member[View]",
+    "CIQ Microbiology Reviewer:AppRole:Member[View]",
+    "CIQ Sustainability Reviewer:AppRole:Member[View]",
+    "CIQ Business Admin:AppRole:Member[View]",
+    "CIQ Reader:AppRole:Member[View]",
+    "CIQ Case Admin:AppRole:Admin",
+    "CIQ Integration Service:AppRole:Member[InitiateItems]",
+    "Customs & Trade Compliance:AppRole:Member[View]",
+    "Legal / IP:AppRole:Member[View]",
+    "Business owner (reports):AppRole:Member[View]"
+   ],
+   "batch": [
+    "CIQ RMM → Member[InitiateItems,View]",
+    "CIQ Regulatory Reviewer → Member[InitiateItems,View]",
+    "CIQ Safety Reviewer → Member[InitiateItems,View]",
+    "CIQ QM Reviewer → Member[InitiateItems,View]",
+    "CIQ Microbiology Reviewer → Member[InitiateItems,View]",
+    "CIQ Sustainability Reviewer → Member[InitiateItems,View]",
+    "Customs & Trade Compliance → Member[View]",
+    "Legal / IP → Member[View]",
+    "CIQ Business Admin → Member[View]",
+    "CIQ Reader → Member[View]",
+    "Business owner (reports) → Member[View]",
+    "CIQ Case Admin → Admin",
+    "CIQ Integration Service → Member[InitiateItems]"
+   ],
+   "changes": [
+    "CIQ RMM: Member[\"View\"] → Member[\"InitiateItems\",\"View\"]",
+    "CIQ Regulatory Reviewer: Member[\"View\"] → Member[\"InitiateItems\",\"View\"]",
+    "CIQ Safety Reviewer: Member[\"View\"] → Member[\"InitiateItems\",\"View\"]",
+    "CIQ QM Reviewer: Member[\"View\"] → Member[\"InitiateItems\",\"View\"]",
+    "CIQ Microbiology Reviewer: Member[\"View\"] → Member[\"InitiateItems\",\"View\"]",
+    "CIQ Sustainability Reviewer: Member[\"View\"] → Member[\"InitiateItems\",\"View\"]"
+   ],
+   "removals": [],
+   "untouched": [],
+   "batchStatus": 200,
+   "readBackDiffs": []
+  },
+  {
+   "flow": "CaseData",
+   "id": "CIQ_Case_Data_A00",
+   "type": "form",
+   "liveMembers": [
+    "CIQ RMM:AppRole:Viewer",
+    "CIQ Regulatory Reviewer:AppRole:Viewer",
+    "CIQ Safety Reviewer:AppRole:Viewer",
+    "CIQ QM Reviewer:AppRole:Viewer",
+    "CIQ Microbiology Reviewer:AppRole:Viewer",
+    "CIQ Sustainability Reviewer:AppRole:Viewer",
+    "Customs & Trade Compliance:AppRole:Viewer",
+    "Legal / IP:AppRole:Viewer",
+    "CIQ Business Admin:AppRole:Viewer",
+    "CIQ Reader:AppRole:Viewer",
+    "Business owner (reports):AppRole:Viewer",
+    "CIQ Case Admin:AppRole:Viewer",
+    "CIQ Integration Service:AppRole:Member"
+   ],
+   "batch": [
+    "CIQ Case Admin → Viewer"
+   ],
+   "changes": [],
+   "removals": [
+    "CIQ RMM (Viewer[])",
+    "CIQ Regulatory Reviewer (Viewer[])",
+    "CIQ Safety Reviewer (Viewer[])",
+    "CIQ QM Reviewer (Viewer[])",
+    "CIQ Microbiology Reviewer (Viewer[])",
+    "CIQ Sustainability Reviewer (Viewer[])",
+    "Customs & Trade Compliance (Viewer[])",
+    "Legal / IP (Viewer[])",
+    "CIQ Business Admin (Viewer[])",
+    "CIQ Reader (Viewer[])",
+    "Business owner (reports) (Viewer[])",
+    "CIQ Integration Service (Member[])"
+   ],
+   "untouched": [],
+   "batchStatus": 200,
+   "deleteStatus": [
+    "CIQ RMM:200",
+    "CIQ Regulatory Reviewer:200",
+    "CIQ Safety Reviewer:200",
+    "CIQ QM Reviewer:200",
+    "CIQ Microbiology Reviewer:200",
+    "CIQ Sustainability Reviewer:200",
+    "Customs & Trade Compliance:200",
+    "Legal / IP:200",
+    "CIQ Business Admin:200",
+    "CIQ Reader:200",
+    "Business owner (reports):200",
+    "CIQ Integration Service:200"
+   ],
+   "readBackDiffs": []
+  },
+  {
+   "flow": "Outbox",
+   "id": "CIQ_Mail_Outbox_A00",
+   "type": "form",
+   "liveMembers": [
+    "CIQ Reader:AppRole:Viewer",
+    "CIQ Case Admin:AppRole:Viewer",
+    "CIQ Integration Service:AppRole:Member"
+   ],
+   "batch": [
+    "CIQ Case Admin → Viewer"
+   ],
+   "changes": [],
+   "removals": [
+    "CIQ Reader (Viewer[])",
+    "CIQ Integration Service (Member[])"
+   ],
+   "untouched": [],
+   "batchStatus": 200,
+   "deleteStatus": [
+    "CIQ Reader:200",
+    "CIQ Integration Service:200"
+   ],
+   "readBackDiffs": []
+  },
+  {
+   "flow": "ServiceRequest",
+   "id": "CIQ_Service_Request_A00",
+   "type": "form",
+   "liveMembers": [
+    "CIQ RMM:AppRole:Member",
+    "CIQ Regulatory Reviewer:AppRole:Member",
+    "CIQ Safety Reviewer:AppRole:Member",
+    "CIQ QM Reviewer:AppRole:Member",
+    "CIQ Microbiology Reviewer:AppRole:Member",
+    "CIQ Sustainability Reviewer:AppRole:Member",
+    "Customs & Trade Compliance:AppRole:Member",
+    "Legal / IP:AppRole:Member",
+    "CIQ Business Admin:AppRole:Member",
+    "CIQ Reader:AppRole:Viewer",
+    "CIQ Case Admin:AppRole:Viewer",
+    "CIQ Integration Service:AppRole:Member"
+   ],
+   "batch": [
+    "CIQ Case Admin → Viewer"
+   ],
+   "changes": [],
+   "removals": [
+    "CIQ RMM (Member[])",
+    "CIQ Regulatory Reviewer (Member[])",
+    "CIQ Safety Reviewer (Member[])",
+    "CIQ QM Reviewer (Member[])",
+    "CIQ Microbiology Reviewer (Member[])",
+    "CIQ Sustainability Reviewer (Member[])",
+    "Customs & Trade Compliance (Member[])",
+    "Legal / IP (Member[])",
+    "CIQ Business Admin (Member[])",
+    "CIQ Reader (Viewer[])",
+    "CIQ Integration Service (Member[])"
+   ],
+   "untouched": [],
+   "batchStatus": 200,
+   "deleteStatus": [
+    "CIQ RMM:200",
+    "CIQ Regulatory Reviewer:200",
+    "CIQ Safety Reviewer:200",
+    "CIQ QM Reviewer:200",
+    "CIQ Microbiology Reviewer:200",
+    "CIQ Sustainability Reviewer:200",
+    "Customs & Trade Compliance:200",
+    "Legal / IP:200",
+    "CIQ Business Admin:200",
+    "CIQ Reader:200",
+    "CIQ Integration Service:200"
+   ],
+   "readBackDiffs": []
+  },
+  {
+   "flow": "Supplier",
+   "id": "CIQ_Supplier_A00",
+   "type": "form",
+   "liveMembers": [
+    "CIQ RMM:AppRole:Viewer",
+    "CIQ Business Admin:AppRole:Member",
+    "CIQ Case Admin:AppRole:Viewer",
+    "CIQ Integration Service:AppRole:Member"
+   ],
+   "batch": [
+    "CIQ RMM → Viewer",
+    "CIQ Business Admin → Member",
+    "CIQ Case Admin → Viewer",
+    "CIQ Integration Service → Member"
+   ],
+   "changes": [],
+   "removals": [],
+   "untouched": [],
+   "batchStatus": 200,
+   "readBackDiffs": []
+  },
+  {
+   "flow": "Config",
+   "id": "CIQ_Config_Version_A00",
+   "type": "form",
+   "liveMembers": [
+    "CIQ RMM:AppRole:Viewer",
+    "CIQ Regulatory Reviewer:AppRole:Viewer",
+    "CIQ Safety Reviewer:AppRole:Viewer",
+    "CIQ QM Reviewer:AppRole:Viewer",
+    "CIQ Microbiology Reviewer:AppRole:Viewer",
+    "CIQ Sustainability Reviewer:AppRole:Viewer",
+    "CIQ Business Admin:AppRole:Member",
+    "CIQ Reader:AppRole:Viewer",
+    "CIQ Case Admin:AppRole:Viewer",
+    "Customs & Trade Compliance:AppRole:Viewer",
+    "Legal / IP:AppRole:Viewer",
+    "Business owner (reports):AppRole:Viewer",
+    "CIQ Integration Service:AppRole:Member"
+   ],
+   "batch": [
+    "CIQ RMM → Viewer",
+    "CIQ Regulatory Reviewer → Viewer",
+    "CIQ Safety Reviewer → Viewer",
+    "CIQ QM Reviewer → Viewer",
+    "CIQ Microbiology Reviewer → Viewer",
+    "CIQ Sustainability Reviewer → Viewer",
+    "Customs & Trade Compliance → Viewer",
+    "Legal / IP → Viewer",
+    "CIQ Business Admin → Member",
+    "CIQ Reader → Viewer",
+    "Business owner (reports) → Viewer",
+    "CIQ Case Admin → Viewer",
+    "CIQ Integration Service → Member"
+   ],
+   "changes": [],
+   "removals": [],
+   "untouched": [],
+   "batchStatus": 200,
+   "readBackDiffs": []
+  },
+  {
+   "flow": "ScopeRun",
+   "id": "CIQ_Scope_Run_A00",
+   "type": "form",
+   "liveMembers": [
+    "CIQ RMM:AppRole:Viewer",
+    "CIQ Regulatory Reviewer:AppRole:Viewer",
+    "CIQ Safety Reviewer:AppRole:Viewer",
+    "CIQ QM Reviewer:AppRole:Viewer",
+    "CIQ Microbiology Reviewer:AppRole:Viewer",
+    "CIQ Sustainability Reviewer:AppRole:Viewer",
+    "CIQ Business Admin:AppRole:Viewer",
+    "CIQ Reader:AppRole:Viewer",
+    "CIQ Case Admin:AppRole:Viewer",
+    "Customs & Trade Compliance:AppRole:Viewer",
+    "Legal / IP:AppRole:Viewer",
+    "Business owner (reports):AppRole:Viewer",
+    "CIQ Integration Service:AppRole:Member"
+   ],
+   "batch": [
+    "CIQ RMM → Member",
+    "CIQ Regulatory Reviewer → Viewer",
+    "CIQ Safety Reviewer → Viewer",
+    "CIQ QM Reviewer → Viewer",
+    "CIQ Microbiology Reviewer → Viewer",
+    "CIQ Sustainability Reviewer → Viewer",
+    "Customs & Trade Compliance → Viewer",
+    "Legal / IP → Viewer",
+    "CIQ Business Admin → Viewer",
+    "CIQ Reader → Viewer",
+    "Business owner (reports) → Viewer",
+    "CIQ Case Admin → Viewer",
+    "CIQ Integration Service → Member"
+   ],
+   "changes": [
+    "CIQ RMM: Viewer[] → Member[]"
+   ],
+   "removals": [],
+   "untouched": [],
+   "batchStatus": 200,
+   "readBackDiffs": []
+  },
+  {
+   "flow": "RmesSaf",
+   "id": "CIQ_RMES_Safety_A00",
+   "type": "form",
+   "liveMembers": [
+    "CIQ Safety Reviewer:AppRole:Member",
+    "CIQ Reader:AppRole:Viewer",
+    "CIQ Case Admin:AppRole:Viewer",
+    "CIQ Integration Service:AppRole:Member"
+   ],
+   "batch": [
+    "CIQ Safety Reviewer → Member",
+    "CIQ Reader → Viewer",
+    "CIQ Case Admin → Viewer",
+    "CIQ Integration Service → Member"
+   ],
+   "changes": [],
+   "removals": [],
+   "untouched": [],
+   "batchStatus": 200,
+   "readBackDiffs": []
+  },
+  {
+   "flow": "RmesReg",
+   "id": "CIQ_RMES_Regulatory_A00",
+   "type": "form",
+   "liveMembers": [
+    "CIQ Regulatory Reviewer:AppRole:Member",
+    "CIQ Reader:AppRole:Viewer",
+    "CIQ Case Admin:AppRole:Viewer",
+    "CIQ Integration Service:AppRole:Member"
+   ],
+   "batch": [
+    "CIQ Regulatory Reviewer → Member",
+    "CIQ Reader → Viewer",
+    "CIQ Case Admin → Viewer",
+    "CIQ Integration Service → Member"
+   ],
+   "changes": [],
+   "removals": [],
+   "untouched": [],
+   "batchStatus": 200,
+   "readBackDiffs": []
+  },
+  {
+   "flow": "Note",
+   "id": "CIQ_Internal_Note_A00",
+   "type": "form",
+   "liveMembers": [
+    "CIQ RMM:AppRole:Member",
+    "CIQ Regulatory Reviewer:AppRole:Member",
+    "CIQ Safety Reviewer:AppRole:Member",
+    "CIQ QM Reviewer:AppRole:Member",
+    "CIQ Microbiology Reviewer:AppRole:Member",
+    "CIQ Sustainability Reviewer:AppRole:Member",
+    "CIQ Business Admin:AppRole:Viewer",
+    "CIQ Reader:AppRole:Viewer",
+    "CIQ Case Admin:AppRole:Viewer",
+    "Customs & Trade Compliance:AppRole:Member",
+    "Legal / IP:AppRole:Member",
+    "Business owner (reports):AppRole:Viewer",
+    "CIQ Integration Service:AppRole:Viewer"
+   ],
+   "batch": [
+    "CIQ RMM → Member",
+    "CIQ Regulatory Reviewer → Member",
+    "CIQ Safety Reviewer → Member",
+    "CIQ QM Reviewer → Member",
+    "CIQ Microbiology Reviewer → Member",
+    "CIQ Sustainability Reviewer → Member",
+    "Customs & Trade Compliance → Member",
+    "Legal / IP → Member",
+    "CIQ Business Admin → Viewer",
+    "CIQ Reader → Viewer",
+    "Business owner (reports) → Viewer",
+    "CIQ Case Admin → Viewer",
+    "CIQ Integration Service → Viewer"
+   ],
+   "changes": [],
+   "removals": [],
+   "untouched": [],
+   "batchStatus": 200,
+   "readBackDiffs": []
+  },
+  {
+   "flow": "Audit",
+   "id": "CIQ_Audit_Event_A00",
+   "type": "form",
+   "liveMembers": [
+    "CIQ RMM:AppRole:Viewer",
+    "CIQ Regulatory Reviewer:AppRole:Viewer",
+    "CIQ Safety Reviewer:AppRole:Viewer",
+    "CIQ QM Reviewer:AppRole:Viewer",
+    "CIQ Microbiology Reviewer:AppRole:Viewer",
+    "CIQ Sustainability Reviewer:AppRole:Viewer",
+    "CIQ Business Admin:AppRole:Viewer",
+    "CIQ Reader:AppRole:Viewer",
+    "CIQ Case Admin:AppRole:Viewer",
+    "CIQ Integration Service:AppRole:Member",
+    "Customs & Trade Compliance:AppRole:Viewer",
+    "Legal / IP:AppRole:Viewer",
+    "Business owner (reports):AppRole:Viewer"
+   ],
+   "batch": [
+    "CIQ RMM → Member",
+    "CIQ Regulatory Reviewer → Member",
+    "CIQ Safety Reviewer → Member",
+    "CIQ QM Reviewer → Member",
+    "CIQ Microbiology Reviewer → Member",
+    "CIQ Sustainability Reviewer → Member",
+    "Customs & Trade Compliance → Member",
+    "Legal / IP → Member",
+    "CIQ Business Admin → Member",
+    "CIQ Reader → Viewer",
+    "Business owner (reports) → Viewer",
+    "CIQ Case Admin → Viewer",
+    "CIQ Integration Service → Member"
+   ],
+   "changes": [
+    "CIQ RMM: Viewer[] → Member[]",
+    "CIQ Regulatory Reviewer: Viewer[] → Member[]",
+    "CIQ Safety Reviewer: Viewer[] → Member[]",
+    "CIQ QM Reviewer: Viewer[] → Member[]",
+    "CIQ Microbiology Reviewer: Viewer[] → Member[]",
+    "CIQ Sustainability Reviewer: Viewer[] → Member[]",
+    "Customs & Trade Compliance: Viewer[] → Member[]",
+    "Legal / IP: Viewer[] → Member[]",
+    "CIQ Business Admin: Viewer[] → Member[]"
+   ],
+   "removals": [],
+   "untouched": [],
+   "batchStatus": 200,
+   "readBackDiffs": []
+  }
+ ],
+ "calls": 61,
+ "summary": {
+  "flows": 12,
+  "skipped": [],
+  "changes": 16,
+  "removals": 25,
+  "readBackDiffs": 0
+ }
+}

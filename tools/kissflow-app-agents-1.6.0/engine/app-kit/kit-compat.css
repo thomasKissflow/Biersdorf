@@ -1,0 +1,20 @@
+/* KIT PILOT — scaffold-shell compatibility.
+ *
+ * The scaffold's app-shell.jsx reads sidebar-* utilities that only the scaffold's own Tailwind
+ * graph emits (`background-color: var(--sidebar-primary)` — WHOLE colours). themes.css used to
+ * feed them; the kit's token graph (shadcn.css → tokens.css) bridges only --sidebar and
+ * --sidebar-border, so the rest fell back to the scaffold's grey oklch defaults — that is what
+ * turned the rail's wordmark tile black.
+ *
+ * Each value below derives from the kit contract's own triplet tokens, wrapped hsl() here
+ * because these consumers take whole colours. Nothing invents a colour.
+ */
+:root,
+:root[data-theme][data-theme] {
+  --sidebar-foreground: hsl(var(--foreground));
+  --sidebar-primary: hsl(var(--primary));
+  --sidebar-primary-foreground: hsl(var(--primary-foreground));
+  --sidebar-accent: hsl(var(--accent));
+  --sidebar-accent-foreground: hsl(var(--accent-foreground));
+  --sidebar-muted: hsl(var(--muted-foreground));
+}

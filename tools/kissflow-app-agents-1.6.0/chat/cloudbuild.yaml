@@ -1,0 +1,14 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -f
+      - plugins/app-agents/chat/Dockerfile
+      - -t
+      - asia-south1-docker.pkg.dev/kf-app-builder-p001/kf-images/ai-builder:latest
+      - .
+images:
+  - asia-south1-docker.pkg.dev/kf-app-builder-p001/kf-images/ai-builder:latest
+timeout: 1200s
+options:
+  machineType: E2_HIGHCPU_8

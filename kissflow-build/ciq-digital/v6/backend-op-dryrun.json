@@ -1,0 +1,59 @@
+{
+ "target": "op",
+ "flow": "CIQ_Open_Point_A00",
+ "at": "2026-10-19T20:52:16.676Z",
+ "apply": false,
+ "changes": [
+  "Raise open point · Raiser_Assignee: Editable → Mandatory (the field-assigned department step needs the raiser; the screen sets it at Start)",
+  "Raise open point · OP_Outcome: Editable → ReadOnly (set by the raiser at its department step, not at Start)",
+  "Raise open point · Outcome_Reason: Editable → ReadOnly (set by the raiser at its department step, not at Start)",
+  "Raise open point · Return_Reason: Editable → ReadOnly (set by the raiser at its department step, not at Start)",
+  "Raise open point · Closed_At: Editable → ReadOnly (set by the raiser at its department step, not at Start)",
+  "Raise open point · Closed_By: Editable → ReadOnly (set by the raiser at its department step, not at Start)",
+  "Raise open point · Response_Kind: Editable → ReadOnly (written only by the hand-off integrations (admin PUT writes ReadOnly fields, probe P-RO))",
+  "Raise open point · Response_Text: Editable → ReadOnly (written only by the hand-off integrations (admin PUT writes ReadOnly fields, probe P-RO))",
+  "Raise open point · Response_Doc_Refs_JSON: Editable → ReadOnly (written only by the hand-off integrations (admin PUT writes ReadOnly fields, probe P-RO))",
+  "Raise open point · Supplier_Responsible_Email: Editable → ReadOnly (written only by the hand-off integrations (admin PUT writes ReadOnly fields, probe P-RO))",
+  "Raise open point · Portal_Query_Item_Id: Editable → ReadOnly (written only by the hand-off integrations (admin PUT writes ReadOnly fields, probe P-RO))"
+ ],
+ "conflicts": [],
+ "already": [],
+ "backup": "v6/backups/CIQ_Open_Point_A00.before-v6.2026-10-19T2052.json",
+ "diffSummary": {
+  "added": [],
+  "removed": [],
+  "changed": 11,
+  "kindsBefore": {
+   "Model": 2,
+   "Row": 43,
+   "Column": 71,
+   "Field": 69,
+   "QueryDefinition": 6,
+   "Expression": 8,
+   "Node": 71,
+   "ProcessDef": 1,
+   "Permission": 480,
+   "Activity": 9,
+   "Resource": 6,
+   "Appearance": 1,
+   "Style": 1,
+   "User": 1
+  },
+  "kindsAfter": {
+   "Model": 2,
+   "Row": 43,
+   "Column": 71,
+   "Field": 69,
+   "QueryDefinition": 6,
+   "Expression": 8,
+   "Node": 71,
+   "ProcessDef": 1,
+   "Permission": 480,
+   "Activity": 9,
+   "Resource": 6,
+   "Appearance": 1,
+   "Style": 1,
+   "User": 1
+  }
+ }
+}

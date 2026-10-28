@@ -1,0 +1,59 @@
+{
+  "Root": "z2_cancellation_neutral_email_A00",
+  "z2_cancellation_neutral_email_A00": {
+    "_id": "z2_cancellation_neutral_email_A00",
+    "Id": "z2_cancellation_neutral_email_A00",
+    "Kind": "Integration",
+    "Name": "CIQ Z2 Case cancelled – neutral e-mail",
+    "Type": "Integration",
+    "Status": "Draft",
+    "IsActive": true,
+    "_application_id": "CIQ_Digital_A00",
+    "Connectors": [
+      "Connector_s306ji"
+    ],
+    "Integration::Trigger": [
+      "Trigger_13m2c24"
+    ],
+    "Integration::Action": [
+      "Action_13m2c1l"
+    ]
+  },
+  "Connector_s306ji": {
+    "_id": "Connector_s306ji",
+    "Id": "Connector_s306ji",
+    "Kind": "Connector",
+    "Name": "CIQ Z2 Case cancelled – neutral e-mail connector",
+    "Entities": [
+      "Trigger_13m2c24",
+      "Action_13m2c1l"
+    ]
+  },
+  "Trigger_13m2c24": {
+    "_id": "Trigger_13m2c24",
+    "Id": "Trigger_13m2c24",
+    "Kind": "Trigger",
+    "Version": 1,
+    "Name": "CIQ_Audit_Event_A00 · created",
+    "Flow": "CIQ_Audit_Event_A00",
+    "On": null,
+    "Event": "created"
+  },
+  "Action_13m2c1l": {
+    "_id": "Action_13m2c1l",
+    "Id": "Action_13m2c1l",
+    "Kind": "Action",
+    "Version": 1,
+    "Name": "notify → CIQ_Audit_Event_A00",
+    "ActionType": "notify",
+    "TargetFlow": "CIQ_Audit_Event_A00",
+    "FieldMap": {
+      "Notify_Recipient": "Notify_Recipient"
+    },
+    "Condition": {
+      "lhs": "Event_Category",
+      "op": "=",
+      "rhs": "Cancellation"
+    }
+  }
+}

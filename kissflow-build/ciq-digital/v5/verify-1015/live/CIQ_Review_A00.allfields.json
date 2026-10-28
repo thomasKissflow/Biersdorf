@@ -1,0 +1,612 @@
+{
+ "status": 200,
+ "body": {
+  "CIQ_Review_A00": {
+   "Id": "CIQ_Review_A00",
+   "Name": "CIQ Review",
+   "Tables": [],
+   "Fields": [
+    {
+     "Id": "_current_step",
+     "Name": "Current step",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_current_assigned_to",
+     "Name": "Currently assigned to",
+     "Type": "UserGroupList",
+     "IsSystemField": true,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_status",
+     "Name": "Status",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "CIQ_Review_A00",
+     "Widget": "Status",
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Review_Key",
+     "Name": "Review Key",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": true,
+     "IsInternal": false
+    },
+    {
+     "Id": "Case_Code",
+     "Name": "Case Code",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": true,
+     "IsInternal": false
+    },
+    {
+     "Id": "Cycle_No",
+     "Name": "Cycle No",
+     "Type": "Number",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "Decimalpoint": null
+    },
+    {
+     "Id": "Case_Item_Id",
+     "Name": "Case Item Id",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": true,
+     "IsInternal": false
+    },
+    {
+     "Id": "Supplier_Code",
+     "Name": "Supplier Code",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Trade_Name",
+     "Name": "Trade Name",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Review_Dept",
+     "Name": "Review Dept",
+     "Type": "Select",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": true,
+     "IsInternal": false
+    },
+    {
+     "Id": "Round_No",
+     "Name": "Round No",
+     "Type": "Number",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "Decimalpoint": null
+    },
+    {
+     "Id": "Activation_Kind",
+     "Name": "Activation Kind",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Activation_Reason",
+     "Name": "Activation Reason",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Activated_By_Name",
+     "Name": "Activated By Name",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Assignee_User",
+     "Name": "Assignee User",
+     "Type": "User",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "SourceFlowId": "User",
+     "SourceFlowType": "User"
+    },
+    {
+     "Id": "Assignee_Name",
+     "Name": "Assignee Name",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Assignee_Email",
+     "Name": "Assignee Email",
+     "Type": "Email",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Reassign_Reason",
+     "Name": "Reassign Reason",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Track_Status",
+     "Name": "Track Status",
+     "Type": "Select",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Open_Count",
+     "Name": "Open Count",
+     "Type": "Number",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "Decimalpoint": null
+    },
+    {
+     "Id": "RMES_Gaps",
+     "Name": "RMES Gaps",
+     "Type": "Number",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "Decimalpoint": null
+    },
+    {
+     "Id": "Review_Gate",
+     "Name": "Review Gate",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Review_Confirm",
+     "Name": "Review Confirm",
+     "Type": "Select",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Completed_By",
+     "Name": "Completed By",
+     "Type": "User",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "SourceFlowId": "User",
+     "SourceFlowType": "User"
+    },
+    {
+     "Id": "Completed_By_Name",
+     "Name": "Completed By Name",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Completed_By_Email",
+     "Name": "Completed By Email",
+     "Type": "Email",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Completed_At",
+     "Name": "Completed At",
+     "Type": "DateTime",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "RMES_Decision",
+     "Name": "RMES Decision",
+     "Type": "Select",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "RMES_Decision_Reason",
+     "Name": "RMES Decision Reason",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Rejection_Handling",
+     "Name": "Rejection Handling",
+     "Type": "Select",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Rejection_Note",
+     "Name": "Rejection Note",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Rejected_Depts_Covered",
+     "Name": "Rejected Depts Covered",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "On_Behalf_Of",
+     "Name": "On Behalf Of",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Review_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    }
+   ],
+   "System": [
+    {
+     "Id": "Name",
+     "Name": "Name",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "ProcessBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_created_by",
+     "Name": "Created by",
+     "Type": "User",
+     "IsSystemField": true,
+     "Model": "ProcessBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "SourceFlowId": "UserAbstract",
+     "SourceFlowType": null,
+     "Attributes": [
+      {
+       "Id": "Status",
+       "Name": "Status",
+       "Type": "DropdownList"
+      },
+      {
+       "Id": "FirstName",
+       "Name": "First name",
+       "Type": "Text"
+      },
+      {
+       "Id": "LastName",
+       "Name": "Last name",
+       "Type": "Text"
+      },
+      {
+       "Id": "ProfilePicture",
+       "Name": "Profile picture",
+       "Type": "ProfilePicture"
+      }
+     ]
+    },
+    {
+     "Id": "_modified_by",
+     "Name": "Modified by",
+     "Type": "User",
+     "IsSystemField": true,
+     "Model": "ProcessBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "SourceFlowId": "UserAbstract",
+     "SourceFlowType": null,
+     "Attributes": [
+      {
+       "Id": "Status",
+       "Name": "Status",
+       "Type": "DropdownList"
+      },
+      {
+       "Id": "FirstName",
+       "Name": "First name",
+       "Type": "Text"
+      },
+      {
+       "Id": "LastName",
+       "Name": "Last name",
+       "Type": "Text"
+      },
+      {
+       "Id": "ProfilePicture",
+       "Name": "Profile picture",
+       "Type": "ProfilePicture"
+      }
+     ]
+    },
+    {
+     "Id": "_created_at",
+     "Name": "Created at",
+     "Type": "DateTime",
+     "IsSystemField": true,
+     "Model": "ProcessBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_modified_at",
+     "Name": "Modified at",
+     "Type": "DateTime",
+     "IsSystemField": true,
+     "Model": "ProcessBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_deleted_at",
+     "Name": "Deleted at",
+     "Type": "DateTime",
+     "IsSystemField": true,
+     "Model": "ProcessBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true
+    },
+    {
+     "Id": "_deleted_by",
+     "Name": "Deleted by",
+     "Type": "User",
+     "IsSystemField": true,
+     "Model": "ProcessBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true,
+     "SourceFlowId": "UserAbstract",
+     "SourceFlowType": null,
+     "Attributes": [
+      {
+       "Id": "Status",
+       "Name": "Status",
+       "Type": "DropdownList"
+      },
+      {
+       "Id": "FirstName",
+       "Name": "First name",
+       "Type": "Text"
+      },
+      {
+       "Id": "LastName",
+       "Name": "Last name",
+       "Type": "Text"
+      },
+      {
+       "Id": "ProfilePicture",
+       "Name": "Profile picture",
+       "Type": "ProfilePicture"
+      }
+     ]
+    },
+    {
+     "Id": "_flow_name",
+     "Name": "Flow name",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "ProcessBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_doc_version",
+     "Name": "DocVersion",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "ProcessBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true
+    }
+   ],
+   "Workflow": [
+    {
+     "Id": "Activity_1wb6scg",
+     "Name": "Review – Regulatory",
+     "Fields": [
+      {
+       "Id": "ExpectedAt",
+       "Name": "Expected at",
+       "Type": "DateTime",
+       "IsSystemField": false,
+       "Model": "ActivityInstance",
+       "Widget": null,
+       "Required": false,
+       "IsInternal": false
+      }
+     ]
+    },
+    {
+     "Id": "Activity_116f3su",
+     "Name": "Review – Safety",
+     "Fields": [
+      {
+       "Id": "ExpectedAt",
+       "Name": "Expected at",
+       "Type": "DateTime",
+       "IsSystemField": false,
+       "Model": "ActivityInstance",
+       "Widget": null,
+       "Required": false,
+       "IsInternal": false
+      }
+     ]
+    },
+    {
+     "Id": "Activity_12d3ab4",
+     "Name": "Review – QM",
+     "Fields": [
+      {
+       "Id": "ExpectedAt",
+       "Name": "Expected at",
+       "Type": "DateTime",
+       "IsSystemField": false,
+       "Model": "ActivityInstance",
+       "Widget": null,
+       "Required": false,
+       "IsInternal": false
+      }
+     ]
+    },
+    {
+     "Id": "Activity_1wkxybl",
+     "Name": "Review – Microbiology",
+     "Fields": [
+      {
+       "Id": "ExpectedAt",
+       "Name": "Expected at",
+       "Type": "DateTime",
+       "IsSystemField": false,
+       "Model": "ActivityInstance",
+       "Widget": null,
+       "Required": false,
+       "IsInternal": false
+      }
+     ]
+    },
+    {
+     "Id": "Activity_1um3oo7",
+     "Name": "Review – Sustainability",
+     "Fields": [
+      {
+       "Id": "ExpectedAt",
+       "Name": "Expected at",
+       "Type": "DateTime",
+       "IsSystemField": false,
+       "Model": "ActivityInstance",
+       "Widget": null,
+       "Required": false,
+       "IsInternal": false
+      }
+     ]
+    },
+    {
+     "Id": "Activity_1mh3ji6",
+     "Name": "Review – RMM",
+     "Fields": [
+      {
+       "Id": "ExpectedAt",
+       "Name": "Expected at",
+       "Type": "DateTime",
+       "IsSystemField": false,
+       "Model": "ActivityInstance",
+       "Widget": null,
+       "Required": false,
+       "IsInternal": false
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

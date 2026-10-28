@@ -1,0 +1,107 @@
+{
+ "rehearsal": "R5",
+ "flow": "CIQ_ZZ_Spike_Case_A00",
+ "what": "remove the parallel block \"Spike review lanes\" (Parallel activity + 6 branch ProcessDefs + 6 branch activities + their Permissions/Resources/Expressions/Nodes)",
+ "at": "2026-10-14T17:56:33.349Z",
+ "apply": true,
+ "liveMetaVersion": "1792000556810236",
+ "livePublishedAt": "2026-10-14T17:55:56Z",
+ "mutation": {
+  "removed": {
+   "Activity": 7,
+   "ProcessDef": 6,
+   "Permission": 222,
+   "Resource": 6,
+   "Expression": 6,
+   "Node": 18
+  }
+ },
+ "diffSummary": {
+  "added": 0,
+  "removed": 265,
+  "changed": 1
+ },
+ "preflight": {
+  "errors": [],
+  "warnings": [
+   "NO_ID",
+   "ORPHAN_ENTITY"
+  ]
+ },
+ "write": {
+  "ok": true,
+  "putDraft": 200,
+  "publish": 200,
+  "publishedAt": "2026-10-14T17:56:36Z"
+ },
+ "readBack": {
+  "metaVersion": "1792000596276265",
+  "publishedAt": "2026-10-14T17:56:36Z",
+  "diffVsSent": {
+   "added": [],
+   "removed": [],
+   "changed": []
+  },
+  "steps": [
+   "Create spike case [Activity_18dgdbl]  perms=37",
+   "Spike prepare [Activity_194d12o] AppRole:Admin / Developer perms=37",
+   "Spike hold check [Activity_90lk5i] AppRole:CIQ Integration Service if Hold_Flag = \"Yes\" perms=37",
+   "Spike gate check [Activity_1tuyhu] AppRole:Admin / Developer perms=37",
+   "End [Activity_1t24obg]  perms=37"
+  ],
+  "check": {
+   "gone": true,
+   "order": [
+    "Create spike case",
+    "Spike prepare",
+    "Spike hold check",
+    "Spike gate check",
+    "End"
+   ]
+  }
+ },
+ "publishedFields": {
+  "status": 200,
+  "ids": [
+   "Flag_A",
+   "Flag_B",
+   "Flag_C",
+   "Flag_D",
+   "Flag_E",
+   "Flag_F",
+   "Lane_A_Confirm",
+   "Lane_A_By",
+   "Lane_A_At",
+   "Lane_A_Note",
+   "Lane_B_Confirm",
+   "Lane_B_By",
+   "Lane_B_At",
+   "Lane_B_Note",
+   "Lane_C_Confirm",
+   "Lane_C_By",
+   "Lane_C_At",
+   "Lane_C_Note",
+   "Lane_D_Confirm",
+   "Lane_D_By",
+   "Lane_D_At",
+   "Lane_D_Note",
+   "Lane_E_Confirm",
+   "Lane_E_By",
+   "Lane_E_At",
+   "Lane_E_Note",
+   "Lane_F_Confirm",
+   "Lane_F_By",
+   "Lane_F_At",
+   "Lane_F_Note",
+   "Spike_Decision",
+   "Open_Count",
+   "Hold_Flag",
+   "Gate",
+   "Spike_V5_Note",
+   "Spike_V5_Phase"
+  ]
+ },
+ "run": {
+  "skipped": "no runtime: the ZZ processes have no initiator grant (key Start submit = 403 050302; the grant was refused by Claude's permission guard)"
+ }
+}

@@ -1,0 +1,56 @@
+{
+  "Root": "Perm_nukys2",
+  "Perm_nukys2": {
+    "Id": "Perm_nukys2",
+    "Kind": "FlowPermission",
+    "Role": "ciq_overall_approver",
+    "RoleName": "CIQ Overall Approver",
+    "Model": "CIQ_Config_Release_A00",
+    "Level": "ReadOnly",
+    "Scope": "all",
+    "FlowPermission::Permission": [
+      "Permission_wpvxbb",
+      "Permission_1ffg30x",
+      "Permission_1m71pym",
+      "Permission_cpfcuw",
+      "Permission_1nio3yu",
+      "Permission_13lj2fa"
+    ]
+  },
+  "Permission_wpvxbb": {
+    "Id": "Permission_wpvxbb",
+    "Kind": "Permission",
+    "Column": "Release_Key",
+    "Permission": "ReadOnly"
+  },
+  "Permission_1ffg30x": {
+    "Id": "Permission_1ffg30x",
+    "Kind": "Permission",
+    "Column": "Change_Summary",
+    "Permission": "ReadOnly"
+  },
+  "Permission_1m71pym": {
+    "Id": "Permission_1m71pym",
+    "Kind": "Permission",
+    "Column": "Release_Manifest_JSON",
+    "Permission": "ReadOnly"
+  },
+  "Permission_cpfcuw": {
+    "Id": "Permission_cpfcuw",
+    "Kind": "Permission",
+    "Column": "Manifest_Hash",
+    "Permission": "ReadOnly"
+  },
+  "Permission_1nio3yu": {
+    "Id": "Permission_1nio3yu",
+    "Kind": "Permission",
+    "Column": "Regression_Result_JSON",
+    "Permission": "ReadOnly"
+  },
+  "Permission_13lj2fa": {
+    "Id": "Permission_13lj2fa",
+    "Kind": "Permission",
+    "Column": "Test_Case_Codes",
+    "Permission": "ReadOnly"
+  }
+}

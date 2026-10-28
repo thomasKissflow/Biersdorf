@@ -1,0 +1,124 @@
+{
+ "Root": "CIQ_I_1_Case_to_supplier_request_A00",
+ "CIQ_I_1_Case_to_supplier_request_A00": {
+  "Id": "CIQ_I_1_Case_to_supplier_request_A00",
+  "Description": "Plan v6 I-1: when a CIQ Case enters 'Waiting for supplier: CIQ', create the supplier's CIQP Request in the portal and store its id on the case.",
+  "Name": "CIQ I-1 Case to supplier request",
+  "Kind": "Integration",
+  "FlowType": "Integration",
+  "Integration::Trigger": [
+   "Trigger_I1_case_enters_wait"
+  ],
+  "Integration::Action": [
+   "Action_I1_create_request",
+   "Action_I1_store_request_id"
+  ],
+  "_application_id": "CIQ_Digital_A00"
+ },
+ "PublishedAt": "2026-10-20T09:05:18Z",
+ "PublishedBy": {
+  "_id": "UsEJUfjYLM8Y",
+  "Name": "Thomas",
+  "Kind": "User"
+ },
+ "_meta_version": "1792487119160726",
+ "Trigger_I1_case_enters_wait": {
+  "Id": "Trigger_I1_case_enters_wait",
+  "Kind": "Trigger",
+  "Type": "App",
+  "Name": "When an item enters this step",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQ_I_1_Case_to_supplier_request_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "TriggerId": "ItemEntersToStep",
+   "TriggerName": "When an item enters this step"
+  },
+  "Trigger::FieldMapping": []
+ },
+ "Action_I1_create_request": {
+  "Id": "Action_I1_create_request",
+  "Kind": "Action",
+  "Type": "Create",
+  "Name": "Create and submit a new item",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQ_I_1_Case_to_supplier_request_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "CreateAndSubmitItem",
+   "ActionName": "Create and submit a new item"
+  },
+  "Action::FieldMapping": []
+ },
+ "Action_I1_store_request_id": {
+  "Id": "Action_I1_store_request_id",
+  "Kind": "Action",
+  "Type": "Update",
+  "Name": "Update an item",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQ_I_1_Case_to_supplier_request_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "UpdateAnItem",
+   "ActionName": "Update an item"
+  },
+  "Action::FieldMapping": []
+ }
+}

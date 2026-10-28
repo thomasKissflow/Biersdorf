@@ -1,0 +1,2634 @@
+{
+  "at": "2026-10-07T19:30:06.017Z",
+  "mode": "offline (no network)",
+  "app": "CIQ_Digital_A00",
+  "graphRevision": 31,
+  "ok": true,
+  "plan": {
+    "counts": {
+      "PASS": 351,
+      "FAIL": 0,
+      "WARN": 3,
+      "INFO": 7
+    },
+    "summary": [
+      {
+        "area": "plan",
+        "PASS": 5,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 0
+      },
+      {
+        "area": "plan-flows",
+        "PASS": 12,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 0
+      },
+      {
+        "area": "plan-lists",
+        "PASS": 23,
+        "FAIL": 0,
+        "WARN": 3,
+        "INFO": 0
+      },
+      {
+        "area": "plan-roles",
+        "PASS": 2,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 0
+      },
+      {
+        "area": "plan-fields",
+        "PASS": 11,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 0
+      },
+      {
+        "area": "plan-workflow",
+        "PASS": 37,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 0
+      },
+      {
+        "area": "plan-step-perms",
+        "PASS": 32,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 0
+      },
+      {
+        "area": "plan-grants",
+        "PASS": 178,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 2
+      },
+      {
+        "area": "plan-postgen",
+        "PASS": 48,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 0
+      },
+      {
+        "area": "plan-integrations",
+        "PASS": 3,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 0
+      },
+      {
+        "area": "plan-switches",
+        "PASS": 0,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 5
+      }
+    ],
+    "checks": [
+      {
+        "area": "plan",
+        "id": "graph revision 31",
+        "status": "PASS",
+        "detail": "app-spec.json.graph-revision.json: 31"
+      },
+      {
+        "area": "plan",
+        "id": "dry-run build: 224 artifacts, 0 errors",
+        "status": "PASS",
+        "detail": "PLAN — app CIQ_Digital_A00: 224 artifacts (DRY-RUN → runs/current/preview-rev31)"
+      },
+      {
+        "area": "plan",
+        "id": "preview families: form, integration, list, permission, process, role (no page/nav)",
+        "status": "PASS",
+        "detail": "form,integration,list,permission,process,role"
+      },
+      {
+        "area": "plan",
+        "id": "app id",
+        "status": "PASS",
+        "detail": "CIQ_Digital_A00"
+      },
+      {
+        "area": "plan",
+        "id": "no pages and no nav in the plan (--no-pages)",
+        "status": "PASS",
+        "detail": "0"
+      },
+      {
+        "area": "plan-flows",
+        "id": "3 processes + 8 forms, same ids/names/types in plan and preview",
+        "status": "PASS",
+        "detail": "plan 11 · preview 11"
+      },
+      {
+        "area": "plan-flows",
+        "id": "CIQ Case: name starts \"CIQ \" (app prefix)",
+        "status": "PASS",
+        "detail": "CIQ Case"
+      },
+      {
+        "area": "plan-flows",
+        "id": "CIQ Change Request: name starts \"CIQ \" (app prefix)",
+        "status": "PASS",
+        "detail": "CIQ Change Request"
+      },
+      {
+        "area": "plan-flows",
+        "id": "CIQ Open Point: name starts \"CIQ \" (app prefix)",
+        "status": "PASS",
+        "detail": "CIQ Open Point"
+      },
+      {
+        "area": "plan-flows",
+        "id": "CIQ Audit Event: name starts \"CIQ \" (app prefix)",
+        "status": "PASS",
+        "detail": "CIQ Audit Event"
+      },
+      {
+        "area": "plan-flows",
+        "id": "CIQ Config Version: name starts \"CIQ \" (app prefix)",
+        "status": "PASS",
+        "detail": "CIQ Config Version"
+      },
+      {
+        "area": "plan-flows",
+        "id": "CIQ Internal Note: name starts \"CIQ \" (app prefix)",
+        "status": "PASS",
+        "detail": "CIQ Internal Note"
+      },
+      {
+        "area": "plan-flows",
+        "id": "CIQ RMES Regulatory: name starts \"CIQ \" (app prefix)",
+        "status": "PASS",
+        "detail": "CIQ RMES Regulatory"
+      },
+      {
+        "area": "plan-flows",
+        "id": "CIQ RMES Safety: name starts \"CIQ \" (app prefix)",
+        "status": "PASS",
+        "detail": "CIQ RMES Safety"
+      },
+      {
+        "area": "plan-flows",
+        "id": "CIQ Scope Run: name starts \"CIQ \" (app prefix)",
+        "status": "PASS",
+        "detail": "CIQ Scope Run"
+      },
+      {
+        "area": "plan-flows",
+        "id": "CIQ Section: name starts \"CIQ \" (app prefix)",
+        "status": "PASS",
+        "detail": "CIQ Section"
+      },
+      {
+        "area": "plan-flows",
+        "id": "CIQ Supplier: name starts \"CIQ \" (app prefix)",
+        "status": "PASS",
+        "detail": "CIQ Supplier"
+      },
+      {
+        "area": "plan-lists",
+        "id": "22 lists: data_model 22 = preview 22",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ AI State: items (data_model = preview)",
+        "status": "PASS",
+        "detail": "[\"Proposed\",\"Confirmed\",\"Discarded\"]"
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ Actor Side: items (data_model = preview)",
+        "status": "PASS",
+        "detail": "[\"BDF\",\"Supplier\",\"System\"]"
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ CR Outcome: items (data_model = preview)",
+        "status": "PASS",
+        "detail": "[\"Accepted\",\"Accepted – scope extended\",\"Refused – after final release\",\"Refused – not valid\"]"
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ Config Kind: items (data_model = preview)",
+        "status": "PASS",
+        "detail": "[\"Template\",\"Section definition\",\"Rule set\",\"Section ownership\",\"RMES criteria\",\"Limit set\",\"Text bundle\",\"Reminders\",\"Settings\",\"Regression set\",\"Release\"]"
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ Config State: items (data_model = preview)",
+        "status": "PASS",
+        "detail": "[\"Draft\",\"Published\",\"Retired\"]"
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ Confirm: items (data_model = preview)",
+        "status": "PASS",
+        "detail": "[\"Confirmed\"]"
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ Contact Role: items (data_model = preview)",
+        "status": "PASS",
+        "detail": "[\"Coordinator\",\"Quality\",\"Regulatory\",\"Key account\",\"Other\"]"
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ Country Code: items (data_model = preview)",
+        "status": "PASS",
+        "detail": "[\"AT\",\"BE\",\"BG\",\"HR\",\"CY\",\"CZ\",\"DK\",\"EE\",\"FI\",\"FR\",\"DE\",\"GR\",\"HU\",\"IE\",\"IT\",\"LV\",\"LT\",\"LU\",\"MT\",\"NL\",\"PL\",\"PT\",\"RO\",\"SK\",\"SI\",\"ES\",\"SE\",\"GB\",\"TR\",\"CN\",\"US\",\"CA\"]"
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ Decision: items (data_model = preview)",
+        "status": "PASS",
+        "detail": "[\"Approved\",\"Rejected\"]"
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ Department: items (data_model = preview)",
+        "status": "PASS",
+        "detail": "[\"RMM\",\"REG\",\"SAF\",\"QM\",\"MIC\",\"SUS\",\"CUS\",\"LEG\"]"
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ Event Category: items (data_model = preview)",
+        "status": "PASS",
+        "detail": "[\"Case\",\"Scope\",\"Section\",\"Section review\",\"Snapshot\",\"Open point\",\"RMES\",\"Change request\",\"Configuration\",\"Notification\",\"Delegation\",\"Assignment\",\"Change attempt\",\"Cancellation\",\"Access\",\"Item created\",\"Final PDF\"]"
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ Event Category: forms[] projection is stale (doc drift, not compiled)",
+        "status": "WARN",
+        "detail": "forms[] [\"Case\",\"Scope\",\"Section\",\"Section review\",\"Snapshot\",\"Open point\",\"RMES\",\"Change request\",\"Configuration\",\"Notification\",\"Delegation\",\"Assignment\",\"Change attempt\",\"Cancellation\",\"Access\",\"Item created\"] · compiled [\"Case\",\"Scope\",\"Section\",\"Section review\",\"Snapshot\",\"Open point\",\"RMES\",\"Change request\",\"Configuration\",\"Notification\",\"Delegation\",\"Assignment\",\"Change attempt\",\"Cancellation\",\"Access\",\"Item created\",\"Final PDF\"]"
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ Impact Resolution: items (data_model = preview)",
+        "status": "PASS",
+        "detail": "[\"No impact confirmed\",\"Re-assessed\",\"Finding raised\"]"
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ OP Kind: items (data_model = preview)",
+        "status": "PASS",
+        "detail": "[\"Query\",\"Document request\",\"Additional part\",\"Internal review\",\"Department review\",\"Contact update\"]"
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ OP Outcome: items (data_model = preview)",
+        "status": "PASS",
+        "detail": "[\"Accepted\",\"Withdrawn\"]"
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ OP Outcome: forms[] projection is stale (doc drift, not compiled)",
+        "status": "WARN",
+        "detail": "forms[] [\"Accepted\",\"Returned\",\"Withdrawn\"] · compiled [\"Accepted\",\"Withdrawn\"]"
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ OP Progress: items (data_model = preview)",
+        "status": "PASS",
+        "detail": "[\"Open\",\"In progress\"]"
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ RMES Part: items (data_model = preview)",
+        "status": "PASS",
+        "detail": "[\"A\",\"B\",\"C\",\"D\"]"
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ RMES Result: items (data_model = preview)",
+        "status": "PASS",
+        "detail": "[\"Available\",\"Not available\",\"Plausible\",\"Implausible\",\"Listed\",\"Not listed\",\"Negative\",\"Not applicable\"]"
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ Release Stage: items (data_model = preview)",
+        "status": "PASS",
+        "detail": "[\"Test\",\"Live\"]"
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ Review Dept: items (data_model = preview)",
+        "status": "PASS",
+        "detail": "[\"REG\",\"SAF\",\"QM\",\"MIC\",\"SUS\",\"RMM\"]"
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ Round Outcome: items (data_model = preview)",
+        "status": "PASS",
+        "detail": "[\"Accepted\",\"Returned\",\"Withdrawn\"]"
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ Round Outcome: missing from the top-level forms[] projection (doc drift, not compiled)",
+        "status": "WARN",
+        "detail": ""
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ Supplier Kind: items (data_model = preview)",
+        "status": "PASS",
+        "detail": "[\"Manufacturer\",\"Distributor\",\"Trader\"]"
+      },
+      {
+        "area": "plan-lists",
+        "id": "CIQ Yes No: items (data_model = preview)",
+        "status": "PASS",
+        "detail": "[\"Yes\",\"No\"]"
+      },
+      {
+        "area": "plan-roles",
+        "id": "13 roles (Admin/User reused + 11 custom), plan = preview",
+        "status": "PASS",
+        "detail": "admin:Admin, ciq_business_admin:CIQ Business Admin, ciq_case_admin:CIQ Case Admin, ciq_integration_service:CIQ Integration Service, ciq_microbiology_reviewer:CIQ Microbiology Reviewer, ciq_overall_approver:CIQ Overall Approver, ciq_qm_reviewer:CIQ QM Reviewer, ciq_reader:CIQ Reader, ciq_regulatory_reviewer:CIQ Regulatory Reviewer, ciq_rmm:CIQ RMM, ciq_safety_reviewer:CIQ Safety Reviewer, ciq_sustainability_reviewer:CIQ Sustainability Reviewer, user:User"
+      },
+      {
+        "area": "plan-roles",
+        "id": "Admin and User are kind 'default' (reused, never created)",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-fields",
+        "id": "CIQ Case: 125 fields, 0 child table(s)",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-fields",
+        "id": "CIQ Change Request: 49 fields, 0 child table(s)",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-fields",
+        "id": "CIQ Open Point: 63 fields, 1 child table(s)",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-fields",
+        "id": "CIQ Audit Event: 31 fields, 0 child table(s)",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-fields",
+        "id": "CIQ Config Version: 21 fields, 0 child table(s)",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-fields",
+        "id": "CIQ Internal Note: 10 fields, 0 child table(s)",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-fields",
+        "id": "CIQ RMES Regulatory: 48 fields, 2 child table(s)",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-fields",
+        "id": "CIQ RMES Safety: 48 fields, 2 child table(s)",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-fields",
+        "id": "CIQ Scope Run: 18 fields, 0 child table(s)",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-fields",
+        "id": "CIQ Section: 41 fields, 1 child table(s)",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-fields",
+        "id": "CIQ Supplier: 19 fields, 1 child table(s)",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Case: 16 activities (plan 16 steps)",
+        "status": "PASS",
+        "detail": "Create case → Waiting for supplier: basic data → Scope check → Waiting for supplier: completeness PS-05 → Part 2 – Beiersdorf review → Review – Regulatory → Review – Safety → Review – QM → Review – Microbiology → Review – Sustainability → Review – RMM → Open items check – before release request → Overall approval → Waiting for supplier: final release PS-11 → Open items check – before close → End"
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Case · CASE_S0 \"Create case\"",
+        "status": "PASS",
+        "detail": "StartEvent"
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Case · CASE_S1 \"Waiting for supplier: basic data\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ RMM"
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Case · CASE_S2 \"Scope check\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ RMM"
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Case · CASE_S3 \"Waiting for supplier: completeness PS-05\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ RMM"
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Case · CASE_PAR \"Part 2 – Beiersdorf review\"",
+        "status": "PASS",
+        "detail": "Parallel"
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Case · CASE_B_REG \"Review – Regulatory\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ Regulatory Reviewer · Dept_REG_Active=\"Yes\""
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Case · CASE_B_SAF \"Review – Safety\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ Safety Reviewer · Dept_SAF_Active=\"Yes\""
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Case · CASE_B_QM \"Review – QM\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ QM Reviewer · Dept_QM_Active=\"Yes\""
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Case · CASE_B_MIC \"Review – Microbiology\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ Microbiology Reviewer · Dept_MIC_Active=\"Yes\""
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Case · CASE_B_SUS \"Review – Sustainability\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ Sustainability Reviewer · Dept_SUS_Active=\"Yes\""
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Case · CASE_B_RMM \"Review – RMM\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ RMM · Dept_RMM_Active=\"Yes\""
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Case · CASE_S5 \"Open items check – before release request\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ RMM · Hold_For_Open_Items=\"Yes\""
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Case · CASE_S6 \"Overall approval\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ Overall Approver · Overall_Approval_Required=\"Yes\""
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Case · CASE_S7 \"Waiting for supplier: final release PS-11\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ RMM · Overall_Decision!=\"Rejected\""
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Case · CASE_S8 \"Open items check – before close\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ RMM · Hold_For_Open_Items=\"Yes\""
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Case · CASE_END \"End\"",
+        "status": "PASS",
+        "detail": "EndEvent"
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Case · CASE_S0: 125 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Case · CASE_S1: 125 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Case · CASE_S2: 125 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Case · CASE_S3: 125 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Case · CASE_B_REG: 125 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Case · CASE_B_SAF: 125 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Case · CASE_B_QM: 125 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Case · CASE_B_MIC: 125 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Case · CASE_B_SUS: 125 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Case · CASE_B_RMM: 125 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Case · CASE_S5: 125 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Case · CASE_S6: 125 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Case · CASE_S7: 125 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Case · CASE_S8: 125 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Case · CASE_END: no plan cells → all ReadOnly in preview",
+        "status": "PASS",
+        "detail": "125 cells"
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Change Request: 9 activities (plan 9 steps)",
+        "status": "PASS",
+        "detail": "Receive change request → Triage → Assess impact → Assess – Regulatory → Assess – Safety → Assess – QM → Assess – Microbiology → Assess – Sustainability → End"
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Change Request · CHRQ_S0 \"Receive change request\"",
+        "status": "PASS",
+        "detail": "StartEvent"
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Change Request · CHRQ_S1 \"Triage\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ RMM"
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Change Request · CHRQ_PAR \"Assess impact\"",
+        "status": "PASS",
+        "detail": "Parallel"
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Change Request · CHRQ_B_REG \"Assess – Regulatory\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ Regulatory Reviewer · Impact_REG=\"Yes\""
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Change Request · CHRQ_B_SAF \"Assess – Safety\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ Safety Reviewer · Impact_SAF=\"Yes\""
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Change Request · CHRQ_B_QM \"Assess – QM\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ QM Reviewer · Impact_QM=\"Yes\""
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Change Request · CHRQ_B_MIC \"Assess – Microbiology\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ Microbiology Reviewer · Impact_MIC=\"Yes\""
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Change Request · CHRQ_B_SUS \"Assess – Sustainability\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ Sustainability Reviewer · Impact_SUS=\"Yes\""
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Change Request · CHRQ_END \"End\"",
+        "status": "PASS",
+        "detail": "EndEvent"
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Change Request · CHRQ_S0: 49 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Change Request · CHRQ_S1: 49 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Change Request · CHRQ_B_REG: 49 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Change Request · CHRQ_B_SAF: 49 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Change Request · CHRQ_B_QM: 49 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Change Request · CHRQ_B_MIC: 49 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Change Request · CHRQ_B_SUS: 49 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Change Request · CHRQ_END: no plan cells → all ReadOnly in preview",
+        "status": "PASS",
+        "detail": "49 cells"
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Open Point: 9 activities (plan 9 steps)",
+        "status": "PASS",
+        "detail": "Raise open point → Waiting for supplier → Review – Regulatory → Review – Safety → Review – QM → Review – Microbiology → Review – Sustainability → Review – RMM → End"
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Open Point · OPNT_S0 \"Raise open point\"",
+        "status": "PASS",
+        "detail": "StartEvent"
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Open Point · OPNT_S1 \"Waiting for supplier\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ RMM · OP_To_Supplier=\"Yes\""
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Open Point · OPNT_R_REG \"Review – Regulatory\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ Regulatory Reviewer · OP_Dept=\"REG\""
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Open Point · OPNT_R_SAF \"Review – Safety\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ Safety Reviewer · OP_Dept=\"SAF\""
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Open Point · OPNT_R_QM \"Review – QM\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ QM Reviewer · OP_Dept=\"QM\""
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Open Point · OPNT_R_MIC \"Review – Microbiology\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ Microbiology Reviewer · OP_Dept=\"MIC\""
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Open Point · OPNT_R_SUS \"Review – Sustainability\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ Sustainability Reviewer · OP_Dept=\"SUS\""
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Open Point · OPNT_R_RMM \"Review – RMM\"",
+        "status": "PASS",
+        "detail": "UserTask · CIQ RMM · OP_Dept=\"RMM\""
+      },
+      {
+        "area": "plan-workflow",
+        "id": "CIQ Open Point · OPNT_END \"End\"",
+        "status": "PASS",
+        "detail": "EndEvent"
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Open Point · OPNT_S0: 54 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Open Point · OPNT_S1: 54 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Open Point · OPNT_R_REG: 54 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Open Point · OPNT_R_SAF: 54 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Open Point · OPNT_R_QM: 54 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Open Point · OPNT_R_MIC: 54 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Open Point · OPNT_R_SUS: 54 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Open Point · OPNT_R_RMM: 54 cells",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-step-perms",
+        "id": "CIQ Open Point · OPNT_END: no plan cells → all ReadOnly in preview",
+        "status": "PASS",
+        "detail": "54 cells"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_rmm · CIQ_Case_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_rmm · CIQ_Open_Point_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_rmm · CIQ_Change_Request_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_rmm · CIQ_Supplier_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_rmm · Contacts: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_rmm · CIQ_Config_Version_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_rmm · CIQ_Section_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_rmm · Components: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_rmm · CIQ_Scope_Run_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_rmm · CIQ_RMES_Safety_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_rmm · Safety_Criteria: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_rmm · Safety_Findings: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_rmm · CIQ_RMES_Regulatory_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_rmm · Regulatory_Criteria: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_rmm · Regulatory_Findings: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_rmm · CIQ_Internal_Note_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_rmm · CIQ_Audit_Event_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_regulatory_reviewer · CIQ_Case_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_regulatory_reviewer · CIQ_Open_Point_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_regulatory_reviewer · CIQ_Change_Request_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_regulatory_reviewer · CIQ_Supplier_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_regulatory_reviewer · Contacts: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_regulatory_reviewer · CIQ_Config_Version_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_regulatory_reviewer · CIQ_Section_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_regulatory_reviewer · Components: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_regulatory_reviewer · CIQ_Scope_Run_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_regulatory_reviewer · CIQ_RMES_Safety_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_regulatory_reviewer · Safety_Criteria: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_regulatory_reviewer · Safety_Findings: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_regulatory_reviewer · CIQ_RMES_Regulatory_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_regulatory_reviewer · Regulatory_Criteria: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_regulatory_reviewer · Regulatory_Findings: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_regulatory_reviewer · CIQ_Internal_Note_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_regulatory_reviewer · CIQ_Audit_Event_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_safety_reviewer · CIQ_Case_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_safety_reviewer · CIQ_Open_Point_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_safety_reviewer · CIQ_Change_Request_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_safety_reviewer · CIQ_Supplier_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_safety_reviewer · Contacts: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_safety_reviewer · CIQ_Config_Version_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_safety_reviewer · CIQ_Section_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_safety_reviewer · Components: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_safety_reviewer · CIQ_Scope_Run_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_safety_reviewer · CIQ_RMES_Safety_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_safety_reviewer · Safety_Criteria: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_safety_reviewer · Safety_Findings: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_safety_reviewer · CIQ_RMES_Regulatory_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_safety_reviewer · Regulatory_Criteria: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_safety_reviewer · Regulatory_Findings: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_safety_reviewer · CIQ_Internal_Note_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_safety_reviewer · CIQ_Audit_Event_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_qm_reviewer · CIQ_Case_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_qm_reviewer · CIQ_Open_Point_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_qm_reviewer · CIQ_Change_Request_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_qm_reviewer · CIQ_Supplier_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_qm_reviewer · Contacts: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_qm_reviewer · CIQ_Config_Version_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_qm_reviewer · CIQ_Section_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_qm_reviewer · Components: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_qm_reviewer · CIQ_Scope_Run_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_qm_reviewer · CIQ_RMES_Safety_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_qm_reviewer · Safety_Criteria: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_qm_reviewer · Safety_Findings: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_qm_reviewer · CIQ_RMES_Regulatory_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_qm_reviewer · Regulatory_Criteria: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_qm_reviewer · Regulatory_Findings: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_qm_reviewer · CIQ_Internal_Note_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_qm_reviewer · CIQ_Audit_Event_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_microbiology_reviewer · CIQ_Case_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_microbiology_reviewer · CIQ_Open_Point_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_microbiology_reviewer · CIQ_Change_Request_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_microbiology_reviewer · CIQ_Supplier_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_microbiology_reviewer · Contacts: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_microbiology_reviewer · CIQ_Config_Version_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_microbiology_reviewer · CIQ_Section_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_microbiology_reviewer · Components: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_microbiology_reviewer · CIQ_Scope_Run_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_microbiology_reviewer · CIQ_RMES_Safety_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_microbiology_reviewer · Safety_Criteria: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_microbiology_reviewer · Safety_Findings: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_microbiology_reviewer · CIQ_RMES_Regulatory_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_microbiology_reviewer · Regulatory_Criteria: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_microbiology_reviewer · Regulatory_Findings: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_microbiology_reviewer · CIQ_Internal_Note_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_microbiology_reviewer · CIQ_Audit_Event_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_sustainability_reviewer · CIQ_Case_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_sustainability_reviewer · CIQ_Open_Point_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_sustainability_reviewer · CIQ_Change_Request_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_sustainability_reviewer · CIQ_Supplier_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_sustainability_reviewer · Contacts: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_sustainability_reviewer · CIQ_Config_Version_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_sustainability_reviewer · CIQ_Section_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_sustainability_reviewer · Components: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_sustainability_reviewer · CIQ_Scope_Run_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_sustainability_reviewer · CIQ_RMES_Safety_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_sustainability_reviewer · Safety_Criteria: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_sustainability_reviewer · Safety_Findings: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_sustainability_reviewer · CIQ_RMES_Regulatory_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_sustainability_reviewer · Regulatory_Criteria: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_sustainability_reviewer · Regulatory_Findings: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_sustainability_reviewer · CIQ_Internal_Note_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_sustainability_reviewer · CIQ_Audit_Event_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_overall_approver · CIQ_Case_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_overall_approver · CIQ_Open_Point_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_overall_approver · CIQ_Change_Request_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_overall_approver · CIQ_Supplier_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_overall_approver · Contacts: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_overall_approver · CIQ_Config_Version_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_overall_approver · CIQ_Section_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_overall_approver · Components: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_overall_approver · CIQ_Scope_Run_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_overall_approver · CIQ_RMES_Safety_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_overall_approver · Safety_Criteria: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_overall_approver · Safety_Findings: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_overall_approver · CIQ_RMES_Regulatory_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_overall_approver · Regulatory_Criteria: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_overall_approver · Regulatory_Findings: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_overall_approver · CIQ_Internal_Note_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_overall_approver · CIQ_Audit_Event_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_business_admin · CIQ_Case_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_business_admin · CIQ_Open_Point_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_business_admin · CIQ_Change_Request_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_business_admin · CIQ_Supplier_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_business_admin · Contacts: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_business_admin · CIQ_Config_Version_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_business_admin · CIQ_Section_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_business_admin · Components: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_business_admin · CIQ_Scope_Run_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_business_admin · CIQ_RMES_Safety_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_business_admin · Safety_Criteria: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_business_admin · Safety_Findings: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_business_admin · CIQ_RMES_Regulatory_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_business_admin · Regulatory_Criteria: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_business_admin · Regulatory_Findings: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_business_admin · CIQ_Internal_Note_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_business_admin · CIQ_Audit_Event_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_reader · CIQ_Case_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_reader · CIQ_Open_Point_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_reader · CIQ_Change_Request_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_reader · CIQ_Supplier_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_reader · Contacts: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_reader · CIQ_Config_Version_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_reader · CIQ_Section_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_reader · Components: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_reader · CIQ_Scope_Run_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_reader · CIQ_RMES_Safety_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_reader · Safety_Criteria: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_reader · Safety_Findings: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_reader · CIQ_RMES_Regulatory_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_reader · Regulatory_Criteria: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_reader · Regulatory_Findings: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_reader · CIQ_Internal_Note_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_reader · CIQ_Audit_Event_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_case_admin · CIQ_Case_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_case_admin · CIQ_Open_Point_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_case_admin · CIQ_Change_Request_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_case_admin · CIQ_Supplier_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_case_admin · Contacts: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_case_admin · CIQ_Config_Version_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_case_admin · CIQ_Section_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_case_admin · Components: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_case_admin · CIQ_Scope_Run_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_case_admin · CIQ_RMES_Safety_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_case_admin · Safety_Criteria: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_case_admin · Safety_Findings: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_case_admin · CIQ_RMES_Regulatory_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_case_admin · Regulatory_Criteria: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_case_admin · Regulatory_Findings: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_case_admin · CIQ_Internal_Note_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_case_admin · CIQ_Audit_Event_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_integration_service · CIQ_Case_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_integration_service · CIQ_Open_Point_A00: ReadOnly",
+        "status": "PASS",
+        "detail": "ReadOnly scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_integration_service · CIQ_Change_Request_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_integration_service · CIQ_Section_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_integration_service · Components: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "ciq_integration_service · CIQ_Audit_Event_A00: Editable",
+        "status": "PASS",
+        "detail": "Editable scope all"
+      },
+      {
+        "area": "plan-grants",
+        "id": "every compiled grant (176) has a security cell",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-grants",
+        "id": "Admin and User get no flow grant in the plan",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-grants",
+        "id": "115 flow-level + 61 child-table grant entries",
+        "status": "INFO",
+        "detail": "child models: Regulatory_Criteria, Safety_Findings, Components, Regulatory_Findings, Contacts, Safety_Criteria"
+      },
+      {
+        "area": "plan-grants",
+        "id": "[assumed] member shape per level (shape differences are WARN, class differences FAIL)",
+        "status": "INFO",
+        "detail": "{\"process\":{\"write\":{\"Role\":\"Member\",\"Permission\":[\"InitiateItems\"]},\"read\":{\"Role\":\"Member\",\"Permission\":[\"View\"]},\"admin\":{\"Role\":\"Admin\",\"Permission\":[]}},\"form\":{\"write\":{\"Role\":\"Member\",\"Permission\":[\"Delete\"]},\"read\":{\"Role\":\"Viewer\",\"Permission\":[]},\"admin\":{\"Role\":\"Admin\",\"Permission\":[]}}}"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Case Admin · CIQ_Case_A00 → admin",
+        "status": "PASS",
+        "detail": "preview class read · flow Admin"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Case Admin · CIQ_Open_Point_A00 → admin",
+        "status": "PASS",
+        "detail": "preview class read · flow Admin"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Case Admin · CIQ_Change_Request_A00 → admin",
+        "status": "PASS",
+        "detail": "preview class read · flow Admin"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Regulatory Reviewer · CIQ_Case_A00 → read",
+        "status": "PASS",
+        "detail": "preview class write · Process Member Permission [\"View\"] (no InitiateItems; keeps read access; acts only on its own steps)"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Safety Reviewer · CIQ_Case_A00 → read",
+        "status": "PASS",
+        "detail": "preview class write · Process Member Permission [\"View\"] (no InitiateItems; keeps read access; acts only on its own steps)"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ QM Reviewer · CIQ_Case_A00 → read",
+        "status": "PASS",
+        "detail": "preview class write · Process Member Permission [\"View\"] (no InitiateItems; keeps read access; acts only on its own steps)"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Microbiology Reviewer · CIQ_Case_A00 → read",
+        "status": "PASS",
+        "detail": "preview class write · Process Member Permission [\"View\"] (no InitiateItems; keeps read access; acts only on its own steps)"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Sustainability Reviewer · CIQ_Case_A00 → read",
+        "status": "PASS",
+        "detail": "preview class write · Process Member Permission [\"View\"] (no InitiateItems; keeps read access; acts only on its own steps)"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Overall Approver · CIQ_Case_A00 → read",
+        "status": "PASS",
+        "detail": "preview class write · Process Member Permission [\"View\"] (no InitiateItems; keeps read access; acts only on its own steps)"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Regulatory Reviewer · CIQ_Change_Request_A00 → read",
+        "status": "PASS",
+        "detail": "preview class write · Process Member Permission [\"View\"] (no InitiateItems; keeps read access; acts only on its own steps)"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Safety Reviewer · CIQ_Change_Request_A00 → read",
+        "status": "PASS",
+        "detail": "preview class write · Process Member Permission [\"View\"] (no InitiateItems; keeps read access; acts only on its own steps)"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ QM Reviewer · CIQ_Change_Request_A00 → read",
+        "status": "PASS",
+        "detail": "preview class write · Process Member Permission [\"View\"] (no InitiateItems; keeps read access; acts only on its own steps)"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Microbiology Reviewer · CIQ_Change_Request_A00 → read",
+        "status": "PASS",
+        "detail": "preview class write · Process Member Permission [\"View\"] (no InitiateItems; keeps read access; acts only on its own steps)"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Sustainability Reviewer · CIQ_Change_Request_A00 → read",
+        "status": "PASS",
+        "detail": "preview class write · Process Member Permission [\"View\"] (no InitiateItems; keeps read access; acts only on its own steps)"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Business Admin · CIQ_Audit_Event_A00 → write (no-Delete required)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Case Admin · CIQ_Audit_Event_A00 → write (no-Delete required)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Integration Service · CIQ_Audit_Event_A00 → write (no-Delete required)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Microbiology Reviewer · CIQ_Audit_Event_A00 → write (no-Delete required)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Overall Approver · CIQ_Audit_Event_A00 → write (no-Delete required)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ QM Reviewer · CIQ_Audit_Event_A00 → write (no-Delete required)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Regulatory Reviewer · CIQ_Audit_Event_A00 → write (no-Delete required)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ RMM · CIQ_Audit_Event_A00 → write (no-Delete required)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Safety Reviewer · CIQ_Audit_Event_A00 → write (no-Delete required)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Sustainability Reviewer · CIQ_Audit_Event_A00 → write (no-Delete required)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Business Admin · CIQ_Config_Version_A00 → write (no-Delete required)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Business Admin · CIQ_Internal_Note_A00 → write (no-Delete optional)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Case Admin · CIQ_Internal_Note_A00 → write (no-Delete optional)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Microbiology Reviewer · CIQ_Internal_Note_A00 → write (no-Delete optional)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Overall Approver · CIQ_Internal_Note_A00 → write (no-Delete optional)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ QM Reviewer · CIQ_Internal_Note_A00 → write (no-Delete optional)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Reader · CIQ_Internal_Note_A00 → write (no-Delete optional)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Regulatory Reviewer · CIQ_Internal_Note_A00 → write (no-Delete optional)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ RMM · CIQ_Internal_Note_A00 → write (no-Delete optional)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Safety Reviewer · CIQ_Internal_Note_A00 → write (no-Delete optional)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Sustainability Reviewer · CIQ_Internal_Note_A00 → write (no-Delete optional)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Regulatory Reviewer · CIQ_RMES_Regulatory_A00 → write (no-Delete optional)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Safety Reviewer · CIQ_RMES_Safety_A00 → write (no-Delete optional)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Microbiology Reviewer · CIQ_Scope_Run_A00 → write (no-Delete optional)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ QM Reviewer · CIQ_Scope_Run_A00 → write (no-Delete optional)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Regulatory Reviewer · CIQ_Scope_Run_A00 → write (no-Delete optional)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ RMM · CIQ_Scope_Run_A00 → write (no-Delete optional)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Safety Reviewer · CIQ_Scope_Run_A00 → write (no-Delete optional)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Sustainability Reviewer · CIQ_Scope_Run_A00 → write (no-Delete optional)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Integration Service · CIQ_Section_A00 → write (no-Delete optional)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ RMM · CIQ_Section_A00 → write (no-Delete optional)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ RMM · CIQ_Supplier_A00 → write (no-Delete optional)",
+        "status": "PASS",
+        "detail": "preview class write · Form Member WITHOUT Delete on CIQ Config Version, CIQ Audit Event (all writers) and, where K-17 allows, every other Form"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Integration Service · CIQ_Case_A00 → read|write",
+        "status": "PASS",
+        "detail": "preview class read · upgrade View to Member only if K-09b shows the integration identity needs membership"
+      },
+      {
+        "area": "plan-postgen",
+        "id": "CIQ Integration Service · CIQ_Open_Point_A00 → read|write",
+        "status": "PASS",
+        "detail": "preview class read · upgrade View to Member only if K-09b shows the integration identity needs membership"
+      },
+      {
+        "area": "plan-integrations",
+        "id": "exactly 2 automations (Z1, Z2; D31)",
+        "status": "PASS",
+        "detail": "CIQ Z1 Case completed – PDF, e-mails, notification event | CIQ Z2 Case cancelled – neutral e-mail"
+      },
+      {
+        "area": "plan-integrations",
+        "id": "CIQ Z1 Case completed – PDF, e-mails, notification event: compiled shell",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-integrations",
+        "id": "CIQ Z2 Case cancelled – neutral e-mail: compiled shell",
+        "status": "PASS",
+        "detail": ""
+      },
+      {
+        "area": "plan-switches",
+        "id": "source",
+        "status": "INFO",
+        "detail": "brd.md L411-L418 (v4 §7 'After generate (by hand)'); e-mail switches PART D L793-L801, L918"
+      },
+      {
+        "area": "plan-switches",
+        "id": "CIQ_Case_A00 (set by hand after generate)",
+        "status": "INFO",
+        "detail": "send_back: OFF on every step | reject: ON only at the RMM steps CASE_S1, CASE_S2, CASE_S3, CASE_S5, CASE_S7, CASE_S8 (cancellation); OFF at CASE_B_* and CASE_S6 (Case Admin rejects there through the flow-Admin route, K-13/K-PAR-3) | step_email: OFF at CASE_S1, CASE_S3, CASE_S7 (supplier waits; X1/X4/X5 notify); ON at CASE_B_* (the department's notification, REQ-PROC-017)"
+      },
+      {
+        "area": "plan-switches",
+        "id": "CIQ_Open_Point_A00 (set by hand after generate)",
+        "status": "INFO",
+        "detail": "send_back: ON only at OPNT_R_* (the Return to 'Waiting for supplier', v4 L246, L414); OFF at OPNT_S1 | reject: OFF at OPNT_S1 and OPNT_R_* (Case Admin ends stray points through the admin route on cancellation) | step_email: OFF at OPNT_S1 (X3 notifies the supplier)"
+      },
+      {
+        "area": "plan-switches",
+        "id": "CIQ_Change_Request_A00 (set by hand after generate)",
+        "status": "INFO",
+        "detail": "send_back: OFF on CHRQ_S1 and CHRQ_B_* | reject: OFF on CHRQ_S1 and CHRQ_B_*"
+      },
+      {
+        "area": "plan-switches",
+        "id": "other_after_generate",
+        "status": "INFO",
+        "detail": "[\"flow Admin for CIQ Case Admin on all three Processes (L416)\",\"SLA durations on every step in sla_steps (L417)\",\"field-assigned owners after K-FA: CASE_S1 -> Owner_RMM, OPNT_S1 -> Responsible_User (L…"
+      }
+    ]
+  },
+  "simulatedReadback": {
+    "note": "comparison code run against a simulated apply of the preview; proves the script, not Kissflow",
+    "counts": {
+      "PASS": 436,
+      "FAIL": 0,
+      "WARN": 25,
+      "INFO": 20
+    },
+    "summary": [
+      {
+        "area": "app",
+        "PASS": 2,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 0
+      },
+      {
+        "area": "roles",
+        "PASS": 16,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 2
+      },
+      {
+        "area": "membership",
+        "PASS": 14,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 0
+      },
+      {
+        "area": "lists",
+        "PASS": 67,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 2
+      },
+      {
+        "area": "flows",
+        "PASS": 59,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 4
+      },
+      {
+        "area": "fields",
+        "PASS": 22,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 0
+      },
+      {
+        "area": "workflow",
+        "PASS": 37,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 0
+      },
+      {
+        "area": "step-permissions",
+        "PASS": 32,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 0
+      },
+      {
+        "area": "after-generate",
+        "PASS": 0,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 6
+      },
+      {
+        "area": "published",
+        "PASS": 27,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 0
+      },
+      {
+        "area": "child-tables",
+        "PASS": 12,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 0
+      },
+      {
+        "area": "grants",
+        "PASS": 129,
+        "FAIL": 0,
+        "WARN": 25,
+        "INFO": 1
+      },
+      {
+        "area": "reports",
+        "PASS": 11,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 0
+      },
+      {
+        "area": "integrations",
+        "PASS": 5,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 4
+      },
+      {
+        "area": "pages-nav",
+        "PASS": 3,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 0
+      },
+      {
+        "area": "apply-log",
+        "PASS": 0,
+        "FAIL": 0,
+        "WARN": 0,
+        "INFO": 1
+      }
+    ],
+    "warnings": [
+      {
+        "area": "grants",
+        "id": "CIQ Case · CIQ Case Admin: post-generate change pending",
+        "status": "WARN",
+        "detail": "live Member [\"View\"] (read) · preview ReadOnly (read) · post-generate target admin · flow Admin"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Case · CIQ Microbiology Reviewer: ESCALATION pending the post-generate reset",
+        "status": "WARN",
+        "detail": "live Member [\"InitiateItems\"] (write) · preview Editable (write) · post-generate target read · Process Member Permission [\"View\"] (no InitiateItems; keeps read access; acts only on its own steps)"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Case · CIQ Overall Approver: ESCALATION pending the post-generate reset",
+        "status": "WARN",
+        "detail": "live Member [\"InitiateItems\"] (write) · preview Editable (write) · post-generate target read · Process Member Permission [\"View\"] (no InitiateItems; keeps read access; acts only on its own steps)"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Case · CIQ QM Reviewer: ESCALATION pending the post-generate reset",
+        "status": "WARN",
+        "detail": "live Member [\"InitiateItems\"] (write) · preview Editable (write) · post-generate target read · Process Member Permission [\"View\"] (no InitiateItems; keeps read access; acts only on its own steps)"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Case · CIQ Regulatory Reviewer: ESCALATION pending the post-generate reset",
+        "status": "WARN",
+        "detail": "live Member [\"InitiateItems\"] (write) · preview Editable (write) · post-generate target read · Process Member Permission [\"View\"] (no InitiateItems; keeps read access; acts only on its own steps)"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Case · CIQ Safety Reviewer: ESCALATION pending the post-generate reset",
+        "status": "WARN",
+        "detail": "live Member [\"InitiateItems\"] (write) · preview Editable (write) · post-generate target read · Process Member Permission [\"View\"] (no InitiateItems; keeps read access; acts only on its own steps)"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Case · CIQ Sustainability Reviewer: ESCALATION pending the post-generate reset",
+        "status": "WARN",
+        "detail": "live Member [\"InitiateItems\"] (write) · preview Editable (write) · post-generate target read · Process Member Permission [\"View\"] (no InitiateItems; keeps read access; acts only on its own steps)"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Change Request · CIQ Case Admin: post-generate change pending",
+        "status": "WARN",
+        "detail": "live Member [\"View\"] (read) · preview ReadOnly (read) · post-generate target admin · flow Admin"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Change Request · CIQ Microbiology Reviewer: ESCALATION pending the post-generate reset",
+        "status": "WARN",
+        "detail": "live Member [\"InitiateItems\"] (write) · preview Editable (write) · post-generate target read · Process Member Permission [\"View\"] (no InitiateItems; keeps read access; acts only on its own steps)"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Change Request · CIQ QM Reviewer: ESCALATION pending the post-generate reset",
+        "status": "WARN",
+        "detail": "live Member [\"InitiateItems\"] (write) · preview Editable (write) · post-generate target read · Process Member Permission [\"View\"] (no InitiateItems; keeps read access; acts only on its own steps)"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Change Request · CIQ Regulatory Reviewer: ESCALATION pending the post-generate reset",
+        "status": "WARN",
+        "detail": "live Member [\"InitiateItems\"] (write) · preview Editable (write) · post-generate target read · Process Member Permission [\"View\"] (no InitiateItems; keeps read access; acts only on its own steps)"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Change Request · CIQ Safety Reviewer: ESCALATION pending the post-generate reset",
+        "status": "WARN",
+        "detail": "live Member [\"InitiateItems\"] (write) · preview Editable (write) · post-generate target read · Process Member Permission [\"View\"] (no InitiateItems; keeps read access; acts only on its own steps)"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Change Request · CIQ Sustainability Reviewer: ESCALATION pending the post-generate reset",
+        "status": "WARN",
+        "detail": "live Member [\"InitiateItems\"] (write) · preview Editable (write) · post-generate target read · Process Member Permission [\"View\"] (no InitiateItems; keeps read access; acts only on its own steps)"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Open Point · CIQ Case Admin: post-generate change pending",
+        "status": "WARN",
+        "detail": "live Member [\"View\"] (read) · preview ReadOnly (read) · post-generate target admin · flow Admin"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Audit Event · CIQ Business Admin: Delete still granted (post-generate no-Delete reset pending, K-17)",
+        "status": "WARN",
+        "detail": "Member [\"Delete\"]"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Audit Event · CIQ Case Admin: Delete still granted (post-generate no-Delete reset pending, K-17)",
+        "status": "WARN",
+        "detail": "Member [\"Delete\"]"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Audit Event · CIQ Integration Service: Delete still granted (post-generate no-Delete reset pending, K-17)",
+        "status": "WARN",
+        "detail": "Member [\"Delete\"]"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Audit Event · CIQ Microbiology Reviewer: Delete still granted (post-generate no-Delete reset pending, K-17)",
+        "status": "WARN",
+        "detail": "Member [\"Delete\"]"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Audit Event · CIQ Overall Approver: Delete still granted (post-generate no-Delete reset pending, K-17)",
+        "status": "WARN",
+        "detail": "Member [\"Delete\"]"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Audit Event · CIQ QM Reviewer: Delete still granted (post-generate no-Delete reset pending, K-17)",
+        "status": "WARN",
+        "detail": "Member [\"Delete\"]"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Audit Event · CIQ Regulatory Reviewer: Delete still granted (post-generate no-Delete reset pending, K-17)",
+        "status": "WARN",
+        "detail": "Member [\"Delete\"]"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Audit Event · CIQ RMM: Delete still granted (post-generate no-Delete reset pending, K-17)",
+        "status": "WARN",
+        "detail": "Member [\"Delete\"]"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Audit Event · CIQ Safety Reviewer: Delete still granted (post-generate no-Delete reset pending, K-17)",
+        "status": "WARN",
+        "detail": "Member [\"Delete\"]"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Audit Event · CIQ Sustainability Reviewer: Delete still granted (post-generate no-Delete reset pending, K-17)",
+        "status": "WARN",
+        "detail": "Member [\"Delete\"]"
+      },
+      {
+        "area": "grants",
+        "id": "CIQ Config Version · CIQ Business Admin: Delete still granted (post-generate no-Delete reset pending, K-17)",
+        "status": "WARN",
+        "detail": "Member [\"Delete\"]"
+      }
+    ],
+    "getRoutes": [
+      "/flow/2/{acc}/app/<flow>/info",
+      "/app_role/2/{acc}/list?_application_id=CIQ_Digital_A00&page_number=1&page_size=100",
+      "/app_role/2/{acc}/<role>?_application_id=CIQ_Digital_A00",
+      "/flow/2/{acc}/list/?_application_id=CIQ_Digital_A00&page_number=1&page_size=300",
+      "/flow/2/{acc}/list/<flow>/items?_application_id=CIQ_Digital_A00",
+      "/flow/2/{acc}/process/?_application_id=CIQ_Digital_A00&page_number=1&page_size=300",
+      "/flow/2/{acc}/form/?_application_id=CIQ_Digital_A00&page_number=1&page_size=300",
+      "/flow/2/{acc}/case/?_application_id=CIQ_Digital_A00&page_number=1&page_size=300",
+      "/flow/2/{acc}/dataset/?_application_id=CIQ_Digital_A00&page_number=1&page_size=300",
+      "/metadata/2/{acc}/process/<flow>/draft",
+      "/process/2/{acc}/<flow>/allfields?_application_id=CIQ_Digital_A00",
+      "/metadata/2/{acc}/form/<flow>/draft",
+      "/form/2/{acc}/<flow>/allfields?_application_id=CIQ_Digital_A00",
+      "/flow/2/{acc}/process/<flow>/member?_application_id=CIQ_Digital_A00",
+      "/flow/2/{acc}/form/<flow>/member?_application_id=CIQ_Digital_A00",
+      "/flow/2/{acc}/process/<flow>/report?_application_id=CIQ_Digital_A00",
+      "/flow/2/{acc}/process/<flow>/report/<flow>_all/member?_application_id=CIQ_Digital_A00",
+      "/flow/2/{acc}/form/<flow>/report?_application_id=CIQ_Digital_A00",
+      "/flow/2/{acc}/form/<flow>/report/<flow>_all/member?_application_id=CIQ_Digital_A00",
+      "/flow/2/{acc}/integration/?_application_id=CIQ_Digital_A00&page_number=1&page_size=100",
+      "/metadata/2/{acc}/integration/<flow>/draft",
+      "/flow/2/{acc}/application/<flow>/page/",
+      "/metadata/2/{acc}/application/<flow>/draft"
+    ]
+  },
+  "faultInjection": [
+    {
+      "fault": "thomas-missing",
+      "area": "membership",
+      "detected": true,
+      "fails": 1,
+      "first": "CIQ QM Reviewer: Thomas (UsEJUfjYLM8Y) is a member · UserCount=0 · members [] · the apply's developer-add can fail silently: add Thomas in the UI (Users[]) and "
+    },
+    {
+      "fault": "condition",
+      "area": "workflow",
+      "detected": true,
+      "fails": 1,
+      "first": "CIQ Case · Overall approval · condition [\"Overall_Approval_Required=\\\"No\\\"\"]≠[\"Overall_Approval_Required=\\\"Yes\\\"\"]"
+    },
+    {
+      "fault": "field-type",
+      "area": "fields",
+      "detected": true,
+      "fails": 2,
+      "first": "CIQ Case: 125 fields (id, type, list, formula, reference, Required) · Cycle_No.type: live Text · plan Number"
+    },
+    {
+      "fault": "grant-escalation",
+      "area": "grants",
+      "detected": true,
+      "fails": 1,
+      "first": "CIQ RMES Safety · CIQ Reader: ESCALATION beyond the preview · live Member [\"Delete\"] (write) · preview ReadOnly (read)"
+    },
+    {
+      "fault": "integration-on",
+      "area": "integrations",
+      "detected": true,
+      "fails": 1,
+      "first": "CIQ Z1 Case completed – PDF, e-mails, notification event: switched off · IsActive=true · Status=Live · CIQ_Z1_Case_completed_PDF_e_mails_notification_event_A00"
+    },
+    {
+      "fault": "extra-page",
+      "area": "pages-nav",
+      "detected": true,
+      "fails": 1,
+      "first": "no page besides the pre-existing home page · CIQ_RMM_Dashboard_A00 \"CIQ RMM Dashboard\""
+    },
+    {
+      "fault": "list-item",
+      "area": "lists",
+      "detected": true,
+      "fails": 1,
+      "first": "CIQ Yes No: items · status 200 · live [\"Yes\"] · plan [\"Yes\",\"No\"]"
+    },
+    {
+      "fault": "unpublished",
+      "area": "flows",
+      "detected": true,
+      "fails": 1,
+      "first": "CIQ Scope Run: published (Live) · status Draft"
+    },
+    {
+      "fault": "step-perm",
+      "area": "step-permissions",
+      "detected": true,
+      "fails": 1,
+      "first": "CIQ Case · Review – Regulatory · 1 cell(s) differ: REG_Review_Confirm: live ReadOnly · plan Mandatory"
+    },
+    {
+      "fault": "report-leak",
+      "area": "reports",
+      "detected": true,
+      "fails": 1,
+      "first": "CIQ RMES Safety · CIQ RMES Safety All Items: report View only for roles with flow access · report View without flow access: CIQ Integration Service"
+    }
+  ]
+}

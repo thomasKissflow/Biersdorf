@@ -1,0 +1,76 @@
+
+== Z1 the supplier's read (user route) at fill, keep, give, view and respond returns every field the admin read has
+  ok   Z1 G2 at 'Supplier: fill in the CIQ': the user-route read answers (200) with all 40 filled fields, unchanged
+  ok   Z1 G3 at 'Supplier: keep the CIQ up to date': the user-route read answers (200) with all 45 filled fields, unchanged
+  ok   Z1 G4 at 'Supplier: give the final release': the user-route read answers (200) with all 47 filled fields, unchanged
+  ok   Z1 S1 at 'Supplier: view the released CIQ': the user-route read answers (200) with all 53 filled fields, unchanged
+
+== Z2 items outside the test: none of the five processes has a non-ZZT item changed since the night began
+  FAIL Z2 CIQ_Case_A00: 30 items listed (0 with a modified time), no non-ZZT item modified since 2026-10-20T20:58:00Z — {"touched":[],"undated":30}
+  FAIL Z2 CIQ_Review_A00: 18 items listed (0 with a modified time), no non-ZZT item modified since 2026-10-20T20:58:00Z — {"touched":[],"undated":18}
+  FAIL Z2 CIQ_Open_Point_A00: 24 items listed (0 with a modified time), no non-ZZT item modified since 2026-10-20T20:58:00Z — {"touched":[],"undated":24}
+  FAIL Z2 CIQP_Request_A00: 21 items listed (0 with a modified time), no non-ZZT item modified since 2026-10-20T20:58:00Z — {"touched":[],"undated":21}
+  FAIL Z2 CIQP_Query_A00: 33 items listed (0 with a modified time), no non-ZZT item modified since 2026-10-20T20:58:00Z — {"touched":[],"undated":33}
+
+== Z3 a case or open point created with its trust fields set at Start (they are ReadOnly or Hidden there)
+  FAIL Z3 CIQ Case create: no trust field is stored (Portal_Request_Item_Id, Completeness_Confirm, Case_Phase, Release_Requested_At) — {"stored":["Portal_Request_Item_Id","Completeness_Confirm","Case_Phase","Release_Requested_At"]}
+  FAIL Z3 CIQ Open Point create: no trust field is stored (Portal_Query_Item_Id, OP_Outcome, Response_Text) — {"stored":["Portal_Query_Item_Id","OP_Outcome","Response_Text"]}
+  ok   Z3 both drafts deleted (GET 404)
+
+== Z4 a form refuses a value outside its list (Audit Event: Event_Category, Actor_Dept)
+  ok   Z4 Event_Category "Bogus" is refused (no row is kept)
+  FAIL Z4 Actor_Dept "XYZ" is refused (no row is kept) — {"refusedAtCreate":null,"submit":200}
+
+== Z5 at 'fill in', which ReadOnly fields a supplier write can change (P-1 inventory); all put back
+  FAIL Z5 a supplier write at fill changes none of the 9 ReadOnly fields — {"status":200,"leaked":["Release_Contacts","Supplier_Due_Date","Questions_History_JSON","Change_Reports_JSON","Manual_Scope_JSON","Config_Bundle_JSON","Config_Bundle_Hash","BDF_Contact_Email","Request_Key"]}
+  ok   Z5 every leaked value is put back (admin) and reads back
+
+== Z6 I-2 refuses a request at 'fill in' without its completeness
+  ok   Z6 completeness.confirmed for a request without Completeness_Confirm is refused: the case is unchanged
+
+== Z7 two saves in quick succession, each posted at once (as the screen does): the case ends with the newer
+  ok   Z7 round 1: after both runs the case holds Rev 12 and the request's 15 synced fields (no stale overwrite)
+  ok   Z7 round 2: after both runs the case holds Rev 22 and the request's 15 synced fields (no stale overwrite)
+
+== Z8 release.requested on a CANCELLED request (case X1) must be refused; anything it changes is put back
+  ok   Z8 setup: X1's request is labelled Cancelled and locked
+  FAIL Z8 release.requested on a cancelled request is refused: the request and the case are unchanged — {"webhook":200,"changed":[{"flow":"CIQP_Request_A00","id":"PkEPDpZ0F7d1","keys":["_modified_at","Case_Phase_Label","Release_By_Name","Release_At"]},{"flow":"CIQ_Case_A00","id":"PkEPDpJyrc9x","keys":["_modified_at","Release_Requested_At"]}]}
+  ok   Z8 info: what it changed
+  ok   Z8 put back: the request is Cancelled and locked again
+
+== Z9 release.requested writes the release contact list (multi-user mapping) from an empty list
+  ok   Z9 setup: the request's Release_Contacts emptied (admin)
+  ok   Z9 release.requested → Release_Contacts holds the case's release contact again
+  ok   Z9 and the flag, lock and label are set
+
+== Z10.1 two case.started posts back to back BEFORE the link exists (race 1): exactly one request
+  ok   Z10.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   Z10.1 case draft is at 'Create case'
+  ok   Z10.1 Start submit accepted
+  ok   Z10.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   Z10.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   Z10.1 case fields unchanged by the submit
+  ok   Z10.1 exactly one request names the case, and the case links it
+
+== Z10.2 two case.started posts back to back BEFORE the link exists (race 2): exactly one request
+  ok   Z10.2 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   Z10.2 case draft is at 'Create case'
+  ok   Z10.2 Start submit accepted
+  ok   Z10.2 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   Z10.2 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   Z10.2 case fields unchanged by the submit
+  ok   Z10.2 exactly one request names the case, and the case links it
+
+== Z11 I-1 with a ~100 KB configuration bundle and its sha256, duplicate portal contacts, no release contacts, cycle 2
+  ok   Z11 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   Z11 case draft is at 'Create case'
+  ok   Z11 Start submit accepted
+  ok   Z11 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   Z11 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   Z11 case fields unchanged by the submit
+  ok   Z11 info: the bundle is 112109 characters
+  ok   Z11 case.started → the case links its request
+  ok   Z11 the request's Config_Bundle_JSON is byte-equal and its sha256 equals Config_Bundle_Hash
+  ok   Z11 Assigned_Contacts holds the contact once; Release_Contacts falls back to it; Request_Key is '<code>|2'
+
+PASS 3 DONE: 7/12 scenarios pass, 40/50 checks

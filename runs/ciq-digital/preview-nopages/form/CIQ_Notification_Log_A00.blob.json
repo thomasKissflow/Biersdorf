@@ -1,0 +1,163 @@
+{
+  "Root": "CIQ_Notification_Log_A00",
+  "CIQ_Notification_Log_A00": {
+    "Id": "CIQ_Notification_Log_A00",
+    "Name": "CIQ Notification Log",
+    "Kind": "Model",
+    "FlowType": "Form",
+    "Description": "",
+    "Model::Row": [
+      "Row_s4n0jy"
+    ],
+    "Model::Field": [
+      "Event_Code",
+      "Recipient",
+      "Channel",
+      "Sent_At",
+      "Related_Key"
+    ]
+  },
+  "Row_s4n0jy": {
+    "Id": "Row_s4n0jy",
+    "Kind": "Row",
+    "Model": "CIQ_Notification_Log_A00",
+    "Row::Column": [
+      "Column_s4n0jy"
+    ]
+  },
+  "Column_s4n0jy": {
+    "Id": "Column_s4n0jy",
+    "Kind": "Column",
+    "Type": "Section",
+    "Name": "Details",
+    "Start": 0,
+    "End": 6,
+    "Row": "Row_s4n0jy",
+    "Column::Row": [
+      "Row_s4lseg",
+      "Row_s4lseh",
+      "Row_s4lsei"
+    ]
+  },
+  "Row_s4lseg": {
+    "Id": "Row_s4lseg",
+    "Kind": "Row",
+    "Column": "Column_s4n0jy",
+    "Row::Column": [
+      "Column_rpw8yn",
+      "Column_1iu79mu"
+    ]
+  },
+  "Column_rpw8yn": {
+    "Id": "Column_rpw8yn",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_s4lseg",
+    "Column::Field": [
+      "Event_Code"
+    ]
+  },
+  "Column_1iu79mu": {
+    "Id": "Column_1iu79mu",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_s4lseg",
+    "Column::Field": [
+      "Recipient"
+    ]
+  },
+  "Row_s4lseh": {
+    "Id": "Row_s4lseh",
+    "Kind": "Row",
+    "Column": "Column_s4n0jy",
+    "Row::Column": [
+      "Column_1wk98ws",
+      "Column_1hglhip"
+    ]
+  },
+  "Column_1wk98ws": {
+    "Id": "Column_1wk98ws",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_s4lseh",
+    "Column::Field": [
+      "Channel"
+    ]
+  },
+  "Column_1hglhip": {
+    "Id": "Column_1hglhip",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_s4lseh",
+    "Column::Field": [
+      "Sent_At"
+    ]
+  },
+  "Row_s4lsei": {
+    "Id": "Row_s4lsei",
+    "Kind": "Row",
+    "Column": "Column_s4n0jy",
+    "Row::Column": [
+      "Column_18zi1kc"
+    ]
+  },
+  "Column_18zi1kc": {
+    "Id": "Column_18zi1kc",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_s4lsei",
+    "Column::Field": [
+      "Related_Key"
+    ]
+  },
+  "Event_Code": {
+    "Id": "Event_Code",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Event_Code",
+    "Model": "CIQ_Notification_Log_A00",
+    "Column": "Column_rpw8yn"
+  },
+  "Recipient": {
+    "Id": "Recipient",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Recipient",
+    "Model": "CIQ_Notification_Log_A00",
+    "Column": "Column_1iu79mu"
+  },
+  "Channel": {
+    "Id": "Channel",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Channel",
+    "Model": "CIQ_Notification_Log_A00",
+    "Column": "Column_1wk98ws"
+  },
+  "Sent_At": {
+    "Id": "Sent_At",
+    "Kind": "Field",
+    "Type": "DateTime",
+    "Name": "Sent_At",
+    "Model": "CIQ_Notification_Log_A00",
+    "Column": "Column_1hglhip"
+  },
+  "Related_Key": {
+    "Id": "Related_Key",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Related_Key",
+    "Model": "CIQ_Notification_Log_A00",
+    "Column": "Column_18zi1kc"
+  }
+}

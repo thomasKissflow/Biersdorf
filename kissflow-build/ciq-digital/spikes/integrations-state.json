@@ -1,0 +1,178 @@
+{
+  "connections": {
+    "dataform": {
+      "_id": "CnEKHrH5GzkY",
+      "Name": "CIQ ZZ Spike Kissflow Dataform connection",
+      "connectorId": "Co4mIEiAdtSb",
+      "version": "1.5.4",
+      "connectorName": "Kissflow Dataform",
+      "connector": {
+        "_id": "Co4mIEiAdtSb",
+        "Name": "Kissflow Dataform",
+        "Version": "1.5.4",
+        "Organization": {
+          "_id": "ORG5kFkh0BUGV",
+          "Name": "Kissflow"
+        }
+      }
+    },
+    "process": {
+      "_id": "CnEKHrHqXRKB",
+      "Name": "CIQ ZZ Spike Kissflow Process connection",
+      "connectorId": "ComaBsL8ZTSMM",
+      "version": "3.7.6",
+      "connectorName": "Kissflow Process",
+      "connector": {
+        "_id": "ComaBsL8ZTSMM",
+        "Name": "Kissflow Process",
+        "Version": "3.7.6",
+        "Organization": {
+          "_id": "ORG5kFkh0BUGV",
+          "Name": "Kissflow"
+        }
+      }
+    }
+  },
+  "integrations": {
+    "CIQ_ZZ_Spike_log_register_created_A00": {
+      "tId": "Trigger__created_A00",
+      "aId": "Action__created_A00",
+      "trig": [
+        "dataform",
+        "ItemCreated",
+        "When an item is added to a dataform"
+      ],
+      "act": [
+        "dataform",
+        "CreateAndSubmitItem",
+        "Create and submit an item"
+      ],
+      "skeleton": 200,
+      "bind": 200,
+      "actionSchema": [
+        {
+          "Id": "ActionField002",
+          "Name": "form_id",
+          "Label": "Choose a dataform",
+          "Type": "String",
+          "IsRequired": true,
+          "IsDropdown": true
+        },
+        {
+          "Id": "Log_Key",
+          "Name": "Log_Key",
+          "Label": "Log_Key",
+          "Type": "String",
+          "IsRequired": false
+        },
+        {
+          "Id": "Log_Source",
+          "Name": "Log_Source",
+          "Label": "Log_Source",
+          "Type": "String",
+          "IsRequired": false
+        },
+        {
+          "Id": "Log_Event",
+          "Name": "Log_Event",
+          "Label": "Log_Event",
+          "Type": "String",
+          "IsRequired": false
+        },
+        {
+          "Id": "Log_Item_Id",
+          "Name": "Log_Item_Id",
+          "Label": "Log_Item_Id",
+          "Type": "String",
+          "IsRequired": false
+        },
+        {
+          "Id": "Log_At",
+          "Name": "Log_At",
+          "Label": "Log_At",
+          "Type": "Datetime",
+          "IsRequired": false
+        },
+        {
+          "Id": "Log_Payload",
+          "Name": "Log_Payload",
+          "Label": "Log_Payload",
+          "Type": "String",
+          "IsRequired": false
+        }
+      ],
+      "mapPut": 200,
+      "publish": 200
+    },
+    "CIQ_ZZ_Spike_log_point_completed_A00": {
+      "tId": "Trigger_ompleted_A00",
+      "aId": "Action_ompleted_A00",
+      "trig": [
+        "process",
+        "ItemCompleted",
+        "When an item completes its workflow"
+      ],
+      "act": [
+        "dataform",
+        "CreateAndSubmitItem",
+        "Create and submit an item"
+      ],
+      "skeleton": 200,
+      "bind": 200,
+      "actionSchema": [
+        {
+          "Id": "ActionField002",
+          "Name": "form_id",
+          "Label": "Choose a dataform",
+          "Type": "String",
+          "IsRequired": true,
+          "IsDropdown": true
+        },
+        {
+          "Id": "Log_Key",
+          "Name": "Log_Key",
+          "Label": "Log_Key",
+          "Type": "String",
+          "IsRequired": false
+        },
+        {
+          "Id": "Log_Source",
+          "Name": "Log_Source",
+          "Label": "Log_Source",
+          "Type": "String",
+          "IsRequired": false
+        },
+        {
+          "Id": "Log_Event",
+          "Name": "Log_Event",
+          "Label": "Log_Event",
+          "Type": "String",
+          "IsRequired": false
+        },
+        {
+          "Id": "Log_Item_Id",
+          "Name": "Log_Item_Id",
+          "Label": "Log_Item_Id",
+          "Type": "String",
+          "IsRequired": false
+        },
+        {
+          "Id": "Log_At",
+          "Name": "Log_At",
+          "Label": "Log_At",
+          "Type": "Datetime",
+          "IsRequired": false
+        },
+        {
+          "Id": "Log_Payload",
+          "Name": "Log_Payload",
+          "Label": "Log_Payload",
+          "Type": "String",
+          "IsRequired": false
+        }
+      ],
+      "mapPut": 200,
+      "publish": 200
+    }
+  }
+}

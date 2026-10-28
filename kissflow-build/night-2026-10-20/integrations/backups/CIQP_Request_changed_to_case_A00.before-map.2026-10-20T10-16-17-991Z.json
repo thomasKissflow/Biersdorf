@@ -1,0 +1,412 @@
+{
+ "Root": "CIQP_Request_changed_to_case_A00",
+ "CIQP_Request_changed_to_case_A00": {
+  "Id": "CIQP_Request_changed_to_case_A00",
+  "Description": "Plan v6 §4.2 request.changed: the supplier's screen posts {portalRequestItemId}; the request's 15 answer fields are copied to the CIQ Case named by its App_Case_Item_Id.",
+  "Name": "CIQP Request changed to case",
+  "Kind": "Integration",
+  "FlowType": "Integration",
+  "Integration::Trigger": [
+   "Trigger_RC_webhook"
+  ],
+  "Integration::Action": [
+   "Action_RC_read_request",
+   "Action_RC_pick_request",
+   "Action_RC_update_case"
+  ],
+  "_application_id": "CIQ_Supplier_Portal_A00"
+ },
+ "PublishedAt": "2026-10-20T10:16:08Z",
+ "PublishedBy": {
+  "_id": "UsEJUfjYLM8Y",
+  "Name": "Thomas",
+  "Kind": "User"
+ },
+ "_meta_version": "1792491368695458",
+ "Trigger_RC_webhook": {
+  "Id": "Trigger_RC_webhook",
+  "Kind": "Trigger",
+  "Type": "Create",
+  "Name": "Catch a webhook (POST)",
+  "IsInternalAuth": true,
+  "Connection": {},
+  "Integration": "CIQP_Request_changed_to_case_A00",
+  "Connector": {
+   "_id": "Coowt2xE4WH9S",
+   "Name": "Webhooks by Kissflow",
+   "Version": "1.0.0",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/Coowt2xE4WH9S/1.0.0/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/Coowt2xE4WH9S/1.0.0/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/Coowt2xE4WH9S/1.0.0/Logo/Webhook.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "TriggerId": "WebhookTrigger",
+   "TriggerName": "Catch a webhook (POST)"
+  },
+  "Output": {
+   "portalRequestItemId": "PkEP13vfhEiE"
+  },
+  "IsTested": true
+ },
+ "Action_RC_read_request": {
+  "Id": "Action_RC_read_request",
+  "Kind": "Action",
+  "Type": "Search",
+  "Name": "Search an item",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQP_Request_changed_to_case_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "Action_Kh4Jb2AoG",
+   "ActionName": "Search an item "
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_j224c1",
+   "FieldMapping_j23qj5"
+  ],
+  "Output": {
+   "_id": "CIQP_Request_A00",
+   "Data": [
+    {
+     "_id": "PkEP13vfhEiE",
+     "_activity_instance_id": [
+      "PkEP13vsSuYR"
+     ],
+     "_current_assigned_to": [
+      {
+       "_id": "UsEJUfjYLM8Y",
+       "Name": "Thomas",
+       "Kind": "User"
+      }
+     ],
+     "_status": "InProgress",
+     "Name": "CIQP Request from Thomas",
+     "_created_at": "2026-10-20T10:13:44Z",
+     "_created_by": {
+      "_id": "UsEJUfjYLM8Y",
+      "Name": "Thomas",
+      "Kind": "User"
+     },
+     "Request_Key": "ZZT-I1E|1",
+     "Case_Code": "ZZT-I1E",
+     "Cycle_No": 1,
+     "Supplier_Code": "ZZT-SUP-DEV",
+     "App_Case_Item_Id": "PkEP0tis9hWG",
+     "Trade_Name": "ZZT test material (fictional)",
+     "BDF_Contact_Name": "ZZT RMM (fictional)",
+     "BDF_Contact_Email": "rmm.zzt@example.com",
+     "Supplier_Due_Date": "2026-11-03",
+     "Assigned_Contacts": [
+      {
+       "_id": "UsEJUfjYLM8Y",
+       "Name": "Thomas",
+       "Kind": "User"
+      }
+     ],
+     "Config_Answers_JSON": "{}",
+     "Answers_JSON": "{\"FLD-ZZT-001\":\"ZZT answer (fictional)\"}",
+     "Answered_By_JSON": "{}",
+     "Components_JSON": "[]",
+     "Scope_JSON": "[]",
+     "Requested_Docs_JSON": "[]",
+     "Answers_Rev": 3,
+     "Answers_Changed_At": "2026-10-20T10:13:42Z",
+     "Answers_Changed_By_Email": "zzt.contact@example.com",
+     "Case_Phase_Label": "Filling in",
+     "Request_Locked": "No",
+     "Release_Contacts": [
+      {
+       "_id": "UsEJUfjYLM8Y",
+       "Name": "Thomas",
+       "Kind": "User"
+      }
+     ],
+     "Documents_JSON": "[]"
+    }
+   ]
+  },
+  "IsTested": true
+ },
+ "Action_RC_update_case": {
+  "Id": "Action_RC_update_case",
+  "Kind": "Action",
+  "Type": "Update",
+  "Name": "Update an item",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQP_Request_changed_to_case_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "UpdateAnItem",
+   "ActionName": "Update an item"
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_j23qj3"
+  ]
+ },
+ "FieldMapping_j224c1": {
+  "Id": "FieldMapping_j224c1",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Field_FfgdBFhZt",
+  "Label": "Choose a process",
+  "Name": "process_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Action": "Action_RC_read_request",
+  "SelectedDropdown": [
+   {
+    "FieldId": "CIQP_Request_A00",
+    "FieldName": "CIQP Request - CIQ Supplier Portal",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_j224c2"
+  ]
+ },
+ "Property_j224c2": {
+  "Id": "Property_j224c2",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_j224c1",
+  "Type": "Value",
+  "Value": [
+   "CIQP_Request_A00"
+  ],
+  "Name": "process_id"
+ },
+ "FieldMapping_j23qj3": {
+  "Id": "FieldMapping_j23qj3",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField002",
+  "Label": "Choose a process",
+  "Name": "process_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Action": "Action_RC_update_case",
+  "SelectedDropdown": [
+   {
+    "FieldId": "CIQ_Case_A00",
+    "FieldName": "CIQ Case - CIQ Digital",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_j23qj4"
+  ]
+ },
+ "Property_j23qj4": {
+  "Id": "Property_j23qj4",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_j23qj3",
+  "Type": "Value",
+  "Value": [
+   "CIQ_Case_A00"
+  ],
+  "Name": "process_id"
+ },
+ "FieldMapping_j23qj5": {
+  "Id": "FieldMapping_j23qj5",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Field_1D8EgGqhG",
+  "Label": "Search term",
+  "Name": "lookupValue",
+  "IsRequired": true,
+  "Action": "Action_RC_read_request",
+  "FieldMapping::Property": [
+   "Property_j23qj6"
+  ]
+ },
+ "Property_j23qj6": {
+  "Id": "Property_j23qj6",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_j23qj5",
+  "Type": "Field",
+  "Field": "context.Trigger_RC_webhook.portalRequestItemId",
+  "Name": "lookupValue"
+ },
+ "Action_RC_pick_request": {
+  "Id": "Action_RC_pick_request",
+  "Kind": "Action",
+  "Type": "Create",
+  "Name": "Run JavaScript",
+  "IsInternalAuth": true,
+  "Connection": {},
+  "Integration": "CIQP_Request_changed_to_case_A00",
+  "Connector": {
+   "_id": "Co4m9q4JUbkV",
+   "Name": "Run script",
+   "Version": "1.0.0",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/Runscript.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "RunJSCode",
+   "ActionName": "Run JavaScript"
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_j255r7",
+   "FieldMapping_j255sc"
+  ],
+  "Output": {
+   "requestId": "PkEP13vfhEiE",
+   "caseId": "PkEP0tis9hWG",
+   "Config_Answers_JSON": "{}",
+   "Answers_JSON": "{\"FLD-ZZT-001\":\"ZZT answer (fictional)\"}",
+   "Answered_By_JSON": "{}",
+   "Justifications_JSON": null,
+   "Components_JSON": "[]",
+   "Scope_JSON": "[]",
+   "Requested_Docs_JSON": "[]",
+   "Documents_JSON": "[]",
+   "Answers_Rev": 3,
+   "Answers_Changed_At": "2026-10-20T10:13:42Z",
+   "Answers_Changed_By_Email": "zzt.contact@example.com",
+   "Change_Report_Text": null,
+   "Change_Report_Rev": null,
+   "Change_Report_By_Email": null,
+   "Change_Report_At": null
+  },
+  "IsTested": true
+ },
+ "FieldMapping_j255r7": {
+  "Id": "FieldMapping_j255r7",
+  "Kind": "FieldMapping",
+  "Type": "Object",
+  "FieldId": "InputFields",
+  "Label": "Input data",
+  "Name": "input_fields",
+  "IsDropdown": false,
+  "IsPaginated": false,
+  "HelpText": "Specify the input data that should be provided to your code",
+  "AutoRefresh": false,
+  "Action": "Action_RC_pick_request",
+  "FieldMapping::FieldMapping": [
+   "FieldMapping_j255r8",
+   "FieldMapping_j255ra"
+  ]
+ },
+ "FieldMapping_j255r8": {
+  "Id": "FieldMapping_j255r8",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "IsVisible": true,
+  "FieldMapping": "FieldMapping_j255r7",
+  "Name": "requestId",
+  "Label": "requestId",
+  "FieldMapping::Property": [
+   "Property_j255r9"
+  ]
+ },
+ "Property_j255r9": {
+  "Id": "Property_j255r9",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_j255r8",
+  "Type": "Field",
+  "Field": "context.Trigger_RC_webhook.portalRequestItemId",
+  "Name": "requestId"
+ },
+ "FieldMapping_j255ra": {
+  "Id": "FieldMapping_j255ra",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "IsVisible": true,
+  "FieldMapping": "FieldMapping_j255r7",
+  "Name": "rows",
+  "Label": "rows",
+  "FieldMapping::Property": [
+   "Property_j255rb"
+  ]
+ },
+ "Property_j255rb": {
+  "Id": "Property_j255rb",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_j255ra",
+  "Type": "Field",
+  "Field": "context.Action_RC_read_request.Data",
+  "Name": "rows"
+ },
+ "FieldMapping_j255sc": {
+  "Id": "FieldMapping_j255sc",
+  "Kind": "FieldMapping",
+  "Type": "Code",
+  "FieldId": "JSCode",
+  "Label": "JavaScript code",
+  "Name": "js_code",
+  "IsRequired": true,
+  "IsDropdown": false,
+  "IsPaginated": false,
+  "AutoRefresh": false,
+  "CodeLanguage": "javascript",
+  "Action": "Action_RC_pick_request",
+  "FieldMapping::Property": [
+   "Property_j255sd"
+  ]
+ },
+ "Property_j255sd": {
+  "Id": "Property_j255sd",
+  "Kind": "Property",
+  "Type": "Code",
+  "Name": "js_code",
+  "Code": "// request.changed · step 3: the one request the supplier's screen named (exact _id match in the search result), and the\n// app case it belongs to. The target case comes only from the request's own App_Case_Item_Id (ReadOnly to suppliers).\nconst FIELDS = [\"Config_Answers_JSON\", \"Answers_JSON\", \"Answered_By_JSON\", \"Justifications_JSON\", \"Components_JSON\", \"Scope_JSON\", \"Requested_Docs_JSON\", \"Documents_JSON\",\n  \"Answers_Rev\", \"Answers_Changed_At\", \"Answers_Changed_By_Email\", \"Change_Report_Text\", \"Change_Report_Rev\", \"Change_Report_By_Email\", \"Change_Report_At\"];\nconst id = String(inputData.requestId || \"\").trim();\nlet rows = inputData.rows;\nif (typeof rows === \"string\") { try { rows = JSON.parse(rows); } catch (e) { rows = []; } }\nconst row = (Array.isArray(rows) ? rows : []).find((r) => r && r._id === id);\nif (!id || !row) throw new Error(`CIQP Request ${id || \"(no id)\"} was not found`);\nif (!row.App_Case_Item_Id) throw new Error(`CIQP Request ${id} names no app case`);\nlet output = { requestId: id, caseId: row.App_Case_Item_Id };\nfor (const f of FIELDS) output[f] = row[f] === undefined ? null : row[f];\nreturn output;\n",
+  "FieldMapping": "FieldMapping_j255sc"
+ }
+}

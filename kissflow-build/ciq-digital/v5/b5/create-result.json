@@ -1,0 +1,29 @@
+{
+ "phase": "create",
+ "apply": true,
+ "at": "2026-10-14T18:45:51.885Z",
+ "existing": null,
+ "create": {
+  "status": 200,
+  "id": "CIQ_Mail_send_outbox_mail_A00"
+ },
+ "readBack": {
+  "keys": [
+   "Root",
+   "CIQ_Mail_send_outbox_mail_A00",
+   "PublishedAt",
+   "PublishedBy",
+   "_meta_version"
+  ],
+  "root": {
+   "Id": "CIQ_Mail_send_outbox_mail_A00",
+   "Description": "R-1: sends each CIQ Mail Outbox row (one row = one e-mail, written by the CIQ Sync Service) and marks it Sent. Built OFF; Thomas switches it on.",
+   "Name": "CIQ Mail – send outbox mail",
+   "Kind": "Integration",
+   "FlowType": "Integration",
+   "Integration::Trigger": [],
+   "Integration::Action": [],
+   "_application_id": "CIQ_Digital_A00"
+  }
+ }
+}

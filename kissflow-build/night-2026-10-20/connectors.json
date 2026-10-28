@@ -1,0 +1,286 @@
+{
+ "Kissflow Dataform": {
+  "id": "Co4mIEiAdtSb",
+  "version": "1.5.4",
+  "status": 200,
+  "entities": [
+   {
+    "Kind": "Trigger",
+    "Id": "ItemCreated",
+    "Name": "When an item is added to a dataform"
+   },
+   {
+    "Kind": "Trigger",
+    "Id": "ItemUpdated",
+    "Name": "When an item is updated in a dataform",
+    "Type": "Create"
+   },
+   {
+    "Kind": "Trigger",
+    "Id": "ItemDeleted",
+    "Name": "When an item is deleted in a dataform",
+    "Type": "Create"
+   },
+   {
+    "Kind": "Action",
+    "Id": "CreateAndSubmitItem",
+    "Name": "Create and submit an item",
+    "Type": "Create"
+   },
+   {
+    "Kind": "Action",
+    "Id": "UpdateAnItem",
+    "Name": "Update an item",
+    "Type": "Create"
+   },
+   {
+    "Kind": "Action",
+    "Id": "FetchAnItem",
+    "Name": "Fetch an item",
+    "Type": "Create"
+   },
+   {
+    "Kind": "Action",
+    "Id": "FetchManyItems",
+    "Name": "Fetch one or more items",
+    "Type": "Create"
+   },
+   {
+    "Kind": "Action",
+    "Id": "Action_DeleteAnItem",
+    "Name": "Delete an item",
+    "Type": "Create"
+   }
+  ]
+ },
+ "Email": {
+  "id": "CoOj46v9fVh37",
+  "version": "1.0.6",
+  "status": 200,
+  "entities": [
+   {
+    "Kind": "Action",
+    "Id": "SendEmail",
+    "Name": "Send an email",
+    "Type": "Create"
+   }
+  ]
+ },
+ "Scheduler by Kissflow": {
+  "id": "Co9f6DM76TrrP",
+  "version": "1.0.7",
+  "status": 200,
+  "entities": [
+   {
+    "Kind": "Trigger",
+    "Id": "ScheduleDaily",
+    "Name": "Schedule daily"
+   },
+   {
+    "Kind": "Trigger",
+    "Id": "ScheduleWeekly",
+    "Name": "Schedule weekly"
+   },
+   {
+    "Kind": "Trigger",
+    "Id": "ScheduleMonthly",
+    "Name": "Schedule monthly"
+   },
+   {
+    "Kind": "Trigger",
+    "Id": "Trigger_CqOusn7cF",
+    "Name": "Schedule yearly",
+    "Type": "Create"
+   }
+  ]
+ },
+ "Kissflow Process": {
+  "id": "ComaBsL8ZTSMM",
+  "version": "3.7.6",
+  "status": 200,
+  "entities": [
+   {
+    "Kind": "Trigger",
+    "Id": "ItemCreated",
+    "Name": "When an item is created"
+   },
+   {
+    "Kind": "Trigger",
+    "Id": "Trigger_Comment_Added",
+    "Name": "When a comment is added to an item"
+   },
+   {
+    "Kind": "Trigger",
+    "Id": "DraftItemSubmitted",
+    "Name": "When a draft item is submitted"
+   },
+   {
+    "Kind": "Trigger",
+    "Id": "ItemAdvancesToNextStep",
+    "Name": "When an item advances to next step"
+   },
+   {
+    "Kind": "Trigger",
+    "Id": "ItemRejected",
+    "Name": "When an item is rejected"
+   },
+   {
+    "Kind": "Trigger",
+    "Id": "ItemWithdrawn",
+    "Name": "When an item is withdrawn"
+   },
+   {
+    "Kind": "Trigger",
+    "Id": "SlaBreached",
+    "Name": "When an item crosses its deadline"
+   },
+   {
+    "Kind": "Trigger",
+    "Id": "ItemReassigned",
+    "Name": "When an item is reassigned"
+   },
+   {
+    "Kind": "Trigger",
+    "Id": "ItemSentBack",
+    "Name": "When an item is sent back"
+   },
+   {
+    "Kind": "Trigger",
+    "Id": "ItemCompleted",
+    "Name": "When an item completes its workflow"
+   },
+   {
+    "Kind": "Trigger",
+    "Id": "ItemEntersToStep",
+    "Name": "When an item enters this step"
+   },
+   {
+    "Kind": "Trigger",
+    "Id": "ItemExitsToStep",
+    "Name": "When an item exits this step"
+   },
+   {
+    "Kind": "Trigger",
+    "Id": "ProcessStepSubmit",
+    "Name": "When an item is approved by an assignee at this step"
+   },
+   {
+    "Kind": "Trigger",
+    "Id": "ItemRejectedStep",
+    "Name": "When an item is rejected by an assignee at this step"
+   },
+   {
+    "Kind": "Trigger",
+    "Id": "SlaBreachedStep",
+    "Name": "When an item crosses its deadline at this step"
+   },
+   {
+    "Kind": "Trigger",
+    "Id": "ItemReassignedStep",
+    "Name": "When an item is reassigned at this step"
+   },
+   {
+    "Kind": "Trigger",
+    "Id": "ProcessStepBeforeEnter",
+    "Name": "When an item is about to enter the step"
+   },
+   {
+    "Kind": "Action",
+    "Id": "CreateAndSubmitItem",
+    "Name": "Create and submit a new item",
+    "Type": "Create"
+   },
+   {
+    "Kind": "Action",
+    "Id": "UpdateAnItem",
+    "Name": "Update an item",
+    "Type": "Create"
+   },
+   {
+    "Kind": "Action",
+    "Id": "Action_GeneratePDF",
+    "Name": "Generate a PDF document",
+    "Type": "Create"
+   },
+   {
+    "Kind": "Action",
+    "Id": "Action_-2Kg0WTjS",
+    "Name": "Create and submit items in bulk",
+    "Type": "Create"
+   },
+   {
+    "Kind": "Action",
+    "Id": "Action_-SkflzwKj",
+    "Name": "Approve an item",
+    "Type": "Create"
+   },
+   {
+    "Kind": "Action",
+    "Id": "Action_Kh4Jb2AoG",
+    "Name": "Search an item ",
+    "Type": "Create"
+   },
+   {
+    "Kind": "Action",
+    "Id": "Action_admin_skip_complete",
+    "Name": "Skip and complete",
+    "Type": "Create"
+   }
+  ]
+ },
+ "Webhooks by Kissflow": {
+  "id": "Coowt2xE4WH9S",
+  "version": "1.0.0",
+  "status": 200,
+  "entities": [
+   {
+    "Kind": "Trigger",
+    "Id": "WebhookTrigger",
+    "Name": "Catch a webhook (POST)"
+   }
+  ]
+ },
+ "HTTP": {
+  "id": "CoTw_5MLD2yHg",
+  "version": "2.0.0",
+  "status": 200,
+  "entities": [
+   {
+    "Kind": "Action",
+    "Id": "POSTCall",
+    "Name": "Make an HTTP call (POST)",
+    "Type": "Create"
+   },
+   {
+    "Kind": "Action",
+    "Id": "GETCall",
+    "Name": "Make an HTTP call (GET)",
+    "Type": "Create"
+   },
+   {
+    "Kind": "Action",
+    "Id": "PUTCall",
+    "Name": "Make an HTTP call (PUT)",
+    "Type": "Create"
+   },
+   {
+    "Kind": "Action",
+    "Id": "CustomCall",
+    "Name": "Make an HTTP call (Custom)",
+    "Type": "Create"
+   },
+   {
+    "Kind": "Action",
+    "Id": "Action_HttpSmartAction",
+    "Name": "Smart link",
+    "Type": "Create"
+   },
+   {
+    "Kind": "Action",
+    "Id": "Action_DownloadFile",
+    "Name": "Download a file",
+    "Type": "Create"
+   }
+  ]
+ }
+}

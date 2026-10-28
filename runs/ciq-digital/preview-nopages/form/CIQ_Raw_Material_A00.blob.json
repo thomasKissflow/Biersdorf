@@ -1,0 +1,253 @@
+{
+  "Root": "CIQ_Raw_Material_A00",
+  "CIQ_Raw_Material_A00": {
+    "Id": "CIQ_Raw_Material_A00",
+    "Name": "CIQ Raw Material",
+    "Kind": "Model",
+    "FlowType": "Form",
+    "Description": "",
+    "Model::Row": [
+      "Row_104f3zy"
+    ],
+    "Model::Field": [
+      "Material_Code",
+      "Trade_Name",
+      "Main_INCI",
+      "Material_Supplier",
+      "BDF_Material_No",
+      "IRMA_Ref",
+      "TC_Item_Ref",
+      "SAP_Material_No"
+    ]
+  },
+  "Row_104f3zy": {
+    "Id": "Row_104f3zy",
+    "Kind": "Row",
+    "Model": "CIQ_Raw_Material_A00",
+    "Row::Column": [
+      "Column_104f3zy"
+    ]
+  },
+  "Column_104f3zy": {
+    "Id": "Column_104f3zy",
+    "Kind": "Column",
+    "Type": "Section",
+    "Name": "Details",
+    "Start": 0,
+    "End": 6,
+    "Row": "Row_104f3zy",
+    "Column::Row": [
+      "Row_104dvug",
+      "Row_104dvuh",
+      "Row_104dvui",
+      "Row_104dvuj"
+    ]
+  },
+  "Row_104dvug": {
+    "Id": "Row_104dvug",
+    "Kind": "Row",
+    "Column": "Column_104f3zy",
+    "Row::Column": [
+      "Column_15phubg",
+      "Column_1srev7"
+    ]
+  },
+  "Column_15phubg": {
+    "Id": "Column_15phubg",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_104dvug",
+    "Column::Field": [
+      "Material_Code"
+    ]
+  },
+  "Column_1srev7": {
+    "Id": "Column_1srev7",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_104dvug",
+    "Column::Field": [
+      "Trade_Name"
+    ]
+  },
+  "Row_104dvuh": {
+    "Id": "Row_104dvuh",
+    "Kind": "Row",
+    "Column": "Column_104f3zy",
+    "Row::Column": [
+      "Column_qx9sre",
+      "Column_10lwh2t"
+    ]
+  },
+  "Column_qx9sre": {
+    "Id": "Column_qx9sre",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_104dvuh",
+    "Column::Field": [
+      "Main_INCI"
+    ]
+  },
+  "Column_10lwh2t": {
+    "Id": "Column_10lwh2t",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_104dvuh",
+    "Column::Field": [
+      "Material_Supplier"
+    ]
+  },
+  "Row_104dvui": {
+    "Id": "Row_104dvui",
+    "Kind": "Row",
+    "Column": "Column_104f3zy",
+    "Row::Column": [
+      "Column_actlyh",
+      "Column_10chwhk"
+    ]
+  },
+  "Column_actlyh": {
+    "Id": "Column_actlyh",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_104dvui",
+    "Column::Field": [
+      "BDF_Material_No"
+    ]
+  },
+  "Column_10chwhk": {
+    "Id": "Column_10chwhk",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_104dvui",
+    "Column::Field": [
+      "IRMA_Ref"
+    ]
+  },
+  "Row_104dvuj": {
+    "Id": "Row_104dvuj",
+    "Kind": "Row",
+    "Column": "Column_104f3zy",
+    "Row::Column": [
+      "Column_1nmzy1g",
+      "Column_s14uht"
+    ]
+  },
+  "Column_1nmzy1g": {
+    "Id": "Column_1nmzy1g",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_104dvuj",
+    "Column::Field": [
+      "TC_Item_Ref"
+    ]
+  },
+  "Column_s14uht": {
+    "Id": "Column_s14uht",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_104dvuj",
+    "Column::Field": [
+      "SAP_Material_No"
+    ]
+  },
+  "Material_Code": {
+    "Id": "Material_Code",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Material_Code",
+    "Model": "CIQ_Raw_Material_A00",
+    "Column": "Column_15phubg"
+  },
+  "Trade_Name": {
+    "Id": "Trade_Name",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Trade_Name",
+    "Model": "CIQ_Raw_Material_A00",
+    "Column": "Column_1srev7",
+    "Required": true
+  },
+  "Main_INCI": {
+    "Id": "Main_INCI",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Main_INCI",
+    "Model": "CIQ_Raw_Material_A00",
+    "Column": "Column_qx9sre"
+  },
+  "QueryDefinition_10lwh2t": {
+    "Id": "QueryDefinition_10lwh2t",
+    "Kind": "QueryDefinition",
+    "Field": "Material_Supplier",
+    "LHSModel": "CIQ_Supplier_A00",
+    "FlowType": "Form",
+    "LookupField": [
+      {
+        "Id": "Supplier_Code",
+        "Name": "Supplier_Code",
+        "Type": "Text"
+      }
+    ],
+    "HiddenField": []
+  },
+  "Material_Supplier": {
+    "Id": "Material_Supplier",
+    "Kind": "Field",
+    "Type": "Reference",
+    "Name": "Material_Supplier",
+    "Model": "CIQ_Raw_Material_A00",
+    "Column": "Column_10lwh2t",
+    "Field::QueryDefinition": [
+      "QueryDefinition_10lwh2t"
+    ]
+  },
+  "BDF_Material_No": {
+    "Id": "BDF_Material_No",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "BDF_Material_No",
+    "Model": "CIQ_Raw_Material_A00",
+    "Column": "Column_actlyh"
+  },
+  "IRMA_Ref": {
+    "Id": "IRMA_Ref",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "IRMA_Ref",
+    "Model": "CIQ_Raw_Material_A00",
+    "Column": "Column_10chwhk"
+  },
+  "TC_Item_Ref": {
+    "Id": "TC_Item_Ref",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "TC_Item_Ref",
+    "Model": "CIQ_Raw_Material_A00",
+    "Column": "Column_1nmzy1g"
+  },
+  "SAP_Material_No": {
+    "Id": "SAP_Material_No",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "SAP_Material_No",
+    "Model": "CIQ_Raw_Material_A00",
+    "Column": "Column_s14uht"
+  }
+}

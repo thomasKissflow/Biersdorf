@@ -1,0 +1,151 @@
+{
+ "rehearsal": "R1",
+ "flow": "CIQ_ZZ_Spike_Case_A00",
+ "what": "add-field Spike_V5_Note (Text) + Spike_V5_Phase (Select, Yes No list) with explicit per-step levels",
+ "at": "2026-10-14T17:26:05.599Z",
+ "apply": true,
+ "liveMetaVersion": "1791998648041323",
+ "livePublishedAt": "2026-10-14T17:24:07Z",
+ "mutation": {
+  "note": {
+   "field": "Spike V5 Note",
+   "id": "Spike_V5_Note",
+   "column": "Column_1oo0jd6",
+   "type": "Text",
+   "ref": null,
+   "stepPermissions": 14
+  },
+  "phase": {
+   "field": "Spike V5 Phase",
+   "id": "Spike_V5_Phase",
+   "column": "Column_d6l891",
+   "type": "Select",
+   "ref": null,
+   "stepPermissions": 14
+  },
+  "strippedNonTaskPerms": [
+   "Activity_t7r746:Permission_c2v3t",
+   "SendBackToInitiator:Permission_b71vhc",
+   "Activity_t7r746:Permission_1uc6kv2",
+   "SendBackToInitiator:Permission_jbae3p"
+  ]
+ },
+ "diffSummary": {
+  "added": 30,
+  "removed": 0,
+  "changed": 14
+ },
+ "preflight": {
+  "errors": [],
+  "warnings": [
+   "NO_ID",
+   "ORPHAN_ENTITY"
+  ]
+ },
+ "write": {
+  "ok": true,
+  "putDraft": 200,
+  "publish": 200,
+  "publishedAt": "2026-10-14T17:26:08Z"
+ },
+ "readBack": {
+  "metaVersion": "1791998769023461",
+  "publishedAt": "2026-10-14T17:26:08Z",
+  "diffVsSent": {
+   "added": [],
+   "removed": [],
+   "changed": []
+  },
+  "steps": [
+   "Create spike case [Activity_18dgdbl]  perms=37",
+   "Spike prepare [Activity_194d12o] AppRole:Admin / Developer perms=37",
+   "Spike review lanes [Activity_t7r746]  perms=0",
+   "  Spike review – A [Activity_7a5wvb] AppRole:Admin / Developer if Flag_A = \"Yes\" perms=37",
+   "  Spike review – B [Activity_7a5wvc] AppRole:Admin / Developer if Flag_B = \"Yes\" perms=37",
+   "  Spike review – C [Activity_7a5wvd] AppRole:Admin / Developer if Flag_C = \"Yes\" perms=37",
+   "  Spike review – D [Activity_7a5wve] AppRole:Admin / Developer if Flag_D = \"Yes\" perms=37",
+   "  Spike review – E [Activity_7a5wvf] AppRole:Admin / Developer if Flag_E = \"Yes\" perms=37",
+   "  Spike review – F [Activity_7a5wvg] AppRole:Admin / Developer if Flag_F = \"Yes\" perms=37",
+   "Spike hold check [Activity_90lk5i] AppRole:Admin / Developer if Hold_Flag = \"Yes\" perms=37",
+   "Spike gated step [Activity_1tuyhu] AppRole:Admin / Developer perms=37",
+   "Spike not-equal step [Activity_1uarf0z] AppRole:Admin / Developer if Spike_Decision != \"Rejected\" perms=37",
+   "End [Activity_1t24obg]  perms=37"
+  ]
+ },
+ "publishedFields": {
+  "status": 200,
+  "ids": [
+   "Flag_A",
+   "Flag_B",
+   "Flag_C",
+   "Flag_D",
+   "Flag_E",
+   "Flag_F",
+   "Lane_A_Confirm",
+   "Lane_A_By",
+   "Lane_A_At",
+   "Lane_A_Note",
+   "Lane_B_Confirm",
+   "Lane_B_By",
+   "Lane_B_At",
+   "Lane_B_Note",
+   "Lane_C_Confirm",
+   "Lane_C_By",
+   "Lane_C_At",
+   "Lane_C_Note",
+   "Lane_D_Confirm",
+   "Lane_D_By",
+   "Lane_D_At",
+   "Lane_D_Note",
+   "Lane_E_Confirm",
+   "Lane_E_By",
+   "Lane_E_At",
+   "Lane_E_Note",
+   "Lane_F_Confirm",
+   "Lane_F_By",
+   "Lane_F_At",
+   "Lane_F_Note",
+   "Spike_Decision",
+   "Open_Count",
+   "Hold_Flag",
+   "Gate",
+   "Spike_V5_Note",
+   "Spike_V5_Phase"
+  ]
+ },
+ "run": {
+  "item": "PkEMvy3KGl4d",
+  "create": 200,
+  "label": "R1: flags No; Note at create",
+  "startUpdateNote": {
+   "status": 200
+  },
+  "startUpdatePhase_ReadOnlyAtStart": {
+   "status": 200
+  },
+  "atStartReadBack": {
+   "Spike_V5_Note": "R1 updated at Start (assignee route)",
+   "Spike_V5_Phase": "Yes"
+  },
+  "submitStart": 403,
+  "submitStartErr": "KISSFLOW_ERROR_050302 You don't have permission to submit this item anymore.",
+  "adminRoute_PkEMvy3KGl4d": {
+   "put": 200,
+   "itemStatus": "Draft",
+   "step": "Create spike case",
+   "readBack": {
+    "Spike_V5_Phase": "Yes",
+    "Spike_V5_Note": "R1 admin-route write 10141726"
+   }
+  },
+  "adminRoute_PkEKO4Ijeqy3": {
+   "put": 200,
+   "itemStatus": "InProgress",
+   "step": "Spike prepare",
+   "readBack": {
+    "Spike_V5_Phase": "Yes",
+    "Spike_V5_Note": "R1 admin-route write 10141726"
+   }
+  }
+ }
+}

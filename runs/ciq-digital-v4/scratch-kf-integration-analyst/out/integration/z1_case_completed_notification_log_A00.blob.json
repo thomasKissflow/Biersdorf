@@ -1,0 +1,68 @@
+{
+  "Root": "z1_case_completed_notification_log_A00",
+  "z1_case_completed_notification_log_A00": {
+    "_id": "z1_case_completed_notification_log_A00",
+    "Id": "z1_case_completed_notification_log_A00",
+    "Kind": "Integration",
+    "Name": "CIQ Z1 Case completed – PDF, e-mails, notification event",
+    "Type": "Integration",
+    "Status": "Draft",
+    "IsActive": true,
+    "_application_id": "CIQ_Digital_A00",
+    "Connectors": [
+      "Connector_huw632"
+    ],
+    "Integration::Trigger": [
+      "Trigger_1k3d4qk"
+    ],
+    "Integration::Action": [
+      "Action_1k3d4q1"
+    ]
+  },
+  "Connector_huw632": {
+    "_id": "Connector_huw632",
+    "Id": "Connector_huw632",
+    "Kind": "Connector",
+    "Name": "CIQ Z1 Case completed – PDF, e-mails, notification event connector",
+    "Entities": [
+      "Trigger_1k3d4qk",
+      "Action_1k3d4q1"
+    ]
+  },
+  "Trigger_1k3d4qk": {
+    "_id": "Trigger_1k3d4qk",
+    "Id": "Trigger_1k3d4qk",
+    "Kind": "Trigger",
+    "Version": 1,
+    "Name": "CIQ_Case_A00 · completed",
+    "Flow": "CIQ_Case_A00",
+    "On": "CASE_END",
+    "Event": "completed"
+  },
+  "Action_1k3d4q1": {
+    "_id": "Action_1k3d4q1",
+    "Id": "Action_1k3d4q1",
+    "Kind": "Action",
+    "Version": 1,
+    "Name": "create → CIQ_Audit_Event_A00",
+    "ActionType": "create",
+    "TargetFlow": "CIQ_Audit_Event_A00",
+    "FieldMap": {
+      "Event_Category": "'Notification'",
+      "Action_Code": "'Z1 case completed'",
+      "Actor_Side": "'System'",
+      "Case_Code": "Case_Code",
+      "Cycle_No": "Cycle_No",
+      "Case_Item_Id": "_id",
+      "Object_Kind": "'CIQ Case'",
+      "Object_Key": "Case_Code",
+      "Object_Item_Id": "_id",
+      "Object_State": "'Completed'",
+      "Notify_Recipient": "Supplier_Contact_Emails",
+      "Notify_Channel": "'E-mail'",
+      "New_Value_Text": "Completion_Trigger",
+      "Event_Reason": "Overall_Decision"
+    },
+    "Condition": null
+  }
+}

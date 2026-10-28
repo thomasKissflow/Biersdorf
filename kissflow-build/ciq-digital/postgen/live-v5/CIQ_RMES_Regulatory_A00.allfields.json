@@ -1,0 +1,724 @@
+{
+ "status": 200,
+ "body": {
+  "CIQ_RMES_Regulatory_A00": {
+   "Id": "CIQ_RMES_Regulatory_A00",
+   "Name": "CIQ RMES Regulatory",
+   "Tables": [
+    "Regulatory_Criteria",
+    "Regulatory_Findings"
+   ],
+   "Fields": [
+    {
+     "Id": "RMES_Key",
+     "Name": "RMES Key",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_RMES_Regulatory_A00",
+     "Widget": null,
+     "Required": true,
+     "IsInternal": false
+    },
+    {
+     "Id": "Result_Case",
+     "Name": "Result Case",
+     "Type": "Reference",
+     "IsSystemField": false,
+     "Model": "CIQ_RMES_Regulatory_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "Attributes": [
+      {
+       "Id": "Name",
+       "Name": "Name",
+       "Type": "Text"
+      },
+      {
+       "Id": "Case_Code",
+       "Name": "Case Code",
+       "Type": "Text"
+      }
+     ]
+    },
+    {
+     "Id": "Case_Item_Id",
+     "Name": "Case Item Id",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_RMES_Regulatory_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Case_Code",
+     "Name": "Case Code",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_RMES_Regulatory_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Cycle_No",
+     "Name": "Cycle No",
+     "Type": "Number",
+     "IsSystemField": false,
+     "Model": "CIQ_RMES_Regulatory_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "Decimalpoint": null
+    },
+    {
+     "Id": "Open_Criteria_Count",
+     "Name": "Open Criteria Count",
+     "Type": "Number",
+     "IsSystemField": false,
+     "Model": "CIQ_RMES_Regulatory_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "Decimalpoint": null
+    },
+    {
+     "Id": "Open_Blocking_Findings_Count",
+     "Name": "Open Blocking Findings Count",
+     "Type": "Number",
+     "IsSystemField": false,
+     "Model": "CIQ_RMES_Regulatory_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "Decimalpoint": null
+    },
+    {
+     "Id": "Editing_By",
+     "Name": "Editing By",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_RMES_Regulatory_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Editing_Since",
+     "Name": "Editing Since",
+     "Type": "DateTime",
+     "IsSystemField": false,
+     "Model": "CIQ_RMES_Regulatory_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "RMES_Voided",
+     "Name": "RMES Voided",
+     "Type": "Select",
+     "IsSystemField": false,
+     "Model": "CIQ_RMES_Regulatory_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    }
+   ],
+   "Regulatory_Criteria": {
+    "Id": "Regulatory_Criteria",
+    "Name": "Criteria",
+    "Fields": [
+     {
+      "Id": "Criteria_Code",
+      "Name": "Criterion Code",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_Part",
+      "Name": "RMES Part",
+      "Type": "Select",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_Title",
+      "Name": "Criterion Title",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_Applicable",
+      "Name": "Applicable",
+      "Type": "Select",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_Applicability_Basis",
+      "Name": "Applicability Basis",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_Override_Reason",
+      "Name": "Override Reason",
+      "Type": "Textarea",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_Prefill_Value",
+      "Name": "Prefill Value",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_Source_Section_Key",
+      "Name": "Source Section Key",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_Source_Field_Key",
+      "Name": "Source Field Key",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_Source_Row_Id",
+      "Name": "Source Row Id",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_Source_Value_Text",
+      "Name": "Source Value Text",
+      "Type": "Textarea",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_Source_Answers_Rev",
+      "Name": "Source Answers Rev",
+      "Type": "Number",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false,
+      "Decimalpoint": null
+     },
+     {
+      "Id": "Criteria_Source_Doc_File_Name",
+      "Name": "Source Doc File Name",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_Source_Doc_Uploaded_At",
+      "Name": "Source Doc Uploaded At",
+      "Type": "DateTime",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_Result",
+      "Name": "Result",
+      "Type": "Select",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_Comment",
+      "Name": "Comment",
+      "Type": "Textarea",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_Recorded_By",
+      "Name": "Recorded By",
+      "Type": "User",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false,
+      "SourceFlowId": "User",
+      "SourceFlowType": "User"
+     },
+     {
+      "Id": "Criteria_Recorded_At",
+      "Name": "Recorded At",
+      "Type": "DateTime",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_Reported_Value",
+      "Name": "Reported Value",
+      "Type": "Number",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false,
+      "Decimalpoint": null
+     },
+     {
+      "Id": "Criteria_Reported_Unit",
+      "Name": "Reported Unit",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_Limit_Value",
+      "Name": "Limit Value",
+      "Type": "Number",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false,
+      "Decimalpoint": null
+     },
+     {
+      "Id": "Criteria_Limit_Comparator",
+      "Name": "Limit Comparator",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_Limit_Set_Version",
+      "Name": "Limit Set Version",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_Limit_Pass",
+      "Name": "Limit Pass",
+      "Type": "Select",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_Impact_Resolution",
+      "Name": "Impact Resolution",
+      "Type": "Select",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_AI_Suggestion_Text",
+      "Name": "AI Suggestion Text",
+      "Type": "Textarea",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_AI_Source_Quote",
+      "Name": "AI Source Quote",
+      "Type": "Textarea",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_AI_Source_Doc_File_Name",
+      "Name": "AI Source Doc File Name",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_AI_Source_Doc_Uploaded_At",
+      "Name": "AI Source Doc Uploaded At",
+      "Type": "DateTime",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_AI_State",
+      "Name": "AI State",
+      "Type": "Select",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_AI_Decided_By",
+      "Name": "AI Confirmed By",
+      "Type": "User",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false,
+      "SourceFlowId": "User",
+      "SourceFlowType": "User"
+     },
+     {
+      "Id": "Criteria_AI_Decided_At",
+      "Name": "AI Confirmed At",
+      "Type": "DateTime",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Criteria_Open_Num",
+      "Name": "Open Num",
+      "Type": "Number",
+      "IsSystemField": false,
+      "Model": "Regulatory_Criteria",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false,
+      "Decimalpoint": null
+     }
+    ]
+   },
+   "Regulatory_Findings": {
+    "Id": "Regulatory_Findings",
+    "Name": "Findings",
+    "Fields": [
+     {
+      "Id": "Findings_Text",
+      "Name": "Finding Text",
+      "Type": "Textarea",
+      "IsSystemField": false,
+      "Model": "Regulatory_Findings",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Findings_Criterion_Code",
+      "Name": "Criterion Code",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "Regulatory_Findings",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Findings_Blocking",
+      "Name": "Blocking",
+      "Type": "Select",
+      "IsSystemField": false,
+      "Model": "Regulatory_Findings",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Findings_State",
+      "Name": "Finding State",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "Regulatory_Findings",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Findings_Linked_OP_Key",
+      "Name": "Linked OP Key",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "Regulatory_Findings",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Findings_Key",
+      "Name": "Finding Key",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "Regulatory_Findings",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     }
+    ]
+   },
+   "System": [
+    {
+     "Id": "Name",
+     "Name": "Name",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_created_by",
+     "Name": "Created by",
+     "Type": "User",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "SourceFlowId": "UserAbstract",
+     "SourceFlowType": null,
+     "Attributes": [
+      {
+       "Id": "Status",
+       "Name": "Status",
+       "Type": "DropdownList"
+      },
+      {
+       "Id": "FirstName",
+       "Name": "First name",
+       "Type": "Text"
+      },
+      {
+       "Id": "LastName",
+       "Name": "Last name",
+       "Type": "Text"
+      },
+      {
+       "Id": "ProfilePicture",
+       "Name": "Profile picture",
+       "Type": "ProfilePicture"
+      }
+     ]
+    },
+    {
+     "Id": "_modified_by",
+     "Name": "Modified by",
+     "Type": "User",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "SourceFlowId": "UserAbstract",
+     "SourceFlowType": null,
+     "Attributes": [
+      {
+       "Id": "Status",
+       "Name": "Status",
+       "Type": "DropdownList"
+      },
+      {
+       "Id": "FirstName",
+       "Name": "First name",
+       "Type": "Text"
+      },
+      {
+       "Id": "LastName",
+       "Name": "Last name",
+       "Type": "Text"
+      },
+      {
+       "Id": "ProfilePicture",
+       "Name": "Profile picture",
+       "Type": "ProfilePicture"
+      }
+     ]
+    },
+    {
+     "Id": "_created_at",
+     "Name": "Created at",
+     "Type": "DateTime",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_modified_at",
+     "Name": "Modified at",
+     "Type": "DateTime",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_deleted_at",
+     "Name": "Deleted at",
+     "Type": "DateTime",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true
+    },
+    {
+     "Id": "_deleted_by",
+     "Name": "Deleted by",
+     "Type": "User",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true,
+     "SourceFlowId": "UserAbstract",
+     "SourceFlowType": null,
+     "Attributes": [
+      {
+       "Id": "Status",
+       "Name": "Status",
+       "Type": "DropdownList"
+      },
+      {
+       "Id": "FirstName",
+       "Name": "First name",
+       "Type": "Text"
+      },
+      {
+       "Id": "LastName",
+       "Name": "Last name",
+       "Type": "Text"
+      },
+      {
+       "Id": "ProfilePicture",
+       "Name": "Profile picture",
+       "Type": "ProfilePicture"
+      }
+     ]
+    },
+    {
+     "Id": "_flow_name",
+     "Name": "Flow name",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_application_id",
+     "Name": "Application id",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true
+    },
+    {
+     "Id": "_flow_type",
+     "Name": "Flow type",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true
+    },
+    {
+     "Id": "_doc_version",
+     "Name": "DocVersion",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true
+    }
+   ]
+  }
+ }
+}

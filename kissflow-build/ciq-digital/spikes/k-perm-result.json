@@ -1,0 +1,133 @@
+{
+  "tests": [
+    {
+      "name": "create case (flags at create)",
+      "status": 200,
+      "msg": null,
+      "code": null,
+      "id": "PkEKO1pn5eI1"
+    },
+    {
+      "name": "submit Start",
+      "status": 200,
+      "msg": null,
+      "code": null
+    },
+    {
+      "name": "GET item via assignee route at Spike prepare",
+      "status": 200,
+      "msg": null,
+      "code": null,
+      "hasPermissionInfo": null
+    },
+    {
+      "name": "prepare: update Spike_Decision (Editable)",
+      "status": 400,
+      "msg": "You don't have permission to update the following fields: {fields}.",
+      "code": "KISSFLOW_ERROR_050313"
+    },
+    {
+      "name": "prepare: update Lane_A_Note (ReadOnly here)",
+      "status": 400,
+      "msg": "You don't have permission to update the following fields: {fields}.",
+      "code": "KISSFLOW_ERROR_050313"
+    },
+    {
+      "name": "prepare: update Flag_D (Editable)",
+      "status": 400,
+      "msg": "You don't have permission to update the following fields: {fields}.",
+      "code": "KISSFLOW_ERROR_050313"
+    },
+    {
+      "name": "prepare: update with _id in body",
+      "status": 400,
+      "msg": "You don't have permission to update the following fields: {fields}.",
+      "code": "KISSFLOW_ERROR_050313"
+    },
+    {
+      "name": "submit Spike prepare",
+      "status": 200,
+      "msg": null,
+      "code": null
+    },
+    {
+      "name": "GET item via assignee route at branch A",
+      "status": 200,
+      "msg": null,
+      "code": null,
+      "current_step_seen": "Spike review – A,Spike review – B,Spike review – C"
+    },
+    {
+      "name": "A: Lane_A_Note only",
+      "status": 400,
+      "msg": "You don't have permission to update the following fields: {fields}.",
+      "code": "KISSFLOW_ERROR_050313"
+    },
+    {
+      "name": "A: Lane_A_Confirm only",
+      "status": 400,
+      "msg": "You don't have permission to update the following fields: {fields}.",
+      "code": "KISSFLOW_ERROR_050313"
+    },
+    {
+      "name": "A: Lane_A_By only",
+      "status": 400,
+      "msg": "You don't have permission to update the following fields: {fields}.",
+      "code": "KISSFLOW_ERROR_050313"
+    },
+    {
+      "name": "A: Lane_A_At only",
+      "status": 400,
+      "msg": "You don't have permission to update the following fields: {fields}.",
+      "code": "KISSFLOW_ERROR_050313"
+    },
+    {
+      "name": "A: Lane_A_Note with _id",
+      "status": 400,
+      "msg": "You don't have permission to update the following fields: {fields}.",
+      "code": "KISSFLOW_ERROR_050313"
+    },
+    {
+      "name": "A: Lane_B_Note (other branch's field)",
+      "status": 400,
+      "msg": "You don't have permission to update the following fields: {fields}.",
+      "code": "KISSFLOW_ERROR_050313"
+    },
+    {
+      "name": "A: PUT instead of POST (Lane_A_Note)",
+      "status": 404,
+      "msg": "Resource not found. Verify the request URL and try again.",
+      "code": "KISSFLOW_ERROR_00137"
+    }
+  ],
+  "caseId": "PkEKO1pn5eI1",
+  "prepAct": "PkEKO1qU1bLt",
+  "assigneeGetKeys": "_id,_created_by,_modified_by,_created_at,_modified_at,_flow_name,_application_id,_flow_type,_doc_version,_current_step,_current_assigned_to,_status,_stage,_root_process_instance,_submitted_at,_request_number,_counter,_last_completed_step,_progress,_activity_instance_id,_activity_id,_note,_entity_id,_current_context,_meta_version",
+  "afterPrepUpdates": {
+    "Lane_A_Note": null
+  },
+  "fork": [
+    {
+      "step": "Spike review – A",
+      "act": "PkEKO1xYteOq"
+    },
+    {
+      "step": "Spike review – B",
+      "act": "PkEKO1xa62ht"
+    },
+    {
+      "step": "Spike review – C",
+      "act": "PkEKO1xbtGsb"
+    }
+  ],
+  "afterBranchProbes": {
+    "Lane_A_Confirm": null,
+    "Lane_A_By": null,
+    "Lane_A_At": null,
+    "Lane_A_Note": null,
+    "Lane_B_Confirm": null,
+    "Lane_B_By": null,
+    "Lane_B_At": null,
+    "Lane_B_Note": null
+  }
+}

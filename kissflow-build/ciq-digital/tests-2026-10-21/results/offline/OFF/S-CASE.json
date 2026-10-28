@@ -1,0 +1,435 @@
+{
+ "suite": "S-CASE",
+ "run": "OFF",
+ "startedAt": "2026-10-28T12:19:11.909Z",
+ "savedAt": "2026-10-28T12:19:11.939Z",
+ "counts": {
+  "pass": 2,
+  "fail": 1,
+  "blocked": 0,
+  "not-run": 12
+ },
+ "steps": [
+  {
+   "name": "0 integrations ON",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "integration lists (both apps)",
+      "value": [
+       "case.started: Live ON",
+       "review.reopened: Live ON",
+       "op.round: Live ON",
+       "op.edited: Live ON",
+       "op.closed: Live ON",
+       "release.requested: Live ON",
+       "history.updated: Live ON",
+       "case.cancelled: Live ON",
+       "requestChanged: Live ON",
+       "completenessConfirmed: Live ON",
+       "queryAnswered: Live ON",
+       "releaseGiven: Live ON"
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "all 12 integrations Live and ON",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "every built hand-off has its webhook URL (by code)",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "calls": 2
+    }
+   },
+   "ms": 0,
+   "at": "2026-10-28T12:19:11.910Z"
+  },
+  {
+   "name": "1 supplier master",
+   "status": "fail",
+   "reason": "failed: the supplier reads back as written (country as its live code)",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Supplier (form GET)",
+      "value": {
+       "Supplier_Code": "ZZT-N21-OFF-SC1-SUP",
+       "Supplier_Legal_Name": "ZZT-N21-OFF Supplier",
+       "DUNS_Number": "920000001",
+       "Supplier_Kind": "Manufacturer",
+       "Supplier_Country_Code": "DE",
+       "Supplier_City": "ZZT-N21-OFF Hamburg",
+       "Supplier_Active": "Yes",
+       "contacts": [
+        {
+         "Contacts_Key": "u-ZZT-N21-OFF-SC1-SUP-1",
+         "Contacts_Full_Name": "Katrin Vogel",
+         "Contacts_Email": "zzt-n21-off-sc1.self@example.test",
+         "Contacts_Title": "Regulatory Manager",
+         "Contacts_Can_Confirm": "Yes",
+         "Contacts_Active": "Yes",
+         "Contacts_Portal_User_Id": "UsRmmKatrin"
+        },
+        {
+         "Contacts_Key": "u-ZZT-N21-OFF-SC1-SUP-2",
+         "Contacts_Full_Name": "Marta Lindqvist",
+         "Contacts_Email": "marta.lindqvist.sc1@zzt-n21-r1.example",
+         "Contacts_Title": "QA Specialist",
+         "Contacts_Can_Confirm": "No",
+         "Contacts_Active": "Yes",
+         "Contacts_Portal_User_Id": null
+        }
+       ]
+      }
+     },
+     {
+      "what": "CIQ Supplier (list row keys)",
+      "value": [
+       "_id",
+       "_created_by",
+       "_created_at",
+       "_modified_by",
+       "_modified_at",
+       "Supplier_Code",
+       "Supplier_Legal_Name",
+       "DUNS_Number",
+       "Supplier_Kind",
+       "Supplier_Country_Code",
+       "Supplier_City",
+       "Supplier_Active"
+      ]
+     },
+     {
+      "what": "mapped supplier (RMM)",
+      "value": {
+       "id": "ZZT-N21-OFF-SC1-SUP",
+       "name": "ZZT-N21-OFF Supplier",
+       "duns": "920000001",
+       "country": "Germany",
+       "city": "ZZT-N21-OFF Hamburg",
+       "type": "manufacturer",
+       "active": true,
+       "contacts": 2
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "every header field as written (supplierFields)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "two contact rows, no duplicate",
+      "ok": true,
+      "detail": 2
+     },
+     {
+      "label": "contact row u-ZZT-N21-OFF-SC1-SUP-1 as written (contactRow)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "contact row u-ZZT-N21-OFF-SC1-SUP-2 as written (contactRow)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the self contact's portal user is the key's user",
+      "ok": true,
+      "detail": "UsRmmKatrin"
+     },
+     {
+      "label": "the placeholder has no portal user",
+      "ok": true
+     },
+     {
+      "label": "the list row is there and has no child table",
+      "ok": true
+     },
+     {
+      "label": "its audit row: supplier.changed",
+      "ok": true,
+      "detail": {
+       "Action_Code": "supplier.changed",
+       "Object_Item_Id": "FmSup2"
+      }
+     },
+     {
+      "label": "the supplier reads back as written (country as its live code)",
+      "ok": false,
+      "detail": {
+       "got": {
+        "id": "ZZT-N21-OFF-SC1-SUP",
+        "name": "ZZT-N21-OFF Supplier",
+        "duns": "920000001",
+        "country": "Germany",
+        "city": "ZZT-N21-OFF Hamburg",
+        "type": "manufacturer",
+        "active": true,
+        "contacts": 2
+       },
+       "want": {
+        "id": "ZZT-N21-OFF-SC1-SUP",
+        "name": "ZZT-N21-OFF Supplier",
+        "duns": "920000001",
+        "country": "DE",
+        "city": "ZZT-N21-OFF Hamburg",
+        "type": "manufacturer",
+        "active": true,
+        "contacts": 2
+       }
+      }
+     },
+     {
+      "label": "contact zzt-n21-off-sc1.self@example.test reads back as written",
+      "ok": true,
+      "detail": {
+       "got": {
+        "name": "Katrin Vogel",
+        "email": "zzt-n21-off-sc1.self@example.test",
+        "title": "Regulatory Manager",
+        "mayConfirm": true,
+        "active": true,
+        "supplierId": "ZZT-N21-OFF-SC1-SUP"
+       },
+       "want": {
+        "name": "Katrin Vogel",
+        "email": "zzt-n21-off-sc1.self@example.test",
+        "title": "Regulatory Manager",
+        "mayConfirm": true,
+        "active": true,
+        "supplierId": "ZZT-N21-OFF-SC1-SUP"
+       }
+      }
+     },
+     {
+      "label": "contact marta.lindqvist.sc1@zzt-n21-r1.example reads back as written",
+      "ok": true,
+      "detail": {
+       "got": {
+        "name": "Marta Lindqvist",
+        "email": "marta.lindqvist.sc1@zzt-n21-r1.example",
+        "title": "QA Specialist",
+        "mayConfirm": false,
+        "active": true,
+        "supplierId": "ZZT-N21-OFF-SC1-SUP"
+       },
+       "want": {
+        "name": "Marta Lindqvist",
+        "email": "marta.lindqvist.sc1@zzt-n21-r1.example",
+        "title": "QA Specialist",
+        "mayConfirm": false,
+        "active": true,
+        "supplierId": "ZZT-N21-OFF-SC1-SUP"
+       }
+      }
+     },
+     {
+      "label": "the self contact maps to self:<the key's user>",
+      "ok": true,
+      "detail": "self:UsRmmKatrin"
+     },
+     {
+      "label": "the placeholder keeps the domain's id",
+      "ok": true,
+      "detail": "u-ZZT-N21-OFF-SC1-SUP-2"
+     }
+    ],
+    "notes": {
+     "approximated": "the domain named the supplier \"s1\"; the suite renamed it to \"ZZT-N21-OFF-SC1-SUP\" before the app's writer encoded it (the run tag on every supplier code, SPEC §1)",
+     "CIQ Supplier": "FmSup2",
+     "not the app's writer": "Contacts_Portal_User_Id of the self contact written by a form update (by the row's _id): no app writer writes it",
+     "calls": 22
+    }
+   },
+   "ms": 12,
+   "at": "2026-10-28T12:19:11.911Z"
+  },
+  {
+   "name": "2 draft",
+   "status": "not-run",
+   "reason": "needs \"1 supplier master\" (fail)",
+   "evidence": {
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-28T12:19:11.924Z"
+  },
+  {
+   "name": "3 started (I-1)",
+   "status": "not-run",
+   "reason": "needs \"1 supplier master\" (fail)",
+   "evidence": {
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-28T12:19:11.924Z"
+  },
+  {
+   "name": "4a answers saved (request.changed)",
+   "status": "not-run",
+   "reason": "needs \"3 started (I-1)\" (not-run)",
+   "evidence": {
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-28T12:19:11.925Z"
+  },
+  {
+   "name": "4b completeness confirmed (I-2 fields)",
+   "status": "not-run",
+   "reason": "needs \"4a answers saved (request.changed)\" (not-run)",
+   "evidence": {
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-28T12:19:11.925Z"
+  },
+  {
+   "name": "4c I-2 Approve",
+   "status": "not-run",
+   "reason": "needs \"4b completeness confirmed (I-2 fields)\" (not-run)",
+   "evidence": {
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-28T12:19:11.926Z"
+  },
+  {
+   "name": "5 reviews (E-A)",
+   "status": "not-run",
+   "reason": "needs \"4b completeness confirmed (I-2 fields)\" (not-run)",
+   "evidence": {
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-28T12:19:11.926Z"
+  },
+  {
+   "name": "6a RMES Safety",
+   "status": "not-run",
+   "reason": "needs \"5 reviews (E-A)\" (not-run)",
+   "evidence": {
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-28T12:19:11.927Z"
+  },
+  {
+   "name": "6b RMES Regulatory",
+   "status": "not-run",
+   "reason": "needs \"5 reviews (E-A)\" (not-run)",
+   "evidence": {
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-28T12:19:11.927Z"
+  },
+  {
+   "name": "7 review completion",
+   "status": "not-run",
+   "reason": "needs \"5 reviews (E-A)\" (not-run)",
+   "evidence": {
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-28T12:19:11.928Z"
+  },
+  {
+   "name": "8 release requested",
+   "status": "not-run",
+   "reason": "needs \"5 reviews (E-A)\" (not-run)",
+   "evidence": {
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-28T12:19:11.928Z"
+  },
+  {
+   "name": "9 final release (I-7)",
+   "status": "not-run",
+   "reason": "needs \"8 release requested\" (not-run)",
+   "evidence": {
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-28T12:19:11.929Z"
+  },
+  {
+   "name": "10 cancelled case",
+   "status": "not-run",
+   "reason": "needs \"1 supplier master\" (fail)",
+   "evidence": {
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-28T12:19:11.930Z"
+  },
+  {
+   "name": "11 cleanup",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "this suite's ledger items after the cleanup",
+      "value": [
+       "CIQ_Audit_Event_A00 FmAudit4: row, deleted",
+       "CIQ_Supplier_A00 FmSup2: row, deleted"
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit4 (Event_Key=EV-LOG-20261028121911-odd1 Action_Code=supplier.changed): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 Document not found (FmAudit4)"
+     },
+     {
+      "label": "CIQ_Supplier_A00 FmSup2 (Supplier_Code=ZZT-N21-OFF-SC1-SUP Supplier_Legal_Name=ZZT-N21-OFF Supplier): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 Document not found (FmSup2)"
+     }
+    ],
+    "notes": {
+     "I-1's requests found at the cleanup (adopted)": [],
+     "calls": 6
+    }
+   },
+   "ms": 1,
+   "at": "2026-10-28T12:19:11.930Z"
+  }
+ ]
+}

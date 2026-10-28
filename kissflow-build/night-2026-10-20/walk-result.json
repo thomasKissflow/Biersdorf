@@ -1,0 +1,109 @@
+{
+ "at": "2026-10-19T21:05:12.624Z",
+ "results": [
+  {
+   "id": "W1-start-to-fill",
+   "pass": true,
+   "detail": {
+    "submit": 200,
+    "step": "Supplier: fill in the CIQ"
+   }
+  },
+  {
+   "id": "W1-fill-to-keep",
+   "pass": true,
+   "detail": {
+    "status": 200,
+    "from": "Supplier: fill in the CIQ",
+    "to": "Supplier: keep the CIQ up to date",
+    "label": "fill in"
+   }
+  },
+  {
+   "id": "W1-key-submit-of-keep",
+   "pass": true,
+   "detail": {
+    "status": 200,
+    "from": "Supplier: keep the CIQ up to date",
+    "to": "Supplier: give the final release",
+    "label": "keep up to date (Keep_Open_Gate Mandatory)",
+    "note": "the key (as assignee) CAN move keep → release: Mandatory is not enforced on key submits"
+   }
+  },
+  {
+   "id": "W1-release-to-view-released",
+   "pass": true,
+   "detail": {
+    "status": 200,
+    "from": "Supplier: give the final release",
+    "to": "Supplier: view the released CIQ",
+    "label": "give the final release"
+   }
+  },
+  {
+   "id": "W1-view-step-not-submitted-by-supplier-ui",
+   "pass": true,
+   "detail": {
+    "status": 200,
+    "from": "Supplier: view the released CIQ",
+    "label": "view the released CIQ (should stay held)",
+    "note": "the key moved it on: Mandatory not enforced on key submits"
+   }
+  },
+  {
+   "id": "W2-start-to-fill",
+   "pass": true,
+   "detail": {
+    "submit": 200,
+    "step": "Supplier: fill in the CIQ"
+   }
+  },
+  {
+   "id": "W2-fill-to-keep",
+   "pass": true,
+   "detail": {
+    "status": 200,
+    "from": "Supplier: fill in the CIQ",
+    "to": "Supplier: keep the CIQ up to date",
+    "label": "fill in"
+   }
+  },
+  {
+   "id": "W2-key-submit-of-keep",
+   "pass": true,
+   "detail": {
+    "status": 200,
+    "from": "Supplier: keep the CIQ up to date",
+    "to": "Supplier: give the final release",
+    "label": "keep up to date (Keep_Open_Gate Mandatory)",
+    "note": "the key (as assignee) CAN move keep → release: Mandatory is not enforced on key submits"
+   }
+  },
+  {
+   "id": "W2-reopened-goto-back-to-keep",
+   "pass": true,
+   "detail": {
+    "status": 200,
+    "from": "Supplier: give the final release",
+    "to": "Supplier: keep the CIQ up to date",
+    "label": "give the final release"
+   }
+  },
+  {
+   "id": "cleanup-PkEOoSRIOr91",
+   "pass": true,
+   "detail": {
+    "delete": 200,
+    "after": 404
+   }
+  },
+  {
+   "id": "cleanup-PkEOoSxDsh3f",
+   "pass": true,
+   "detail": {
+    "delete": 200,
+    "after": 404
+   }
+  }
+ ]
+}

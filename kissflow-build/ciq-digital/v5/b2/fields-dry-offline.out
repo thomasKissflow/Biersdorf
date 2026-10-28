@@ -1,0 +1,339 @@
+{
+ "step": "B2-op-fields",
+ "flow": "CIQ_Open_Point_A00",
+ "what": "add the 5 §4.3 fields with explicit per-step levels; Start Mandatory/Editable and review-step Mandatory/Editable as §4.3; End all ReadOnly",
+ "at": "2026-10-14T18:38:44.312Z",
+ "apply": false,
+ "offline": true,
+ "liveMetaVersion": "1791485991666407",
+ "livePublishedAt": "2026-10-08T18:59:51Z",
+ "mutation": {
+  "added": [
+   {
+    "id": "Raised_By_User",
+    "type": "User",
+    "column": "Column_grxljk",
+    "qd": [
+     {
+      "Id": "QueryDefinition_1k8sp52",
+      "Kind": "QueryDefinition",
+      "Field": "Raised_By_User",
+      "LHSModel": "User",
+      "FlowType": "User",
+      "LookupField": [],
+      "HiddenField": []
+     }
+    ]
+   },
+   {
+    "id": "Raised_By_Name",
+    "type": "Text",
+    "column": "Column_grrsia",
+    "qd": []
+   },
+   {
+    "id": "Thread_JSON",
+    "type": "Textarea",
+    "column": "Column_6a0d75",
+    "qd": []
+   },
+   {
+    "id": "Closed_At",
+    "type": "DateTime",
+    "column": "Column_1etbg3y",
+    "qd": []
+   },
+   {
+    "id": "Closed_By",
+    "type": "User",
+    "column": "Column_1etbg50",
+    "qd": [
+     {
+      "Id": "QueryDefinition_50gz3e",
+      "Kind": "QueryDefinition",
+      "Field": "Closed_By",
+      "LHSModel": "User",
+      "FlowType": "User",
+      "LookupField": [],
+      "HiddenField": []
+     }
+    ]
+   }
+  ],
+  "stripped": [
+   "SendBackToInitiator:Permission_mfuerz",
+   "SendBackToInitiator:Permission_mfpy91",
+   "SendBackToInitiator:Permission_1pdp42c",
+   "SendBackToInitiator:Permission_4unaws",
+   "SendBackToInitiator:Permission_4unawl"
+  ],
+  "formulaFields": [
+   "Open_Num",
+   "Start_Gate"
+  ],
+  "roundsTable": {
+   "Activity_uka3mx": "Editable",
+   "Activity_1kdump3": "Editable",
+   "Activity_1go37bt": "Editable",
+   "Activity_hha7u2": "Editable",
+   "Activity_y4af4g": "Editable",
+   "Activity_xc8fbb": "Editable"
+  },
+  "openNumWas": "IF(OP_Outcome=\"Accepted\",0,IF(OP_Outcome=\"Withdrawn\",0,1))",
+  "levelChangesOnExistingFields": 130,
+  "matrixAfter": {
+   "Raise open point [Activity_18t0lhi]": {
+    "Mandatory": 16,
+    "Editable": 40,
+    "ReadOnly": 2
+   },
+   "Open point – Regulatory [Activity_uka3mx]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – Safety [Activity_1kdump3]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – QM [Activity_1go37bt]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – Microbiology [Activity_hha7u2]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – Sustainability [Activity_y4af4g]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – RMM [Activity_xc8fbb]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "End [Activity_i73i25]": {
+    "ReadOnly": 58
+   }
+  }
+ },
+ "diffSummary": {
+  "added": 62,
+  "removed": 11,
+  "changed": 148,
+  "addedByKind": {
+   "Row": 5,
+   "Column": 5,
+   "QueryDefinition": 2,
+   "Field": 5,
+   "Permission": 40,
+   "Node": 5
+  },
+  "removedByKind": {
+   "Node": 11
+  },
+  "changedByKind": {
+   "Model": 1,
+   "Column": 1,
+   "Field": 1,
+   "Expression": 1,
+   "Permission": 136,
+   "Activity": 8
+  }
+ },
+ "changedNonPermission": [
+  {
+   "entity": "CIQ_Open_Point_A00 Model CIQ Open Point",
+   "props": {
+    "Model::Field": {
+     "was": "[53]",
+     "now": "[58]"
+    }
+   }
+  },
+  {
+   "entity": "Column_waac5d Column Details",
+   "props": {
+    "Column::Row": {
+     "was": "[33]",
+     "now": "[38]"
+    }
+   }
+  },
+  {
+   "entity": "OP_Dept Field OP Dept",
+   "props": {
+    "Required": {
+     "now": true
+    }
+   }
+  },
+  {
+   "entity": "Expression_4nzy7r Expression",
+   "props": {
+    "ExpressionStr": {
+     "was": "IF(OP_Outcome=\"Accepted\",0,IF(OP_Outcome=\"Withdrawn\",0,1))",
+     "now": "IF(ISBLANK(OP_Outcome),1,0)"
+    },
+    "Expression::Node": {
+     "was": "[1]",
+     "now": "[1]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_18t0lhi Activity Raise open point",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_uka3mx Activity Open point – Regulatory",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_1kdump3 Activity Open point – Safety",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_1go37bt Activity Open point – QM",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_hha7u2 Activity Open point – Microbiology",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_y4af4g Activity Open point – Sustainability",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_xc8fbb Activity Open point – RMM",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_i73i25 Activity End",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  }
+ ],
+ "preflight": {
+  "errors": [],
+  "warnings": [
+   "NO_ID",
+   "ORPHAN_ENTITY"
+  ]
+ },
+ "dryCheck": {
+  "fields": 58,
+  "newFieldsPresent": [
+   "Raised_By_User:User qd=User",
+   "Raised_By_Name:Text",
+   "Thread_JSON:Textarea",
+   "Closed_At:DateTime",
+   "Closed_By:User qd=User"
+  ],
+  "startMandatoryExact": true,
+  "startEditableExact": true,
+  "reviewExact": [
+   "Activity_uka3mx: M=true E=true Rounds=ReadOnly",
+   "Activity_1kdump3: M=true E=true Rounds=ReadOnly",
+   "Activity_1go37bt: M=true E=true Rounds=ReadOnly",
+   "Activity_hha7u2: M=true E=true Rounds=ReadOnly",
+   "Activity_y4af4g: M=true E=true Rounds=ReadOnly",
+   "Activity_xc8fbb: M=true E=true Rounds=ReadOnly"
+  ],
+  "endAllReadOnly": true,
+  "openNum": {
+   "str": "IF(ISBLANK(OP_Outcome),1,0)",
+   "ok": true
+  },
+  "opDeptRequired": true,
+  "counts": {
+   "Raise open point [Activity_18t0lhi]": {
+    "Mandatory": 16,
+    "Editable": 40,
+    "ReadOnly": 2
+   },
+   "Open point – Regulatory [Activity_uka3mx]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – Safety [Activity_1kdump3]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – QM [Activity_1go37bt]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – Microbiology [Activity_hha7u2]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – Sustainability [Activity_y4af4g]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – RMM [Activity_xc8fbb]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "End [Activity_i73i25]": {
+    "ReadOnly": 58
+   }
+  },
+  "permsOnNonTaskActivities": [
+   "SendBackToInitiator:0"
+  ]
+ },
+ "calls": 0
+}

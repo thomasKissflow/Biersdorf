@@ -1,0 +1,283 @@
+{
+ "Root": "Mail_Integration_Thomas_A00",
+ "Mail_Integration_Thomas_A00": {
+  "Id": "Mail_Integration_Thomas_A00",
+  "Description": "To show claude a framework of the integration idea",
+  "Name": "Mail Integration - Thomas",
+  "Kind": "Integration",
+  "FlowType": "Integration",
+  "Integration::Trigger": [
+   "Trigger_G8ts1wtogS"
+  ],
+  "Integration::Action": [
+   "Action_cw5C-VXySq"
+  ],
+  "_application_id": "CIQ_Digital_A00"
+ },
+ "PublishedAt": "2026-10-16T09:18:56Z",
+ "PublishedBy": {
+  "_id": "UsEJUfjYLM8Y",
+  "Name": "Thomas",
+  "Kind": "User"
+ },
+ "_meta_version": "1792142336375171",
+ "Trigger_G8ts1wtogS": {
+  "Id": "Trigger_G8ts1wtogS",
+  "Kind": "Trigger",
+  "Type": "Create",
+  "Name": "Catch a webhook (POST)",
+  "IsInternalAuth": true,
+  "Connector": {
+   "_id": "Coowt2xE4WH9S",
+   "Name": "Webhooks by Kissflow",
+   "TriggerId": "WebhookTrigger",
+   "TriggerName": "Catch a webhook (POST)",
+   "Version": "1.0.0",
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com"
+  },
+  "Connection": {},
+  "Integration": "Mail_Integration_Thomas_A00",
+  "Trigger::WebhookAcknowledgement": [
+   "WebhookAcknowledgement_VFwzAR160a"
+  ],
+  "Output": {
+   "Body": "<html><body><div dir=\"ltr\" style=\"text-align: left; margin-top: 40px;\"><p>Hi User;,</p><p>A sample email body.</p><br><p>Best Regards,<br>Test</p></div></body></html>",
+   "To": "thomas@kissflow.com",
+   "Subject": "Test Subject"
+  },
+  "IsTested": true
+ },
+ "WebhookAcknowledgement_VFwzAR160a": {
+  "Id": "WebhookAcknowledgement_VFwzAR160a",
+  "Kind": "WebhookAcknowledgement",
+  "Trigger": "Trigger_G8ts1wtogS",
+  "WebhookAcknowledgement::WebhookResponse": [
+   "WebhookResponse_9erOC4kJBl"
+  ],
+  "IsEnabled": false
+ },
+ "WebhookResponse_9erOC4kJBl": {
+  "Id": "WebhookResponse_9erOC4kJBl",
+  "Kind": "WebhookResponse",
+  "WebhookAcknowledgement": "WebhookAcknowledgement_VFwzAR160a"
+ },
+ "Action_cw5C-VXySq": {
+  "Id": "Action_cw5C-VXySq",
+  "Kind": "Action",
+  "Type": "Create",
+  "Name": "Send an email",
+  "IsInternalAuth": true,
+  "Connector": {
+   "_id": "CoOj46v9fVh37",
+   "Name": "Email",
+   "ActionId": "SendEmail",
+   "ActionName": "Send an email",
+   "Version": "1.0.6",
+   "Status": "Published",
+   "WebsiteURL": "www.email.com"
+  },
+  "Connection": {},
+  "Integration": "Mail_Integration_Thomas_A00",
+  "Action::FieldMapping": [
+   "FieldMapping_JBR98SKlRZ",
+   "FieldMapping_6H1_leLf7_",
+   "FieldMapping_qZw0l2WE-7",
+   "FieldMapping_AnV8tnglUW",
+   "FieldMapping_LI4vDNZfBg",
+   "FieldMapping_eeGaZDMUuq",
+   "FieldMapping_kBqkYAc4KB",
+   "FieldMapping_uWREtYQjpT",
+   "FieldMapping_BvUIUh-IRM"
+  ],
+  "Output": {
+   "status": "success"
+  },
+  "IsTested": true
+ },
+ "FieldMapping_JBR98SKlRZ": {
+  "Id": "FieldMapping_JBR98SKlRZ",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField001",
+  "Label": "To",
+  "Name": "To",
+  "IsRequired": true,
+  "IsMultiValue": true,
+  "HelpText": "Enter multiple email fields or any text-based email addresses as comma separated values here",
+  "Action": "Action_cw5C-VXySq",
+  "FieldMapping::Property": [
+   "Property_nUJGR2OSm0"
+  ]
+ },
+ "FieldMapping_6H1_leLf7_": {
+  "Id": "FieldMapping_6H1_leLf7_",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField002",
+  "Label": "Subject",
+  "Name": "Subject",
+  "IsRequired": true,
+  "Action": "Action_cw5C-VXySq",
+  "FieldMapping::Property": [
+   "Property_2EX8zSbS6n"
+  ]
+ },
+ "FieldMapping_qZw0l2WE-7": {
+  "Id": "FieldMapping_qZw0l2WE-7",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField005",
+  "Label": "Cc",
+  "Name": "CC",
+  "IsMultiValue": true,
+  "HelpText": "Enter multiple email fields or any text-based email addresses as comma separated values here",
+  "Action": "Action_cw5C-VXySq"
+ },
+ "FieldMapping_AnV8tnglUW": {
+  "Id": "FieldMapping_AnV8tnglUW",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField006",
+  "Label": "Bcc",
+  "Name": "Bcc",
+  "IsMultiValue": true,
+  "HelpText": "Enter multiple email fields or any text-based email addresses as comma separated values here",
+  "Action": "Action_cw5C-VXySq"
+ },
+ "FieldMapping_LI4vDNZfBg": {
+  "Id": "FieldMapping_LI4vDNZfBg",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField007",
+  "Label": "Reply To",
+  "Name": "ReplyTo",
+  "IsMultiValue": true,
+  "HelpText": "Enter multiple email fields or any text-based email addresses as comma separated values here",
+  "Action": "Action_cw5C-VXySq"
+ },
+ "FieldMapping_eeGaZDMUuq": {
+  "Id": "FieldMapping_eeGaZDMUuq",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField008",
+  "Label": "From",
+  "Name": "From",
+  "HelpText": "The email address and the display label that your recipient will see",
+  "Action": "Action_cw5C-VXySq",
+  "FieldMapping::Property": [
+   "Property_HbA7Uci1_l"
+  ]
+ },
+ "FieldMapping_kBqkYAc4KB": {
+  "Id": "FieldMapping_kBqkYAc4KB",
+  "Kind": "FieldMapping",
+  "Type": "Attachment",
+  "FieldId": "ActionField009",
+  "Label": "Attachments",
+  "Name": "Attachments",
+  "IsMultiValue": true,
+  "AttachmentLimit": "10485760",
+  "AttachmentType": "Both",
+  "IsDropdown": false,
+  "IsPaginated": false,
+  "HelpText": "Map fields containing attachments or external URLs from your previous steps. The attachment size cannot exceed 10 MB",
+  "AutoRefresh": false,
+  "Action": "Action_cw5C-VXySq",
+  "FieldMapping::FieldMapping": [
+   "FieldMapping_PGmcRE95YP"
+  ]
+ },
+ "FieldMapping_PGmcRE95YP": {
+  "Id": "FieldMapping_PGmcRE95YP",
+  "Kind": "FieldMapping",
+  "Type": "Attachment",
+  "Name": "Attachment",
+  "Label": "Attachment",
+  "IsMultiValue": true,
+  "AttachmentType": "Both",
+  "FieldMapping": "FieldMapping_kBqkYAc4KB"
+ },
+ "FieldMapping_uWREtYQjpT": {
+  "Id": "FieldMapping_uWREtYQjpT",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Field_htDKY9uKu8",
+  "Label": "Body type",
+  "Name": "BodyType",
+  "IsRequired": true,
+  "IsMultiValue": false,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "AllowMultiples": false,
+  "DefaultValue": "RichText",
+  "Action": "Action_cw5C-VXySq",
+  "SelectedDropdown": [
+   {
+    "FieldId": "PlainText",
+    "FieldName": "HTML",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_N95yBK32d8"
+  ]
+ },
+ "FieldMapping_BvUIUh-IRM": {
+  "Id": "FieldMapping_BvUIUh-IRM",
+  "Kind": "FieldMapping",
+  "Type": "TextArea",
+  "FieldId": "ActionField012",
+  "Label": "Email body",
+  "Name": "Body",
+  "IsRequired": true,
+  "Action": "Action_cw5C-VXySq",
+  "FieldMapping::Property": [
+   "Property_Fp_rLXgEzg"
+  ]
+ },
+ "Property_nUJGR2OSm0": {
+  "Id": "Property_nUJGR2OSm0",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_JBR98SKlRZ",
+  "Type": "Field",
+  "Field": "context.Trigger_G8ts1wtogS.To",
+  "Name": "To"
+ },
+ "Property_2EX8zSbS6n": {
+  "Id": "Property_2EX8zSbS6n",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_6H1_leLf7_",
+  "Type": "Field",
+  "Field": "context.Trigger_G8ts1wtogS.Subject",
+  "Name": "Subject"
+ },
+ "Property_N95yBK32d8": {
+  "Id": "Property_N95yBK32d8",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_uWREtYQjpT",
+  "Type": "Value",
+  "Value": [
+   "PlainText"
+  ],
+  "Name": "BodyType"
+ },
+ "Property_Fp_rLXgEzg": {
+  "Id": "Property_Fp_rLXgEzg",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_BvUIUh-IRM",
+  "Type": "Field",
+  "Field": "context.Trigger_G8ts1wtogS.Body",
+  "Name": "Body"
+ },
+ "Property_HbA7Uci1_l": {
+  "Id": "Property_HbA7Uci1_l",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_eeGaZDMUuq",
+  "Type": "Value",
+  "Value": [
+   "Beiersdorf | Kissflow"
+  ],
+  "Name": "From"
+ }
+}

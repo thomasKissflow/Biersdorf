@@ -1,0 +1,60 @@
+PASS | ARTIFACT-FAMILIES | form,list,permission,process,role
+PASS | NO-PAGES-OR-NAV | no page/nav artifacts in build output
+PASS | NO-INTEGRATIONS | no integration artifacts in build output
+PASS | FLOW-COUNT-FORMS | 25 Form models
+PASS | FLOW-COUNT-PROCESSES | 3 Process models
+PASS | FLOW-NAMES-CIQ-PREFIX | all 28 start with 'CIQ '
+PASS | NO-A12-A13 | CIQ Review Version / CIQ Section Snapshot absent
+PASS | FLOW-NAMES-UNIQUE | 28 unique of 28
+PASS | FIELD-TOTAL | 454 fields
+PASS | FIELD-NO-FORBIDDEN-NAMES | none
+PASS | FIELD-ID-EQUALS-NAME | all field ids equal names (no truncation in compile)
+PASS | NO-DOC-VERSION | no *_Doc_Version / Review_Version_Key
+PASS | CONTRACT-FIELD Case_Code | Text
+PASS | CONTRACT-FIELD Current_Cycle | Number
+PASS | CONTRACT-FIELD Portal_Request_Item_Id | Text
+PASS | CONTRACT-FIELD Completeness_Confirm | Text
+PASS | CONTRACT-FIELD Completeness_By_Name | Text
+PASS | CONTRACT-FIELD Completeness_By_Email | Email
+PASS | CONTRACT-FIELD Completeness_At | DateTime
+PASS | CONTRACT-FIELD Final_Release_By_Name | Text
+PASS | CONTRACT-FIELD Final_Release_By_Email | Email
+PASS | CONTRACT-FIELD Final_Release_By_Role | Text
+PASS | CONTRACT-FIELD Final_Release_At | DateTime
+PASS | CONTRACT-FIELD Completion_Trigger | Text
+PASS | CONTRACT-FIELD Release_Path | Text
+PASS | CONTRACT-FIELD Supplier_Notice_Text | Textarea
+PASS | CONTRACT-FIELD Overall_Approval_Required | Text
+PASS | CASE-ID | CIQ_Case_A00
+PASS | CASE-STEP-COUNT | 6 steps
+PASS | CASE-STEP 0 "Create case" | byte-exact name, node, owner, condition
+PASS | CASE-STEP 1 "Part 1 – with supplier" | byte-exact name, node, owner, condition
+PASS | CASE-STEP 2 "Part 2 – Beiersdorf review" | byte-exact name, node, owner, condition
+PASS | CASE-STEP 3 "Awaiting supplier final release" | byte-exact name, node, owner, condition
+PASS | CASE-STEP 4 "Overall approval" | byte-exact name, node, owner, condition
+PASS | CASE-STEP 5 "End" | byte-exact name, node, owner, condition
+PASS | TRACK-STEP-COUNT | 10 steps
+PASS | TRACK-STEP 0 "Create track" | byte-exact name, node, owner, condition
+PASS | TRACK-STEP 1 "Review – Regulatory" | byte-exact name, node, owner, condition
+PASS | TRACK-STEP 2 "Review – Safety" | byte-exact name, node, owner, condition
+PASS | TRACK-STEP 3 "Review – QM" | byte-exact name, node, owner, condition
+PASS | TRACK-STEP 4 "Review – Microbiology" | byte-exact name, node, owner, condition
+PASS | TRACK-STEP 5 "Review – Sustainability" | byte-exact name, node, owner, condition
+PASS | TRACK-STEP 6 "Review – RMM" | byte-exact name, node, owner, condition
+PASS | TRACK-STEP 7 "Final decision – Safety" | byte-exact name, node, owner, condition
+PASS | TRACK-STEP 8 "Final decision – Regulatory" | byte-exact name, node, owner, condition
+PASS | TRACK-STEP 9 "End" | byte-exact name, node, owner, condition
+PASS | TRACK-DEPT_GATE-FORMULA | {"Type":"Text"}
+PASS | PERMISSION-COUNT | 401 flow permissions
+PASS | ROLE-COUNT | 20 roles
+PASS | ADMIN-USER-NO-GRANTS | default Admin/User have no flow permissions
+PASS | RMES-ASYMMETRY CIQ_RMES_Safety_Result_A00 | editors: ciq_safety_approver,ciq_safety_reviewer
+PASS | RMES-ASYMMETRY CIQ_Safety_Finding_A00 | editors: ciq_safety_approver,ciq_safety_reviewer
+PASS | RMES-ASYMMETRY CIQ_RMES_Regulatory_Result_A00 | editors: ciq_regulatory_approver,ciq_regulatory_reviewer
+PASS | RMES-ASYMMETRY CIQ_Regulatory_Finding_A00 | editors: ciq_regulatory_approver,ciq_regulatory_reviewer
+PASS | A9-EDITABLE-ROLES (= InitiateItems at apply) | ciq_case_sync,ciq_overall_approver,ciq_rmm  [case_sync + overall_approver are the documented D27/D41 broadening]
+PASS | A8-GRANTS | ciq_auditor:ReadOnly, ciq_business_admin:Editable, ciq_config_approver:Editable, ciq_microbiology_reviewer:ReadOnly, ciq_overall_approver:ReadOnly, ciq_process_owner:ReadOnly, ciq_qm_reviewer:ReadOnly, ciq_regulatory_approver:ReadOnly, ciq_regulatory_reviewer:ReadOnly, ciq_rmm:ReadOnly, ciq_safety_approver:ReadOnly, ciq_safety_reviewer:ReadOnly, ciq_sustainability_reviewer:ReadOnly
+PASS | LIST-COUNT | 33 lists
+PASS | LIST-NAMES-CIQ-PREFIX | all start with 'CIQ '
+
+58/58 checks pass

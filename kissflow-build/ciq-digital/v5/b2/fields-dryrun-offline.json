@@ -1,0 +1,2997 @@
+{
+ "step": "B2-op-fields",
+ "flow": "CIQ_Open_Point_A00",
+ "what": "add the 5 §4.3 fields with explicit per-step levels; Start Mandatory/Editable and review-step Mandatory/Editable as §4.3; End all ReadOnly",
+ "at": "2026-10-14T18:38:44.312Z",
+ "apply": false,
+ "offline": true,
+ "liveMetaVersion": "1791485991666407",
+ "livePublishedAt": "2026-10-08T18:59:51Z",
+ "mutation": {
+  "added": [
+   {
+    "id": "Raised_By_User",
+    "type": "User",
+    "column": "Column_grxljk",
+    "qd": [
+     {
+      "Id": "QueryDefinition_1k8sp52",
+      "Kind": "QueryDefinition",
+      "Field": "Raised_By_User",
+      "LHSModel": "User",
+      "FlowType": "User",
+      "LookupField": [],
+      "HiddenField": []
+     }
+    ]
+   },
+   {
+    "id": "Raised_By_Name",
+    "type": "Text",
+    "column": "Column_grrsia",
+    "qd": []
+   },
+   {
+    "id": "Thread_JSON",
+    "type": "Textarea",
+    "column": "Column_6a0d75",
+    "qd": []
+   },
+   {
+    "id": "Closed_At",
+    "type": "DateTime",
+    "column": "Column_1etbg3y",
+    "qd": []
+   },
+   {
+    "id": "Closed_By",
+    "type": "User",
+    "column": "Column_1etbg50",
+    "qd": [
+     {
+      "Id": "QueryDefinition_50gz3e",
+      "Kind": "QueryDefinition",
+      "Field": "Closed_By",
+      "LHSModel": "User",
+      "FlowType": "User",
+      "LookupField": [],
+      "HiddenField": []
+     }
+    ]
+   }
+  ],
+  "stripped": [
+   "SendBackToInitiator:Permission_mfuerz",
+   "SendBackToInitiator:Permission_mfpy91",
+   "SendBackToInitiator:Permission_1pdp42c",
+   "SendBackToInitiator:Permission_4unaws",
+   "SendBackToInitiator:Permission_4unawl"
+  ],
+  "formulaFields": [
+   "Open_Num",
+   "Start_Gate"
+  ],
+  "roundsTable": {
+   "Activity_uka3mx": "Editable",
+   "Activity_1kdump3": "Editable",
+   "Activity_1go37bt": "Editable",
+   "Activity_hha7u2": "Editable",
+   "Activity_y4af4g": "Editable",
+   "Activity_xc8fbb": "Editable"
+  },
+  "openNumWas": "IF(OP_Outcome=\"Accepted\",0,IF(OP_Outcome=\"Withdrawn\",0,1))",
+  "levelChangesOnExistingFields": 130,
+  "levelChangesSample": [
+   "Raise open point [Activity_18t0lhi]: Supplier_Justification Editable → Mandatory",
+   "Raise open point [Activity_18t0lhi]: Supplier_Due_Date Editable → Mandatory",
+   "Raise open point [Activity_18t0lhi]: OP_To_Supplier Mandatory → Editable",
+   "Raise open point [Activity_18t0lhi]: Internal_Justification Mandatory → Editable",
+   "Raise open point [Activity_18t0lhi]: Internal_Due_Date Mandatory → Editable",
+   "Raise open point [Activity_18t0lhi]: Response_Kind ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Response_Text ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Response_Doc_Refs_JSON ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Supplier_Responsible_Email ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Portal_Query_Item_Id ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: OP_Progress ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: OP_Outcome ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Outcome_Reason ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Return_Reason ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Accepted_Doc_File_Name ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Accepted_Doc_Uploaded_At ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Reviewed_By ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Reviewed_By_Email ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Reviewed_At ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Reviewed_Answers_Rev ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Late_Decision ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Late_Decision_Reason ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: On_Behalf_Of ReadOnly → Editable",
+   "Raise open point [Activity_18t0lhi]: Start_Gate Mandatory → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Internal_Due_Date Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Portal_Contact_Ids Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Thread_Text Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Awaiting_Response Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Response_Kind Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Response_Text Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Response_Doc_Refs_JSON Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Accepted_Doc_File_Name Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Accepted_Doc_Uploaded_At Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Reviewed_By Mandatory → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Reviewed_By_Email Mandatory → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Reviewed_At Mandatory → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Reviewed_Answers_Rev Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Late_Decision Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Late_Decision_Reason Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: On_Behalf_Of Editable → ReadOnly",
+   "Open point – Regulatory [Activity_uka3mx]: Kind_Label ReadOnly → Editable",
+   "Open point – Regulatory [Activity_uka3mx]: Responsible_User ReadOnly → Editable",
+   "Open point – Regulatory [Activity_uka3mx]: Responsible_Name ReadOnly → Editable",
+   "Open point – Safety [Activity_1kdump3]: Internal_Due_Date Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Portal_Contact_Ids Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Thread_Text Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Awaiting_Response Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Response_Kind Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Response_Text Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Response_Doc_Refs_JSON Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Accepted_Doc_File_Name Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Accepted_Doc_Uploaded_At Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Reviewed_By Mandatory → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Reviewed_By_Email Mandatory → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Reviewed_At Mandatory → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Reviewed_Answers_Rev Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Late_Decision Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Late_Decision_Reason Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: On_Behalf_Of Editable → ReadOnly",
+   "Open point – Safety [Activity_1kdump3]: Kind_Label ReadOnly → Editable",
+   "Open point – Safety [Activity_1kdump3]: Responsible_User ReadOnly → Editable",
+   "Open point – Safety [Activity_1kdump3]: Responsible_Name ReadOnly → Editable",
+   "Open point – QM [Activity_1go37bt]: Internal_Due_Date Editable → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Portal_Contact_Ids Editable → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Thread_Text Editable → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Awaiting_Response Editable → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Response_Kind Editable → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Response_Text Editable → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Response_Doc_Refs_JSON Editable → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Accepted_Doc_File_Name Editable → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Accepted_Doc_Uploaded_At Editable → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Reviewed_By Mandatory → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Reviewed_By_Email Mandatory → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Reviewed_At Mandatory → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Reviewed_Answers_Rev Editable → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: On_Behalf_Of Editable → ReadOnly",
+   "Open point – QM [Activity_1go37bt]: Kind_Label ReadOnly → Editable",
+   "Open point – QM [Activity_1go37bt]: Responsible_User ReadOnly → Editable",
+   "Open point – QM [Activity_1go37bt]: Responsible_Name ReadOnly → Editable",
+   "Open point – Microbiology [Activity_hha7u2]: Internal_Due_Date Editable → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Portal_Contact_Ids Editable → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Thread_Text Editable → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Awaiting_Response Editable → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Response_Kind Editable → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Response_Text Editable → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Response_Doc_Refs_JSON Editable → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Accepted_Doc_File_Name Editable → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Accepted_Doc_Uploaded_At Editable → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Reviewed_By Mandatory → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Reviewed_By_Email Mandatory → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Reviewed_At Mandatory → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Reviewed_Answers_Rev Editable → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: On_Behalf_Of Editable → ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]: Kind_Label ReadOnly → Editable",
+   "Open point – Microbiology [Activity_hha7u2]: Responsible_User ReadOnly → Editable",
+   "Open point – Microbiology [Activity_hha7u2]: Responsible_Name ReadOnly → Editable",
+   "Open point – Sustainability [Activity_y4af4g]: Internal_Due_Date Editable → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Portal_Contact_Ids Editable → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Thread_Text Editable → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Awaiting_Response Editable → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Response_Kind Editable → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Response_Text Editable → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Response_Doc_Refs_JSON Editable → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Accepted_Doc_File_Name Editable → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Accepted_Doc_Uploaded_At Editable → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Reviewed_By Mandatory → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Reviewed_By_Email Mandatory → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Reviewed_At Mandatory → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Reviewed_Answers_Rev Editable → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: On_Behalf_Of Editable → ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]: Kind_Label ReadOnly → Editable",
+   "Open point – Sustainability [Activity_y4af4g]: Responsible_User ReadOnly → Editable",
+   "Open point – Sustainability [Activity_y4af4g]: Responsible_Name ReadOnly → Editable",
+   "Open point – RMM [Activity_xc8fbb]: Internal_Due_Date Editable → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Portal_Contact_Ids Editable → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Thread_Text Editable → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Awaiting_Response Editable → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Response_Kind Editable → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Response_Text Editable → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Response_Doc_Refs_JSON Editable → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Accepted_Doc_File_Name Editable → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Accepted_Doc_Uploaded_At Editable → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Reviewed_By Mandatory → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Reviewed_By_Email Mandatory → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Reviewed_At Mandatory → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Reviewed_Answers_Rev Editable → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: On_Behalf_Of Editable → ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]: Kind_Label ReadOnly → Editable",
+   "Open point – RMM [Activity_xc8fbb]: Responsible_User ReadOnly → Editable",
+   "Open point – RMM [Activity_xc8fbb]: Responsible_Name ReadOnly → Editable"
+  ],
+  "matrixAfter": {
+   "Raise open point [Activity_18t0lhi]": {
+    "Mandatory": 16,
+    "Editable": 40,
+    "ReadOnly": 2
+   },
+   "Open point – Regulatory [Activity_uka3mx]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – Safety [Activity_1kdump3]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – QM [Activity_1go37bt]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – Microbiology [Activity_hha7u2]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – Sustainability [Activity_y4af4g]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – RMM [Activity_xc8fbb]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "End [Activity_i73i25]": {
+    "ReadOnly": 58
+   }
+  }
+ },
+ "diffSummary": {
+  "added": 62,
+  "removed": 11,
+  "changed": 148,
+  "addedByKind": {
+   "Row": 5,
+   "Column": 5,
+   "QueryDefinition": 2,
+   "Field": 5,
+   "Permission": 40,
+   "Node": 5
+  },
+  "removedByKind": {
+   "Node": 11
+  },
+  "changedByKind": {
+   "Model": 1,
+   "Column": 1,
+   "Field": 1,
+   "Expression": 1,
+   "Permission": 136,
+   "Activity": 8
+  }
+ },
+ "changedNonPermission": [
+  {
+   "entity": "CIQ_Open_Point_A00 Model CIQ Open Point",
+   "props": {
+    "Model::Field": {
+     "was": "[53]",
+     "now": "[58]"
+    }
+   }
+  },
+  {
+   "entity": "Column_waac5d Column Details",
+   "props": {
+    "Column::Row": {
+     "was": "[33]",
+     "now": "[38]"
+    }
+   }
+  },
+  {
+   "entity": "OP_Dept Field OP Dept",
+   "props": {
+    "Required": {
+     "now": true
+    }
+   }
+  },
+  {
+   "entity": "Expression_4nzy7r Expression",
+   "props": {
+    "ExpressionStr": {
+     "was": "IF(OP_Outcome=\"Accepted\",0,IF(OP_Outcome=\"Withdrawn\",0,1))",
+     "now": "IF(ISBLANK(OP_Outcome),1,0)"
+    },
+    "Expression::Node": {
+     "was": "[1]",
+     "now": "[1]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_18t0lhi Activity Raise open point",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_uka3mx Activity Open point – Regulatory",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_1kdump3 Activity Open point – Safety",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_1go37bt Activity Open point – QM",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_hha7u2 Activity Open point – Microbiology",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_y4af4g Activity Open point – Sustainability",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_xc8fbb Activity Open point – RMM",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_i73i25 Activity End",
+   "props": {
+    "Activity::Permission": {
+     "was": "[54]",
+     "now": "[59]"
+    }
+   }
+  }
+ ],
+ "preflight": {
+  "errors": [],
+  "warnings": [
+   "NO_ID",
+   "ORPHAN_ENTITY"
+  ]
+ },
+ "dryCheck": {
+  "fields": 58,
+  "newFieldsPresent": [
+   "Raised_By_User:User qd=User",
+   "Raised_By_Name:Text",
+   "Thread_JSON:Textarea",
+   "Closed_At:DateTime",
+   "Closed_By:User qd=User"
+  ],
+  "startMandatoryExact": true,
+  "startEditableExact": true,
+  "reviewExact": [
+   "Activity_uka3mx: M=true E=true Rounds=ReadOnly",
+   "Activity_1kdump3: M=true E=true Rounds=ReadOnly",
+   "Activity_1go37bt: M=true E=true Rounds=ReadOnly",
+   "Activity_hha7u2: M=true E=true Rounds=ReadOnly",
+   "Activity_y4af4g: M=true E=true Rounds=ReadOnly",
+   "Activity_xc8fbb: M=true E=true Rounds=ReadOnly"
+  ],
+  "endAllReadOnly": true,
+  "openNum": {
+   "str": "IF(ISBLANK(OP_Outcome),1,0)",
+   "ok": true
+  },
+  "opDeptRequired": true,
+  "counts": {
+   "Raise open point [Activity_18t0lhi]": {
+    "Mandatory": 16,
+    "Editable": 40,
+    "ReadOnly": 2
+   },
+   "Open point – Regulatory [Activity_uka3mx]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – Safety [Activity_1kdump3]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – QM [Activity_1go37bt]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – Microbiology [Activity_hha7u2]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – Sustainability [Activity_y4af4g]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "Open point – RMM [Activity_xc8fbb]": {
+    "ReadOnly": 43,
+    "Editable": 14,
+    "Mandatory": 1
+   },
+   "End [Activity_i73i25]": {
+    "ReadOnly": 58
+   }
+  },
+  "permsOnNonTaskActivities": [
+   "SendBackToInitiator:0"
+  ]
+ },
+ "calls": 0,
+ "diff": {
+  "added": [
+   "Row_grxljk Row",
+   "Column_grxljk Column",
+   "QueryDefinition_1k8sp52 QueryDefinition",
+   "Raised_By_User Field Raised By User",
+   "Permission_r2ubjo Permission",
+   "Permission_sxadvn Permission",
+   "Permission_1clmohb Permission",
+   "Permission_11bg4a9 Permission",
+   "Permission_1ytfo0p Permission",
+   "Permission_l0t28p Permission",
+   "Permission_1nqrsef Permission",
+   "Permission_13z8r1p Permission",
+   "Row_grrsia Row",
+   "Column_grrsia Column",
+   "Raised_By_Name Field Raised By Name",
+   "Permission_r2pv0q Permission",
+   "Permission_sx5xcp Permission",
+   "Permission_1cli7yd Permission",
+   "Permission_11bbnrb Permission",
+   "Permission_1ytb7hr Permission",
+   "Permission_l0olpr Permission",
+   "Permission_1nqnbvh Permission",
+   "Permission_13z4air Permission",
+   "Row_6a0d75 Row",
+   "Column_6a0d75 Column",
+   "Thread_JSON Field Thread JSON",
+   "Permission_1u0p0u1 Permission",
+   "Permission_1vv5360 Permission",
+   "Permission_gidbsk Permission",
+   "Permission_586rli Permission",
+   "Permission_12q6bby Permission",
+   "Permission_1nynrj2 Permission",
+   "Permission_rnifpo Permission",
+   "Permission_7vzecy Permission",
+   "Row_1etbg3y Row",
+   "Column_1etbg3y Column",
+   "Closed_At Field Closed At",
+   "Permission_fvc8ch Permission",
+   "Permission_5qybcg Permission",
+   "Permission_fs7jfg Permission",
+   "Permission_1xmvcta Permission",
+   "Permission_12mnkg6 Permission",
+   "Permission_t3iv7q Permission",
+   "Permission_scbuwk Permission",
+   "Permission_fdw40q Permission",
+   "Row_1etbg50 Row",
+   "Column_1etbg50 Column",
+   "QueryDefinition_50gz3e QueryDefinition",
+   "Closed_By Field Closed By",
+   "Permission_fvc8ca Permission",
+   "Permission_5qybc9 Permission",
+   "Permission_fs7jf9 Permission",
+   "Permission_1xmvct3 Permission",
+   "Permission_12mnkfz Permission",
+   "Permission_t3iv7j Permission",
+   "Permission_scbuwd Permission",
+   "Permission_fdw40j Permission",
+   "Node_e1emap Node",
+   "Node_e1emaq Node",
+   "Node_e1emar Node",
+   "Node_e1emas Node",
+   "Node_e1emat Node"
+  ],
+  "removed": [
+   "Node_xssm3u Node",
+   "Node_xssm3v Node",
+   "Node_xssm3w Node",
+   "Node_xssm3x Node",
+   "Node_xssm3y Node",
+   "Node_xssm3z Node",
+   "Node_xssm40 Node",
+   "Node_xssm41 Node",
+   "Node_xssm42 Node",
+   "Node_xssm43 Node",
+   "Node_1dxjfy3 Node"
+  ],
+  "changed": [
+   {
+    "entity": "CIQ_Open_Point_A00 Model CIQ Open Point",
+    "props": {
+     "Model::Field": {
+      "was": [
+       "OP_Key",
+       "Round_No",
+       "Query_Key",
+       "Case_Code",
+       "Cycle_No",
+       "Supplier_Code",
+       "Case_Item_Id",
+       "OP_Kind",
+       "OP_Dept",
+       "Raised_By_Dept",
+       "OP_To_Supplier",
+       "Ref_Kind",
+       "Ref_Section_Key",
+       "Ref_Field_Key",
+       "Ref_Row_Id",
+       "Ref_Doc_Id",
+       "Ref_Doc_File_Name",
+       "Ref_Doc_Uploaded_At",
+       "Ref_Label",
+       "Ref_Internal_Key",
+       "Kind_Label",
+       "Question_Text",
+       "Supplier_Justification",
+       "Internal_Justification",
+       "Responsible_User",
+       "Responsible_Name",
+       "Responsible_Dept_Label",
+       "Internal_Due_Date",
+       "Supplier_Due_Date",
+       "New_Section_Item_Key",
+       "Portal_Contact_Ids",
+       "Thread_Text",
+       "Awaiting_Response",
+       "Response_Kind",
+       "Response_Text",
+       "Response_Doc_Refs_JSON",
+       "Supplier_Responsible_Email",
+       "Portal_Query_Item_Id",
+       "OP_Progress",
+       "OP_Outcome",
+       "Outcome_Reason",
+       "Return_Reason",
+       "Accepted_Doc_File_Name",
+       "Accepted_Doc_Uploaded_At",
+       "Reviewed_By",
+       "Reviewed_By_Email",
+       "Reviewed_At",
+       "Reviewed_Answers_Rev",
+       "Late_Decision",
+       "Late_Decision_Reason",
+       "On_Behalf_Of",
+       "Open_Num",
+       "Start_Gate"
+      ],
+      "now": [
+       "OP_Key",
+       "Round_No",
+       "Query_Key",
+       "Case_Code",
+       "Cycle_No",
+       "Supplier_Code",
+       "Case_Item_Id",
+       "OP_Kind",
+       "OP_Dept",
+       "Raised_By_Dept",
+       "OP_To_Supplier",
+       "Ref_Kind",
+       "Ref_Section_Key",
+       "Ref_Field_Key",
+       "Ref_Row_Id",
+       "Ref_Doc_Id",
+       "Ref_Doc_File_Name",
+       "Ref_Doc_Uploaded_At",
+       "Ref_Label",
+       "Ref_Internal_Key",
+       "Kind_Label",
+       "Question_Text",
+       "Supplier_Justification",
+       "Internal_Justification",
+       "Responsible_User",
+       "Responsible_Name",
+       "Responsible_Dept_Label",
+       "Internal_Due_Date",
+       "Supplier_Due_Date",
+       "New_Section_Item_Key",
+       "Portal_Contact_Ids",
+       "Thread_Text",
+       "Awaiting_Response",
+       "Response_Kind",
+       "Response_Text",
+       "Response_Doc_Refs_JSON",
+       "Supplier_Responsible_Email",
+       "Portal_Query_Item_Id",
+       "OP_Progress",
+       "OP_Outcome",
+       "Outcome_Reason",
+       "Return_Reason",
+       "Accepted_Doc_File_Name",
+       "Accepted_Doc_Uploaded_At",
+       "Reviewed_By",
+       "Reviewed_By_Email",
+       "Reviewed_At",
+       "Reviewed_Answers_Rev",
+       "Late_Decision",
+       "Late_Decision_Reason",
+       "On_Behalf_Of",
+       "Open_Num",
+       "Start_Gate",
+       "Raised_By_User",
+       "Raised_By_Name",
+       "Thread_JSON",
+       "Closed_At",
+       "Closed_By"
+      ]
+     }
+    }
+   },
+   {
+    "entity": "Column_waac5d Column Details",
+    "props": {
+     "Column::Row": {
+      "was": [
+       "Row_wa93zv",
+       "Row_wa93zw",
+       "Row_wa93zx",
+       "Row_wa93zy",
+       "Row_wa93zz",
+       "Row_wa9400",
+       "Row_wa9401",
+       "Row_wa9402",
+       "Row_wa9403",
+       "Row_wa9404",
+       "Row_1yyrwa4",
+       "Row_1yyrwa5",
+       "Row_1yyrwa6",
+       "Row_1yyrwa7",
+       "Row_1yyrwa8",
+       "Row_1yyrwa9",
+       "Row_1yyrwaa",
+       "Row_1yyrwab",
+       "Row_1yyrwac",
+       "Row_1yyrwad",
+       "Row_1yyrwb1",
+       "Row_1yyrwb2",
+       "Row_1yyrwb3",
+       "Row_1yyrwb4",
+       "Row_1yyrwb5",
+       "Row_1yyrwb6",
+       "Row_1yyrwb7",
+       "Row_1yyrwb8",
+       "Row_1yyrwb9",
+       "Row_1yyrwba",
+       "Row_1yyrwby",
+       "Row_1yyrwbz",
+       "Row_1yyrwc0"
+      ],
+      "now": [
+       "Row_wa93zv",
+       "Row_wa93zw",
+       "Row_wa93zx",
+       "Row_wa93zy",
+       "Row_wa93zz",
+       "Row_wa9400",
+       "Row_wa9401",
+       "Row_wa9402",
+       "Row_wa9403",
+       "Row_wa9404",
+       "Row_1yyrwa4",
+       "Row_1yyrwa5",
+       "Row_1yyrwa6",
+       "Row_1yyrwa7",
+       "Row_1yyrwa8",
+       "Row_1yyrwa9",
+       "Row_1yyrwaa",
+       "Row_1yyrwab",
+       "Row_1yyrwac",
+       "Row_1yyrwad",
+       "Row_1yyrwb1",
+       "Row_1yyrwb2",
+       "Row_1yyrwb3",
+       "Row_1yyrwb4",
+       "Row_1yyrwb5",
+       "Row_1yyrwb6",
+       "Row_1yyrwb7",
+       "Row_1yyrwb8",
+       "Row_1yyrwb9",
+       "Row_1yyrwba",
+       "Row_1yyrwby",
+       "Row_1yyrwbz",
+       "Row_1yyrwc0",
+       "Row_grxljk",
+       "Row_grrsia",
+       "Row_6a0d75",
+       "Row_1etbg3y",
+       "Row_1etbg50"
+      ]
+     }
+    }
+   },
+   {
+    "entity": "OP_Dept Field OP Dept",
+    "props": {
+     "Required": {
+      "now": true
+     }
+    }
+   },
+   {
+    "entity": "Expression_4nzy7r Expression",
+    "props": {
+     "ExpressionStr": {
+      "was": "IF(OP_Outcome=\"Accepted\",0,IF(OP_Outcome=\"Withdrawn\",0,1))",
+      "now": "IF(ISBLANK(OP_Outcome),1,0)"
+     },
+     "Expression::Node": {
+      "was": [
+       "Node_1dxjfy3"
+      ],
+      "now": [
+       "Node_e1emap"
+      ]
+     }
+    }
+   },
+   {
+    "entity": "Permission_kesbhr Permission",
+    "props": {
+     "Permission": {
+      "was": "Mandatory",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_t3e0x5 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "Mandatory"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1jt2jw4 Permission",
+    "props": {
+     "Permission": {
+      "was": "Mandatory",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1kdrava Permission",
+    "props": {
+     "Permission": {
+      "was": "Mandatory",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1r9xyt9 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "Mandatory"
+     }
+    }
+   },
+   {
+    "entity": "Permission_woiyhz Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_woo8zf Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_xd2sk1 Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1kfqvb8 Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_fisvff Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1ui7jrm Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_vq1tc9 Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_qhwgis Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1wd7wft Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_h0mh67 Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_11jq8fs Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_e0ymh8 Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_11evn6y Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_e0ymg9 Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1u6uwj7 Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_kfgc9v Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_p6g1v3 Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_ux4qq3 Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1w8xyst Permission",
+    "props": {
+     "Permission": {
+      "was": "Mandatory",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Activity_18t0lhi Activity Raise open point",
+    "props": {
+     "Activity::Permission": {
+      "was": [
+       "Permission_c32vox",
+       "Permission_df7asg",
+       "Permission_gst9cm",
+       "Permission_sjus6h",
+       "Permission_ddqvxl",
+       "Permission_1ubd3lv",
+       "Permission_k2t7sc",
+       "Permission_10uakph",
+       "Permission_10u5emx",
+       "Permission_ikuwzh",
+       "Permission_kesbhr",
+       "Permission_1h6h09x",
+       "Permission_rhl80u",
+       "Permission_no3v4j",
+       "Permission_nwtgk3",
+       "Permission_h9rshl",
+       "Permission_l49kkw",
+       "Permission_uexwqh",
+       "Permission_1hl7l3o",
+       "Permission_pxvf51",
+       "Permission_1k3peey",
+       "Permission_yores9",
+       "Permission_t3e0x5",
+       "Permission_1jt2jw4",
+       "Permission_re2q0h",
+       "Permission_reum2y",
+       "Permission_zfio8d",
+       "Permission_1kdrava",
+       "Permission_1r9xyt9",
+       "Permission_rfgnl7",
+       "Permission_xd298d",
+       "Permission_nzv7sf",
+       "Permission_l4cvaa",
+       "Permission_woiyhz",
+       "Permission_woo8zf",
+       "Permission_xd2sk1",
+       "Permission_1kfqvb8",
+       "Permission_fisvff",
+       "Permission_1ui7jrm",
+       "Permission_vq1tc9",
+       "Permission_qhwgis",
+       "Permission_1wd7wft",
+       "Permission_h0mh67",
+       "Permission_11jq8fs",
+       "Permission_e0ymh8",
+       "Permission_11evn6y",
+       "Permission_e0ymg9",
+       "Permission_1u6uwj7",
+       "Permission_kfgc9v",
+       "Permission_p6g1v3",
+       "Permission_ux4qq3",
+       "Permission_1t0vc68",
+       "Permission_1w8xyst",
+       "Permission_is9b0g"
+      ],
+      "now": [
+       "Permission_c32vox",
+       "Permission_df7asg",
+       "Permission_gst9cm",
+       "Permission_sjus6h",
+       "Permission_ddqvxl",
+       "Permission_1ubd3lv",
+       "Permission_k2t7sc",
+       "Permission_10uakph",
+       "Permission_10u5emx",
+       "Permission_ikuwzh",
+       "Permission_kesbhr",
+       "Permission_1h6h09x",
+       "Permission_rhl80u",
+       "Permission_no3v4j",
+       "Permission_nwtgk3",
+       "Permission_h9rshl",
+       "Permission_l49kkw",
+       "Permission_uexwqh",
+       "Permission_1hl7l3o",
+       "Permission_pxvf51",
+       "Permission_1k3peey",
+       "Permission_yores9",
+       "Permission_t3e0x5",
+       "Permission_1jt2jw4",
+       "Permission_re2q0h",
+       "Permission_reum2y",
+       "Permission_zfio8d",
+       "Permission_1kdrava",
+       "Permission_1r9xyt9",
+       "Permission_rfgnl7",
+       "Permission_xd298d",
+       "Permission_nzv7sf",
+       "Permission_l4cvaa",
+       "Permission_woiyhz",
+       "Permission_woo8zf",
+       "Permission_xd2sk1",
+       "Permission_1kfqvb8",
+       "Permission_fisvff",
+       "Permission_1ui7jrm",
+       "Permission_vq1tc9",
+       "Permission_qhwgis",
+       "Permission_1wd7wft",
+       "Permission_h0mh67",
+       "Permission_11jq8fs",
+       "Permission_e0ymh8",
+       "Permission_11evn6y",
+       "Permission_e0ymg9",
+       "Permission_1u6uwj7",
+       "Permission_kfgc9v",
+       "Permission_p6g1v3",
+       "Permission_ux4qq3",
+       "Permission_1t0vc68",
+       "Permission_1w8xyst",
+       "Permission_is9b0g",
+       "Permission_r2ubjo",
+       "Permission_r2pv0q",
+       "Permission_1u0p0u1",
+       "Permission_fvc8ch",
+       "Permission_fvc8ca"
+      ]
+     }
+    }
+   },
+   {
+    "entity": "Permission_19zbhex Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_t8iscg Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_t9aoex Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1a9ddv9 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_z7ibkc Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_dvhase Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_azyya9 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_yiz0ty Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_yj4bbe Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_z7iuw0 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_6w8k66 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_13e6arr Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_3wkph7 Permission",
+    "props": {
+     "Permission": {
+      "was": "Mandatory",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_139bpix Permission",
+    "props": {
+     "Permission": {
+      "was": "Mandatory",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_3wkpg8 Permission",
+    "props": {
+     "Permission": {
+      "was": "Mandatory",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1w1ayv6 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_ab2f9u Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_f224v2 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_wrkt22 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_8nve0f Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Activity_uka3mx Activity Open point – Regulatory",
+    "props": {
+     "Activity::Permission": {
+      "was": [
+       "Permission_1yoyow",
+       "Permission_3atdsf",
+       "Permission_6ofccl",
+       "Permission_ifgv6g",
+       "Permission_39cyxk",
+       "Permission_1w5t5xu",
+       "Permission_9yfasb",
+       "Permission_12oqn1g",
+       "Permission_12olgyw",
+       "Permission_8ggzzg",
+       "Permission_aaeehq",
+       "Permission_172339w",
+       "Permission_tc1act",
+       "Permission_djpy4i",
+       "Permission_dsfjk2",
+       "Permission_75dvhk",
+       "Permission_azvnkv",
+       "Permission_w9dz2g",
+       "Permission_17gto3n",
+       "Permission_rsbhh0",
+       "Permission_19zbhex",
+       "Permission_10j7h48",
+       "Permission_uxu394",
+       "Permission_19oomw3",
+       "Permission_t8iscg",
+       "Permission_t9aoex",
+       "Permission_119yqkc",
+       "Permission_1a9ddv9",
+       "Permission_1t4e158",
+       "Permission_hb2ql6",
+       "Permission_z7ibkc",
+       "Permission_dvhase",
+       "Permission_azyya9",
+       "Permission_yiz0ty",
+       "Permission_yj4bbe",
+       "Permission_z7iuw0",
+       "Permission_1abcyb7",
+       "Permission_5eeyfe",
+       "Permission_1wcnm3l",
+       "Permission_xkhvo8",
+       "Permission_scciur",
+       "Permission_1y7nyrs",
+       "Permission_6w8k66",
+       "Permission_13e6arr",
+       "Permission_3wkph7",
+       "Permission_139bpix",
+       "Permission_3wkpg8",
+       "Permission_1w1ayv6",
+       "Permission_ab2f9u",
+       "Permission_f224v2",
+       "Permission_wrkt22",
+       "Permission_1uvbei7",
+       "Permission_1y3e14s",
+       "Permission_8nve0f"
+      ],
+      "now": [
+       "Permission_1yoyow",
+       "Permission_3atdsf",
+       "Permission_6ofccl",
+       "Permission_ifgv6g",
+       "Permission_39cyxk",
+       "Permission_1w5t5xu",
+       "Permission_9yfasb",
+       "Permission_12oqn1g",
+       "Permission_12olgyw",
+       "Permission_8ggzzg",
+       "Permission_aaeehq",
+       "Permission_172339w",
+       "Permission_tc1act",
+       "Permission_djpy4i",
+       "Permission_dsfjk2",
+       "Permission_75dvhk",
+       "Permission_azvnkv",
+       "Permission_w9dz2g",
+       "Permission_17gto3n",
+       "Permission_rsbhh0",
+       "Permission_19zbhex",
+       "Permission_10j7h48",
+       "Permission_uxu394",
+       "Permission_19oomw3",
+       "Permission_t8iscg",
+       "Permission_t9aoex",
+       "Permission_119yqkc",
+       "Permission_1a9ddv9",
+       "Permission_1t4e158",
+       "Permission_hb2ql6",
+       "Permission_z7ibkc",
+       "Permission_dvhase",
+       "Permission_azyya9",
+       "Permission_yiz0ty",
+       "Permission_yj4bbe",
+       "Permission_z7iuw0",
+       "Permission_1abcyb7",
+       "Permission_5eeyfe",
+       "Permission_1wcnm3l",
+       "Permission_xkhvo8",
+       "Permission_scciur",
+       "Permission_1y7nyrs",
+       "Permission_6w8k66",
+       "Permission_13e6arr",
+       "Permission_3wkph7",
+       "Permission_139bpix",
+       "Permission_3wkpg8",
+       "Permission_1w1ayv6",
+       "Permission_ab2f9u",
+       "Permission_f224v2",
+       "Permission_wrkt22",
+       "Permission_1uvbei7",
+       "Permission_1y3e14s",
+       "Permission_8nve0f",
+       "Permission_sxadvn",
+       "Permission_sx5xcp",
+       "Permission_1vv5360",
+       "Permission_5qybcg",
+       "Permission_5qybc9"
+      ]
+     }
+    }
+   },
+   {
+    "entity": "Permission_1k0kphx Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1cwv2y4 Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1cxmz0l Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1kamly9 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1ivum60 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_nwqive Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_l186d9 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1i7bbfm Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1i7glx2 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1ivv5ho Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_gxhs96 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1n2ildf Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_dxtxk7 Permission",
+    "props": {
+     "Permission": {
+      "was": "Mandatory",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1mxo04l Permission",
+    "props": {
+     "Permission": {
+      "was": "Mandatory",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_dxtxj8 Permission",
+    "props": {
+     "Permission": {
+      "was": "Mandatory",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_goj7hq Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_kcbncu Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_p3bcy2 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1gfx3nq Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_ip4m3f Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Activity_1kdump3 Activity Open point – Safety",
+    "props": {
+     "Activity::Permission": {
+      "was": [
+       "Permission_bzy6rw",
+       "Permission_dc2lvf",
+       "Permission_gpokfl",
+       "Permission_sgq39g",
+       "Permission_dam70k",
+       "Permission_gt1eke",
+       "Permission_jzoivb",
+       "Permission_1md2xn4",
+       "Permission_1mcxrkk",
+       "Permission_ihq82g",
+       "Permission_kbnmkq",
+       "Permission_1h3cbcw",
+       "Permission_1d0dkyh",
+       "Permission_nkz67i",
+       "Permission_ntorn2",
+       "Permission_h6n3kk",
+       "Permission_l14vnv",
+       "Permission_1fxq9o4",
+       "Permission_1hi2w6n",
+       "Permission_1bgns2o",
+       "Permission_1k0kphx",
+       "Permission_1k7jrpw",
+       "Permission_1em6dus",
+       "Permission_1jpxuz3",
+       "Permission_1cwv2y4",
+       "Permission_1cxmz0l",
+       "Permission_1kyb160",
+       "Permission_1kamly9",
+       "Permission_drm9rs",
+       "Permission_rcbyo6",
+       "Permission_1ivum60",
+       "Permission_nwqive",
+       "Permission_l186d9",
+       "Permission_1i7bbfm",
+       "Permission_1i7glx2",
+       "Permission_1ivv5ho",
+       "Permission_1kcm6e7",
+       "Permission_ffo6ie",
+       "Permission_gzvuq5",
+       "Permission_1h8u69w",
+       "Permission_1c0otgf",
+       "Permission_iuw7ec",
+       "Permission_gxhs96",
+       "Permission_1n2ildf",
+       "Permission_dxtxk7",
+       "Permission_1mxo04l",
+       "Permission_dxtxj8",
+       "Permission_goj7hq",
+       "Permission_kcbncu",
+       "Permission_p3bcy2",
+       "Permission_1gfx3nq",
+       "Permission_fijn4r",
+       "Permission_iqm9rc",
+       "Permission_ip4m3f"
+      ],
+      "now": [
+       "Permission_bzy6rw",
+       "Permission_dc2lvf",
+       "Permission_gpokfl",
+       "Permission_sgq39g",
+       "Permission_dam70k",
+       "Permission_gt1eke",
+       "Permission_jzoivb",
+       "Permission_1md2xn4",
+       "Permission_1mcxrkk",
+       "Permission_ihq82g",
+       "Permission_kbnmkq",
+       "Permission_1h3cbcw",
+       "Permission_1d0dkyh",
+       "Permission_nkz67i",
+       "Permission_ntorn2",
+       "Permission_h6n3kk",
+       "Permission_l14vnv",
+       "Permission_1fxq9o4",
+       "Permission_1hi2w6n",
+       "Permission_1bgns2o",
+       "Permission_1k0kphx",
+       "Permission_1k7jrpw",
+       "Permission_1em6dus",
+       "Permission_1jpxuz3",
+       "Permission_1cwv2y4",
+       "Permission_1cxmz0l",
+       "Permission_1kyb160",
+       "Permission_1kamly9",
+       "Permission_drm9rs",
+       "Permission_rcbyo6",
+       "Permission_1ivum60",
+       "Permission_nwqive",
+       "Permission_l186d9",
+       "Permission_1i7bbfm",
+       "Permission_1i7glx2",
+       "Permission_1ivv5ho",
+       "Permission_1kcm6e7",
+       "Permission_ffo6ie",
+       "Permission_gzvuq5",
+       "Permission_1h8u69w",
+       "Permission_1c0otgf",
+       "Permission_iuw7ec",
+       "Permission_gxhs96",
+       "Permission_1n2ildf",
+       "Permission_dxtxk7",
+       "Permission_1mxo04l",
+       "Permission_dxtxj8",
+       "Permission_goj7hq",
+       "Permission_kcbncu",
+       "Permission_p3bcy2",
+       "Permission_1gfx3nq",
+       "Permission_fijn4r",
+       "Permission_iqm9rc",
+       "Permission_ip4m3f",
+       "Permission_1clmohb",
+       "Permission_1cli7yd",
+       "Permission_gidbsk",
+       "Permission_fs7jfg",
+       "Permission_fs7jf9"
+      ]
+     }
+    }
+   },
+   {
+    "entity": "Permission_12u4gwn Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_11moir2 Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_11ngetj Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1346dcz Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_17lo1yy Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_6qaaa4 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_3urxrz Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_16x4r8k Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_16xa1q0 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_17lolam Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1ys5ln0 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1bsc16d Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1vshqy1 Permission",
+    "props": {
+     "Permission": {
+      "was": "Mandatory",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1bnhfxj Permission",
+    "props": {
+     "Permission": {
+      "was": "Mandatory",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1vshqx2 Permission",
+    "props": {
+     "Permission": {
+      "was": "Mandatory",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_5ecnao Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_155qjgo Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1iodi5 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Activity_1go37bt Activity Open point – QM",
+    "props": {
+     "Activity::Permission": {
+      "was": [
+       "Permission_1tum05q",
+       "Permission_1v6qf99",
+       "Permission_1ykcdtf",
+       "Permission_ba9uo6",
+       "Permission_1v5a0ee",
+       "Permission_5iuudc",
+       "Permission_2t8aa1",
+       "Permission_1b2wdg2",
+       "Permission_1b2r7di",
+       "Permission_1b9zh6",
+       "Permission_357dzg",
+       "Permission_zww2rm",
+       "Permission_11q70rf",
+       "Permission_6eixm8",
+       "Permission_6n8j1s",
+       "Permission_6uza",
+       "Permission_3uon2l",
+       "Permission_14njph2",
+       "Permission_10bmnld",
+       "Permission_106h7vm",
+       "Permission_12u4gwn",
+       "Permission_18xd7iu",
+       "Permission_13bztnq",
+       "Permission_12jhmdt",
+       "Permission_11moir2",
+       "Permission_11ngetj",
+       "Permission_19o4gyy",
+       "Permission_1346dcz",
+       "Permission_2hfpkq",
+       "Permission_a5vq2w",
+       "Permission_17lo1yy",
+       "Permission_6qaaa4",
+       "Permission_3urxrz",
+       "Permission_16x4r8k",
+       "Permission_16xa1q0",
+       "Permission_17lolam",
+       "Permission_1365xsx",
+       "Permission_1xabzw8",
+       "Permission_5ppaj3",
+       "Permission_15ynm2u",
+       "Permission_10qi99d",
+       "Permission_7kpn7a",
+       "Permission_1ys5ln0",
+       "Permission_1bsc16d",
+       "Permission_1vshqy1",
+       "Permission_1bnhfxj",
+       "Permission_1vshqx2",
+       "Permission_5ecnao",
+       "Permission_35verk",
+       "Permission_7wv4cs",
+       "Permission_155qjgo",
+       "Permission_48d2xp",
+       "Permission_7gfpka",
+       "Permission_1iodi5"
+      ],
+      "now": [
+       "Permission_1tum05q",
+       "Permission_1v6qf99",
+       "Permission_1ykcdtf",
+       "Permission_ba9uo6",
+       "Permission_1v5a0ee",
+       "Permission_5iuudc",
+       "Permission_2t8aa1",
+       "Permission_1b2wdg2",
+       "Permission_1b2r7di",
+       "Permission_1b9zh6",
+       "Permission_357dzg",
+       "Permission_zww2rm",
+       "Permission_11q70rf",
+       "Permission_6eixm8",
+       "Permission_6n8j1s",
+       "Permission_6uza",
+       "Permission_3uon2l",
+       "Permission_14njph2",
+       "Permission_10bmnld",
+       "Permission_106h7vm",
+       "Permission_12u4gwn",
+       "Permission_18xd7iu",
+       "Permission_13bztnq",
+       "Permission_12jhmdt",
+       "Permission_11moir2",
+       "Permission_11ngetj",
+       "Permission_19o4gyy",
+       "Permission_1346dcz",
+       "Permission_2hfpkq",
+       "Permission_a5vq2w",
+       "Permission_17lo1yy",
+       "Permission_6qaaa4",
+       "Permission_3urxrz",
+       "Permission_16x4r8k",
+       "Permission_16xa1q0",
+       "Permission_17lolam",
+       "Permission_1365xsx",
+       "Permission_1xabzw8",
+       "Permission_5ppaj3",
+       "Permission_15ynm2u",
+       "Permission_10qi99d",
+       "Permission_7kpn7a",
+       "Permission_1ys5ln0",
+       "Permission_1bsc16d",
+       "Permission_1vshqy1",
+       "Permission_1bnhfxj",
+       "Permission_1vshqx2",
+       "Permission_5ecnao",
+       "Permission_35verk",
+       "Permission_7wv4cs",
+       "Permission_155qjgo",
+       "Permission_48d2xp",
+       "Permission_7gfpka",
+       "Permission_1iodi5",
+       "Permission_11bg4a9",
+       "Permission_11bbnrb",
+       "Permission_586rli",
+       "Permission_1xmvcta",
+       "Permission_1xmvct3"
+      ]
+     }
+    }
+   },
+   {
+    "entity": "Permission_7twojj Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_3k0ie Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_4bwkv Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_83ykzv Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_62jjqa Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1ar6jw4 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_17vo7dz Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_5e08zw Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_5e5jhc Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_62k31y Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_13rxt9w Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_a97ixp Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_10s9ykx Permission",
+    "props": {
+     "Permission": {
+      "was": "Mandatory",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_a4cxov Permission",
+    "props": {
+     "Permission": {
+      "was": "Mandatory",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_10s9yjy Permission",
+    "props": {
+     "Permission": {
+      "was": "Mandatory",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_12wc714 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_3mm180 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_15jkn45 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Activity_hha7u2 Activity Open point – Microbiology",
+    "props": {
+     "Activity::Permission": {
+      "was": [
+       "Permission_yue7sm",
+       "Permission_106imw5",
+       "Permission_13k4lgb",
+       "Permission_1fb64a6",
+       "Permission_105281a",
+       "Permission_130ue3s",
+       "Permission_16u4jw1",
+       "Permission_9jrv7e",
+       "Permission_9jmp4u",
+       "Permission_15c6936",
+       "Permission_1763nlg",
+       "Permission_4woaei",
+       "Permission_72iir",
+       "Permission_1aff788",
+       "Permission_1ao4sns",
+       "Permission_14134la",
+       "Permission_17vkwol",
+       "Permission_34f78e",
+       "Permission_5bev89",
+       "Permission_1xogrm2",
+       "Permission_7twojj",
+       "Permission_7e8pa6",
+       "Permission_1svbf2",
+       "Permission_7j9u0p",
+       "Permission_3k0ie",
+       "Permission_4bwkv",
+       "Permission_84zyqa",
+       "Permission_83ykzv",
+       "Permission_zzf9b6",
+       "Permission_1e6rzow",
+       "Permission_62jjqa",
+       "Permission_1ar6jw4",
+       "Permission_17vo7dz",
+       "Permission_5e08zw",
+       "Permission_5e5jhc",
+       "Permission_62k31y",
+       "Permission_85y5ft",
+       "Permission_12a47j4",
+       "Permission_137ou9j",
+       "Permission_4fj3u6",
+       "Permission_1y8hszt",
+       "Permission_152p6xq",
+       "Permission_13rxt9w",
+       "Permission_a97ixp",
+       "Permission_10s9ykx",
+       "Permission_a4cxov",
+       "Permission_10s9yjy",
+       "Permission_12wc714",
+       "Permission_176rodk",
+       "Permission_1bxrdys",
+       "Permission_3mm180",
+       "Permission_11qcmo5",
+       "Permission_14yf9aq",
+       "Permission_15jkn45"
+      ],
+      "now": [
+       "Permission_yue7sm",
+       "Permission_106imw5",
+       "Permission_13k4lgb",
+       "Permission_1fb64a6",
+       "Permission_105281a",
+       "Permission_130ue3s",
+       "Permission_16u4jw1",
+       "Permission_9jrv7e",
+       "Permission_9jmp4u",
+       "Permission_15c6936",
+       "Permission_1763nlg",
+       "Permission_4woaei",
+       "Permission_72iir",
+       "Permission_1aff788",
+       "Permission_1ao4sns",
+       "Permission_14134la",
+       "Permission_17vkwol",
+       "Permission_34f78e",
+       "Permission_5bev89",
+       "Permission_1xogrm2",
+       "Permission_7twojj",
+       "Permission_7e8pa6",
+       "Permission_1svbf2",
+       "Permission_7j9u0p",
+       "Permission_3k0ie",
+       "Permission_4bwkv",
+       "Permission_84zyqa",
+       "Permission_83ykzv",
+       "Permission_zzf9b6",
+       "Permission_1e6rzow",
+       "Permission_62jjqa",
+       "Permission_1ar6jw4",
+       "Permission_17vo7dz",
+       "Permission_5e08zw",
+       "Permission_5e5jhc",
+       "Permission_62k31y",
+       "Permission_85y5ft",
+       "Permission_12a47j4",
+       "Permission_137ou9j",
+       "Permission_4fj3u6",
+       "Permission_1y8hszt",
+       "Permission_152p6xq",
+       "Permission_13rxt9w",
+       "Permission_a97ixp",
+       "Permission_10s9ykx",
+       "Permission_a4cxov",
+       "Permission_10s9yjy",
+       "Permission_12wc714",
+       "Permission_176rodk",
+       "Permission_1bxrdys",
+       "Permission_3mm180",
+       "Permission_11qcmo5",
+       "Permission_14yf9aq",
+       "Permission_15jkn45",
+       "Permission_1ytfo0p",
+       "Permission_1ytb7hr",
+       "Permission_12q6bby",
+       "Permission_12mnkg6",
+       "Permission_12mnkfz"
+      ]
+     }
+    }
+   },
+   {
+    "entity": "Permission_1xbw1a7 Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_lc1gpi Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_lctcrz Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1xlxxqj Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_rb0zxe Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1181uno Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_ycji5j Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_qmhp70 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_qmmzog Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_rb1j92 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_u8t41g Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_vhoz4t Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_r959ch Permission",
+    "props": {
+     "Permission": {
+      "was": "Mandatory",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_vcudvz Permission",
+    "props": {
+     "Permission": {
+      "was": "Mandatory",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_r959bi Permission",
+    "props": {
+     "Permission": {
+      "was": "Mandatory",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1o4tn88 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_ov3hf4 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_w0fxvp Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Activity_y4af4g Activity Open point – Sustainability",
+    "props": {
+     "Activity::Permission": {
+      "was": [
+       "Permission_pb9ik6",
+       "Permission_qndxnp",
+       "Permission_u0zw7v",
+       "Permission_15s1f1q",
+       "Permission_qlxisu",
+       "Permission_1o9buaw",
+       "Permission_xazunl",
+       "Permission_us9bei",
+       "Permission_us45by",
+       "Permission_vt1juq",
+       "Permission_xmyyd0",
+       "Permission_1uenn56",
+       "Permission_lfjypv",
+       "Permission_10wahzs",
+       "Permission_11503fc",
+       "Permission_uhyfcu",
+       "Permission_ycg7g5",
+       "Permission_ocwnfi",
+       "Permission_1ute7yx",
+       "Permission_jvu5u2",
+       "Permission_1xbw1a7",
+       "Permission_smq5ha",
+       "Permission_n1crm6",
+       "Permission_1x196rd",
+       "Permission_lc1gpi",
+       "Permission_lctcrz",
+       "Permission_tdhexe",
+       "Permission_1xlxxqj",
+       "Permission_1l7wpia",
+       "Permission_14nnagg",
+       "Permission_rb0zxe",
+       "Permission_1181uno",
+       "Permission_ycji5j",
+       "Permission_qmhp70",
+       "Permission_qmmzog",
+       "Permission_rb1j92",
+       "Permission_1xnxi6h",
+       "Permission_sqziao",
+       "Permission_1og6agn",
+       "Permission_po0k1a",
+       "Permission_kfv77t",
+       "Permission_1qb6n4u",
+       "Permission_u8t41g",
+       "Permission_vhoz4t",
+       "Permission_r959ch",
+       "Permission_vcudvz",
+       "Permission_r959bi",
+       "Permission_1o4tn88",
+       "Permission_xnmz54",
+       "Permission_12emoqc",
+       "Permission_ov3hf4",
+       "Permission_1myu2v9",
+       "Permission_1q6wphu",
+       "Permission_w0fxvp"
+      ],
+      "now": [
+       "Permission_pb9ik6",
+       "Permission_qndxnp",
+       "Permission_u0zw7v",
+       "Permission_15s1f1q",
+       "Permission_qlxisu",
+       "Permission_1o9buaw",
+       "Permission_xazunl",
+       "Permission_us9bei",
+       "Permission_us45by",
+       "Permission_vt1juq",
+       "Permission_xmyyd0",
+       "Permission_1uenn56",
+       "Permission_lfjypv",
+       "Permission_10wahzs",
+       "Permission_11503fc",
+       "Permission_uhyfcu",
+       "Permission_ycg7g5",
+       "Permission_ocwnfi",
+       "Permission_1ute7yx",
+       "Permission_jvu5u2",
+       "Permission_1xbw1a7",
+       "Permission_smq5ha",
+       "Permission_n1crm6",
+       "Permission_1x196rd",
+       "Permission_lc1gpi",
+       "Permission_lctcrz",
+       "Permission_tdhexe",
+       "Permission_1xlxxqj",
+       "Permission_1l7wpia",
+       "Permission_14nnagg",
+       "Permission_rb0zxe",
+       "Permission_1181uno",
+       "Permission_ycji5j",
+       "Permission_qmhp70",
+       "Permission_qmmzog",
+       "Permission_rb1j92",
+       "Permission_1xnxi6h",
+       "Permission_sqziao",
+       "Permission_1og6agn",
+       "Permission_po0k1a",
+       "Permission_kfv77t",
+       "Permission_1qb6n4u",
+       "Permission_u8t41g",
+       "Permission_vhoz4t",
+       "Permission_r959ch",
+       "Permission_vcudvz",
+       "Permission_r959bi",
+       "Permission_1o4tn88",
+       "Permission_xnmz54",
+       "Permission_12emoqc",
+       "Permission_ov3hf4",
+       "Permission_1myu2v9",
+       "Permission_1q6wphu",
+       "Permission_w0fxvp",
+       "Permission_l0t28p",
+       "Permission_l0olpr",
+       "Permission_1nynrj2",
+       "Permission_t3iv7q",
+       "Permission_t3iv7j"
+      ]
+     }
+    }
+   },
+   {
+    "entity": "Permission_1wkp0z1 Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1o206v8 Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1o2s2xp Permission",
+    "props": {
+     "Permission": {
+      "was": "ReadOnly",
+      "now": "Editable"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1wuqxfd Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1u0zq34 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_10guuci Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_xlchud Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1tcgfcq Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1tclpu6 Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1u109es Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_thm3qa Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1y7npaj Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_qhy91b Permission",
+    "props": {
+     "Permission": {
+      "was": "Mandatory",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1y2t41p Permission",
+    "props": {
+     "Permission": {
+      "was": "Mandatory",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_qhy90c Permission",
+    "props": {
+     "Permission": {
+      "was": "Mandatory",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_rtobeu Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_1rl27ku Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Permission_v98xkj Permission",
+    "props": {
+     "Permission": {
+      "was": "Editable",
+      "now": "ReadOnly"
+     }
+    }
+   },
+   {
+    "entity": "Activity_xc8fbb Activity Open point – RMM",
+    "props": {
+     "Activity::Permission": {
+      "was": [
+       "Permission_ok2i90",
+       "Permission_pw6xcj",
+       "Permission_t9svwp",
+       "Permission_150ueqk",
+       "Permission_puqiho",
+       "Permission_ry6ihi",
+       "Permission_wjsucf",
+       "Permission_1xi81k8",
+       "Permission_1xi2vho",
+       "Permission_v1ujjk",
+       "Permission_wvry1u",
+       "Permission_1tngmu0",
+       "Permission_1o5iovl",
+       "Permission_1053hom",
+       "Permission_10dt346",
+       "Permission_tqrf1o",
+       "Permission_xl974z",
+       "Permission_1r2vdl8",
+       "Permission_1u277nr",
+       "Permission_1mlsvzs",
+       "Permission_1wkp0z1",
+       "Permission_1vcovn0",
+       "Permission_1prbhrw",
+       "Permission_1wa26g7",
+       "Permission_1o206v8",
+       "Permission_1o2s2xp",
+       "Permission_1w3g534",
+       "Permission_1wuqxfd",
+       "Permission_owrdow",
+       "Permission_13wga5a",
+       "Permission_1u0zq34",
+       "Permission_10guuci",
+       "Permission_xlchud",
+       "Permission_1tcgfcq",
+       "Permission_1tclpu6",
+       "Permission_1u109es",
+       "Permission_1wwqhvb",
+       "Permission_rzshzi",
+       "Permission_s50yn9",
+       "Permission_1sdza70",
+       "Permission_1n5txdj",
+       "Permission_u01bbg",
+       "Permission_thm3qa",
+       "Permission_1y7npaj",
+       "Permission_qhy91b",
+       "Permission_1y2t41p",
+       "Permission_qhy90c",
+       "Permission_rtobeu",
+       "Permission_wwfyty",
+       "Permission_11nfof6",
+       "Permission_1rl27ku",
+       "Permission_qnor1v",
+       "Permission_tvrdog",
+       "Permission_v98xkj"
+      ],
+      "now": [
+       "Permission_ok2i90",
+       "Permission_pw6xcj",
+       "Permission_t9svwp",
+       "Permission_150ueqk",
+       "Permission_puqiho",
+       "Permission_ry6ihi",
+       "Permission_wjsucf",
+       "Permission_1xi81k8",
+       "Permission_1xi2vho",
+       "Permission_v1ujjk",
+       "Permission_wvry1u",
+       "Permission_1tngmu0",
+       "Permission_1o5iovl",
+       "Permission_1053hom",
+       "Permission_10dt346",
+       "Permission_tqrf1o",
+       "Permission_xl974z",
+       "Permission_1r2vdl8",
+       "Permission_1u277nr",
+       "Permission_1mlsvzs",
+       "Permission_1wkp0z1",
+       "Permission_1vcovn0",
+       "Permission_1prbhrw",
+       "Permission_1wa26g7",
+       "Permission_1o206v8",
+       "Permission_1o2s2xp",
+       "Permission_1w3g534",
+       "Permission_1wuqxfd",
+       "Permission_owrdow",
+       "Permission_13wga5a",
+       "Permission_1u0zq34",
+       "Permission_10guuci",
+       "Permission_xlchud",
+       "Permission_1tcgfcq",
+       "Permission_1tclpu6",
+       "Permission_1u109es",
+       "Permission_1wwqhvb",
+       "Permission_rzshzi",
+       "Permission_s50yn9",
+       "Permission_1sdza70",
+       "Permission_1n5txdj",
+       "Permission_u01bbg",
+       "Permission_thm3qa",
+       "Permission_1y7npaj",
+       "Permission_qhy91b",
+       "Permission_1y2t41p",
+       "Permission_qhy90c",
+       "Permission_rtobeu",
+       "Permission_wwfyty",
+       "Permission_11nfof6",
+       "Permission_1rl27ku",
+       "Permission_qnor1v",
+       "Permission_tvrdog",
+       "Permission_v98xkj",
+       "Permission_1nqrsef",
+       "Permission_1nqnbvh",
+       "Permission_rnifpo",
+       "Permission_scbuwk",
+       "Permission_scbuwd"
+      ]
+     }
+    }
+   },
+   {
+    "entity": "Activity_i73i25 Activity End",
+    "props": {
+     "Activity::Permission": {
+      "was": [
+       "Permission_blmrd6",
+       "Permission_cxr6gp",
+       "Permission_gbd50v",
+       "Permission_s2enuq",
+       "Permission_cwarlu",
+       "Permission_86nh4s",
+       "Permission_jld3gl",
+       "Permission_1dqp07i",
+       "Permission_1dqju4y",
+       "Permission_i3esnq",
+       "Permission_jxc760",
+       "Permission_1gp0vy6",
+       "Permission_14dzniv",
+       "Permission_n6nqss",
+       "Permission_nfdc8c",
+       "Permission_gsbo5u",
+       "Permission_kmtg95",
+       "Permission_17bcc8i",
+       "Permission_1h3rgrx",
+       "Permission_12u9un2",
+       "Permission_1jm9a37",
+       "Permission_1bl5uaa",
+       "Permission_15zsgf6",
+       "Permission_1jbmfkd",
+       "Permission_14ah5ii",
+       "Permission_14b91kz",
+       "Permission_1cbx3qe",
+       "Permission_1jwb6jj",
+       "Permission_558cc6",
+       "Permission_qy0j9g",
+       "Permission_1a9goqe",
+       "Permission_nif3go",
+       "Permission_kmwqyj",
+       "Permission_19kxe00",
+       "Permission_19l2ohg",
+       "Permission_1a9h822",
+       "Permission_1jyaqzh",
+       "Permission_f1cr3o",
+       "Permission_8dhxaj",
+       "Permission_18mg8ua",
+       "Permission_13eaw0t",
+       "Permission_a8i9yq",
+       "Permission_gj6cug",
+       "Permission_1eg4nxt",
+       "Permission_djii5h",
+       "Permission_1eba2oz",
+       "Permission_djii4i",
+       "Permission_825a24",
+       "Permission_jy07y4",
+       "Permission_oozxjc",
+       "Permission_17tj684",
+       "Permission_6w5pp5",
+       "Permission_a48cbq",
+       "Permission_iat6op"
+      ],
+      "now": [
+       "Permission_blmrd6",
+       "Permission_cxr6gp",
+       "Permission_gbd50v",
+       "Permission_s2enuq",
+       "Permission_cwarlu",
+       "Permission_86nh4s",
+       "Permission_jld3gl",
+       "Permission_1dqp07i",
+       "Permission_1dqju4y",
+       "Permission_i3esnq",
+       "Permission_jxc760",
+       "Permission_1gp0vy6",
+       "Permission_14dzniv",
+       "Permission_n6nqss",
+       "Permission_nfdc8c",
+       "Permission_gsbo5u",
+       "Permission_kmtg95",
+       "Permission_17bcc8i",
+       "Permission_1h3rgrx",
+       "Permission_12u9un2",
+       "Permission_1jm9a37",
+       "Permission_1bl5uaa",
+       "Permission_15zsgf6",
+       "Permission_1jbmfkd",
+       "Permission_14ah5ii",
+       "Permission_14b91kz",
+       "Permission_1cbx3qe",
+       "Permission_1jwb6jj",
+       "Permission_558cc6",
+       "Permission_qy0j9g",
+       "Permission_1a9goqe",
+       "Permission_nif3go",
+       "Permission_kmwqyj",
+       "Permission_19kxe00",
+       "Permission_19l2ohg",
+       "Permission_1a9h822",
+       "Permission_1jyaqzh",
+       "Permission_f1cr3o",
+       "Permission_8dhxaj",
+       "Permission_18mg8ua",
+       "Permission_13eaw0t",
+       "Permission_a8i9yq",
+       "Permission_gj6cug",
+       "Permission_1eg4nxt",
+       "Permission_djii5h",
+       "Permission_1eba2oz",
+       "Permission_djii4i",
+       "Permission_825a24",
+       "Permission_jy07y4",
+       "Permission_oozxjc",
+       "Permission_17tj684",
+       "Permission_6w5pp5",
+       "Permission_a48cbq",
+       "Permission_iat6op",
+       "Permission_13z8r1p",
+       "Permission_13z4air",
+       "Permission_7vzecy",
+       "Permission_fdw40q",
+       "Permission_fdw40j"
+      ]
+     }
+    }
+   }
+  ]
+ }
+}

@@ -1,0 +1,421 @@
+{
+  "appId": "local",
+  "branch": "main",
+  "revision": 5,
+  "parentRevision": 4,
+  "actor": "thomas@kissflow.com",
+  "message": "Update workflow IR slice",
+  "schemaVersion": 1,
+  "graphHash": "fda02a0fe7603dc9cbf5403e3a9e40ff3d6f03fec6bc3273cfc3ed388c9f8d39",
+  "metadata": {
+    "slice": "workflow",
+    "validation": {
+      "ok": true,
+      "issues": []
+    },
+    "foundation": {
+      "version": 1,
+      "status": "draft",
+      "compiler": "foundation-contract-v1",
+      "compilerDigest": "87251d7f3bd70019de5ff2045c5e3fa89f3c4250958ed777170c66679bef8ed7",
+      "inputDigest": "3482b0324cb550d51dd723e6de74b1fb12f9b9bb2b4b5c8457f0bdb05acbfe68",
+      "findings": [
+        {
+          "slice": "workflow",
+          "code": "FOUNDATION_EVIDENCE_GATE",
+          "path": "workflow.CIQ_Case_A00.CASE_B_REG.REG_Review_Confirm",
+          "message": "declared evidence must be enforced as Mandatory at this action, not only described in prose",
+          "category": "invalid-business-logic",
+          "owners": [
+            "workflow"
+          ],
+          "repairAction": "correct-owned-contract",
+          "repairStatus": "open"
+        },
+        {
+          "slice": "workflow",
+          "code": "FOUNDATION_EVIDENCE_GATE",
+          "path": "workflow.CIQ_Case_A00.CASE_B_SAF.SAF_Review_Confirm",
+          "message": "declared evidence must be enforced as Mandatory at this action, not only described in prose",
+          "category": "invalid-business-logic",
+          "owners": [
+            "workflow"
+          ],
+          "repairAction": "correct-owned-contract",
+          "repairStatus": "open"
+        },
+        {
+          "slice": "workflow",
+          "code": "FOUNDATION_EVIDENCE_GATE",
+          "path": "workflow.CIQ_Case_A00.CASE_B_QM.QM_Review_Confirm",
+          "message": "declared evidence must be enforced as Mandatory at this action, not only described in prose",
+          "category": "invalid-business-logic",
+          "owners": [
+            "workflow"
+          ],
+          "repairAction": "correct-owned-contract",
+          "repairStatus": "open"
+        },
+        {
+          "slice": "workflow",
+          "code": "FOUNDATION_EVIDENCE_GATE",
+          "path": "workflow.CIQ_Case_A00.CASE_B_MIC.MIC_Review_Confirm",
+          "message": "declared evidence must be enforced as Mandatory at this action, not only described in prose",
+          "category": "invalid-business-logic",
+          "owners": [
+            "workflow"
+          ],
+          "repairAction": "correct-owned-contract",
+          "repairStatus": "open"
+        },
+        {
+          "slice": "workflow",
+          "code": "FOUNDATION_EVIDENCE_GATE",
+          "path": "workflow.CIQ_Case_A00.CASE_B_SUS.SUS_Review_Confirm",
+          "message": "declared evidence must be enforced as Mandatory at this action, not only described in prose",
+          "category": "invalid-business-logic",
+          "owners": [
+            "workflow"
+          ],
+          "repairAction": "correct-owned-contract",
+          "repairStatus": "open"
+        },
+        {
+          "slice": "workflow",
+          "code": "FOUNDATION_EVIDENCE_GATE",
+          "path": "workflow.CIQ_Case_A00.CASE_B_RMM.RMM_Review_Confirm",
+          "message": "declared evidence must be enforced as Mandatory at this action, not only described in prose",
+          "category": "invalid-business-logic",
+          "owners": [
+            "workflow"
+          ],
+          "repairAction": "correct-owned-contract",
+          "repairStatus": "open"
+        }
+      ],
+      "metrics": {
+        "checked": 42,
+        "reused": 0,
+        "units": [
+          {
+            "id": "data:CIQ_Case_A00",
+            "digest": "30465a95c09e34b150fa516141736fafbf8097600b613bdac5949fc38089e6ac",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_Open_Point_A00",
+            "digest": "0c28b5453e23c2fba910c529bb10e0feaa3be531ac823524cf5e51993272445c",
+            "reused": false
+          },
+          {
+            "id": "data:Rounds",
+            "digest": "eab0e90c389cecccbaf008d1305b31aabc96bb1fad3658e4e7e845388af3e86b",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_Change_Request_A00",
+            "digest": "2d8238a60381bbfe35479fe611e99c4ae33f407ab6a710d0a4a74a7773860b8c",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_Supplier_A00",
+            "digest": "1ebbc5132ebeff4ea0e45fed7473d6abce1551a6e9e346add4ae7bb3008e4a03",
+            "reused": false
+          },
+          {
+            "id": "data:Contacts",
+            "digest": "86604706a5987a212255e03df23b0983bf2fb2d3671e1066121389ae83977678",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_Config_Version_A00",
+            "digest": "286275de2eb11cad6da07e1fbb2eef764e3562c16b0d0e303df0c0088f05d80b",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_Section_A00",
+            "digest": "7522caf3a2108922d241383359fdcfcaef1faeb3ab60406c904d593f613ce08e",
+            "reused": false
+          },
+          {
+            "id": "data:Components",
+            "digest": "6aa89c48fad65efa74855cf57562274240c0287d2f264b6f9ae74912a66c59ad",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_Scope_Run_A00",
+            "digest": "f0387cded26cf7eff4f156c54334fad7c7c4a75344f7189fd7fdc02f0b36e843",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_RMES_Safety_A00",
+            "digest": "9d209933bc765c379cbc65e8c2f5d19e7c87d46a760573e4bb3599407fd68350",
+            "reused": false
+          },
+          {
+            "id": "data:Safety_Criteria",
+            "digest": "e5292531ec2f76f8d28213716c54ffa7faffcc5176a3607a7b75c872c1586aae",
+            "reused": false
+          },
+          {
+            "id": "data:Safety_Findings",
+            "digest": "311aedc5ac06b7de70c2565a23f8ba608163fbe5dd0cbfaa2e5f738f50b4ea96",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_RMES_Regulatory_A00",
+            "digest": "c2ce6125ede5decb67e6e53070fdecc8567346843f312afbe38e0ec81b3040e3",
+            "reused": false
+          },
+          {
+            "id": "data:Regulatory_Criteria",
+            "digest": "e3aabf10c91384d9342a0af460d49a13c15918d7bc8cbecb5a5880ef981c4cee",
+            "reused": false
+          },
+          {
+            "id": "data:Regulatory_Findings",
+            "digest": "079a428f6c687eb722267f07de54eb32f1f8803c96a05fe00b38490b90f44797",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_Internal_Note_A00",
+            "digest": "ba5c6d3abce5ae3b6a2394ab918ab5d9e8d624e8f5a6d7c9de4ddafa0862832e",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_Audit_Event_A00",
+            "digest": "93b228c90dfa19e9a2d9a82dcd49d2649d20f89faabe6ed06e44593a2f2961f7",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_Yes_No",
+            "digest": "98de4746402e07a042c73b9500c1252f8a83b81bc6ae5add1ff70f22061088b5",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_Confirm",
+            "digest": "1fdcb6b1f0dc52031a3f52e1aefc9f55b64497ad1a8a8cd28ff2f0d99626eec7",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_Department",
+            "digest": "707a3555b148aa27cdeebc20290ce1e406fb9321762e90b916f88b7f8fa2be94",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_Review_Dept",
+            "digest": "6602a78304d71c92aa0e34687863329128ae45fc19392f36a1fe60da1e2172c8",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_Decision",
+            "digest": "47e2eb1a60e2e0385d5864fd9dffc3c0a4d9b1a731e9a349ea00e25baa3ed9d6",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_OP_Kind",
+            "digest": "e4c7379b50abd4135cf0f7e84e0067b40d15b0d7591c7626299d97131af2822b",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_OP_Progress",
+            "digest": "324835e57637faa158bf09985082b91b4c6b9a68cf546b56f0772d3c67f238b6",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_OP_Outcome",
+            "digest": "7fc897ba3da829028c816b9a1b7bb95c0d14677855154f0c4828bc8947a038e2",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_CR_Outcome",
+            "digest": "32bed5087fd3c4ebaf8519a8deda36b58043abec4c89588bba24184d8f47eadc",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_Impact_Resolution",
+            "digest": "7ee1262cb2b379fcae1d7a74f9ff489169e1163667ffef08792cd414bc23ed43",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_Config_Kind",
+            "digest": "b580a9eb4e18d86b9473f21328af273e1c177e6f26265d835c0b9c2a63bc3ce8",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_Config_State",
+            "digest": "8250df7241b3e1c079995edf0aa7cadd9e504bc6f7f5c63ebbd7494696d0912e",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_Release_Stage",
+            "digest": "c7a8ce6882c9d4694473ff33fcdca3f9b9f99c825ec12cb8e113dfa852ad875b",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_RMES_Part",
+            "digest": "23a4df8784f2852002de6da3d8bf4ccc22dedddd3d16aea9b1d4fadae33822d9",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_RMES_Result",
+            "digest": "c5f86330f98adafcefb1f6cc3888801341f886e1e4011a3d1f94aac554fd38cd",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_AI_State",
+            "digest": "79a43a58bcd5e3ebacfc3eba688524dc39ac4db09eb731072eb216b6cd272d7a",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_Supplier_Kind",
+            "digest": "143def68957adaa98976d3a59d90d262724d9f09e706cd56b39b5612ddb5d509",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_Contact_Role",
+            "digest": "c4cbe9de4bbddcbeaa129856852bcaf0fa80a9a07add22cfed094d70a36ba925",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_Country_Code",
+            "digest": "202ba59fea7565b139865d69346a04fd515d9dc31ba25dd63a69f41a5a2f39fe",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_Event_Category",
+            "digest": "c5e223256eb545419e52da5921d196641afb39c3da222280d50bc83665385745",
+            "reused": false
+          },
+          {
+            "id": "data:CIQ_Actor_Side",
+            "digest": "3fc6d222bdc529ef8a6ef1c75f2d031f66bdf5ca8e3ec59570d941ad5f7e28c7",
+            "reused": false
+          },
+          {
+            "id": "workflow:CIQ_Case_A00",
+            "digest": "caa8c0ac2d1c16e3f96f647f9683f071331067b93991294aab4152210f56f3bc",
+            "reused": false
+          },
+          {
+            "id": "workflow:CIQ_Open_Point_A00",
+            "digest": "6f0af16988dbd521c19c196e5924bdf94cabdf24100aad17f81e4d4a44c5e133",
+            "reused": false
+          },
+          {
+            "id": "workflow:CIQ_Change_Request_A00",
+            "digest": "861b37a6af46109a51df803c941e667624ee58804a481575be3ff0c43c446365",
+            "reused": false
+          }
+        ],
+        "durationMs": 27.13425000000001
+      }
+    }
+  },
+  "touched": {
+    "nodes": [
+      "agenttask.workflow",
+      "irslice.workflow",
+      "workflowstep.ciq_case_a00_case_end",
+      "workflowstep.ciq_case_a00_case_par",
+      "workflowstep.ciq_case_a00_case_s0",
+      "workflowstep.ciq_case_a00_case_s1",
+      "workflowstep.ciq_case_a00_case_s2",
+      "workflowstep.ciq_case_a00_case_s3",
+      "workflowstep.ciq_case_a00_case_s5",
+      "workflowstep.ciq_case_a00_case_s6",
+      "workflowstep.ciq_case_a00_case_s7",
+      "workflowstep.ciq_case_a00_case_s8",
+      "workflowstep.ciq_change_request_a00_chrq_end",
+      "workflowstep.ciq_change_request_a00_chrq_par",
+      "workflowstep.ciq_change_request_a00_chrq_s0",
+      "workflowstep.ciq_change_request_a00_chrq_s1",
+      "workflowstep.ciq_open_point_a00_opnt_end",
+      "workflowstep.ciq_open_point_a00_opnt_r_mic",
+      "workflowstep.ciq_open_point_a00_opnt_r_qm",
+      "workflowstep.ciq_open_point_a00_opnt_r_reg",
+      "workflowstep.ciq_open_point_a00_opnt_r_rmm",
+      "workflowstep.ciq_open_point_a00_opnt_r_saf",
+      "workflowstep.ciq_open_point_a00_opnt_r_sus",
+      "workflowstep.ciq_open_point_a00_opnt_s0",
+      "workflowstep.ciq_open_point_a00_opnt_s1"
+    ],
+    "edges": [
+      "edge.01d06faf7fc5d141332d885e",
+      "edge.03543e5eefd00ad87257015e",
+      "edge.054742b2d6c179d4fc5a6ac1",
+      "edge.060e7b587bfa7ad297b13515",
+      "edge.06633c3aad9d58415a1f2c17",
+      "edge.0c9e0fdb41fe1c47f1eb551e",
+      "edge.15c9047f1eddae65d879d5ad",
+      "edge.178800c21de175d824a8b55d",
+      "edge.199a652929e0a4019d00f5b5",
+      "edge.1c1e87893494f2627f239886",
+      "edge.1dbbff385a1d467eb4cdc100",
+      "edge.22c314ceff93cf1e18f388dc",
+      "edge.25e5252cb8a28d00f71913e8",
+      "edge.28ad8bec1d2441a62e4009cf",
+      "edge.299ed650b96c43168b1a8834",
+      "edge.2bf6c6d303e6f2cfdbe39a93",
+      "edge.34bb3b39a4426cffde54092f",
+      "edge.4a2d5354b01edab153b4a15b",
+      "edge.4c11485e94d8f3d360ee9b5e",
+      "edge.4d8aa34823eb48c5a9705352",
+      "edge.55604b58a981f1433eed60fc",
+      "edge.56affbb2e3c9e2e2004cb6a8",
+      "edge.5746971e5f96d60d141e3ddb",
+      "edge.58a6e948d5f252b6784efed3",
+      "edge.618fd0ec5b96d32a06f4f227",
+      "edge.6471b4ad3e6e3e8cba4e93f8",
+      "edge.6eeeb8ae56a76095ad6ef4bd",
+      "edge.6efcef0f842531479f78f232",
+      "edge.796a29125341a8f065fcc4d4",
+      "edge.7b678a9dfed6f1e3aa1b8e23",
+      "edge.89456decd0c6b991f5588848",
+      "edge.8d7aa2295229897de493ea17",
+      "edge.9765229eccc763b7bc94bce5",
+      "edge.9a408cf59de2e61238ad4f80",
+      "edge.9a4b2494110dea9da3fedf24",
+      "edge.a1996975989fdef0d23b5fa6",
+      "edge.a65e5b25e85ca05aade3d3cc",
+      "edge.a83612ad42fc86ad336918d5",
+      "edge.aaed4471df9c1560f40aefd1",
+      "edge.af057758e7bd048a77edbee9",
+      "edge.afbfd45bbc3b483ba11ef0fe",
+      "edge.b58800b2b05ff149225f8eec",
+      "edge.b68f74e15ee9d4481029c04f",
+      "edge.c70e6976ec7a9c89c8ac6203",
+      "edge.cabce08c21d03b4f020073b9",
+      "edge.cb44138633b50008701bee8b",
+      "edge.cde2d5dd75d45a2dd773a996",
+      "edge.dbcb0e48177e315e7d24459a",
+      "edge.dc0f729906f43e71c6134ab6",
+      "edge.e0731dee9bfd16670c92badc",
+      "edge.e4ea5cfedd6447cc9699faf1",
+      "edge.e71497278b54642f93221da6",
+      "edge.e7e5d690ebc4a3aa7ab6d2a8",
+      "edge.e804a705f0a3320ec801db7d",
+      "edge.e8cfee5e5e6a85e3f94283fb",
+      "edge.eed1dde21394dbba59711d4a",
+      "edge.ef60661515a61918fa0310de",
+      "edge.f1e5537dd08f3b8f8589d2fd",
+      "edge.f82912d7fda5bad409778367",
+      "edge.f950d07106bff54f2ad2b9bf",
+      "edge.fe2ce95695bf7f600e2b2297",
+      "edge.ffac376273657c8dd4c494ed"
+    ]
+  },
+  "createdAt": "2026-10-07T12:34:56.853Z",
+  "confirmed": {
+    "version": 2,
+    "key": "workflow",
+    "status": "committed",
+    "branch": "main",
+    "revision": 5,
+    "patchDigest": "6c9eead8fa363d2185406504ad493c1ddcc7c9728a1e207a7f8033c9a55afcfc",
+    "canonicalDigest": "6c9eead8fa363d2185406504ad493c1ddcc7c9728a1e207a7f8033c9a55afcfc",
+    "confirmedAt": "2026-10-07T12:34:56.934Z"
+  },
+  "receipt": "runs/ciq-digital-v4/scratch-kf-workflow-designer/commit-receipt.json",
+  "materialized": "/Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/runs/current/app-spec.json"
+}

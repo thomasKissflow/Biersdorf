@@ -1,0 +1,258 @@
+{
+  "Root": "CIQ_Supplier_Contact_A00",
+  "CIQ_Supplier_Contact_A00": {
+    "Id": "CIQ_Supplier_Contact_A00",
+    "Name": "CIQ Supplier Contact",
+    "Kind": "Model",
+    "FlowType": "Form",
+    "Description": "",
+    "Model::Row": [
+      "Row_n9pzfp"
+    ],
+    "Model::Field": [
+      "Contact_Full_Name",
+      "Contact_Email",
+      "Contact_Supplier",
+      "Contact_Role",
+      "Can_Confirm",
+      "Portal_User_Key",
+      "Invited_At",
+      "Contact_Active"
+    ]
+  },
+  "Row_n9pzfp": {
+    "Id": "Row_n9pzfp",
+    "Kind": "Row",
+    "Model": "CIQ_Supplier_Contact_A00",
+    "Row::Column": [
+      "Column_n9pzfp"
+    ]
+  },
+  "Column_n9pzfp": {
+    "Id": "Column_n9pzfp",
+    "Kind": "Column",
+    "Type": "Section",
+    "Name": "Details",
+    "Start": 0,
+    "End": 6,
+    "Row": "Row_n9pzfp",
+    "Column::Row": [
+      "Row_n9ora7",
+      "Row_n9ora8",
+      "Row_n9ora9",
+      "Row_n9oraa"
+    ]
+  },
+  "Row_n9ora7": {
+    "Id": "Row_n9ora7",
+    "Kind": "Row",
+    "Column": "Column_n9pzfp",
+    "Row::Column": [
+      "Column_k5b3i0",
+      "Column_7f7165"
+    ]
+  },
+  "Column_k5b3i0": {
+    "Id": "Column_k5b3i0",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_n9ora7",
+    "Column::Field": [
+      "Contact_Full_Name"
+    ]
+  },
+  "Column_7f7165": {
+    "Id": "Column_7f7165",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_n9ora7",
+    "Column::Field": [
+      "Contact_Email"
+    ]
+  },
+  "Row_n9ora8": {
+    "Id": "Row_n9ora8",
+    "Kind": "Row",
+    "Column": "Column_n9pzfp",
+    "Row::Column": [
+      "Column_13p1czd",
+      "Column_lr9bsn"
+    ]
+  },
+  "Column_13p1czd": {
+    "Id": "Column_13p1czd",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_n9ora8",
+    "Column::Field": [
+      "Contact_Supplier"
+    ]
+  },
+  "Column_lr9bsn": {
+    "Id": "Column_lr9bsn",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_n9ora8",
+    "Column::Field": [
+      "Contact_Role"
+    ]
+  },
+  "Row_n9ora9": {
+    "Id": "Row_n9ora9",
+    "Kind": "Row",
+    "Column": "Column_n9pzfp",
+    "Row::Column": [
+      "Column_9badax",
+      "Column_viv442"
+    ]
+  },
+  "Column_9badax": {
+    "Id": "Column_9badax",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_n9ora9",
+    "Column::Field": [
+      "Can_Confirm"
+    ]
+  },
+  "Column_viv442": {
+    "Id": "Column_viv442",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_n9ora9",
+    "Column::Field": [
+      "Portal_User_Key"
+    ]
+  },
+  "Row_n9oraa": {
+    "Id": "Row_n9oraa",
+    "Kind": "Row",
+    "Column": "Column_n9pzfp",
+    "Row::Column": [
+      "Column_1dfzgbl",
+      "Column_t2950h"
+    ]
+  },
+  "Column_1dfzgbl": {
+    "Id": "Column_1dfzgbl",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_n9oraa",
+    "Column::Field": [
+      "Invited_At"
+    ]
+  },
+  "Column_t2950h": {
+    "Id": "Column_t2950h",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_n9oraa",
+    "Column::Field": [
+      "Contact_Active"
+    ]
+  },
+  "Contact_Full_Name": {
+    "Id": "Contact_Full_Name",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Contact_Full_Name",
+    "Model": "CIQ_Supplier_Contact_A00",
+    "Column": "Column_k5b3i0",
+    "Required": true
+  },
+  "Contact_Email": {
+    "Id": "Contact_Email",
+    "Kind": "Field",
+    "Type": "Email",
+    "Name": "Contact_Email",
+    "Model": "CIQ_Supplier_Contact_A00",
+    "Column": "Column_7f7165",
+    "Required": true
+  },
+  "QueryDefinition_13p1czd": {
+    "Id": "QueryDefinition_13p1czd",
+    "Kind": "QueryDefinition",
+    "Field": "Contact_Supplier",
+    "LHSModel": "CIQ_Supplier_A00",
+    "FlowType": "Form",
+    "LookupField": [
+      {
+        "Id": "Supplier_Code",
+        "Name": "Supplier_Code",
+        "Type": "Text"
+      }
+    ],
+    "HiddenField": []
+  },
+  "Contact_Supplier": {
+    "Id": "Contact_Supplier",
+    "Kind": "Field",
+    "Type": "Reference",
+    "Name": "Contact_Supplier",
+    "Model": "CIQ_Supplier_Contact_A00",
+    "Column": "Column_13p1czd",
+    "Required": true,
+    "Field::QueryDefinition": [
+      "QueryDefinition_13p1czd"
+    ]
+  },
+  "Contact_Role": {
+    "Id": "Contact_Role",
+    "Kind": "Field",
+    "Type": "Select",
+    "Name": "Contact_Role",
+    "Model": "CIQ_Supplier_Contact_A00",
+    "Column": "Column_lr9bsn",
+    "ReferredList": "CIQ_Contact_Role_A00"
+  },
+  "Can_Confirm": {
+    "Id": "Can_Confirm",
+    "Kind": "Field",
+    "Type": "Select",
+    "Name": "Can_Confirm",
+    "Model": "CIQ_Supplier_Contact_A00",
+    "Column": "Column_9badax",
+    "ReferredList": "CIQ_Yes_No_A00"
+  },
+  "Portal_User_Key": {
+    "Id": "Portal_User_Key",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Portal_User_Key",
+    "Model": "CIQ_Supplier_Contact_A00",
+    "Column": "Column_viv442"
+  },
+  "Invited_At": {
+    "Id": "Invited_At",
+    "Kind": "Field",
+    "Type": "DateTime",
+    "Name": "Invited_At",
+    "Model": "CIQ_Supplier_Contact_A00",
+    "Column": "Column_1dfzgbl"
+  },
+  "Contact_Active": {
+    "Id": "Contact_Active",
+    "Kind": "Field",
+    "Type": "Select",
+    "Name": "Contact_Active",
+    "Model": "CIQ_Supplier_Contact_A00",
+    "Column": "Column_t2950h",
+    "ReferredList": "CIQ_Yes_No_A00"
+  }
+}

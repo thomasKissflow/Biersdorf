@@ -1,0 +1,141 @@
+{
+ "status": 200,
+ "body": [
+  {
+   "_id": "CIQ_Z2_Case_cancelled_neutral_e_ma_A00",
+   "_created_at": "2026-10-08T18:39:52Z",
+   "_created_by": {
+    "_id": "UsEJUfjYLM8Y",
+    "Name": "Thomas",
+    "Kind": "User"
+   },
+   "_modified_at": "2026-10-08T18:39:52Z",
+   "Name": "CIQ Z2 Case cancelled – neutral e-mail",
+   "Description": null,
+   "Type": "Integration",
+   "Status": "Live",
+   "_application_id": "CIQ_Digital_A00",
+   "SharedWith": [],
+   "PageAccess": [],
+   "IsActive": false,
+   "AutoRetry": {
+    "IsEnabled": false
+   },
+   "Connectors": []
+  },
+  {
+   "_id": "CIQ_Z1_Case_completed_PDF_e_mails__A00",
+   "_created_at": "2026-10-08T18:39:50Z",
+   "_created_by": {
+    "_id": "UsEJUfjYLM8Y",
+    "Name": "Thomas",
+    "Kind": "User"
+   },
+   "_modified_at": "2026-10-08T18:39:50Z",
+   "Name": "CIQ Z1 Case completed – PDF, e-mails, notification event",
+   "Description": null,
+   "Type": "Integration",
+   "Status": "Live",
+   "_application_id": "CIQ_Digital_A00",
+   "SharedWith": [],
+   "PageAccess": [],
+   "IsActive": false,
+   "AutoRetry": {
+    "IsEnabled": false
+   },
+   "Connectors": []
+  },
+  {
+   "_id": "CIQ_ZZ_Spike_log_point_completed_A00",
+   "_created_at": "2026-10-07T10:31:19Z",
+   "_created_by": {
+    "_id": "UsEJUfjYLM8Y",
+    "Name": "Thomas",
+    "Kind": "User"
+   },
+   "_modified_at": "2026-10-14T06:52:24Z",
+   "Name": "CIQ ZZ Spike log – point completed",
+   "Description": null,
+   "Type": "Integration",
+   "Status": "Live",
+   "_application_id": "CIQ_Digital_A00",
+   "SharedWith": [],
+   "PageAccess": [],
+   "IsActive": true,
+   "ExecutedAt": "2026-10-07T15:00:21Z",
+   "ExecutedCount": 1,
+   "AutoRetry": {
+    "IsEnabled": false
+   },
+   "Connectors": [
+    {
+     "_id": "ComaBsL8ZTSMM",
+     "Name": "Kissflow Process",
+     "Entities": [
+      {
+       "_id": "ItemCompleted",
+       "Kind": "Trigger",
+       "Name": "When an item completes its workflow",
+       "Version": "3.7.6"
+      }
+     ]
+    },
+    {
+     "_id": "Co4mIEiAdtSb",
+     "Name": "Kissflow Dataform",
+     "Entities": [
+      {
+       "_id": "CreateAndSubmitItem",
+       "Kind": "Action",
+       "Name": "Create and submit an item",
+       "Version": "1.5.4"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "_id": "CIQ_ZZ_Spike_log_register_created_A00",
+   "_created_at": "2026-10-07T10:31:17Z",
+   "_created_by": {
+    "_id": "UsEJUfjYLM8Y",
+    "Name": "Thomas",
+    "Kind": "User"
+   },
+   "_modified_at": "2026-10-14T06:52:25Z",
+   "Name": "CIQ ZZ Spike log – register created",
+   "Description": null,
+   "Type": "Integration",
+   "Status": "Live",
+   "_application_id": "CIQ_Digital_A00",
+   "SharedWith": [],
+   "PageAccess": [],
+   "IsActive": true,
+   "ExecutedAt": "2026-10-07T17:35:05Z",
+   "ExecutedCount": 8,
+   "AutoRetry": {
+    "IsEnabled": false
+   },
+   "Connectors": [
+    {
+     "_id": "Co4mIEiAdtSb",
+     "Name": "Kissflow Dataform",
+     "Entities": [
+      {
+       "_id": "ItemCreated",
+       "Kind": "Trigger",
+       "Name": "When an item is added to a dataform",
+       "Version": "1.5.4"
+      },
+      {
+       "_id": "CreateAndSubmitItem",
+       "Kind": "Action",
+       "Name": "Create and submit an item",
+       "Version": "1.5.4"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

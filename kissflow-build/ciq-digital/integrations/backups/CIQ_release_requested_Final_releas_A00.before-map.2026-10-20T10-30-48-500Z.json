@@ -1,0 +1,326 @@
+{
+ "Root": "CIQ_release_requested_Final_releas_A00",
+ "CIQ_release_requested_Final_releas_A00": {
+  "Id": "CIQ_release_requested_Final_releas_A00",
+  "Description": "Plan v6 §4.1 I-5 release.requested: the app posts {caseItemId}; the case's request gets Release_Flag Requested, the lock and Release_Contacts from the case.",
+  "Name": "CIQ release.requested Final release requested",
+  "Kind": "Integration",
+  "FlowType": "Integration",
+  "Integration::Trigger": [
+   "Trigger_release_webhook"
+  ],
+  "Integration::Action": [
+   "Action_release_read_app_item",
+   "Action_release_pick",
+   "Action_RR_update_request"
+  ],
+  "_application_id": "CIQ_Digital_A00"
+ },
+ "PublishedAt": "2026-10-20T10:29:24Z",
+ "PublishedBy": {
+  "_id": "UsEJUfjYLM8Y",
+  "Name": "Thomas",
+  "Kind": "User"
+ },
+ "_meta_version": "1792492164829959",
+ "Trigger_release_webhook": {
+  "Id": "Trigger_release_webhook",
+  "Kind": "Trigger",
+  "Type": "Create",
+  "Name": "Catch a webhook (POST)",
+  "IsInternalAuth": true,
+  "Connection": {},
+  "Integration": "CIQ_release_requested_Final_releas_A00",
+  "Connector": {
+   "_id": "Coowt2xE4WH9S",
+   "Name": "Webhooks by Kissflow",
+   "Version": "1.0.0",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/Coowt2xE4WH9S/1.0.0/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/Coowt2xE4WH9S/1.0.0/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/Coowt2xE4WH9S/1.0.0/Logo/Webhook.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "TriggerId": "WebhookTrigger",
+   "TriggerName": "Catch a webhook (POST)"
+  }
+ },
+ "Action_release_read_app_item": {
+  "Id": "Action_release_read_app_item",
+  "Kind": "Action",
+  "Type": "Search",
+  "Name": "Search an item",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQ_release_requested_Final_releas_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "Action_Kh4Jb2AoG",
+   "ActionName": "Search an item "
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_jjv791",
+   "FieldMapping_jjv793"
+  ]
+ },
+ "Action_release_pick": {
+  "Id": "Action_release_pick",
+  "Kind": "Action",
+  "Type": "Create",
+  "Name": "Run JavaScript",
+  "IsInternalAuth": true,
+  "Connection": {},
+  "Integration": "CIQ_release_requested_Final_releas_A00",
+  "Connector": {
+   "_id": "Co4m9q4JUbkV",
+   "Name": "Run script",
+   "Version": "1.0.0",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/Runscript.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "RunJSCode",
+   "ActionName": "Run JavaScript"
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_jjwse7",
+   "FieldMapping_jjwsec"
+  ]
+ },
+ "Action_RR_update_request": {
+  "Id": "Action_RR_update_request",
+  "Kind": "Action",
+  "Type": "Update",
+  "Name": "Update an item",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQ_release_requested_Final_releas_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "UpdateAnItem",
+   "ActionName": "Update an item"
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_jjwsd5"
+  ]
+ },
+ "FieldMapping_jjv791": {
+  "Id": "FieldMapping_jjv791",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Field_FfgdBFhZt",
+  "Label": "Choose a process",
+  "Name": "process_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Action": "Action_release_read_app_item",
+  "SelectedDropdown": [
+   {
+    "FieldId": "CIQ_Case_A00",
+    "FieldName": "CIQ Case - CIQ Digital",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_jjv792"
+  ]
+ },
+ "Property_jjv792": {
+  "Id": "Property_jjv792",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jjv791",
+  "Type": "Value",
+  "Value": [
+   "CIQ_Case_A00"
+  ],
+  "Name": "process_id"
+ },
+ "FieldMapping_jjv793": {
+  "Id": "FieldMapping_jjv793",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Field_1D8EgGqhG",
+  "Label": "Search term",
+  "Name": "lookupValue",
+  "IsRequired": true,
+  "Action": "Action_release_read_app_item",
+  "FieldMapping::Property": [
+   "Property_jjv794"
+  ]
+ },
+ "Property_jjv794": {
+  "Id": "Property_jjv794",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jjv793",
+  "Type": "Field",
+  "Field": "context.Trigger_release_webhook.caseItemId",
+  "Name": "lookupValue"
+ },
+ "FieldMapping_jjwsd5": {
+  "Id": "FieldMapping_jjwsd5",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField002",
+  "Label": "Choose a process",
+  "Name": "process_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Action": "Action_RR_update_request",
+  "SelectedDropdown": [
+   {
+    "FieldId": "CIQP_Request_A00",
+    "FieldName": "CIQP Request - CIQ Supplier Portal",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_jjwsd6"
+  ]
+ },
+ "Property_jjwsd6": {
+  "Id": "Property_jjwsd6",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jjwsd5",
+  "Type": "Value",
+  "Value": [
+   "CIQP_Request_A00"
+  ],
+  "Name": "process_id"
+ },
+ "FieldMapping_jjwse7": {
+  "Id": "FieldMapping_jjwse7",
+  "Kind": "FieldMapping",
+  "Type": "Object",
+  "FieldId": "InputFields",
+  "Label": "Input data",
+  "Name": "input_fields",
+  "IsDropdown": false,
+  "IsPaginated": false,
+  "HelpText": "Specify the input data that should be provided to your code",
+  "AutoRefresh": false,
+  "Action": "Action_release_pick",
+  "FieldMapping::FieldMapping": [
+   "FieldMapping_jjwse8",
+   "FieldMapping_jjwsea"
+  ]
+ },
+ "FieldMapping_jjwse8": {
+  "Id": "FieldMapping_jjwse8",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "IsVisible": true,
+  "FieldMapping": "FieldMapping_jjwse7",
+  "Name": "caseItemId",
+  "Label": "caseItemId",
+  "FieldMapping::Property": [
+   "Property_jjwse9"
+  ]
+ },
+ "Property_jjwse9": {
+  "Id": "Property_jjwse9",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jjwse8",
+  "Type": "Field",
+  "Field": "context.Trigger_release_webhook.caseItemId",
+  "Name": "caseItemId"
+ },
+ "FieldMapping_jjwsea": {
+  "Id": "FieldMapping_jjwsea",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "IsVisible": true,
+  "FieldMapping": "FieldMapping_jjwse7",
+  "Name": "rows",
+  "Label": "rows",
+  "FieldMapping::Property": [
+   "Property_jjwseb"
+  ]
+ },
+ "Property_jjwseb": {
+  "Id": "Property_jjwseb",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jjwsea",
+  "Type": "Field",
+  "Field": "context.Action_release_read_app_item.Data",
+  "Name": "rows"
+ },
+ "FieldMapping_jjwsec": {
+  "Id": "FieldMapping_jjwsec",
+  "Kind": "FieldMapping",
+  "Type": "Code",
+  "FieldId": "JSCode",
+  "Label": "JavaScript code",
+  "Name": "js_code",
+  "IsRequired": true,
+  "IsDropdown": false,
+  "IsPaginated": false,
+  "AutoRefresh": false,
+  "CodeLanguage": "javascript",
+  "Action": "Action_release_pick",
+  "FieldMapping::Property": [
+   "Property_jjwsed"
+  ]
+ },
+ "Property_jjwsed": {
+  "Id": "Property_jjwsed",
+  "Kind": "Property",
+  "Type": "Code",
+  "Name": "js_code",
+  "Code": "// release.requested (I-5) · the case the RMM's screen named; its supplier request (Portal_Request_Item_Id, written only by\n// the case.started integration) is asked for the final release. Release_Contacts come from the case's own\n// Release_Assignees_JSON. The supplier's screen then submits \"keep the CIQ up to date\" itself (Release_Flag \"Requested\").\nconst id = String(inputData.caseItemId || \"\").trim();\nlet rows = inputData.rows;\nif (typeof rows === \"string\") { try { rows = JSON.parse(rows); } catch (e) { rows = []; } }\nconst row = (Array.isArray(rows) ? rows : []).find((r) => r && r._id === id);\nif (!id || !row) throw new Error(`CIQ Case ${id || \"(no id)\"} was not found`);\nif (!row.Portal_Request_Item_Id) throw new Error(`Case ${row.Case_Code} has no supplier request`);\nlet contacts = row.Release_Assignees_JSON;\nif (typeof contacts === \"string\") { try { contacts = JSON.parse(contacts); } catch (e) { contacts = []; } }\nconst releaseContacts = (Array.isArray(contacts) ? contacts : []).map((c) => (c && c._id ? { _id: String(c._id) } : null)).filter(Boolean);\nif (!releaseContacts.length) throw new Error(`Case ${row.Case_Code} names no release contact (Release_Assignees_JSON)`);\nreturn { _id: row.Portal_Request_Item_Id, Release_Flag: \"Requested\", Request_Locked: \"Yes\", Case_Phase_Label: \"Awaiting your final release\", releaseContacts };\n",
+  "FieldMapping": "FieldMapping_jjwsec"
+ }
+}

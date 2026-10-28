@@ -1,0 +1,20 @@
+--- ../../prototype/scripts/harness-portal.mjs	2026-10-22 15:43:12
++++ prototype/scripts/harness-portal.mjs	2026-10-26 00:12:25
+@@ -1249,10 +1249,13 @@
+     }),
+   paging: () =>
+     scenario("paging", async (t) => {
+-      await t.host({ role: "admin", extra: 120 }, "/admin/flow/request");
+-      await t.see(`${120 + FX.byFlow.CIQP_Request_A00.length} items in total`, "every request read across pages of 50");
+-      const pages = (await t.calls((c) => c.command === "PROCESS_GET_ADMIN_ITEMS" && c.flowId === "CIQP_Request_A00")).map((c) => c.pageNumber);
+-      t.check("pages 1, 2 and 3 were asked for", JSON.stringify([...new Set(pages)].sort()) === "[1,2,3]", pages);
++      // 26 Oct: 200 rows asked a call (client.ts PAGE_SIZE); 450 + the fixtures span 3 pages, plus at most one empty read
++      const total = 450 + FX.byFlow.CIQP_Request_A00.length;
++      await t.host({ role: "admin", extra: 450 }, "/admin/flow/request");
++      await t.see(`${total} items in total`, "every request read across pages of 200");
++      const pages = [...new Set((await t.calls((c) => c.command === "PROCESS_GET_ADMIN_ITEMS" && c.flowId === "CIQP_Request_A00")).map((c) => c.pageNumber))].sort((a, b) => a - b);
++      const need = Math.ceil(total / 200);
++      t.check(`pages 1 to ${need} were asked for (at most one more, empty)`, pages.every((n, i) => n === i + 1) && pages.length >= need && pages.length <= need + 1, pages);
+     }),
+ };
+ 

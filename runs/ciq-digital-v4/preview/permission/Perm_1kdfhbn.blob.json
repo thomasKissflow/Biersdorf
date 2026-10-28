@@ -1,0 +1,49 @@
+{
+  "Root": "Perm_1kdfhbn",
+  "Perm_1kdfhbn": {
+    "Id": "Perm_1kdfhbn",
+    "Kind": "FlowPermission",
+    "Role": "ciq_microbiology_reviewer",
+    "RoleName": "CIQ Microbiology Reviewer",
+    "Model": "Regulatory_Findings",
+    "Level": "ReadOnly",
+    "Scope": "all",
+    "FlowPermission::Permission": [
+      "Permission_15r13ie",
+      "Permission_tvrh1m",
+      "Permission_5306bu",
+      "Permission_s6grya",
+      "Permission_1l0dji6"
+    ]
+  },
+  "Permission_15r13ie": {
+    "Id": "Permission_15r13ie",
+    "Kind": "Permission",
+    "Column": "Findings_Text",
+    "Permission": "ReadOnly"
+  },
+  "Permission_tvrh1m": {
+    "Id": "Permission_tvrh1m",
+    "Kind": "Permission",
+    "Column": "Findings_Criterion_Code",
+    "Permission": "ReadOnly"
+  },
+  "Permission_5306bu": {
+    "Id": "Permission_5306bu",
+    "Kind": "Permission",
+    "Column": "Findings_Blocking",
+    "Permission": "ReadOnly"
+  },
+  "Permission_s6grya": {
+    "Id": "Permission_s6grya",
+    "Kind": "Permission",
+    "Column": "Findings_State",
+    "Permission": "ReadOnly"
+  },
+  "Permission_1l0dji6": {
+    "Id": "Permission_1l0dji6",
+    "Kind": "Permission",
+    "Column": "Findings_Linked_OP_Key",
+    "Permission": "ReadOnly"
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "Config_Key": "RMES:current",
+  "Config_Kind": "RMES criteria",
+  "Version_Label": "current",
+  "Config_State": "Published",
+  "Payload_JSON": {
+    "criteria": [
+      {
+        "id": "R-A1",
+        "part": "A",
+        "dept": "REG",
+        "title": "INCI and CAS of every component are consistent",
+        "source": {
+          "sectionId": "K2.1",
+          "version": 1,
+          "label": "K2.1 composition table"
+        },
+        "appliesWhen": "always"
+      },
+      {
+        "id": "R-A2",
+        "part": "A",
+        "dept": "REG",
+        "title": "EU REACH registration status listed for each substance",
+        "source": {
+          "sectionId": "A10",
+          "version": 1,
+          "label": "Annex 10"
+        },
+        "appliesWhen": "always"
+      },
+      {
+        "id": "R-B1",
+        "part": "B",
+        "dept": "REG",
+        "title": "Status under Reg. 1223/2009 Annexes III–VI",
+        "source": {
+          "sectionId": "K6.5",
+          "version": 1,
+          "label": "K6.5"
+        },
+        "appliesWhen": "always"
+      },
+      {
+        "id": "R-B2",
+        "part": "B",
+        "dept": "REG",
+        "title": "Animal testing statement available (Art. 11(2)(e))",
+        "source": {
+          "sectionId": "K6.7",
+          "version": 1,
+          "label": "K6.7"
+        },
+        "appliesWhen": "always"
+      },
+      {
+        "id": "S-A1",
+        "part": "A",
+        "dept": "SAF",
+        "title": "Byproducts and contaminants within BDF limits",
+        "source": {
+          "sectionId": "K2.2",
+          "fieldId": "FLD-A14-101",
+          "version": 1,
+          "label": "K2.2 heavy metals"
+        },
+        "appliesWhen": "always"
+      },
+      {
+        "id": "S-B1",
+        "part": "B",
+        "dept": "SAF",
+        "title": "Toxicological profile available and plausible",
+        "source": {
+          "sectionId": "K4.1",
+          "version": 1,
+          "label": "K4.1"
+        },
+        "aiSuggestion": "AI suggestion: the uploaded SDS lists acute oral toxicity LD50 > 2000 mg/kg (rat) on page 4; no skin sensitisation data found. Please verify.",
+        "appliesWhen": "always"
+      },
+      {
+        "id": "S-C1",
+        "part": "C",
+        "dept": "SAF",
+        "title": "Nanomaterial status plausible, justification given",
+        "source": {
+          "sectionId": "K6.9",
+          "version": 1,
+          "label": "K6.9"
+        },
+        "appliesWhen": "always"
+      },
+      {
+        "id": "S-C2",
+        "part": "C",
+        "dept": "SAF",
+        "title": "MOAH value assessed against BDF threshold",
+        "source": {
+          "sectionId": "A4",
+          "fieldId": "FLD-A4-101",
+          "version": 1,
+          "label": "Annex 4 MOAH"
+        },
+        "appliesWhen": "Annex 4 in scope"
+      },
+      {
+        "id": "R-C1",
+        "part": "C",
+        "dept": "REG",
+        "title": "Pesticide analysis available or justified",
+        "source": {
+          "sectionId": "A1",
+          "fieldId": "FLD-A1-201",
+          "version": 1,
+          "label": "Annex 1 pesticides"
+        },
+        "appliesWhen": "Annex 1 in scope"
+      },
+      {
+        "id": "R-D1",
+        "part": "D",
+        "dept": "REG",
+        "title": "Listed in the chemical inventories of all target markets",
+        "source": {
+          "sectionId": "A13",
+          "version": 1,
+          "label": "Annex 13"
+        },
+        "appliesWhen": "a target market outside the EU"
+      },
+      {
+        "id": "S-D1",
+        "part": "D",
+        "dept": "SAF",
+        "title": "Overall safety conclusion documented",
+        "source": {
+          "sectionId": "K4.1",
+          "version": 1,
+          "label": "Safety summary"
+        },
+        "appliesWhen": "always"
+      }
+    ],
+    "note": "A-13 placeholder template (actions.ts rmesCriteria) until BDF shares its own (G-07)."
+  },
+  "Content_Hash": "6f603256b2414ae0db4c8042988d906ee42dce627513755bed5947b0a8cb5781",
+  "Published_At": "2026-09-21T10:00:00.000Z",
+  "Change_Note": "Seed (plan v5 §11.2).",
+  "Evaluator_Version": "prototype-domain@vendor"
+}

@@ -1,0 +1,201 @@
+{
+ "type": "integration",
+ "name": "Test",
+ "status": "Live",
+ "isActive": false,
+ "list": {
+  "_id": "Test_A00",
+  "_created_at": "2026-10-16T09:19:11Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-16T09:21:13Z",
+  "Name": "Test",
+  "Description": "",
+  "Type": "Integration",
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "SharedWith": [],
+  "PageAccess": [],
+  "IsActive": false,
+  "AutoRetry": {
+   "IsEnabled": false
+  },
+  "Connectors": [
+   {
+    "_id": "Co4mIEiAdtSb",
+    "Name": "Kissflow Dataform",
+    "Entities": [
+     {
+      "_id": "ItemCreated",
+      "Kind": "Trigger",
+      "Name": "When an item is added to a dataform",
+      "Version": "1.5.4"
+     }
+    ]
+   },
+   {
+    "_id": "CoTw_5MLD2yHg",
+    "Name": "HTTP",
+    "Entities": [
+     {
+      "_id": "CustomCall",
+      "Kind": "Action",
+      "Name": "Make an HTTP call (Custom)",
+      "Version": "2.0.0"
+     }
+    ]
+   }
+  ]
+ },
+ "draftStatus": 200,
+ "draft": {
+  "Root": "Test_A00",
+  "Test_A00": {
+   "Id": "Test_A00",
+   "Description": "",
+   "Name": "Test",
+   "Kind": "Integration",
+   "FlowType": "Integration",
+   "Integration::Trigger": [
+    "Trigger_qZWHEh6yJA"
+   ],
+   "Integration::Action": [
+    "Action_GONEcSPB2z"
+   ],
+   "_application_id": "CIQ_Digital_A00"
+  },
+  "PublishedAt": "2026-10-16T09:21:12Z",
+  "PublishedBy": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_meta_version": "1792142472833181",
+  "Trigger_qZWHEh6yJA": {
+   "Id": "Trigger_qZWHEh6yJA",
+   "Kind": "Trigger",
+   "Type": "Create",
+   "Name": "When an item is added to a dataform",
+   "IsInternalAuth": false,
+   "Connector": {
+    "_id": "Co4mIEiAdtSb",
+    "Name": "Kissflow Dataform",
+    "TriggerId": "ItemCreated",
+    "TriggerName": "When an item is added to a dataform",
+    "Version": "1.5.4",
+    "Status": "Published",
+    "WebsiteURL": "https://kissflow.com"
+   },
+   "Connection": {},
+   "Integration": "Test_A00"
+  },
+  "Action_GONEcSPB2z": {
+   "Id": "Action_GONEcSPB2z",
+   "Kind": "Action",
+   "Integration": "Test_A00",
+   "Type": "Create",
+   "Name": "Make an HTTP call (Custom)",
+   "IsInternalAuth": false,
+   "Connector": {
+    "_id": "CoTw_5MLD2yHg",
+    "Name": "HTTP",
+    "ActionId": "CustomCall",
+    "ActionName": "Make an HTTP call (Custom)",
+    "Version": "2.0.0",
+    "Status": "Published",
+    "WebsiteURL": "www.http.com"
+   },
+   "Connection": {
+    "_id": "CnENYDu15_X6",
+    "Name": "CustomAuth - Test"
+   },
+   "Action::FieldMapping": [
+    "FieldMapping_w3qn69b0iO",
+    "FieldMapping_IJ511-WDb6",
+    "FieldMapping_klqXI4B06l",
+    "FieldMapping_t9jKvtxtCQ",
+    "FieldMapping_MO6AkRH9Dg"
+   ]
+  },
+  "FieldMapping_w3qn69b0iO": {
+   "Id": "FieldMapping_w3qn69b0iO",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "URLField004",
+   "Label": "URL",
+   "Name": "URL",
+   "IsRequired": true,
+   "IsMultiValue": false,
+   "IsDropdown": false,
+   "AutoRefresh": false,
+   "AllowMultiples": false,
+   "Action": "Action_GONEcSPB2z"
+  },
+  "FieldMapping_IJ511-WDb6": {
+   "Id": "FieldMapping_IJ511-WDb6",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "MethodField004",
+   "Label": "Method",
+   "Name": "Method",
+   "IsRequired": true,
+   "IsMultiValue": false,
+   "IsDropdown": true,
+   "AutoRefresh": true,
+   "Action": "Action_GONEcSPB2z",
+   "FieldMapping::Property": [
+    "Property_zNk3SPwOhh"
+   ],
+   "SelectedDropdown": [
+    {
+     "FieldId": "PUT",
+     "FieldName": "PUT",
+     "IsSubArray": false
+    }
+   ]
+  },
+  "Property_zNk3SPwOhh": {
+   "Id": "Property_zNk3SPwOhh",
+   "Kind": "Property",
+   "FieldMapping": "FieldMapping_IJ511-WDb6",
+   "Type": "Value",
+   "Value": [
+    "PUT"
+   ],
+   "Name": "Method"
+  },
+  "FieldMapping_klqXI4B06l": {
+   "Id": "FieldMapping_klqXI4B06l",
+   "Kind": "FieldMapping",
+   "Type": "Object",
+   "FieldId": "HTTPHeaderField004",
+   "Label": "HTTP headers",
+   "Name": "HTTPHeader",
+   "Action": "Action_GONEcSPB2z"
+  },
+  "FieldMapping_t9jKvtxtCQ": {
+   "Id": "FieldMapping_t9jKvtxtCQ",
+   "Kind": "FieldMapping",
+   "Type": "Object",
+   "FieldId": "QueryParamsField004",
+   "Label": "Query parameters",
+   "Name": "QueryParams",
+   "Action": "Action_GONEcSPB2z"
+  },
+  "FieldMapping_MO6AkRH9Dg": {
+   "Id": "FieldMapping_MO6AkRH9Dg",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "BodyTypeField004",
+   "Label": "Body type",
+   "Name": "body_type",
+   "IsRequired": true,
+   "IsDropdown": true,
+   "AutoRefresh": true,
+   "Action": "Action_GONEcSPB2z"
+  }
+ }
+}

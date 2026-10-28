@@ -1,0 +1,104 @@
+{
+ "rehearsal": "R0P",
+ "flow": "CIQ_ZZ_Spike_Point_A00",
+ "what": "re-point every step owned by the deleted Spike roles A/B to Admin / Developer",
+ "at": "2026-10-14T17:25:42.390Z",
+ "apply": true,
+ "liveMetaVersion": "1791394979552199",
+ "livePublishedAt": "2026-10-07T17:42:59Z",
+ "mutation": {
+  "repointed": [
+   "Spike waiting: CIQ ZZ Spike Role A → Admin / Developer",
+   "Spike review: CIQ ZZ Spike Role B → Admin / Developer"
+  ]
+ },
+ "diff": {
+  "added": [],
+  "removed": [],
+  "changed": [
+   {
+    "entity": "Resource_1xings0 Resource",
+    "props": {
+     "DisplayValue": {
+      "was": "CIQ ZZ Spike Role A",
+      "now": "Admin / Developer"
+     },
+     "Value": {
+      "was": "RoEKHLFdFsUJ",
+      "now": "RoEK3_3Jy9XU"
+     }
+    }
+   },
+   {
+    "entity": "Resource_1a0ot8o Resource",
+    "props": {
+     "DisplayValue": {
+      "was": "CIQ ZZ Spike Role B",
+      "now": "Admin / Developer"
+     },
+     "Value": {
+      "was": "RoEKHLGDsV2J",
+      "now": "RoEK3_3Jy9XU"
+     }
+    }
+   }
+  ]
+ },
+ "diffSummary": {
+  "added": 0,
+  "removed": 0,
+  "changed": 2
+ },
+ "preflight": {
+  "errors": [],
+  "warnings": [
+   "NO_ID",
+   "ORPHAN_ENTITY"
+  ]
+ },
+ "write": {
+  "ok": true,
+  "putDraft": 200,
+  "publish": 200,
+  "publishedAt": "2026-10-14T17:25:44Z"
+ },
+ "readBack": {
+  "metaVersion": "1791998744250418",
+  "publishedAt": "2026-10-14T17:25:44Z",
+  "diffVsSent": {
+   "added": [],
+   "removed": [],
+   "changed": []
+  },
+  "steps": [
+   "Raise spike point [Activity_1wjqod]  perms=7",
+   "Spike waiting [Activity_1nm6syq] AppRole:Admin / Developer if To_Supplier = \"Yes\" perms=7",
+   "Spike review [Activity_2yluch] AppRole:Admin / Developer perms=7",
+   "End [Activity_fdurmy]  perms=7"
+  ]
+ },
+ "publishedFields": {
+  "status": 200,
+  "ids": [
+   "Round_No",
+   "Question_Text",
+   "Awaiting_Response",
+   "Response_Text",
+   "Due_Date",
+   "To_Supplier"
+  ]
+ },
+ "run": {
+  "item": "PkEMvxcZ29BU",
+  "create": 200,
+  "submitStart": 403,
+  "path": [
+   {
+    "end": true,
+    "status": "Draft",
+    "step": "Raise spike point"
+   }
+  ],
+  "pathText": "Raise spike point → Draft"
+ }
+}

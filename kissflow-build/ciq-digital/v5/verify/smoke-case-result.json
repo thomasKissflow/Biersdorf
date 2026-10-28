@@ -1,0 +1,106 @@
+{
+ "step": "verifier-smoke-case",
+ "at": "2026-10-14T18:22:57.489Z",
+ "tag": "ZZT-VER-10141822",
+ "create": {
+  "status": 200,
+  "item": "PkEMwsBV0JSm"
+ },
+ "item": "PkEMwsBV0JSm",
+ "atStart": {
+  "status": "Draft",
+  "ctx": [
+   {
+    "assigned": [
+     "User:Thomas:UsEJUfjYLM8Y"
+    ]
+   }
+  ],
+  "stored": {
+   "Template_Version": "ZZT-T-1",
+   "Priority": "High",
+   "Case_Phase_forged": "Completed",
+   "Final_Document_Hash_forged": "ZZT-forged-at-create"
+  }
+ },
+ "note": "no activity instance id at Start in the admin GET",
+ "submitStart": {
+  "status": 0
+ },
+ "afterSubmit": {
+  "status": "Draft",
+  "ctx": [
+   {
+    "assigned": [
+     "User:Thomas:UsEJUfjYLM8Y"
+    ]
+   }
+  ],
+  "current_assigned_to": [
+   {
+    "_id": "UsEJUfjYLM8Y",
+    "Name": "Thomas",
+    "Kind": "User"
+   }
+  ],
+  "Case_Phase": "Completed",
+  "Final_Document_Hash": "ZZT-forged-at-create"
+ },
+ "withdraw": {
+  "status": 400,
+  "err": "KISSFLOW_ERROR_050305 You don't have permission to withdraw this item anymore."
+ },
+ "final": {
+  "status": "Draft",
+  "ctx": [
+   {
+    "assigned": [
+     "User:Thomas:UsEJUfjYLM8Y"
+    ]
+   }
+  ]
+ },
+ "part2": {
+  "at": "2026-10-14T18:23:33.074Z",
+  "startActFromCreate": "PkEMwsBWCmtv",
+  "submitStart": {
+   "status": 200
+  },
+  "afterSubmit": {
+   "status": "InProgress",
+   "ctx": [
+    {
+     "step": "Waiting for supplier: CIQ",
+     "activity": "Activity_1kltjdn",
+     "act": "PkEMwsn1_ous",
+     "assigned": [
+      "AppRole:CIQ Integration Service:RoEKl89I5nGx"
+     ]
+    }
+   ],
+   "current_assigned_to": [
+    {
+     "_id": "RoEKl89I5nGx",
+     "Name": "CIQ Integration Service",
+     "Kind": "AppRole"
+    }
+   ],
+   "Case_Phase": "Completed",
+   "Final_Document_Hash": "ZZT-forged-at-create",
+   "Template_Version": "ZZT-T-1"
+  },
+  "withdraw": {
+   "status": 200
+  },
+  "final": {
+   "status": "Withdrawn",
+   "ctx": [
+    {
+     "assigned": [
+      "User:Thomas:UsEJUfjYLM8Y"
+     ]
+    }
+   ]
+  }
+ }
+}

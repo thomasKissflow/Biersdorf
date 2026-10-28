@@ -1,0 +1,103 @@
+
+ RUN  v2.1.9 /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/prototype
+
+stdout | live/case.live.ts > S-CASE: a case from the supplier master to the final release, and a cancelled one
+S-CASE R1 (live): /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/kissflow-build/ciq-digital/tests-2026-10-21/results/R1/S-CASE.json
+pass     0 integrations ON [2 calls]
+pass     1 supplier master [22 calls]
+fail     2 draft [18 calls] — failed: ZZT-N21-R1-SC1-D01: a Start draft (Diagnostics lists it); ZZT-N21-R1-SC1-D01: not part of any case, but blocks a twin (ownDraftKeys); ZZT-N21-R1-SC1-D02
+pass     3 started (I-1) [21 calls]
+pass     4a answers saved (request.changed) [9 calls]
+pass     4b completeness confirmed (I-2 fields) [8 calls]
+blocked  4c I-2 Approve [1 calls] — 050201 expected: "Waiting for supplier: CIQ" is held by Integration service, and the key's user, whom I-2 acts as, is not in it (app roles read at boot: Busines
+pass     5 reviews (ensureReviews) [70 calls]
+pass     6a RMES Safety [63 calls]
+pass     6b RMES Regulatory [63 calls]
+blocked  7 review completion [32 calls] — 050201: "Review – RMM" is held by Raw Material Manager (RMM), which has no members; the app refused first (The RMM review of this case is not one of your open t
+pass     8 release requested [42 calls]
+fail     9 final release (I-7) [25 calls] — failed: the case reached End
+pass     10 cancelled case [52 calls]
+not-run  11 cleanup — R1 is the showcase: its 32 items stay at the stages the ledger names
+calls: 434
+showcase (kept):
+  CIQ_Supplier_A00 PkEPDGzxZAYF Supplier_Code=ZZT-N21-R1-SC1-SUP Supplier_Legal_Name=ZZT-N21-R1 Supplier: saved
+  CIQ_Audit_Event_A00 PkEPDH9ZZTpH Event_Key=EV-LOG-20261020225804-hnqr Action_Code=supplier.changed: saved
+  CIQ_Case_A00 PkEPDHs5ks_V Case_Code=ZZT-N21-R1-SC1-D01: discarded
+  CIQ_Case_A00 PkEPDHygP392 Case_Code=ZZT-N21-R1-SC1-D02: Create case, Draft
+  CIQ_Case_A00 PkEPDInM93XJ Case_Code=ZZT-N21-R1-SC1-C01: Waiting for supplier: CIQ, InProgress
+  CIQ_Audit_Event_A00 PkEPDJ3rgmzp Case_Code=ZZT-N21-R1-SC1-C01 Event_Key=EV-ZZT-N21-R1-SC1-C01-20261020225955-u9rb: saved
+  CIQP_Request_A00 PkEPDIyFblNB Request_Key=ZZT-N21-R1-SC1-C01|1: Supplier: keep the CIQ up to date, InProgress: released
+  CIQ_Review_A00 PkEPDLUjv_bu Review_Key=ZZT-N21-R1-SC1-C01-RMM-1: Review – RMM, InProgress: started by ensureReviews
+  CIQ_Audit_Event_A00 PkEPDLgeU6Wc Case_Code=ZZT-N21-R1-SC1-C01 Event_Key=EV-ZZT-N21-R1-SC1-C01-20261020230235-8ghx: saved
+  CIQ_Review_A00 PkEPDLn4VWJD Review_Key=ZZT-N21-R1-SC1-C01-REG-1: Review – Regulatory, InProgress: started by ensureReviews
+  CIQ_Audit_Event_A00 PkEPDLzpgCvG Case_Code=ZZT-N21-R1-SC1-C01 Event_Key=EV-ZZT-N21-R1-SC1-C01-20261020230253-4uv6: saved
+  CIQ_Review_A00 PkEPDM6Fq7bs Review_Key=ZZT-N21-R1-SC1-C01-SAF-1: Review – Safety, InProgress: started by ensureReviews
+  CIQ_Audit_Event_A00 PkEPDMJ2lSRh Case_Code=ZZT-N21-R1-SC1-C01 Event_Key=EV-ZZT-N21-R1-SC1-C01-20261020230311-5j1b: saved
+  CIQ_Review_A00 PkEPDMPSI6uE Review_Key=ZZT-N21-R1-SC1-C01-QM-1: Review – QM, InProgress: started by ensureReviews
+  CIQ_Audit_Event_A00 PkEPDMbLifAA Case_Code=ZZT-N21-R1-SC1-C01 Event_Key=EV-ZZT-N21-R1-SC1-C01-20261020230330-bm7p: saved
+  CIQ_Review_A00 PkEPDMhzSNPt Review_Key=ZZT-N21-R1-SC1-C01-MIC-1: Review – Microbiology, InProgress: started by ensureReviews
+  CIQ_Audit_Event_A00 PkEPDMurN545 Case_Code=ZZT-N21-R1-SC1-C01 Event_Key=EV-ZZT-N21-R1-SC1-C01-20261020230348-cdl2: saved
+  CIQ_Review_A00 PkEPDN1LaVvN Review_Key=ZZT-N21-R1-SC1-C01-SUS-1: Review – Sustainability, InProgress: started by ensureReviews
+  CIQ_Audit_Event_A00 PkEPDNECk6H7 Case_Code=ZZT-N21-R1-SC1-C01 Event_Key=EV-ZZT-N21-R1-SC1-C01-20261020230406-wr0o: saved
+  CIQ_Scope_Run_A00 PkEPDNNm9Pwx Case_Code=ZZT-N21-R1-SC1-C01: saved
+  CIQ_RMES_Safety_A00 PkEPDPCsnvmc Case_Code=ZZT-N21-R1-SC1-C01 RMES_Key=ZZT-N21-R1-SC1-C01-RMES-SAF: saved
+  CIQ_Audit_Event_A00 PkEPDPMldDbl Case_Code=ZZT-N21-R1-SC1-C01 Event_Key=EV-ZZT-N21-R1-SC1-C01-20261020230614-vg7e: saved
+  CIQ_Audit_Event_A00 PkEPDQRw7khC Case_Code=ZZT-N21-R1-SC1-C01 Event_Key=EV-ZZT-N21-R1-SC1-C01-20261020230718-80er: saved
+  CIQ_Audit_Event_A00 PkEPDQjzHM2q Case_Code=ZZT-N21-R1-SC1-C01 Event_Key=EV-ZZT-N21-R1-SC1-C01-20261020230736-lzca: saved
+  CIQ_RMES_Regulatory_A00 PkEPDSQZQ2cS Case_Code=ZZT-N21-R1-SC1-C01 RMES_Key=ZZT-N21-R1-SC1-C01-RMES-REG: saved
+  CIQ_Audit_Event_A00 PkEPDS_Ny3WD Case_Code=ZZT-N21-R1-SC1-C01 Event_Key=EV-ZZT-N21-R1-SC1-C01-20261020230925-r76a: saved
+  CIQ_Audit_Event_A00 PkEPDTejN94n Case_Code=ZZT-N21-R1-SC1-C01 Event_Key=EV-ZZT-N21-R1-SC1-C01-20261020231030-vm83: saved
+  CIQ_Audit_Event_A00 PkEPDTxp2_s2 Case_Code=ZZT-N21-R1-SC1-C01 Event_Key=EV-ZZT-N21-R1-SC1-C01-20261020231048-rb2n: saved
+  CIQ_Audit_Event_A00 PkEPDXXmr7ll Case_Code=ZZT-N21-R1-SC1-C01 Event_Key=EV-ZZT-N21-R1-SC1-C01-20261020231418-lds2: saved
+  CIQ_Case_A00 PkEPD_8I3bF0 Case_Code=ZZT-N21-R1-SC1-C02: Waiting for supplier: CIQ, InProgress: cancelled by its history row; the app leaves the item here
+  CIQ_Audit_Event_A00 PkEPD_OZlvEN Case_Code=ZZT-N21-R1-SC1-C02 Event_Key=EV-ZZT-N21-R1-SC1-C02-20261020231708-yiwg: saved
+  CIQP_Request_A00 PkEPD_IpqWfw Request_Key=ZZT-N21-R1-SC1-C02|1: Supplier: fill in the CIQ, InProgress: cancelled, locked
+  CIQ_Audit_Event_A00 PkEPDagK0nuw Case_Code=ZZT-N21-R1-SC1-C02 Event_Key=EV-ZZT-N21-R1-SC1-C02-20261020231825-kcmq: saved
+
+ ❯ live/case.live.ts (16 tests | 1 failed) 1345499ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 0 the integrations are ON (read-only) 6093ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 1 supplier master: the app's addSupplier, Thomas as self contact and a placeholder 67990ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 2 draft: the app's Start gate leaves a draft; it is discarded (R1 keeps one) 55141ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 3 started: createCase, I-1 makes the request 67991ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 4a the supplier saves answers through the portal's writer (request.changed) 27985ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 4b the supplier confirms completeness (I-2's fields) 24694ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 4c I-2's Approve moves the case on (expected blocked: Integration service has no members) 3015ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 5 reviews: the RMM's load starts them (ensureReviews) 213067ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 6a RMES Safety: ensureRmes creates the record, saveRmes writes a result and a finding 191865ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 6b RMES Regulatory: ensureRmes creates the record, saveRmes writes a result and a finding 192444ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 7 review completion (expected blocked: 050201), the gate by admin PUT 96855ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 8 release requested, as ensureRelease sends it 135584ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 9 final release: the supplier releases, I-7 completes the case 80088ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 10 cancel: a second case is started, then cancelled (case.cancelled) 166196ms
+   × S-CASE: a case from the supplier master to the final release, and a cancelled one > records every step; offline the expected outcome 28ms
+     → expected [ …(2) ] to deeply equal []
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  live/case.live.ts > S-CASE: a case from the supplier master to the final release, and a cancelled one > records every step; offline the expected outcome
+AssertionError: expected [ …(2) ] to deeply equal []
+
+- Expected
++ Received
+
+- Array []
++ Array [
++   "2 draft: failed: ZZT-N21-R1-SC1-D01: a Start draft (Diagnostics lists it); ZZT-N21-R1-SC1-D01: not part of any case, but blocks a twin (ownDraftKeys); ZZT-N21-R1-SC1-D02: a Start draft (Diagnostics lists it); ZZT-N21-R1-SC1-D02: not part of any case, but blocks a twin (ownDraftKeys)",
++   "9 final release (I-7): failed: the case reached End",
++ ]
+
+ ❯ live/case.live.ts:902:95
+    900|     if (!rec) throw new Error("the world was not created");
+    901|     const by = (status: string) => rec.steps.filter((x) => x.status ==…
+    902|     expect(rec.steps.filter((x) => x.status === "fail").map((x) => `${…
+       |                                                                                               ^
+    903|     // the RMES steps of every department the run's data activates run…
+    904|     const rmes = (["SAF", "REG"] as const).filter((x) => d.reviews.inc…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 15 passed (16)
+   Start at  04:27:18
+   Duration  1346.79s (transform 579ms, setup 0ms, collect 1.06s, tests 1345.50s, environment 0ms, prepare 41ms)
+

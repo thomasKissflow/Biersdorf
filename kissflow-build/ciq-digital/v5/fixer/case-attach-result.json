@@ -1,0 +1,145 @@
+{
+ "step": "fixer-case-attach-probe",
+ "at": "2026-10-14T18:41:52.761Z",
+ "tag": "ZZT-FX-10141841",
+ "results": [
+  {
+   "id": "create",
+   "pass": true,
+   "evidence": {
+    "status": 200,
+    "item": "PkEMxBED0ISK"
+   }
+  },
+  {
+   "id": "submit Start",
+   "pass": true,
+   "evidence": {
+    "status": 200
+   }
+  },
+  {
+   "id": "at S1",
+   "pass": true,
+   "evidence": {
+    "ctx": [
+     {
+      "step": "Waiting for supplier: CIQ",
+      "act": "PkEMxBF2PqMl"
+     }
+    ]
+   }
+  },
+  {
+   "id": "S1 attach Supplier_Files (ReadOnly field, admin route)",
+   "pass": true,
+   "evidence": {
+    "upload": {
+     "status": 200,
+     "att": {
+      "id": "Attach-EMxBIPtJY9",
+      "name": "ZZT-FX-10141841-supplier-file-1.pdf",
+      "size": 257
+     }
+    },
+    "stored": [
+     "ZZT-FX-10141841-supplier-file-1.pdf"
+    ]
+   }
+  },
+  {
+   "id": "S1 download Supplier_Files",
+   "pass": true,
+   "evidence": {
+    "status": "302→200",
+    "bytes": 257,
+    "pdf": true,
+    "how": "redirect, same host"
+   }
+  },
+  {
+   "id": "submit S1",
+   "pass": true,
+   "evidence": {
+    "status": 200
+   }
+  },
+  {
+   "id": "at S7",
+   "pass": true,
+   "evidence": {
+    "ctx": [
+     {
+      "step": "Beiersdorf review and final release",
+      "act": "PkEMxBN4MkpN"
+     }
+    ]
+   }
+  },
+  {
+   "id": "S7 attach Final_PDF (ReadOnly field, admin route)",
+   "pass": true,
+   "evidence": {
+    "upload": {
+     "status": 200,
+     "att": {
+      "id": "Attach-EMxBQVu1gc",
+      "name": "ZZT-FX-10141841-final-document.pdf",
+      "size": 256
+     }
+    },
+    "stored": [
+     "ZZT-FX-10141841-final-document.pdf"
+    ]
+   }
+  },
+  {
+   "id": "S7 attach Supplier_Files (second file kept beside the first)",
+   "pass": true,
+   "evidence": {
+    "upload": {
+     "status": 200,
+     "att": {
+      "id": "Attach-EMxBRfaFZo",
+      "name": "ZZT-FX-10141841-supplier-file-2.pdf",
+      "size": 257
+     }
+    },
+    "stored": [
+     "ZZT-FX-10141841-supplier-file-1.pdf",
+     "ZZT-FX-10141841-supplier-file-2.pdf"
+    ]
+   }
+  },
+  {
+   "id": "S7 download Final_PDF",
+   "pass": true,
+   "evidence": {
+    "status": "302→200",
+    "bytes": 256,
+    "pdf": true,
+    "how": "redirect, same host"
+   }
+  },
+  {
+   "id": "S7 download Supplier_Files",
+   "pass": true,
+   "evidence": {
+    "status": "302→200",
+    "bytes": 257,
+    "pdf": true,
+    "how": "redirect, same host"
+   }
+  },
+  {
+   "id": "cleanup: delete the ZZT probe item",
+   "pass": true,
+   "evidence": {
+    "del": 200,
+    "after": 404
+   }
+  }
+ ],
+ "item": "PkEMxBED0ISK",
+ "calls": 18
+}

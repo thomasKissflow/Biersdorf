@@ -1,0 +1,334 @@
+{
+ "step": "B1-lists",
+ "at": "2026-10-14T18:04:17.884Z",
+ "apply": true,
+ "created": [
+  {
+   "name": "CIQ Case Phase",
+   "status": 200,
+   "id": "CIQ_Case_Phase_A00",
+   "listStatus": "Live"
+  },
+  {
+   "name": "CIQ Track Status",
+   "status": 200,
+   "id": "CIQ_Track_Status_A00",
+   "listStatus": "Live"
+  },
+  {
+   "name": "CIQ Priority",
+   "status": 200,
+   "id": "CIQ_Priority_A00",
+   "listStatus": "Live"
+  },
+  {
+   "name": "CIQ Rejection Handling",
+   "status": 200,
+   "id": "CIQ_Rejection_Handling_A00",
+   "listStatus": "Live"
+  },
+  {
+   "name": "CIQ Request Status",
+   "status": 200,
+   "id": "CIQ_Request_Status_A00",
+   "listStatus": "Live"
+  }
+ ],
+ "replaced": [
+  {
+   "id": "CIQ_Case_Phase_A00",
+   "status": 200,
+   "items": 5
+  },
+  {
+   "id": "CIQ_Track_Status_A00",
+   "status": 200,
+   "items": 5
+  },
+  {
+   "id": "CIQ_Priority_A00",
+   "status": 200,
+   "items": 2
+  },
+  {
+   "id": "CIQ_Rejection_Handling_A00",
+   "status": 200,
+   "items": 2
+  },
+  {
+   "id": "CIQ_Request_Status_A00",
+   "status": 200,
+   "items": 3
+  },
+  {
+   "id": "CIQ_OP_Kind_A00",
+   "status": 200,
+   "items": 7,
+   "added": [
+    "Finding"
+   ]
+  },
+  {
+   "id": "CIQ_OP_Outcome_A00",
+   "status": 200,
+   "items": 3,
+   "added": [
+    "Not accepted"
+   ]
+  },
+  {
+   "id": "CIQ_Event_Category_A00",
+   "status": 200,
+   "items": 20,
+   "added": [
+    "Supplier master",
+    "Review",
+    "Internal note"
+   ]
+  }
+ ],
+ "readBack": {
+  "CIQ_Case_Phase_A00": {
+   "items": [
+    "Supplier filling in the CIQ",
+    "Review",
+    "Awaiting final release",
+    "Completed",
+    "Cancelled"
+   ],
+   "match": true
+  },
+  "CIQ_Track_Status_A00": {
+   "items": [
+    "In review",
+    "Waiting for supplier",
+    "Reopened",
+    "Completed",
+    "Ended"
+   ],
+   "match": true
+  },
+  "CIQ_Priority_A00": {
+   "items": [
+    "Normal",
+    "High"
+   ],
+   "match": true
+  },
+  "CIQ_Rejection_Handling_A00": {
+   "items": [
+    "Continue to final release",
+    "Cancel the case"
+   ],
+   "match": true
+  },
+  "CIQ_Request_Status_A00": {
+   "items": [
+    "Done",
+    "Refused",
+    "Failed"
+   ],
+   "match": true
+  },
+  "CIQ_OP_Kind_A00": {
+   "items": [
+    "Query",
+    "Document request",
+    "Additional part",
+    "Internal review",
+    "Department review",
+    "Contact update",
+    "Finding"
+   ],
+   "match": true,
+   "oldValuesKept": true
+  },
+  "CIQ_OP_Outcome_A00": {
+   "items": [
+    "Accepted",
+    "Withdrawn",
+    "Not accepted"
+   ],
+   "match": true,
+   "oldValuesKept": true
+  },
+  "CIQ_Event_Category_A00": {
+   "items": [
+    "Case",
+    "Scope",
+    "Section",
+    "Section review",
+    "Snapshot",
+    "Open point",
+    "RMES",
+    "Change request",
+    "Configuration",
+    "Notification",
+    "Delegation",
+    "Assignment",
+    "Change attempt",
+    "Cancellation",
+    "Access",
+    "Item created",
+    "Final PDF",
+    "Supplier master",
+    "Review",
+    "Internal note"
+   ],
+   "match": true,
+   "oldValuesKept": true
+  }
+ },
+ "plan": [
+  {
+   "kind": "new",
+   "name": "CIQ Case Phase",
+   "id": "CIQ_Case_Phase_A00",
+   "exists": false,
+   "items": [
+    "Supplier filling in the CIQ",
+    "Review",
+    "Awaiting final release",
+    "Completed",
+    "Cancelled"
+   ]
+  },
+  {
+   "kind": "new",
+   "name": "CIQ Track Status",
+   "id": "CIQ_Track_Status_A00",
+   "exists": false,
+   "items": [
+    "In review",
+    "Waiting for supplier",
+    "Reopened",
+    "Completed",
+    "Ended"
+   ]
+  },
+  {
+   "kind": "new",
+   "name": "CIQ Priority",
+   "id": "CIQ_Priority_A00",
+   "exists": false,
+   "items": [
+    "Normal",
+    "High"
+   ]
+  },
+  {
+   "kind": "new",
+   "name": "CIQ Rejection Handling",
+   "id": "CIQ_Rejection_Handling_A00",
+   "exists": false,
+   "items": [
+    "Continue to final release",
+    "Cancel the case"
+   ]
+  },
+  {
+   "kind": "new",
+   "name": "CIQ Request Status",
+   "id": "CIQ_Request_Status_A00",
+   "exists": false,
+   "items": [
+    "Done",
+    "Refused",
+    "Failed"
+   ]
+  },
+  {
+   "kind": "changed",
+   "id": "CIQ_OP_Kind_A00",
+   "before": [
+    "Query",
+    "Document request",
+    "Additional part",
+    "Internal review",
+    "Department review",
+    "Contact update"
+   ],
+   "next": [
+    "Query",
+    "Document request",
+    "Additional part",
+    "Internal review",
+    "Department review",
+    "Contact update",
+    "Finding"
+   ],
+   "unchanged": false
+  },
+  {
+   "kind": "changed",
+   "id": "CIQ_OP_Outcome_A00",
+   "before": [
+    "Accepted",
+    "Withdrawn"
+   ],
+   "next": [
+    "Accepted",
+    "Withdrawn",
+    "Not accepted"
+   ],
+   "unchanged": false
+  },
+  {
+   "kind": "changed",
+   "id": "CIQ_Event_Category_A00",
+   "before": [
+    "Case",
+    "Scope",
+    "Section",
+    "Section review",
+    "Snapshot",
+    "Open point",
+    "RMES",
+    "Change request",
+    "Configuration",
+    "Notification",
+    "Delegation",
+    "Assignment",
+    "Change attempt",
+    "Cancellation",
+    "Access",
+    "Item created",
+    "Final PDF"
+   ],
+   "next": [
+    "Case",
+    "Scope",
+    "Section",
+    "Section review",
+    "Snapshot",
+    "Open point",
+    "RMES",
+    "Change request",
+    "Configuration",
+    "Notification",
+    "Delegation",
+    "Assignment",
+    "Change attempt",
+    "Cancellation",
+    "Access",
+    "Item created",
+    "Final PDF",
+    "Supplier master",
+    "Review",
+    "Internal note"
+   ],
+   "unchanged": false
+  }
+ ],
+ "appListsAfter": [
+  "CIQ_Request_Status_A00 | CIQ Request Status | Live",
+  "CIQ_Rejection_Handling_A00 | CIQ Rejection Handling | Live",
+  "CIQ_Priority_A00 | CIQ Priority | Live",
+  "CIQ_Track_Status_A00 | CIQ Track Status | Live",
+  "CIQ_Case_Phase_A00 | CIQ Case Phase | Live",
+  "CIQ_Event_Category_A00 | CIQ Event Category | Live",
+  "CIQ_OP_Outcome_A00 | CIQ OP Outcome | Live",
+  "CIQ_OP_Kind_A00 | CIQ OP Kind | Live"
+ ],
+ "ok": true
+}

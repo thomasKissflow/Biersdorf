@@ -1,0 +1,121 @@
+{
+  "at": "2026-10-14T17:23:03.111Z",
+  "results": [
+    {
+      "id": "S5-req-create-submit-routes",
+      "pass": true,
+      "evidence": {
+        "create": 200,
+        "submit": 200,
+        "step": "Supplier: fill in the CIQ"
+      }
+    },
+    {
+      "id": "S5-req-admin-put-service-fields-at-supplier-step",
+      "pass": true,
+      "evidence": {
+        "put": 200,
+        "phase": "With Beiersdorf",
+        "step": "Supplier: fill in the CIQ"
+      }
+    },
+    {
+      "id": "S5-req-admin-put-assigned-contacts-mid-step (same user; rerouting to a new user = S-7)",
+      "pass": true,
+      "evidence": {
+        "put": 200,
+        "assigned": [
+          "UsEJUfjYLM8Y"
+        ]
+      }
+    },
+    {
+      "id": "S5-req-submit-fill-in-moves-to-keep-up-to-date",
+      "pass": true,
+      "evidence": {
+        "submit": 200,
+        "step": "Supplier: keep the CIQ up to date"
+      }
+    },
+    {
+      "id": "S5-req-admin-put-at-second-step",
+      "pass": true,
+      "evidence": {
+        "put": 200,
+        "locked": "Yes",
+        "step": "Supplier: keep the CIQ up to date"
+      }
+    },
+    {
+      "id": "S5-req-withdraw-by-initiator",
+      "pass": true,
+      "evidence": {
+        "withdraw": 200,
+        "status": "Withdrawn"
+      }
+    },
+    {
+      "id": "S5-query-create-submit-routes",
+      "pass": true,
+      "evidence": {
+        "submit": 200,
+        "step": "Supplier: respond"
+      }
+    },
+    {
+      "id": "S5-query-admin-edit-open-question",
+      "pass": true,
+      "evidence": {
+        "put": 200
+      }
+    },
+    {
+      "id": "S5-query-withdraw-by-initiator",
+      "pass": true,
+      "evidence": {
+        "withdraw": 200,
+        "status": "Withdrawn"
+      }
+    },
+    {
+      "id": "S5-release-create-submit-routes",
+      "pass": true,
+      "evidence": {
+        "submit": 200,
+        "step": "Supplier: release"
+      }
+    },
+    {
+      "id": "S5-release-withdraw-by-initiator",
+      "pass": true,
+      "evidence": {
+        "withdraw": 200,
+        "status": "Withdrawn"
+      }
+    },
+    {
+      "id": "S5-cleanup-CIQP_Request_A00",
+      "pass": true,
+      "evidence": {
+        "del": 200,
+        "after": 404
+      }
+    },
+    {
+      "id": "S5-cleanup-CIQP_Query_A00",
+      "pass": true,
+      "evidence": {
+        "del": 200,
+        "after": 404
+      }
+    },
+    {
+      "id": "S5-cleanup-CIQP_Final_Release_A00",
+      "pass": true,
+      "evidence": {
+        "del": 200,
+        "after": 404
+      }
+    }
+  ]
+}

@@ -1,0 +1,278 @@
+{
+ "id": "CIQ_Mail_send_outbox_mail_A00",
+ "skeleton": {
+  "ok": true,
+  "schemas": {
+   "Trigger_CIQ_Mail_A00": {
+    "status": 200,
+    "fields": [
+     {
+      "Id": "ActionField007",
+      "Name": "form_id",
+      "Label": "Choose a dataform",
+      "Type": "String",
+      "Req": true,
+      "DD": true
+     }
+    ]
+   },
+   "Action_CIQ_Mail_Send_A00": {
+    "status": 200,
+    "fields": [
+     {
+      "Id": "ActionField001",
+      "Name": "To",
+      "Label": "To",
+      "Type": "String",
+      "Req": true
+     },
+     {
+      "Id": "ActionField002",
+      "Name": "Subject",
+      "Label": "Subject",
+      "Type": "String",
+      "Req": true
+     },
+     {
+      "Id": "ActionField005",
+      "Name": "CC",
+      "Label": "Cc",
+      "Type": "String"
+     },
+     {
+      "Id": "ActionField006",
+      "Name": "Bcc",
+      "Label": "Bcc",
+      "Type": "String"
+     },
+     {
+      "Id": "ActionField007",
+      "Name": "ReplyTo",
+      "Label": "Reply To",
+      "Type": "String"
+     },
+     {
+      "Id": "ActionField008",
+      "Name": "From",
+      "Label": "From",
+      "Type": "String"
+     },
+     {
+      "Id": "ActionField009",
+      "Name": "Attachments",
+      "Label": "Attachments",
+      "Type": "Attachment",
+      "DD": false
+     },
+     {
+      "Id": "Field_htDKY9uKu8",
+      "Name": "BodyType",
+      "Label": "Body type",
+      "Type": "String",
+      "Req": true,
+      "DD": true
+     }
+    ]
+   },
+   "Action_CIQ_Mail_Sent_A00": {
+    "status": 200,
+    "fields": [
+     {
+      "Id": "ActionField004",
+      "Name": "form_id",
+      "Label": "Choose a dataform",
+      "Type": "String",
+      "Req": true,
+      "DD": true
+     },
+     {
+      "Id": "ActionField005",
+      "Name": "instance_id",
+      "Label": "Dataform item ID",
+      "Type": "String",
+      "Req": true
+     }
+    ]
+   }
+  }
+ },
+ "bind": {
+  "ok": true,
+  "schemas": {
+   "Action_CIQ_Mail_Send_A00": {
+    "status": 200,
+    "fields": [
+     {
+      "Id": "ActionField001",
+      "Name": "To",
+      "Label": "To",
+      "Type": "String",
+      "Req": true
+     },
+     {
+      "Id": "ActionField002",
+      "Name": "Subject",
+      "Label": "Subject",
+      "Type": "String",
+      "Req": true
+     },
+     {
+      "Id": "ActionField005",
+      "Name": "CC",
+      "Label": "Cc",
+      "Type": "String"
+     },
+     {
+      "Id": "ActionField006",
+      "Name": "Bcc",
+      "Label": "Bcc",
+      "Type": "String"
+     },
+     {
+      "Id": "ActionField007",
+      "Name": "ReplyTo",
+      "Label": "Reply To",
+      "Type": "String"
+     },
+     {
+      "Id": "ActionField008",
+      "Name": "From",
+      "Label": "From",
+      "Type": "String"
+     },
+     {
+      "Id": "ActionField009",
+      "Name": "Attachments",
+      "Label": "Attachments",
+      "Type": "Attachment",
+      "DD": false
+     },
+     {
+      "Id": "Field_htDKY9uKu8",
+      "Name": "BodyType",
+      "Label": "Body type",
+      "Type": "String",
+      "Req": true,
+      "DD": true
+     },
+     {
+      "Id": "ActionField011",
+      "Name": "Body",
+      "Label": "Email body",
+      "Type": "RichText",
+      "Req": true
+     }
+    ]
+   },
+   "Action_CIQ_Mail_Sent_A00": {
+    "status": 200,
+    "fields": [
+     {
+      "Id": "ActionField004",
+      "Name": "form_id",
+      "Label": "Choose a dataform",
+      "Type": "String",
+      "Req": true,
+      "DD": true
+     },
+     {
+      "Id": "ActionField005",
+      "Name": "instance_id",
+      "Label": "Dataform item ID",
+      "Type": "String",
+      "Req": true
+     },
+     {
+      "Id": "Mail_Key",
+      "Name": "Mail_Key",
+      "Label": "Mail Key",
+      "Type": "String",
+      "Req": false
+     },
+     {
+      "Id": "Event_Code",
+      "Name": "Event_Code",
+      "Label": "Event Code",
+      "Type": "String",
+      "Req": false
+     },
+     {
+      "Id": "Audience",
+      "Name": "Audience",
+      "Label": "Audience",
+      "Type": "String",
+      "Req": false
+     },
+     {
+      "Id": "To_Emails",
+      "Name": "To_Emails",
+      "Label": "To Emails",
+      "Type": "String",
+      "Req": false
+     },
+     {
+      "Id": "Subject",
+      "Name": "Subject",
+      "Label": "Subject",
+      "Type": "String",
+      "Req": false
+     },
+     {
+      "Id": "Body_Text",
+      "Name": "Body_Text",
+      "Label": "Body Text",
+      "Type": "String",
+      "Req": false
+     },
+     {
+      "Id": "Link_Url",
+      "Name": "Link_Url",
+      "Label": "Link Url",
+      "Type": "String",
+      "Req": false
+     },
+     {
+      "Id": "Case_Code",
+      "Name": "Case_Code",
+      "Label": "Case Code",
+      "Type": "String",
+      "Req": false
+     },
+     {
+      "Id": "Related_Key",
+      "Name": "Related_Key",
+      "Label": "Related Key",
+      "Type": "String",
+      "Req": false
+     },
+     {
+      "Id": "Created_At",
+      "Name": "Created_At",
+      "Label": "Created At",
+      "Type": "Datetime",
+      "Req": false
+     },
+     {
+      "Id": "Sent_Status",
+      "Name": "Sent_Status",
+      "Label": "Sent Status",
+      "Type": "String",
+      "Req": false
+     },
+     {
+      "Id": "Attempt_No",
+      "Name": "Attempt_No",
+      "Label": "Attempt No",
+      "Type": "Number",
+      "Req": false
+     }
+    ]
+   }
+  }
+ },
+ "map": {
+  "ok": true,
+  "publishedAt": "2026-10-14T18:46:50Z",
+  "isActive": false
+ }
+}

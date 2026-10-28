@@ -1,0 +1,468 @@
+diff -ru orig/src/app-live/Diagnostics.tsx prototype/src/app-live/Diagnostics.tsx
+--- orig/src/app-live/Diagnostics.tsx	2026-10-22 13:08:02
++++ prototype/src/app-live/Diagnostics.tsx	2026-10-26 00:19:13
+@@ -190,7 +190,10 @@
+                   <Badge tone="bad">refused</Badge>
+                 )}
+               </Td>
+-              <Td className="tabular-nums">{r.count}</Td>
++              <Td className="tabular-nums">
++                {r.count}
++                {r.reused ? <span className="text-muted-foreground"> ({r.reused} kept from earlier this session)</span> : null}
++              </Td>
+               <Td className="tabular-nums">{r.ms} ms</Td>
+               <Td className={r.error ? "text-bad" : "text-ink-3"}>
+                 {r.error ?? ""}
+diff -ru orig/src/app-live/kf/client.test.ts prototype/src/app-live/kf/client.test.ts
+--- orig/src/app-live/kf/client.test.ts	2026-10-21 17:22:21
++++ prototype/src/app-live/kf/client.test.ts	2026-10-26 00:02:06
+@@ -46,7 +46,7 @@
+ });
+ 
+ describe("lists: paging and envelopes", () => {
+-  it("pages until a short page, 50 rows per page (the SDK's default)", async () => {
++  it("pages until a short page, on a host that answers 50 rows per page whatever is asked (a cap)", async () => {
+     const asked: unknown[] = [];
+     const { kf, flows } = fakeKf({
+       getAdminItems: async (o) => {
+@@ -60,6 +60,40 @@
+     expect(flows).toEqual(["CIQ_Case_A00"]);
+   });
+ 
++  it("26 Oct: asks PAGE_SIZE (200) rows a call; a host that honours it reads 120 rows in one call plus one empty read", async () => {
++    const all = page("h", 120);
++    const asked: number[] = [];
++    const { kf } = fakeKf({
++      getAdminItems: async (o) => {
++        asked.push(Number(o?.pageNumber));
++        const n = Number(o?.pageNumber), size = Number(o?.pageSize);
++        return { Data: all.slice((n - 1) * size, n * size) };
++      },
++    });
++    const c = createAppClient(kf, { sleep: noSleep });
++    expect(PAGE_SIZE).toBe(200);
++    expect(await c.adminList("case")).toHaveLength(120);
++    expect(asked).toEqual([1, 2]);
++  });
++
++  it("26 Oct: a page under HOST_PAGE_FLOOR (50) is the last one: one call; a host capping at 100 is read to the end", async () => {
++    let calls = 0;
++    const small = fakeKf({ getMyItems: async () => (calls++, page("s", 30)) });
++    expect(await createAppClient(small.kf, { sleep: noSleep }).myItems("review")).toHaveLength(30);
++    expect(calls).toBe(1);
++    const all = page("k", 240);
++    const asked: number[] = [];
++    const capped = fakeKf({
++      getAdminItems: async (o) => {
++        asked.push(Number(o?.pageNumber));
++        const n = Number(o?.pageNumber);
++        return { Data: all.slice((n - 1) * 100, n * 100) };
++      },
++    });
++    expect(await createAppClient(capped.kf, { sleep: noSleep }).adminList("case")).toHaveLength(240);
++    expect(asked).toEqual([1, 2, 3]);
++  });
++
+   it("stops when the host ignores the page number and repeats a page", async () => {
+     let n = 0;
+     const { kf } = fakeKf({ getMyItems: async () => (n++, page("r", 50)) });
+@@ -112,7 +146,7 @@
+     const c = createAppClient(kf, { sleep: noSleep });
+     const rows = await c.myTasks("review", "Activity_12d3ab4");
+     expect(rows.map((r) => r._activity_instance_id)).toEqual(["A1", "A2"]);
+-    expect(seen).toEqual([{ pageNumber: 1, pageSize: 50, activityId: "Activity_12d3ab4" }]);
++    expect(seen).toEqual([{ pageNumber: 1, pageSize: 200, activityId: "Activity_12d3ab4" }]);
+   });
+ });
+ 
+@@ -320,7 +354,7 @@
+       getMyItems: async (o) => (drafts.push(o), { Columns: [], Data: [{ _id: "PkZ", _activity_instance_id: "ActZ" }, { _id: "PkB", _activity_instance_id: "ActB" }] }),
+     });
+     expect(await createAppClient(listed.kf, { sleep: noSleep }).create("review", {})).toEqual({ id: "PkB", act: "ActB" });
+-    expect(drafts).toEqual([{ status: "draft", pageNumber: 1, pageSize: 50 }]);
++    expect(drafts).toEqual([{ status: "draft", pageNumber: 1, pageSize: 200 }]);
+     const none = fakeKf({ createItem: async () => ({ _id: "PkC" }), getMyItems: async () => ({ Data: [] }) });
+     await expect(createAppClient(none.kf, { sleep: noSleep }).create("case", {})).rejects.toThrow(/created CIQ_Case_A00 item PkC without naming its step/);
+   });
+diff -ru orig/src/app-live/kf/client.ts prototype/src/app-live/kf/client.ts
+--- orig/src/app-live/kf/client.ts	2026-10-21 17:22:21
++++ prototype/src/app-live/kf/client.ts	2026-10-26 00:01:17
+@@ -15,7 +15,12 @@
+ import type { AppClient, FlowKey, FormKey, ProcessKey } from "../types";
+ 
+ /** The SDK's own default page size; a larger one may be capped by the host, which would end paging early. */
+-export const PAGE_SIZE = 50;
++/** Rows asked per list call (26 Oct optimisation: 200 instead of the SDK's default 50, so most lists take one call;
++ *  the REST list honours 200, proven live 25 Oct; the SDK host [unverified] may cap it, which `pages` allows for). */
++export const PAGE_SIZE = 200;
++/** The smallest page a host answers in full (the SDK's default): a page shorter than this is the last one. A page of
++ *  this size or more but under PAGE_SIZE may be a host's cap, so the next page is read too (at most one empty read). */
++export const HOST_PAGE_FLOOR = 50;
+ 
+ /** SDK calls in flight at once, per client (= per session). They go out as the signed-in user, through the Kissflow
+  *  page; a modest number keeps a load from bursting into the rate limit. */
+@@ -147,7 +152,7 @@
+     });
+   }
+ 
+-  /** Every page of a list (the SDK's default page size). Stops on a short page, at the reported total, or when a page
++  /** Every page of a list, PAGE_SIZE rows asked a call. Stops on an empty page or one under HOST_PAGE_FLOOR rows, at the reported total, or when a page
+    *  repeats rows already seen (a host that ignores the page number). Rows are deduped by `key`. */
+   async function pages(get: (page: KfPage) => Promise<unknown>, key: (r: RawItem) => string = (r) => String(r._id), maxPages = 200): Promise<RawItem[]> {
+     const seen = new Map<string, RawItem>();
+@@ -158,7 +163,7 @@
+       const total = totalOf(body);
+       const fresh = rows.filter((r) => !seen.has(key(r)));
+       for (const r of fresh) seen.set(key(r), r);
+-      if (rows.length < PAGE_SIZE || fresh.length === 0 || (total !== undefined && seen.size >= total)) return [...seen.values()];
++      if (rows.length === 0 || rows.length < Math.min(PAGE_SIZE, HOST_PAGE_FLOOR) || fresh.length === 0 || (total !== undefined && seen.size >= total)) return [...seen.values()];
+     }
+     throw new AppError(`More than ${maxPages * PAGE_SIZE} items: the list was not read completely.`);
+   }
+diff -ru orig/src/app-live/load.test.ts prototype/src/app-live/load.test.ts
+--- orig/src/app-live/load.test.ts	2026-10-22 21:16:59
++++ prototype/src/app-live/load.test.ts	2026-10-26 00:31:40
+@@ -163,6 +163,74 @@
+     });
+   });
+ 
++  it("26 Oct: a reload reads in full only the open items; ended items read earlier this session are used again", async () => {
++    const { client, identity, acting } = setup("rmm", { admin: true });
++    const first = await loadSnapshot(client, identity, acting);
++    const ended = (["case", "review", "op"] as const).flatMap((f) => first.items[f].filter((it) => ["Completed", "Withdrawn", "Rejected", "Cancelled"].includes(str(it, "_status"))).map((it) => it._id));
++    const all = first.items.case.length + first.items.review.length + first.items.op.length;
++    expect(ended.length).toBeGreaterThan(0);
++    const before = client.calls.length;
++    const again = await loadSnapshot(client, identity, acting);
++    const reread = client.calls.slice(before).filter((c) => c.m === "adminGet");
++    expect(reread).toHaveLength(all - ended.length);
++    expect(reread.some((c) => ended.includes(String(c.id ?? "")))).toBe(false);
++    expect(again.reads.filter((r) => r.rung === "admin").reduce((n, r) => n + (r.reused ?? 0), 0)).toBe(ended.length);
++    // the same screens: the reused reads map exactly like the fresh ones
++    expect(viewOf(again, identity, acting).mapped.state.cases).toEqual(viewOf(first, identity, acting).mapped.state.cases);
++  });
++
++  it("26 Oct: a new history row on a case reads that case's ended items again; a reopened item is read again", async () => {
++    const { client, identity, acting } = setup("rmm", { admin: true });
++    const first = await loadSnapshot(client, identity, acting);
++    const endedReview = first.items.review.find((it) => str(it, "_status") === "Completed");
++    expect(endedReview).toBeDefined();
++    const caseId = str(endedReview!, "Case_Item_Id");
++    // a history row on its case (the final PDF, a reopen, …)
++    client.db.audit.push({ _id: "PkEvNew1", Case_Item_Id: caseId, Case_Code: "x", Event_At: "2026-10-26T01:00:00Z", Action_Code: "case.final-document", Snapshot_JSON: "{}" });
++    let before = client.calls.length;
++    await loadSnapshot(client, identity, acting);
++    let reread = client.calls.slice(before).filter((c) => c.m === "adminGet").map((c) => String(c.id ?? ""));
++    expect(reread).toContain(endedReview!._id);
++    // nothing new: not read again
++    before = client.calls.length;
++    await loadSnapshot(client, identity, acting);
++    reread = client.calls.slice(before).filter((c) => c.m === "adminGet").map((c) => String(c.id ?? ""));
++    expect(reread).not.toContain(endedReview!._id);
++    // reopened without a history row: its list row shows another status, so it is read again
++    client.set(endedReview!._id, { _status: "InProgress" });
++    before = client.calls.length;
++    const snap = await loadSnapshot(client, identity, acting);
++    reread = client.calls.slice(before).filter((c) => c.m === "adminGet").map((c) => String(c.id ?? ""));
++    expect(reread).toContain(endedReview!._id);
++    expect(str(snap.items.review.find((it) => it._id === endedReview!._id)!, "_status")).toBe("InProgress");
++  });
++
++  it("26 Oct: nothing is reused when this load could not read the history, nor by a new client (a new session)", async () => {
++    let block = false;
++    const { client, identity, acting } = setup("rmm", { admin: true, refuse: { formList: (c) => (block && c.flow === "audit" ? "This form could not be read." : false) } });
++    const first = await loadSnapshot(client, identity, acting);
++    const all = first.items.case.length + first.items.review.length + first.items.op.length;
++    block = true;
++    const before = client.calls.length;
++    await loadSnapshot(client, identity, acting);
++    expect(client.calls.slice(before).filter((c) => c.m === "adminGet")).toHaveLength(all);
++    const fresh = setup("rmm", { admin: true });
++    await loadSnapshot(fresh.client, fresh.identity, fresh.acting);
++    expect(callsOf(fresh.client, "adminGet")).toHaveLength(all);
++  });
++
++  it("26 Oct: by id (a viewer): ended cases read earlier this session are not read again", async () => {
++    const { client, identity, acting } = setup("cus", { viewerRead: true });
++    const first = await loadSnapshot(client, identity, acting);
++    const ended = first.items.case.filter((it) => str(it, "_status") === "Completed").map((it) => it._id);
++    const before = client.calls.length;
++    const again = await loadSnapshot(client, identity, acting);
++    const reread = client.calls.slice(before).filter((c) => c.m === "getById").map((c) => String(c.id ?? ""));
++    expect(reread).toHaveLength(first.items.case.length - ended.length);
++    expect(reread.some((id) => ended.includes(id))).toBe(false);
++    expect(again.items.case.map((it) => it._id).sort()).toEqual(first.items.case.map((it) => it._id).sort());
++  });
++
+   it("remembers an admin refusal for the session (the client), and tries again with a new one", async () => {
+     const { client, identity, acting } = setup("qm");
+     await loadSnapshot(client, identity, acting);
+diff -ru orig/src/app-live/load.ts prototype/src/app-live/load.ts
+--- orig/src/app-live/load.ts	2026-10-22 21:16:59
++++ prototype/src/app-live/load.ts	2026-10-26 00:31:40
+@@ -110,6 +110,62 @@
+ 
+ // ---------------------------------------------------------------------------------- session memory
+ 
++/** 26 Oct optimisation: the full reads of ENDED items (Completed, Withdrawn, Rejected, Cancelled), kept for the session
++ *  per client and persona, so that a reload reads in full only the open items (before, every load read every item of a
++ *  flow again, one call each). A kept read is used again only while its case's history (the CIQ Audit Event rows that
++ *  name the case) is unchanged: a later change of an ended item writes a history row on its case (the final PDF, a
++ *  reopen, a history update), and that new row has the case's ended items read again. The list row must still show
++ *  the kept status. Nothing is kept when this load could not read the history. */
++interface KeptFull {
++  item: RawItem;
++  sig: string;
++}
++const endedReads = new WeakMap<AppClient, Map<string, KeptFull>>();
++const endedFor = (client: AppClient): Map<string, KeptFull> => {
++  let m = endedReads.get(client);
++  if (!m) endedReads.set(client, (m = new Map()));
++  return m;
++};
++/** Each case's history signature: how many history rows name it, and the newest Event_At and _modified_at among them. */
++export function historySigs(audit: readonly RawItem[]): Map<string, string> {
++  const by = new Map<string, { n: number; at: string; mod: string }>();
++  for (const r of audit) {
++    const c = str(r, "Case_Item_Id");
++    if (!c) continue;
++    const cur = by.get(c) ?? { n: 0, at: "", mod: "" };
++    cur.n++;
++    if (str(r, "Event_At") > cur.at) cur.at = str(r, "Event_At");
++    if (str(r, "_modified_at") > cur.mod) cur.mod = str(r, "_modified_at");
++    by.set(c, cur);
++  }
++  return new Map([...by].map(([c, v]) => [c, `${v.n}|${v.at}|${v.mod}`]));
++}
++const caseOfItem = (flow: ProcessKey, it: RawItem): string => (flow === "case" ? String(it._id) : str(it, "Case_Item_Id"));
++/** The kept reads of one flow for one persona: `reuse` gives an ended item's kept full read while its case's history
++ *  is unchanged (null sigs: the history was not read, nothing is reused); `remember` keeps a full read of an ended item
++ *  (and drops an item that is open again). */
++function keptReads(client: AppClient, persona: string, flow: ProcessKey) {
++  const kept = endedFor(client);
++  const key = (id: string) => `${persona}|${flow}|${id}`;
++  return {
++    reuse(id: string, sigs: Map<string, string> | null, status?: string): RawItem | undefined {
++      const k = kept.get(key(id));
++      if (!k || !sigs) return undefined;
++      const c = caseOfItem(flow, k.item);
++      if (!c || (sigs.get(c) ?? "") !== k.sig || (status !== undefined && status !== str(k.item, "_status"))) {
++        kept.delete(key(id));
++        return undefined;
++      }
++      return k.item;
++    },
++    remember(item: RawItem, sigs: Map<string, string> | null): void {
++      const c = caseOfItem(flow, item);
++      if (!sigs || !c || !ENDED.has(str(item, "_status"))) kept.delete(key(String(item._id)));
++      else kept.set(key(String(item._id)), { item, sig: sigs.get(c) ?? "" });
++    },
++  };
++}
++
+ /** Flows whose admin rung was refused, per client (= per session: the app makes one client per handshake). */
+ const adminRefused = new WeakMap<AppClient, Set<ProcessKey>>();
+ const refusedFor = (client: AppClient): Set<ProcessKey> => {
+@@ -215,11 +271,12 @@
+ 
+ /** One process flow up its rungs. `knownIds` (case only) is awaited by the byId rung alone: the ids the index, the other
+  *  forms and the other flows name. */
+-async function readProcess(client: AppClient, flow: ProcessKey, plan: FlowPlan, knownIds: () => Promise<Set<string>>, log: Log): Promise<FlowRead> {
++async function readProcess(client: AppClient, flow: ProcessKey, plan: FlowPlan, knownIds: () => Promise<Set<string>>, log: Log, sigsP: Promise<Map<string, string> | null>, persona: string): Promise<FlowRead> {
+   const { reads, warnings } = log;
+   const got = new Collected();
+   const tasks = new Map<string, TaskRef>();
+   const refused = refusedFor(client);
++  const keep = keptReads(client, persona, flow);
+ 
+   // the flow's lists go out together (none needs another's answer); the rungs below take them in their order
+   const t0 = Date.now();
+@@ -230,22 +287,39 @@
+   // admin: every item, each read in full (admin rows are sparse and carry no step)
+   if (adminRows) {
+     let adminError: unknown;
++    let adminReused = 0;
+     const adminOk = await rung(reads, flow, "admin", async () => {
+       const rows = await answer(adminRows).catch((e: unknown) => {
+         adminError = e;
+         throw e;
+       });
+       for (const r of rows) got.add(r, false);
++      const sigs = await sigsP;
++      let reused = 0;
+       await pool(rows, LANES, async (r) => {
++        // an ended item read in full earlier this session, its case's history unchanged: not read again
++        const kept = ENDED.has(str(r, "_status")) ? keep.reuse(r._id, sigs, str(r, "_status")) : undefined;
++        if (kept) {
++          got.add(kept, true);
++          reused++;
++          return;
++        }
+         try {
+-          got.add(await client.adminGet(flow, r._id), true);
++          const full = await client.adminGet(flow, r._id);
++          got.add(full, true);
++          keep.remember(full, sigs);
+         } catch (e) {
+           got.failed(r._id, errorText(e));
+           warnings.push(`${FLOW_LABEL[flow]} ${r._id}: ${errorText(e)}`);
+         }
+       });
++      if (reused) adminReused = reused;
+       return rows.length;
+     }, t0);
++    if (adminReused) {
++      const rep = reads.at(-1);
++      if (rep?.flow === flow && rep.rung === "admin") rep.reused = adminReused;
++    }
+     if (!adminOk && isRefusal(adminError)) refused.add(flow);
+   } else {
+     reads.push({ flow, rung: "admin", ok: false, count: 0, ms: 0, error: REFUSED_EARLIER });
+@@ -324,7 +398,19 @@
+ 
+   // byId: items the index names that no rung read in full
+   if (plan.byId) {
+-    const todo = [...new Set([...(await knownIds()), ...got.byId.keys()])].filter((id) => !got.isFull(id));
++    const wanted = [...new Set([...(await knownIds()), ...got.byId.keys()])].filter((id) => !got.isFull(id));
++    // ended items read in full earlier this session, their case's history unchanged, are not read again
++    const sigs = await sigsP;
++    let reused = 0;
++    for (const id of wanted) {
++      const kept = keep.reuse(id, sigs);
++      if (kept) {
++        got.add(kept, true);
++        reused++;
++      }
++    }
++    const todo = wanted.filter((id) => !got.isFull(id));
++    if (!todo.length && reused) reads.push({ flow, rung: "byId", ok: true, count: reused, ms: 0, reused });
+     if (todo.length) {
+       const routes: ("adminGet" | "getById")[] = refused.has(flow) ? ["getById"] : ["adminGet", "getById"];
+       await rung(reads, flow, "byId", async () => {
+@@ -333,7 +419,9 @@
+         const errors: string[] = [];
+         for (const r of routes) {
+           try {
+-            got.add(await client[r](flow, todo[0]), true);
++            const full = await client[r](flow, todo[0]);
++            got.add(full, true);
++            keep.remember(full, sigs);
+             route = r;
+             break;
+           } catch (e) {
+@@ -347,13 +435,17 @@
+         const via = route;
+         await pool(todo.slice(1), LANES, async (id) => {
+           try {
+-            got.add(await client[via](flow, id), true);
++            const full = await client[via](flow, id);
++            got.add(full, true);
++            keep.remember(full, sigs);
+           } catch (e) {
+             got.failed(id, errorText(e));
+           }
+         });
+-        return todo.filter((id) => got.isFull(id)).length;
++        return wanted.filter((id) => got.isFull(id)).length;
+       });
++      const rep = reads.at(-1);
++      if (reused && rep?.flow === flow && rep.rung === "byId") rep.reused = reused;
+     }
+   }
+   return { got, tasks: [...tasks.values()] };
+@@ -500,12 +592,15 @@
+   const itemsP = (flow: ProcessKey, r: Promise<FlowRead>, known: () => Promise<Set<string>>) =>
+     Promise.all([r, snapsP, auditP]).then(async ([read, s, a]) => itemsOf(flow, read, s, a, await known(), flowLog[flow].reads));
+   const noIds = async () => new Set<string>();
+-  const reviewP = itemsP("review", readProcess(client, "review", plan.process.review, noIds, flowLog.review), noIds);
+-  const opP = itemsP("op", readProcess(client, "op", plan.process.op, noIds, flowLog.op), noIds);
++  // 26 Oct: the cases' history signatures decide which kept full reads of ended items are used again (keptReads)
++  const sigsP = auditP.then((a) => (a.error ? null : historySigs(a.rows)));
++  const persona = acting.personaId;
++  const reviewP = itemsP("review", readProcess(client, "review", plan.process.review, noIds, flowLog.review, sigsP, persona), noIds);
++  const opP = itemsP("op", readProcess(client, "op", plan.process.op, noIds, flowLog.op, sigsP, persona), noIds);
+   const formsP = Promise.all(OTHER_FORMS.map(async (f) => [f, (await readForm(f)).rows] as const));
+   let caseIds: Promise<Set<string>> | undefined;
+   const knownIds = () => (caseIds ??= Promise.all([auditP, snapsP, reviewP, opP, formsP]).then(([a, s, rv, o, fs]) => knownCaseIds(a.rows, [...rv.kept, ...o.kept, ...fs.flatMap(([, rows]) => rows)], s.case)));
+-  const caseP = itemsP("case", readProcess(client, "case", plan.process.case, knownIds, flowLog.case), knownIds);
++  const caseP = itemsP("case", readProcess(client, "case", plan.process.case, knownIds, flowLog.case, sigsP, persona), knownIds);
+   const [review, op, kase, forms, audit, config] = await Promise.all([reviewP, opP, caseP, formsP, auditP, configP]);
+ 
+   const unreadableCases = kase.unreadable;
+diff -ru orig/src/app-live/types.ts prototype/src/app-live/types.ts
+--- orig/src/app-live/types.ts	2026-10-22 21:16:59
++++ prototype/src/app-live/types.ts	2026-10-26 00:03:31
+@@ -58,7 +58,9 @@
+ export type Rung = "admin" | "tasks" | "mine" | "byId" | "form" | "snapshot" | "skipped";
+ export interface ReadReport { flow: FlowKey; rung: Rung; ok: boolean; count: number; ms: number; error?: string;
+   /** "mine" rung: the field names the My items rows carried (morning test R-1: what a live list row holds). */
+-  keys?: string[] }
++  keys?: string[];
++  /** 26 Oct: items of this rung taken from the session's kept full reads of ended items, not read again (load.ts). */
++  reused?: number }
+ export interface TaskRef { flow: ProcessKey; itemId: string; act: string; activityId: string }
+ export interface LiveSnapshot {
+   loadedAt: string;
+diff -ru orig/src/portal/data/LiveSupplierStore.tsx prototype/src/portal/data/LiveSupplierStore.tsx
+--- orig/src/portal/data/LiveSupplierStore.tsx	2026-10-22 16:05:46
++++ prototype/src/portal/data/LiveSupplierStore.tsx	2026-10-26 00:00:52
+@@ -64,8 +64,11 @@
+ export async function loadSupplierData(client: PortalClient, me: Who, local: LocalNotes = emptyNotes()): Promise<LoadedData> {
+   const warnings: string[] = [];
+   const listed = new Map<string, { flow: FlowKey; row: RawItem; steps: StepKey[] }>();
+-  for (const l of TASK_LISTS) {
+-    for (const r of await client.listTasks(l.flow, STEPS[l.step].activity)) {
++  // the task lists go out together (none needs another's answer) and are merged in TASK_LISTS order, as when they
++  // were read one by one (26 Oct optimisation: 5 round trips became 1)
++  const lists = await Promise.all(TASK_LISTS.map((l) => client.listTasks(l.flow, STEPS[l.step].activity)));
++  for (const [i, l] of TASK_LISTS.entries()) {
++    for (const r of lists[i]) {
+       const id = String(r._id ?? "");
+       if (!id) continue;
+       const cur = listed.get(id) ?? { flow: l.flow, row: r, steps: [] };
+diff -ru orig/src/portal/data/client.test.ts prototype/src/portal/data/client.test.ts
+--- orig/src/portal/data/client.test.ts	2026-10-21 16:36:33
++++ prototype/src/portal/data/client.test.ts	2026-10-26 00:01:55
+@@ -55,8 +55,8 @@
+     const c = createClient(kf, { sleep: noSleep });
+     expect(await c.listTasks("request", "Activity_15rz7z2")).toHaveLength(51);
+     expect(seen).toEqual([
+-      { pageNumber: 1, pageSize: 50, activityId: "Activity_15rz7z2" },
+-      { pageNumber: 2, pageSize: 50, activityId: "Activity_15rz7z2" },
++      { pageNumber: 1, pageSize: 200, activityId: "Activity_15rz7z2" },
++      { pageNumber: 2, pageSize: 200, activityId: "Activity_15rz7z2" },
+     ]);
+   });
+ 
+diff -ru orig/src/portal/data/client.ts prototype/src/portal/data/client.ts
+--- orig/src/portal/data/client.ts	2026-10-21 16:35:28
++++ prototype/src/portal/data/client.ts	2026-10-26 00:01:17
+@@ -6,7 +6,9 @@
+ import { errorText, rowsOf, totalOf, type Kf, type KfData, type KfFileMeta, type KfPage } from "../kf/sdk";
+ 
+ /** The SDK's own default page size; a larger one may be capped by the host, which would end paging early. */
+-const PAGE_SIZE = 50;
++/** Rows asked per list call, and the smallest page a host answers in full (26 Oct optimisation; as app-live/kf/client.ts). */
++const PAGE_SIZE = 200;
++const HOST_PAGE_FLOOR = 50;
+ import type { RawItem } from "./raw";
+ 
+ export class PortalError extends Error {}
+@@ -103,7 +105,7 @@
+     }
+   }
+ 
+-  /** Every page of a list (the SDK's default page size). Stops on a short page, or when a page repeats rows
++  /** Every page of a list, PAGE_SIZE rows asked a call. Stops on an empty page or one under HOST_PAGE_FLOOR rows, or when a page repeats rows
+    *  already seen (a host that ignores the page number). */
+   async function pages(get: (page: KfPage) => Promise<unknown>, maxPages = 200): Promise<RawItem[]> {
+     const seen = new Map<string, RawItem>();
+@@ -113,7 +115,7 @@
+       const total = totalOf(body);
+       const fresh = rows.filter((r) => !seen.has(String(r._id)));
+       for (const r of fresh) seen.set(String(r._id), r);
+-      if (rows.length < PAGE_SIZE || fresh.length === 0 || (total !== undefined && seen.size >= total)) return [...seen.values()];
++      if (rows.length === 0 || rows.length < Math.min(PAGE_SIZE, HOST_PAGE_FLOOR) || fresh.length === 0 || (total !== undefined && seen.size >= total)) return [...seen.values()];
+     }
+     throw new PortalError(`More than ${maxPages * PAGE_SIZE} items: the list was not read completely.`);
+   }

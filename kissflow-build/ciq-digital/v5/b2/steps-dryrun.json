@@ -1,0 +1,358 @@
+{
+ "step": "B2-op-steps",
+ "flow": "CIQ_Open_Point_A00",
+ "what": "remove \"Waiting for supplier\" Activity_4k7uck; rename the 6 review steps to \"Open point – <Dept>\" (ids, role owners and conditions kept)",
+ "at": "2026-10-14T18:13:39.334Z",
+ "apply": false,
+ "liveMetaVersion": "1791485991666407",
+ "livePublishedAt": "2026-10-08T18:59:51Z",
+ "mutation": {
+  "removed": {
+   "Activity": 1,
+   "Permission": 54,
+   "Resource": 1,
+   "Expression": 1,
+   "Node": 3
+  },
+  "renamed": [
+   "Activity_uka3mx: Review – Regulatory → Open point – Regulatory",
+   "Activity_1kdump3: Review – Safety → Open point – Safety",
+   "Activity_1go37bt: Review – QM → Open point – QM",
+   "Activity_hha7u2: Review – Microbiology → Open point – Microbiology",
+   "Activity_y4af4g: Review – Sustainability → Open point – Sustainability",
+   "Activity_xc8fbb: Review – RMM → Open point – RMM"
+  ]
+ },
+ "diffSummary": {
+  "added": 0,
+  "removed": 60,
+  "changed": 7,
+  "addedByKind": {},
+  "removedByKind": {
+   "Permission": 54,
+   "Resource": 1,
+   "Expression": 1,
+   "Node": 3,
+   "Activity": 1
+  },
+  "changedByKind": {
+   "ProcessDef": 1,
+   "Activity": 6
+  }
+ },
+ "changedNonPermission": [
+  {
+   "entity": "ProcessDef_15nolcs ProcessDef",
+   "props": {
+    "ProcessDef::Activity": {
+     "was": "[9]",
+     "now": "[8]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_uka3mx Activity Open point – Regulatory",
+   "props": {
+    "Name": {
+     "was": "Review – Regulatory",
+     "now": "Open point – Regulatory"
+    }
+   }
+  },
+  {
+   "entity": "Activity_1kdump3 Activity Open point – Safety",
+   "props": {
+    "Name": {
+     "was": "Review – Safety",
+     "now": "Open point – Safety"
+    }
+   }
+  },
+  {
+   "entity": "Activity_1go37bt Activity Open point – QM",
+   "props": {
+    "Name": {
+     "was": "Review – QM",
+     "now": "Open point – QM"
+    }
+   }
+  },
+  {
+   "entity": "Activity_hha7u2 Activity Open point – Microbiology",
+   "props": {
+    "Name": {
+     "was": "Review – Microbiology",
+     "now": "Open point – Microbiology"
+    }
+   }
+  },
+  {
+   "entity": "Activity_y4af4g Activity Open point – Sustainability",
+   "props": {
+    "Name": {
+     "was": "Review – Sustainability",
+     "now": "Open point – Sustainability"
+    }
+   }
+  },
+  {
+   "entity": "Activity_xc8fbb Activity Open point – RMM",
+   "props": {
+    "Name": {
+     "was": "Review – RMM",
+     "now": "Open point – RMM"
+    }
+   }
+  }
+ ],
+ "preflight": {
+  "errors": [],
+  "warnings": [
+   "NO_ID",
+   "ORPHAN_ENTITY"
+  ]
+ },
+ "dryCheck": {
+  "order": [
+   "Raise open point [Activity_18t0lhi]  perms=54",
+   "Open point – Regulatory [Activity_uka3mx] AppRole:CIQ Regulatory Reviewer if OP_Dept = \"REG\" perms=54",
+   "Open point – Safety [Activity_1kdump3] AppRole:CIQ Safety Reviewer if OP_Dept = \"SAF\" perms=54",
+   "Open point – QM [Activity_1go37bt] AppRole:CIQ QM Reviewer if OP_Dept = \"QM\" perms=54",
+   "Open point – Microbiology [Activity_hha7u2] AppRole:CIQ Microbiology Reviewer if OP_Dept = \"MIC\" perms=54",
+   "Open point – Sustainability [Activity_y4af4g] AppRole:CIQ Sustainability Reviewer if OP_Dept = \"SUS\" perms=54",
+   "Open point – RMM [Activity_xc8fbb] AppRole:CIQ RMM if OP_Dept = \"RMM\" perms=54",
+   "End [Activity_i73i25]  perms=54"
+  ],
+  "removedGone": true,
+  "reviewSteps": [
+   {
+    "id": "Activity_uka3mx",
+    "name": "Open point – Regulatory",
+    "nameOk": true,
+    "roleOk": true,
+    "role": [
+     "AppRole:CIQ Regulatory Reviewer:RoEKl84Hca4w"
+    ],
+    "condOk": true,
+    "cond": [
+     "OP_Dept = \"REG\""
+    ]
+   },
+   {
+    "id": "Activity_1kdump3",
+    "name": "Open point – Safety",
+    "nameOk": true,
+    "roleOk": true,
+    "role": [
+     "AppRole:CIQ Safety Reviewer:RoEKl84xAFRW"
+    ],
+    "condOk": true,
+    "cond": [
+     "OP_Dept = \"SAF\""
+    ]
+   },
+   {
+    "id": "Activity_1go37bt",
+    "name": "Open point – QM",
+    "nameOk": true,
+    "roleOk": true,
+    "role": [
+     "AppRole:CIQ QM Reviewer:RoEKl85WB1yE"
+    ],
+    "condOk": true,
+    "cond": [
+     "OP_Dept = \"QM\""
+    ]
+   },
+   {
+    "id": "Activity_hha7u2",
+    "name": "Open point – Microbiology",
+    "nameOk": true,
+    "roleOk": true,
+    "role": [
+     "AppRole:CIQ Microbiology Reviewer:RoEKl8647K2u"
+    ],
+    "condOk": true,
+    "cond": [
+     "OP_Dept = \"MIC\""
+    ]
+   },
+   {
+    "id": "Activity_y4af4g",
+    "name": "Open point – Sustainability",
+    "nameOk": true,
+    "roleOk": true,
+    "role": [
+     "AppRole:CIQ Sustainability Reviewer:RoEKl86bQQrO"
+    ],
+    "condOk": true,
+    "cond": [
+     "OP_Dept = \"SUS\""
+    ]
+   },
+   {
+    "id": "Activity_xc8fbb",
+    "name": "Open point – RMM",
+    "nameOk": true,
+    "roleOk": true,
+    "role": [
+     "AppRole:CIQ RMM:RoEKl83f9jPF"
+    ],
+    "condOk": true,
+    "cond": [
+     "OP_Dept = \"RMM\""
+    ]
+   }
+  ]
+ },
+ "calls": 1,
+ "diff": {
+  "added": [],
+  "removed": [
+   "Permission_wl59vk Permission",
+   "Permission_xx9oz3 Permission",
+   "Permission_11avnj9 Permission",
+   "Permission_1d1x6d4 Permission",
+   "Permission_xvta48 Permission",
+   "Permission_az190y Permission",
+   "Permission_14kvlyz Permission",
+   "Permission_1gj2s3o Permission",
+   "Permission_1gixm14 Permission",
+   "Permission_132xb64 Permission",
+   "Permission_14wupoe Permission",
+   "Permission_2nfchg Permission",
+   "Permission_176dff1 Permission",
+   "Permission_18669b6 Permission",
+   "Permission_18evuqq Permission",
+   "Permission_11ru6o8 Permission",
+   "Permission_15mbyrj Permission",
+   "Permission_1a3q44o Permission",
+   "Permission_325xb7 Permission",
+   "Permission_15mnmj8 Permission",
+   "Permission_5knqmh Permission",
+   "Permission_1edjm6g Permission",
+   "Permission_18s68bc Permission",
+   "Permission_5a0w3n Permission",
+   "Permission_172uxeo Permission",
+   "Permission_173mth5 Permission",
+   "Permission_1f4avmk Permission",
+   "Permission_5upn2t Permission",
+   "Permission_7xm48c Permission",
+   "Permission_1bxj1ru Permission",
+   "Permission_1d1ugmk Permission",
+   "Permission_18hxlz2 Permission",
+   "Permission_15mf9gx Permission",
+   "Permission_1cdb5w6 Permission",
+   "Permission_1cdggdm Permission",
+   "Permission_1d1uzy8 Permission",
+   "Permission_5wp7ir Permission",
+   "Permission_100v9m2 Permission",
+   "Permission_b5vp6p Permission",
+   "Permission_1beu0qg Permission",
+   "Permission_166onwz Permission",
+   "Permission_d0w1uw Permission",
+   "Permission_11iovcu Permission",
+   "Permission_1h8iftz Permission",
+   "Permission_yj10nv Permission",
+   "Permission_1h3nul5 Permission",
+   "Permission_yj10mw Permission",
+   "Permission_auj1ya Permission",
+   "Permission_14xiqgi Permission",
+   "Permission_19oig1q Permission",
+   "Permission_1alwy4a Permission",
+   "Permission_9ojhlb Permission",
+   "Permission_cwm47w Permission",
+   "Permission_13abp73 Permission",
+   "Resource_1b09qui Resource",
+   "Expression_kuhuqj Expression",
+   "Node_11lkgo4 Node",
+   "Node_11lkgo5 Node",
+   "Node_11lkgo6 Node",
+   "Activity_4k7uck Activity Waiting for supplier"
+  ],
+  "changed": [
+   {
+    "entity": "ProcessDef_15nolcs ProcessDef",
+    "props": {
+     "ProcessDef::Activity": {
+      "was": [
+       "Activity_18t0lhi",
+       "Activity_4k7uck",
+       "Activity_uka3mx",
+       "Activity_1kdump3",
+       "Activity_1go37bt",
+       "Activity_hha7u2",
+       "Activity_y4af4g",
+       "Activity_xc8fbb",
+       "Activity_i73i25"
+      ],
+      "now": [
+       "Activity_18t0lhi",
+       "Activity_uka3mx",
+       "Activity_1kdump3",
+       "Activity_1go37bt",
+       "Activity_hha7u2",
+       "Activity_y4af4g",
+       "Activity_xc8fbb",
+       "Activity_i73i25"
+      ]
+     }
+    }
+   },
+   {
+    "entity": "Activity_uka3mx Activity Open point – Regulatory",
+    "props": {
+     "Name": {
+      "was": "Review – Regulatory",
+      "now": "Open point – Regulatory"
+     }
+    }
+   },
+   {
+    "entity": "Activity_1kdump3 Activity Open point – Safety",
+    "props": {
+     "Name": {
+      "was": "Review – Safety",
+      "now": "Open point – Safety"
+     }
+    }
+   },
+   {
+    "entity": "Activity_1go37bt Activity Open point – QM",
+    "props": {
+     "Name": {
+      "was": "Review – QM",
+      "now": "Open point – QM"
+     }
+    }
+   },
+   {
+    "entity": "Activity_hha7u2 Activity Open point – Microbiology",
+    "props": {
+     "Name": {
+      "was": "Review – Microbiology",
+      "now": "Open point – Microbiology"
+     }
+    }
+   },
+   {
+    "entity": "Activity_y4af4g Activity Open point – Sustainability",
+    "props": {
+     "Name": {
+      "was": "Review – Sustainability",
+      "now": "Open point – Sustainability"
+     }
+    }
+   },
+   {
+    "entity": "Activity_xc8fbb Activity Open point – RMM",
+    "props": {
+     "Name": {
+      "was": "Review – RMM",
+      "now": "Open point – RMM"
+     }
+    }
+   }
+  ]
+ }
+}

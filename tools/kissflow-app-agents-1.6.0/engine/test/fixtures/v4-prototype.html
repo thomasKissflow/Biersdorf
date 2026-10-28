@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fixture — a real v4-contract prototype (raw, pre-publish)</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style type="text/tailwindcss">
+/* The token contract as the generator emits it. These prose comments are the exact ones a real
+   prototype carries — the regression tests assert they survive compilation:
+   "Tabular numerals keep the figures aligned in the tables below."
+   "The accent rides on Beacon's own canvas, never a hardcoded hex." */
+@import "tailwindcss/theme.css";
+@import "tailwindcss/utilities.css";
+@theme {
+  --color-background: #0b0e14;
+  --color-foreground: #e6e9ef;
+  --color-card: #131722;
+  --color-muted-foreground: #8b93a7;
+  --color-brand: #00aaff;
+  --color-border: #232838;
+}
+</style>
+</head>
+<body class="bg-background text-foreground">
+<div class="p-4 px-6 py-3 m-2 mt-4 mb-6 flex grid gap-4 items-center justify-between rounded-lg rounded-xl shadow-sm border border-border bg-card text-sm text-lg font-semibold w-full h-10 max-w-md grid-cols-2 grid-cols-3 hover:bg-brand/80 md:flex lg:grid-cols-4 col-span-2 space-y-4 divide-y overflow-hidden relative absolute inset-0 z-10 opacity-80 transition text-muted-foreground">
+  <h1 class="text-lg font-semibold text-foreground">Dashboard</h1>
+</div>
+<section id="rv-admin">
+  <div class="grid grid-cols-3 gap-4 p-6 rounded-xl bg-card border border-border shadow-sm text-sm text-muted-foreground w-full max-w-md items-center justify-between font-semibold hover:bg-brand/80 transition"></div>
+</section>
+<script>
+  window.ROLES = [{ id: "admin", name: "Admin" }];
+  window.PAGES = window.PAGES || {};
+  window.PAGES.admin = () => {};
+</script>
+</body>
+</html>

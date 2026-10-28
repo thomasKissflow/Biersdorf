@@ -1,0 +1,668 @@
+{
+ "type": "process",
+ "name": "ZZZ (Not in Use) CIQP Notice",
+ "status": "Live",
+ "list": {
+  "_id": "CIQP_Notice_A00",
+  "_created_at": "2026-10-07T04:25:32Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-15T16:34:10Z",
+  "Name": "ZZZ (Not in Use) CIQP Notice",
+  "Description": "A message from Beiersdorf to the supplier, e.g. a change-request outcome, a scope change or a case closure. The supplier acknowledges it.",
+  "Type": "Process",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Supplier_Portal_A00",
+  "LastPublishedAt": "2026-10-15T16:34:09Z"
+ },
+ "draftStatus": 200,
+ "draft": {
+  "SendBackToInitiator": {
+   "Id": "SendBackToInitiator",
+   "Kind": "Activity",
+   "NodeType": "SendBackToInitiator",
+   "BaseMetadata": "Activity_nel5eh"
+  },
+  "PublishedAt": "2026-10-15T16:34:09Z",
+  "PublishedBy": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_meta_version": "1791347977361145",
+  "CIQP_Notice_A00": {
+   "Id": "CIQP_Notice_A00",
+   "Name": "ZZZ (Not in Use) CIQP Notice",
+   "Kind": "Model",
+   "FlowType": "Process",
+   "Description": "A message from Beiersdorf that the supplier acknowledges, e.g. a change-request outcome or a scope change. Not used for cancellation or closure (those go by e-mail, so no supplier task stays open).",
+   "_application_id": "CIQ_Supplier_Portal_A00",
+   "Model::Row": [
+    "Row_11xat4"
+   ],
+   "Model::Field": [
+    "Notice_Key",
+    "Notice_Kind",
+    "Case_Code",
+    "Cycle_No",
+    "Supplier_Code",
+    "App_Notice_Item_Id",
+    "Notice_Title",
+    "Notice_Text",
+    "Related_Key",
+    "Assigned_Contacts"
+   ],
+   "Model::ProcessDef": [
+    "ProcessDef_u4sfqr"
+   ],
+   "RootProcessDef": "ProcessDef_u4sfqr",
+   "Model::Appearance": [
+    "Appearance_u4sfqr"
+   ],
+   "Button::Row": [
+    "Row_1yexy4"
+   ]
+  },
+  "Row_11xat4": {
+   "Id": "Row_11xat4",
+   "Kind": "Row",
+   "Model": "CIQP_Notice_A00",
+   "Row::Column": [
+    "Column_11xat4"
+   ]
+  },
+  "Column_11xat4": {
+   "Id": "Column_11xat4",
+   "Kind": "Column",
+   "Type": "Section",
+   "Name": "Details",
+   "Start": 0,
+   "End": 6,
+   "Row": "Row_11xat4",
+   "Column::Row": [
+    "Row_11w2nm",
+    "Row_11w2nn",
+    "Row_11w2no",
+    "Row_11w2np",
+    "Row_11w2nq",
+    "Row_11w2nr"
+   ]
+  },
+  "Row_11w2nm": {
+   "Id": "Row_11w2nm",
+   "Kind": "Row",
+   "Column": "Column_11xat4",
+   "Row::Column": [
+    "Column_986jfb",
+    "Column_kdjoac"
+   ]
+  },
+  "Column_986jfb": {
+   "Id": "Column_986jfb",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_11w2nm",
+   "Column::Field": [
+    "Notice_Key"
+   ]
+  },
+  "Column_kdjoac": {
+   "Id": "Column_kdjoac",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 3,
+   "End": 6,
+   "Row": "Row_11w2nm",
+   "Column::Field": [
+    "Notice_Kind"
+   ]
+  },
+  "Row_11w2nn": {
+   "Id": "Row_11w2nn",
+   "Kind": "Row",
+   "Column": "Column_11xat4",
+   "Row::Column": [
+    "Column_1xrqyqr",
+    "Column_oi9ypl"
+   ]
+  },
+  "Column_1xrqyqr": {
+   "Id": "Column_1xrqyqr",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_11w2nn",
+   "Column::Field": [
+    "Case_Code"
+   ]
+  },
+  "Column_oi9ypl": {
+   "Id": "Column_oi9ypl",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 3,
+   "End": 6,
+   "Row": "Row_11w2nn",
+   "Column::Field": [
+    "Cycle_No"
+   ]
+  },
+  "Row_11w2no": {
+   "Id": "Row_11w2no",
+   "Kind": "Row",
+   "Column": "Column_11xat4",
+   "Row::Column": [
+    "Column_4if263",
+    "Column_1tzvdu1"
+   ]
+  },
+  "Column_4if263": {
+   "Id": "Column_4if263",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_11w2no",
+   "Column::Field": [
+    "Supplier_Code"
+   ]
+  },
+  "Column_1tzvdu1": {
+   "Id": "Column_1tzvdu1",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 3,
+   "End": 6,
+   "Row": "Row_11w2no",
+   "Column::Field": [
+    "App_Notice_Item_Id"
+   ]
+  },
+  "Row_11w2np": {
+   "Id": "Row_11w2np",
+   "Kind": "Row",
+   "Column": "Column_11xat4",
+   "Row::Column": [
+    "Column_xbdokw"
+   ]
+  },
+  "Column_xbdokw": {
+   "Id": "Column_xbdokw",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_11w2np",
+   "Column::Field": [
+    "Notice_Title"
+   ]
+  },
+  "Row_11w2nq": {
+   "Id": "Row_11w2nq",
+   "Kind": "Row",
+   "Column": "Column_11xat4",
+   "Row::Column": [
+    "Column_kdqir7"
+   ]
+  },
+  "Column_kdqir7": {
+   "Id": "Column_kdqir7",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 6,
+   "Row": "Row_11w2nq",
+   "Column::Field": [
+    "Notice_Text"
+   ]
+  },
+  "Row_11w2nr": {
+   "Id": "Row_11w2nr",
+   "Kind": "Row",
+   "Column": "Column_11xat4",
+   "Row::Column": [
+    "Column_liiidy",
+    "Column_xfgyd5"
+   ]
+  },
+  "Column_liiidy": {
+   "Id": "Column_liiidy",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_11w2nr",
+   "Column::Field": [
+    "Related_Key"
+   ]
+  },
+  "Column_xfgyd5": {
+   "Id": "Column_xfgyd5",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 3,
+   "End": 6,
+   "Row": "Row_11w2nr",
+   "Column::Field": [
+    "Assigned_Contacts"
+   ]
+  },
+  "Notice_Key": {
+   "Id": "Notice_Key",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Notice Key",
+   "Model": "CIQP_Notice_A00",
+   "Column": "Column_986jfb",
+   "Required": true
+  },
+  "Notice_Kind": {
+   "Id": "Notice_Kind",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Notice Kind",
+   "Model": "CIQP_Notice_A00",
+   "Column": "Column_kdjoac",
+   "Required": true
+  },
+  "Case_Code": {
+   "Id": "Case_Code",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Case Code",
+   "Model": "CIQP_Notice_A00",
+   "Column": "Column_1xrqyqr",
+   "Required": true
+  },
+  "Cycle_No": {
+   "Id": "Cycle_No",
+   "Kind": "Field",
+   "Type": "Number",
+   "Name": "Cycle No",
+   "Model": "CIQP_Notice_A00",
+   "Column": "Column_oi9ypl",
+   "Required": true
+  },
+  "Supplier_Code": {
+   "Id": "Supplier_Code",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Supplier Code",
+   "Model": "CIQP_Notice_A00",
+   "Column": "Column_4if263",
+   "Required": true
+  },
+  "App_Notice_Item_Id": {
+   "Id": "App_Notice_Item_Id",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "App Notice Item Id",
+   "Model": "CIQP_Notice_A00",
+   "Column": "Column_1tzvdu1",
+   "Required": true
+  },
+  "Notice_Title": {
+   "Id": "Notice_Title",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Notice Title",
+   "Model": "CIQP_Notice_A00",
+   "Column": "Column_xbdokw",
+   "Required": true
+  },
+  "Notice_Text": {
+   "Id": "Notice_Text",
+   "Kind": "Field",
+   "Type": "Textarea",
+   "Name": "Notice Text",
+   "Model": "CIQP_Notice_A00",
+   "Column": "Column_kdqir7",
+   "Required": true
+  },
+  "Related_Key": {
+   "Id": "Related_Key",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Related Key",
+   "Model": "CIQP_Notice_A00",
+   "Column": "Column_liiidy"
+  },
+  "QueryDefinition_xfgyd5": {
+   "Id": "QueryDefinition_xfgyd5",
+   "Kind": "QueryDefinition",
+   "Field": "Assigned_Contacts",
+   "LHSModel": "User",
+   "FlowType": "User",
+   "LookupField": [],
+   "HiddenField": []
+  },
+  "Assigned_Contacts": {
+   "Id": "Assigned_Contacts",
+   "Kind": "Field",
+   "Type": "MultiUser",
+   "Name": "Assigned Contacts",
+   "Model": "CIQP_Notice_A00",
+   "Column": "Column_xfgyd5",
+   "Required": true,
+   "Field::QueryDefinition": [
+    "QueryDefinition_xfgyd5"
+   ]
+  },
+  "ProcessDef_u4sfqr": {
+   "Id": "ProcessDef_u4sfqr",
+   "Kind": "ProcessDef",
+   "WorkflowType": "Sequence",
+   "Model": "CIQP_Notice_A00",
+   "ProcessDef::Activity": [
+    "Activity_nel5eh",
+    "Activity_t6gsv3",
+    "Activity_1jztbgk"
+   ]
+  },
+  "Permission_2ib4xe": {
+   "Id": "Permission_2ib4xe",
+   "Kind": "Permission",
+   "Column": "Column_986jfb",
+   "Permission": "Editable",
+   "Activity": "Activity_nel5eh"
+  },
+  "Permission_zri2sl": {
+   "Id": "Permission_zri2sl",
+   "Kind": "Permission",
+   "Column": "Column_kdjoac",
+   "Permission": "Editable",
+   "Activity": "Activity_nel5eh"
+  },
+  "Permission_pjt2dd": {
+   "Id": "Permission_pjt2dd",
+   "Kind": "Permission",
+   "Column": "Column_1xrqyqr",
+   "Permission": "Editable",
+   "Activity": "Activity_nel5eh"
+  },
+  "Permission_12f6wf3": {
+   "Id": "Permission_12f6wf3",
+   "Kind": "Permission",
+   "Column": "Column_oi9ypl",
+   "Permission": "Editable",
+   "Activity": "Activity_nel5eh"
+  },
+  "Permission_9e8d3": {
+   "Id": "Permission_9e8d3",
+   "Kind": "Permission",
+   "Column": "Column_4if263",
+   "Permission": "Editable",
+   "Activity": "Activity_nel5eh"
+  },
+  "Permission_n4cjo8": {
+   "Id": "Permission_n4cjo8",
+   "Kind": "Permission",
+   "Column": "Column_1tzvdu1",
+   "Permission": "Editable",
+   "Activity": "Activity_nel5eh"
+  },
+  "Permission_184v4dk": {
+   "Id": "Permission_184v4dk",
+   "Kind": "Permission",
+   "Column": "Column_xbdokw",
+   "Permission": "Editable",
+   "Activity": "Activity_nel5eh"
+  },
+  "Permission_zrnc97": {
+   "Id": "Permission_zrnc97",
+   "Kind": "Permission",
+   "Column": "Column_kdqir7",
+   "Permission": "Editable",
+   "Activity": "Activity_nel5eh"
+  },
+  "Permission_10ib2hp": {
+   "Id": "Permission_10ib2hp",
+   "Kind": "Permission",
+   "Column": "Column_liiidy",
+   "Permission": "Editable",
+   "Activity": "Activity_nel5eh"
+  },
+  "Permission_187rbzk": {
+   "Id": "Permission_187rbzk",
+   "Kind": "Permission",
+   "Column": "Column_xfgyd5",
+   "Permission": "Editable",
+   "Activity": "Activity_nel5eh"
+  },
+  "Activity_nel5eh": {
+   "Id": "Activity_nel5eh",
+   "Kind": "Activity",
+   "NodeType": "StartEvent",
+   "Name": "Send notice",
+   "ProcessDef": "ProcessDef_u4sfqr",
+   "Activity::Permission": [
+    "Permission_2ib4xe",
+    "Permission_zri2sl",
+    "Permission_pjt2dd",
+    "Permission_12f6wf3",
+    "Permission_9e8d3",
+    "Permission_n4cjo8",
+    "Permission_184v4dk",
+    "Permission_zrnc97",
+    "Permission_10ib2hp",
+    "Permission_187rbzk"
+   ]
+  },
+  "Permission_jem3dq": {
+   "Id": "Permission_jem3dq",
+   "Kind": "Permission",
+   "Column": "Column_986jfb",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_t6gsv3"
+  },
+  "Permission_1gnt18x": {
+   "Id": "Permission_1gnt18x",
+   "Kind": "Permission",
+   "Column": "Column_kdjoac",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_t6gsv3"
+  },
+  "Permission_ewy7jh": {
+   "Id": "Permission_ewy7jh",
+   "Kind": "Permission",
+   "Column": "Column_1xrqyqr",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_t6gsv3"
+  },
+  "Permission_1jbhuvf": {
+   "Id": "Permission_1jbhuvf",
+   "Kind": "Permission",
+   "Column": "Column_oi9ypl",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_t6gsv3"
+  },
+  "Permission_h5p6tf": {
+   "Id": "Permission_h5p6tf",
+   "Kind": "Permission",
+   "Column": "Column_4if263",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_t6gsv3"
+  },
+  "Permission_chhouc": {
+   "Id": "Permission_chhouc",
+   "Kind": "Permission",
+   "Column": "Column_1tzvdu1",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_t6gsv3"
+  },
+  "Permission_1p162tw": {
+   "Id": "Permission_1p162tw",
+   "Kind": "Permission",
+   "Column": "Column_xbdokw",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_t6gsv3"
+  },
+  "Permission_1gnyapj": {
+   "Id": "Permission_1gnyapj",
+   "Kind": "Permission",
+   "Column": "Column_kdqir7",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_t6gsv3"
+  },
+  "Permission_1hem0y1": {
+   "Id": "Permission_1hem0y1",
+   "Kind": "Permission",
+   "Column": "Column_liiidy",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_t6gsv3"
+  },
+  "Permission_1p42afw": {
+   "Id": "Permission_1p42afw",
+   "Kind": "Permission",
+   "Column": "Column_xfgyd5",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_t6gsv3"
+  },
+  "Resource_gdz4bi": {
+   "Id": "Resource_gdz4bi",
+   "Kind": "Resource",
+   "ValueType": "Field",
+   "DisplayValue": "Assigned Contacts",
+   "Value": "Assigned_Contacts",
+   "Field": "Assigned_Contacts",
+   "Activity": "Activity_t6gsv3"
+  },
+  "Activity_t6gsv3": {
+   "Id": "Activity_t6gsv3",
+   "Kind": "Activity",
+   "NodeType": "UserTask",
+   "Name": "Supplier: acknowledge",
+   "ProcessDef": "ProcessDef_u4sfqr",
+   "Activity::Permission": [
+    "Permission_jem3dq",
+    "Permission_1gnt18x",
+    "Permission_ewy7jh",
+    "Permission_1jbhuvf",
+    "Permission_h5p6tf",
+    "Permission_chhouc",
+    "Permission_1p162tw",
+    "Permission_1gnyapj",
+    "Permission_1hem0y1",
+    "Permission_1p42afw"
+   ],
+   "Activity::Resource": [
+    "Resource_gdz4bi"
+   ]
+  },
+  "Permission_1dje7wu": {
+   "Id": "Permission_1dje7wu",
+   "Kind": "Permission",
+   "Column": "Column_986jfb",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_1jztbgk"
+  },
+  "Permission_brh3sx": {
+   "Id": "Permission_brh3sx",
+   "Kind": "Permission",
+   "Column": "Column_kdjoac",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_1jztbgk"
+  },
+  "Permission_ev5lel": {
+   "Id": "Permission_ev5lel",
+   "Kind": "Permission",
+   "Column": "Column_1xrqyqr",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_1jztbgk"
+  },
+  "Permission_ef5xff": {
+   "Id": "Permission_ef5xff",
+   "Kind": "Permission",
+   "Column": "Column_oi9ypl",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_1jztbgk"
+  },
+  "Permission_1bahbcj": {
+   "Id": "Permission_1bahbcj",
+   "Kind": "Permission",
+   "Column": "Column_4if263",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_1jztbgk"
+  },
+  "Permission_cfp2pg": {
+   "Id": "Permission_cfp2pg",
+   "Kind": "Permission",
+   "Column": "Column_1tzvdu1",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_1jztbgk"
+  },
+  "Permission_k4u5dw": {
+   "Id": "Permission_k4u5dw",
+   "Kind": "Permission",
+   "Column": "Column_xbdokw",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_1jztbgk"
+  },
+  "Permission_brmd9j": {
+   "Id": "Permission_brmd9j",
+   "Kind": "Permission",
+   "Column": "Column_kdqir7",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_1jztbgk"
+  },
+  "Permission_cia3i1": {
+   "Id": "Permission_cia3i1",
+   "Kind": "Permission",
+   "Column": "Column_liiidy",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_1jztbgk"
+  },
+  "Permission_k7qczw": {
+   "Id": "Permission_k7qczw",
+   "Kind": "Permission",
+   "Column": "Column_xfgyd5",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_1jztbgk"
+  },
+  "Activity_1jztbgk": {
+   "Id": "Activity_1jztbgk",
+   "Kind": "Activity",
+   "NodeType": "EndEvent",
+   "Name": "End",
+   "ProcessDef": "ProcessDef_u4sfqr",
+   "Activity::Permission": [
+    "Permission_1dje7wu",
+    "Permission_brh3sx",
+    "Permission_ev5lel",
+    "Permission_ef5xff",
+    "Permission_1bahbcj",
+    "Permission_cfp2pg",
+    "Permission_k4u5dw",
+    "Permission_brmd9j",
+    "Permission_cia3i1",
+    "Permission_k7qczw"
+   ]
+  },
+  "Appearance_u4sfqr": {
+   "Id": "Appearance_u4sfqr",
+   "Kind": "Appearance",
+   "Model": "CIQP_Notice_A00",
+   "Appearance::Style": [
+    "Style_u4sfqr"
+   ]
+  },
+  "Style_u4sfqr": {
+   "Id": "Style_u4sfqr",
+   "Kind": "Style",
+   "Appearance": "Appearance_u4sfqr"
+  },
+  "Row_1yexy4": {
+   "Id": "Row_1yexy4",
+   "Kind": "Row",
+   "Button": "CIQP_Notice_A00"
+  },
+  "Root": "CIQP_Notice_A00"
+ }
+}

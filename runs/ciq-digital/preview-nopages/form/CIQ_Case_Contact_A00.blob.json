@@ -1,0 +1,276 @@
+{
+  "Root": "CIQ_Case_Contact_A00",
+  "CIQ_Case_Contact_A00": {
+    "Id": "CIQ_Case_Contact_A00",
+    "Name": "CIQ Case Contact",
+    "Kind": "Model",
+    "FlowType": "Form",
+    "Description": "",
+    "Model::Row": [
+      "Row_18b09xp"
+    ],
+    "Model::Field": [
+      "Case_Contact_Key",
+      "Case_Code",
+      "Contact",
+      "Is_Primary",
+      "Can_Confirm_On_Case",
+      "Added_By",
+      "Added_At",
+      "Removed_At"
+    ]
+  },
+  "Row_18b09xp": {
+    "Id": "Row_18b09xp",
+    "Kind": "Row",
+    "Model": "CIQ_Case_Contact_A00",
+    "Row::Column": [
+      "Column_18b09xp"
+    ]
+  },
+  "Column_18b09xp": {
+    "Id": "Column_18b09xp",
+    "Kind": "Column",
+    "Type": "Section",
+    "Name": "Details",
+    "Start": 0,
+    "End": 6,
+    "Row": "Row_18b09xp",
+    "Column::Row": [
+      "Row_18az1s7",
+      "Row_18az1s8",
+      "Row_18az1s9",
+      "Row_18az1sa"
+    ]
+  },
+  "Row_18az1s7": {
+    "Id": "Row_18az1s7",
+    "Kind": "Row",
+    "Column": "Column_18b09xp",
+    "Row::Column": [
+      "Column_pwesmp",
+      "Column_1esbu8o"
+    ]
+  },
+  "Column_pwesmp": {
+    "Id": "Column_pwesmp",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_18az1s7",
+    "Column::Field": [
+      "Case_Contact_Key"
+    ]
+  },
+  "Column_1esbu8o": {
+    "Id": "Column_1esbu8o",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_18az1s7",
+    "Column::Field": [
+      "Case_Code"
+    ]
+  },
+  "Row_18az1s8": {
+    "Id": "Row_18az1s8",
+    "Kind": "Row",
+    "Column": "Column_18b09xp",
+    "Row::Column": [
+      "Column_yl52lq",
+      "Column_kpfgu9"
+    ]
+  },
+  "Column_yl52lq": {
+    "Id": "Column_yl52lq",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_18az1s8",
+    "Column::Field": [
+      "Contact"
+    ]
+  },
+  "Column_kpfgu9": {
+    "Id": "Column_kpfgu9",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_18az1s8",
+    "Column::Field": [
+      "Is_Primary"
+    ]
+  },
+  "Row_18az1s9": {
+    "Id": "Row_18az1s9",
+    "Kind": "Row",
+    "Column": "Column_18b09xp",
+    "Row::Column": [
+      "Column_sxtom0",
+      "Column_1m97bzi"
+    ]
+  },
+  "Column_sxtom0": {
+    "Id": "Column_sxtom0",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_18az1s9",
+    "Column::Field": [
+      "Can_Confirm_On_Case"
+    ]
+  },
+  "Column_1m97bzi": {
+    "Id": "Column_1m97bzi",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_18az1s9",
+    "Column::Field": [
+      "Added_By"
+    ]
+  },
+  "Row_18az1sa": {
+    "Id": "Row_18az1sa",
+    "Kind": "Row",
+    "Column": "Column_18b09xp",
+    "Row::Column": [
+      "Column_1m97byg",
+      "Column_o698nc"
+    ]
+  },
+  "Column_1m97byg": {
+    "Id": "Column_1m97byg",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_18az1sa",
+    "Column::Field": [
+      "Added_At"
+    ]
+  },
+  "Column_o698nc": {
+    "Id": "Column_o698nc",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_18az1sa",
+    "Column::Field": [
+      "Removed_At"
+    ]
+  },
+  "Case_Contact_Key": {
+    "Id": "Case_Contact_Key",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Case_Contact_Key",
+    "Model": "CIQ_Case_Contact_A00",
+    "Column": "Column_pwesmp"
+  },
+  "Case_Code": {
+    "Id": "Case_Code",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Case_Code",
+    "Model": "CIQ_Case_Contact_A00",
+    "Column": "Column_1esbu8o"
+  },
+  "QueryDefinition_yl52lq": {
+    "Id": "QueryDefinition_yl52lq",
+    "Kind": "QueryDefinition",
+    "Field": "Contact",
+    "LHSModel": "CIQ_Supplier_Contact_A00",
+    "FlowType": "Form",
+    "LookupField": [
+      {
+        "Id": "Contact_Email",
+        "Name": "Contact_Email",
+        "Type": "Email"
+      },
+      {
+        "Id": "Contact_Full_Name",
+        "Name": "Contact_Full_Name",
+        "Type": "Text"
+      },
+      {
+        "Id": "Contact_Supplier",
+        "Name": "Contact_Supplier",
+        "Type": "Reference"
+      }
+    ],
+    "HiddenField": []
+  },
+  "Contact": {
+    "Id": "Contact",
+    "Kind": "Field",
+    "Type": "Reference",
+    "Name": "Contact",
+    "Model": "CIQ_Case_Contact_A00",
+    "Column": "Column_yl52lq",
+    "Field::QueryDefinition": [
+      "QueryDefinition_yl52lq"
+    ]
+  },
+  "Is_Primary": {
+    "Id": "Is_Primary",
+    "Kind": "Field",
+    "Type": "Select",
+    "Name": "Is_Primary",
+    "Model": "CIQ_Case_Contact_A00",
+    "Column": "Column_kpfgu9",
+    "ReferredList": "CIQ_Yes_No_A00"
+  },
+  "Can_Confirm_On_Case": {
+    "Id": "Can_Confirm_On_Case",
+    "Kind": "Field",
+    "Type": "Select",
+    "Name": "Can_Confirm_On_Case",
+    "Model": "CIQ_Case_Contact_A00",
+    "Column": "Column_sxtom0",
+    "ReferredList": "CIQ_Yes_No_A00"
+  },
+  "QueryDefinition_1m97bzi": {
+    "Id": "QueryDefinition_1m97bzi",
+    "Kind": "QueryDefinition",
+    "Field": "Added_By",
+    "LHSModel": "User",
+    "FlowType": "User",
+    "LookupField": [],
+    "HiddenField": []
+  },
+  "Added_By": {
+    "Id": "Added_By",
+    "Kind": "Field",
+    "Type": "User",
+    "Name": "Added_By",
+    "Model": "CIQ_Case_Contact_A00",
+    "Column": "Column_1m97bzi",
+    "Field::QueryDefinition": [
+      "QueryDefinition_1m97bzi"
+    ]
+  },
+  "Added_At": {
+    "Id": "Added_At",
+    "Kind": "Field",
+    "Type": "DateTime",
+    "Name": "Added_At",
+    "Model": "CIQ_Case_Contact_A00",
+    "Column": "Column_1m97byg"
+  },
+  "Removed_At": {
+    "Id": "Removed_At",
+    "Kind": "Field",
+    "Type": "DateTime",
+    "Name": "Removed_At",
+    "Model": "CIQ_Case_Contact_A00",
+    "Column": "Column_o698nc"
+  }
+}

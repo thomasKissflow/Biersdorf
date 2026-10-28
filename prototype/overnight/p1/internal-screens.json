@@ -1,0 +1,313 @@
+{
+ "area": "Supplier portal screens (src/features/supplier/**, supplier personas, SupplierShell), incl. live-portal reuse constraints",
+ "summary": "The supplier side has 3 nav tabs (My requests, Tasks, Help; catalog.ts:431-456) and one request page (SupplierCase) whose body changes with the phase. The live portal (src/portal) adds Notices and Corrections tabs.\n\nMain findings:\n1. **Duplicates.** My requests (SupplierHome) and Tasks (SupplierTasks) list the same work twice, and the Tasks \"With Beiersdorf\" and \"Done\" tabs repeat what the request page's \"Questions for you\" card and the home groups already show. Merge Tasks into My requests. Keep the SupplierTasks component, because the live portal's own nav still uses it.\n2. **Stale content:**\n   - the AS-06 \"to be confirmed\" text (ConfigQuestions.tsx:42);\n   - the disabled \"Download PDF\" with \"PDF generation not simulated\" (PhaseViews.tsx:232-235), which AS-12/R-2 make stale;\n   - the Help FAQ pointing to a Corrections tab the prototype doesn't have (SupplierHelp.tsx:83);\n   - the video-guide DemoNote (SupplierHelp.tsx:186-206);\n   - \"In this prototype every invited contact may confirm\" (Completeness.tsx:183);\n   - document \"version\" wording and chips (FieldRenderer.tsx:91,137; AnswerDrawer.tsx:144,167), which BRM v2 REQ-PROC-016/-029 contradict (no versioning: documents are added with an upload date, no delete).\n3. **Edge-case gaps that must be fixed:**\n   - The final release isn't blocked while a question is open or in progress, or while required items are missing (FinalReleaseView, PhaseViews.tsx:156; app-plan-v4 D27). A completed reviewer can raise a question in final-release without the case going back to review (actions.ts:407).\n   - Edits during final-release have no consequence (actions.ts:238-247), against AS-03 (\"a completed review is reopened on change\").\n   - Closed requests lose the question history (SupplierCase.tsx:108-119 does not render QuestionsForYou), and nothing records the supplier's own confirmations.\n   - Withdrawn questions disappear silently (PhaseViews.tsx:83). AS-08 question edits and closes by the raiser have no supplier view.\n   - The supplier scope is per company, not per case contact (lib.ts:17-23, selectors.ts:214).\n   - The supplier personas are hard-wired to two contacts (catalog.ts:431-456), so suppliers added in the demo can't be shown.\n4. **Missing entirely:** the per-person simulated e-mail inbox (R-1, AS-08: mails on raise, return, edit and close, plus the invitation, the single release request, cancellation and reactivation), and a post-release \"Report a change\" path.\n5. **Empty start:** with no cases, the supplier lands on three zero count tiles above a \"No requests yet\" card, and is greeted \"Welcome back\". Show only the empty state.\n6. **Live portal (liveScope unset) must keep working:**\n   - keep MetadataStep, ScopeCheckView, the old STEPS and the SupplierTasks component;\n   - keep the AnswerDrawer \"Upload a document\" mode;\n   - keep the harness strings (\"Confirm completeness\", \"Confirm and submit\", \"Completeness confirmed\", \"Answer\", \"Upload a document\", \"Send to Beiersdorf\", \"How it works\", \"Your Beiersdorf contacts\", no \"Video guide\");\n   - gate every new behaviour with isLiveScope(c) where the live data differs.",
+ "items": [
+  {
+   "id": "SUP-01",
+   "kind": "tab",
+   "title": "Supplier nav: My requests + Help only (drop Tasks tab)",
+   "current": "catalog.ts:431-456 (supplier and supplier2 nav: /portal, /portal/tasks, /portal/help); Shells.tsx:178-198 renders it, task badge on /portal/tasks at Shells.tsx:190-194; routes App.tsx:84-87",
+   "decision": "change",
+   "details": "Final supplier nav = 'My requests' (/portal, landing, with the open-task count badge moved onto it) and 'Help' (/portal/help). Remove the 'Tasks' tab. In App.tsx make /portal/tasks redirect to /portal. Keep the SupplierTasks export, because src/portal/supplier/supplierRoutes.tsx:13 and PortalSupplierShell.tsx:19 (live portal) still use it; don't touch src/portal. The simulated inbox (SUP-27) is a top-bar button, not a tab.",
+   "priority": "must"
+  },
+  {
+   "id": "SUP-02",
+   "kind": "duplicate",
+   "title": "Merge Tasks into My requests: one work list",
+   "current": "SupplierHome.tsx:18-71 groups cards Needs your action / With Beiersdorf / Closed; SupplierTasks.tsx:15-135 lists the same work as To do / With Beiersdorf / Done; Done repeats confirmations and closed questions that the request page also shows (PhaseViews.tsx:80-95)",
+   "decision": "merge",
+   "details": "My requests becomes the single list: one card per request, ordered: action first (by earliest due), then with Beiersdorf, then closed. An active card lists its open tasks as rows inside it (REQ-PROC-030: one row per task):\n- 'Fill in the CIQ and confirm completeness' with % done;\n- each open question, with kind, ref.label, 'Asked by <name>, Beiersdorf', due date (DueText) and an 'Answer' button that opens the AnswerDrawer in place;\n- 'Give the final release'.\nThe 'With Beiersdorf' and 'Done' tab content is not repeated here: answered or closed questions and the confirmations live on the request page (SUP-09, SUP-23). Remove the three CountTiles (SupplierHome.tsx:36-40), or keep one compact line ('2 requests in progress · 1 overdue') only when there are cases.",
+   "priority": "must"
+  },
+  {
+   "id": "SUP-03",
+   "kind": "edge-case",
+   "title": "Empty state for a contact with no request (demo start)",
+   "current": "SupplierHome.tsx:27 'Welcome back, <first>'; tiles with 0/0/0 above the EmptyState (36-48); SupplierHelp.tsx:154-155 'No open requests'; SupplierTasks.tsx:47-49",
+   "decision": "change",
+   "details": "With zero cases, show only the header and one EmptyState: 'No requests yet. When Beiersdorf sends you a CIQ request, you get an e-mail and it appears here.' No count tiles. Title: 'Welcome, <first>' when the contact has no cases, 'Welcome back' otherwise. Help contacts card: 'Your Beiersdorf contact appears here once a request is open.' Inbox empty state: 'No e-mails yet.' The same applies to a supplier added through the supplier-master UI and to a contact who isn't on any case.",
+   "priority": "must"
+  },
+  {
+   "id": "SUP-04",
+   "kind": "screen",
+   "title": "Request page (SupplierCase): header, stepper, phase body",
+   "current": "SupplierCase.tsx:16-125: header with materialName, INCI, CaseRef, StatusPill, DueText; Stepper with 3 steps for live-scope cases (lib.ts:210-217); phase switch at 86-119; not-available state at 21-36",
+   "decision": "keep",
+   "details": "Keep as the only per-request screen. Add one line in the header: 'Your Beiersdorf contact: <RMM owner name> · <email>' (E-P-13; today only on the Help page, SupplierHelp.tsx:158-180). Keep the 'This request is not available' state for foreign or unknown ids, deep links from mails included. Keep the old-flow branches (metadata 86, scope-check 88) for the live portal; the prototype store never produces them (types.ts:171-177).",
+   "priority": "should"
+  },
+  {
+   "id": "SUP-05",
+   "kind": "screen",
+   "title": "Phase supplier-input: questionnaire with completeness gate",
+   "current": "SupplierCase.tsx:89; Questionnaire.tsx:17-133 (navigator General/Chapters/Annexes, mobile select, New badges 139-159); CompletenessHeader Completeness.tsx:14-61; MetadataQuestions.tsx:16-132 at ?s=SF; SectionDeltaNote parts.tsx:106-144; UndefinedOriginNote parts.tsx:147-154",
+   "decision": "keep",
+   "details": "Final behaviour:\n- Sections open and close live with the metadata answers (D-1); answers in a closed section are kept.\n- 'Check completeness' lists blockers with jump links; 'Confirm completeness' opens the declaration modal, disabled until no blockers and the box is ticked.\n- No Beiersdorf questions in this phase: D-1, nothing goes to Beiersdorf before completeness.\n- Origins without rules show the neutral note (ScopePreview.tsx:20).\nEdge cases to keep working:\n- all metadata unanswered: the start CTA is 'Start the questionnaire' (lib.ts:286);\n- the K5.1 waiver at SF-12 = No (SectionPanel.tsx:88-92);\n- a section that closes while it is selected falls back to the first open entry (Questionnaire.tsx:25-27).",
+   "priority": "must"
+  },
+  {
+   "id": "SUP-06",
+   "kind": "copy",
+   "title": "Stale AS-06 text in target markets row",
+   "current": "ConfigQuestions.tsx:42 '… Our assumption AS-06, to be confirmed.'",
+   "decision": "change",
+   "details": "AS-06 was confirmed on 12 Oct. Text becomes: 'Beiersdorf decides where the raw material will be used. Some markets add chapters (for example UK REACH).' Keep the lock icon and the read-only badges.",
+   "priority": "must"
+  },
+  {
+   "id": "SUP-07",
+   "kind": "screen",
+   "title": "Phase review: banner + questions + editable questionnaire",
+   "current": "SupplierCase.tsx:91-97; ReviewBanner PhaseViews.tsx:124-132; QuestionsForYou PhaseViews.tsx:80-95; Questionnaire locked=false confirmable=false",
+   "decision": "keep",
+   "details": "Keep. ReviewBanner copy: 'Beiersdorf is reviewing. You get a task and an e-mail if Beiersdorf has a question. You can still correct data and add documents until the final release. A changed metadata answer can now only add sections.' A section added after completeness keeps its 'Added after your completeness confirmation' badge (SectionPanel.tsx:52) and arrives as an 'Additional section to complete' question (actions.ts:196-211). Show the 'Requested by Beiersdorf' field badge while unlocked too: SectionPanel.tsx:98 passes requested only when locked, so fields with an open question aren't marked during review.",
+   "priority": "should"
+  },
+  {
+   "id": "SUP-08",
+   "kind": "action",
+   "title": "Final release: block while questions are open or required items are missing",
+   "current": "FinalReleaseView PhaseViews.tsx:134-220: the button is enabled whenever caps.canAct (156-162); supplierStatus already words 'Final release needed · n questions for you' (lib.ts:297-298); domain finalRelease only checks the phase (actions.ts:565-575); raiseOpenPoint by a completed track keeps it completed (actions.ts:407), so a question can be open in final-release",
+   "decision": "change",
+   "details": "'Give final release' is disabled while any open point of the case is 'open' or 'in-progress', or while supplierBlockers(c) is not empty: an added section with gaps, or a required field cleared during final-release. Show the reasons as a list with jump links (questions open the AnswerDrawer, blockers jump to section/field). Enforce the same guard in the domain finalRelease (toast + no state change), per app-plan-v4 L275 D27 and PARITY.md:82. In the KeyValue, 'Questions answered' (PhaseViews.tsx:171) becomes 'Questions closed'. Keep the declaration modal: statement, name, title as role, e-mail, company, time, checkbox (REQ-PROC-042). Gate the new disable for the live portal too: it has the same rule, D27.",
+   "priority": "must"
+  },
+  {
+   "id": "SUP-09",
+   "kind": "edge-case",
+   "title": "Supplier edits data after all reviews completed (final-release phase)",
+   "current": "SupplierCase.tsx:99-106 shows the questionnaire editable ('You can still correct data… until you give the final release', SupplierCase.tsx:133); setAnswer and uploadDocument only write an audit row (actions.ts:238-247, 263-280); nothing tells or reopens reviewers",
+   "decision": "change",
+   "details": "In final-release, show above the questionnaire: 'Beiersdorf has completed its review. If you change an answer or add a document now, Beiersdorf is told, and a reviewer may reopen its review; the final release is then requested again.' Domain (shared with the review area): a change in review or final-release mails the reviewers whose sections are affected (R-1 generic mail, internal inbox). If a reviewer reopens (reopenReview actions.ts:550-555), the case goes back to review, the supplier's release task disappears, and the supplier gets the mail 'The final release request was withdrawn: Beiersdorf is checking a change' (no internal reason). AS-03: the reviewer 'can reopen'; Thomas's note says it is reopened on change.",
+   "priority": "must"
+  },
+  {
+   "id": "SUP-10",
+   "kind": "screen",
+   "title": "Phase completed: frozen view, release record, Q&A history",
+   "current": "ClosedBanner PhaseViews.tsx:222-242 (disabled 'Download PDF' with DemoNote 'PDF generation not simulated'); SupplierCase.tsx:108-119 renders only the banner and a locked Questionnaire; QuestionsForYou isn't rendered for closed cases",
+   "decision": "change",
+   "details": "Completed request shows:\n1. Banner: 'Released on <date> by <name>. The questionnaire is frozen. Beiersdorf has filed the final document.' No PDF button, no DemoNote.\n2. A 'Release record' card with the supplier's own confirmations (REQ-PROC-015): Completeness confirmed and Final release, each with name, role, e-mail and time (from c.confirmations type completeness and final-release). No department completions.\n3. A read-only 'Questions and answers' card listing every non-internal thread (QuestionsForYou with only View buttons).\n4. The read-only questionnaire ('Frozen with your final release').\nThe freeze stays enforced (setAnswer is a no-op on closed cases, actions.ts:240), with every input locked (Questionnaire locked).",
+   "priority": "must"
+  },
+  {
+   "id": "SUP-11",
+   "kind": "requirement",
+   "title": "What the supplier sees of the final document",
+   "current": "Not defined: the ClosedBanner hints at a 'Download PDF' (PhaseViews.tsx:232); AS-12 (catalog.ts:502) says the PDF goes to RMM",
+   "decision": "add",
+   "details": "Rule: the auto-generated final document (AS-12, R-2) is internal. It goes to RMM and is filed on the case. The supplier sees neither it nor a link to it, because it carries the PS-10 department completions, which supplier screens never show (lib.ts:1-2, REQ-PROC-040). The supplier gets the SUP-10 release record, the frozen questionnaire and the Q&A history instead. Flag for Beiersdorf as an open question (E-P-71): 'May the supplier get a supplier-safe copy?' If yes later, add a 'View released CIQ' with the questionnaire plus its own two confirmations only.",
+   "priority": "should"
+  },
+  {
+   "id": "SUP-12",
+   "kind": "screen",
+   "title": "Phase cancelled (withdrawn) and reactivation",
+   "current": "ClosedBanner cancelled branch PhaseViews.tsx:243-247; stepKey keeps the last step (lib.ts:230-238); cancelCase withdraws open points (actions.ts:577-586); reactivateCase returns to the earlier phase (actions.ts:588-596)",
+   "decision": "keep",
+   "details": "Keep the neutral banner 'Beiersdorf has withdrawn this request' with the date, no reason (E-D-71), and the read-only questionnaire. The card goes to the 'Closed' part of My requests and no task is left (REQ-PROC-049). Add mails: cancellation 'Beiersdorf has withdrawn the request for <material>. No further action is needed.' and reactivation 'Beiersdorf has reopened the request for <material>'. On reactivation the card returns to the active list with its tasks. Heading choice stays as in SupplierCase.tsx:115.",
+   "priority": "should"
+  },
+  {
+   "id": "SUP-13",
+   "kind": "screen",
+   "title": "Live-portal-only screens: MetadataStep and ScopeCheckView",
+   "current": "MetadataStep.tsx:15-73 (phase metadata), ScopeCheckView PhaseViews.tsx:17-77 (phase scope-check), SupplierHelp STEPS (19-36), supplierSteps 4-step variant (lib.ts:216)",
+   "decision": "keep",
+   "details": "Not reachable in the prototype: the store never sets metadata or scope-check (types.ts:171-177). Keep them unchanged for the live portal (old flow, c.liveScope unset) until the portal backend is reworked. Don't delete; don't show them in the prototype demo.",
+   "priority": "must"
+  },
+  {
+   "id": "SUP-14",
+   "kind": "screen",
+   "title": "ScopePreview inside the metadata entry",
+   "current": "ScopePreview.tsx:22-90, embedded at MetadataQuestions.tsx:129; old-flow warning at 80-85",
+   "decision": "keep",
+   "details": "Keep 'What your answers switch on': mandatory/optional counts, annexes added with the reason, the K5.1 waiver note, and the evidence list. It is hidden when locked. The old-flow manual-scope-check warning stays gated on !isLiveScope.",
+   "priority": "nice"
+  },
+  {
+   "id": "SUP-15",
+   "kind": "copy",
+   "title": "Template chapters: production wording, no DemoNote",
+   "current": "SectionPanel.tsx:136-184: prototype text at 144-145 and DemoNote 'questions of this chapter are not modelled yet (field matrix v0.6 scope)' at 147",
+   "decision": "change",
+   "details": "Use the production wording in the prototype too: 'The questions of this chapter will follow here. It does not block your completeness confirmation.' Keep the optional supporting-document upload with the upload date and uploader. Drop the DemoNote: the final MVP app has the same FLM v0.6 field scope.",
+   "priority": "should"
+  },
+  {
+   "id": "SUP-16",
+   "kind": "requirement",
+   "title": "Documents are additive with an upload date, never versioned or deleted (BRM v2)",
+   "current": "FieldRenderer.tsx:86-92 shows only the latest doc with a 'v<n>' chip; FileDrop 'current' replaces the shown doc (132-139); toast 'uploaded as version N' (137); AnswerDrawer thread chip 'v<n>' (AnswerDrawer.tsx:144) and hint '…as a new version' (167); uploadDocument keeps all docs (actions.ts:263-280)",
+   "decision": "change",
+   "details": "A file field lists every document uploaded at that field (c.documents with that fieldId), each with file name, uploader, upload date and size, newest first. The drop zone reads 'Add a document'. No delete control (REQ-PROC-029 v2: suppliers cannot delete). Toast: '<name> added.' Drawer chip: '<name> · uploaded <date>'. Drawer hint: 'The file is added to the questionnaire at the item this question refers to, next to the earlier documents, with today's date.' Read-only view: the same list. Keep answers[fieldId] = latest doc id, which the completeness check uses.",
+   "priority": "must"
+  },
+  {
+   "id": "SUP-17",
+   "kind": "screen",
+   "title": "FieldRenderer and ComponentTable (field-level input)",
+   "current": "FieldRenderer.tsx:38-228 (types, validation, K2.2 limit note 199-206, attribution 208, justification 209-225); ComponentTable.tsx:34-189 (CAS/EC check digits cas.ts, conc ranges, sum hint, restrictTo)",
+   "decision": "keep",
+   "details": "Keep as is, apart from SUP-16. Edge cases to keep:\n- a CAS/EC check digit is wrong;\n- min is greater than max;\n- the concentration sum is below 100 or above 100 (hint only, never blocking);\n- a value above the BDF limit asks for a justification;\n- 'Cannot provide? Add a justification' counts as answered;\n- GEN shows 'Pre-filled by Beiersdorf';\n- an origin select limited to the SF-01 answers.\nTwo contacts editing the same K2.1 table: last write wins (E-D-97). This can't be shown in one browser; note it in the demo guide.",
+   "priority": "nice"
+  },
+  {
+   "id": "SUP-18",
+   "kind": "copy",
+   "title": "Completeness modal: remove prototype sentence; who may confirm",
+   "current": "Completeness.tsx:183 'In this prototype every invited contact may confirm (to be confirmed by Beiersdorf).'; caps default canAct=true (portalCaps.tsx:17)",
+   "decision": "change",
+   "details": "Final rule: every named contact on the case may confirm completeness and give the final release (REQ-CTL-001: routing is the supplier's). Remove the sentence. Keep the statement 'not a Beiersdorf approval', name, e-mail, company and time, plus 'you can still correct data until the final release; a changed metadata answer then only adds sections'. The live portal keeps OnlyOthers through its caps.",
+   "priority": "should"
+  },
+  {
+   "id": "SUP-19",
+   "kind": "edge-case",
+   "title": "Two contacts working in parallel",
+   "current": "Personas supplier/supplier2 = u-sup-1/u-sup-2 of s1 (catalog.ts:431-456); Attribution parts.tsx:77-87; colleague note Completeness.tsx:36-41; useDraft follows a colleague's edit (FieldRenderer.tsx:15-23)",
+   "decision": "keep",
+   "details": "Must show:\n- each answer, upload and justification with 'Answered by <name> (you)' and the time;\n- the colleague hint on the completeness card;\n- either contact can confirm or release, and the other then sees the new phase, with the release record naming who did it;\n- both receive every supplier mail (SUP-27);\n- a question answered by A shows 'With Beiersdorf' for B, with A's answer in the thread;\n- a draft open in B's drawer when A already answered: B sees the 'With Beiersdorf' state (op.status in-progress) and no composer.",
+   "priority": "must"
+  },
+  {
+   "id": "SUP-20",
+   "kind": "requirement",
+   "title": "Per-contact visibility, not per-company",
+   "current": "useSupplierScope filters by supplierId only (lib.ts:17-23); supplierTasks by supplierId (selectors.ts:214-227); shell badge Shells.tsx:158-159",
+   "decision": "change",
+   "details": "A supplier contact sees only the requests where c.supplierContactIds includes me.id (REQ-PROC-004 'named supplier contact'; plan v3 Assigned_Contacts). The task count and the Help contacts follow the same filter. Apply it to live-scope cases only, or to the prototype store only. The live portal already lists only the items assigned to the user, and its mapped supplierContactIds come from those assignments (map.ts:351-361), so the harness 'supplier2' scenario (harness-portal.mjs:395-398) keeps passing. A contact of another supplier opening a URL gets 'This request is not available' (SupplierCase.tsx:21-36).",
+   "priority": "must"
+  },
+  {
+   "id": "SUP-21",
+   "kind": "requirement",
+   "title": "Supplier personas from the supplier master (dynamic contacts)",
+   "current": "PERSONAS fixed: supplier→u-sup-1 and supplier2→u-sup-2 (catalog.ts:431-456); RoleSwitcher groups the static PERSONAS (RoleSwitcher.tsx:26-29); DemoSupplierStore pins persona 'supplier' (DemoSupplierStore.tsx:10)",
+   "decision": "change",
+   "details": "The role switcher's 'Supplier portal (external)' group lists every contact of every supplier in state.suppliers, grouped by supplier name, so a supplier or contact added through the app's supplier master can be demoed. One supplier-side persona works for any supplier user: landing /portal, nav My requests + Help, me = that contact. Keep the persona ids 'supplier' and 'supplier2' (the first two contacts of the seeded supplier) for DemoSupplierStore and any tests.",
+   "priority": "must"
+  },
+  {
+   "id": "SUP-22",
+   "kind": "screen",
+   "title": "AnswerDrawer: answer, upload, cannot provide",
+   "current": "AnswerDrawer.tsx:26-211: modes answer/upload/cannot (58, 213-217), returned state (49-50, 85-86), with-Beiersdorf (192-203), closed (204-208); finding justification hidden (lib.ts:182)",
+   "decision": "keep",
+   "details": "Keep the three modes. Upload stores the file at the referenced section or field and the message references it (actions.ts:419-424). That meets v2 REQ-PROC-033 ('uploaded in the CIQ section, referenced from the conversation'), and the live harness 'answer-upload' needs it (harness-portal.mjs:532-541). Keep 'More information needed' on a returned point with the original question below, and the 'Go to <ref>' jump.",
+   "priority": "must"
+  },
+  {
+   "id": "SUP-23",
+   "kind": "edge-case",
+   "title": "AS-08: the raiser edits or closes a question; the supplier sees it",
+   "current": "Message actions have no 'edited' or 'closed' (types.ts:222); QuestionsForYou hides outcome 'withdrawn' (PhaseViews.tsx:83); SupplierTasks Done also hides it (SupplierTasks.tsx:27); the drawer for a closed point says only 'This item is closed' (AnswerDrawer.tsx:204-208)",
+   "decision": "change",
+   "details": "Domain (with the review area): add message actions 'edited' (stores the old and new text) and 'withdrawn'/'closed by Beiersdorf'. Supplier view:\n- An edited question shows the new text with the badge 'Changed by Beiersdorf on <date>'; the thread shows 'Beiersdorf changed the question' and the earlier wording.\n- A question the raiser closes without an answer stays visible in 'Questions for you' as 'Closed by Beiersdorf · no answer needed'.\n- An accepted one shows 'Closed'; a not-accepted one shows 'Closed' too, without the internal note (visibleThread lib.ts:168).\n- Each change sends a mail (SUP-27).\n- A drawer open on a point that changes re-renders with the new state; the store update re-keys it (AnswerDrawer.tsx:32).",
+   "priority": "must"
+  },
+  {
+   "id": "SUP-24",
+   "kind": "action",
+   "title": "Additional section question: finish the section, then send",
+   "current": "An additional-part open point is raised by saveConfig in Part 2 (actions.ts:196-211) or by extendScope (215-236); the drawer defaults to the free-text 'Write an answer' (AnswerDrawer.tsx:40)",
+   "decision": "change",
+   "details": "For kind 'additional-part', show the added section's progress ('4 of 6 answered') and 'Go to <section>'. The default response reads 'Section completed'. 'Send to Beiersdorf' is enabled once the section has no blockers, or in 'We cannot provide this' mode with a justification. REQ-ADR-002: the section blocks the requesting review until it is dealt with.",
+   "priority": "should"
+  },
+  {
+   "id": "SUP-25",
+   "kind": "screen",
+   "title": "Supplier Help page",
+   "current": "SupplierHelp.tsx:89-211: STEPS_LIVE 3 steps (39-52), FAQs (64-86), Beiersdorf contacts (149-184), video guide card with DemoNote (186-206); live variant HelpLive.tsx passes the articles",
+   "decision": "keep",
+   "details": "Keep 'How it works' (3 steps), the FAQs and 'Your Beiersdorf contacts'. Changes:\n- FAQ 'Can I change an answer after submission?' (83): '…until you give the final release. After the release the questionnaire is frozen; to report a change, use \"Report a change\" on the released request.' It now names the SUP-26 path, not a Corrections tab.\n- New FAQ 'Which e-mails will I get?' with the SUP-27 list.\n- Remove the video guide card: the live portal shows none, and the harness asserts notSee 'Video guide' (harness-portal.mjs:561).\nKeep the strings 'How it works' and 'Your Beiersdorf contacts' for the harness.",
+   "priority": "should"
+  },
+  {
+   "id": "SUP-26",
+   "kind": "action",
+   "title": "Post-release change: 'Report a change' on a completed request (no Corrections tab)",
+   "current": "Prototype: nothing; ClosedBanner says 'Beiersdorf will start a new request' (PhaseViews.tsx:240). Live portal: Corrections tab CorrectionRequest.tsx:15-140 (CIQP Change Request, kinds Metadata correction / Configuration answer change / Other)",
+   "decision": "add",
+   "details": "On a completed request only, a secondary action 'Report a change' opens a small modal with what changed (text, required), why (text, required) and an optional section. It records a change report on the case, mails the RMM owner and gives the supplier a toast. RMM decides whether to start a new request, and the supplier then gets the normal invitation mail (E-P-78, E-D-70). The frozen data never changes. No separate Corrections or Notices tab in the final app: before release the supplier edits directly (REQ-PROC-016), so the 'Metadata correction' and 'Configuration answer change' kinds are obsolete under D-1. The live portal keeps its Corrections and Notices tabs until its rework.",
+   "priority": "should"
+  },
+  {
+   "id": "SUP-27",
+   "kind": "data",
+   "title": "Simulated e-mail inbox per person: supplier mails (R-1, AS-08)",
+   "current": "Missing. Events only write audit rows: createCase 'Notified supplier' (actions.ts:122, first contact only), raiseOpenPoint (actions.ts:410), the single release request (actions.ts:525-545)",
+   "decision": "add",
+   "details": "Domain: AppState.mails: {id, at, toUserId, caseId, opId?, event, subject, body, link, read}. A mail goes to every case contact (c.supplierContactIds), because FLD-GEN-009 is an extra recipient. Supplier events:\n1. Invitation on createCase: 'Beiersdorf asks you for a CIQ: <material>', link /portal/case/:id.\n2. Question raised, also system 'additional section' and department extension: 'New question from Beiersdorf on <material>: <ref.label>', the question text, link caseLink(q=opId).\n3. Answer returned: 'Beiersdorf needs more information'.\n4. Question edited by the raiser: 'Beiersdorf changed a question'.\n5. Question closed (accepted / closed by Beiersdorf): 'Question closed'.\n6. Exactly one 'Please give the final release' when the last review completes; again only after a withdrawal.\n7. 'Final release request withdrawn' when a review is reopened from final-release.\n8. Cancellation (no reason) and reactivation.\n9. Nice: to the other contact, '<name> gave the final release'.\nNever: mails per department completion (REQ-PROC-040), internal notes, RMES, findings, finding-based justification (lib.ts:182), cancellation reason, department names. The supplier's own answer mails the raiser (internal inbox), never the supplier.",
+   "priority": "must"
+  },
+  {
+   "id": "SUP-28",
+   "kind": "screen",
+   "title": "Inbox UI in the supplier shell",
+   "current": "Missing; SupplierShell top bar has theme toggle + RoleSwitcher (Shells.tsx:174-176, TopActions 50-65)",
+   "decision": "add",
+   "details": "Top-bar button 'E-mail' with an unread count opens a right-hand drawer listing me's mails, newest first: subject, 'Beiersdorf CIQ <no-reply>', time, case ref. A row opens the body and an 'Open in the portal' button that navigates to the link and marks the mail read. Header note: 'Simulated inbox: in the product these arrive as real e-mails.' Empty state: 'No e-mails yet.' The same component serves the internal personas. It is never shown in the live portal (production context) and has no tab.",
+   "priority": "must"
+  },
+  {
+   "id": "SUP-29",
+   "kind": "data",
+   "title": "Empty start: one supplier, its contacts, no cases",
+   "current": "buildSeed plays all SPECS (seed.ts:385-423); SCHEMA=6 (seed.ts:28) guards localStorage (store.tsx:33); the portal DemoSupplierStore uses the same StoreProvider/buildSeed (DemoSupplierStore.tsx:21-26)",
+   "decision": "change",
+   "details": "The prototype starts with all internal users, one fictional supplier (keep s1 Solvaro Oleochemicals S.A. with Elena Márquez and Ravi Menon) and no cases. Bump SCHEMA so a seeded localStorage from an earlier run is discarded. The supplier persona then lands on the SUP-03 empty state. Decide for the portal's 'Preview supplier view': keep a demo seed there (separate builder), or accept it empty. The harness only checks the preview banner (harness-portal.mjs:276, 387), so either passes.",
+   "priority": "must"
+  },
+  {
+   "id": "SUP-30",
+   "kind": "copy",
+   "title": "supplierStatus progress value inconsistent in review",
+   "current": "lib.ts:295 progress 100 when questions are open vs lib.ts:296 progress 75 without",
+   "decision": "change",
+   "details": "Use one value per step (review = 75, final-release = 90, completed = 100) whatever the question count, so the bar doesn't jump when a question arrives.",
+   "priority": "nice"
+  },
+  {
+   "id": "SUP-31",
+   "kind": "edge-case",
+   "title": "Deep link to a section that closed or no longer applies",
+   "current": "Questionnaire.tsx:25-27 falls back silently to the first open entry when ?s= is not in the entries",
+   "decision": "change",
+   "details": "When ?s= names a section that isn't in navEntries, show an inline note above the panel: '<code> <title> no longer applies to your answers. Your entries there are kept and come back if it reopens.' This happens with mail or task links from before a Part 1 metadata change.",
+   "priority": "nice"
+  },
+  {
+   "id": "SUP-32",
+   "kind": "copy",
+   "title": "Supplier shell prototype markers",
+   "current": "Shells.tsx:203 footer 'Beiersdorf Supplier Portal · Prototype by Kissflow · synthetic data, nothing is sent anywhere'; badge 'External access' 171-173",
+   "decision": "keep",
+   "details": "Keep both: the demo is honest about being a prototype, and the inbox note covers the e-mails. No 'Our understanding' entry on the supplier side; TopActions there has no onUnderstanding. Nothing to remove.",
+   "priority": "nice"
+  },
+  {
+   "id": "SUP-33",
+   "kind": "test",
+   "title": "Domain and unit tests for the supplier side",
+   "current": "lib.test.ts (D-1 navigator, status/stepper, sectionDelta); seed.test.ts expects seeded cases (seed.test.ts:41,119)",
+   "decision": "add",
+   "details": "Add:\n- finalRelease refused with an open or in-progress question and with blockers;\n- a supplier change in final-release mails the affected reviewers, and reopening returns the case to review with a withdrawal mail;\n- mails per event go to both contacts and never include a department completion, internal note, finding id or cancellation reason;\n- an AS-08 edit and close produce supplier-visible messages; a withdrawn point stays listed;\n- per-contact scope hides cases where the contact is not on supplierContactIds;\n- the empty seed has 1 supplier, its contacts and 0 cases (update seed.test.ts expectations; seeded-case tests move to a fixture builder);\n- release record content.\nKeep the old-flow assertions (lib.test.ts:10-11 'portal' variant).",
+   "priority": "must"
+  },
+  {
+   "id": "SUP-34",
+   "kind": "test",
+   "title": "End-to-end supplier journey from the empty start",
+   "current": "No prototype e2e harness (scripts/ has harness-portal.mjs and the workbench harnesses only)",
+   "decision": "add",
+   "details": "Playwright on :5310:\n1. Empty start: the supplier sees the empty state and an empty inbox.\n2. RMM creates a case: both contacts get the invitation mail; the link opens the request.\n3. Contact 1 answers the metadata: sections open and close, 'New' badges appear.\n4. Contact 2 fills K2.1 and a file field: attribution shows 'Ravi Menon'.\n5. Completeness is refused with blockers, then confirmed.\n6. A reviewer raises a question: mail plus a task row on My requests; answer via the drawer.\n7. The question is returned: 'More information needed', with a mail.\n8. The question is edited and then closed: badges and mails.\n9. All reviews complete: exactly one release mail; release disabled while a newly raised question is open; answered and closed; release enabled.\n10. An edit in final-release shows the warning.\n11. Release: frozen inputs, release record, Q&A history, no PDF button.\n12. 'Report a change' mails RMM.\n13. A second case is cancelled: neutral banner, mail, no tasks.\n14. Isolation: a contact of a supplier added through the master, or a contact not on the case, sees nothing; a URL guess gives 'not available'.\n15. Phone width 390 px: nav and drawer fit.\nGate: npm run typecheck && npm test && npm run build && npm run build:portal && node scripts/harness-portal.mjs, plus the new e2e.",
+   "priority": "must"
+  }
+ ],
+ "proposals": "## Supplier portal after the overnight build\n\n### Navigation\nThe supplier side keeps two tabs:\n- **My requests** (`/portal`, the landing page). Its badge counts open tasks.\n- **Help** (`/portal/help`).\n\nThe top bar adds an **E-mail** button, a simulated inbox with an unread count, next to the theme toggle and the role switcher.\n- `/portal/tasks` redirects to `/portal`.\n- Notices and Corrections are not tabs in the final app.\n- The live portal (`src/portal`) keeps its own five-tab navigation unchanged until the backend is reworked.\n\n### Screens\n\n**1. My requests**\n- One card per request, in this order: needs action, then with Beiersdorf, then closed.\n- Each active card lists its open tasks as rows:\n  - Fill in the CIQ, with the percentage done;\n  - each question, with its reference, who asked, the due date and an Answer button that opens the drawer;\n  - Give the final release.\n- With no requests, the page shows only the empty state.\n\n**2. Request page.** Header (material, INCI, Beiersdorf reference and material number, status pill, due date, Beiersdorf contact), the three-step stepper, then the body for the current phase:\n- **supplier-input:** completeness bar and modal, navigator with the metadata questions as entry SF, sections that open and close live.\n- **review:** review banner, Questions for you, editable questionnaire.\n- **final-release:**\n  - the release card, disabled with a list of reasons while questions are open or required items are missing;\n  - a warning that edits now go back to Beiersdorf;\n  - Questions for you;\n  - the editable questionnaire.\n- **completed:** release banner, release record (the supplier's own two confirmations), the question history read-only, the frozen questionnaire, and a Report a change action.\n- **cancelled:** neutral banner, read-only questionnaire.\n\n**3. Answer drawer** (opened from My requests, the request page or a mail link):\n- Three ways to respond: write an answer, upload a document, or we cannot provide this.\n- A question Beiersdorf changed shows a \"changed by Beiersdorf\" badge; one it closed shows \"closed, no answer needed\".\n- A request to complete an added section shows that section's progress.\n\n**4. Help:** how it works in three steps, the FAQs (including which e-mails you get) and your Beiersdorf contacts. No video.\n\n**5. Inbox drawer** (prototype only).\n\n### Data model sketch\n```\nMail { id, at, toUserId, caseId, opId?, event, subject, body, link, read }\nevent: invitation | op-raised | op-returned | op-edited | op-closed | release-requested | release-withdrawn | released-by-colleague | cancelled | reactivated | change-reported (to RMM) | supplier-answered (to the raiser) | data-changed (to reviewers)\n```\n- `Message.action` gains `edited` and `withdrawn`.\n- `CiqCase.changeReports[]` holds `{ id, at, by, text, reason, sectionId? }`.\n- One mail builder is fed by every action (R-1 generic). It strips internal content and addresses the supplier events to everyone in `c.supplierContactIds`.\n\n### Live-portal rules to respect\n- Keep these as they are:\n  - SupplierTasks;\n  - MetadataStep and ScopeCheckView;\n  - the four-step stepper and the old Help steps;\n  - the drawer's upload mode;\n  - the CorrectionRequest and Notices screens.\n- Keep the harness strings: \"Confirm completeness\", \"Confirm and submit\", \"Completeness confirmed\", \"Answer\", \"Upload a document\", \"Send to Beiersdorf\", \"How it works\", \"Your Beiersdorf contacts\", and no \"Video guide\".\n- Gate per-contact visibility and anything else that depends on prototype data behind `isLiveScope(c)` or the prototype store.\n\n### Defaults chosen while Thomas sleeps\nFlag these in the demo guide:\n- Every named contact may confirm and release (E-P-33).\n- A contact sees only the requests they are named on (E-P-10).\n- The supplier does not receive the internal final PDF (E-P-71).\n- Changes after the release go through Report a change, and RMM may start a new request (E-P-78, E-D-70).\n- A supplier edit after all reviews are done can reopen a review (AS-03).\n- The final release is refused while any question is open (app-plan-v4 D27).\n\n### Order of work\n1. Must: SUP-01, 02, 03, 08, 09, 10, 16, 19–23, 27–29, 33, 34.\n2. Should: SUP-04, 07, 11, 12, 15, 18, 24, 25, 26.\n3. Nice: SUP-14, 17, 30, 31, 32."
+}

@@ -1,0 +1,382 @@
+{
+ "type": "form",
+ "name": "CIQ Mail Outbox",
+ "status": "Live",
+ "list": {
+  "_id": "CIQ_Mail_Outbox_A00",
+  "_created_at": "2026-10-14T18:36:33Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-19T20:50:29Z",
+  "Name": "CIQ Mail Outbox",
+  "Description": "One row = one e-mail (R-1). Written only by the CIQ Sync Service; the integration 'CIQ Mail – send outbox mail' sends it and sets Sent_Status.",
+  "Type": "Form",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "LastPublishedAt": "2026-10-14T18:36:36Z"
+ },
+ "draftStatus": 200,
+ "draft": {
+  "CIQ_Mail_Outbox_A00": {
+   "Id": "CIQ_Mail_Outbox_A00",
+   "Name": "CIQ Mail Outbox",
+   "Kind": "Model",
+   "FlowType": "Form",
+   "Description": "One row = one e-mail (R-1). Written only by the CIQ Sync Service; the integration 'CIQ Mail – send outbox mail' sends it and sets Sent_Status.",
+   "_application_id": "CIQ_Digital_A00",
+   "Model::Row": [
+    "Row_zu9dwp"
+   ],
+   "Model::Field": [
+    "Mail_Key",
+    "Event_Code",
+    "Audience",
+    "To_Emails",
+    "Subject",
+    "Body_Text",
+    "Link_Url",
+    "Case_Code",
+    "Related_Key",
+    "Created_At",
+    "Sent_Status",
+    "Attempt_No"
+   ]
+  },
+  "Row_zu9dwp": {
+   "Id": "Row_zu9dwp",
+   "Kind": "Row",
+   "Model": "CIQ_Mail_Outbox_A00",
+   "Row::Column": [
+    "Column_zu9dwp"
+   ]
+  },
+  "Column_zu9dwp": {
+   "Id": "Column_zu9dwp",
+   "Kind": "Column",
+   "Type": "Section",
+   "Name": "Details",
+   "Start": 0,
+   "End": 6,
+   "Row": "Row_zu9dwp",
+   "Column::Row": [
+    "Row_zu85r7",
+    "Row_zu85r8",
+    "Row_zu85r9",
+    "Row_zu85ra",
+    "Row_zu85rb",
+    "Row_zu85rc",
+    "Row_zu85rd",
+    "Row_zu85re"
+   ]
+  },
+  "Row_zu85r7": {
+   "Id": "Row_zu85r7",
+   "Kind": "Row",
+   "Column": "Column_zu9dwp",
+   "Row::Column": [
+    "Column_z9q4p5",
+    "Column_jj9osa"
+   ]
+  },
+  "Column_z9q4p5": {
+   "Id": "Column_z9q4p5",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_zu85r7",
+   "Column::Field": [
+    "Mail_Key"
+   ]
+  },
+  "Column_jj9osa": {
+   "Id": "Column_jj9osa",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 3,
+   "End": 6,
+   "Row": "Row_zu85r7",
+   "Column::Field": [
+    "Event_Code"
+   ]
+  },
+  "Row_zu85r8": {
+   "Id": "Row_zu85r8",
+   "Kind": "Row",
+   "Column": "Column_zu9dwp",
+   "Row::Column": [
+    "Column_ro2lmk"
+   ]
+  },
+  "Column_ro2lmk": {
+   "Id": "Column_ro2lmk",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_zu85r8",
+   "Column::Field": [
+    "Audience"
+   ]
+  },
+  "Row_zu85r9": {
+   "Id": "Row_zu85r9",
+   "Kind": "Row",
+   "Column": "Column_zu9dwp",
+   "Row::Column": [
+    "Column_9gsnob"
+   ]
+  },
+  "Column_9gsnob": {
+   "Id": "Column_9gsnob",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 6,
+   "Row": "Row_zu85r9",
+   "Column::Field": [
+    "To_Emails"
+   ]
+  },
+  "Row_zu85ra": {
+   "Id": "Row_zu85ra",
+   "Kind": "Row",
+   "Column": "Column_zu9dwp",
+   "Row::Column": [
+    "Column_10k0jf2"
+   ]
+  },
+  "Column_10k0jf2": {
+   "Id": "Column_10k0jf2",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_zu85ra",
+   "Column::Field": [
+    "Subject"
+   ]
+  },
+  "Row_zu85rb": {
+   "Id": "Row_zu85rb",
+   "Kind": "Row",
+   "Column": "Column_zu9dwp",
+   "Row::Column": [
+    "Column_1t2pp74"
+   ]
+  },
+  "Column_1t2pp74": {
+   "Id": "Column_1t2pp74",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 6,
+   "Row": "Row_zu85rb",
+   "Column::Field": [
+    "Body_Text"
+   ]
+  },
+  "Row_zu85rc": {
+   "Id": "Row_zu85rc",
+   "Kind": "Row",
+   "Column": "Column_zu9dwp",
+   "Row::Column": [
+    "Column_1qncxq",
+    "Column_1jbpdbo"
+   ]
+  },
+  "Column_1qncxq": {
+   "Id": "Column_1qncxq",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_zu85rc",
+   "Column::Field": [
+    "Link_Url"
+   ]
+  },
+  "Column_1jbpdbo": {
+   "Id": "Column_1jbpdbo",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 3,
+   "End": 6,
+   "Row": "Row_zu85rc",
+   "Column::Field": [
+    "Case_Code"
+   ]
+  },
+  "Row_zu85rd": {
+   "Id": "Row_zu85rd",
+   "Kind": "Row",
+   "Column": "Column_zu9dwp",
+   "Row::Column": [
+    "Column_1n19rmv",
+    "Column_10o5zmy"
+   ]
+  },
+  "Column_1n19rmv": {
+   "Id": "Column_1n19rmv",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_zu85rd",
+   "Column::Field": [
+    "Related_Key"
+   ]
+  },
+  "Column_10o5zmy": {
+   "Id": "Column_10o5zmy",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 3,
+   "End": 6,
+   "Row": "Row_zu85rd",
+   "Column::Field": [
+    "Created_At"
+   ]
+  },
+  "Row_zu85re": {
+   "Id": "Row_zu85re",
+   "Kind": "Row",
+   "Column": "Column_zu9dwp",
+   "Row::Column": [
+    "Column_mx66gr",
+    "Column_qzymbd"
+   ]
+  },
+  "Column_mx66gr": {
+   "Id": "Column_mx66gr",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_zu85re",
+   "Column::Field": [
+    "Sent_Status"
+   ]
+  },
+  "Column_qzymbd": {
+   "Id": "Column_qzymbd",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 3,
+   "End": 6,
+   "Row": "Row_zu85re",
+   "Column::Field": [
+    "Attempt_No"
+   ]
+  },
+  "Mail_Key": {
+   "Id": "Mail_Key",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Mail Key",
+   "Model": "CIQ_Mail_Outbox_A00",
+   "Column": "Column_z9q4p5",
+   "Required": true
+  },
+  "Event_Code": {
+   "Id": "Event_Code",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Event Code",
+   "Model": "CIQ_Mail_Outbox_A00",
+   "Column": "Column_jj9osa"
+  },
+  "Audience": {
+   "Id": "Audience",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Audience",
+   "Model": "CIQ_Mail_Outbox_A00",
+   "Column": "Column_ro2lmk"
+  },
+  "To_Emails": {
+   "Id": "To_Emails",
+   "Kind": "Field",
+   "Type": "Textarea",
+   "Name": "To Emails",
+   "Model": "CIQ_Mail_Outbox_A00",
+   "Column": "Column_9gsnob"
+  },
+  "Subject": {
+   "Id": "Subject",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Subject",
+   "Model": "CIQ_Mail_Outbox_A00",
+   "Column": "Column_10k0jf2"
+  },
+  "Body_Text": {
+   "Id": "Body_Text",
+   "Kind": "Field",
+   "Type": "Textarea",
+   "Name": "Body Text",
+   "Model": "CIQ_Mail_Outbox_A00",
+   "Column": "Column_1t2pp74"
+  },
+  "Link_Url": {
+   "Id": "Link_Url",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Link Url",
+   "Model": "CIQ_Mail_Outbox_A00",
+   "Column": "Column_1qncxq"
+  },
+  "Case_Code": {
+   "Id": "Case_Code",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Case Code",
+   "Model": "CIQ_Mail_Outbox_A00",
+   "Column": "Column_1jbpdbo"
+  },
+  "Related_Key": {
+   "Id": "Related_Key",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Related Key",
+   "Model": "CIQ_Mail_Outbox_A00",
+   "Column": "Column_1n19rmv"
+  },
+  "Created_At": {
+   "Id": "Created_At",
+   "Kind": "Field",
+   "Type": "DateTime",
+   "Name": "Created At",
+   "Model": "CIQ_Mail_Outbox_A00",
+   "Column": "Column_10o5zmy"
+  },
+  "Sent_Status": {
+   "Id": "Sent_Status",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Sent Status",
+   "Model": "CIQ_Mail_Outbox_A00",
+   "Column": "Column_mx66gr"
+  },
+  "Attempt_No": {
+   "Id": "Attempt_No",
+   "Kind": "Field",
+   "Type": "Number",
+   "Name": "Attempt No",
+   "Model": "CIQ_Mail_Outbox_A00",
+   "Column": "Column_qzymbd"
+  },
+  "Root": "CIQ_Mail_Outbox_A00",
+  "PublishedAt": "2026-10-14T18:36:36Z",
+  "PublishedBy": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_meta_version": "1792002996694625"
+ }
+}

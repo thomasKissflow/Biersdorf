@@ -1,0 +1,102 @@
+{
+  "caseId": "PkEKO1pn5eI1",
+  "tests": [
+    {
+      "name": "admin PUT Lane_A_Note",
+      "status": 200,
+      "msg": null
+    },
+    {
+      "name": "submit A with fields in the submit body",
+      "status": 200,
+      "msg": null
+    },
+    {
+      "name": "concurrent submit B",
+      "status": 200,
+      "msg": null
+    },
+    {
+      "name": "concurrent submit C",
+      "status": 200,
+      "msg": null
+    }
+  ],
+  "openBranches": "ABC",
+  "afterAdminA": {
+    "confirm": null,
+    "note": "admin route A",
+    "by": null
+  },
+  "concurrentAdmin": [
+    {
+      "r": 1,
+      "b": 200,
+      "c": 200,
+      "B": "B round 1",
+      "C": "C round 1",
+      "bothKept": true
+    },
+    {
+      "r": 2,
+      "b": 200,
+      "c": 200,
+      "B": "B round 2",
+      "C": "C round 2",
+      "bothKept": true
+    },
+    {
+      "r": 3,
+      "b": 200,
+      "c": 200,
+      "B": "B round 2",
+      "C": "C round 3",
+      "bothKept": false
+    },
+    {
+      "r": 4,
+      "b": 200,
+      "c": 200,
+      "B": "B round 2",
+      "C": "C round 4",
+      "bothKept": false
+    },
+    {
+      "r": 5,
+      "b": 200,
+      "c": 200,
+      "B": "B round 2",
+      "C": "C round 5",
+      "bothKept": false
+    }
+  ],
+  "afterSubmitA": {
+    "confirm": null,
+    "note": "admin route A",
+    "by": null
+  },
+  "afterJoin": {
+    "step": "Spike hold check",
+    "ctx": [
+      {
+        "step": "Spike hold check",
+        "act": "PkEKO3BnfoX0"
+      }
+    ],
+    "A": {
+      "confirm": null,
+      "note": "admin route A",
+      "by": null
+    },
+    "B": {
+      "confirm": null,
+      "note": "B round 2",
+      "by": null
+    },
+    "C": {
+      "confirm": null,
+      "note": "C round 5",
+      "by": null
+    }
+  }
+}

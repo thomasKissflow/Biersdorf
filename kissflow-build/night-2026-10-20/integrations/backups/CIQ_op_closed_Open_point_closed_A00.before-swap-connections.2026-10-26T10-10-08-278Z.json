@@ -1,0 +1,656 @@
+{
+ "Root": "CIQ_op_closed_Open_point_closed_A00",
+ "CIQ_op_closed_Open_point_closed_A00": {
+  "Id": "CIQ_op_closed_Open_point_closed_A00",
+  "Description": "Plan v6 §4.1 op.closed: the app posts {opItemId}; only a point with an outcome ends its query (skip and complete).",
+  "Name": "CIQ op.closed Open point closed",
+  "Kind": "Integration",
+  "FlowType": "Integration",
+  "Integration::Trigger": [
+   "Trigger_opClosed_webhook"
+  ],
+  "Integration::Action": [
+   "Action_opClosed_read_app_item",
+   "Action_opClosed_read_target",
+   "Action_opClosed_pick",
+   "Action_OC_complete_query"
+  ],
+  "_application_id": "CIQ_Digital_A00"
+ },
+ "PublishedAt": "2026-10-21T18:39:16Z",
+ "PublishedBy": {
+  "_id": "UsEJUfjYLM8Y",
+  "Name": "Thomas",
+  "Kind": "User"
+ },
+ "_meta_version": "1792607956743048",
+ "Trigger_opClosed_webhook": {
+  "Id": "Trigger_opClosed_webhook",
+  "Kind": "Trigger",
+  "Type": "Create",
+  "Name": "Catch a webhook (POST)",
+  "IsInternalAuth": true,
+  "Connection": {},
+  "Integration": "CIQ_op_closed_Open_point_closed_A00",
+  "Connector": {
+   "_id": "Coowt2xE4WH9S",
+   "Name": "Webhooks by Kissflow",
+   "Version": "1.0.0",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/Coowt2xE4WH9S/1.0.0/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/Coowt2xE4WH9S/1.0.0/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/Coowt2xE4WH9S/1.0.0/Logo/Webhook.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "TriggerId": "WebhookTrigger",
+   "TriggerName": "Catch a webhook (POST)"
+  },
+  "Output": {
+   "opItemId": "PkEPVmf5pIKU",
+   "idempotencyKey": "ZZT-N21-A3-opClosed-capture-GBGJB"
+  },
+  "IsTested": true
+ },
+ "Action_opClosed_read_app_item": {
+  "Id": "Action_opClosed_read_app_item",
+  "Kind": "Action",
+  "Type": "Search",
+  "Name": "Search an item",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQ_op_closed_Open_point_closed_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "Action_Kh4Jb2AoG",
+   "ActionName": "Search an item "
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_jjcxy1",
+   "FieldMapping_jjcxz3"
+  ],
+  "Output": {
+   "_id": "CIQ_Open_Point_A00",
+   "Data": [
+    {
+     "_id": "PkEPVmf5pIKU",
+     "_activity_instance_id": [
+      "PkEPVmmFB2Pc"
+     ],
+     "_current_assigned_to": [
+      {
+       "_id": "UsEJUfjYLM8Y",
+       "Name": "Thomas",
+       "Kind": "User"
+      }
+     ],
+     "_status": "InProgress",
+     "Name": "CIQ Open Point from Thomas",
+     "_created_at": "2026-10-21T18:17:26Z",
+     "_created_by": {
+      "_id": "UsEJUfjYLM8Y",
+      "Name": "Thomas",
+      "Kind": "User"
+     },
+     "OP_Key": "ZZT-N21-A3-FO2DM-OP1",
+     "Round_No": 2,
+     "Query_Key": "ZZT-N21-A3-FO2DM-OP1-R2",
+     "Case_Code": "ZZT-N21-A3-FO2DM-C1",
+     "Cycle_No": 1,
+     "Supplier_Code": "ZZT-SUP-A3",
+     "Case_Item_Id": "PkEPVlrp7HwN",
+     "OP_Kind": "Query",
+     "OP_Dept": "QM",
+     "Raised_By_Dept": "QM",
+     "OP_To_Supplier": "Yes",
+     "Ref_Kind": "Section",
+     "Ref_Section_Key": "K4",
+     "Ref_Label": "K4 · ZZT test section",
+     "Kind_Label": "Question",
+     "Question_Text": "ZZT ZZT-N21-A3-FO2DM-OP1 question, EDITED again for the live op.edited (fictional).",
+     "Supplier_Justification": "ZZT test justification (fictional).",
+     "Responsible_User": {
+      "_id": "UsEJUfjYLM8Y",
+      "Name": "Thomas",
+      "Kind": "User"
+     },
+     "Responsible_Name": "ZZT Quentin Test (fictional)",
+     "Responsible_Dept_Label": "Quality Management",
+     "Supplier_Due_Date": "2026-11-04",
+     "Portal_Contact_Ids": "UsEJUfjYLM8Y",
+     "Portal_Query_Item_Id": "PkEPVrlbLg1o",
+     "OP_Progress": "Open",
+     "OP_Outcome": "Withdrawn",
+     "Outcome_Reason": "ZZT test close (fictional)",
+     "Open_Num": 0,
+     "Start_Gate": "",
+     "Raised_By_User": {
+      "_id": "UsEJUfjYLM8Y",
+      "Name": "Thomas",
+      "Kind": "User"
+     },
+     "Raised_By_Name": "ZZT Quentin Test (fictional)",
+     "Thread_JSON": "[]",
+     "Closed_At": "2026-10-21T18:35:15Z",
+     "Closed_By": {
+      "_id": "UsEJUfjYLM8Y",
+      "Name": "Thomas",
+      "Kind": "User"
+     },
+     "Raiser_Assignee": [
+      {
+       "_id": "UsEJUfjYLM8Y",
+       "Name": "Thomas",
+       "Kind": "User"
+      }
+     ]
+    }
+   ]
+  },
+  "IsTested": true
+ },
+ "Action_opClosed_pick": {
+  "Id": "Action_opClosed_pick",
+  "Kind": "Action",
+  "Type": "Create",
+  "Name": "Run JavaScript",
+  "IsInternalAuth": true,
+  "Connection": {},
+  "Integration": "CIQ_op_closed_Open_point_closed_A00",
+  "Connector": {
+   "_id": "Co4m9q4JUbkV",
+   "Name": "Run script",
+   "Version": "1.0.0",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/Runscript.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "RunJSCode",
+   "ActionName": "Run JavaScript"
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_jjega7",
+   "FieldMapping_jjegbc"
+  ],
+  "Output": {
+   "_id": "PkEPVrlbLg1o",
+   "opKey": "ZZT-N21-A3-FO2DM-OP1",
+   "outcome": "Withdrawn"
+  },
+  "IsTested": true
+ },
+ "Action_OC_complete_query": {
+  "Id": "Action_OC_complete_query",
+  "Kind": "Action",
+  "Type": "Create",
+  "Name": "Skip and complete",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQ_op_closed_Open_point_closed_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "Action_admin_skip_complete",
+   "ActionName": "Skip and complete"
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_jjega5",
+   "FieldMapping_jlm0t1"
+  ],
+  "Output": {
+   "Success": "Completed successfully"
+  },
+  "IsTested": true
+ },
+ "FieldMapping_jjcxy1": {
+  "Id": "FieldMapping_jjcxy1",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Field_FfgdBFhZt",
+  "Label": "Choose a process",
+  "Name": "process_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Action": "Action_opClosed_read_app_item",
+  "SelectedDropdown": [
+   {
+    "FieldId": "CIQ_Open_Point_A00",
+    "FieldName": "CIQ Open Point - CIQ Digital",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_jjcxy2"
+  ]
+ },
+ "Property_jjcxy2": {
+  "Id": "Property_jjcxy2",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jjcxy1",
+  "Type": "Value",
+  "Value": [
+   "CIQ_Open_Point_A00"
+  ],
+  "Name": "process_id"
+ },
+ "FieldMapping_jjcxz3": {
+  "Id": "FieldMapping_jjcxz3",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Field_1D8EgGqhG",
+  "Label": "Search term",
+  "Name": "lookupValue",
+  "IsRequired": true,
+  "Action": "Action_opClosed_read_app_item",
+  "FieldMapping::Property": [
+   "Property_jjcxz4"
+  ]
+ },
+ "Property_jjcxz4": {
+  "Id": "Property_jjcxz4",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jjcxz3",
+  "Type": "Field",
+  "Field": "context.Trigger_opClosed_webhook.opItemId",
+  "Name": "lookupValue"
+ },
+ "FieldMapping_jjega5": {
+  "Id": "FieldMapping_jjega5",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "StringField_1R9g76mPo",
+  "Label": "Choose a process",
+  "Name": "process_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Action": "Action_OC_complete_query",
+  "SelectedDropdown": [
+   {
+    "FieldId": "CIQP_Query_A00",
+    "FieldName": "CIQP Query - CIQ Supplier Portal",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_jjega6"
+  ]
+ },
+ "Property_jjega6": {
+  "Id": "Property_jjega6",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jjega5",
+  "Type": "Value",
+  "Value": [
+   "CIQP_Query_A00"
+  ],
+  "Name": "process_id"
+ },
+ "FieldMapping_jjega7": {
+  "Id": "FieldMapping_jjega7",
+  "Kind": "FieldMapping",
+  "Type": "Object",
+  "FieldId": "InputFields",
+  "Label": "Input data",
+  "Name": "input_fields",
+  "IsDropdown": false,
+  "IsPaginated": false,
+  "HelpText": "Specify the input data that should be provided to your code",
+  "AutoRefresh": false,
+  "Action": "Action_opClosed_pick",
+  "FieldMapping::FieldMapping": [
+   "FieldMapping_jjega8",
+   "FieldMapping_jjegba",
+   "FieldMapping_geg9zc"
+  ]
+ },
+ "FieldMapping_jjega8": {
+  "Id": "FieldMapping_jjega8",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "IsVisible": true,
+  "FieldMapping": "FieldMapping_jjega7",
+  "Name": "opItemId",
+  "Label": "opItemId",
+  "FieldMapping::Property": [
+   "Property_jjega9"
+  ]
+ },
+ "Property_jjega9": {
+  "Id": "Property_jjega9",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jjega8",
+  "Type": "Field",
+  "Field": "context.Trigger_opClosed_webhook.opItemId",
+  "Name": "opItemId"
+ },
+ "FieldMapping_jjegba": {
+  "Id": "FieldMapping_jjegba",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "IsVisible": true,
+  "FieldMapping": "FieldMapping_jjega7",
+  "Name": "rows",
+  "Label": "rows",
+  "FieldMapping::Property": [
+   "Property_jjegbb"
+  ]
+ },
+ "Property_jjegbb": {
+  "Id": "Property_jjegbb",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jjegba",
+  "Type": "Field",
+  "Field": "context.Action_opClosed_read_app_item.Data",
+  "Name": "rows"
+ },
+ "FieldMapping_jjegbc": {
+  "Id": "FieldMapping_jjegbc",
+  "Kind": "FieldMapping",
+  "Type": "Code",
+  "FieldId": "JSCode",
+  "Label": "JavaScript code",
+  "Name": "js_code",
+  "IsRequired": true,
+  "IsDropdown": false,
+  "IsPaginated": false,
+  "AutoRefresh": false,
+  "CodeLanguage": "javascript",
+  "Action": "Action_opClosed_pick",
+  "FieldMapping::Property": [
+   "Property_jjegbd"
+  ]
+ },
+ "Property_jjegbd": {
+  "Id": "Property_jjegbd",
+  "Kind": "Property",
+  "Type": "Code",
+  "Name": "js_code",
+  "Code": "// op.closed · only an open point that really has an outcome (closed or withdrawn in the app) ends its supplier query\n// (Portal_Query_Item_Id, written only by op.round). The payload carries only the point's id.\n// Hardened 21 Oct: the query must name this point back (inputData.queries: a search of CIQP Query by the point's id),\n// because a point created over REST keeps a preset Portal_Query_Item_Id. No status check: closing completes the point.\nconst id = String(inputData.opItemId || \"\").trim();\nlet rows = inputData.rows;\nif (typeof rows === \"string\") { try { rows = JSON.parse(rows); } catch (e) { rows = []; } }\nconst row = (Array.isArray(rows) ? rows : []).find((r) => r && r._id === id);\nif (!id || !row) throw new Error(`CIQ Open Point ${id || \"(no id)\"} was not found`);\nif (!row.OP_Outcome) throw new Error(`Open point ${row.OP_Key} is still open: its query stays`);\nif (!row.Portal_Query_Item_Id) throw new Error(`Open point ${row.OP_Key} has no supplier query`);\nlet queries = inputData.queries;\nif (typeof queries === \"string\") { try { queries = JSON.parse(queries); } catch (e) { queries = []; } }\nconst query = (Array.isArray(queries) ? queries : []).find((q) => q && q._id === row.Portal_Query_Item_Id);\nif (!query || query.App_Open_Point_Id !== id) throw new Error(`CIQP Query ${row.Portal_Query_Item_Id} does not name open point ${row.OP_Key} (${id}) back`);\nreturn { _id: row.Portal_Query_Item_Id, opKey: row.OP_Key, outcome: row.OP_Outcome };\n",
+  "FieldMapping": "FieldMapping_jjegbc"
+ },
+ "FieldMapping_jlm0t1": {
+  "Id": "FieldMapping_jlm0t1",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Field_nwHTfZmAs",
+  "Label": "Enter the process instance id",
+  "Name": "instance_id",
+  "IsRequired": true,
+  "Action": "Action_OC_complete_query",
+  "FieldMapping::Property": [
+   "Property_jlm0u2"
+  ]
+ },
+ "Property_jlm0u2": {
+  "Id": "Property_jlm0u2",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jlm0t1",
+  "Type": "Field",
+  "Field": "context.Action_opClosed_pick._id",
+  "Name": "instance_id"
+ },
+ "Action_opClosed_read_target": {
+  "Id": "Action_opClosed_read_target",
+  "Kind": "Action",
+  "Type": "Search",
+  "Name": "Search an item",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQ_op_closed_Open_point_closed_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "Action_Kh4Jb2AoG",
+   "ActionName": "Search an item "
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_geg9z8",
+   "FieldMapping_geg9za"
+  ],
+  "Output": {
+   "_id": "CIQP_Query_A00",
+   "Data": [
+    {
+     "_id": "PkEPVrlbLg1o",
+     "_activity_instance_id": [
+      "PkEPVrlpvlpO"
+     ],
+     "_current_assigned_to": [
+      {
+       "_id": "UsEJUfjYLM8Y",
+       "Name": "Thomas",
+       "Kind": "User"
+      }
+     ],
+     "_status": "InProgress",
+     "Name": "CIQP Query from Thomas",
+     "_created_at": "2026-10-21T18:22:30Z",
+     "_created_by": {
+      "_id": "UsEJUfjYLM8Y",
+      "Name": "Thomas",
+      "Kind": "User"
+     },
+     "Query_Key": "ZZT-N21-A3-FO2DM-OP1-R2",
+     "Round_No": 2,
+     "Case_Code": "ZZT-N21-A3-FO2DM-C1",
+     "Cycle_No": 1,
+     "Supplier_Code": "ZZT-SUP-A3",
+     "App_Open_Point_Id": "PkEPVmf5pIKU",
+     "Kind_Label": "Question",
+     "Responsible_Department": "Quality Management",
+     "Responsible_Name": "ZZT Quentin Test (fictional)",
+     "Ref_Kind": "Section",
+     "Ref_Section_Key": "K4",
+     "Ref_Field_Key": "",
+     "Ref_Row_Id": "",
+     "Ref_Doc_Id": "",
+     "Ref_Doc_File_Name": "",
+     "Ref_Label": "K4 · ZZT test section",
+     "Question_Text": "ZZT ZZT-N21-A3-FO2DM-OP1 question, EDITED again for the live op.edited (fictional).",
+     "Supplier_Justification": "ZZT test justification (fictional).",
+     "Supplier_Due_Date": "2026-11-04",
+     "New_Section_Item_Key": "",
+     "Assigned_Contacts": [
+      {
+       "_id": "UsEJUfjYLM8Y",
+       "Name": "Thomas",
+       "Kind": "User"
+      }
+     ],
+     "Edited_At": "2026-10-21T18:33:17Z"
+    },
+    {
+     "_id": "PkEPVpT6e4Cd",
+     "_activity_instance_id": [
+      "PkEPVpTLTt6J"
+     ],
+     "_current_assigned_to": [
+      {
+       "_id": "UsEJUfjYLM8Y",
+       "Name": "Thomas",
+       "Kind": "User"
+      }
+     ],
+     "_status": "InProgress",
+     "Name": "CIQP Query from Thomas",
+     "_created_at": "2026-10-21T18:20:13Z",
+     "_created_by": {
+      "_id": "UsEJUfjYLM8Y",
+      "Name": "Thomas",
+      "Kind": "User"
+     },
+     "Query_Key": "ZZT-N21-A3-FO2DM-OP1-R1",
+     "Round_No": 1,
+     "Case_Code": "ZZT-N21-A3-FO2DM-C1",
+     "Cycle_No": 1,
+     "Supplier_Code": "ZZT-SUP-A3",
+     "App_Open_Point_Id": "PkEPVmf5pIKU",
+     "Kind_Label": "Question",
+     "Responsible_Department": "Quality Management",
+     "Responsible_Name": "ZZT Quentin Test (fictional)",
+     "Ref_Kind": "Section",
+     "Ref_Section_Key": "K4",
+     "Ref_Field_Key": "",
+     "Ref_Row_Id": "",
+     "Ref_Doc_Id": "",
+     "Ref_Doc_File_Name": "",
+     "Ref_Label": "K4 · ZZT test section",
+     "Question_Text": "ZZT ZZT-N21-A3-FO2DM-OP1 question for the hardening apply test (fictional).",
+     "Supplier_Justification": "ZZT test justification (fictional).",
+     "Supplier_Due_Date": "2026-11-04",
+     "New_Section_Item_Key": "",
+     "Assigned_Contacts": [
+      {
+       "_id": "UsEJUfjYLM8Y",
+       "Name": "Thomas",
+       "Kind": "User"
+      }
+     ]
+    }
+   ]
+  },
+  "IsTested": true
+ },
+ "FieldMapping_geg9z8": {
+  "Id": "FieldMapping_geg9z8",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Field_FfgdBFhZt",
+  "Label": "Choose a process",
+  "Name": "process_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Action": "Action_opClosed_read_target",
+  "SelectedDropdown": [
+   {
+    "FieldId": "CIQP_Query_A00",
+    "FieldName": "CIQP Query - CIQ Supplier Portal",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_geg9z9"
+  ]
+ },
+ "Property_geg9z9": {
+  "Id": "Property_geg9z9",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_geg9z8",
+  "Type": "Value",
+  "Value": [
+   "CIQP_Query_A00"
+  ],
+  "Name": "process_id"
+ },
+ "FieldMapping_geg9za": {
+  "Id": "FieldMapping_geg9za",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Field_1D8EgGqhG",
+  "Label": "Search term",
+  "Name": "lookupValue",
+  "IsRequired": true,
+  "Action": "Action_opClosed_read_target",
+  "FieldMapping::Property": [
+   "Property_geg9zb"
+  ]
+ },
+ "Property_geg9zb": {
+  "Id": "Property_geg9zb",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_geg9za",
+  "Type": "Field",
+  "Field": "context.Trigger_opClosed_webhook.opItemId",
+  "Name": "lookupValue"
+ },
+ "FieldMapping_geg9zc": {
+  "Id": "FieldMapping_geg9zc",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "IsVisible": true,
+  "FieldMapping": "FieldMapping_jjega7",
+  "Name": "queries",
+  "Label": "queries",
+  "FieldMapping::Property": [
+   "Property_geg9zd"
+  ]
+ },
+ "Property_geg9zd": {
+  "Id": "Property_geg9zd",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_geg9zc",
+  "Type": "Field",
+  "Field": "context.Action_opClosed_read_target.Data",
+  "Name": "queries"
+ }
+}

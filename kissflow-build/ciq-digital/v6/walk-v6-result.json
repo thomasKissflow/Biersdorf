@@ -1,0 +1,92 @@
+{
+ "at": "2026-10-19T20:53:15.846Z",
+ "tag": "ZZT-W6-10192053",
+ "w1": {
+  "create": {
+   "status": 200,
+   "item": "PkEOoHSxdlm1"
+  },
+  "startReadOnlyHeld": {
+   "Completed_At": "2026-10-19T20:53:15Z",
+   "ok": false
+  },
+  "submitStart": {
+   "status": 200
+  },
+  "atDept": {
+   "step": "Review – QM",
+   "act": "PkEOoHW5bL6f",
+   "to": [
+    "AppRole:Quality Management reviewer"
+   ]
+  },
+  "blockedWithOpenPoint": {
+   "update": 400,
+   "updateErr": "KISSFLOW_ERROR_050201 This item has moved out of your queue.",
+   "submit": 400,
+   "submitErr": "KISSFLOW_ERROR_050201 This item has moved out of your queue.",
+   "stillAt": "Review – QM",
+   "Review_Gate": "OK",
+   "ok": true
+  },
+  "userUpdate": {
+   "status": 400,
+   "err": "KISSFLOW_ERROR_050201 This item has moved out of your queue.",
+   "Open_Count": 0,
+   "RMES_Gaps": 0,
+   "Review_Gate": "OK"
+  },
+  "complete": {
+   "submit": 400,
+   "err": "KISSFLOW_ERROR_050201 This item has moved out of your queue.",
+   "status": "InProgress",
+   "Completed_By": null,
+   "ok": false
+  }
+ },
+ "w2": {
+  "create": {
+   "status": 200,
+   "item": "PkEOoHi4U3vM"
+  },
+  "startReadOnlyHeld": {
+   "Response_Text": "must not be stored (ReadOnly at Start)",
+   "ok": false
+  },
+  "submitStart": {
+   "status": 200
+  },
+  "atDept": {
+   "step": "Open point – QM",
+   "act": "PkEOoHken99G",
+   "to": [
+    "User:Thomas"
+   ]
+  },
+  "accept": {
+   "update": 400,
+   "updateErr": "KISSFLOW_ERROR_050313 You don't have permission to update the following fields: {\"CIQ_Open_Point_A00\": [\"Outcome_Reason\", \"Thread_JSON\", \"Closed_By\", \"OP_Outcome\", \"Closed_At\"]}.",
+   "submit": 200,
+   "status": "Completed",
+   "OP_Outcome": null,
+   "Open_Num": 1,
+   "ok": true
+  }
+ },
+ "cleanup": [
+  {
+   "flow": "CIQ_Review_A00",
+   "item": "PkEOoHSxdlm1",
+   "withdraw": 200,
+   "delete": 200,
+   "getAfter": 404
+  },
+  {
+   "flow": "CIQ_Open_Point_A00",
+   "item": "PkEOoHi4U3vM",
+   "withdraw": null,
+   "delete": 200,
+   "getAfter": 404
+  }
+ ]
+}

@@ -1,0 +1,398 @@
+{
+ "scenarios": 7,
+ "ok": 0,
+ "failed": [
+  {
+   "id": "probe-markets-case-all-lanes-overall-approved",
+   "flow": "CIQ_Case_A00",
+   "ok": false,
+   "walked": [
+    "CASE_S0",
+    "CASE_S1",
+    "CASE_S2",
+    "CASE_S3",
+    "CASE_B_REG",
+    "CASE_B_SAF",
+    "CASE_B_QM",
+    "CASE_B_MIC",
+    "CASE_B_SUS",
+    "CASE_B_RMM",
+    "CASE_S5",
+    "CASE_S6",
+    "CASE_S7",
+    "CASE_S8"
+   ],
+   "skipped": [],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Hold_For_Open_Items": "No",
+    "Open_Items_Gate_Release": "OK",
+    "Open_Items_Gate_Close": "OK",
+    "REG_Gate": "OK",
+    "SAF_Gate": "OK",
+    "QM_Gate": "OK",
+    "MIC_Gate": "OK",
+    "SUS_Gate": "OK",
+    "RMM_Gate": "OK"
+   },
+   "issues": [
+    "CASE_S5: input Markets_Label is ReadOnly (not writable)",
+    "CASE_S8: input Markets_Label is ReadOnly (not writable)"
+   ]
+  },
+  {
+   "id": "probe-contacts-op-reg-supplier-accepted",
+   "flow": "CIQ_Open_Point_A00",
+   "ok": false,
+   "walked": [
+    "OPNT_S0",
+    "OPNT_S1",
+    "OPNT_R_REG"
+   ],
+   "skipped": [
+    "OPNT_R_SAF",
+    "OPNT_R_QM",
+    "OPNT_R_MIC",
+    "OPNT_R_SUS",
+    "OPNT_R_RMM"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Open_Num": 0.0,
+    "Start_Gate": ""
+   },
+   "issues": [
+    "OPNT_R_REG: input Portal_Contact_Ids is ReadOnly (not writable)"
+   ]
+  },
+  {
+   "id": "probe-contacts-op-saf-supplier-accepted",
+   "flow": "CIQ_Open_Point_A00",
+   "ok": false,
+   "walked": [
+    "OPNT_S0",
+    "OPNT_S1",
+    "OPNT_R_SAF"
+   ],
+   "skipped": [
+    "OPNT_R_REG",
+    "OPNT_R_QM",
+    "OPNT_R_MIC",
+    "OPNT_R_SUS",
+    "OPNT_R_RMM"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Open_Num": 0.0,
+    "Start_Gate": ""
+   },
+   "issues": [
+    "OPNT_R_SAF: input Portal_Contact_Ids is ReadOnly (not writable)"
+   ]
+  },
+  {
+   "id": "probe-contacts-op-qm-supplier-accepted",
+   "flow": "CIQ_Open_Point_A00",
+   "ok": false,
+   "walked": [
+    "OPNT_S0",
+    "OPNT_S1",
+    "OPNT_R_QM"
+   ],
+   "skipped": [
+    "OPNT_R_REG",
+    "OPNT_R_SAF",
+    "OPNT_R_MIC",
+    "OPNT_R_SUS",
+    "OPNT_R_RMM"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Open_Num": 0.0,
+    "Start_Gate": ""
+   },
+   "issues": [
+    "OPNT_R_QM: input Portal_Contact_Ids is ReadOnly (not writable)"
+   ]
+  },
+  {
+   "id": "probe-contacts-op-mic-internal-accepted",
+   "flow": "CIQ_Open_Point_A00",
+   "ok": false,
+   "walked": [
+    "OPNT_S0",
+    "OPNT_R_MIC"
+   ],
+   "skipped": [
+    "OPNT_S1",
+    "OPNT_R_REG",
+    "OPNT_R_SAF",
+    "OPNT_R_QM",
+    "OPNT_R_SUS",
+    "OPNT_R_RMM"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Open_Num": 0.0,
+    "Start_Gate": "OK"
+   },
+   "issues": [
+    "OPNT_R_MIC: input Portal_Contact_Ids is ReadOnly (not writable)"
+   ]
+  },
+  {
+   "id": "probe-contacts-op-sus-internal-accepted",
+   "flow": "CIQ_Open_Point_A00",
+   "ok": false,
+   "walked": [
+    "OPNT_S0",
+    "OPNT_R_SUS"
+   ],
+   "skipped": [
+    "OPNT_S1",
+    "OPNT_R_REG",
+    "OPNT_R_SAF",
+    "OPNT_R_QM",
+    "OPNT_R_MIC",
+    "OPNT_R_RMM"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Open_Num": 0.0,
+    "Start_Gate": "OK"
+   },
+   "issues": [
+    "OPNT_R_SUS: input Portal_Contact_Ids is ReadOnly (not writable)"
+   ]
+  },
+  {
+   "id": "probe-contacts-op-rmm-internal-accepted",
+   "flow": "CIQ_Open_Point_A00",
+   "ok": false,
+   "walked": [
+    "OPNT_S0",
+    "OPNT_R_RMM"
+   ],
+   "skipped": [
+    "OPNT_S1",
+    "OPNT_R_REG",
+    "OPNT_R_SAF",
+    "OPNT_R_QM",
+    "OPNT_R_MIC",
+    "OPNT_R_SUS"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Open_Num": 0.0,
+    "Start_Gate": "OK"
+   },
+   "issues": [
+    "OPNT_R_RMM: input Portal_Contact_Ids is ReadOnly (not writable)"
+   ]
+  }
+ ],
+ "all": [
+  {
+   "id": "probe-markets-case-all-lanes-overall-approved",
+   "flow": "CIQ_Case_A00",
+   "ok": false,
+   "walked": [
+    "CASE_S0",
+    "CASE_S1",
+    "CASE_S2",
+    "CASE_S3",
+    "CASE_B_REG",
+    "CASE_B_SAF",
+    "CASE_B_QM",
+    "CASE_B_MIC",
+    "CASE_B_SUS",
+    "CASE_B_RMM",
+    "CASE_S5",
+    "CASE_S6",
+    "CASE_S7",
+    "CASE_S8"
+   ],
+   "skipped": [],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Hold_For_Open_Items": "No",
+    "Open_Items_Gate_Release": "OK",
+    "Open_Items_Gate_Close": "OK",
+    "REG_Gate": "OK",
+    "SAF_Gate": "OK",
+    "QM_Gate": "OK",
+    "MIC_Gate": "OK",
+    "SUS_Gate": "OK",
+    "RMM_Gate": "OK"
+   },
+   "issues": [
+    "CASE_S5: input Markets_Label is ReadOnly (not writable)",
+    "CASE_S8: input Markets_Label is ReadOnly (not writable)"
+   ]
+  },
+  {
+   "id": "probe-contacts-op-reg-supplier-accepted",
+   "flow": "CIQ_Open_Point_A00",
+   "ok": false,
+   "walked": [
+    "OPNT_S0",
+    "OPNT_S1",
+    "OPNT_R_REG"
+   ],
+   "skipped": [
+    "OPNT_R_SAF",
+    "OPNT_R_QM",
+    "OPNT_R_MIC",
+    "OPNT_R_SUS",
+    "OPNT_R_RMM"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Open_Num": 0.0,
+    "Start_Gate": ""
+   },
+   "issues": [
+    "OPNT_R_REG: input Portal_Contact_Ids is ReadOnly (not writable)"
+   ]
+  },
+  {
+   "id": "probe-contacts-op-saf-supplier-accepted",
+   "flow": "CIQ_Open_Point_A00",
+   "ok": false,
+   "walked": [
+    "OPNT_S0",
+    "OPNT_S1",
+    "OPNT_R_SAF"
+   ],
+   "skipped": [
+    "OPNT_R_REG",
+    "OPNT_R_QM",
+    "OPNT_R_MIC",
+    "OPNT_R_SUS",
+    "OPNT_R_RMM"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Open_Num": 0.0,
+    "Start_Gate": ""
+   },
+   "issues": [
+    "OPNT_R_SAF: input Portal_Contact_Ids is ReadOnly (not writable)"
+   ]
+  },
+  {
+   "id": "probe-contacts-op-qm-supplier-accepted",
+   "flow": "CIQ_Open_Point_A00",
+   "ok": false,
+   "walked": [
+    "OPNT_S0",
+    "OPNT_S1",
+    "OPNT_R_QM"
+   ],
+   "skipped": [
+    "OPNT_R_REG",
+    "OPNT_R_SAF",
+    "OPNT_R_MIC",
+    "OPNT_R_SUS",
+    "OPNT_R_RMM"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Open_Num": 0.0,
+    "Start_Gate": ""
+   },
+   "issues": [
+    "OPNT_R_QM: input Portal_Contact_Ids is ReadOnly (not writable)"
+   ]
+  },
+  {
+   "id": "probe-contacts-op-mic-internal-accepted",
+   "flow": "CIQ_Open_Point_A00",
+   "ok": false,
+   "walked": [
+    "OPNT_S0",
+    "OPNT_R_MIC"
+   ],
+   "skipped": [
+    "OPNT_S1",
+    "OPNT_R_REG",
+    "OPNT_R_SAF",
+    "OPNT_R_QM",
+    "OPNT_R_SUS",
+    "OPNT_R_RMM"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Open_Num": 0.0,
+    "Start_Gate": "OK"
+   },
+   "issues": [
+    "OPNT_R_MIC: input Portal_Contact_Ids is ReadOnly (not writable)"
+   ]
+  },
+  {
+   "id": "probe-contacts-op-sus-internal-accepted",
+   "flow": "CIQ_Open_Point_A00",
+   "ok": false,
+   "walked": [
+    "OPNT_S0",
+    "OPNT_R_SUS"
+   ],
+   "skipped": [
+    "OPNT_S1",
+    "OPNT_R_REG",
+    "OPNT_R_SAF",
+    "OPNT_R_QM",
+    "OPNT_R_MIC",
+    "OPNT_R_RMM"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Open_Num": 0.0,
+    "Start_Gate": "OK"
+   },
+   "issues": [
+    "OPNT_R_SUS: input Portal_Contact_Ids is ReadOnly (not writable)"
+   ]
+  },
+  {
+   "id": "probe-contacts-op-rmm-internal-accepted",
+   "flow": "CIQ_Open_Point_A00",
+   "ok": false,
+   "walked": [
+    "OPNT_S0",
+    "OPNT_R_RMM"
+   ],
+   "skipped": [
+    "OPNT_S1",
+    "OPNT_R_REG",
+    "OPNT_R_SAF",
+    "OPNT_R_QM",
+    "OPNT_R_MIC",
+    "OPNT_R_SUS"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Open_Num": 0.0,
+    "Start_Gate": "OK"
+   },
+   "issues": [
+    "OPNT_R_RMM: input Portal_Contact_Ids is ReadOnly (not writable)"
+   ]
+  }
+ ]
+}

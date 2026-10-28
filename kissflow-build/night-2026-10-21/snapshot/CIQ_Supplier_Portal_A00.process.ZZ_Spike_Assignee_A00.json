@@ -1,0 +1,263 @@
+{
+ "type": "process",
+ "name": "ZZ Spike Assignee",
+ "status": "Live",
+ "list": {
+  "_id": "ZZ_Spike_Assignee_A00",
+  "_created_at": "2026-10-06T21:02:35Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-14T18:55:07Z",
+  "Name": "ZZ Spike Assignee",
+  "Description": "Throwaway probe: field-driven step assignee. Safe to delete.",
+  "Type": "Process",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Supplier_Portal_A00",
+  "LastPublishedAt": "2026-10-14T17:54:30Z"
+ },
+ "draftStatus": 200,
+ "draft": {
+  "SendBackToInitiator": {
+   "Id": "SendBackToInitiator",
+   "Kind": "Activity",
+   "NodeType": "SendBackToInitiator",
+   "BaseMetadata": "Activity_z5b98q"
+  },
+  "PublishedAt": "2026-10-14T17:54:30Z",
+  "PublishedBy": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_meta_version": "1792000470463473",
+  "ZZ_Spike_Assignee_A00": {
+   "Id": "ZZ_Spike_Assignee_A00",
+   "Name": "ZZ Spike Assignee",
+   "Kind": "Model",
+   "FlowType": "Process",
+   "Description": "Throwaway probe (spikes K-04, S-2). Safe to ignore.",
+   "_application_id": "CIQ_Supplier_Portal_A00",
+   "Model::Row": [
+    "Row_1aa9rjb"
+   ],
+   "Model::Field": [
+    "Probe_Title",
+    "Probe_Note",
+    "Probe_File"
+   ],
+   "Model::ProcessDef": [
+    "ProcessDef_1l3sttu"
+   ],
+   "RootProcessDef": "ProcessDef_1l3sttu",
+   "Model::Appearance": [
+    "Appearance_1l3sttu"
+   ],
+   "Button::Row": [
+    "Row_rbpnl7"
+   ]
+  },
+  "Row_1aa9rjb": {
+   "Id": "Row_1aa9rjb",
+   "Kind": "Row",
+   "Model": "ZZ_Spike_Assignee_A00",
+   "Row::Column": [
+    "Column_1aa9rjb"
+   ]
+  },
+  "Column_1aa9rjb": {
+   "Id": "Column_1aa9rjb",
+   "Kind": "Column",
+   "Type": "Section",
+   "Name": "Details",
+   "Start": 0,
+   "End": 6,
+   "Row": "Row_1aa9rjb",
+   "Column::Row": [
+    "Row_1aa8jdt",
+    "Row_1aa8jdu",
+    "Row_1aa8jdv"
+   ]
+  },
+  "Row_1aa8jdt": {
+   "Id": "Row_1aa8jdt",
+   "Kind": "Row",
+   "Column": "Column_1aa9rjb",
+   "Row::Column": [
+    "Column_pw5idx"
+   ]
+  },
+  "Column_pw5idx": {
+   "Id": "Column_pw5idx",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_1aa8jdt",
+   "Column::Field": [
+    "Probe_Title"
+   ]
+  },
+  "Row_1aa8jdu": {
+   "Id": "Row_1aa8jdu",
+   "Kind": "Row",
+   "Column": "Column_1aa9rjb",
+   "Row::Column": [
+    "Column_533kfd"
+   ]
+  },
+  "Column_533kfd": {
+   "Id": "Column_533kfd",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 6,
+   "Row": "Row_1aa8jdu",
+   "Column::Field": [
+    "Probe_Note"
+   ]
+  },
+  "Row_1aa8jdv": {
+   "Id": "Row_1aa8jdv",
+   "Kind": "Row",
+   "Column": "Column_1aa9rjb",
+   "Row::Column": [
+    "Column_52x9cj"
+   ]
+  },
+  "Column_52x9cj": {
+   "Id": "Column_52x9cj",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 6,
+   "Row": "Row_1aa8jdv",
+   "Column::Field": [
+    "Probe_File"
+   ]
+  },
+  "Probe_Title": {
+   "Id": "Probe_Title",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Probe Title",
+   "Model": "ZZ_Spike_Assignee_A00",
+   "Column": "Column_pw5idx",
+   "Required": true
+  },
+  "Probe_Note": {
+   "Id": "Probe_Note",
+   "Kind": "Field",
+   "Type": "Textarea",
+   "Name": "Probe Note",
+   "Model": "ZZ_Spike_Assignee_A00",
+   "Column": "Column_533kfd"
+  },
+  "Probe_File": {
+   "Id": "Probe_File",
+   "Kind": "Field",
+   "Type": "Attachment",
+   "Name": "Probe File",
+   "Model": "ZZ_Spike_Assignee_A00",
+   "Column": "Column_52x9cj"
+  },
+  "ProcessDef_1l3sttu": {
+   "Id": "ProcessDef_1l3sttu",
+   "Kind": "ProcessDef",
+   "WorkflowType": "Sequence",
+   "Model": "ZZ_Spike_Assignee_A00",
+   "ProcessDef::Activity": [
+    "Activity_z5b98q",
+    "Activity_1po4umr"
+   ]
+  },
+  "Permission_1388kuk": {
+   "Id": "Permission_1388kuk",
+   "Kind": "Permission",
+   "Column": "Column_pw5idx",
+   "Permission": "Editable",
+   "Activity": "Activity_z5b98q"
+  },
+  "Permission_1yql257": {
+   "Id": "Permission_1yql257",
+   "Kind": "Permission",
+   "Column": "Column_533kfd",
+   "Permission": "Editable",
+   "Activity": "Activity_z5b98q"
+  },
+  "Permission_1yrbmb4": {
+   "Id": "Permission_1yrbmb4",
+   "Kind": "Permission",
+   "Column": "Column_52x9cj",
+   "Permission": "Editable",
+   "Activity": "Activity_z5b98q"
+  },
+  "Activity_z5b98q": {
+   "Id": "Activity_z5b98q",
+   "Kind": "Activity",
+   "NodeType": "StartEvent",
+   "Name": "Start",
+   "ProcessDef": "ProcessDef_1l3sttu",
+   "Activity::Permission": [
+    "Permission_1388kuk",
+    "Permission_1yql257",
+    "Permission_1yrbmb4"
+   ]
+  },
+  "Permission_11n1ucx": {
+   "Id": "Permission_11n1ucx",
+   "Kind": "Permission",
+   "Column": "Column_pw5idx",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_1po4umr"
+  },
+  "Permission_1x5ebnk": {
+   "Id": "Permission_1x5ebnk",
+   "Kind": "Permission",
+   "Column": "Column_533kfd",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_1po4umr"
+  },
+  "Permission_1x64vth": {
+   "Id": "Permission_1x64vth",
+   "Kind": "Permission",
+   "Column": "Column_52x9cj",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_1po4umr"
+  },
+  "Activity_1po4umr": {
+   "Id": "Activity_1po4umr",
+   "Kind": "Activity",
+   "NodeType": "EndEvent",
+   "Name": "End",
+   "ProcessDef": "ProcessDef_1l3sttu",
+   "Activity::Permission": [
+    "Permission_11n1ucx",
+    "Permission_1x5ebnk",
+    "Permission_1x64vth"
+   ]
+  },
+  "Appearance_1l3sttu": {
+   "Id": "Appearance_1l3sttu",
+   "Kind": "Appearance",
+   "Model": "ZZ_Spike_Assignee_A00",
+   "Appearance::Style": [
+    "Style_1l3sttu"
+   ]
+  },
+  "Style_1l3sttu": {
+   "Id": "Style_1l3sttu",
+   "Kind": "Style",
+   "Appearance": "Appearance_1l3sttu"
+  },
+  "Row_rbpnl7": {
+   "Id": "Row_rbpnl7",
+   "Kind": "Row",
+   "Button": "ZZ_Spike_Assignee_A00"
+  },
+  "Root": "ZZ_Spike_Assignee_A00"
+ }
+}

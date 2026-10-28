@@ -1,0 +1,85 @@
+{
+  "at": "2026-10-14T17:54:50.785Z",
+  "results": [
+    {
+      "id": "S2-attach-in-progress item (at Start)",
+      "pass": true,
+      "evidence": {
+        "status": "Draft",
+        "route": "/process/2/{acc}/admin/ZZ_Spike_Assignee_A00/{item}/Probe_File/attachment?_application_id=CIQ_Supplier_Portal_A00",
+        "fieldName": "file",
+        "value": [
+          {
+            "key": "ZZ_Spike_Assignee_A00/PkEMwQb2_ExF/Attach-EMwQdGzrQJ/ZZT-final-document.pdf",
+            "id": "Attach-EMwQdGzrQJ",
+            "name": "ZZT-final-document.pdf",
+            "size": 193,
+            "fileExtension": "pdf"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S2-download-in-progress item (at Start)",
+      "pass": false,
+      "evidence": {
+        "note": "no URL in the stored value; value keys",
+        "keys": [
+          "key",
+          "id",
+          "name",
+          "size",
+          "fileExtension"
+        ]
+      }
+    },
+    {
+      "id": "S2-attach-completed item",
+      "pass": true,
+      "evidence": {
+        "status": "Draft",
+        "route": "/process/2/{acc}/admin/ZZ_Spike_Assignee_A00/{item}/Probe_File/attachment?_application_id=CIQ_Supplier_Portal_A00",
+        "fieldName": "file",
+        "value": [
+          {
+            "key": "ZZ_Spike_Assignee_A00/PkEMwQgbkvGZ/Attach-EMwQkPhFr2/ZZT-final-document.pdf",
+            "id": "Attach-EMwQkPhFr2",
+            "name": "ZZT-final-document.pdf",
+            "size": 193,
+            "fileExtension": "pdf"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S2-download-completed item",
+      "pass": false,
+      "evidence": {
+        "note": "no URL in the stored value; value keys",
+        "keys": [
+          "key",
+          "id",
+          "name",
+          "size",
+          "fileExtension"
+        ]
+      }
+    },
+    {
+      "id": "S2-cleanup-PkEMwQb2_ExF",
+      "pass": true,
+      "evidence": {
+        "del": 200,
+        "after": 404
+      }
+    },
+    {
+      "id": "S2-cleanup-PkEMwQgbkvGZ",
+      "pass": true,
+      "evidence": {
+        "del": 200,
+        "after": 404
+      }
+    }
+  ]
+}

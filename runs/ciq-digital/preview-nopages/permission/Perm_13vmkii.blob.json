@@ -1,0 +1,56 @@
+{
+  "Root": "Perm_13vmkii",
+  "Perm_13vmkii": {
+    "Id": "Perm_13vmkii",
+    "Kind": "FlowPermission",
+    "Role": "ciq_rmm",
+    "RoleName": "CIQ RMM",
+    "Model": "CIQ_Config_Release_A00",
+    "Level": "ReadOnly",
+    "Scope": "all",
+    "FlowPermission::Permission": [
+      "Permission_17fih9b",
+      "Permission_fki8cp",
+      "Permission_1gy5lie",
+      "Permission_su7oeo",
+      "Permission_sfg51q",
+      "Permission_1rrevsu"
+    ]
+  },
+  "Permission_17fih9b": {
+    "Id": "Permission_17fih9b",
+    "Kind": "Permission",
+    "Column": "Release_Key",
+    "Permission": "ReadOnly"
+  },
+  "Permission_fki8cp": {
+    "Id": "Permission_fki8cp",
+    "Kind": "Permission",
+    "Column": "Change_Summary",
+    "Permission": "ReadOnly"
+  },
+  "Permission_1gy5lie": {
+    "Id": "Permission_1gy5lie",
+    "Kind": "Permission",
+    "Column": "Release_Manifest_JSON",
+    "Permission": "ReadOnly"
+  },
+  "Permission_su7oeo": {
+    "Id": "Permission_su7oeo",
+    "Kind": "Permission",
+    "Column": "Manifest_Hash",
+    "Permission": "ReadOnly"
+  },
+  "Permission_sfg51q": {
+    "Id": "Permission_sfg51q",
+    "Kind": "Permission",
+    "Column": "Regression_Result_JSON",
+    "Permission": "ReadOnly"
+  },
+  "Permission_1rrevsu": {
+    "Id": "Permission_1rrevsu",
+    "Kind": "Permission",
+    "Column": "Test_Case_Codes",
+    "Permission": "ReadOnly"
+  }
+}

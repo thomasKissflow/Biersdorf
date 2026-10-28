@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CIQ Digital · Beiersdorf</title>
+    <script>
+      // Light by default whatever the OS prefers; dark only when chosen in the app (see src/portal/theme.tsx).
+      try {
+        if (localStorage.getItem("bdf-theme") === "dark") document.documentElement.dataset.theme = "dark";
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root">
+      <div class="brand-loader" role="status" aria-live="polite">
+        <img class="brand-loader-logo logo-adaptive" src="./src/assets/beiersdorf-logo.webp" alt="Beiersdorf" />
+        <div class="brand-loader-track" aria-hidden="true"><div class="brand-loader-bar"></div></div>
+        <p class="brand-loader-label">Loading CIQ Digital…</p>
+      </div>
+    </div>
+    <script type="module" src="/src/app-live/main.tsx"></script>
+  </body>
+</html>

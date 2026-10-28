@@ -1,0 +1,1222 @@
+{
+ "area": "Requirements-to-screen traceability for the localhost clickable prototype: every BRM v2 row, the RMES rows that still apply under the matrix ending, the 9 Oct decisions, the 12 Oct answers, R-1 and R-2",
+ "summary": "I mapped every requirement in scope against the prototype source. That is all 50 BRM v2 rows, REQ-RMES-001 to -020, D-1 to D-3, R-1, R-2, and AS-02 to AS-10 plus AS-12. Nothing was edited.\n\n**Already in place:**\n- The core flow after D-1/D-2/D-3 is already right:\n  - live scope driven by the metadata questions (actions.ts:147-208);\n  - an RMM review lane (ReviewWorkspace.tsx:73-81);\n  - the single final-release request (actions.ts:533-546);\n  - automatic completion (actions.ts:557-575).\n- About 30 BRM rows are covered on screen today.\n\n**Missing completely (must):**\n- **Supplier master:** there is no route, screen or action.\n- **Per-person e-mail inbox (R-1):** notifications exist only as audit text (actions.ts:122, 410, 369, 543).\n- **On-screen final document (R-2 / AS-12):** CaseDetail.tsx:238-240 shows a file name and the note \"PDF not generated in the prototype\".\n- **Raiser can edit or close an open point (AS-08):** OpenPointsPanel.tsx:41-101 has only accept, return and not-accepted.\n- **Change attempts after the freeze are not logged (REQ-PROC-043):** setComponents, setJustification and uploadDocument at actions.ts:250-279 have no freeze guard at all.\n- **Notification log (REQ-CTL-010):** none exists.\n- **Empty start state:** buildSeed (seed.ts:412-419) plays about 25 cases across 10 suppliers. REGRESSION REFERENCE_CASES (RegressionCheck.tsx:14) hard-codes seeded case IDs.\n\n**Wording and navigation contradict the binding decisions:**\n- \"Review version vN fixed at completeness\" still appears in about 12 places, which contradicts REQ-PROC-016 v2.\n- Documents are shown as \"versioned\".\n- \"Our understanding\" is still in 4 navs, the top bar and the drawer.\n- Duplicate entries: RMM Reports, Owner Operations, and the Scope tab next to the Questionnaire tab.\n\n**Partial:**\n- REQ-PROC-031: changes are not all audited, and departments are not actually told.\n- REQ-PROC-036: non-blocking findings do not block, which contradicts the BRM.\n- REQ-PROC-039 delegation and REQ-PROC-034 reassignment: none.\n- REQ-CTL-001: no supplier-side assignment; components are attributed as one block.\n- REQ-CFG-001: no export; AddSectionModal only shows a toast.\n- REQ-CFG-002: no date field type.\n- REQ-CFG-003: R-80 is a single trigger, not the nested rule.\n- REQ-RMES-004 applicability override and REQ-RMES-012 'impacted' flag: missing.\n- Reminders: configured but never run.\n- Dynamic personas: the role switcher is static, so the contacts of a new supplier cannot act.\n\n**Constraints for the build:**\n- The portal (LiveSupplierStore.tsx:265-312) implements StoreApi, so every new store method needs a stub there.\n- The portal demo preview (DemoSupplierStore.tsx:21-27) uses buildSeed, so the rich seed must stay available as a demo seed.",
+ "items": [
+  {
+   "id": "NAV-01",
+   "kind": "screen",
+   "title": "Remove 'Our understanding' from the app",
+   "current": "Nav entries at catalog.ts:341, 358, 399, 427. Top-bar button at Shells.tsx:54-57 and 116. AssumptionsDrawer at Shells.tsx:125 and layout/AssumptionsDrawer.tsx. Internal route /understanding at App.tsx:71. Sidebar note 'Ending: supplier final release…' at Shells.tsx:102-104",
+   "decision": "remove",
+   "details": "Remove the 4 nav items, the TopActions onUnderstanding button, the AssumptionsDrawer, the /understanding internal route and the sidebar 'Ending' note. Keep /understanding/call (App.tsx:54, CallUnderstanding App.tsx:31-47), src/call and ASSUMPTIONS_LIST (catalog.ts:465+), which the call build uses. A stale #/understanding URL falls through to Home (App.tsx:87).",
+   "priority": "must"
+  },
+  {
+   "id": "NAV-02",
+   "kind": "duplicate",
+   "title": "RMM navigation: Dashboard, My reviews, Cases, Suppliers, Inbox",
+   "current": "catalog.ts:335-342 has Dashboard, My reviews, All cases, New case, Reports, Our understanding. Reports repeats the Dashboard KPIs (Dashboard.tsx:46-51 vs Reports.tsx:89-94). New case is also a button at Dashboard.tsx:42-45",
+   "decision": "change",
+   "details": "Remove Reports (Thomas: Reports is for Business owner and Auditor). Remove 'New case' from the nav and keep it as the primary button on the Dashboard and the Cases page header. Add Suppliers (SUP-01) and Inbox (R1-01). Keep My reviews: it is RMM's task list for its Part 2 lane, the same pattern as the departments.",
+   "priority": "should"
+  },
+  {
+   "id": "NAV-03",
+   "kind": "screen",
+   "title": "Department reviewers (REG, SAF, QM, MIC, SUS): My reviews, All cases, Inbox",
+   "current": "catalog.ts:355-359 (includes Our understanding)",
+   "decision": "change",
+   "details": "Drop Our understanding and add Inbox. Landing stays /review (catalog.ts:350).",
+   "priority": "must"
+  },
+  {
+   "id": "NAV-04",
+   "kind": "screen",
+   "title": "Customs and Legal (informed, read-only): Informed cases, All cases, Inbox",
+   "current": "catalog.ts:368-371, 381-384; InformedList.tsx",
+   "decision": "keep",
+   "details": "Add Inbox. They receive an 'informed' mail at the completeness confirmation and at the final release (AS-07). They have no review task and no Ask button.",
+   "priority": "should"
+  },
+  {
+   "id": "NAV-05",
+   "kind": "screen",
+   "title": "Business admin: Rule table, Questionnaire, Section owners, Reminders and notifications, Suppliers",
+   "current": "catalog.ts:392-399 (includes Our understanding)",
+   "decision": "change",
+   "details": "Drop Our understanding. Add Suppliers if Thomas confirms that the admin also maintains the master (question Q5). The admin pages stay behind AdminGate (Gates.tsx:5-10), read-only for Owner and Auditor.",
+   "priority": "must"
+  },
+  {
+   "id": "NAV-06",
+   "kind": "screen",
+   "title": "Auditor: Audit trail, All cases, Rule table (read-only)",
+   "current": "catalog.ts:409-413",
+   "decision": "keep",
+   "details": "Keep. Optionally add a read-only Questionnaire versions entry, so the auditor can see which template version a case used.",
+   "priority": "nice"
+  },
+  {
+   "id": "NAV-07",
+   "kind": "duplicate",
+   "title": "Business owner: Reports, All cases",
+   "current": "catalog.ts:424-427 has Reports, Operations (/rmm), All cases, Our understanding. Operations is the RMM dashboard in read mode, and its stat row repeats Reports (Dashboard.tsx:46-51 vs Reports.tsx:89-94)",
+   "decision": "remove",
+   "details": "Remove Operations and Our understanding. If Thomas wants the live 'needs attention' list for the owner, fold attentionItems(viewer 'other') (attention.ts:41) into the top of Reports instead of a second dashboard.",
+   "priority": "should"
+  },
+  {
+   "id": "NAV-08",
+   "kind": "screen",
+   "title": "Supplier portal: My requests, Tasks, Help, Inbox",
+   "current": "catalog.ts:438-442, 451-455; routes App.tsx:82-85; SupplierShell Shells.tsx:151-206",
+   "decision": "keep",
+   "details": "Add Inbox (/portal/inbox), with an unread count like the Tasks badge (Shells.tsx:190-194). Keep Help (SupplierHelp.tsx; Thomas). My requests (case-level grouping, SupplierHome.tsx:51-70) and Tasks (item-level to-do, SupplierTasks.tsx) stay separate: one is the case list, the other is the task inbox.",
+   "priority": "must"
+  },
+  {
+   "id": "NAV-09",
+   "kind": "screen",
+   "title": "Role switcher covers every role holder and every supplier contact, including added ones",
+   "current": "Static PERSONAS list (RoleSwitcher.tsx:26-29, catalog.ts:325-457). store.tsx:33 and 111 resolve the persona only through PERSONA_BY_ID. Supplier personas are pinned to u-sup-1 and u-sup-2",
+   "decision": "change",
+   "details": "Build the supplier group from state.users where side is supplier and the contact is active, grouped by supplier. Persona id 'contact:<userId>' uses the supplier nav and lands on /portal. A contact added in the supplier master appears at once. Internal personas stay as they are; for the second RMM user, see EC-19. The persona must survive reload: validate it against state, not only PERSONA_BY_ID (store.tsx:33).",
+   "priority": "must"
+  },
+  {
+   "id": "NAV-10",
+   "kind": "copy",
+   "title": "Shell chrome for the demo",
+   "current": "Prototype badge at Shells.tsx:83. Reset demo data at Shells.tsx:105-107 (store.tsx:122-125 resets to buildSeed). Footer 'Prototype by Kissflow · synthetic data' at Shells.tsx:108 and 203",
+   "decision": "change",
+   "details": "Keep the role switcher and 'Reset demo data', but make reset return to the empty start state (DATA-01). Keep one small 'Prototype' marker. Remove the other prototype wording, such as the 'Ending' note.",
+   "priority": "should"
+  },
+  {
+   "id": "TAB-01",
+   "kind": "tab",
+   "title": "Case 360 tabs: Overview | Questionnaire | Open points | Documents | Internal notes | Audit trail | Final document",
+   "current": "CaseDetail.tsx:21-22 and 117-137 has Overview, Scope, Questionnaire, Open points, Documents, Internal notes, Audit trail. ScopeTab.tsx:109-157 and QuestionnaireTab.tsx:24-68 both list the sections with applicability badges",
+   "decision": "merge",
+   "details": "Merge Scope into Questionnaire as one 'Scope and answers' tab, with a segmented All / In scope / Not applicable filter. The not-applicable rows keep the fired rules, the reason and the manual-extension justification (REQ-PROC-009/010 internal traceability), and the 'Evidence the fired rules ask for' strip (ScopeTab.tsx:70-81) moves to the top. Add a 'Final document' tab, shown only when the phase is completed (R2-01). The Audit trail tab gains a 'Notifications' filter (CTL-010). Keep ?tab= deep links: map 'scope' to 'questionnaire'.",
+   "priority": "should"
+  },
+  {
+   "id": "TAB-02",
+   "kind": "tab",
+   "title": "Review workspace keeps Questionnaire and RMES tabs; side panels for open points and notes",
+   "current": "ReviewWorkspace.tsx:150-175; OpenPointsPanel.tsx; InternalNotes.tsx",
+   "decision": "keep",
+   "details": "Keep the layout. Changes inside: AS-08 edit and close on my points (AS08-01); a 'changed since your completion' marker (PROC-031); the reassign and delegate actions in WorkspaceHeader (PROC-039, EC-27).",
+   "priority": "must"
+  },
+  {
+   "id": "TAB-03",
+   "kind": "duplicate",
+   "title": "Admin Reminders page: drop the e-mail previews once the inbox exists",
+   "current": "ReminderSettings.tsx:123-130 renders NotificationEvents (EmailPreviews.tsx:22-43) and EmailPreviews (EmailPreviews.tsx:70-155)",
+   "decision": "change",
+   "details": "Keep the reminder and escalation table and the NotificationEvents rules table, updated with the R-1 rows (raised / answered / edited / closed → who receives it). Remove EmailPreviews, because the real mails are in each person's inbox.",
+   "priority": "should"
+  },
+  {
+   "id": "DATA-01",
+   "kind": "data",
+   "title": "Empty start state: no cases; all role holders; one fictional supplier with its contacts",
+   "current": "buildSeed seed.ts:412-419 plays SPECS (seed.ts ~114-383: 12 historic plus about 13 active cases) over 10 suppliers (seed.ts:67-78) with 2 contacts each. baseState seed.ts:385-409",
+   "decision": "change",
+   "details": "New buildStartState():\n- users: INTERNAL (seed.ts:49-65, 15 people) plus the contacts of ONE supplier (keep s1 Solvaro Oleochemicals S.A., seed.ts:68, with Elena Márquez and Ravi Menon);\n- suppliers: [s1];\n- templates: v1 published, v2 draft (seed.ts:392-395);\n- activeRuleSet: RS-2026.1;\n- ownership and reminders as today;\n- cases: [] and mails: [];\n- personaId: 'rmm'.\nStoreProvider loads this when localStorage is empty, and Reset returns to it.",
+   "priority": "must"
+  },
+  {
+   "id": "DATA-02",
+   "kind": "data",
+   "title": "Invalidate old browser state; morning check of the empty start",
+   "current": "SCHEMA = 6 (seed.ts:28). load() keeps any state with the same schema (store.tsx:27-39). Key 'bdf-ciq-prototype' (store.tsx:25)",
+   "decision": "change",
+   "details": "Bump SCHEMA to 7 so a browser that has old seeded data falls back to the empty start. In the morning, open http://localhost:5310 in a fresh profile or after clearing the key, and verify:\n- 0 cases;\n- 1 supplier;\n- every persona switchable;\n- every inbox empty;\n- every list shows its empty state.",
+   "priority": "must"
+  },
+  {
+   "id": "DATA-03",
+   "kind": "data",
+   "title": "Keep the rich seed as buildDemoSeed() for tests and the portal demo preview",
+   "current": "seed.test.ts relies on the seeded cases. The portal demo preview DemoSupplierStore.tsx:21-27 mounts StoreProvider (so it uses buildSeed). harness-portal.mjs:275-277 and 387 open the demo preview",
+   "decision": "change",
+   "details": "Rename the current seed to buildDemoSeed(), with the same SPECS and determinism. StoreProvider takes an optional initial-state factory. The prototype app uses buildStartState, while DemoSupplierStore and the domain tests pass buildDemoSeed. This keeps the portal harness green.",
+   "priority": "must"
+  },
+  {
+   "id": "DATA-04",
+   "kind": "data",
+   "title": "Regression check must not depend on seeded case IDs",
+   "current": "REFERENCE_CASES at RegressionCheck.tsx:14 lists 8 seeded case IDs, and runRegression (RegressionCheck.tsx:28-51) looks them up in state.cases. With 0 cases the check is empty",
+   "decision": "change",
+   "details": "Replace it with fixed reference materials: the ScopeSimulator presets (ScopeSimulator.tsx:17-22: sunflower, palm, mineral-oil, acrylate, ccu, turkey) plus any running cases, labelled 'running case'. The check then works on an empty start and shows RS-2026.1 → RS-2026.2 adding K6.3 and Annex 12 for Turkey.",
+   "priority": "must"
+  },
+  {
+   "id": "DATA-05",
+   "kind": "data",
+   "title": "StoreApi additions stubbed in the live portal store",
+   "current": "LiveSupplierStore.tsx:265-312 implements every StoreApi method (na(...) stubs for internal ones)",
+   "decision": "change",
+   "details": "Every new method needs a na() stub or an optional field in StoreApi (store.tsx:49-94), so that build:portal and harness-portal stay green. New methods: addSupplier, addContact, setContactActive, setCaseContacts, editOpenPoint, closeOpenPoint, markMailRead, reportChangeAfterRelease, reassignReview, delegateReview, runReminders/advanceClock. Supplier-side assignToColleague can stay na in the live portal.",
+   "priority": "must"
+  },
+  {
+   "id": "DATA-06",
+   "kind": "data",
+   "title": "Pin section ownership per case",
+   "current": "state.ownership is read live for running cases (sectionsOwnedBy selectors.ts:188-196, ReviewWorkspace.tsx:75, ScopeTab.tsx:35), yet setOwnership's toast says 'applies to new cases' (actions.ts:614-616)",
+   "decision": "change",
+   "details": "Copy the ownership map onto the case at createCase (CiqCase.ownership). Every case-level selector reads c.ownership, and OwnershipMatrix changes affect new cases only (E-P-86, REQ-CFG-006).",
+   "priority": "should"
+  },
+  {
+   "id": "DATA-07",
+   "kind": "data",
+   "title": "Review assignee must be a switchable role holder",
+   "current": "assigneeFor (actions.ts:316-320) round-robins across the department's users, so it can assign u-reg-2, u-saf-2 or u-qm-2, who have no persona. The persona that acts is u-reg and so on. The header shows 'Assigned to Lea Schmitt' (WorkspaceHeader.tsx:51-53) while Jonas completes",
+   "decision": "change",
+   "details": "Assign to the department's primary user (the persona user), with a 'Reassign' action (EC-27) to the second user. Alternatively, list every internal user in the role switcher (question Q8).",
+   "priority": "should"
+  },
+  {
+   "id": "SUP-01",
+   "kind": "screen",
+   "title": "Suppliers list (supplier master, imported data master)",
+   "current": "missing (no route; suppliers only appear in the NewCase select, NewCase.tsx:105-116)",
+   "decision": "add",
+   "details": "Route /suppliers (internal shell; RMM and Admin edit, other internal roles read).\n- Table: name, DUNS, country, type, active contacts, open and closed cases, source ('Imported from supplier master' or 'Added in the app by X on date').\n- Search by name or DUNS. 'Add supplier' button.\n- Empty-safe, though it always holds at least the one imported supplier.\n- Kissflow twin: the F1 'CIQ Supplier' data form with a Contacts child table (app-plan-v4 §3 F1).",
+   "priority": "must"
+  },
+  {
+   "id": "SUP-02",
+   "kind": "screen",
+   "title": "Supplier detail: company data, contacts, cases",
+   "current": "missing",
+   "decision": "add",
+   "details": "Route /suppliers/:id.\n- Header: name, DUNS, country, type, active.\n- Contacts table: name, e-mail, role or title, 'may confirm and release' flag, active, invited to N cases.\n- Actions: Add contact; deactivate or reactivate contact.\n- Cases list linking to /cases/:id.\n- Every change is audited on a supplier-level log, shown under the table.",
+   "priority": "must"
+  },
+  {
+   "id": "SUP-03",
+   "kind": "action",
+   "title": "Add supplier with validation",
+   "current": "missing",
+   "decision": "add",
+   "details": "Modal fields: legal name (required), DUNS (required, exactly 9 digits, the same rule as FLD-GEN-003 in catalog.ts:222, unique), country, type (manufacturer or distributor), and at least one contact (name; valid e-mail unique across all suppliers; title; may-confirm). The new supplier and its contacts are fictional, become usable in New case at once, and appear in the role switcher (NAV-09). Refused: duplicate DUNS, duplicate e-mail, no contact.",
+   "priority": "must"
+  },
+  {
+   "id": "SUP-04",
+   "kind": "action",
+   "title": "Add contact and deactivate contact",
+   "current": "missing",
+   "decision": "add",
+   "details": "Add a contact to an existing supplier (same validation). Deactivate keeps the history and attribution but removes the contact from invitation lists, the role switcher and future mails. A contact who is invited to a running case cannot be deactivated without first being replaced on that case (EC-03).",
+   "priority": "should"
+  },
+  {
+   "id": "SUP-05",
+   "kind": "screen",
+   "title": "New case: supplier picker driven by the master",
+   "current": "NewCase.tsx:105-153 lists every supplier and pre-selects all its contacts",
+   "decision": "change",
+   "details": "List only active suppliers. A supplier without an active contact shows 'Add a contact in the supplier master first' with a link. Contacts are pre-selected and the RMM can untick them. An 'Add supplier' link opens SUP-03 and returns to the form. Mandatory-data errors stay as at NewCase.tsx:57-66.",
+   "priority": "should"
+  },
+  {
+   "id": "CFG-001",
+   "kind": "requirement",
+   "title": "REQ-CFG-001 Questionnaire maintainable, versioned, exportable",
+   "current": "Versions and pinning: TemplateManager.tsx:96-220, PublishModal.tsx:10-101, publishTemplateV2 actions.ts:605-612, the case pins its template (actions.ts:76; CaseDetail.tsx:94-98). AddSectionModal.tsx:56 only shows a toast and persists nothing. No export or restore",
+   "decision": "change",
+   "details": "Partial.\n- Keep the publish flow: the Turkey REACH draft v2 publishes with RS-2026.2, running cases keep v1, and new cases get K6.3 and Annex 12.\n- Make 'Add section to draft' persist into the draft, so the section shows in the version catalogue.\n- Add 'Export this version' (a client-side JSON download of the sections, fields, rules and ownership).\n- Add 'Restore as new draft' (nice).",
+   "priority": "should"
+  },
+  {
+   "id": "CFG-002",
+   "kind": "requirement",
+   "title": "REQ-CFG-002 Field types",
+   "current": "FieldType (types.ts:68-78) covers text, email, number, decimal, range, yesno, single, multi, file and longtext, with no date. The repeatable table is K2.1 only (supplier/ComponentTable.tsx). Structured read-out: QuestionnaireTab.tsx:111-167",
+   "decision": "change",
+   "details": "Add a 'date' type to FieldType, FieldRenderer and formatValue, and use it on one real field (for example K1 'CoA batch date' or a certificate valid-until date). Everything else is shown.",
+   "priority": "should"
+  },
+  {
+   "id": "CFG-003",
+   "kind": "requirement",
+   "title": "REQ-CFG-003 Versioned rule set, nested rule",
+   "current": "RuleTable.tsx:65-163, RuleList.tsx, RULE_SETS rules.ts:44-46. The version is shown on the case (CaseDetail.tsx:99-103) and logged (actions.ts:120-121). R-80 is the single trigger SF-08 → A1 + RSPO (rules.ts:30), not the acceptance criterion's 'SF-01 plant-based AND SF-08 palm'",
+   "decision": "change",
+   "details": "Show the nested condition as a rule: 'SF-01 includes Vegetable AND SF-08 = Yes → A1 §5 + RSPO evidence'. The ScopeSimulator palm preset (ScopeSimulator.tsx:18) then demonstrates it. A no-code rule editor is out of scope (rules are code, types.ts:128-139).",
+   "priority": "should"
+  },
+  {
+   "id": "CFG-004",
+   "kind": "requirement",
+   "title": "REQ-CFG-004 Role and authorisation model",
+   "current": "SideGuard App.tsx:21-27. AdminGate Gates.tsx:5-10. Read-only RMES of the other department: RmesTab.tsx:16-61. Own vs other sections: ReviewWorkspace.tsx:73-79. rmesDecision checks the department (actions.ts:502)",
+   "decision": "keep",
+   "details": "Shown. The new supplier-master and inbox screens must respect it: a supplier never reaches /suppliers or internal mails, and supplier mails carry no internal content. Cover it in the E2E tests (TEST-02).",
+   "priority": "must"
+  },
+  {
+   "id": "CFG-006",
+   "kind": "requirement",
+   "title": "REQ-CFG-006 Section responsibility (lead, plus QM co-reviewer on K2.2)",
+   "current": "OwnershipMatrix.tsx:45-161. K2.2 lead SAF with co QM (catalog.ts:83). Tracks follow the leads (departmentsForScope selectors.ts:162-171)",
+   "decision": "keep",
+   "details": "Shown. Pin ownership per case (DATA-06).",
+   "priority": "should"
+  },
+  {
+   "id": "CFG-008",
+   "kind": "requirement",
+   "title": "REQ-CFG-008 Supplier edits metadata until the final release; scope only grows; manual extension with justification",
+   "current": "saveConfig actions.ts:147-208: Part 1 opens and closes; Part 2 uses growScope, raises an additional-part point and reopens or activates tracks. extendScope actions.ts:215-236 and ActivateSectionModal AskModals.tsx:127-205. 'Added after completeness' badge at ScopeTab.tsx:153. Departments are 'informed' only in the audit text (actions.ts:178)",
+   "decision": "change",
+   "details": "Keep the logic. Each Part 2 growth sends a mail to the lead department of every added section and to RMM, listing the added sections (the difference list). The supplier gets one mail per new task. A refused extension (no justification, RMM, or Part 1) keeps its toast (actions.ts:218-221).",
+   "priority": "must"
+  },
+  {
+   "id": "CFG-009",
+   "kind": "requirement",
+   "title": "REQ-CFG-009 No section removed after completeness; entered data kept",
+   "current": "Part 1 keeps answers in sections that close (actions.ts:139-140, 167). Part 2 is grow-only (actions.ts:171-187)",
+   "decision": "keep",
+   "details": "Shown. Add domain tests for: close and reopen in Part 1 keeps the answers; Part 2 change keeps sections that are no longer derived.",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-001",
+   "kind": "requirement",
+   "title": "REQ-PROC-001 Create case manually",
+   "current": "NewCase.tsx:27-274. Mandatory checks NewCase.tsx:57-66. Unique ID actions.ts:69-72 (first case on the empty start is CIQ-2026-0101). Audit actions.ts:120",
+   "decision": "change",
+   "details": "Shown. Add the duplicate warning (EC-01) and an invitation mail to each invited contact (PROC-004). Replace the DemoNote 'invitation e-mail is simulated' (NewCase.tsx:267) with 'The contacts receive the invitation in their inbox'.",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-004",
+   "kind": "requirement",
+   "title": "REQ-PROC-004 Supplier access and first task (superseded in part by D-1)",
+   "current": "Supplier task at selectors.ts:219. The invitation exists only as an audit entry (actions.ts:122). The supplier opens the full CIQ with the metadata questions (Questionnaire, MetadataQuestions)",
+   "decision": "change",
+   "details": "Under D-1 the supplier opens the CIQ directly, so 'metadata only' no longer applies. Add an inbox mail 'Beiersdorf asks you to fill in a CIQ for <material>' per invited contact, with the portal link. Visibility stays limited to the contact's own company (and, per EC-04, its own invited cases).",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-005",
+   "kind": "requirement",
+   "title": "REQ-PROC-005 Mandatory-field check names section and field",
+   "current": "completenessBlockers selectors.ts:111-131. BlockerPanel Completeness.tsx:57-110 with jump links",
+   "decision": "keep",
+   "details": "Shown, including the metadata questions as blockers (selectors.ts:114).",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-006",
+   "kind": "requirement",
+   "title": "REQ-PROC-006 Structured, searchable data (DUNS, INCI, origin; K2.1 per component)",
+   "current": "Case search covers ID, material, INCI, supplier name and material number (CaseList.tsx:47). No DUNS, origin or component search. The RMM Components table has no EC column (QuestionnaireTab.tsx:183); the review table has CAS/EC (review/ComponentTable.tsx:22, 48)",
+   "decision": "change",
+   "details": "Extend the case search to supplier DUNS and the INCI and CAS of every component. Add an 'Origin type' filter to CaseList. Add an EC column to the Case Questionnaire composition table.",
+   "priority": "should"
+  },
+  {
+   "id": "PROC-007",
+   "kind": "requirement",
+   "title": "REQ-PROC-007 Metadata changeable until release, audited, re-derives; nothing after release",
+   "current": "Audit 'Changed metadata answer after completeness' at actions.ts:178. The isClosed guard (actions.ts:149) refuses silently, with no log",
+   "decision": "change",
+   "details": "Keep. A refused change after release is logged (see PROC-043).",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-009",
+   "kind": "requirement",
+   "title": "REQ-PROC-009 Rule-based scope; N.A. hidden from the supplier, documented internally",
+   "current": "deriveScope rules.ts:65. Internal N.A. rows with reasons: ScopeTab.tsx:105-157. Rule-set version on the case",
+   "decision": "keep",
+   "details": "Shown. It moves into the merged tab (TAB-01).",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-010",
+   "kind": "requirement",
+   "title": "REQ-PROC-010 Mandatory / optional / N.A. with rule and answer per section",
+   "current": "ApplicabilityBadge, fired rules and reason at ScopeTab.tsx:123-148",
+   "decision": "keep",
+   "details": "Shown. Keep it in the merged tab.",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-011",
+   "kind": "requirement",
+   "title": "REQ-PROC-011 Upload at the question; overview by chapter; uploads during review; upload date",
+   "current": "Upload per field: FieldRenderer.tsx:134. Overview: DocumentsTab.tsx:9-57, a flat newest-first list with a Section column and a Version column (DocumentsTab.tsx:44). Uploads stay possible in review (SupplierCase.tsx:91-105)",
+   "decision": "change",
+   "details": "Group the Documents tab by chapter (section code order). Show file name, field, uploaded by and upload date. Drop the Version column; an earlier file of the same field shows as 'earlier upload'.",
+   "priority": "should"
+  },
+  {
+   "id": "PROC-012",
+   "kind": "requirement",
+   "title": "REQ-PROC-012 Completeness blocked until filled or justified; K5.1 waiver",
+   "current": "Justification UI FieldRenderer.tsx:208-240. K5.1 waiver at selectors.ts:117-119. Gate at actions.ts:355-356",
+   "decision": "keep",
+   "details": "Shown.",
+   "priority": "must"
+  },
+  {
+   "id": "CTL-001",
+   "kind": "requirement",
+   "title": "REQ-CTL-001 Several supplier contacts; per-answer attribution; supplier-side assignment",
+   "current": "Attribution: parts.tsx:76-84, QuestionnaireTab.tsx:151-163, DocumentsTab.tsx:47, SectionPanel.tsx:161. Components are attributed as one block, 'K2.1:components' (actions.ts:251). No supplier-side assignment",
+   "decision": "change",
+   "details": "Record by and at per component row (answeredBy 'K2.1:<rowId>'). Add 'Assign to a colleague' on a section and on an open-point task in the portal: supplier contacts only, shown as 'Assigned to Ravi' in Tasks. Beiersdorf cannot assign supplier tasks.",
+   "priority": "should"
+  },
+  {
+   "id": "PROC-014",
+   "kind": "requirement",
+   "title": "REQ-PROC-014 Completeness confirmation (name, e-mail, time; not an approval)",
+   "current": "Declaration modal Completeness.tsx:160-187. Stored at actions.ts:361. The modal says 'In this prototype every invited contact may confirm' (Completeness.tsx:183)",
+   "decision": "change",
+   "details": "Keep. Only contacts flagged 'may confirm' in the supplier master can confirm (EC-05); the others see the existing OnlyOthers message.",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-015",
+   "kind": "requirement",
+   "title": "REQ-PROC-015 Three confirmation types kept apart, in the case and the closing document",
+   "current": "Confirmations card OverviewTab.tsx:193-230 with type, name, role, e-mail, time and 'Not a raw-material approval'. There is no closing document",
+   "decision": "change",
+   "details": "The final document (R2-01) gets a 'Confirmations' block listing PS-05, each PS-10 (RMM and every department) and PS-11, typed and dated, none labelled as an approval.",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-016",
+   "kind": "copy",
+   "title": "REQ-PROC-016 v2: no review version; data stays editable; BDF never edits",
+   "current": "'Review version' still shown at CaseDetail.tsx:104-108, OverviewTab.tsx:75, 221, 238, WorkspaceHeader.tsx:41, CompletePanel.tsx:65, AuditTab.tsx:27, 67, RmesTab.tsx:83, EventLog.tsx:129, ReconstructEvidence.tsx:24, 97. Documents 'versioned' at DocumentsTab.tsx:16, 24, 44. 'and its version' at AskModals.tsx:77. 'v{version}' at CriterionRow.tsx:15, 54 and OpenPointsPanel.tsx:31. BDF read-only: QuestionnaireTab.tsx:42",
+   "decision": "change",
+   "details": "Remove every 'review version' label and the version column. Show 'completeness confirmed on <date>' where a date is needed. Identify documents by file name and upload date. Audit rows show the phase instead of 'v1'. The internal counter can stay in the data. BDF stays read-only, as today.",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-017",
+   "kind": "requirement",
+   "title": "REQ-PROC-017 Completeness starts Part 2: notify and create tasks for exactly the affected departments",
+   "current": "confirmCompleteness actions.ts:351-374: RMM plus the lead departments of the scope, with Customs and Legal informed. The notification is audit text only (actions.ts:369)",
+   "decision": "change",
+   "details": "Mail the RMM owner and each activated department's assignee ('Review task for CIQ-…'), and send an 'informed' mail to Customs and Legal. Departments without a section get nothing; test it.",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-018",
+   "kind": "requirement",
+   "title": "REQ-PROC-018 Parallel review subprocesses",
+   "current": "Independent tracks; completeReview actions.ts:511-548",
+   "decision": "keep",
+   "details": "Shown.",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-019",
+   "kind": "requirement",
+   "title": "REQ-PROC-019 All internal roles read all; edit only their own area",
+   "current": "mine/others at ReviewWorkspace.tsx:73-79. Read-only case for non-RMM roles: CaseDetail.tsx:179-191",
+   "decision": "keep",
+   "details": "Shown.",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-020",
+   "kind": "requirement",
+   "title": "REQ-PROC-020 v2: internal chat between departments, optionally linked to a section or finding",
+   "current": "NotesTab.tsx:10-94 and review/InternalNotes.tsx. InternalNote has only sectionId (types.ts:360-367). There is no finding or open-point link",
+   "decision": "change",
+   "details": "Add an optional link to a finding or open point (select in Add note; chip on the message). Keep chronological order, author and time. Never shown to the supplier.",
+   "priority": "should"
+  },
+  {
+   "id": "PROC-021",
+   "kind": "requirement",
+   "title": "REQ-PROC-021 One RMES record per case, invisible to suppliers (partial scope)",
+   "current": "Created once at completeness (actions.ts:367) or when Safety or Regulatory joins late (actions.ts:337-339). Header copy at RmesTab.tsx:83",
+   "decision": "change",
+   "details": "Keep. Change the header to 'Record for CIQ-… created <timestamp>' (v2: project ID plus timestamp, no version).",
+   "priority": "should"
+  },
+  {
+   "id": "PROC-022",
+   "kind": "requirement",
+   "title": "REQ-PROC-022 Pre-populate RMES with source reference (partial scope)",
+   "current": "Criteria carry a source (actions.ts:282-297). Limit values come from the answers (actions.ts:298-307). The source shows a section and 'v1', not the document",
+   "decision": "change",
+   "details": "When the source is a file field, show the file name and upload date. When it is a value, show that value, as SourceLink does today with the section.",
+   "priority": "should"
+  },
+  {
+   "id": "PROC-024",
+   "kind": "requirement",
+   "title": "REQ-PROC-024 AI suggestion: marked, sourced, confirm or discard (partial scope)",
+   "current": "CriterionRow.tsx:112-167. The suggestion text is hard-coded and claims 'the uploaded SDS … page 4' (actions.ts:309) even when no SDS was uploaded",
+   "decision": "change",
+   "details": "Only offer the suggestion when an SDS exists on K1, and cite its file name and upload date. Otherwise show nothing.",
+   "priority": "should"
+  },
+  {
+   "id": "PROC-029",
+   "kind": "requirement",
+   "title": "REQ-PROC-029 Query tied to an object (field, row, document); jump target; no supplier delete",
+   "current": "RaiseQueryModal AskModals.tsx:38-125 with row attribute. Supplier jump at AnswerDrawer.tsx:97. No delete in the supplier UI, but the upload control says 'Replace' (components/ui/form.tsx:138)",
+   "decision": "change",
+   "details": "Keep. Document references read 'file name · uploaded <date>'. Rename 'Replace' to 'Add a newer file': the earlier file stays listed.",
+   "priority": "should"
+  },
+  {
+   "id": "PROC-030",
+   "kind": "requirement",
+   "title": "REQ-PROC-030 One supplier task per request (reference, justification, responsible, due date)",
+   "current": "supplierTasks selectors.ts:221-223. TaskRow SupplierTasks.tsx:151-202 shows the reference, question and due date. Responsible and justification appear in AnswerDrawer.tsx:103-112",
+   "decision": "keep",
+   "details": "Shown. Nice to have: the responsible person also on the task row.",
+   "priority": "nice"
+  },
+  {
+   "id": "ADR-001",
+   "kind": "requirement",
+   "title": "REQ-ADR-001 Responsible person and due date mandatory; notifications configurable",
+   "current": "UI validation at AskModals.tsx:48-49 and 108-120. raiseOpenPoint checks only the question (actions.ts:389). ReminderSettings.tsx",
+   "decision": "change",
+   "details": "Validate the responsible person and a due date not in the past inside raiseOpenPoint, so the guard is not only in the UI.",
+   "priority": "should"
+  },
+  {
+   "id": "ADR-002",
+   "kind": "requirement",
+   "title": "REQ-ADR-002 Additional CIQ parts at any time; marked; block the requester",
+   "current": "extendScope actions.ts:215-236. addedLater badge at QuestionnaireTab.tsx:84. Additional-part open point at actions.ts:234",
+   "decision": "keep",
+   "details": "Shown. Add the mail to the supplier contacts through R-1 (raise).",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-031",
+   "kind": "requirement",
+   "title": "REQ-PROC-031 Changes in Part 2 audited and shown to the affected departments",
+   "current": "setAnswer audits in review (actions.ts:243-245). setComponents (actions.ts:250-252) and setJustification (actions.ts:254-261) are not audited. 'Affected departments informed' exists only as audit text",
+   "decision": "change",
+   "details": "Audit every Part 2 change: answer, component row, justification, upload and metadata. Mail the department that leads or co-reviews the changed section, plus RMM, and the owners of any RMES criterion sourced there. In the review workspace, mark the section in SectionNav and the field in SectionContent with 'Changed <date> by <contact>' until that department has opened it.",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-032",
+   "kind": "requirement",
+   "title": "REQ-PROC-032 Answer, document or justified non-delivery",
+   "current": "supplierRespond actions.ts:415-437. AnswerDrawer, including the cannot-provide justification (AnswerDrawer.tsx:177)",
+   "decision": "keep",
+   "details": "Shown.",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-033",
+   "kind": "requirement",
+   "title": "REQ-PROC-033 Full chronological history at the object; no upload in the chat",
+   "current": "Thread at OpenPointsPanel.tsx:14-39 and OpenPointsTab.tsx:100-172. A response document is filed at the referenced section and field (actions.ts:421-425)",
+   "decision": "keep",
+   "details": "Shown. The copy in the AnswerDrawer states that the document is filed in section X and referenced in the conversation. Edits and closures from AS-08 appear in the thread.",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-034",
+   "kind": "requirement",
+   "title": "REQ-PROC-034 Status traffic light; only the responsible department decides; reason on return; record the reviewed document; documented reassignment",
+   "current": "TrafficLight in lists. canAct is own department only (OpenPointsPanel.tsx:133). Reason required on return (actions.ts:443). The accept or return records no document. No reassignment",
+   "decision": "change",
+   "details": "On accept or return, record the latest document of the referenced field (file name and upload date) in the thread message and the audit. Add 'Hand over to <user of another department>' with a reason; it is audited, and the new department then owns the point.",
+   "priority": "should"
+  },
+  {
+   "id": "PROC-035",
+   "kind": "requirement",
+   "title": "REQ-PROC-035 Repeatable loop without losing history",
+   "current": "Rounds and a fresh due date (actions.ts:450-452)",
+   "decision": "keep",
+   "details": "Shown.",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-036",
+   "kind": "requirement",
+   "title": "REQ-PROC-036 All open points, findings included, block completion; blockers named with type, section, status, responsible; project-level open-points view",
+   "current": "reviewBlockers selectors.ts:144-156: the text has no responsible person (line 147), and only BLOCKING findings block (line 151). Non-blocking toggle at RmesSide.tsx:241. Open points per case: CaseList OpenPointsCell, Dashboard NeedsAction",
+   "decision": "change",
+   "details": "Every open finding blocks its department's completion; the blocking toggle goes, or becomes a label only (decision Q1). The blocker text gains 'responsible <name>'. Dashboard and CaseList keep the open-points-per-case column with click-through.",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-038",
+   "kind": "requirement",
+   "title": "REQ-PROC-038 Department completion, not a raw-material approval",
+   "current": "CompletePanel.tsx:13-16 and 134; confirmation note at actions.ts:521-524",
+   "decision": "keep",
+   "details": "Shown.",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-039",
+   "kind": "requirement",
+   "title": "REQ-PROC-039 Safety and Regulatory complete separately; comment on a negative result; auditable delegation",
+   "current": "Separate tracks; a negative result needs a comment (actions.ts:465); rmesDecision checks the department (actions.ts:502). No delegation",
+   "decision": "change",
+   "details": "Add 'Delegate my review' in WorkspaceHeader: pick a named user and give a reason. It is audited, and the completion confirmation records 'on behalf of <dept>'. Without a delegation, the Regulatory user still cannot complete Safety; test it.",
+   "priority": "should"
+  },
+  {
+   "id": "PROC-040",
+   "kind": "requirement",
+   "title": "REQ-PROC-040 Exactly one supplier notification after the last review",
+   "current": "Phase change and audit at actions.ts:533-546. FinalReleaseView PhaseViews.tsx:134-220. No mail",
+   "decision": "change",
+   "details": "Send exactly one mail per invited contact when the last track completes, with no internal content. A reopen followed by a new last completion sends one new mail. Test: no mail on intermediate completions.",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-042",
+   "kind": "requirement",
+   "title": "REQ-PROC-042 Final release with name, role, e-mail, time; only after all reviews",
+   "current": "Modal at PhaseViews.tsx:179-215. confirm() records the role (actions.ts:49-53). Guard at actions.ts:568",
+   "decision": "keep",
+   "details": "Shown. Restrict it to 'may confirm' contacts (EC-05).",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-043",
+   "kind": "requirement",
+   "title": "REQ-PROC-043 Freeze at release; a change attempt is refused AND logged",
+   "current": "The UI locks (SupplierCase.tsx:108-119, Questionnaire locked). setAnswer and saveConfig return silently (actions.ts:149, 240). setComponents, setJustification and uploadDocument have no freeze guard (actions.ts:250-279). No log",
+   "decision": "change",
+   "details": "Every supplier write action refuses on completed or cancelled cases and appends 'Change attempt refused (CIQ frozen)', with the field, to the audit, plus a mail to the RMM owner. In the portal, the ClosedBanner (PhaseViews.tsx:222-243) gets 'Report a change'. It records the attempt, and the supplier sees 'The CIQ is frozen; Beiersdorf will start a new request if needed'.",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-045",
+   "kind": "requirement",
+   "title": "REQ-PROC-045 Automatic completion after release; trigger and time recorded",
+   "current": "complete() actions.ts:557-561. Completed banner CaseDetail.tsx:234-241",
+   "decision": "keep",
+   "details": "Shown. Manual completion in exceptions is done through cancellation (PROC-049).",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-046",
+   "kind": "requirement",
+   "title": "REQ-PROC-046 Automatic final document, immutable, filed at the case, sent to RMM",
+   "current": "Audit only (actions.ts:560). CaseDetail.tsx:238-240 shows the file name and the DemoNote 'PDF not generated in the prototype'",
+   "decision": "add",
+   "details": "See R2-01. A snapshot is generated inside finalRelease, with no user action. Filed on the case (Final document tab), mailed to the RMM owner, and it cannot change afterwards.",
+   "priority": "must"
+  },
+  {
+   "id": "PROC-049",
+   "kind": "requirement",
+   "title": "REQ-PROC-049 Cancellation with justification ends all tasks; reactivation within the window",
+   "current": "cancelCase actions.ts:577-586 withdraws the open points; the review tracks stay 'in-review' in the data. CancelDialog CaseActions.tsx:29-75. Banners at CaseDetail.tsx:212-230 and PhaseViews.tsx:244. Reactivate: CaseActions.tsx:77-113; the 12-month guard is in the UI only (CaseDetail.tsx:155), and reactivateCase (actions.ts:588-596) has no guard",
+   "decision": "change",
+   "details": "Cancellation:\n- also marks every open track as ended and writes a 'Task ended' entry per track;\n- sends a neutral 'request withdrawn' mail to the contacts and a mail to every assignee with an open task.\nReactivation:\n- refused at action level after 365 days;\n- asks for an optional reason;\n- mails the contacts and the assignees.",
+   "priority": "must"
+  },
+  {
+   "id": "CTL-002",
+   "kind": "requirement",
+   "title": "REQ-CTL-002 Role-based separation of supplier and internal content",
+   "current": "SideGuard App.tsx:21-27. visibleThread filters internal notes from the supplier thread. Supplier mails are neutral by design (EmailPreviews.tsx:37-41)",
+   "decision": "keep",
+   "details": "Must also hold for the inbox and the final document: supplier mails never contain findings, RMES, notes or department statuses.",
+   "priority": "must"
+  },
+  {
+   "id": "CTL-003",
+   "kind": "requirement",
+   "title": "REQ-CTL-003 Every action is a task with one named responsible",
+   "current": "Track assignee shown at OverviewTab.tsx:152 and WorkspaceHeader.tsx:52. Supplier tasks are per company (selectors.ts:214-226). No reassignment",
+   "decision": "change",
+   "details": "Reassign a review track (EC-27). With supplier-side assignment (CTL-001), a supplier task shows its assigned contact, or 'any invited contact'.",
+   "priority": "should"
+  },
+  {
+   "id": "CTL-006",
+   "kind": "requirement",
+   "title": "REQ-CTL-006 Status at section, subprocess and project; bottlenecks; supplier sees only their own",
+   "current": "Project PhaseBadge. Track TrackBadge. Supplier section progress. BottleneckCard Dashboard.tsx:211-249. There is no per-section open / in progress / with supplier / reviewed / completed state",
+   "decision": "change",
+   "details": "Derive a per-section status chip from the section's open points, the lead track and changes: open, in progress, with the supplier, reviewed, completed. Show it in the merged Questionnaire tab and in the review SectionNav. All dashboards and lists need empty states (EC-18).",
+   "priority": "should"
+  },
+  {
+   "id": "CTL-009",
+   "kind": "requirement",
+   "title": "REQ-CTL-009 Immutable audit; reconstruct who assessed what, when, on which value and document",
+   "current": "AuditTab.tsx. AuditTrail.tsx (EventLog plus Reconstruct). RMES results log the source as 'v1' (actions.ts:469). Reconstruct picks a default case (Reconstruct.tsx:16-22) and shows an empty Select when there are 0 cases",
+   "decision": "change",
+   "details": "RMES result and open-point decision entries carry the assessed value or the document (file name and upload date). Reconstruct and EventLog get proper empty states ('No case yet') on the empty start.",
+   "priority": "must"
+  },
+  {
+   "id": "CTL-010",
+   "kind": "requirement",
+   "title": "REQ-CTL-010 Notifications for task, query, answer, resubmission, decision; every one logged at the case",
+   "current": "missing (only 'Notified supplier' audit entries at actions.ts:122 and 410)",
+   "decision": "add",
+   "details": "Every mail of R1-01 is also written to the case as a notification-log entry: event, recipients, time and subject. The case Audit trail gets a 'Notifications' filter (AuditTab Segmented at AuditTab.tsx:29-38).",
+   "priority": "must"
+  },
+  {
+   "id": "RMES-001",
+   "kind": "requirement",
+   "title": "REQ-RMES-001 Controlled start of one RMES review",
+   "current": "actions.ts:367 (only after completeness)",
+   "decision": "keep",
+   "details": "Shown.",
+   "priority": "should"
+  },
+  {
+   "id": "RMES-002",
+   "kind": "requirement",
+   "title": "REQ-RMES-002 Criteria maintained by the admin, versioned",
+   "current": "missing (criteria are code, actions.ts:282-311)",
+   "decision": "add",
+   "details": "A read-only 'RMES criteria' list under Admin → Questionnaire (Parts A–D, department, applicability rule, version). Editing waits for the RMES template from BDF.",
+   "priority": "nice"
+  },
+  {
+   "id": "RMES-003",
+   "kind": "requirement",
+   "title": "REQ-RMES-003 Role-based assignment; Regulatory cannot give the Safety decision",
+   "current": "actions.ts:502. DecisionCard RmesSide.tsx:13-109",
+   "decision": "keep",
+   "details": "Shown.",
+   "priority": "should"
+  },
+  {
+   "id": "RMES-004",
+   "kind": "requirement",
+   "title": "REQ-RMES-004 Applicability; override with mandatory reason; N.A. criteria stay visible internally",
+   "current": "missing. N.A. criteria are simply not created (actions.ts:294-297)",
+   "decision": "add",
+   "details": "Create every criterion and mark the non-applicable ones 'N.A. (rule: Annex 4 not in scope)'. Add 'Override applicability' with a mandatory reason; it is audited.",
+   "priority": "should"
+  },
+  {
+   "id": "RMES-005",
+   "kind": "requirement",
+   "title": "REQ-RMES-005 Source traceability in both directions",
+   "current": "criterion → source: SourceLink CriterionRow.tsx:11-24. source → criteria: missing",
+   "decision": "change",
+   "details": "In the review SectionContent, show 'Used by RMES S-A1, R-C1' chips on the fields that are sources.",
+   "priority": "nice"
+  },
+  {
+   "id": "RMES-006",
+   "kind": "requirement",
+   "title": "REQ-RMES-006 A final result per criterion before the decision and completion",
+   "current": "selectors.ts:150 and actions.ts:504-505",
+   "decision": "keep",
+   "details": "Shown.",
+   "priority": "should"
+  },
+  {
+   "id": "RMES-007",
+   "kind": "requirement",
+   "title": "REQ-RMES-007 Mandatory rationale for negative, implausible or N.A. results",
+   "current": "actions.ts:465",
+   "decision": "keep",
+   "details": "Shown. Extend it to the overrides (RMES-004).",
+   "priority": "should"
+  },
+  {
+   "id": "RMES-008",
+   "kind": "requirement",
+   "title": "REQ-RMES-008 Limit checks with a reproducible limit-set version",
+   "current": "LimitBox CriterionRow.tsx:27-45; LIMIT_SET_VERSION",
+   "decision": "keep",
+   "details": "Shown.",
+   "priority": "should"
+  },
+  {
+   "id": "RMES-009",
+   "kind": "requirement",
+   "title": "REQ-RMES-009 Findings (blocking vs non-blocking) against BRM REQ-PROC-036",
+   "current": "Toggle at RmesSide.tsx:241; only blocking findings block (selectors.ts:151)",
+   "decision": "change",
+   "details": "Follow the matrix (D-3): every open finding blocks its department's completion. See PROC-036 and Q1.",
+   "priority": "must"
+  },
+  {
+   "id": "RMES-010",
+   "kind": "requirement",
+   "title": "REQ-RMES-010 Supplier query from a finding without retyping",
+   "current": "FindingQueryModal AskModals.tsx:207-268; findingToQuery actions.ts:485-493",
+   "decision": "keep",
+   "details": "Shown. It goes through R-1 mails like any raise.",
+   "priority": "should"
+  },
+  {
+   "id": "RMES-011",
+   "kind": "requirement",
+   "title": "REQ-RMES-011 Only the responsible department accepts or rejects; the accepted evidence is recorded",
+   "current": "Department-only decide (OpenPointsPanel.tsx:133). No evidence recorded",
+   "decision": "change",
+   "details": "See PROC-034: record the document file name and upload date on accept.",
+   "priority": "should"
+  },
+  {
+   "id": "RMES-012",
+   "kind": "requirement",
+   "title": "REQ-RMES-012 Impacted flag when a criterion's source changes",
+   "current": "missing",
+   "decision": "add",
+   "details": "When the supplier changes a field or document that a recorded criterion uses, show 'Source changed on <date>, re-check'. The reviewer re-records the result or clicks 'No impact', which is audited. Completion is blocked until that is done. Under v2 there is no versioning: the flag is based on the change audit.",
+   "priority": "should"
+  },
+  {
+   "id": "RMES-013",
+   "kind": "requirement",
+   "title": "REQ-RMES-013 Separate internal Safety and Regulatory decisions with a rejection reason",
+   "current": "DecisionCard RmesSide.tsx:13-109; rmesDecision actions.ts:499-508",
+   "decision": "keep",
+   "details": "Shown. Under AS-02 it is internal: RMM sees 'Department rejected' (attention.ts:47-62) and either cancels or lets the case run to release.",
+   "priority": "must"
+  },
+  {
+   "id": "RMES-014",
+   "kind": "requirement",
+   "title": "REQ-RMES-014 Overall case approval gate",
+   "current": "absent (correct after D-3)",
+   "decision": "remove",
+   "details": "Dropped with the requirements-PDF ending. Make sure no screen or copy mentions an overall approval or approver.",
+   "priority": "must"
+  },
+  {
+   "id": "RMES-015",
+   "kind": "requirement",
+   "title": "REQ-RMES-015 RMES, findings and notes hidden from suppliers",
+   "current": "SideGuard. FindingQueryModal sends only the supplier question (AskModals.tsx:255)",
+   "decision": "keep",
+   "details": "Shown. Covered in the E2E supplier-visibility checks.",
+   "priority": "must"
+  },
+  {
+   "id": "RMES-016",
+   "kind": "requirement",
+   "title": "REQ-RMES-016 Immutable trail of RMES results, findings and decisions",
+   "current": "Audits at actions.ts:469, 480, 496 and 507. ReconstructEvidence.tsx:13-92",
+   "decision": "keep",
+   "details": "Shown. Change the copy to value or document instead of a version.",
+   "priority": "should"
+  },
+  {
+   "id": "RMES-017",
+   "kind": "requirement",
+   "title": "REQ-RMES-017 Reference register: original title plus storage title, both searchable",
+   "current": "Only the file name (DocumentsTab.tsx:33)",
+   "decision": "add",
+   "details": "Show the stored name, for example 'CIQ-2026-0101-d3.pdf', next to the original name in Documents and in the final document's evidence list.",
+   "priority": "nice"
+  },
+  {
+   "id": "RMES-018",
+   "kind": "requirement",
+   "title": "REQ-RMES-018 RMES progress per Safety and Regulatory with states and blocking reason, without opening tasks",
+   "current": "Per-case card RmesProgress OverviewTab.tsx:233-272. Nothing in CaseList or the Dashboard",
+   "decision": "change",
+   "details": "Add a Safety and Regulatory RMES state chip to CaseList and the RMM dashboard: open, waiting for supplier, overdue, reopened, approved or rejected.",
+   "priority": "should"
+  },
+  {
+   "id": "RMES-019",
+   "kind": "requirement",
+   "title": "REQ-RMES-019 Notifications and configurable reminders and escalation, logged",
+   "current": "Configuration only (ReminderSettings.tsx; reminders in seed.ts:398-404). Nothing ever runs",
+   "decision": "add",
+   "details": "See REM-01.",
+   "priority": "should"
+  },
+  {
+   "id": "RMES-020",
+   "kind": "requirement",
+   "title": "REQ-RMES-020 Readable internal RMES evaluation record",
+   "current": "missing",
+   "decision": "add",
+   "details": "An internal 'RMES record' print view (Parts A–D, applicability, results, comments, references, findings, decisions), linked from the RMES tab after completion. It is not part of the RMM final document unless Thomas decides otherwise (Q3).",
+   "priority": "nice"
+  },
+  {
+   "id": "D1-01",
+   "kind": "requirement",
+   "title": "D-1 One supplier step with live scope; no RMM scope check; undefined origins flagged",
+   "current": "Questionnaire with MetadataQuestions; saveConfig actions.ts:147-208. No scope action for RMM (CaseActions.tsx:1-3). PHASE_STEPS has 4 steps (selectors.ts:41). Flag at ReviewWorkspace.tsx:127-133 and ScopeTab.tsx:62-69. Legacy phases kept only for the portal (types.ts:171-176)",
+   "decision": "keep",
+   "details": "Shown. In the E2E test: answering SF-01 vegetable opens A1, A2 and A9; switching to mineral closes them, keeps the answers, and they come back; after completeness a new 'palm' answer only adds sections.",
+   "priority": "must"
+  },
+  {
+   "id": "D2-01",
+   "kind": "requirement",
+   "title": "D-2 RMM reviews in Part 2 like a department; the release waits for RMM",
+   "current": "RMM track at actions.ts:364. RMM lane at ReviewWorkspace.tsx:74-80. 'Open my review' at CaseDetail.tsx:166-170",
+   "decision": "keep",
+   "details": "Shown.",
+   "priority": "must"
+  },
+  {
+   "id": "D3-01",
+   "kind": "requirement",
+   "title": "D-3 Matrix ending only",
+   "current": "finalRelease leads to complete (actions.ts:565-575). No overall approval anywhere",
+   "decision": "keep",
+   "details": "Shown. Remove the remaining 'ending' explainer copy (Shells.tsx:102-104, AssumptionsDrawer).",
+   "priority": "must"
+  },
+  {
+   "id": "R1-01",
+   "kind": "screen",
+   "title": "R-1 Inbox per person, with mails on open point raised, answered, edited and closed (plus the other notifications)",
+   "current": "missing",
+   "decision": "add",
+   "details": "State mails[] with id, to, caseId, opId, event, subject, body, at and read. Route /inbox (internal) and /portal/inbox (supplier); list plus reading pane; an unread badge in the shells; a deep link to the case or the portal request.\nOpen-point recipients (R-1, one generic template 'Someone has written on <case> · <reference>'):\n- raise, edit, close (accept, not accepted, withdrawn) and return go to every invited contact of the case;\n- an answer goes to the raiser and the responsible person.\nOther events:\n- invitation (PROC-004);\n- review tasks and informed mails (PROC-017);\n- added sections (CFG-008);\n- Part 2 changes (PROC-031);\n- the single release request (PROC-040);\n- final document to RMM (R2-01);\n- change attempt (PROC-043);\n- cancel and reactivate (PROC-049);\n- reminders and escalation (REM-01).\nSupplier mails carry no question text or internal content, only the material, the case ID, the reference and the link.",
+   "priority": "must"
+  },
+  {
+   "id": "R2-01",
+   "kind": "screen",
+   "title": "R-2 / AS-12 Final document, generated automatically at the final release",
+   "current": "missing (CaseDetail.tsx:238-240 shows only the file name and a DemoNote)",
+   "decision": "add",
+   "details": "finalRelease stores an immutable snapshot c.finalDocument (generatedAt, trigger, ID). It is shown in the Case 'Final document' tab (all internal roles, read-only, printable with print CSS) and linked in the RMM owner's mail. Contents:\n1. Header: case ID, material, INCI, material number, supplier and DUNS, RMM owner, template and rule-set version, completed at, trigger.\n2. Confirmations: PS-05, every PS-10 and PS-11, typed, with name, role, e-mail and time; 'not a raw-material approval'.\n3. Scope: sections with applicability, reason and manual extensions.\n4. Released answers per section, with who and when, the K2.1 component table and the justifications. Hidden conditional fields are left out.\n5. Evidence list: file name, section and field, uploaded by, upload date. No attachments.\n6. Every open point as text: ID, type, raising department and person, reference, then every round in order (question, answer, return, accept, edits, closure) with who and when, and the outcome.\nInternal notes are excluded; RMES only if Q3 says so. It is never regenerated.",
+   "priority": "must"
+  },
+  {
+   "id": "AS08-01",
+   "kind": "action",
+   "title": "AS-08 The raiser edits, changes or closes their open point; the change reaches the portal",
+   "current": "missing (OpenPointsPanel.tsx:41-101 has only accept, return and not-accepted on in-progress points; withdrawn exists only on cancel, actions.ts:580)",
+   "decision": "add",
+   "details": "On my own points (createdBy is me; see Q2 on department-wide):\n- 'Edit': question, justification, due date, responsible person, reference attribute. It writes an 'edited' thread message showing the old and new values. Editing the question of an answered point turns it back to open.\n- 'Close': reason required. The outcome is withdrawn when the point is unanswered, accepted or not-accepted when it is answered.\nEach edit or close sends one mail (R1-01). The supplier's Tasks and AnswerDrawer show 'Updated by Beiersdorf on <date>' or 'Closed by Beiersdorf'. A closed point stops blocking and recomputes the track status. Every point still blocks its own track while it is open.",
+   "priority": "must"
+  },
+  {
+   "id": "AS-02",
+   "kind": "copy",
+   "title": "AS-02 confirmed: a rejection is internal; RMM decides with the department whether to cancel",
+   "current": "attention.ts:47-62, with the flag text 'AS-02, still open' (attention.ts:60). Audit at actions.ts:543",
+   "decision": "change",
+   "details": "Keep the behaviour. Change the flag to 'Agree with <dept>: cancel the case, or let it go to the final release'. Remove 'still open'.",
+   "priority": "should"
+  },
+  {
+   "id": "AS-03",
+   "kind": "requirement",
+   "title": "AS-03 Open and close until completeness, then add-only; current answers; a completed review reopens on a change",
+   "current": "saveConfig actions.ts:147-208. ensureTracks reopen at actions.ts:333-335",
+   "decision": "keep",
+   "details": "Shown. Covered by D1-01 and EC-12 in the tests.",
+   "priority": "must"
+  },
+  {
+   "id": "AS-04",
+   "kind": "requirement",
+   "title": "AS-04 One row per component",
+   "current": "supplier/ComponentTable.tsx; ComponentRow types.ts:116-126",
+   "decision": "keep",
+   "details": "Shown.",
+   "priority": "must"
+  },
+  {
+   "id": "AS-05",
+   "kind": "requirement",
+   "title": "AS-05 Rule principle (origin, markets and specific questions; EU REACH always; the stricter rule wins)",
+   "current": "rules.ts BASE_RULES; ScopeSimulator.tsx",
+   "decision": "keep",
+   "details": "Shown.",
+   "priority": "should"
+  },
+  {
+   "id": "AS-06",
+   "kind": "requirement",
+   "title": "AS-06 RMM sets the target markets; the supplier sees them read-only",
+   "current": "NewCase.tsx:187-199. ConfigQuestions.tsx:40. SF-11 kept on save (actions.ts:150)",
+   "decision": "keep",
+   "details": "Shown. Remove the 'Assumption AS-06' badge (NewCase.tsx:187), since it is confirmed.",
+   "priority": "should"
+  },
+  {
+   "id": "AS-07",
+   "kind": "requirement",
+   "title": "AS-07 RMM and the concerned departments complete; Customs and Legal read-only",
+   "current": "informed CUS and LEG at actions.ts:365. OverviewTab.tsx:172-180. InformedList.tsx",
+   "decision": "keep",
+   "details": "Shown. Remove '(assumption AS-07)' (OverviewTab.tsx:178).",
+   "priority": "should"
+  },
+  {
+   "id": "AS-09",
+   "kind": "requirement",
+   "title": "AS-09 Undefined origins flagged in RMM's review",
+   "current": "rmmFlags selectors.ts:183-186. Flag notice at ReviewWorkspace.tsx:127-133. Reopen at actions.ts:180-185",
+   "decision": "keep",
+   "details": "Shown. Remove the 'OP-19' and 'AS-09' codes from the copy.",
+   "priority": "should"
+  },
+  {
+   "id": "AS-10",
+   "kind": "requirement",
+   "title": "AS-10 Integrations manual in the MVP; material number on every case",
+   "current": "Required at NewCase.tsx:62 and 166. Shown at OverviewTab.tsx:49 and WorkspaceHeader.tsx:32",
+   "decision": "keep",
+   "details": "Shown.",
+   "priority": "should"
+  },
+  {
+   "id": "REM-01",
+   "kind": "action",
+   "title": "Reminders and escalation actually run (demo clock)",
+   "current": "Configuration only: ReminderSettings.tsx:36-133, seed reminders at seed.ts:398-404. nowIso follows the real clock (selectors.ts:22-24), so nothing becomes overdue during a demo",
+   "decision": "add",
+   "details": "Add a demo clock offset (state.clockOffsetDays used by nowIso) and an admin and demo control, 'Advance N days / Send due reminders'. It evaluates the enabled rules against the open supplier tasks, open points, idle reviews and pending releases. It sends reminder mails to the configured recipient and escalation mails (RMM owner, requester, department lead) after the escalate days, logs each one at the case, and shows the overdue badges that already exist.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-01",
+   "kind": "edge-case",
+   "title": "Duplicate case for the same supplier and material number (E-P-01)",
+   "current": "missing (createCase actions.ts:69-124 does not check)",
+   "decision": "add",
+   "details": "New case warns 'CIQ-… is already running for this supplier and material number', with a link. Creation is still allowed after ticking 'Create anyway', which is audited.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-02",
+   "kind": "edge-case",
+   "title": "Supplier without active contacts, or with inactive contacts only",
+   "current": "NewCase.tsx:59 shows an error only after a contact is unticked",
+   "decision": "change",
+   "details": "The supplier is shown disabled in the picker, with a link to its master record (SUP-05).",
+   "priority": "must"
+  },
+  {
+   "id": "EC-03",
+   "kind": "edge-case",
+   "title": "Contact replaced mid-case (E-P-08)",
+   "current": "missing (supplierContactIds fixed at creation, actions.ts:89)",
+   "decision": "add",
+   "details": "RMM 'Edit case contacts' on the Overview contacts block (OverviewTab.tsx:53-67): add an active contact of the same supplier (who gets an invitation mail) or remove one (who loses access; at least one must remain). Audited.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-04",
+   "kind": "edge-case",
+   "title": "A contact sees only the cases they were invited to (E-P-10)",
+   "current": "useSupplierScope filters by company only (features/supplier/lib.ts:17-22). supplierTasks is per company (selectors.ts:214-226)",
+   "decision": "change",
+   "details": "Filter cases and tasks by c.supplierContactIds including me.id. The not-invited message at SupplierCase.tsx:21-36 already exists.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-05",
+   "kind": "edge-case",
+   "title": "Who may confirm completeness and give the final release (E-P-33)",
+   "current": "Prototype PortalCaps lets everyone act (store/portalCaps.tsx:17). OnlyOthers message at PhaseViews.tsx:161",
+   "decision": "change",
+   "details": "The prototype caps read the contact's 'may confirm' flag from the master. A contact without it sees 'Elena Márquez can confirm'.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-06",
+   "kind": "edge-case",
+   "title": "Writes after the freeze or after cancellation go around the UI lock",
+   "current": "No isClosed check in setComponents, setJustification or uploadDocument (actions.ts:250-279)",
+   "decision": "change",
+   "details": "Guard and log (PROC-043). Add unit tests for each action.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-07",
+   "kind": "edge-case",
+   "title": "Cancel while supplier tasks and review tracks are open (E-P-73)",
+   "current": "Open points withdrawn (actions.ts:580). Tracks unchanged",
+   "decision": "change",
+   "details": "See PROC-049. After cancellation, review queues, supplier tasks and the dashboard show nothing open for that case. The case is listed under the Cancelled tab (CaseList.tsx:65).",
+   "priority": "must"
+  },
+  {
+   "id": "EC-08",
+   "kind": "edge-case",
+   "title": "Reactivation after the window; what comes back (E-P-75)",
+   "current": "UI-only guard at CaseDetail.tsx:155. Back to the previous phase, withdrawn points stay closed (CaseActions.tsx:106)",
+   "decision": "change",
+   "details": "Action-level guard. Mails on reactivation. The test covers reactivation into Part 1 and Part 2.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-09",
+   "kind": "edge-case",
+   "title": "The raiser closes a point the supplier has already answered, or edits it while the supplier drafts",
+   "current": "missing",
+   "decision": "add",
+   "details": "Part of AS08-01. The AnswerDrawer for a point closed meanwhile shows 'Closed by Beiersdorf' and disables Send. An edited point shows the new text and keeps the supplier's draft.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-10",
+   "kind": "edge-case",
+   "title": "Deleting a component row that an open point references (E-D-50)",
+   "current": "remove() at supplier/ComponentTable.tsx:59 drops the row; OpenPoint.ref.rowId is left dangling",
+   "decision": "change",
+   "details": "Block deleting a row that an unclosed open point references ('Beiersdorf asked about this component'). After completeness, a deleted row is audited.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-11",
+   "kind": "edge-case",
+   "title": "A late section for a completed department, or during the final release (E-P-49/50)",
+   "current": "ensureTracks reopens the track and withdraws the release request (actions.ts:327-344)",
+   "decision": "keep",
+   "details": "Shown. Add the mails (the department gets a task mail; the supplier gets a new-task mail).",
+   "priority": "must"
+  },
+  {
+   "id": "EC-12",
+   "kind": "edge-case",
+   "title": "Supplier edits data in the final-release phase (v2 allows it)",
+   "current": "Editable (SupplierCase.tsx:99-105). setAnswer audits (actions.ts:243-245)",
+   "decision": "change",
+   "details": "The affected completed departments get a 'changed' mail. The release stays possible unless a department reopens, which sends the case back to review (actions.ts:553).",
+   "priority": "should"
+  },
+  {
+   "id": "EC-13",
+   "kind": "edge-case",
+   "title": "Rejected RMES decision, then cancel or continue (E-P-62)",
+   "current": "attention.ts:47-62; cancel dialog",
+   "decision": "keep",
+   "details": "Add an E2E test: Safety rejects, RMM sees the flag and cancels with a reason; supplier and department mails follow.",
+   "priority": "must"
+  },
+  {
+   "id": "EC-14",
+   "kind": "edge-case",
+   "title": "An origin without rules is chosen after RMM completed",
+   "current": "actions.ts:180-185",
+   "decision": "keep",
+   "details": "Shown. Add a test.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-15",
+   "kind": "edge-case",
+   "title": "Department with no section in scope gets no task",
+   "current": "ReviewWorkspace.tsx:62-69. departmentsForScope",
+   "decision": "keep",
+   "details": "Shown. Add a test: an EU-only mineral case has no Sustainability task.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-16",
+   "kind": "edge-case",
+   "title": "Double submit: completeness or release by two contacts",
+   "current": "Phase guards at actions.ts:354 and 568",
+   "decision": "keep",
+   "details": "Shown. Add a test.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-17",
+   "kind": "edge-case",
+   "title": "Empty states everywhere on the empty start",
+   "current": "Dashboard stat cards show 0 for lead time and first-time-right (Dashboard.tsx:46-51; metrics.ts:62-64). Reports has no empty state (Reports.tsx:26-122). Reconstruct shows an empty Select (Reconstruct.tsx:111-150). Some empty states already exist: SupplierHome.tsx:44, ReviewQueue.tsx:109, InformedList.tsx:164, CaseList.tsx:144, Dashboard.tsx:137 and 268",
+   "decision": "change",
+   "details": "Dashboard and Reports show '—' and 'No completed case yet' instead of 0 or NaN, and the charts show an empty-state card. Reconstruct and EventLog show 'No case yet'. The Regression check works without cases (DATA-04).",
+   "priority": "must"
+  },
+  {
+   "id": "EC-18",
+   "kind": "edge-case",
+   "title": "Case owner other than the acting RMM persona",
+   "current": "The owner select offers Jan Petersen (NewCase.tsx:169-180), who has no persona; 'My cases' filters by owner (Dashboard.tsx:25)",
+   "decision": "change",
+   "details": "Either add Jan Petersen as a second RMM persona, or default to me and warn 'Jan Petersen will own and review this case'.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-19",
+   "kind": "edge-case",
+   "title": "Absent reviewer: reassign the review (E-P-91)",
+   "current": "missing",
+   "decision": "add",
+   "details": "'Reassign' in WorkspaceHeader (WorkspaceHeader.tsx:51-53) to another user of the same department: audited, with a mail to the new assignee.",
+   "priority": "should"
+  },
+  {
+   "id": "EC-20",
+   "kind": "edge-case",
+   "title": "Hidden conditional values and stale answers in the final document (E-D-44)",
+   "current": "isVisible is used for completeness (selectors.ts:64-66, 98)",
+   "decision": "change",
+   "details": "The final document and the Questionnaire tab leave out invisible fields, as completeness does.",
+   "priority": "should"
+  },
+  {
+   "id": "COPY-01",
+   "kind": "copy",
+   "title": "Remove assumption, OP and requirement codes from screen copy",
+   "current": "About 71 occurrences in features/{rmm,review,admin,reports,supplier}. Examples: ScopeTab.tsx:66 'OP-19', OpenPointsTab.tsx:39 'assumption AS-08', OverviewTab.tsx:178, NewCase.tsx:187, CaseActions.tsx:71 and 109 'assumption', attention.ts:60, ReminderSettings.tsx:101-104 'Defaults are our proposal … NEW-16', toasts in actions.ts ('REQ-…')",
+   "decision": "change",
+   "details": "Final-app wording: plain sentences without codes. Keep the confirmed rules, such as the 12-month reactivation, stated as rules. The understanding call page keeps its codes.",
+   "priority": "should"
+  },
+  {
+   "id": "COPY-02",
+   "kind": "copy",
+   "title": "Replace prototype DemoNotes that the new features make real",
+   "current": "CaseDetail.tsx:240 'PDF not generated in the prototype'. NewCase.tsx:267 'invitation e-mail is simulated'. EmailPreviews.tsx:25 'no e-mail is sent'",
+   "decision": "change",
+   "details": "Remove them once R2-01 and R1-01 exist. Keep only notes about things that stay simulated, such as 'files are not stored' and 'export not connected'.",
+   "priority": "should"
+  },
+  {
+   "id": "TEST-01",
+   "kind": "test",
+   "title": "Domain unit tests for the new behaviour",
+   "current": "rules.test.ts, seed.test.ts, attention.test.ts, supplier/lib.test.ts (all on the demo seed)",
+   "decision": "add",
+   "details": "Vitest, starting from buildStartState. Cover:\n- addSupplier and addContact validations (DUNS, unique e-mail, at least one contact);\n- edit and close of an open point (thread entries, status, blocking, mails);\n- the mail recipients for each R-1 event;\n- the single release mail;\n- the final-document snapshot content and immutability;\n- freeze guards and the logged attempt;\n- cancellation ends the tracks; the reactivation window;\n- every finding blocks;\n- reminders under the demo clock;\n- ownership pinned per case.\nExisting tests move to buildDemoSeed.",
+   "priority": "must"
+  },
+  {
+   "id": "TEST-02",
+   "kind": "test",
+   "title": "Prototype end-to-end harness from the empty start",
+   "current": "missing (only harness-portal.mjs and the workbench harnesses; playwright-core path at harness-portal.mjs:16-17)",
+   "decision": "add",
+   "details": "New scripts/harness-prototype.mjs, run against vite preview on port 5310. Scenarios in the proposals. Each one asserts the screens, mails and supplier invisibility, and takes screenshots.",
+   "priority": "must"
+  },
+  {
+   "id": "TEST-03",
+   "kind": "test",
+   "title": "Gate",
+   "current": "OVERNIGHT-LOG.md gate: typecheck, test, build, build:portal, harness-portal",
+   "decision": "keep",
+   "details": "Gate = typecheck + test + build + build:portal + node scripts/harness-portal.mjs + harness-prototype.mjs. Run build:call too, because the call page must still build. Do not edit src/workbench.",
+   "priority": "must"
+  }
+ ],
+ "proposals": "## 1. Navigation per role (final app)\n\nInternal app (Kissflow app):\n\n| Role | Navigation | Landing |\n|---|---|---|\n| RMM | Dashboard · My reviews · Cases · Suppliers · Inbox | /rmm |\n| Department reviewers (Regulatory, Safety, QM, Microbiology, Sustainability) | My reviews · All cases · Inbox | /review |\n| Customs, Legal | Informed cases · All cases · Inbox | /informed |\n| Business admin | Rule table · Questionnaire · Section owners · Reminders and notifications · Suppliers (if Q5 says yes) | — |\n| Auditor | Audit trail · All cases · Rule table (read-only) | — |\n| Business owner | Reports · All cases | — |\n\nFor RMM, \"New case\" becomes a button on the Dashboard and the Cases page.\n\nSupplier portal: My requests · Tasks · Help · Inbox.\n\n- **Removed:** \"Our understanding\" everywhere (the /understanding/call page stays); RMM Reports; Owner Operations; the separate Scope tab, merged into Questionnaire; the e-mail previews on the admin page.\n- **Case 360 tabs:** Overview | Questionnaire (scope and answers) | Open points | Documents | Internal notes | Audit trail (with a Notifications filter) | Final document (completed cases only).\n\n## 2. Data model sketch (in src/domain, not src/workbench)\n\n**AppState gains:**\n- `mails: Mail[]`, where Mail = {id, to, from, caseId?, opId?, event, subject, body, at, read};\n- `clockOffsetDays`;\n- `supplierLog`.\n\n**Supplier and contacts:**\n- Supplier gains `active`, `source` ('import' | 'app') and `addedBy` / `addedAt`.\n- User (contact) gains `mayConfirm`, `active` and `contactRole`.\n\n**CiqCase gains:**\n- `ownership` (pinned);\n- `finalDocument` = {generatedAt, trigger, header, confirmations, scope, answers, components, evidence, openPoints: [{…, rounds}]}, a deep snapshot;\n- `notifications` (or the mails filtered by caseId).\n\n**Changes to existing types:**\n- OpenPoint.thread Message.action gains 'edited' and 'closed'; OpenPoint gains `editedAt`, `closedBy` and `closeReason`.\n- InternalNote gains `findingId?` and `opId?`.\n- ReviewTrack gains `delegatedTo?` and `onBehalfOf?`.\n- Finding.blocking is removed or kept as a label only (Q1).\n- FieldType gains 'date'.\n\n**New pure actions:**\n- addSupplier, addContact, setContactActive, setCaseContacts;\n- editOpenPoint, closeOpenPoint;\n- reportChangeAfterRelease;\n- reassignReview, delegateReview;\n- advanceClock / runReminders;\n- markMailRead;\n- `sendMail(s, event, recipients, case)` called inside the existing actions.\n\nEvery new StoreApi method gets a `na()` stub in src/portal/data/LiveSupplierStore.tsx.\n\n**Seeds:**\n- `buildStartState()` (empty: 15 internal role holders, Solvaro plus its contacts) for the app and for Reset.\n- `buildDemoSeed()` (today's seed) for the unit tests and the portal demo preview.\n- SCHEMA goes to 7.\n\n## 3. End-to-end scenarios for harness-prototype.mjs (from the empty start)\n\n1. **Empty start.** 0 cases, 1 supplier, every persona switchable, every inbox empty, every list and dashboard shows its empty state.\n2. **Supplier master.** RMM adds a fictional supplier with 2 contacts. Duplicate DUNS and duplicate e-mail are refused. The new contacts appear in the role switcher and see no requests.\n3. **New case.** The RMM leaves the form incomplete and every missing item is listed. Creating the case gives CIQ-2026-0101, an audit entry and an invitation mail for each invited contact. The duplicate warning works.\n4. **Supplier fills in.** Metadata answers open and close sections live, and closed answers come back. Two contacts fill different sections, each answer attributed. The K5.1 waiver without a justification is refused. Completeness is blocked with named items, then confirmed by a contact who may confirm; one without the flag cannot. Review-task mails go out to RMM and only the affected departments, and an informed mail to Customs and Legal.\n5. **Review loop.** A reviewer raises a query on K2.1 component 2 CAS and the supplier gets a mail. The raiser edits it and the supplier sees the update (mail). The supplier answers and the raiser gets a mail. The reviewer returns it (mail), the supplier answers again, and the reviewer accepts it (mail). Another point is closed as withdrawn (mail). Every round is in the history.\n6. **RMES.** A negative result without a comment is refused. An open finding blocks completion. The finding becomes a query. The Rejected decision needs a reason. Regulatory cannot decide for Safety.\n7. **Part 2 changes.** The supplier changes an answer: the department is informed by mail with a \"changed\" marker. The SF-08 palm answer adds A1 for Sustainability (task plus additional-part point). A late section reopens a completed department and withdraws the release request.\n8. **Ending.** The last completion sends exactly one release mail. The final release completes the case automatically. The Final document tab shows every confirmation, the evidence with upload dates and every open-point thread as text. RMM gets a mail. A supplier change attempt is refused and logged.\n9. **Cancel and reactivate.** Cancelling withdraws the open points and tasks, mails go out, the case is listed as cancelled, and reactivation works within the window.\n10. **Admin.** Publish questionnaire v2 with RS-2026.2. The running case keeps v1, a new case with Turkey gets K6.3 and Annex 12, and the regression check runs without cases. The auditor sees it read-only.\n11. **Reminders.** Advance the clock: reminder and escalation mails are sent and logged.\n12. **Separation.** Supplier personas never reach internal routes or content, in screens, mails or thread.\n\n## 4. Questions for Thomas (to settle before the build)\n\n- **Q1.** Findings: should every open finding block its department's completion (BRM REQ-PROC-036, recommended), or keep the blocking / non-blocking split of REQ-RMES-009?\n- **Q2.** AS-08: may only the person who raised a point edit or close it, or also the department's responsible person and colleagues (for absences)?\n- **Q3.** Final document: is it limited to the released CIQ, the evidence list, the confirmations and the open-point threads (recommended), or should it also carry the Safety and Regulatory RMES decisions?\n- **Q4.** Does the supplier get a copy of the final document, or only a receipt mail (recommended: receipt only)?\n- **Q5.** Who may add suppliers and contacts: RMM only, or RMM and the Business admin?\n- **Q6.** Is it OK to remove Reports from RMM and Operations from the Business owner?\n- **Q7.** Should the demo clock for reminders be visible in the demo, or tucked into the admin Reminders page?\n- **Q8.** Should the switcher list every internal user (15 people), or one person per role with reviews assigned to that person?\n- **Q9.** Should the one supplier get a third contact who is not invited to the demo case, to show per-contact visibility and the \"may confirm\" flag?"
+}

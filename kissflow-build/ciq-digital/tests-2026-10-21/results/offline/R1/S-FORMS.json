@@ -1,0 +1,4506 @@
+{
+ "suite": "S-FORMS",
+ "run": "R1",
+ "startedAt": "2026-10-21T19:27:56.257Z",
+ "savedAt": "2026-10-21T19:27:56.312Z",
+ "counts": {
+  "pass": 13,
+  "fail": 0,
+  "blocked": 0,
+  "not-run": 0
+ },
+ "steps": [
+  {
+   "name": "F1 config: SET:current carries the 8 app hand-off codes (read only)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Config Version SET:current (raw: the row and its webhook codes, never the URLs)",
+      "value": {
+       "_id": "PkCfg10",
+       "Config_Key": "SET:current",
+       "Config_State": "Published",
+       "rowsWithTheKey": 1,
+       "webhookCodes": [
+        "case.cancelled",
+        "case.started",
+        "history.updated",
+        "op.closed",
+        "op.edited",
+        "op.round",
+        "release.requested",
+        "review.reopened"
+       ],
+       "httpsCodes": [
+        "case.cancelled",
+        "case.started",
+        "history.updated",
+        "op.closed",
+        "op.edited",
+        "op.round",
+        "release.requested",
+        "review.reopened"
+       ]
+      }
+     },
+     {
+      "what": "the app's settings → webhooksOf (codes)",
+      "value": [
+       "case.cancelled",
+       "case.started",
+       "history.updated",
+       "op.closed",
+       "op.edited",
+       "op.round",
+       "release.requested",
+       "review.reopened"
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "the app's settings come from a SET:current row whose Payload_JSON parses",
+      "ok": true,
+      "detail": {
+       "rows": 1
+      }
+     },
+     {
+      "label": "all 8 app hand-off codes carry an https URL",
+      "ok": true,
+      "detail": {
+       "missing": []
+      }
+     },
+     {
+      "label": "the suite's hook lookup has the same codes",
+      "ok": true,
+      "detail": [
+       "case.started",
+       "op.round",
+       "op.edited",
+       "op.closed",
+       "release.requested",
+       "review.reopened",
+       "case.cancelled",
+       "history.updated"
+      ]
+     },
+     {
+      "label": "the load's write context carries them",
+      "ok": true
+     }
+    ],
+    "notes": {
+     "calls": {
+      "client": {
+       "oneRead": 1,
+       "formList": 4,
+       "adminList": 3
+      },
+      "liveEstimate": 4
+     }
+    }
+   },
+   "ms": 4,
+   "at": "2026-10-21T19:27:56.258Z"
+  },
+  {
+   "name": "F2 supplier: add a run supplier with three contacts (addSupplier)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Supplier row (raw: header)",
+      "value": {
+       "_id": "FmSup2",
+       "Supplier_Code": "ZZT-N21-R1-FSUP1",
+       "Supplier_Legal_Name": "ZZT-N21-R1 Forms Supplier Iberica 1",
+       "DUNS_Number": "910100021",
+       "Supplier_Kind": "Manufacturer",
+       "Supplier_Country_Code": "ES",
+       "Supplier_City": "ZZT-N21-R1 Reus",
+       "Supplier_Active": "Yes"
+      }
+     },
+     {
+      "what": "the supplier as the app maps it",
+      "value": {
+       "id": "ZZT-N21-R1-FSUP1",
+       "name": "ZZT-N21-R1 Forms Supplier Iberica 1",
+       "duns": "910100021",
+       "country": "ES",
+       "city": "ZZT-N21-R1 Reus",
+       "type": "manufacturer",
+       "active": true,
+       "contactIds": [
+        "u-ZZT-N21-R1-FSUP1-1",
+        "u-ZZT-N21-R1-FSUP1-2",
+        "u-ZZT-N21-R1-FSUP1-3"
+       ]
+      }
+     },
+     {
+      "what": "CIQ Supplier row (raw: Contacts rows)",
+      "value": {
+       "_id": "FmSup2",
+       "rows": [
+        {
+         "_id": "Contacts_u5jz2hi7m3",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-1",
+         "Contacts_Full_Name": "ZZT-N21-R1 Marta Soler",
+         "Contacts_Email": "zzt-n21-r1-f1.marta.soler@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Quality Engineer",
+         "Contacts_Can_Confirm": "Yes",
+         "Contacts_Active": "Yes"
+        },
+        {
+         "_id": "Contacts_cc0b422da7",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-2",
+         "Contacts_Full_Name": "ZZT-N21-R1 Jonas Brandt",
+         "Contacts_Email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Sales Manager",
+         "Contacts_Can_Confirm": "No",
+         "Contacts_Active": "Yes"
+        },
+        {
+         "_id": "Contacts_4m7le62ci8",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-3",
+         "Contacts_Full_Name": "ZZT-N21-R1 Portal contact",
+         "Contacts_Email": "zzt-n21-r1-f1.portal.contact@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Supplier contact",
+         "Contacts_Can_Confirm": "Yes",
+         "Contacts_Active": "Yes"
+        }
+       ]
+      }
+     },
+     {
+      "what": "the supplier's contacts as the app maps them",
+      "value": [
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-1",
+        "name": "ZZT-N21-R1 Marta Soler",
+        "email": "zzt-n21-r1-f1.marta.soler@example.com",
+        "title": "ZZT-N21-R1 Quality Engineer",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": true,
+        "active": true
+       },
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-2",
+        "name": "ZZT-N21-R1 Jonas Brandt",
+        "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+        "title": "ZZT-N21-R1 Sales Manager",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": false,
+        "active": true
+       },
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-3",
+        "name": "ZZT-N21-R1 Portal contact",
+        "email": "zzt-n21-r1-f1.portal.contact@example.com",
+        "title": "ZZT-N21-R1 Supplier contact",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": true,
+        "active": true
+       }
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "addSupplier: no warnings",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "addSupplier: its audit row was written and read back",
+      "ok": true
+     },
+     {
+      "label": "the new row is in the ledger",
+      "ok": true
+     },
+     {
+      "label": "the mapped supplier is the domain's",
+      "ok": true
+     },
+     {
+      "label": "the row of contact a holds it",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the row of contact b holds it",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the row of contact s holds it",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "3 contact rows",
+      "ok": true,
+      "detail": 3
+     },
+     {
+      "label": "no duplicate contact row",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the mapped contacts are the domain's",
+      "ok": true,
+      "detail": {
+       "mapped": [
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-1",
+         "name": "ZZT-N21-R1 Marta Soler",
+         "email": "zzt-n21-r1-f1.marta.soler@example.com",
+         "title": "ZZT-N21-R1 Quality Engineer",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-2",
+         "name": "ZZT-N21-R1 Jonas Brandt",
+         "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "title": "ZZT-N21-R1 Sales Manager",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-3",
+         "name": "ZZT-N21-R1 Portal contact",
+         "email": "zzt-n21-r1-f1.portal.contact@example.com",
+         "title": "ZZT-N21-R1 Supplier contact",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        }
+       ],
+       "domain": [
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-1",
+         "name": "ZZT-N21-R1 Marta Soler",
+         "email": "zzt-n21-r1-f1.marta.soler@example.com",
+         "title": "ZZT-N21-R1 Quality Engineer",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-2",
+         "name": "ZZT-N21-R1 Jonas Brandt",
+         "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "title": "ZZT-N21-R1 Sales Manager",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-3",
+         "name": "ZZT-N21-R1 Portal contact",
+         "email": "zzt-n21-r1-f1.portal.contact@example.com",
+         "title": "ZZT-N21-R1 Supplier contact",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        }
+       ]
+      }
+     },
+     {
+      "label": "the row's header holds the supplier F2 made",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the mapped header is the supplier F2 made",
+      "ok": true,
+      "detail": {
+       "mapped": {
+        "id": "ZZT-N21-R1-FSUP1",
+        "name": "ZZT-N21-R1 Forms Supplier Iberica 1",
+        "duns": "910100021",
+        "country": "ES",
+        "city": "ZZT-N21-R1 Reus",
+        "type": "manufacturer",
+        "active": true
+       },
+       "want": {
+        "id": "ZZT-N21-R1-FSUP1",
+        "name": "ZZT-N21-R1 Forms Supplier Iberica 1",
+        "duns": "910100021",
+        "country": "ES",
+        "city": "ZZT-N21-R1 Reus",
+        "type": "manufacturer",
+        "active": true
+       }
+      }
+     },
+     {
+      "label": "the mapped supplier lists the domain's contacts",
+      "ok": true,
+      "detail": [
+       "u-ZZT-N21-R1-FSUP1-1",
+       "u-ZZT-N21-R1-FSUP1-2",
+       "u-ZZT-N21-R1-FSUP1-3"
+      ]
+     },
+     {
+      "label": "the writers' index knows every contact row",
+      "ok": true
+     }
+    ],
+    "notes": {
+     "result": {
+      "ok": true,
+      "moved": false,
+      "handoffs": [],
+      "warnings": []
+     },
+     "ids": {
+      "supplierItem": "FmSup2",
+      "contacts": {
+       "a": "u-ZZT-N21-R1-FSUP1-1",
+       "b": "u-ZZT-N21-R1-FSUP1-2",
+       "s": "u-ZZT-N21-R1-FSUP1-3"
+      }
+     },
+     "calls": {
+      "client": {
+       "formCreate": 2,
+       "formGet": 2
+      },
+      "liveEstimate": 6
+     }
+    }
+   },
+   "ms": 4,
+   "at": "2026-10-21T19:27:56.263Z"
+  },
+  {
+   "name": "F3 supplier: edit a contact's e-mail (updateContact)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "contact a's row (raw)",
+      "value": {
+       "_id": "Contacts_u5jz2hi7m3",
+       "Contacts_Key": "u-ZZT-N21-R1-FSUP1-1",
+       "Contacts_Full_Name": "ZZT-N21-R1 Marta Soler",
+       "Contacts_Email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+       "Contacts_Title": "ZZT-N21-R1 Quality Engineer",
+       "Contacts_Can_Confirm": "Yes",
+       "Contacts_Active": "Yes"
+      }
+     },
+     {
+      "what": "CIQ Supplier row (raw: Contacts rows)",
+      "value": {
+       "_id": "FmSup2",
+       "rows": [
+        {
+         "_id": "Contacts_u5jz2hi7m3",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-1",
+         "Contacts_Full_Name": "ZZT-N21-R1 Marta Soler",
+         "Contacts_Email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Quality Engineer",
+         "Contacts_Can_Confirm": "Yes",
+         "Contacts_Active": "Yes"
+        },
+        {
+         "_id": "Contacts_cc0b422da7",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-2",
+         "Contacts_Full_Name": "ZZT-N21-R1 Jonas Brandt",
+         "Contacts_Email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Sales Manager",
+         "Contacts_Can_Confirm": "No",
+         "Contacts_Active": "Yes"
+        },
+        {
+         "_id": "Contacts_4m7le62ci8",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-3",
+         "Contacts_Full_Name": "ZZT-N21-R1 Portal contact",
+         "Contacts_Email": "zzt-n21-r1-f1.portal.contact@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Supplier contact",
+         "Contacts_Can_Confirm": "Yes",
+         "Contacts_Active": "Yes"
+        }
+       ]
+      }
+     },
+     {
+      "what": "the supplier's contacts as the app maps them",
+      "value": [
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-1",
+        "name": "ZZT-N21-R1 Marta Soler",
+        "email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+        "title": "ZZT-N21-R1 Quality Engineer",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": true,
+        "active": true
+       },
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-2",
+        "name": "ZZT-N21-R1 Jonas Brandt",
+        "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+        "title": "ZZT-N21-R1 Sales Manager",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": false,
+        "active": true
+       },
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-3",
+        "name": "ZZT-N21-R1 Portal contact",
+        "email": "zzt-n21-r1-f1.portal.contact@example.com",
+        "title": "ZZT-N21-R1 Supplier contact",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": true,
+        "active": true
+       }
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "updateContact (e-mail): no warnings",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "updateContact (e-mail): its audit row was written and read back",
+      "ok": true
+     },
+     {
+      "label": "the domain changed the e-mail",
+      "ok": true
+     },
+     {
+      "label": "the row holds the contact as the writer encodes it",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "edited in place (the same row _id)",
+      "ok": true,
+      "detail": {
+       "before": "Contacts_u5jz2hi7m3",
+       "after": "Contacts_u5jz2hi7m3"
+      }
+     },
+     {
+      "label": "the old e-mail is on no row",
+      "ok": true
+     },
+     {
+      "label": "3 contact rows",
+      "ok": true,
+      "detail": 3
+     },
+     {
+      "label": "no duplicate contact row",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the mapped contacts are the domain's",
+      "ok": true,
+      "detail": {
+       "mapped": [
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-1",
+         "name": "ZZT-N21-R1 Marta Soler",
+         "email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+         "title": "ZZT-N21-R1 Quality Engineer",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-2",
+         "name": "ZZT-N21-R1 Jonas Brandt",
+         "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "title": "ZZT-N21-R1 Sales Manager",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-3",
+         "name": "ZZT-N21-R1 Portal contact",
+         "email": "zzt-n21-r1-f1.portal.contact@example.com",
+         "title": "ZZT-N21-R1 Supplier contact",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        }
+       ],
+       "domain": [
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-1",
+         "name": "ZZT-N21-R1 Marta Soler",
+         "email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+         "title": "ZZT-N21-R1 Quality Engineer",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-2",
+         "name": "ZZT-N21-R1 Jonas Brandt",
+         "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "title": "ZZT-N21-R1 Sales Manager",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-3",
+         "name": "ZZT-N21-R1 Portal contact",
+         "email": "zzt-n21-r1-f1.portal.contact@example.com",
+         "title": "ZZT-N21-R1 Supplier contact",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        }
+       ]
+      }
+     },
+     {
+      "label": "the row's header holds the supplier F2 made",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the mapped header is the supplier F2 made",
+      "ok": true,
+      "detail": {
+       "mapped": {
+        "id": "ZZT-N21-R1-FSUP1",
+        "name": "ZZT-N21-R1 Forms Supplier Iberica 1",
+        "duns": "910100021",
+        "country": "ES",
+        "city": "ZZT-N21-R1 Reus",
+        "type": "manufacturer",
+        "active": true
+       },
+       "want": {
+        "id": "ZZT-N21-R1-FSUP1",
+        "name": "ZZT-N21-R1 Forms Supplier Iberica 1",
+        "duns": "910100021",
+        "country": "ES",
+        "city": "ZZT-N21-R1 Reus",
+        "type": "manufacturer",
+        "active": true
+       }
+      }
+     },
+     {
+      "label": "the mapped supplier lists the domain's contacts",
+      "ok": true,
+      "detail": [
+       "u-ZZT-N21-R1-FSUP1-1",
+       "u-ZZT-N21-R1-FSUP1-2",
+       "u-ZZT-N21-R1-FSUP1-3"
+      ]
+     },
+     {
+      "label": "the writers' index knows every contact row",
+      "ok": true
+     }
+    ],
+    "notes": {
+     "result": {
+      "ok": true,
+      "moved": false,
+      "handoffs": [],
+      "warnings": []
+     },
+     "calls": {
+      "client": {
+       "formCreate": 1,
+       "formGet": 3,
+       "formUpdate": 1
+      },
+      "liveEstimate": 6
+     }
+    }
+   },
+   "ms": 1,
+   "at": "2026-10-21T19:27:56.268Z"
+  },
+  {
+   "name": "F4 supplier: add a contact, one row also after the settle (addContact)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Supplier row (raw: Contacts rows)",
+      "value": {
+       "_id": "FmSup2",
+       "rows": [
+        {
+         "_id": "Contacts_u5jz2hi7m3",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-1",
+         "Contacts_Full_Name": "ZZT-N21-R1 Marta Soler",
+         "Contacts_Email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Quality Engineer",
+         "Contacts_Can_Confirm": "Yes",
+         "Contacts_Active": "Yes"
+        },
+        {
+         "_id": "Contacts_cc0b422da7",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-2",
+         "Contacts_Full_Name": "ZZT-N21-R1 Jonas Brandt",
+         "Contacts_Email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Sales Manager",
+         "Contacts_Can_Confirm": "No",
+         "Contacts_Active": "Yes"
+        },
+        {
+         "_id": "Contacts_4m7le62ci8",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-3",
+         "Contacts_Full_Name": "ZZT-N21-R1 Portal contact",
+         "Contacts_Email": "zzt-n21-r1-f1.portal.contact@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Supplier contact",
+         "Contacts_Can_Confirm": "Yes",
+         "Contacts_Active": "Yes"
+        },
+        {
+         "_id": "Contacts_sv28uga6ho",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-4",
+         "Contacts_Full_Name": "ZZT-N21-R1 Lena Vidal",
+         "Contacts_Email": "zzt-n21-r1-f1.lena.vidal@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Regulatory Specialist",
+         "Contacts_Can_Confirm": "No",
+         "Contacts_Active": "Yes"
+        }
+       ]
+      }
+     },
+     {
+      "what": "the supplier's contacts as the app maps them",
+      "value": [
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-1",
+        "name": "ZZT-N21-R1 Marta Soler",
+        "email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+        "title": "ZZT-N21-R1 Quality Engineer",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": true,
+        "active": true
+       },
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-2",
+        "name": "ZZT-N21-R1 Jonas Brandt",
+        "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+        "title": "ZZT-N21-R1 Sales Manager",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": false,
+        "active": true
+       },
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-3",
+        "name": "ZZT-N21-R1 Portal contact",
+        "email": "zzt-n21-r1-f1.portal.contact@example.com",
+        "title": "ZZT-N21-R1 Supplier contact",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": true,
+        "active": true
+       },
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-4",
+        "name": "ZZT-N21-R1 Lena Vidal",
+        "email": "zzt-n21-r1-f1.lena.vidal@example.com",
+        "title": "ZZT-N21-R1 Regulatory Specialist",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": false,
+        "active": true
+       }
+      ]
+     },
+     {
+      "what": "the row read again 3 s later (raw: Contacts rows)",
+      "value": [
+       {
+        "_id": "Contacts_u5jz2hi7m3",
+        "Contacts_Key": "u-ZZT-N21-R1-FSUP1-1",
+        "Contacts_Full_Name": "ZZT-N21-R1 Marta Soler",
+        "Contacts_Email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+        "Contacts_Title": "ZZT-N21-R1 Quality Engineer",
+        "Contacts_Can_Confirm": "Yes",
+        "Contacts_Active": "Yes"
+       },
+       {
+        "_id": "Contacts_cc0b422da7",
+        "Contacts_Key": "u-ZZT-N21-R1-FSUP1-2",
+        "Contacts_Full_Name": "ZZT-N21-R1 Jonas Brandt",
+        "Contacts_Email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+        "Contacts_Title": "ZZT-N21-R1 Sales Manager",
+        "Contacts_Can_Confirm": "No",
+        "Contacts_Active": "Yes"
+       },
+       {
+        "_id": "Contacts_4m7le62ci8",
+        "Contacts_Key": "u-ZZT-N21-R1-FSUP1-3",
+        "Contacts_Full_Name": "ZZT-N21-R1 Portal contact",
+        "Contacts_Email": "zzt-n21-r1-f1.portal.contact@example.com",
+        "Contacts_Title": "ZZT-N21-R1 Supplier contact",
+        "Contacts_Can_Confirm": "Yes",
+        "Contacts_Active": "Yes"
+       },
+       {
+        "_id": "Contacts_sv28uga6ho",
+        "Contacts_Key": "u-ZZT-N21-R1-FSUP1-4",
+        "Contacts_Full_Name": "ZZT-N21-R1 Lena Vidal",
+        "Contacts_Email": "zzt-n21-r1-f1.lena.vidal@example.com",
+        "Contacts_Title": "ZZT-N21-R1 Regulatory Specialist",
+        "Contacts_Can_Confirm": "No",
+        "Contacts_Active": "Yes"
+       }
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "addContact: no warnings",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "addContact: its audit row was written and read back",
+      "ok": true
+     },
+     {
+      "label": "one row for the new contact",
+      "ok": true,
+      "detail": [
+       {
+        "_id": "Contacts_sv28uga6ho",
+        "Contacts_Key": "u-ZZT-N21-R1-FSUP1-4",
+        "Contacts_Full_Name": "ZZT-N21-R1 Lena Vidal",
+        "Contacts_Email": "zzt-n21-r1-f1.lena.vidal@example.com",
+        "Contacts_Title": "ZZT-N21-R1 Regulatory Specialist",
+        "Contacts_Can_Confirm": "No",
+        "Contacts_Active": "Yes"
+       }
+      ]
+     },
+     {
+      "label": "the row holds the contact as the writer encodes it",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "a key of its own (no other row carries it)",
+      "ok": true,
+      "detail": "u-ZZT-N21-R1-FSUP1-4"
+     },
+     {
+      "label": "4 contact rows",
+      "ok": true,
+      "detail": 4
+     },
+     {
+      "label": "no duplicate contact row",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the mapped contacts are the domain's",
+      "ok": true,
+      "detail": {
+       "mapped": [
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-1",
+         "name": "ZZT-N21-R1 Marta Soler",
+         "email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+         "title": "ZZT-N21-R1 Quality Engineer",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-2",
+         "name": "ZZT-N21-R1 Jonas Brandt",
+         "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "title": "ZZT-N21-R1 Sales Manager",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-3",
+         "name": "ZZT-N21-R1 Portal contact",
+         "email": "zzt-n21-r1-f1.portal.contact@example.com",
+         "title": "ZZT-N21-R1 Supplier contact",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-4",
+         "name": "ZZT-N21-R1 Lena Vidal",
+         "email": "zzt-n21-r1-f1.lena.vidal@example.com",
+         "title": "ZZT-N21-R1 Regulatory Specialist",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": true
+        }
+       ],
+       "domain": [
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-1",
+         "name": "ZZT-N21-R1 Marta Soler",
+         "email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+         "title": "ZZT-N21-R1 Quality Engineer",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-2",
+         "name": "ZZT-N21-R1 Jonas Brandt",
+         "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "title": "ZZT-N21-R1 Sales Manager",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-3",
+         "name": "ZZT-N21-R1 Portal contact",
+         "email": "zzt-n21-r1-f1.portal.contact@example.com",
+         "title": "ZZT-N21-R1 Supplier contact",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-4",
+         "name": "ZZT-N21-R1 Lena Vidal",
+         "email": "zzt-n21-r1-f1.lena.vidal@example.com",
+         "title": "ZZT-N21-R1 Regulatory Specialist",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": true
+        }
+       ]
+      }
+     },
+     {
+      "label": "the row's header holds the supplier F2 made",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the mapped header is the supplier F2 made",
+      "ok": true,
+      "detail": {
+       "mapped": {
+        "id": "ZZT-N21-R1-FSUP1",
+        "name": "ZZT-N21-R1 Forms Supplier Iberica 1",
+        "duns": "910100021",
+        "country": "ES",
+        "city": "ZZT-N21-R1 Reus",
+        "type": "manufacturer",
+        "active": true
+       },
+       "want": {
+        "id": "ZZT-N21-R1-FSUP1",
+        "name": "ZZT-N21-R1 Forms Supplier Iberica 1",
+        "duns": "910100021",
+        "country": "ES",
+        "city": "ZZT-N21-R1 Reus",
+        "type": "manufacturer",
+        "active": true
+       }
+      }
+     },
+     {
+      "label": "the mapped supplier lists the domain's contacts",
+      "ok": true,
+      "detail": [
+       "u-ZZT-N21-R1-FSUP1-1",
+       "u-ZZT-N21-R1-FSUP1-2",
+       "u-ZZT-N21-R1-FSUP1-3",
+       "u-ZZT-N21-R1-FSUP1-4"
+      ]
+     },
+     {
+      "label": "the writers' index knows every contact row",
+      "ok": true
+     },
+     {
+      "label": "after the settle: still one row for the new contact, four in all, no duplicate",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "result": {
+      "ok": true,
+      "moved": false,
+      "handoffs": [],
+      "warnings": []
+     },
+     "calls": {
+      "client": {
+       "formCreate": 1,
+       "formGet": 4,
+       "formUpdate": 1
+      },
+      "liveEstimate": 7
+     }
+    }
+   },
+   "ms": 2,
+   "at": "2026-10-21T19:27:56.269Z"
+  },
+  {
+   "name": "F5 supplier: deactivate a contact (setContactActive)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "contact b's row (raw)",
+      "value": {
+       "_id": "Contacts_cc0b422da7",
+       "Contacts_Key": "u-ZZT-N21-R1-FSUP1-2",
+       "Contacts_Full_Name": "ZZT-N21-R1 Jonas Brandt",
+       "Contacts_Email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+       "Contacts_Title": "ZZT-N21-R1 Sales Manager",
+       "Contacts_Can_Confirm": "No",
+       "Contacts_Active": "No",
+       "Contacts_Deactivated_At": "2026-10-21T19:27:56Z"
+      }
+     },
+     {
+      "what": "CIQ Supplier row (raw: Contacts rows)",
+      "value": {
+       "_id": "FmSup2",
+       "rows": [
+        {
+         "_id": "Contacts_u5jz2hi7m3",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-1",
+         "Contacts_Full_Name": "ZZT-N21-R1 Marta Soler",
+         "Contacts_Email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Quality Engineer",
+         "Contacts_Can_Confirm": "Yes",
+         "Contacts_Active": "Yes"
+        },
+        {
+         "_id": "Contacts_cc0b422da7",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-2",
+         "Contacts_Full_Name": "ZZT-N21-R1 Jonas Brandt",
+         "Contacts_Email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Sales Manager",
+         "Contacts_Can_Confirm": "No",
+         "Contacts_Active": "No",
+         "Contacts_Deactivated_At": "2026-10-21T19:27:56Z"
+        },
+        {
+         "_id": "Contacts_4m7le62ci8",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-3",
+         "Contacts_Full_Name": "ZZT-N21-R1 Portal contact",
+         "Contacts_Email": "zzt-n21-r1-f1.portal.contact@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Supplier contact",
+         "Contacts_Can_Confirm": "Yes",
+         "Contacts_Active": "Yes"
+        },
+        {
+         "_id": "Contacts_sv28uga6ho",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-4",
+         "Contacts_Full_Name": "ZZT-N21-R1 Lena Vidal",
+         "Contacts_Email": "zzt-n21-r1-f1.lena.vidal@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Regulatory Specialist",
+         "Contacts_Can_Confirm": "No",
+         "Contacts_Active": "Yes"
+        }
+       ]
+      }
+     },
+     {
+      "what": "the supplier's contacts as the app maps them",
+      "value": [
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-1",
+        "name": "ZZT-N21-R1 Marta Soler",
+        "email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+        "title": "ZZT-N21-R1 Quality Engineer",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": true,
+        "active": true
+       },
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-2",
+        "name": "ZZT-N21-R1 Jonas Brandt",
+        "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+        "title": "ZZT-N21-R1 Sales Manager",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": false,
+        "active": false,
+        "deactivatedAt": "2026-10-21T19:27:56.000Z"
+       },
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-3",
+        "name": "ZZT-N21-R1 Portal contact",
+        "email": "zzt-n21-r1-f1.portal.contact@example.com",
+        "title": "ZZT-N21-R1 Supplier contact",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": true,
+        "active": true
+       },
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-4",
+        "name": "ZZT-N21-R1 Lena Vidal",
+        "email": "zzt-n21-r1-f1.lena.vidal@example.com",
+        "title": "ZZT-N21-R1 Regulatory Specialist",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": false,
+        "active": true
+       }
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "setContactActive (deactivate): no warnings",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "setContactActive (deactivate): its audit row was written and read back",
+      "ok": true
+     },
+     {
+      "label": "the domain deactivated it",
+      "ok": true
+     },
+     {
+      "label": "the row reads Contacts_Active No with the deactivation time",
+      "ok": true,
+      "detail": {
+       "_id": "Contacts_cc0b422da7",
+       "Contacts_Key": "u-ZZT-N21-R1-FSUP1-2",
+       "Contacts_Full_Name": "ZZT-N21-R1 Jonas Brandt",
+       "Contacts_Email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+       "Contacts_Title": "ZZT-N21-R1 Sales Manager",
+       "Contacts_Can_Confirm": "No",
+       "Contacts_Active": "No",
+       "Contacts_Deactivated_At": "2026-10-21T19:27:56Z"
+      }
+     },
+     {
+      "label": "the row holds the contact as the writer encodes it",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "4 contact rows",
+      "ok": true,
+      "detail": 4
+     },
+     {
+      "label": "no duplicate contact row",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the mapped contacts are the domain's",
+      "ok": true,
+      "detail": {
+       "mapped": [
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-1",
+         "name": "ZZT-N21-R1 Marta Soler",
+         "email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+         "title": "ZZT-N21-R1 Quality Engineer",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-2",
+         "name": "ZZT-N21-R1 Jonas Brandt",
+         "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "title": "ZZT-N21-R1 Sales Manager",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": false,
+         "deactivatedAt": "2026-10-21T19:27:56.000Z"
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-3",
+         "name": "ZZT-N21-R1 Portal contact",
+         "email": "zzt-n21-r1-f1.portal.contact@example.com",
+         "title": "ZZT-N21-R1 Supplier contact",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-4",
+         "name": "ZZT-N21-R1 Lena Vidal",
+         "email": "zzt-n21-r1-f1.lena.vidal@example.com",
+         "title": "ZZT-N21-R1 Regulatory Specialist",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": true
+        }
+       ],
+       "domain": [
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-1",
+         "name": "ZZT-N21-R1 Marta Soler",
+         "email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+         "title": "ZZT-N21-R1 Quality Engineer",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-2",
+         "name": "ZZT-N21-R1 Jonas Brandt",
+         "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "title": "ZZT-N21-R1 Sales Manager",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": false,
+         "deactivatedAt": "2026-10-21T19:27:56.000Z"
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-3",
+         "name": "ZZT-N21-R1 Portal contact",
+         "email": "zzt-n21-r1-f1.portal.contact@example.com",
+         "title": "ZZT-N21-R1 Supplier contact",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-4",
+         "name": "ZZT-N21-R1 Lena Vidal",
+         "email": "zzt-n21-r1-f1.lena.vidal@example.com",
+         "title": "ZZT-N21-R1 Regulatory Specialist",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": true
+        }
+       ]
+      }
+     },
+     {
+      "label": "the row's header holds the supplier F2 made",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the mapped header is the supplier F2 made",
+      "ok": true,
+      "detail": {
+       "mapped": {
+        "id": "ZZT-N21-R1-FSUP1",
+        "name": "ZZT-N21-R1 Forms Supplier Iberica 1",
+        "duns": "910100021",
+        "country": "ES",
+        "city": "ZZT-N21-R1 Reus",
+        "type": "manufacturer",
+        "active": true
+       },
+       "want": {
+        "id": "ZZT-N21-R1-FSUP1",
+        "name": "ZZT-N21-R1 Forms Supplier Iberica 1",
+        "duns": "910100021",
+        "country": "ES",
+        "city": "ZZT-N21-R1 Reus",
+        "type": "manufacturer",
+        "active": true
+       }
+      }
+     },
+     {
+      "label": "the mapped supplier lists the domain's contacts",
+      "ok": true,
+      "detail": [
+       "u-ZZT-N21-R1-FSUP1-1",
+       "u-ZZT-N21-R1-FSUP1-2",
+       "u-ZZT-N21-R1-FSUP1-3",
+       "u-ZZT-N21-R1-FSUP1-4"
+      ]
+     },
+     {
+      "label": "the writers' index knows every contact row",
+      "ok": true
+     }
+    ],
+    "notes": {
+     "result": {
+      "ok": true,
+      "moved": false,
+      "handoffs": [],
+      "warnings": []
+     },
+     "calls": {
+      "client": {
+       "formCreate": 1,
+       "formGet": 3,
+       "formUpdate": 1
+      },
+      "liveEstimate": 6
+     }
+    }
+   },
+   "ms": 1,
+   "at": "2026-10-21T19:27:56.271Z"
+  },
+  {
+   "name": "F6 supplier: link Thomas's portal user to a contact (portal user management, simulated)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "the row after the link (raw)",
+      "value": {
+       "_id": "Contacts_4m7le62ci8",
+       "Contacts_Key": "u-ZZT-N21-R1-FSUP1-3",
+       "Contacts_Full_Name": "ZZT-N21-R1 Portal contact",
+       "Contacts_Email": "zzt-n21-r1-f1.portal.contact@example.com",
+       "Contacts_Title": "ZZT-N21-R1 Supplier contact",
+       "Contacts_Can_Confirm": "Yes",
+       "Contacts_Active": "Yes",
+       "Contacts_Portal_User_Id": "UsRmmKatrin"
+      }
+     },
+     {
+      "what": "the self contact as the app maps it",
+      "value": {
+       "id": "self:UsRmmKatrin",
+       "name": "ZZT-N21-R1 Portal contact",
+       "email": "zzt-n21-r1-f1.portal.contact@example.com",
+       "title": "ZZT-N21-R1 Supplier contact",
+       "supplierId": "ZZT-N21-R1-FSUP1",
+       "mayConfirm": true,
+       "active": true
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the row carries the portal user and keeps its key",
+      "ok": true,
+      "detail": {
+       "_id": "Contacts_4m7le62ci8",
+       "Contacts_Key": "u-ZZT-N21-R1-FSUP1-3",
+       "Contacts_Full_Name": "ZZT-N21-R1 Portal contact",
+       "Contacts_Email": "zzt-n21-r1-f1.portal.contact@example.com",
+       "Contacts_Title": "ZZT-N21-R1 Supplier contact",
+       "Contacts_Can_Confirm": "Yes",
+       "Contacts_Active": "Yes",
+       "Contacts_Portal_User_Id": "UsRmmKatrin"
+      }
+     },
+     {
+      "label": "4 rows, no duplicate",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the row's header holds the supplier F2 made",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the mapped header is the supplier F2 made",
+      "ok": true,
+      "detail": {
+       "mapped": {
+        "id": "ZZT-N21-R1-FSUP1",
+        "name": "ZZT-N21-R1 Forms Supplier Iberica 1",
+        "duns": "910100021",
+        "country": "ES",
+        "city": "ZZT-N21-R1 Reus",
+        "type": "manufacturer",
+        "active": true
+       },
+       "want": {
+        "id": "ZZT-N21-R1-FSUP1",
+        "name": "ZZT-N21-R1 Forms Supplier Iberica 1",
+        "duns": "910100021",
+        "country": "ES",
+        "city": "ZZT-N21-R1 Reus",
+        "type": "manufacturer",
+        "active": true
+       }
+      }
+     },
+     {
+      "label": "the app maps it to the self contact of this supplier, as the domain had it",
+      "ok": true,
+      "detail": {
+       "mapped": {
+        "id": "self:UsRmmKatrin",
+        "name": "ZZT-N21-R1 Portal contact",
+        "email": "zzt-n21-r1-f1.portal.contact@example.com",
+        "title": "ZZT-N21-R1 Supplier contact",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": true,
+        "active": true
+       },
+       "want": {
+        "id": "self:UsRmmKatrin",
+        "name": "ZZT-N21-R1 Portal contact",
+        "email": "zzt-n21-r1-f1.portal.contact@example.com",
+        "title": "ZZT-N21-R1 Supplier contact",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": true,
+        "active": true
+       }
+      }
+     },
+     {
+      "label": "the supplier lists the self contact instead of the domain id",
+      "ok": true,
+      "detail": {
+       "mapped": [
+        "self:UsRmmKatrin",
+        "u-ZZT-N21-R1-FSUP1-1",
+        "u-ZZT-N21-R1-FSUP1-2",
+        "u-ZZT-N21-R1-FSUP1-4"
+       ],
+       "want": [
+        "self:UsRmmKatrin",
+        "u-ZZT-N21-R1-FSUP1-1",
+        "u-ZZT-N21-R1-FSUP1-2",
+        "u-ZZT-N21-R1-FSUP1-4"
+       ]
+      }
+     },
+     {
+      "label": "the writers' index knows its row",
+      "ok": true
+     },
+     {
+      "label": "the Business administrator's own user shows no e-mail (one e-mail per person)",
+      "ok": true
+     },
+     {
+      "label": "the other contacts are unchanged",
+      "ok": true
+     }
+    ],
+    "notes": {
+     "not the app's code": "Contacts_Portal_User_Id is set by portal user management, not by an app writer: a one-field Table::Contacts delta by the row's _id.",
+     "calls": {
+      "client": {
+       "oneRead": 1,
+       "formList": 4,
+       "adminList": 3,
+       "formGet": 2,
+       "formUpdate": 1
+      },
+      "liveEstimate": 7
+     }
+    }
+   },
+   "ms": 2,
+   "at": "2026-10-21T19:27:56.273Z"
+  },
+  {
+   "name": "F7 supplier: the self contact's e-mail and title as the Business administrator (no 'already used' refusal)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "the self contact's row (raw)",
+      "value": {
+       "_id": "Contacts_4m7le62ci8",
+       "Contacts_Key": "u-ZZT-N21-R1-FSUP1-3",
+       "Contacts_Full_Name": "ZZT-N21-R1 Portal contact",
+       "Contacts_Email": "<identity e-mail>",
+       "Contacts_Title": "ZZT-N21-R1 Dev lead",
+       "Contacts_Can_Confirm": "Yes",
+       "Contacts_Active": "Yes",
+       "Contacts_Portal_User_Id": "UsRmmKatrin"
+      }
+     },
+     {
+      "what": "CIQ Supplier row (raw: Contacts rows)",
+      "value": {
+       "_id": "FmSup2",
+       "rows": [
+        {
+         "_id": "Contacts_u5jz2hi7m3",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-1",
+         "Contacts_Full_Name": "ZZT-N21-R1 Marta Soler",
+         "Contacts_Email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Quality Engineer",
+         "Contacts_Can_Confirm": "Yes",
+         "Contacts_Active": "Yes"
+        },
+        {
+         "_id": "Contacts_cc0b422da7",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-2",
+         "Contacts_Full_Name": "ZZT-N21-R1 Jonas Brandt",
+         "Contacts_Email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Sales Manager",
+         "Contacts_Can_Confirm": "No",
+         "Contacts_Active": "No",
+         "Contacts_Deactivated_At": "2026-10-21T19:27:56Z"
+        },
+        {
+         "_id": "Contacts_4m7le62ci8",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-3",
+         "Contacts_Full_Name": "ZZT-N21-R1 Portal contact",
+         "Contacts_Email": "<identity e-mail>",
+         "Contacts_Title": "ZZT-N21-R1 Dev lead",
+         "Contacts_Can_Confirm": "Yes",
+         "Contacts_Active": "Yes",
+         "Contacts_Portal_User_Id": "UsRmmKatrin"
+        },
+        {
+         "_id": "Contacts_sv28uga6ho",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-4",
+         "Contacts_Full_Name": "ZZT-N21-R1 Lena Vidal",
+         "Contacts_Email": "zzt-n21-r1-f1.lena.vidal@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Regulatory Specialist",
+         "Contacts_Can_Confirm": "No",
+         "Contacts_Active": "Yes"
+        }
+       ]
+      }
+     },
+     {
+      "what": "the supplier's contacts as the app maps them",
+      "value": [
+       {
+        "id": "self:UsRmmKatrin",
+        "name": "ZZT-N21-R1 Portal contact",
+        "email": "<identity e-mail>",
+        "title": "ZZT-N21-R1 Dev lead",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": true,
+        "active": true
+       },
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-1",
+        "name": "ZZT-N21-R1 Marta Soler",
+        "email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+        "title": "ZZT-N21-R1 Quality Engineer",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": true,
+        "active": true
+       },
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-2",
+        "name": "ZZT-N21-R1 Jonas Brandt",
+        "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+        "title": "ZZT-N21-R1 Sales Manager",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": false,
+        "active": false,
+        "deactivatedAt": "2026-10-21T19:27:56.000Z"
+       },
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-4",
+        "name": "ZZT-N21-R1 Lena Vidal",
+        "email": "zzt-n21-r1-f1.lena.vidal@example.com",
+        "title": "ZZT-N21-R1 Regulatory Specialist",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": false,
+        "active": true
+       }
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "no \"already used\" refusal",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact): no warnings",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "updateContact (self contact): its audit row was written and read back",
+      "ok": true
+     },
+     {
+      "label": "the row holds the title (and the identity's e-mail)",
+      "ok": true,
+      "detail": {
+       "_id": "Contacts_4m7le62ci8",
+       "Contacts_Key": "u-ZZT-N21-R1-FSUP1-3",
+       "Contacts_Full_Name": "ZZT-N21-R1 Portal contact",
+       "Contacts_Email": "<identity e-mail>",
+       "Contacts_Title": "ZZT-N21-R1 Dev lead",
+       "Contacts_Can_Confirm": "Yes",
+       "Contacts_Active": "Yes",
+       "Contacts_Portal_User_Id": "UsRmmKatrin"
+      }
+     },
+     {
+      "label": "the row holds the contact as the writer encodes it",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "still the portal user's row, same key",
+      "ok": true
+     },
+     {
+      "label": "no \"self:\" id reached the row",
+      "ok": true
+     },
+     {
+      "label": "only the self contact holds the identity's e-mail in the screens' state",
+      "ok": true
+     },
+     {
+      "label": "4 contact rows",
+      "ok": true,
+      "detail": 4
+     },
+     {
+      "label": "no duplicate contact row",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the mapped contacts are the domain's",
+      "ok": true,
+      "detail": {
+       "mapped": [
+        {
+         "id": "self:UsRmmKatrin",
+         "name": "ZZT-N21-R1 Portal contact",
+         "email": "<identity e-mail>",
+         "title": "ZZT-N21-R1 Dev lead",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-1",
+         "name": "ZZT-N21-R1 Marta Soler",
+         "email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+         "title": "ZZT-N21-R1 Quality Engineer",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-2",
+         "name": "ZZT-N21-R1 Jonas Brandt",
+         "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "title": "ZZT-N21-R1 Sales Manager",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": false,
+         "deactivatedAt": "2026-10-21T19:27:56.000Z"
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-4",
+         "name": "ZZT-N21-R1 Lena Vidal",
+         "email": "zzt-n21-r1-f1.lena.vidal@example.com",
+         "title": "ZZT-N21-R1 Regulatory Specialist",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": true
+        }
+       ],
+       "domain": [
+        {
+         "id": "self:UsRmmKatrin",
+         "name": "ZZT-N21-R1 Portal contact",
+         "email": "<identity e-mail>",
+         "title": "ZZT-N21-R1 Dev lead",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-1",
+         "name": "ZZT-N21-R1 Marta Soler",
+         "email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+         "title": "ZZT-N21-R1 Quality Engineer",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-2",
+         "name": "ZZT-N21-R1 Jonas Brandt",
+         "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "title": "ZZT-N21-R1 Sales Manager",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": false,
+         "deactivatedAt": "2026-10-21T19:27:56.000Z"
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-4",
+         "name": "ZZT-N21-R1 Lena Vidal",
+         "email": "zzt-n21-r1-f1.lena.vidal@example.com",
+         "title": "ZZT-N21-R1 Regulatory Specialist",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": true
+        }
+       ]
+      }
+     },
+     {
+      "label": "the row's header holds the supplier F2 made",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the mapped header is the supplier F2 made",
+      "ok": true,
+      "detail": {
+       "mapped": {
+        "id": "ZZT-N21-R1-FSUP1",
+        "name": "ZZT-N21-R1 Forms Supplier Iberica 1",
+        "duns": "910100021",
+        "country": "ES",
+        "city": "ZZT-N21-R1 Reus",
+        "type": "manufacturer",
+        "active": true
+       },
+       "want": {
+        "id": "ZZT-N21-R1-FSUP1",
+        "name": "ZZT-N21-R1 Forms Supplier Iberica 1",
+        "duns": "910100021",
+        "country": "ES",
+        "city": "ZZT-N21-R1 Reus",
+        "type": "manufacturer",
+        "active": true
+       }
+      }
+     },
+     {
+      "label": "the mapped supplier lists the domain's contacts",
+      "ok": true,
+      "detail": [
+       "self:UsRmmKatrin",
+       "u-ZZT-N21-R1-FSUP1-1",
+       "u-ZZT-N21-R1-FSUP1-2",
+       "u-ZZT-N21-R1-FSUP1-4"
+      ]
+     },
+     {
+      "label": "the writers' index knows every contact row",
+      "ok": true
+     }
+    ],
+    "notes": {
+     "patch": {
+      "title": "ZZT-N21-R1 Dev lead",
+      "email": "the identity's"
+     },
+     "result": {
+      "ok": true,
+      "moved": false,
+      "handoffs": [],
+      "warnings": []
+     },
+     "calls": {
+      "client": {
+       "formCreate": 1,
+       "formGet": 3,
+       "formUpdate": 1
+      },
+      "liveEstimate": 6
+     }
+    }
+   },
+   "ms": 1,
+   "at": "2026-10-21T19:27:56.276Z"
+  },
+  {
+   "name": "F8 supplier: every contact row on the form GET and a fresh load",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Supplier row on the form GET (raw: header and every Contacts row)",
+      "value": {
+       "_id": "FmSup2",
+       "Supplier_Code": "ZZT-N21-R1-FSUP1",
+       "Supplier_Legal_Name": "ZZT-N21-R1 Forms Supplier Iberica 1",
+       "rows": [
+        {
+         "_id": "Contacts_u5jz2hi7m3",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-1",
+         "Contacts_Full_Name": "ZZT-N21-R1 Marta Soler",
+         "Contacts_Email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Quality Engineer",
+         "Contacts_Can_Confirm": "Yes",
+         "Contacts_Active": "Yes"
+        },
+        {
+         "_id": "Contacts_cc0b422da7",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-2",
+         "Contacts_Full_Name": "ZZT-N21-R1 Jonas Brandt",
+         "Contacts_Email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Sales Manager",
+         "Contacts_Can_Confirm": "No",
+         "Contacts_Active": "No",
+         "Contacts_Deactivated_At": "2026-10-21T19:27:56Z"
+        },
+        {
+         "_id": "Contacts_4m7le62ci8",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-3",
+         "Contacts_Full_Name": "ZZT-N21-R1 Portal contact",
+         "Contacts_Email": "<identity e-mail>",
+         "Contacts_Title": "ZZT-N21-R1 Dev lead",
+         "Contacts_Can_Confirm": "Yes",
+         "Contacts_Active": "Yes",
+         "Contacts_Portal_User_Id": "UsRmmKatrin"
+        },
+        {
+         "_id": "Contacts_sv28uga6ho",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-4",
+         "Contacts_Full_Name": "ZZT-N21-R1 Lena Vidal",
+         "Contacts_Email": "zzt-n21-r1-f1.lena.vidal@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Regulatory Specialist",
+         "Contacts_Can_Confirm": "No",
+         "Contacts_Active": "Yes"
+        }
+       ]
+      }
+     },
+     {
+      "what": "the supplier and its contacts on a fresh load",
+      "value": {
+       "supplier": {
+        "id": "ZZT-N21-R1-FSUP1",
+        "name": "ZZT-N21-R1 Forms Supplier Iberica 1",
+        "duns": "910100021",
+        "country": "ES",
+        "city": "ZZT-N21-R1 Reus",
+        "type": "manufacturer",
+        "active": true,
+        "contactIds": [
+         "self:UsRmmKatrin",
+         "u-ZZT-N21-R1-FSUP1-1",
+         "u-ZZT-N21-R1-FSUP1-2",
+         "u-ZZT-N21-R1-FSUP1-4"
+        ]
+       },
+       "contacts": [
+        {
+         "id": "self:UsRmmKatrin",
+         "name": "ZZT-N21-R1 Portal contact",
+         "email": "<identity e-mail>",
+         "title": "ZZT-N21-R1 Dev lead",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-1",
+         "name": "ZZT-N21-R1 Marta Soler",
+         "email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+         "title": "ZZT-N21-R1 Quality Engineer",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-2",
+         "name": "ZZT-N21-R1 Jonas Brandt",
+         "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "title": "ZZT-N21-R1 Sales Manager",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": false,
+         "deactivatedAt": "2026-10-21T19:27:56.000Z"
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-4",
+         "name": "ZZT-N21-R1 Lena Vidal",
+         "email": "zzt-n21-r1-f1.lena.vidal@example.com",
+         "title": "ZZT-N21-R1 Regulatory Specialist",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": true
+        }
+       ]
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "4 rows, no duplicate",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the row's header holds the supplier F2 made",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the row of self:UsRmmKatrin holds it",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the row of u-ZZT-N21-R1-FSUP1-1 holds it",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the row of u-ZZT-N21-R1-FSUP1-2 holds it",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the row of u-ZZT-N21-R1-FSUP1-4 holds it",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the fresh load's header is the supplier F2 made",
+      "ok": true,
+      "detail": {
+       "load": {
+        "id": "ZZT-N21-R1-FSUP1",
+        "name": "ZZT-N21-R1 Forms Supplier Iberica 1",
+        "duns": "910100021",
+        "country": "ES",
+        "city": "ZZT-N21-R1 Reus",
+        "type": "manufacturer",
+        "active": true
+       },
+       "want": {
+        "id": "ZZT-N21-R1-FSUP1",
+        "name": "ZZT-N21-R1 Forms Supplier Iberica 1",
+        "duns": "910100021",
+        "country": "ES",
+        "city": "ZZT-N21-R1 Reus",
+        "type": "manufacturer",
+        "active": true
+       }
+      }
+     },
+     {
+      "label": "the fresh load lists the domain's contacts",
+      "ok": true,
+      "detail": [
+       "self:UsRmmKatrin",
+       "u-ZZT-N21-R1-FSUP1-1",
+       "u-ZZT-N21-R1-FSUP1-2",
+       "u-ZZT-N21-R1-FSUP1-4"
+      ]
+     },
+     {
+      "label": "the fresh load's contacts are the domain's",
+      "ok": true,
+      "detail": {
+       "load": [
+        {
+         "id": "self:UsRmmKatrin",
+         "name": "ZZT-N21-R1 Portal contact",
+         "email": "<identity e-mail>",
+         "title": "ZZT-N21-R1 Dev lead",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-1",
+         "name": "ZZT-N21-R1 Marta Soler",
+         "email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+         "title": "ZZT-N21-R1 Quality Engineer",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-2",
+         "name": "ZZT-N21-R1 Jonas Brandt",
+         "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "title": "ZZT-N21-R1 Sales Manager",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": false,
+         "deactivatedAt": "2026-10-21T19:27:56.000Z"
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-4",
+         "name": "ZZT-N21-R1 Lena Vidal",
+         "email": "zzt-n21-r1-f1.lena.vidal@example.com",
+         "title": "ZZT-N21-R1 Regulatory Specialist",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": true
+        }
+       ],
+       "domain": [
+        {
+         "id": "self:UsRmmKatrin",
+         "name": "ZZT-N21-R1 Portal contact",
+         "email": "<identity e-mail>",
+         "title": "ZZT-N21-R1 Dev lead",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-1",
+         "name": "ZZT-N21-R1 Marta Soler",
+         "email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+         "title": "ZZT-N21-R1 Quality Engineer",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-2",
+         "name": "ZZT-N21-R1 Jonas Brandt",
+         "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "title": "ZZT-N21-R1 Sales Manager",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": false,
+         "deactivatedAt": "2026-10-21T19:27:56.000Z"
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-4",
+         "name": "ZZT-N21-R1 Lena Vidal",
+         "email": "zzt-n21-r1-f1.lena.vidal@example.com",
+         "title": "ZZT-N21-R1 Regulatory Specialist",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": true
+        }
+       ]
+      }
+     },
+     {
+      "label": "the writers' index names each contact's own row",
+      "ok": true,
+      "detail": {
+       "u-ZZT-N21-R1-FSUP1-1": "Contacts_u5jz2hi7m3",
+       "u-ZZT-N21-R1-FSUP1-2": "Contacts_cc0b422da7",
+       "self:UsRmmKatrin": "Contacts_4m7le62ci8",
+       "u-ZZT-N21-R1-FSUP1-4": "Contacts_sv28uga6ho"
+      }
+     }
+    ],
+    "notes": {
+     "calls": {
+      "client": {
+       "oneRead": 1,
+       "formList": 4,
+       "adminList": 3,
+       "formGet": 2
+      },
+      "liveEstimate": 6
+     }
+    }
+   },
+   "ms": 2,
+   "at": "2026-10-21T19:27:56.279Z"
+  },
+  {
+   "name": "F9 case: a run case for the note (createCase as RMM; I-1's request adopted)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Case (raw: admin GET)",
+      "value": {
+       "_id": "PkCase13",
+       "Case_Code": "ZZT-N21-R1-FCASE1",
+       "_status": "InProgress",
+       "_current_step": "Waiting for supplier: CIQ",
+       "Supplier_Code": "ZZT-N21-R1-FSUP1",
+       "Owner_RMM": [
+        "UsRmmKatrin"
+       ],
+       "Portal_Contact_Ids": "UsRmmKatrin",
+       "Confirm_Contact_Ids": "UsRmmKatrin",
+       "Case_Contacts_JSON": [
+        {
+         "id": "UsRmmKatrin",
+         "name": "ZZT-N21-R1 Portal contact",
+         "email": "<identity e-mail>",
+         "title": "ZZT-N21-R1 Dev lead",
+         "mayConfirm": true
+        }
+       ],
+       "Portal_Request_Item_Id": "PkReq1"
+      }
+     },
+     {
+      "what": "CIQP Request (raw: admin GET)",
+      "value": {
+       "_id": "PkReq1",
+       "Request_Key": "ZZT-N21-R1-FCASE1|1",
+       "App_Case_Item_Id": "PkCase13",
+       "Case_Code": "ZZT-N21-R1-FCASE1",
+       "_current_step": "Supplier: fill in the CIQ",
+       "Assigned_Contacts": [
+        "UsRmmKatrin"
+       ]
+      }
+     },
+     {
+      "what": "the case as the app maps it",
+      "value": {
+       "id": "ZZT-N21-R1-FCASE1",
+       "materialName": "ZZT-N21-R1 Forms note material 1",
+       "inci": "ZZT-N21-R1 Glycerin",
+       "materialNo": "ZZT-N21-R1-RM-F1",
+       "supplierId": "ZZT-N21-R1-FSUP1",
+       "manufacturer": "ZZT-N21-R1 Forms Supplier Iberica 1",
+       "ownerId": "UsRmmKatrin",
+       "priority": "normal",
+       "templateVersion": "CIQ-2026 v1",
+       "ruleSetVersion": "RS-2026.1",
+       "phase": "supplier-input",
+       "supplierContactIds": [
+        "self:UsRmmKatrin"
+       ],
+       "markets": [
+        "EU"
+       ],
+       "due": "2026-11-20"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "createCase: no warnings",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "createCase: its audit row was written and read back",
+      "ok": true
+     },
+     {
+      "label": "the case is in the ledger",
+      "ok": true
+     },
+     {
+      "label": "case.started was handed over",
+      "ok": true,
+      "detail": [
+       {
+        "code": "case.started",
+        "status": "sent",
+        "detail": "handed over",
+        "key": "HO-case.started-mvii8cjk-bgagzs"
+       }
+      ]
+     },
+     {
+      "label": "I-1 linked a CIQP Request on the case",
+      "ok": true
+     },
+     {
+      "label": "the case waits at \"Waiting for supplier: CIQ\"",
+      "ok": true,
+      "detail": "Waiting for supplier: CIQ"
+     },
+     {
+      "label": "the portal contact is the Kissflow user, not the domain's self id",
+      "ok": true
+     },
+     {
+      "label": "the request names this case (only then it is this suite's)",
+      "ok": true,
+      "detail": {
+       "App_Case_Item_Id": "PkCase13",
+       "Case_Code": "ZZT-N21-R1-FCASE1"
+      }
+     },
+     {
+      "label": "the request is assigned to the portal contact",
+      "ok": true,
+      "detail": [
+       "UsRmmKatrin"
+      ]
+     },
+     {
+      "label": "the mapped case is the domain's",
+      "ok": true,
+      "detail": {
+       "mapped": {
+        "id": "ZZT-N21-R1-FCASE1",
+        "materialName": "ZZT-N21-R1 Forms note material 1",
+        "inci": "ZZT-N21-R1 Glycerin",
+        "materialNo": "ZZT-N21-R1-RM-F1",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "manufacturer": "ZZT-N21-R1 Forms Supplier Iberica 1",
+        "ownerId": "UsRmmKatrin",
+        "priority": "normal",
+        "templateVersion": "CIQ-2026 v1",
+        "ruleSetVersion": "RS-2026.1",
+        "phase": "supplier-input",
+        "supplierContactIds": [
+         "self:UsRmmKatrin"
+        ],
+        "markets": [
+         "EU"
+        ],
+        "due": "2026-11-20"
+       },
+       "domain": {
+        "id": "ZZT-N21-R1-FCASE1",
+        "materialName": "ZZT-N21-R1 Forms note material 1",
+        "inci": "ZZT-N21-R1 Glycerin",
+        "materialNo": "ZZT-N21-R1-RM-F1",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "manufacturer": "ZZT-N21-R1 Forms Supplier Iberica 1",
+        "ownerId": "UsRmmKatrin",
+        "priority": "normal",
+        "templateVersion": "CIQ-2026 v1",
+        "ruleSetVersion": "RS-2026.1",
+        "phase": "supplier-input",
+        "supplierContactIds": [
+         "self:UsRmmKatrin"
+        ],
+        "markets": [
+         "EU"
+        ],
+        "due": "2026-11-20"
+       }
+      }
+     },
+     {
+      "label": "the writers' index links the case and its request",
+      "ok": true
+     },
+     {
+      "label": "no hand-off failed after the save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "result": {
+      "ok": true,
+      "moved": true,
+      "handoffs": [
+       "case.started:sent"
+      ],
+      "warnings": []
+     },
+     "I-1 poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "calls": {
+      "client": {
+       "oneRead": 1,
+       "formList": 4,
+       "adminList": 3,
+       "formCreate": 1,
+       "formGet": 2,
+       "myTasks": 7,
+       "myItems": 3,
+       "create": 1,
+       "getTask": 1,
+       "submit": 1,
+       "postWebhook": 1,
+       "adminGet": 1,
+       "portal.adminGet": 1
+      },
+      "liveEstimate": 17
+     }
+    }
+   },
+   "ms": 9,
+   "at": "2026-10-21T19:27:56.282Z"
+  },
+  {
+   "name": "F10 internal note: add it and read it back (addInternalNote)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Internal Note row (raw)",
+      "value": {
+       "_id": "FmNote19",
+       "Note_Key": "ZZT-N21-R1-FCASE1-n1",
+       "Case_Code": "ZZT-N21-R1-FCASE1",
+       "Case_Item_Id": "PkCase13",
+       "Linked_Kind": "Case",
+       "Linked_Key": "ZZT-N21-R1-FCASE1",
+       "Note_Text": "ZZT-N21-R1 Customs: the HS code of the material needs a second look.",
+       "Note_Dept": "CUS",
+       "Note_At": "2026-10-21T19:27:56Z",
+       "Note_Author": [
+        "UsRmmKatrin"
+       ]
+      }
+     },
+     {
+      "what": "the note as the app maps it",
+      "value": {
+       "id": "ZZT-N21-R1-FCASE1-n1",
+       "at": "2026-10-21T19:27:56.000Z",
+       "by": "UsRmmKatrin",
+       "dept": "CUS",
+       "text": "ZZT-N21-R1 Customs: the HS code of the material needs a second look."
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the note is where this run puts it (on a section, or on the case)",
+      "ok": true,
+      "detail": {
+       "onSection": false,
+       "mandatorySections": [
+        "GEN",
+        "K1",
+        "K2.1",
+        "K2.2",
+        "K2.3",
+        "K3",
+        "K4.1",
+        "K4.2",
+        "K5.1",
+        "K5.2",
+        "K5.3",
+        "K6.1",
+        "K6.5",
+        "K6.6",
+        "K6.7",
+        "K6.9",
+        "K6.10",
+        "K6.11",
+        "K6.12",
+        "K6.16",
+        "K7",
+        "K8",
+        "A10"
+       ]
+      }
+     },
+     {
+      "label": "addInternalNote (cus): no warnings",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "addInternalNote (cus): its audit row was written and read back",
+      "ok": true
+     },
+     {
+      "label": "the row is in the ledger",
+      "ok": true
+     },
+     {
+      "label": "the row holds the note as the writer encodes it",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the author is the Kissflow user",
+      "ok": true
+     },
+     {
+      "label": "the mapped note is the domain's",
+      "ok": true,
+      "detail": {
+       "mapped": {
+        "id": "ZZT-N21-R1-FCASE1-n1",
+        "at": "2026-10-21T19:27:56.000Z",
+        "by": "UsRmmKatrin",
+        "dept": "CUS",
+        "text": "ZZT-N21-R1 Customs: the HS code of the material needs a second look."
+       },
+       "domain": {
+        "id": "ZZT-N21-R1-FCASE1-n1",
+        "at": "2026-10-21T19:27:56.000Z",
+        "by": "UsRmmKatrin",
+        "dept": "CUS",
+        "text": "ZZT-N21-R1 Customs: the HS code of the material needs a second look."
+       }
+      }
+     },
+     {
+      "label": "the case history shows the domain's entry",
+      "ok": true,
+      "detail": [
+       "Added internal note: On the case."
+      ]
+     }
+    ],
+    "notes": {
+     "result": {
+      "ok": true,
+      "message": "Note added.",
+      "moved": false,
+      "handoffs": [],
+      "warnings": []
+     },
+     "calls": {
+      "client": {
+       "oneRead": 1,
+       "formList": 3,
+       "adminList": 3,
+       "formCreate": 2,
+       "formGet": 2,
+       "adminGet": 1
+      },
+      "liveEstimate": 10
+     }
+    }
+   },
+   "ms": 3,
+   "at": "2026-10-21T19:27:56.293Z"
+  },
+  {
+   "name": "F11 audit: every writer's audit row",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "addSupplier: audit row (raw)",
+      "value": {
+       "_id": "FmAudit4",
+       "Event_Key": "EV-LOG-20261021192756-raqh",
+       "Event_At": "2026-10-21T19:27:56Z",
+       "Event_Category": "Supplier master",
+       "Action_Code": "supplier.changed",
+       "Object_Kind": "Supplier",
+       "Object_Key": "ZZT-N21-R1-FSUP1",
+       "Object_Item_Id": "FmSup2",
+       "Ref_Flow_Id": "CIQ_Supplier_A00",
+       "Ref_Item_Id": "FmSup2",
+       "Actor_Side": "BDF",
+       "Actor_Name": "Katrin Vogel",
+       "Actor_Role_Id": "RoEKl87f38Xw"
+      }
+     },
+     {
+      "what": "addSupplier: the entries as the app maps them",
+      "value": [
+       "Added supplier: ZZT-N21-R1 Forms Supplier Iberica 1 (DUNS 910100021, ZZT-N21-R1 Reus, Spain, manufacturer) with 3 contacts: ZZT-N21-R1 Marta Soler <zzt-n21-r1-f1.marta.soler@example.com>, ZZT-N21-R1 Jonas Brandt <zzt-n21-r1-f1.jonas.brandt@example.com>, ZZT-N21-R1 Portal contact <zzt-n21-r1-f1.portal.contact@example.com>."
+      ]
+     },
+     {
+      "what": "updateContact (e-mail): audit row (raw)",
+      "value": {
+       "_id": "FmAudit6",
+       "Event_Key": "EV-LOG-20261021192756-wanz",
+       "Event_At": "2026-10-21T19:27:56Z",
+       "Event_Category": "Supplier master",
+       "Action_Code": "supplier.changed",
+       "Object_Kind": "Supplier",
+       "Object_Key": "ZZT-N21-R1-FSUP1",
+       "Object_Item_Id": "FmSup2",
+       "Ref_Flow_Id": "CIQ_Supplier_A00",
+       "Ref_Item_Id": "FmSup2",
+       "Actor_Side": "BDF",
+       "Actor_Name": "Katrin Vogel",
+       "Actor_Role_Id": "RoEKl87f38Xw"
+      }
+     },
+     {
+      "what": "updateContact (e-mail): the entries as the app maps them",
+      "value": [
+       "Updated contact: ZZT-N21-R1 Marta Soler: E-mail: zzt-n21-r1-f1.marta.soler@example.com → zzt-n21-r1-f1.marta.soler.new@example.com. Earlier answers and confirmations keep the name they were given with."
+      ]
+     },
+     {
+      "what": "addContact: audit row (raw)",
+      "value": {
+       "_id": "FmAudit8",
+       "Event_Key": "EV-LOG-20261021192756-19qk",
+       "Event_At": "2026-10-21T19:27:56Z",
+       "Event_Category": "Supplier master",
+       "Action_Code": "supplier.changed",
+       "Object_Kind": "Supplier",
+       "Object_Key": "ZZT-N21-R1-FSUP1",
+       "Object_Item_Id": "FmSup2",
+       "Ref_Flow_Id": "CIQ_Supplier_A00",
+       "Ref_Item_Id": "FmSup2",
+       "Actor_Side": "BDF",
+       "Actor_Name": "Katrin Vogel",
+       "Actor_Role_Id": "RoEKl87f38Xw"
+      }
+     },
+     {
+      "what": "addContact: the entries as the app maps them",
+      "value": [
+       "Added contact: ZZT-N21-R1 Lena Vidal <zzt-n21-r1-f1.lena.vidal@example.com>, ZZT-N21-R1 Regulatory Specialist, may not confirm."
+      ]
+     },
+     {
+      "what": "setContactActive (deactivate): audit row (raw)",
+      "value": {
+       "_id": "FmAudit10",
+       "Event_Key": "EV-LOG-20261021192756-f70t",
+       "Event_At": "2026-10-21T19:27:56Z",
+       "Event_Category": "Supplier master",
+       "Action_Code": "supplier.changed",
+       "Object_Kind": "Supplier",
+       "Object_Key": "ZZT-N21-R1-FSUP1",
+       "Object_Item_Id": "FmSup2",
+       "Ref_Flow_Id": "CIQ_Supplier_A00",
+       "Ref_Item_Id": "FmSup2",
+       "Actor_Side": "BDF",
+       "Actor_Name": "Katrin Vogel",
+       "Actor_Role_Id": "RoEKl87f38Xw"
+      }
+     },
+     {
+      "what": "setContactActive (deactivate): the entries as the app maps them",
+      "value": [
+       "Deactivated contact: ZZT-N21-R1 Jonas Brandt <zzt-n21-r1-f1.jonas.brandt@example.com> deactivated."
+      ]
+     },
+     {
+      "what": "updateContact (self contact): audit row (raw)",
+      "value": {
+       "_id": "FmAudit12",
+       "Event_Key": "EV-LOG-20261021192756-iuli",
+       "Event_At": "2026-10-21T19:27:56Z",
+       "Event_Category": "Supplier master",
+       "Action_Code": "supplier.changed",
+       "Object_Kind": "Supplier",
+       "Object_Key": "ZZT-N21-R1-FSUP1",
+       "Object_Item_Id": "FmSup2",
+       "Ref_Flow_Id": "CIQ_Supplier_A00",
+       "Ref_Item_Id": "FmSup2",
+       "Actor_Side": "BDF",
+       "Actor_Name": "Katrin Vogel",
+       "Actor_Role_Id": "RoEKl87f38Xw"
+      }
+     },
+     {
+      "what": "updateContact (self contact): the entries as the app maps them",
+      "value": [
+       "Updated contact: ZZT-N21-R1 Portal contact: E-mail: zzt-n21-r1-f1.portal.contact@example.com → <identity e-mail>; Title: ZZT-N21-R1 Supplier contact → ZZT-N21-R1 Dev lead. Earlier answers and confirmations keep the name they were given with."
+      ]
+     },
+     {
+      "what": "createCase: audit row (raw)",
+      "value": {
+       "_id": "FmAudit17",
+       "Event_Key": "EV-ZZT-N21-R1-FCASE1-20261021192756-rqij",
+       "Event_At": "2026-10-21T19:27:56Z",
+       "Event_Category": "Case",
+       "Action_Code": "case.created",
+       "Case_Code": "ZZT-N21-R1-FCASE1",
+       "Case_Item_Id": "PkCase13",
+       "Object_Kind": "Case",
+       "Object_Key": "ZZT-N21-R1-FCASE1",
+       "Object_Item_Id": "PkCase13",
+       "Object_State": "Supplier filling in the CIQ",
+       "Ref_Flow_Id": "CIQ_Case_A00",
+       "Ref_Item_Id": "PkCase13",
+       "Ref_Activity_Instance_Id": "Act14",
+       "Actor_Side": "BDF",
+       "Actor_Name": "Katrin Vogel",
+       "Actor_Dept": "RMM",
+       "Actor_Role_Id": "RoEKl83f9jPF",
+       "Notify_Channel": "webhook",
+       "Notify_Recipient": "[{\"code\":\"case.started\",\"status\":\"sent\",\"detail\":\"handed over\",\"key\":\"HO-case.started-mvii8cjk-bgagzs\"}]"
+      }
+     },
+     {
+      "what": "createCase: the entries as the app maps them",
+      "value": [
+       "Created case: Case created for ZZT-N21-R1 Forms note material 1 (ZZT-N21-R1 Forms Supplier Iberica 1, DUNS 910100021). Questionnaire CIQ-2026 v1, rule set RS-2026.1. Target markets: EU. Due 21 Nov 2026.",
+       "Derived scope: Rule set RS-2026.1 applied to the target markets: 23 mandatory sections, 2 optional, 19 not applicable. More sections open as the supplier answers the metadata questions.",
+       "Invited supplier contacts: Invitation and task “Fill in the CIQ” sent to ZZT-N21-R1 Portal contact <<identity e-mail>>."
+      ]
+     },
+     {
+      "what": "addInternalNote (cus): audit row (raw)",
+      "value": {
+       "_id": "FmAudit21",
+       "Event_Key": "EV-ZZT-N21-R1-FCASE1-20261021192756-oydg",
+       "Event_At": "2026-10-21T19:27:56Z",
+       "Event_Category": "Internal note",
+       "Action_Code": "note.added",
+       "Case_Code": "ZZT-N21-R1-FCASE1",
+       "Case_Item_Id": "PkCase13",
+       "Object_Kind": "Internal note",
+       "Object_Key": "ZZT-N21-R1-FCASE1-n1",
+       "Object_Item_Id": "FmNote19",
+       "Ref_Flow_Id": "CIQ_Internal_Note_A00",
+       "Ref_Item_Id": "FmNote19",
+       "Actor_Side": "BDF",
+       "Actor_Name": "Katrin Vogel",
+       "Actor_Dept": "CUS",
+       "Actor_Role_Id": "RoEKwv6pxX3g"
+      }
+     },
+     {
+      "what": "addInternalNote (cus): the entries as the app maps them",
+      "value": [
+       "Added internal note: On the case."
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "addSupplier (supplier.changed): Action_Code",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): Event_Category",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): Event_Key is EV-LOG-<Event_At>-<4>",
+      "ok": true,
+      "detail": {
+       "Event_Key": "EV-LOG-20261021192756-raqh",
+       "Event_At": "2026-10-21T19:27:56Z"
+      }
+     },
+     {
+      "label": "addSupplier (supplier.changed): Object_Kind",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): Object_Key",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): Object_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): Object_State",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): New_Value_Text is the domain's entries",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): Ref_Flow_Id",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): Ref_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): Ref_Activity_Instance_Id",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): Case_Code",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): Case_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): Actor_Side",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): Actor_Name",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): Actor_Email is the identity's",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): Actor_Role_Id",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): Actor_Dept",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): the creator is the key user",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): Snapshot_JSON parses",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): snapshot v",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): snapshot code",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): snapshot audit and handoffs are lists",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): snapshot entries are the domain's",
+      "ok": true,
+      "detail": {
+       "snapshot": [
+        "ZZT-N21-R1 Forms Supplier Iberica 1 (DUNS 910100021, ZZT-N21-R1 Reus, Spain, manufacturer) with 3 contacts: ZZT-N21-R1 Marta Soler <zzt-n21-r1-f1.marta.soler@example.com>, ZZT-N21-R1 Jonas Brandt <zzt-n21-r1-f1.jonas.brandt@example.com>, ZZT-N21-R1 Portal contact <zzt-n21-r1-f1.portal.contact@example.com>."
+       ],
+       "domain": [
+        "ZZT-N21-R1 Forms Supplier Iberica 1 (DUNS 910100021, ZZT-N21-R1 Reus, Spain, manufacturer) with 3 contacts: ZZT-N21-R1 Marta Soler <zzt-n21-r1-f1.marta.soler@example.com>, ZZT-N21-R1 Jonas Brandt <zzt-n21-r1-f1.jonas.brandt@example.com>, ZZT-N21-R1 Portal contact <zzt-n21-r1-f1.portal.contact@example.com>."
+       ]
+      }
+     },
+     {
+      "label": "addSupplier (supplier.changed): snapshot entries name the actor by the Kissflow id",
+      "ok": true,
+      "detail": [
+       "UsRmmKatrin"
+      ]
+     },
+     {
+      "label": "addSupplier (supplier.changed): snapshot log names the supplier",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): no \"self:\" id in the row",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): no persona alias in the snapshot",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): no hand-off on the row",
+      "ok": true
+     },
+     {
+      "label": "addSupplier (supplier.changed): Event_At has no milliseconds",
+      "ok": true
+     },
+     {
+      "label": "addSupplier: every snapshot entry shows in the app (supplier history)",
+      "ok": true,
+      "detail": {
+       "snapshot": [
+        "Added supplier"
+       ],
+       "mapped": [
+        "Added supplier: ZZT-N21-R1 Forms Supplier Iberica 1 (DUNS 910100021, ZZT-N21-R1 Reus, Spain, manufacturer) with 3 contacts: ZZT-N21-R1 Marta Soler <zzt-n21-r1-f1.marta.soler@example.com>, ZZT-N21-R1 Jonas Brandt <zzt-n21-r1-f1.jonas.brandt@example.com>, ZZT-N21-R1 Portal contact <zzt-n21-r1-f1.portal.contact@example.com>.",
+        "Updated contact: ZZT-N21-R1 Marta Soler: E-mail: zzt-n21-r1-f1.marta.soler@example.com → zzt-n21-r1-f1.marta.soler.new@example.com. Earlier answers and confirmations keep the name they were given with.",
+        "Added contact: ZZT-N21-R1 Lena Vidal <zzt-n21-r1-f1.lena.vidal@example.com>, ZZT-N21-R1 Regulatory Specialist, may not confirm.",
+        "Deactivated contact: ZZT-N21-R1 Jonas Brandt <zzt-n21-r1-f1.jonas.brandt@example.com> deactivated.",
+        "Updated contact: ZZT-N21-R1 Portal contact: E-mail: zzt-n21-r1-f1.portal.contact@example.com → <identity e-mail>; Title: ZZT-N21-R1 Supplier contact → ZZT-N21-R1 Dev lead. Earlier answers and confirmations keep the name they were given with."
+       ]
+      }
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): Action_Code",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): Event_Category",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): Event_Key is EV-LOG-<Event_At>-<4>",
+      "ok": true,
+      "detail": {
+       "Event_Key": "EV-LOG-20261021192756-wanz",
+       "Event_At": "2026-10-21T19:27:56Z"
+      }
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): Object_Kind",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): Object_Key",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): Object_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): Object_State",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): New_Value_Text is the domain's entries",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): Ref_Flow_Id",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): Ref_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): Ref_Activity_Instance_Id",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): Case_Code",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): Case_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): Actor_Side",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): Actor_Name",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): Actor_Email is the identity's",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): Actor_Role_Id",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): Actor_Dept",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): the creator is the key user",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): Snapshot_JSON parses",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): snapshot v",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): snapshot code",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): snapshot audit and handoffs are lists",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): snapshot entries are the domain's",
+      "ok": true,
+      "detail": {
+       "snapshot": [
+        "ZZT-N21-R1 Marta Soler: E-mail: zzt-n21-r1-f1.marta.soler@example.com → zzt-n21-r1-f1.marta.soler.new@example.com. Earlier answers and confirmations keep the name they were given with."
+       ],
+       "domain": [
+        "ZZT-N21-R1 Marta Soler: E-mail: zzt-n21-r1-f1.marta.soler@example.com → zzt-n21-r1-f1.marta.soler.new@example.com. Earlier answers and confirmations keep the name they were given with."
+       ]
+      }
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): snapshot entries name the actor by the Kissflow id",
+      "ok": true,
+      "detail": [
+       "UsRmmKatrin"
+      ]
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): snapshot log names the supplier",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): no \"self:\" id in the row",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): no persona alias in the snapshot",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): no hand-off on the row",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail) (supplier.changed): Event_At has no milliseconds",
+      "ok": true
+     },
+     {
+      "label": "updateContact (e-mail): every snapshot entry shows in the app (supplier history)",
+      "ok": true,
+      "detail": {
+       "snapshot": [
+        "Updated contact"
+       ],
+       "mapped": [
+        "Added supplier: ZZT-N21-R1 Forms Supplier Iberica 1 (DUNS 910100021, ZZT-N21-R1 Reus, Spain, manufacturer) with 3 contacts: ZZT-N21-R1 Marta Soler <zzt-n21-r1-f1.marta.soler@example.com>, ZZT-N21-R1 Jonas Brandt <zzt-n21-r1-f1.jonas.brandt@example.com>, ZZT-N21-R1 Portal contact <zzt-n21-r1-f1.portal.contact@example.com>.",
+        "Updated contact: ZZT-N21-R1 Marta Soler: E-mail: zzt-n21-r1-f1.marta.soler@example.com → zzt-n21-r1-f1.marta.soler.new@example.com. Earlier answers and confirmations keep the name they were given with.",
+        "Added contact: ZZT-N21-R1 Lena Vidal <zzt-n21-r1-f1.lena.vidal@example.com>, ZZT-N21-R1 Regulatory Specialist, may not confirm.",
+        "Deactivated contact: ZZT-N21-R1 Jonas Brandt <zzt-n21-r1-f1.jonas.brandt@example.com> deactivated.",
+        "Updated contact: ZZT-N21-R1 Portal contact: E-mail: zzt-n21-r1-f1.portal.contact@example.com → <identity e-mail>; Title: ZZT-N21-R1 Supplier contact → ZZT-N21-R1 Dev lead. Earlier answers and confirmations keep the name they were given with."
+       ]
+      }
+     },
+     {
+      "label": "addContact (supplier.changed): Action_Code",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): Event_Category",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): Event_Key is EV-LOG-<Event_At>-<4>",
+      "ok": true,
+      "detail": {
+       "Event_Key": "EV-LOG-20261021192756-19qk",
+       "Event_At": "2026-10-21T19:27:56Z"
+      }
+     },
+     {
+      "label": "addContact (supplier.changed): Object_Kind",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): Object_Key",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): Object_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): Object_State",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): New_Value_Text is the domain's entries",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): Ref_Flow_Id",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): Ref_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): Ref_Activity_Instance_Id",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): Case_Code",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): Case_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): Actor_Side",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): Actor_Name",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): Actor_Email is the identity's",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): Actor_Role_Id",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): Actor_Dept",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): the creator is the key user",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): Snapshot_JSON parses",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): snapshot v",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): snapshot code",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): snapshot audit and handoffs are lists",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): snapshot entries are the domain's",
+      "ok": true,
+      "detail": {
+       "snapshot": [
+        "ZZT-N21-R1 Lena Vidal <zzt-n21-r1-f1.lena.vidal@example.com>, ZZT-N21-R1 Regulatory Specialist, may not confirm."
+       ],
+       "domain": [
+        "ZZT-N21-R1 Lena Vidal <zzt-n21-r1-f1.lena.vidal@example.com>, ZZT-N21-R1 Regulatory Specialist, may not confirm."
+       ]
+      }
+     },
+     {
+      "label": "addContact (supplier.changed): snapshot entries name the actor by the Kissflow id",
+      "ok": true,
+      "detail": [
+       "UsRmmKatrin"
+      ]
+     },
+     {
+      "label": "addContact (supplier.changed): snapshot log names the supplier",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): no \"self:\" id in the row",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): no persona alias in the snapshot",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): no hand-off on the row",
+      "ok": true
+     },
+     {
+      "label": "addContact (supplier.changed): Event_At has no milliseconds",
+      "ok": true
+     },
+     {
+      "label": "addContact: every snapshot entry shows in the app (supplier history)",
+      "ok": true,
+      "detail": {
+       "snapshot": [
+        "Added contact"
+       ],
+       "mapped": [
+        "Added supplier: ZZT-N21-R1 Forms Supplier Iberica 1 (DUNS 910100021, ZZT-N21-R1 Reus, Spain, manufacturer) with 3 contacts: ZZT-N21-R1 Marta Soler <zzt-n21-r1-f1.marta.soler@example.com>, ZZT-N21-R1 Jonas Brandt <zzt-n21-r1-f1.jonas.brandt@example.com>, ZZT-N21-R1 Portal contact <zzt-n21-r1-f1.portal.contact@example.com>.",
+        "Updated contact: ZZT-N21-R1 Marta Soler: E-mail: zzt-n21-r1-f1.marta.soler@example.com → zzt-n21-r1-f1.marta.soler.new@example.com. Earlier answers and confirmations keep the name they were given with.",
+        "Added contact: ZZT-N21-R1 Lena Vidal <zzt-n21-r1-f1.lena.vidal@example.com>, ZZT-N21-R1 Regulatory Specialist, may not confirm.",
+        "Deactivated contact: ZZT-N21-R1 Jonas Brandt <zzt-n21-r1-f1.jonas.brandt@example.com> deactivated.",
+        "Updated contact: ZZT-N21-R1 Portal contact: E-mail: zzt-n21-r1-f1.portal.contact@example.com → <identity e-mail>; Title: ZZT-N21-R1 Supplier contact → ZZT-N21-R1 Dev lead. Earlier answers and confirmations keep the name they were given with."
+       ]
+      }
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): Action_Code",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): Event_Category",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): Event_Key is EV-LOG-<Event_At>-<4>",
+      "ok": true,
+      "detail": {
+       "Event_Key": "EV-LOG-20261021192756-f70t",
+       "Event_At": "2026-10-21T19:27:56Z"
+      }
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): Object_Kind",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): Object_Key",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): Object_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): Object_State",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): New_Value_Text is the domain's entries",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): Ref_Flow_Id",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): Ref_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): Ref_Activity_Instance_Id",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): Case_Code",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): Case_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): Actor_Side",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): Actor_Name",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): Actor_Email is the identity's",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): Actor_Role_Id",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): Actor_Dept",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): the creator is the key user",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): Snapshot_JSON parses",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): snapshot v",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): snapshot code",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): snapshot audit and handoffs are lists",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): snapshot entries are the domain's",
+      "ok": true,
+      "detail": {
+       "snapshot": [
+        "ZZT-N21-R1 Jonas Brandt <zzt-n21-r1-f1.jonas.brandt@example.com> deactivated."
+       ],
+       "domain": [
+        "ZZT-N21-R1 Jonas Brandt <zzt-n21-r1-f1.jonas.brandt@example.com> deactivated."
+       ]
+      }
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): snapshot entries name the actor by the Kissflow id",
+      "ok": true,
+      "detail": [
+       "UsRmmKatrin"
+      ]
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): snapshot log names the supplier",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): no \"self:\" id in the row",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): no persona alias in the snapshot",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): no hand-off on the row",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate) (supplier.changed): Event_At has no milliseconds",
+      "ok": true
+     },
+     {
+      "label": "setContactActive (deactivate): every snapshot entry shows in the app (supplier history)",
+      "ok": true,
+      "detail": {
+       "snapshot": [
+        "Deactivated contact"
+       ],
+       "mapped": [
+        "Added supplier: ZZT-N21-R1 Forms Supplier Iberica 1 (DUNS 910100021, ZZT-N21-R1 Reus, Spain, manufacturer) with 3 contacts: ZZT-N21-R1 Marta Soler <zzt-n21-r1-f1.marta.soler@example.com>, ZZT-N21-R1 Jonas Brandt <zzt-n21-r1-f1.jonas.brandt@example.com>, ZZT-N21-R1 Portal contact <zzt-n21-r1-f1.portal.contact@example.com>.",
+        "Updated contact: ZZT-N21-R1 Marta Soler: E-mail: zzt-n21-r1-f1.marta.soler@example.com → zzt-n21-r1-f1.marta.soler.new@example.com. Earlier answers and confirmations keep the name they were given with.",
+        "Added contact: ZZT-N21-R1 Lena Vidal <zzt-n21-r1-f1.lena.vidal@example.com>, ZZT-N21-R1 Regulatory Specialist, may not confirm.",
+        "Deactivated contact: ZZT-N21-R1 Jonas Brandt <zzt-n21-r1-f1.jonas.brandt@example.com> deactivated.",
+        "Updated contact: ZZT-N21-R1 Portal contact: E-mail: zzt-n21-r1-f1.portal.contact@example.com → <identity e-mail>; Title: ZZT-N21-R1 Supplier contact → ZZT-N21-R1 Dev lead. Earlier answers and confirmations keep the name they were given with."
+       ]
+      }
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): Action_Code",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): Event_Category",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): Event_Key is EV-LOG-<Event_At>-<4>",
+      "ok": true,
+      "detail": {
+       "Event_Key": "EV-LOG-20261021192756-iuli",
+       "Event_At": "2026-10-21T19:27:56Z"
+      }
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): Object_Kind",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): Object_Key",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): Object_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): Object_State",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): New_Value_Text is the domain's entries",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): Ref_Flow_Id",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): Ref_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): Ref_Activity_Instance_Id",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): Case_Code",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): Case_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): Actor_Side",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): Actor_Name",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): Actor_Email is the identity's",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): Actor_Role_Id",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): Actor_Dept",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): the creator is the key user",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): Snapshot_JSON parses",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): snapshot v",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): snapshot code",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): snapshot audit and handoffs are lists",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): snapshot entries are the domain's",
+      "ok": true,
+      "detail": {
+       "snapshot": [
+        "ZZT-N21-R1 Portal contact: E-mail: zzt-n21-r1-f1.portal.contact@example.com → <identity e-mail>; Title: ZZT-N21-R1 Supplier contact → ZZT-N21-R1 Dev lead. Earlier answers and confirmations keep the name they were given with."
+       ],
+       "domain": [
+        "ZZT-N21-R1 Portal contact: E-mail: zzt-n21-r1-f1.portal.contact@example.com → <identity e-mail>; Title: ZZT-N21-R1 Supplier contact → ZZT-N21-R1 Dev lead. Earlier answers and confirmations keep the name they were given with."
+       ]
+      }
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): snapshot entries name the actor by the Kissflow id",
+      "ok": true,
+      "detail": [
+       "UsRmmKatrin"
+      ]
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): snapshot log names the supplier",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): no \"self:\" id in the row",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): no persona alias in the snapshot",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): no hand-off on the row",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact) (supplier.changed): Event_At has no milliseconds",
+      "ok": true
+     },
+     {
+      "label": "updateContact (self contact): every snapshot entry shows in the app (supplier history)",
+      "ok": true,
+      "detail": {
+       "snapshot": [
+        "Updated contact"
+       ],
+       "mapped": [
+        "Added supplier: ZZT-N21-R1 Forms Supplier Iberica 1 (DUNS 910100021, ZZT-N21-R1 Reus, Spain, manufacturer) with 3 contacts: ZZT-N21-R1 Marta Soler <zzt-n21-r1-f1.marta.soler@example.com>, ZZT-N21-R1 Jonas Brandt <zzt-n21-r1-f1.jonas.brandt@example.com>, ZZT-N21-R1 Portal contact <zzt-n21-r1-f1.portal.contact@example.com>.",
+        "Updated contact: ZZT-N21-R1 Marta Soler: E-mail: zzt-n21-r1-f1.marta.soler@example.com → zzt-n21-r1-f1.marta.soler.new@example.com. Earlier answers and confirmations keep the name they were given with.",
+        "Added contact: ZZT-N21-R1 Lena Vidal <zzt-n21-r1-f1.lena.vidal@example.com>, ZZT-N21-R1 Regulatory Specialist, may not confirm.",
+        "Deactivated contact: ZZT-N21-R1 Jonas Brandt <zzt-n21-r1-f1.jonas.brandt@example.com> deactivated.",
+        "Updated contact: ZZT-N21-R1 Portal contact: E-mail: zzt-n21-r1-f1.portal.contact@example.com → <identity e-mail>; Title: ZZT-N21-R1 Supplier contact → ZZT-N21-R1 Dev lead. Earlier answers and confirmations keep the name they were given with."
+       ]
+      }
+     },
+     {
+      "label": "createCase (case.created): Action_Code",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): Event_Category",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): Event_Key is EV-<case>-<Event_At>-<4>",
+      "ok": true,
+      "detail": {
+       "Event_Key": "EV-ZZT-N21-R1-FCASE1-20261021192756-rqij",
+       "Event_At": "2026-10-21T19:27:56Z"
+      }
+     },
+     {
+      "label": "createCase (case.created): Object_Kind",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): Object_Key",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): Object_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): Object_State",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): Cycle_No 1",
+      "ok": true,
+      "detail": 1
+     },
+     {
+      "label": "createCase (case.created): New_Value_Text is the domain's entries",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): Ref_Flow_Id",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): Ref_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): Ref_Activity_Instance_Id",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): Case_Code",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): Case_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): Actor_Side",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): Actor_Name",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): Actor_Email is the identity's",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): Actor_Role_Id",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): Actor_Dept",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): the creator is the key user",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): Snapshot_JSON parses",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): snapshot v",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): snapshot code",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): snapshot audit and handoffs are lists",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): snapshot entries are the domain's",
+      "ok": true,
+      "detail": {
+       "snapshot": [
+        "Case created for ZZT-N21-R1 Forms note material 1 (ZZT-N21-R1 Forms Supplier Iberica 1, DUNS 910100021). Questionnaire CIQ-2026 v1, rule set RS-2026.1. Target markets: EU. Due 21 Nov 2026.",
+        "Rule set RS-2026.1 applied to the target markets: 23 mandatory sections, 2 optional, 19 not applicable. More sections open as the supplier answers the metadata questions.",
+        "Invitation and task “Fill in the CIQ” sent to ZZT-N21-R1 Portal contact <<identity e-mail>>."
+       ],
+       "domain": [
+        "Case created for ZZT-N21-R1 Forms note material 1 (ZZT-N21-R1 Forms Supplier Iberica 1, DUNS 910100021). Questionnaire CIQ-2026 v1, rule set RS-2026.1. Target markets: EU. Due 21 Nov 2026.",
+        "Rule set RS-2026.1 applied to the target markets: 23 mandatory sections, 2 optional, 19 not applicable. More sections open as the supplier answers the metadata questions.",
+        "Invitation and task “Fill in the CIQ” sent to ZZT-N21-R1 Portal contact <<identity e-mail>>."
+       ]
+      }
+     },
+     {
+      "label": "createCase (case.created): snapshot entries name the actor by the Kissflow id",
+      "ok": true,
+      "detail": [
+       "UsRmmKatrin",
+       "system",
+       "system"
+      ]
+     },
+     {
+      "label": "createCase (case.created): snapshot case header",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): no \"self:\" id in the row",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): no persona alias in the snapshot",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): Notify_Channel",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): Notify_Recipient lists the hand-offs as sent",
+      "ok": true,
+      "detail": [
+       "case.started:sent"
+      ]
+     },
+     {
+      "label": "createCase (case.created): Notify_Recipient carries no URL",
+      "ok": true
+     },
+     {
+      "label": "createCase (case.created): Event_At has no milliseconds",
+      "ok": true
+     },
+     {
+      "label": "createCase: every snapshot entry shows in the app (case history)",
+      "ok": true,
+      "detail": {
+       "snapshot": [
+        "Created case",
+        "Derived scope",
+        "Invited supplier contacts"
+       ],
+       "mapped": [
+        "Created case: Case created for ZZT-N21-R1 Forms note material 1 (ZZT-N21-R1 Forms Supplier Iberica 1, DUNS 910100021). Questionnaire CIQ-2026 v1, rule set RS-2026.1. Target markets: EU. Due 21 Nov 2026.",
+        "Derived scope: Rule set RS-2026.1 applied to the target markets: 23 mandatory sections, 2 optional, 19 not applicable. More sections open as the supplier answers the metadata questions.",
+        "Invited supplier contacts: Invitation and task “Fill in the CIQ” sent to ZZT-N21-R1 Portal contact <<identity e-mail>>.",
+        "Added internal note: On the case."
+       ]
+      }
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): Action_Code",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): Event_Category",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): Event_Key is EV-<case>-<Event_At>-<4>",
+      "ok": true,
+      "detail": {
+       "Event_Key": "EV-ZZT-N21-R1-FCASE1-20261021192756-oydg",
+       "Event_At": "2026-10-21T19:27:56Z"
+      }
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): Object_Kind",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): Object_Key",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): Object_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): Object_State",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): Cycle_No 1",
+      "ok": true,
+      "detail": 1
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): New_Value_Text is the domain's entries",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): Ref_Flow_Id",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): Ref_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): Ref_Activity_Instance_Id",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): Case_Code",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): Case_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): Actor_Side",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): Actor_Name",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): Actor_Email is the identity's",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): Actor_Role_Id",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): Actor_Dept",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): the creator is the key user",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): Snapshot_JSON parses",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): snapshot v",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): snapshot code",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): snapshot audit and handoffs are lists",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): snapshot entries are the domain's",
+      "ok": true,
+      "detail": {
+       "snapshot": [
+        "On the case."
+       ],
+       "domain": [
+        "On the case."
+       ]
+      }
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): snapshot entries name the actor by the Kissflow id",
+      "ok": true,
+      "detail": [
+       "UsRmmKatrin"
+      ]
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): snapshot note",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): no \"self:\" id in the row",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): no persona alias in the snapshot",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): no hand-off on the row",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus) (note.added): Event_At has no milliseconds",
+      "ok": true
+     },
+     {
+      "label": "addInternalNote (cus): every snapshot entry shows in the app (case history)",
+      "ok": true,
+      "detail": {
+       "snapshot": [
+        "Added internal note"
+       ],
+       "mapped": [
+        "Created case: Case created for ZZT-N21-R1 Forms note material 1 (ZZT-N21-R1 Forms Supplier Iberica 1, DUNS 910100021). Questionnaire CIQ-2026 v1, rule set RS-2026.1. Target markets: EU. Due 21 Nov 2026.",
+        "Derived scope: Rule set RS-2026.1 applied to the target markets: 23 mandatory sections, 2 optional, 19 not applicable. More sections open as the supplier answers the metadata questions.",
+        "Invited supplier contacts: Invitation and task “Fill in the CIQ” sent to ZZT-N21-R1 Portal contact <<identity e-mail>>.",
+        "Added internal note: On the case."
+       ]
+      }
+     }
+    ],
+    "notes": {
+     "calls": {
+      "client": {},
+      "liveEstimate": 0
+     }
+    }
+   },
+   "ms": 1,
+   "at": "2026-10-21T19:27:56.298Z"
+  },
+  {
+   "name": "F12a supplier (R1): the self contact's fictional e-mail back and Thomas's portal user unlinked",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "the self contact's row with its e-mail back (raw)",
+      "value": {
+       "_id": "Contacts_4m7le62ci8",
+       "Contacts_Key": "u-ZZT-N21-R1-FSUP1-3",
+       "Contacts_Full_Name": "ZZT-N21-R1 Portal contact",
+       "Contacts_Email": "zzt-n21-r1-f1.portal.contact@example.com",
+       "Contacts_Title": "ZZT-N21-R1 Dev lead",
+       "Contacts_Can_Confirm": "Yes",
+       "Contacts_Active": "Yes",
+       "Contacts_Portal_User_Id": "UsRmmKatrin"
+      }
+     },
+     {
+      "what": "CIQ Supplier row (raw: Contacts rows)",
+      "value": {
+       "_id": "FmSup2",
+       "rows": [
+        {
+         "_id": "Contacts_u5jz2hi7m3",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-1",
+         "Contacts_Full_Name": "ZZT-N21-R1 Marta Soler",
+         "Contacts_Email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Quality Engineer",
+         "Contacts_Can_Confirm": "Yes",
+         "Contacts_Active": "Yes"
+        },
+        {
+         "_id": "Contacts_cc0b422da7",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-2",
+         "Contacts_Full_Name": "ZZT-N21-R1 Jonas Brandt",
+         "Contacts_Email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Sales Manager",
+         "Contacts_Can_Confirm": "No",
+         "Contacts_Active": "No",
+         "Contacts_Deactivated_At": "2026-10-21T19:27:56Z"
+        },
+        {
+         "_id": "Contacts_4m7le62ci8",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-3",
+         "Contacts_Full_Name": "ZZT-N21-R1 Portal contact",
+         "Contacts_Email": "zzt-n21-r1-f1.portal.contact@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Dev lead",
+         "Contacts_Can_Confirm": "Yes",
+         "Contacts_Active": "Yes",
+         "Contacts_Portal_User_Id": "UsRmmKatrin"
+        },
+        {
+         "_id": "Contacts_sv28uga6ho",
+         "Contacts_Key": "u-ZZT-N21-R1-FSUP1-4",
+         "Contacts_Full_Name": "ZZT-N21-R1 Lena Vidal",
+         "Contacts_Email": "zzt-n21-r1-f1.lena.vidal@example.com",
+         "Contacts_Title": "ZZT-N21-R1 Regulatory Specialist",
+         "Contacts_Can_Confirm": "No",
+         "Contacts_Active": "Yes"
+        }
+       ]
+      }
+     },
+     {
+      "what": "the supplier's contacts as the app maps them",
+      "value": [
+       {
+        "id": "self:UsRmmKatrin",
+        "name": "ZZT-N21-R1 Portal contact",
+        "email": "zzt-n21-r1-f1.portal.contact@example.com",
+        "title": "ZZT-N21-R1 Dev lead",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": true,
+        "active": true
+       },
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-1",
+        "name": "ZZT-N21-R1 Marta Soler",
+        "email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+        "title": "ZZT-N21-R1 Quality Engineer",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": true,
+        "active": true
+       },
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-2",
+        "name": "ZZT-N21-R1 Jonas Brandt",
+        "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+        "title": "ZZT-N21-R1 Sales Manager",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": false,
+        "active": false,
+        "deactivatedAt": "2026-10-21T19:27:56.000Z"
+       },
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-4",
+        "name": "ZZT-N21-R1 Lena Vidal",
+        "email": "zzt-n21-r1-f1.lena.vidal@example.com",
+        "title": "ZZT-N21-R1 Regulatory Specialist",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": false,
+        "active": true
+       }
+      ]
+     },
+     {
+      "what": "updateContact (the fictional e-mail back): audit row (raw)",
+      "value": {
+       "_id": "FmAudit23",
+       "Event_Key": "EV-LOG-20261021192756-qcje",
+       "Event_At": "2026-10-21T19:27:56Z",
+       "Event_Category": "Supplier master",
+       "Action_Code": "supplier.changed",
+       "Object_Kind": "Supplier",
+       "Object_Key": "ZZT-N21-R1-FSUP1",
+       "Object_Item_Id": "FmSup2",
+       "Ref_Flow_Id": "CIQ_Supplier_A00",
+       "Ref_Item_Id": "FmSup2",
+       "Actor_Side": "BDF",
+       "Actor_Name": "Katrin Vogel",
+       "Actor_Role_Id": "RoEKl87f38Xw"
+      }
+     },
+     {
+      "what": "updateContact (the fictional e-mail back): the entries as the app maps them",
+      "value": [
+       "Updated contact: ZZT-N21-R1 Portal contact: E-mail: <identity e-mail> → zzt-n21-r1-f1.portal.contact@example.com. Earlier answers and confirmations keep the name they were given with."
+      ]
+     },
+     {
+      "what": "the row after the unlink (raw)",
+      "value": {
+       "_id": "Contacts_4m7le62ci8",
+       "Contacts_Key": "u-ZZT-N21-R1-FSUP1-3",
+       "Contacts_Full_Name": "ZZT-N21-R1 Portal contact",
+       "Contacts_Email": "zzt-n21-r1-f1.portal.contact@example.com",
+       "Contacts_Title": "ZZT-N21-R1 Dev lead",
+       "Contacts_Can_Confirm": "Yes",
+       "Contacts_Active": "Yes"
+      }
+     },
+     {
+      "what": "the supplier's contacts on a fresh load",
+      "value": [
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-1",
+        "name": "ZZT-N21-R1 Marta Soler",
+        "email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+        "title": "ZZT-N21-R1 Quality Engineer",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": true,
+        "active": true
+       },
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-2",
+        "name": "ZZT-N21-R1 Jonas Brandt",
+        "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+        "title": "ZZT-N21-R1 Sales Manager",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": false,
+        "active": false,
+        "deactivatedAt": "2026-10-21T19:27:56.000Z"
+       },
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-3",
+        "name": "ZZT-N21-R1 Portal contact",
+        "email": "zzt-n21-r1-f1.portal.contact@example.com",
+        "title": "ZZT-N21-R1 Dev lead",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": true,
+        "active": true
+       },
+       {
+        "id": "u-ZZT-N21-R1-FSUP1-4",
+        "name": "ZZT-N21-R1 Lena Vidal",
+        "email": "zzt-n21-r1-f1.lena.vidal@example.com",
+        "title": "ZZT-N21-R1 Regulatory Specialist",
+        "supplierId": "ZZT-N21-R1-FSUP1",
+        "mayConfirm": false,
+        "active": true
+       }
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "updateContact (the fictional e-mail back): no warnings",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "updateContact (the fictional e-mail back): its audit row was written and read back",
+      "ok": true
+     },
+     {
+      "label": "the row holds the fictional e-mail again",
+      "ok": true,
+      "detail": {
+       "_id": "Contacts_4m7le62ci8",
+       "Contacts_Key": "u-ZZT-N21-R1-FSUP1-3",
+       "Contacts_Full_Name": "ZZT-N21-R1 Portal contact",
+       "Contacts_Email": "zzt-n21-r1-f1.portal.contact@example.com",
+       "Contacts_Title": "ZZT-N21-R1 Dev lead",
+       "Contacts_Can_Confirm": "Yes",
+       "Contacts_Active": "Yes",
+       "Contacts_Portal_User_Id": "UsRmmKatrin"
+      }
+     },
+     {
+      "label": "4 contact rows",
+      "ok": true,
+      "detail": 4
+     },
+     {
+      "label": "no duplicate contact row",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the mapped contacts are the domain's",
+      "ok": true,
+      "detail": {
+       "mapped": [
+        {
+         "id": "self:UsRmmKatrin",
+         "name": "ZZT-N21-R1 Portal contact",
+         "email": "zzt-n21-r1-f1.portal.contact@example.com",
+         "title": "ZZT-N21-R1 Dev lead",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-1",
+         "name": "ZZT-N21-R1 Marta Soler",
+         "email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+         "title": "ZZT-N21-R1 Quality Engineer",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-2",
+         "name": "ZZT-N21-R1 Jonas Brandt",
+         "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "title": "ZZT-N21-R1 Sales Manager",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": false,
+         "deactivatedAt": "2026-10-21T19:27:56.000Z"
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-4",
+         "name": "ZZT-N21-R1 Lena Vidal",
+         "email": "zzt-n21-r1-f1.lena.vidal@example.com",
+         "title": "ZZT-N21-R1 Regulatory Specialist",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": true
+        }
+       ],
+       "domain": [
+        {
+         "id": "self:UsRmmKatrin",
+         "name": "ZZT-N21-R1 Portal contact",
+         "email": "zzt-n21-r1-f1.portal.contact@example.com",
+         "title": "ZZT-N21-R1 Dev lead",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-1",
+         "name": "ZZT-N21-R1 Marta Soler",
+         "email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+         "title": "ZZT-N21-R1 Quality Engineer",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-2",
+         "name": "ZZT-N21-R1 Jonas Brandt",
+         "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "title": "ZZT-N21-R1 Sales Manager",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": false,
+         "deactivatedAt": "2026-10-21T19:27:56.000Z"
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-4",
+         "name": "ZZT-N21-R1 Lena Vidal",
+         "email": "zzt-n21-r1-f1.lena.vidal@example.com",
+         "title": "ZZT-N21-R1 Regulatory Specialist",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": true
+        }
+       ]
+      }
+     },
+     {
+      "label": "the row's header holds the supplier F2 made",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the mapped header is the supplier F2 made",
+      "ok": true,
+      "detail": {
+       "mapped": {
+        "id": "ZZT-N21-R1-FSUP1",
+        "name": "ZZT-N21-R1 Forms Supplier Iberica 1",
+        "duns": "910100021",
+        "country": "ES",
+        "city": "ZZT-N21-R1 Reus",
+        "type": "manufacturer",
+        "active": true
+       },
+       "want": {
+        "id": "ZZT-N21-R1-FSUP1",
+        "name": "ZZT-N21-R1 Forms Supplier Iberica 1",
+        "duns": "910100021",
+        "country": "ES",
+        "city": "ZZT-N21-R1 Reus",
+        "type": "manufacturer",
+        "active": true
+       }
+      }
+     },
+     {
+      "label": "the mapped supplier lists the domain's contacts",
+      "ok": true,
+      "detail": [
+       "self:UsRmmKatrin",
+       "u-ZZT-N21-R1-FSUP1-1",
+       "u-ZZT-N21-R1-FSUP1-2",
+       "u-ZZT-N21-R1-FSUP1-4"
+      ]
+     },
+     {
+      "label": "the writers' index knows every contact row",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): Action_Code",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): Event_Category",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): Event_Key is EV-LOG-<Event_At>-<4>",
+      "ok": true,
+      "detail": {
+       "Event_Key": "EV-LOG-20261021192756-qcje",
+       "Event_At": "2026-10-21T19:27:56Z"
+      }
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): Object_Kind",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): Object_Key",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): Object_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): Object_State",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): New_Value_Text is the domain's entries",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): Ref_Flow_Id",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): Ref_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): Ref_Activity_Instance_Id",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): Case_Code",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): Case_Item_Id",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): Actor_Side",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): Actor_Name",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): Actor_Email is the identity's",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): Actor_Role_Id",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): Actor_Dept",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): the creator is the key user",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): Snapshot_JSON parses",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): snapshot v",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): snapshot code",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): snapshot audit and handoffs are lists",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): snapshot entries are the domain's",
+      "ok": true,
+      "detail": {
+       "snapshot": [
+        "ZZT-N21-R1 Portal contact: E-mail: <identity e-mail> → zzt-n21-r1-f1.portal.contact@example.com. Earlier answers and confirmations keep the name they were given with."
+       ],
+       "domain": [
+        "ZZT-N21-R1 Portal contact: E-mail: <identity e-mail> → zzt-n21-r1-f1.portal.contact@example.com. Earlier answers and confirmations keep the name they were given with."
+       ]
+      }
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): snapshot entries name the actor by the Kissflow id",
+      "ok": true,
+      "detail": [
+       "UsRmmKatrin"
+      ]
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): snapshot log names the supplier",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): no \"self:\" id in the row",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): no persona alias in the snapshot",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): no hand-off on the row",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back) (supplier.changed): Event_At has no milliseconds",
+      "ok": true
+     },
+     {
+      "label": "updateContact (the fictional e-mail back): every snapshot entry shows in the app (supplier history)",
+      "ok": true,
+      "detail": {
+       "snapshot": [
+        "Updated contact"
+       ],
+       "mapped": [
+        "Added supplier: ZZT-N21-R1 Forms Supplier Iberica 1 (DUNS 910100021, ZZT-N21-R1 Reus, Spain, manufacturer) with 3 contacts: ZZT-N21-R1 Marta Soler <zzt-n21-r1-f1.marta.soler@example.com>, ZZT-N21-R1 Jonas Brandt <zzt-n21-r1-f1.jonas.brandt@example.com>, ZZT-N21-R1 Portal contact <zzt-n21-r1-f1.portal.contact@example.com>.",
+        "Updated contact: ZZT-N21-R1 Marta Soler: E-mail: zzt-n21-r1-f1.marta.soler@example.com → zzt-n21-r1-f1.marta.soler.new@example.com. Earlier answers and confirmations keep the name they were given with.",
+        "Added contact: ZZT-N21-R1 Lena Vidal <zzt-n21-r1-f1.lena.vidal@example.com>, ZZT-N21-R1 Regulatory Specialist, may not confirm.",
+        "Deactivated contact: ZZT-N21-R1 Jonas Brandt <zzt-n21-r1-f1.jonas.brandt@example.com> deactivated.",
+        "Updated contact: ZZT-N21-R1 Portal contact: E-mail: zzt-n21-r1-f1.portal.contact@example.com → <identity e-mail>; Title: ZZT-N21-R1 Supplier contact → ZZT-N21-R1 Dev lead. Earlier answers and confirmations keep the name they were given with.",
+        "Updated contact: ZZT-N21-R1 Portal contact: E-mail: <identity e-mail> → zzt-n21-r1-f1.portal.contact@example.com. Earlier answers and confirmations keep the name they were given with."
+       ]
+      }
+     },
+     {
+      "label": "the row has no portal user and keeps its key",
+      "ok": true,
+      "detail": {
+       "_id": "Contacts_4m7le62ci8",
+       "Contacts_Key": "u-ZZT-N21-R1-FSUP1-3",
+       "Contacts_Full_Name": "ZZT-N21-R1 Portal contact",
+       "Contacts_Email": "zzt-n21-r1-f1.portal.contact@example.com",
+       "Contacts_Title": "ZZT-N21-R1 Dev lead",
+       "Contacts_Can_Confirm": "Yes",
+       "Contacts_Active": "Yes"
+      }
+     },
+     {
+      "label": "no row of the supplier carries Thomas's portal user",
+      "ok": true
+     },
+     {
+      "label": "4 rows, no duplicate",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the row's header holds the supplier F2 made",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the fresh load's header is the supplier F2 made",
+      "ok": true
+     },
+     {
+      "label": "the fresh load has no self contact on the supplier",
+      "ok": true,
+      "detail": [
+       "u-ZZT-N21-R1-FSUP1-1",
+       "u-ZZT-N21-R1-FSUP1-2",
+       "u-ZZT-N21-R1-FSUP1-3",
+       "u-ZZT-N21-R1-FSUP1-4"
+      ]
+     },
+     {
+      "label": "the fresh load's contacts are the domain's, the third under its own key",
+      "ok": true,
+      "detail": {
+       "load": [
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-1",
+         "name": "ZZT-N21-R1 Marta Soler",
+         "email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+         "title": "ZZT-N21-R1 Quality Engineer",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-2",
+         "name": "ZZT-N21-R1 Jonas Brandt",
+         "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "title": "ZZT-N21-R1 Sales Manager",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": false,
+         "deactivatedAt": "2026-10-21T19:27:56.000Z"
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-3",
+         "name": "ZZT-N21-R1 Portal contact",
+         "email": "zzt-n21-r1-f1.portal.contact@example.com",
+         "title": "ZZT-N21-R1 Dev lead",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-4",
+         "name": "ZZT-N21-R1 Lena Vidal",
+         "email": "zzt-n21-r1-f1.lena.vidal@example.com",
+         "title": "ZZT-N21-R1 Regulatory Specialist",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": true
+        }
+       ],
+       "want": [
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-1",
+         "name": "ZZT-N21-R1 Marta Soler",
+         "email": "zzt-n21-r1-f1.marta.soler.new@example.com",
+         "title": "ZZT-N21-R1 Quality Engineer",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-2",
+         "name": "ZZT-N21-R1 Jonas Brandt",
+         "email": "zzt-n21-r1-f1.jonas.brandt@example.com",
+         "title": "ZZT-N21-R1 Sales Manager",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": false,
+         "deactivatedAt": "2026-10-21T19:27:56.000Z"
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-3",
+         "name": "ZZT-N21-R1 Portal contact",
+         "email": "zzt-n21-r1-f1.portal.contact@example.com",
+         "title": "ZZT-N21-R1 Dev lead",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": true,
+         "active": true
+        },
+        {
+         "id": "u-ZZT-N21-R1-FSUP1-4",
+         "name": "ZZT-N21-R1 Lena Vidal",
+         "email": "zzt-n21-r1-f1.lena.vidal@example.com",
+         "title": "ZZT-N21-R1 Regulatory Specialist",
+         "supplierId": "ZZT-N21-R1-FSUP1",
+         "mayConfirm": false,
+         "active": true
+        }
+       ]
+      }
+     },
+     {
+      "label": "the writers' index names its row under its key",
+      "ok": true
+     }
+    ],
+    "notes": {
+     "why": "Thomas's dev load registers ONE self contact, on the first supplier row it reads that carries his portal user (map/people.ts Directory.contact): a kept supplier with that link could take it from his own dev supplier.",
+     "result": {
+      "ok": true,
+      "moved": false,
+      "handoffs": [],
+      "warnings": []
+     },
+     "not the app's code": "Contacts_Portal_User_Id cleared as portal user management would: a one-field Table::Contacts delta by the row's _id.",
+     "calls": {
+      "client": {
+       "oneRead": 1,
+       "formList": 4,
+       "adminList": 3,
+       "formCreate": 1,
+       "formGet": 5,
+       "formUpdate": 2,
+       "adminGet": 1
+      },
+      "liveEstimate": 14
+     }
+    }
+   },
+   "ms": 2,
+   "at": "2026-10-21T19:27:56.302Z"
+  },
+  {
+   "name": "F12 showcase (R1): every kept item read again, the stage it is left at, in the ledger",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "each kept item read again, and the stage it is left at (the ledger)",
+      "value": [
+       {
+        "flow": "CIQ_Supplier_A00",
+        "id": "FmSup2",
+        "what": "Supplier_Code=ZZT-N21-R1-FSUP1 Supplier_Legal_Name=ZZT-N21-R1 Forms Supplier Iberica 1",
+        "read": "ok",
+        "stage": "S-FORMS supplier ZZT-N21-R1-FSUP1: added with three contacts; one contact's e-mail edited; one contact added; one deactivated; one linked to Thomas's portal user (the self contact); its e-mail and title edited as the Business administrator; every row verified on a fresh read; its fictional e-mail back and the portal user unlinked again"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit4",
+        "what": "Event_Key=EV-LOG-20261021192756-raqh Action_Code=supplier.changed",
+        "read": "ok",
+        "stage": "audit row supplier.changed (addSupplier)"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit6",
+        "what": "Event_Key=EV-LOG-20261021192756-wanz Action_Code=supplier.changed",
+        "read": "ok",
+        "stage": "audit row supplier.changed (updateContact (e-mail))"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit8",
+        "what": "Event_Key=EV-LOG-20261021192756-19qk Action_Code=supplier.changed",
+        "read": "ok",
+        "stage": "audit row supplier.changed (addContact)"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit10",
+        "what": "Event_Key=EV-LOG-20261021192756-f70t Action_Code=supplier.changed",
+        "read": "ok",
+        "stage": "audit row supplier.changed (setContactActive (deactivate))"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit12",
+        "what": "Event_Key=EV-LOG-20261021192756-iuli Action_Code=supplier.changed",
+        "read": "ok",
+        "stage": "audit row supplier.changed (updateContact (self contact))"
+       },
+       {
+        "flow": "CIQ_Case_A00",
+        "id": "PkCase13",
+        "what": "Case_Code=ZZT-N21-R1-FCASE1 Supplier_Code=ZZT-N21-R1-FSUP1",
+        "read": "Waiting for supplier: CIQ",
+        "stage": "Waiting for supplier: CIQ (the S-FORMS note case)"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit17",
+        "what": "Case_Code=ZZT-N21-R1-FCASE1 Event_Key=EV-ZZT-N21-R1-FCASE1-20261021192756-rqij",
+        "read": "ok",
+        "stage": "audit row case.created (createCase)"
+       },
+       {
+        "flow": "CIQP_Request_A00",
+        "id": "PkReq1",
+        "what": "Request_Key=ZZT-N21-R1-FCASE1|1 (I-1, S-FORMS note case)",
+        "read": "Supplier: fill in the CIQ",
+        "stage": "Supplier: fill in the CIQ (I-1's request of the S-FORMS note case)"
+       },
+       {
+        "flow": "CIQ_Internal_Note_A00",
+        "id": "FmNote19",
+        "what": "Case_Code=ZZT-N21-R1-FCASE1 Note_Key=ZZT-N21-R1-FCASE1-n1",
+        "read": "ok",
+        "stage": "internal note ZZT-N21-R1-FCASE1-n1 on ZZT-N21-R1-FCASE1 (cus)"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit21",
+        "what": "Case_Code=ZZT-N21-R1-FCASE1 Event_Key=EV-ZZT-N21-R1-FCASE1-20261021192756-oydg",
+        "read": "ok",
+        "stage": "audit row note.added (addInternalNote (cus))"
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit23",
+        "what": "Event_Key=EV-LOG-20261021192756-qcje Action_Code=supplier.changed",
+        "read": "ok",
+        "stage": "audit row supplier.changed (updateContact (the fictional e-mail back))"
+       }
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "no row is known only by its draft's id",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Supplier_A00 FmSup2 reads back",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit4 reads back",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit6 reads back",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit8 reads back",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit10 reads back",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit12 reads back",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase13 reads back",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit17 reads back",
+      "ok": true
+     },
+     {
+      "label": "CIQP_Request_A00 PkReq1 reads back",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Internal_Note_A00 FmNote19 reads back",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit21 reads back",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit23 reads back",
+      "ok": true
+     },
+     {
+      "label": "every item has a showcase stage",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "nothing left that the ledger misses or this suite does not own",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "leftovers": [],
+     "calls": {
+      "client": {
+       "formGet": 10,
+       "adminGet": 1,
+       "portal.adminGet": 1
+      },
+      "liveEstimate": 12
+     },
+     "suiteCalls": {
+      "client": {
+       "oneRead": 6,
+       "formList": 23,
+       "adminList": 18,
+       "formCreate": 10,
+       "formGet": 38,
+       "formUpdate": 7,
+       "myTasks": 7,
+       "myItems": 3,
+       "create": 1,
+       "getTask": 1,
+       "submit": 1,
+       "postWebhook": 1,
+       "adminGet": 4,
+       "portal.adminGet": 2
+      },
+      "liveEstimate": 101
+     }
+    }
+   },
+   "ms": 0,
+   "at": "2026-10-21T19:27:56.307Z"
+  }
+ ]
+}

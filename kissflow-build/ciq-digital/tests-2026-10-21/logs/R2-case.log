@@ -1,0 +1,84 @@
+
+ RUN  v2.1.9 /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/prototype
+
+stdout | live/case.live.ts > S-CASE: a case from the supplier master to the final release, and a cancelled one
+S-CASE R2 (live): /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/kissflow-build/ciq-digital/tests-2026-10-21/results/R2/S-CASE.json
+pass     0 integrations ON [2 calls]
+pass     1 supplier master [22 calls]
+fail     2 draft [14 calls] — failed: ZZT-N21-R2-SC1-D01: a Start draft (Diagnostics lists it); ZZT-N21-R2-SC1-D01: not part of any case, but blocks a twin (ownDraftKeys)
+pass     3 started (I-1) [19 calls]
+pass     4a answers saved (request.changed) [9 calls]
+pass     4b completeness confirmed (I-2 fields) [8 calls]
+blocked  4c I-2 Approve [1 calls] — 050201 expected: "Waiting for supplier: CIQ" is held by Integration service, and the key's user, whom I-2 acts as, is not in it (app roles read at boot: Busines
+pass     5 reviews (ensureReviews) [59 calls]
+pass     6a RMES Safety [57 calls]
+pass     6b RMES Regulatory [57 calls]
+blocked  7 review completion [27 calls] — 050201: "Review – RMM" is held by Raw Material Manager (RMM), which has no members; the app refused first (The RMM review of this case is not one of your open t
+pass     8 release requested [37 calls]
+pass     9 final release (I-7) [24 calls]
+pass     10 cancelled case [48 calls]
+not-run  11 cleanup [55 calls] — stopped: Stopped on GET /process/2/AcDOSunMEpSA/admin/CIQ_Review_A00/PkEPEW2f_LqV: 429 Too Many Requests. No retry; nothing calls Kissflow for 20 minutes.
+calls: 445
+
+ ❯ live/case.live.ts (16 tests | 2 failed) 1391493ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 0 the integrations are ON (read-only) 6039ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 1 supplier master: the app's addSupplier, Thomas as self contact and a placeholder 68771ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 2 draft: the app's Start gate leaves a draft; it is discarded (R1 keeps one) 42619ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 3 started: createCase, I-1 makes the request 63396ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 4a the supplier saves answers through the portal's writer (request.changed) 27634ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 4b the supplier confirms completeness (I-2's fields) 24646ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 4c I-2's Approve moves the case on (expected blocked: Integration service has no members) 2995ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 5 reviews: the RMM's load starts them (ensureReviews) 181455ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 6a RMES Safety: ensureRmes creates the record, saveRmes writes a result and a finding 176074ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 6b RMES Regulatory: ensureRmes creates the record, saveRmes writes a result and a finding 177009ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 7 review completion (expected blocked: 050201), the gate by admin PUT 81808ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 8 release requested, as ensureRelease sends it 119993ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 9 final release: the supplier releases, I-7 completes the case 80988ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 10 cancel: a second case is started, then cancelled (case.cancelled) 155035ms
+   × S-CASE: a case from the supplier master to the final release, and a cancelled one > 11 cleanup: R2, R3 (and offline) delete their own items; R1 keeps the showcase 165928ms
+     → Stopped on GET /process/2/AcDOSunMEpSA/admin/CIQ_Review_A00/PkEPEW2f_LqV: 429 Too Many Requests. No retry; nothing calls Kissflow for 20 minutes.
+   × S-CASE: a case from the supplier master to the final release, and a cancelled one > records every step; offline the expected outcome 21ms
+     → expected [ Array(1) ] to deeply equal []
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  live/case.live.ts > S-CASE: a case from the supplier master to the final release, and a cancelled one > 11 cleanup: R2, R3 (and offline) delete their own items; R1 keeps the showcase
+StopError: Stopped on GET /process/2/AcDOSunMEpSA/admin/CIQ_Review_A00/PkEPEW2f_LqV: 429 Too Many Requests. No retry; nothing calls Kissflow for 20 minutes.
+ ❯ Object.check live/lib/queue.ts:243:22
+    241|     check(status, body, label) {
+    242|       const why = challengeOf(status, body);
+    243|       if (why) throw new StopError(`Stopped on ${label}: ${why}. No re…
+       |                      ^
+    244|     },
+    245|     stopped: () => stop,
+ ❯ live/lib/liveClient.ts:432:15
+ ❯ live/lib/queue.ts:227:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  live/case.live.ts > S-CASE: a case from the supplier master to the final release, and a cancelled one > records every step; offline the expected outcome
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- Array []
++ Array [
++   "2 draft: failed: ZZT-N21-R2-SC1-D01: a Start draft (Diagnostics lists it); ZZT-N21-R2-SC1-D01: not part of any case, but blocks a twin (ownDraftKeys)",
++ ]
+
+ ❯ live/case.live.ts:905:95
+    903|     if (!rec) throw new Error("the world was not created");
+    904|     const by = (status: string) => rec.steps.filter((x) => x.status ==…
+    905|     expect(rec.steps.filter((x) => x.status === "fail").map((x) => `${…
+       |                                                                                               ^
+    906|     // the RMES steps of every department the run's data activates run…
+    907|     const rmes = (["SAF", "REG"] as const).filter((x) => d.reviews.inc…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 14 passed (16)
+   Start at  05:39:50
+   Duration  1392.81s (transform 560ms, setup 0ms, collect 1.08s, tests 1391.49s, environment 0ms, prepare 31ms)
+

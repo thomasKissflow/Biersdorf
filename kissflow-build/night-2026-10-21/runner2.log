@@ -1,0 +1,943 @@
+skip R1.1 (done)
+skip R1.2 (done)
+skip R1.3 (done)
+skip R1.4 (done)
+skip R1.5 (done)
+skip R1.7 (done)
+skip R1.8 (done)
+skip R2.1 (done)
+skip R2.2 (done)
+skip R2.3 (done)
+skip R2.4 (done)
+skip R2.5 (done)
+skip R2.6 (done)
+skip R2.7 (done)
+skip R2.8 (done)
+skip R3.1 (done)
+skip R3.2 (done)
+skip R3.3 (done)
+skip R3.4 (done)
+skip R3.5 (done)
+skip R3.6 (done)
+skip R3.7 (done)
+skip R3.8 (done)
+skip X1.1 (done)
+skip X1.2 (done)
+skip X2.1 (done)
+skip X2.2 (done)
+skip F1.1 (done)
+skip F1.2 (done)
+
+== S1.1 ZZT-NT-S1: case created, started; I-1 creates the request (+ twins guard)
+  ok   S1.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   S1.1 case draft is at 'Create case'
+  ok   S1.1 Start submit accepted
+  ok   S1.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   S1.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   S1.1 case fields unchanged by the submit
+  ok   S1.1 case.started (I-1) → the case links its new request
+  ok   S1.1 case phase 'Supplier filling in the CIQ'
+  ok   S1.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   S1.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   S1.1 request has no Release_Flag yet
+  ok   S1.1 two more case.started posts create no second request (idempotent)
+  ok   S1.1 the case still links its first request
+
+== S1.2 ZZT-NT-S1: the supplier saves three revisions, uploads and removes a file; request.changed
+  FAIL S1.2 at 'Supplier: fill in the CIQ' a supplier write cannot change the ReadOnly App_Case_Item_Id, Release_Flag, Request_Locked, Case_Phase_Label — {"status":200,"leaked":{"App_Case_Item_Id":"ZZT-FORGED-CASE","Release_Flag":"Requested","Request_Locked":"Yes","Case_Phase_Label":"Forged"}}
+  ok   S1.2 restored the leaked values (admin)
+  ok   S1.2 Rev 1: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   S1.2 Rev 1: the request reads back every answer field exactly
+  ok   S1.2 Rev 1: every JSON field parses and no time has milliseconds
+  ok   S1.2 Rev 1: request.changed → the case has Rev 1
+  ok   S1.2 Rev 1: the case's 15 synced fields equal the request's
+  ok   S1.2 Rev 2: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   S1.2 Rev 2: the request reads back every answer field exactly
+  ok   S1.2 Rev 2: every JSON field parses and no time has milliseconds
+  ok   S1.2 Rev 2: request.changed → the case has Rev 2
+  ok   S1.2 Rev 2: the case's 15 synced fields equal the request's
+  ok   S1.2 Rev 3: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   S1.2 Rev 3: the request reads back every answer field exactly
+  ok   S1.2 Rev 3: every JSON field parses and no time has milliseconds
+  ok   S1.2 Rev 3: request.changed → the case has Rev 3 (posted twice back to back)
+  ok   S1.2 Rev 3: the case's 15 synced fields equal the request's
+  ok   S1.2 upload row ZZT-NT-S1-UP1: the write is accepted
+  ok   S1.2 upload row ZZT-NT-S1-UP2: the write is accepted
+  ok   S1.2 both upload rows are stored with every field
+  ok   S1.2 removing a file marks its row (Upload_Removed_At / _By_Email), keeps the row and adds none
+  ok   S1.2 the other upload row is untouched
+  ok   S1.2 the screen's Documents_JSON (Rev 4) is accepted
+  ok   S1.2 request.changed after the upload/removal → the case's Documents_JSON
+  ok   S1.2 the case's Documents_JSON equals the request's
+  ok   S1.2 not covered: the attachment file itself (Upload_File) needs the browser's upload API
+
+== S1.3 ZZT-NT-S1: completeness confirmed and submitted; I-2
+  ok   S1.3 the supplier's completeness confirmation is accepted at fill-in
+  ok   S1.3 the fill-in submit moves the request to 'keep the CIQ up to date'
+  ok   S1.3 the request reads back the confirmation
+  ok   S1.3 completeness.confirmed (I-2) → the case records the confirmation
+  ok   S1.3 the case's Completeness_* fields equal the request's
+  ok   S1.3 the case's 15 synced fields equal the request's
+  ok   S1.3 the case phase is 'Review'
+  FAIL S1.3 I-2's Approve moves the case to 'Beiersdorf review and final release' (needs Thomas in the role Integration service) — {"_status":"InProgress","_current_step":"Waiting for supplier: CIQ","assigned":"RoEKl89I5nGx"}
+  ok   S1.3 a second completeness.confirmed is refused (the case already has it): the case is unchanged
+
+== S1.3b ZZT-NT-S1: the supplier keeps the CIQ up to date (Rev 5); the P-1 probe at 'keep'
+  ok   S1.3b Rev 5 at 'keep the CIQ up to date': P-1 reproduced: the user route refuses it at 'Supplier: keep the CIQ up to date' (050313)
+  ok   S1.3b Rev 5 at 'keep the CIQ up to date': written by the admin route instead (stand-in for the fixed permission)
+  ok   S1.3b Rev 5: the request reads back every answer field
+  ok   S1.3b Rev 5: request.changed → the case in review has Rev 5
+  ok   S1.3b Rev 5: the case's 15 synced fields equal the request's, and its completeness is kept
+  FAIL S1.3b P-1 probe at 'Supplier: keep the CIQ up to date': an Uploads row (the table is Editable here) is not stored (400); Answers_Rev (Editable field, section without permission) answers 400 — {"upload":{"status":400,"code":"KISSFLOW_ERROR_050313"},"field":{"status":400,"code":"KISSFLOW_ERROR_050313"}}
+
+== S1.4 ZZT-NT-S1: open point(s) REG: two rounds, edit, answer, close; history.updated
+  ok   S1.4 REG: the open point draft reads back every Start field
+  ok   S1.4 REG: the raise moves the point to 'Open point – Regulatory', assigned to the raiser
+  ok   S1.4 REG: op.round → the point links its round-1 query
+  ok   S1.4 REG: the query carries every field of the point
+  ok   S1.4 REG: the query is at 'Supplier: respond', assigned to the portal contact
+  ok   S1.4 REG: the raiser's edit: P-1 reproduced: the user route refuses it at 'Open point – Regulatory' (050313)
+  ok   S1.4 REG: the raiser's edit: written by the admin route instead (stand-in for the fixed permission)
+  ok   S1.4 REG: the raiser's edit is accepted at the point's step
+  ok   S1.4 REG: op.edited → the open query shows the edit
+  ok   S1.4 REG: the query has the edited justification, due date and an Edited_At without milliseconds
+  ok   S1.4 REG: the supplier's answer: P-1 reproduced: the user route refuses it at 'Supplier: respond' (050313)
+  ok   S1.4 REG: the supplier's answer: written by the admin route instead (stand-in for the fixed permission)
+  ok   S1.4 REG: the supplier's answer is accepted at 'Supplier: respond'
+  ok   S1.4 REG: the respond submit completes the query
+  ok   S1.4 REG: query.answered (I-4) → the point has the answer
+  ok   S1.4 REG: the point has all four answer fields and OP_Progress 'In progress'
+  ok   S1.4 REG: the return (round 2): P-1 reproduced: the user route refuses it at 'Open point – Regulatory' (050313)
+  ok   S1.4 REG: the return (round 2): written by the admin route instead (stand-in for the fixed permission)
+  ok   S1.4 REG: the return (round 2) is accepted at the point's step
+  ok   S1.4 REG: op.round → the point links its round-2 query
+  ok   S1.4 REG: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond'
+  ok   S1.4 REG: the answered round-1 query stays completed with its answer
+  ok   S1.4 REG: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   S1.4 REG: op.closed while the point has no outcome is refused (its query stays)
+  ok   S1.4 REG: the close: P-1 reproduced: the user route refuses it at 'Open point – Regulatory' (050313)
+  ok   S1.4 REG: the close: written by the admin route instead (stand-in for the fixed permission)
+  ok   S1.4 REG: closing (outcome + submit) completes the point
+  ok   S1.4 REG: op.closed → the open round-2 query is completed
+  ok   S1.4 REG: op.edited on the closed point is refused
+  ok   S1.4 REG: op.round on the closed point is refused (no new query)
+  ok   S1.4 REG: exactly two queries exist for the point
+  ok   S1.4 history.updated → the request's Questions_History_JSON
+  ok   S1.4 the history reads back exactly and parses
+  ok   S1.4 history.updated with text that is not JSON is refused
+  ok   S1.4 history.updated with a JSON object (not a list) is refused
+
+== S1.5 ZZT-NT-S1: release.requested (I-5) and the supplier's move to the release step
+  ok   S1.5 seeded an earlier round's Release_At / Release_By_Name on the request (admin) to prove the clear
+  ok   S1.5 release.requested (I-5) → the request asks for the final release
+  ok   S1.5 the request is locked, labelled, has its release contact and no earlier release
+  ok   S1.5 the case has Release_Requested_At (now, no milliseconds)
+  ok   S1.5 the supplier's move (submit only: Keep_Open_Gate is a formula, P-2) takes the request to 'give the final release', assigned to the release contact
+
+== S1.7 ZZT-NT-S1: the supplier's final release; I-7 completes the case
+  ok   S1.7 the supplier's final release: P-1 reproduced: the user route refuses it at 'Supplier: give the final release' (050313)
+  ok   S1.7 the supplier's final release: written by the admin route instead (stand-in for the fixed permission)
+  ok   S1.7 the supplier's release (fields + submit) takes the request to 'view the released CIQ'
+  ok   S1.7 the request reads back the release
+  ok   S1.7 release.given (I-7) → the case is completed
+  ok   S1.7 the case has Final_Release_* and phase 'Completed'
+  ok   S1.7 a second release.given is refused (the case is completed)
+
+== S1.8 ZZT-NT-S1: a change report after the release; request.changed on the completed case
+  ok   S1.8 P-1 probe at 'Supplier: view the released CIQ': an Uploads row (the table is ReadOnly here) is not stored (400); Change_Report_Text (Editable field, section without permission) answers 400
+  ok   S1.8 at 'Supplier: view the released CIQ' a supplier write cannot change the ReadOnly Answers_JSON, Release_At
+  ok   S1.8 the supplier's change report: P-1 reproduced: the user route refuses it at 'Supplier: view the released CIQ' (050313)
+  ok   S1.8 the supplier's change report: written by the admin route instead (stand-in for the fixed permission)
+  ok   S1.8 request.changed after the release → the completed case has the change report
+  ok   S1.8 the case's change-report fields equal the request's and the case stays completed
+
+== V1 ZZT-NT-S1: CIQ Review, one per department: activate, the department step, the app's admin writes
+  ok   V1 REG: the review draft reads back every field
+  ok   V1 REG: activation moves the review to 'Review – Regulatory'
+  ok   V1 REG: info: who holds the department step (its reviewer role is empty tonight)
+  ok   V1 REG: the app's admin write of counters and status reads back
+  ok   V1 SAF: the review draft reads back every field
+  ok   V1 SAF: activation moves the review to 'Review – Safety'
+  ok   V1 SAF: info: who holds the department step (its reviewer role is empty tonight)
+  ok   V1 SAF: the app's admin write of counters and status reads back
+  ok   V1 QM: the review draft reads back every field
+  ok   V1 QM: activation moves the review to 'Review – QM'
+  ok   V1 QM: info: who holds the department step (its reviewer role is empty tonight)
+  ok   V1 QM: the app's admin write of counters and status reads back
+  ok   V1 MIC: the review draft reads back every field
+  ok   V1 MIC: activation moves the review to 'Review – Microbiology'
+  ok   V1 MIC: info: who holds the department step (its reviewer role is empty tonight)
+  ok   V1 MIC: the app's admin write of counters and status reads back
+  ok   V1 SUS: the review draft reads back every field
+  ok   V1 SUS: activation moves the review to 'Review – Sustainability'
+  ok   V1 SUS: info: who holds the department step (its reviewer role is empty tonight)
+  ok   V1 SUS: the app's admin write of counters and status reads back
+  ok   V1 RMM: the review draft reads back every field
+  ok   V1 RMM: activation moves the review to 'Review – RMM'
+  ok   V1 RMM: info: who holds the department step (its reviewer role is empty tonight)
+  ok   V1 RMM: the app's admin write of counters and status reads back
+
+== FM.audit CIQ Audit Event: three events, every field, an update
+  ok   FM.audit Case: the event is stored (submit 200) and reads back every field
+  ok   FM.audit an update of one field reads back and leaves the others
+  ok   FM.audit Open point: the event is stored (submit 200) and reads back every field
+  ok   FM.audit Final PDF: the event is stored (submit 200) and reads back every field
+
+== FM.note CIQ Internal Note: two notes, mentions, an edit
+  ok   FM.note note 1: stored and reads back every field
+  ok   FM.note note 2: stored and reads back every field
+  ok   FM.note the edit reads back
+
+== FM.rmesSAF CIQ RMES Safety: header, two criteria and a finding (child tables), a row update, a row added
+  ok   FM.rmesSAF the header reads back
+  ok   FM.rmesSAF both criteria rows read back every field
+  ok   FM.rmesSAF the finding row reads back every field
+  ok   FM.rmesSAF a row update by its id changes that row only, adds none
+  ok   FM.rmesSAF a new finding row is added, the first one kept
+
+== FM.rmesREG CIQ RMES Regulatory: header, two criteria and a finding (child tables), a row update, a row added
+  ok   FM.rmesREG the header reads back
+  ok   FM.rmesREG both criteria rows read back every field
+  ok   FM.rmesREG the finding row reads back every field
+  ok   FM.rmesREG a row update by its id changes that row only, adds none
+  ok   FM.rmesREG a new finding row is added, the first one kept
+
+== FM.scope CIQ Scope Run: a run with JSON input and result
+  ok   FM.scope the run is stored and reads back every field
+
+== FM.supplier CIQ Supplier: a supplier with two contacts (child table), a contact deactivated
+  ok   FM.supplier the supplier header reads back
+  ok   FM.supplier both contacts read back every field
+  ok   FM.supplier deactivating one contact changes that row only
+
+== FM.help CIQP Help Article (portal, seen by suppliers): created, read back, deleted at once
+  ok   FM.help the article is stored and reads back every field
+  ok   FM.help the article is deleted (GET 404)
+
+== S2.1 ZZT-NT-S2: case created, started; I-1 creates the request (+ twins guard)
+  ok   S2.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   S2.1 case draft is at 'Create case'
+  ok   S2.1 Start submit accepted
+  ok   S2.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   S2.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   S2.1 case fields unchanged by the submit
+  ok   S2.1 case.started (I-1) → the case links its new request
+  ok   S2.1 case phase 'Supplier filling in the CIQ'
+  ok   S2.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   S2.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   S2.1 request has no Release_Flag yet
+  ok   S2.1 two more case.started posts create no second request (idempotent)
+  ok   S2.1 the case still links its first request
+
+== S2.2 ZZT-NT-S2: the supplier saves three revisions (Rev 2 ~30 KB), uploads and removes a file; request.changed
+  FAIL S2.2 at 'Supplier: fill in the CIQ' a supplier write cannot change the ReadOnly App_Case_Item_Id, Release_Flag, Request_Locked, Case_Phase_Label — {"status":200,"leaked":{"App_Case_Item_Id":"ZZT-FORGED-CASE","Release_Flag":"Requested","Request_Locked":"Yes","Case_Phase_Label":"Forged"}}
+  ok   S2.2 restored the leaked values (admin)
+  ok   S2.2 Rev 1: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   S2.2 Rev 1: the request reads back every answer field exactly
+  ok   S2.2 Rev 1: every JSON field parses and no time has milliseconds
+  ok   S2.2 Rev 1: request.changed → the case has Rev 1
+  ok   S2.2 Rev 1: the case's 15 synced fields equal the request's
+  ok   S2.2 Rev 2 (~30 KB answers): the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   S2.2 Rev 2: the request reads back every answer field exactly
+  ok   S2.2 Rev 2: every JSON field parses and no time has milliseconds
+  ok   S2.2 Rev 2: request.changed → the case has Rev 2
+  ok   S2.2 Rev 2: the case's 15 synced fields equal the request's
+  ok   S2.2 Rev 3: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   S2.2 Rev 3: the request reads back every answer field exactly
+  ok   S2.2 Rev 3: every JSON field parses and no time has milliseconds
+  ok   S2.2 Rev 3: request.changed → the case has Rev 3 (posted twice back to back)
+  ok   S2.2 Rev 3: the case's 15 synced fields equal the request's
+  ok   S2.2 after Rev 3 the case holds Rev 3, not the ~30 KB Rev 2 (no stale overwrite)
+  ok   S2.2 upload row ZZT-NT-S2-UP1: the write is accepted
+  ok   S2.2 upload row ZZT-NT-S2-UP2: the write is accepted
+  ok   S2.2 both upload rows are stored with every field
+  ok   S2.2 removing a file marks its row (Upload_Removed_At / _By_Email), keeps the row and adds none
+  ok   S2.2 the other upload row is untouched
+  ok   S2.2 the screen's Documents_JSON (Rev 4) is accepted
+  ok   S2.2 request.changed after the upload/removal → the case's Documents_JSON
+  ok   S2.2 the case's Documents_JSON equals the request's
+  ok   S2.2 not covered: the attachment file itself (Upload_File) needs the browser's upload API
+
+== S2.3 ZZT-NT-S2: completeness confirmed and submitted; I-2
+  ok   S2.3 the supplier's completeness confirmation is accepted at fill-in
+  ok   S2.3 the fill-in submit moves the request to 'keep the CIQ up to date'
+  ok   S2.3 the request reads back the confirmation
+  ok   S2.3 completeness.confirmed (I-2) → the case records the confirmation
+  ok   S2.3 the case's Completeness_* fields equal the request's
+  ok   S2.3 the case's 15 synced fields equal the request's
+  ok   S2.3 the case phase is 'Review'
+RATE LIMITED: 429 on GET /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPEhf79dID. Stop 20 minutes, then rerun.
+paused 20 min after a rate limit (Wed Oct 21 06:03:17 IST 2026)
+skip R1.1 (done)
+skip R1.2 (done)
+skip R1.3 (done)
+skip R1.4 (done)
+skip R1.5 (done)
+skip R1.7 (done)
+skip R1.8 (done)
+skip R2.1 (done)
+skip R2.2 (done)
+skip R2.3 (done)
+skip R2.4 (done)
+skip R2.5 (done)
+skip R2.6 (done)
+skip R2.7 (done)
+skip R2.8 (done)
+skip R3.1 (done)
+skip R3.2 (done)
+skip R3.3 (done)
+skip R3.4 (done)
+skip R3.5 (done)
+skip R3.6 (done)
+skip R3.7 (done)
+skip R3.8 (done)
+skip X1.1 (done)
+skip X1.2 (done)
+skip X2.1 (done)
+skip X2.2 (done)
+skip F1.1 (done)
+skip F1.2 (done)
+skip S1.1 (done)
+skip S1.2 (done)
+skip S1.3 (done)
+skip S1.3b (done)
+skip S1.4 (done)
+skip S1.5 (done)
+skip S1.7 (done)
+skip S1.8 (done)
+skip V1 (done)
+skip FM.audit (done)
+skip FM.note (done)
+skip FM.rmesSAF (done)
+skip FM.rmesREG (done)
+skip FM.scope (done)
+skip FM.supplier (done)
+skip FM.help (done)
+skip S2.1 (done)
+skip S2.2 (done)
+skip S2.3 (done)
+
+== S2.3b ZZT-NT-S2: the supplier keeps the CIQ up to date (Rev 5); the P-1 probe at 'keep'
+  ok   S2.3b Rev 5 at 'keep the CIQ up to date': P-1 reproduced: the user route refuses it at 'Supplier: keep the CIQ up to date' (050313)
+  ok   S2.3b Rev 5 at 'keep the CIQ up to date': written by the admin route instead (stand-in for the fixed permission)
+  ok   S2.3b Rev 5: the request reads back every answer field
+  ok   S2.3b Rev 5: request.changed → the case in review has Rev 5
+  ok   S2.3b Rev 5: the case's 15 synced fields equal the request's, and its completeness is kept
+  FAIL S2.3b P-1 probe at 'Supplier: keep the CIQ up to date': an Uploads row (the table is Editable here) is not stored (400); Answers_Rev (Editable field, section without permission) answers 400 — {"upload":{"status":400,"code":"KISSFLOW_ERROR_050313"},"field":{"status":400,"code":"KISSFLOW_ERROR_050313"}}
+
+== S2.4 ZZT-NT-S2: open point(s) SAF + QM: two rounds, edit, answer, close; history.updated
+  ok   S2.4 SAF: the open point draft reads back every Start field
+  ok   S2.4 SAF: the raise moves the point to 'Open point – Safety', assigned to the raiser
+  ok   S2.4 SAF: op.round → the point links its round-1 query
+  ok   S2.4 SAF: the query carries every field of the point
+  ok   S2.4 SAF: the query is at 'Supplier: respond', assigned to the portal contact
+  ok   S2.4 SAF: the raiser's edit: P-1 reproduced: the user route refuses it at 'Open point – Safety' (050313)
+  ok   S2.4 SAF: the raiser's edit: written by the admin route instead (stand-in for the fixed permission)
+  ok   S2.4 SAF: the raiser's edit is accepted at the point's step
+  ok   S2.4 SAF: op.edited → the open query shows the edit
+  ok   S2.4 SAF: the query has the edited justification, due date and an Edited_At without milliseconds
+  ok   S2.4 SAF: the supplier's answer: P-1 reproduced: the user route refuses it at 'Supplier: respond' (050313)
+  ok   S2.4 SAF: the supplier's answer: written by the admin route instead (stand-in for the fixed permission)
+  ok   S2.4 SAF: the supplier's answer is accepted at 'Supplier: respond'
+  ok   S2.4 SAF: the respond submit completes the query
+  ok   S2.4 SAF: query.answered (I-4) → the point has the answer
+  ok   S2.4 SAF: the point has all four answer fields and OP_Progress 'In progress'
+  ok   S2.4 SAF: the return (round 2): P-1 reproduced: the user route refuses it at 'Open point – Safety' (050313)
+  ok   S2.4 SAF: the return (round 2): written by the admin route instead (stand-in for the fixed permission)
+  ok   S2.4 SAF: the return (round 2) is accepted at the point's step
+  ok   S2.4 SAF: op.round → the point links its round-2 query
+  ok   S2.4 SAF: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond'
+  ok   S2.4 SAF: the answered round-1 query stays completed with its answer
+  ok   S2.4 SAF: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   S2.4 SAF: op.closed while the point has no outcome is refused (its query stays)
+  ok   S2.4 SAF: the close: P-1 reproduced: the user route refuses it at 'Open point – Safety' (050313)
+  ok   S2.4 SAF: the close: written by the admin route instead (stand-in for the fixed permission)
+  ok   S2.4 SAF: closing (outcome + submit) completes the point
+  ok   S2.4 SAF: op.closed → the open round-2 query is completed
+  ok   S2.4 SAF: op.edited on the closed point is refused
+  ok   S2.4 SAF: op.round on the closed point is refused (no new query)
+  ok   S2.4 SAF: exactly two queries exist for the point
+  ok   S2.4 QM: the open point draft reads back every Start field
+  ok   S2.4 QM: the raise moves the point to 'Open point – QM', assigned to the raiser
+  ok   S2.4 QM: op.round → the point links its round-1 query
+  ok   S2.4 QM: the query carries every field of the point
+  ok   S2.4 QM: the query is at 'Supplier: respond', assigned to the portal contact
+  ok   S2.4 QM: the raiser's edit: P-1 reproduced: the user route refuses it at 'Open point – QM' (050313)
+  ok   S2.4 QM: the raiser's edit: written by the admin route instead (stand-in for the fixed permission)
+  ok   S2.4 QM: the raiser's edit is accepted at the point's step
+  ok   S2.4 QM: op.edited → the open query shows the edit
+  ok   S2.4 QM: the query has the edited justification, due date and an Edited_At without milliseconds
+  ok   S2.4 QM: the supplier's answer: P-1 reproduced: the user route refuses it at 'Supplier: respond' (050313)
+  ok   S2.4 QM: the supplier's answer: written by the admin route instead (stand-in for the fixed permission)
+  ok   S2.4 QM: the supplier's answer is accepted at 'Supplier: respond'
+  ok   S2.4 QM: the respond submit completes the query
+  ok   S2.4 QM: query.answered (I-4) → the point has the answer
+  ok   S2.4 QM: the point has all four answer fields and OP_Progress 'In progress'
+  ok   S2.4 QM: the return (round 2): P-1 reproduced: the user route refuses it at 'Open point – QM' (050313)
+  ok   S2.4 QM: the return (round 2): written by the admin route instead (stand-in for the fixed permission)
+  ok   S2.4 QM: the return (round 2) is accepted at the point's step
+  ok   S2.4 QM: op.round → the point links its round-2 query
+  ok   S2.4 QM: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond'
+  ok   S2.4 QM: the answered round-1 query stays completed with its answer
+  ok   S2.4 QM: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   S2.4 QM: op.closed while the point has no outcome is refused (its query stays)
+  ok   S2.4 QM: the close: P-1 reproduced: the user route refuses it at 'Open point – QM' (050313)
+  ok   S2.4 QM: the close: written by the admin route instead (stand-in for the fixed permission)
+  ok   S2.4 QM: closing (outcome + submit) completes the point
+  ok   S2.4 QM: op.closed → the open round-2 query is completed
+  ok   S2.4 QM: op.edited on the closed point is refused
+  ok   S2.4 QM: op.round on the closed point is refused (no new query)
+  ok   S2.4 QM: exactly two queries exist for the point
+  ok   S2.4 history.updated → the request's Questions_History_JSON
+  ok   S2.4 the history reads back exactly and parses
+  ok   S2.4 history.updated with text that is not JSON is refused
+  ok   S2.4 history.updated with a JSON object (not a list) is refused
+
+== S2.5 ZZT-NT-S2: release.requested (I-5) and the supplier's move to the release step
+  ok   S2.5 seeded an earlier round's Release_At / Release_By_Name on the request (admin) to prove the clear
+  ok   S2.5 release.requested (I-5) → the request asks for the final release
+  ok   S2.5 the request is locked, labelled, has its release contact and no earlier release
+  ok   S2.5 the case has Release_Requested_At (now, no milliseconds)
+  ok   S2.5 the supplier's move (submit only: Keep_Open_Gate is a formula, P-2) takes the request to 'give the final release', assigned to the release contact
+
+== S2.6 ZZT-NT-S2: review.reopened (I-6), the go-to back, and a second release.requested
+  ok   S2.6 review.reopened (I-6) → the request is flagged Reopened, unlocked, 'With Beiersdorf'
+  ok   S2.6 the request is unlocked and labelled 'With Beiersdorf'
+  ok   S2.6 a second review.reopened is refused (the release is no longer requested)
+  ok   S2.6 the reopen marker at the release step: P-1 reproduced: the user route refuses it at 'Supplier: give the final release' (050313)
+  ok   S2.6 the reopen marker at the release step: written by the admin route instead (stand-in for the fixed permission)
+  ok   S2.6 submitting 'give the final release' while Reopened takes the go-to back to 'keep the CIQ up to date'
+  ok   S2.6 release.given while Reopened is refused: the case stays open
+  ok   S2.6 round 2: seeded an earlier round's Release_At / Release_By_Name on the request (admin) to prove the clear
+  ok   S2.6 round 2: release.requested (I-5) → the request asks for the final release
+  ok   S2.6 round 2: the request is locked, labelled, has its release contact and no earlier release
+  ok   S2.6 round 2: the case has Release_Requested_At (now, no milliseconds)
+  ok   S2.6 round 2: the supplier's move (submit only: Keep_Open_Gate is a formula, P-2) takes the request to 'give the final release', assigned to the release contact
+
+== S2.7 ZZT-NT-S2: the supplier's final release; I-7 completes the case
+  ok   S2.7 the supplier's final release: P-1 reproduced: the user route refuses it at 'Supplier: give the final release' (050313)
+  ok   S2.7 the supplier's final release: written by the admin route instead (stand-in for the fixed permission)
+  ok   S2.7 the supplier's release (fields + submit) takes the request to 'view the released CIQ'
+  ok   S2.7 the request reads back the release
+  ok   S2.7 release.given (I-7) → the case is completed
+  ok   S2.7 the case has Final_Release_* and phase 'Completed'
+  ok   S2.7 a second release.given is refused (the case is completed)
+
+== S2.8 ZZT-NT-S2: a change report after the release; request.changed on the completed case
+  ok   S2.8 P-1 probe at 'Supplier: view the released CIQ': an Uploads row (the table is ReadOnly here) is not stored (400); Change_Report_Text (Editable field, section without permission) answers 400
+  ok   S2.8 at 'Supplier: view the released CIQ' a supplier write cannot change the ReadOnly Answers_JSON, Release_At
+  ok   S2.8 the supplier's change report: P-1 reproduced: the user route refuses it at 'Supplier: view the released CIQ' (050313)
+  ok   S2.8 the supplier's change report: written by the admin route instead (stand-in for the fixed permission)
+  ok   S2.8 request.changed after the release → the completed case has the change report
+  ok   S2.8 the case's change-report fields equal the request's and the case stays completed
+
+== G1.1 ZZT-NT-G1-STARTED: case created, started; I-1 creates the request (+ twins guard)
+  ok   G1.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   G1.1 case draft is at 'Create case'
+  ok   G1.1 Start submit accepted
+  ok   G1.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   G1.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   G1.1 case fields unchanged by the submit
+  ok   G1.1 case.started (I-1) → the case links its new request
+  ok   G1.1 case phase 'Supplier filling in the CIQ'
+  ok   G1.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   G1.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   G1.1 request has no Release_Flag yet
+  ok   G1.1 two more case.started posts create no second request (idempotent)
+  ok   G1.1 the case still links its first request
+
+== G2.1 ZZT-NT-G2-FILLED: case created, started; I-1 creates the request (+ twins guard)
+  ok   G2.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   G2.1 case draft is at 'Create case'
+  ok   G2.1 Start submit accepted
+  ok   G2.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   G2.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   G2.1 case fields unchanged by the submit
+  ok   G2.1 case.started (I-1) → the case links its new request
+  ok   G2.1 case phase 'Supplier filling in the CIQ'
+  ok   G2.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   G2.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   G2.1 request has no Release_Flag yet
+  ok   G2.1 two more case.started posts create no second request (idempotent)
+  ok   G2.1 the case still links its first request
+
+== G2.2 ZZT-NT-G2-FILLED: the supplier saves three revisions, uploads and removes a file; request.changed
+  FAIL G2.2 at 'Supplier: fill in the CIQ' a supplier write cannot change the ReadOnly App_Case_Item_Id, Release_Flag, Request_Locked, Case_Phase_Label — {"status":200,"leaked":{"App_Case_Item_Id":"ZZT-FORGED-CASE","Release_Flag":"Requested","Request_Locked":"Yes","Case_Phase_Label":"Forged"}}
+  ok   G2.2 restored the leaked values (admin)
+  ok   G2.2 Rev 1: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   G2.2 Rev 1: the request reads back every answer field exactly
+  ok   G2.2 Rev 1: every JSON field parses and no time has milliseconds
+  ok   G2.2 Rev 1: request.changed → the case has Rev 1
+  ok   G2.2 Rev 1: the case's 15 synced fields equal the request's
+  ok   G2.2 Rev 2: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   G2.2 Rev 2: the request reads back every answer field exactly
+  ok   G2.2 Rev 2: every JSON field parses and no time has milliseconds
+  ok   G2.2 Rev 2: request.changed → the case has Rev 2
+  ok   G2.2 Rev 2: the case's 15 synced fields equal the request's
+  ok   G2.2 Rev 3: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   G2.2 Rev 3: the request reads back every answer field exactly
+  ok   G2.2 Rev 3: every JSON field parses and no time has milliseconds
+  ok   G2.2 Rev 3: request.changed → the case has Rev 3 (posted twice back to back)
+  ok   G2.2 Rev 3: the case's 15 synced fields equal the request's
+  ok   G2.2 upload row ZZT-NT-G2-FILLED-UP1: the write is accepted
+  ok   G2.2 upload row ZZT-NT-G2-FILLED-UP2: the write is accepted
+  ok   G2.2 both upload rows are stored with every field
+  ok   G2.2 removing a file marks its row (Upload_Removed_At / _By_Email), keeps the row and adds none
+  ok   G2.2 the other upload row is untouched
+  ok   G2.2 the screen's Documents_JSON (Rev 4) is accepted
+  ok   G2.2 request.changed after the upload/removal → the case's Documents_JSON
+  ok   G2.2 the case's Documents_JSON equals the request's
+  ok   G2.2 not covered: the attachment file itself (Upload_File) needs the browser's upload API
+
+== G3.1 ZZT-NT-G3-CONFIRMED: case created, started; I-1 creates the request (+ twins guard)
+  ok   G3.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   G3.1 case draft is at 'Create case'
+  ok   G3.1 Start submit accepted
+  ok   G3.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   G3.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   G3.1 case fields unchanged by the submit
+  ok   G3.1 case.started (I-1) → the case links its new request
+  ok   G3.1 case phase 'Supplier filling in the CIQ'
+  ok   G3.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   G3.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   G3.1 request has no Release_Flag yet
+  ok   G3.1 two more case.started posts create no second request (idempotent)
+  ok   G3.1 the case still links its first request
+
+== G3.2 ZZT-NT-G3-CONFIRMED: the supplier saves three revisions, uploads and removes a file; request.changed
+  FAIL G3.2 at 'Supplier: fill in the CIQ' a supplier write cannot change the ReadOnly App_Case_Item_Id, Release_Flag, Request_Locked, Case_Phase_Label — {"status":200,"leaked":{"App_Case_Item_Id":"ZZT-FORGED-CASE","Release_Flag":"Requested","Request_Locked":"Yes","Case_Phase_Label":"Forged"}}
+  ok   G3.2 restored the leaked values (admin)
+  ok   G3.2 Rev 1: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   G3.2 Rev 1: the request reads back every answer field exactly
+  ok   G3.2 Rev 1: every JSON field parses and no time has milliseconds
+  ok   G3.2 Rev 1: request.changed → the case has Rev 1
+  ok   G3.2 Rev 1: the case's 15 synced fields equal the request's
+  ok   G3.2 Rev 2: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   G3.2 Rev 2: the request reads back every answer field exactly
+  ok   G3.2 Rev 2: every JSON field parses and no time has milliseconds
+  ok   G3.2 Rev 2: request.changed → the case has Rev 2
+  ok   G3.2 Rev 2: the case's 15 synced fields equal the request's
+  ok   G3.2 Rev 3: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   G3.2 Rev 3: the request reads back every answer field exactly
+  ok   G3.2 Rev 3: every JSON field parses and no time has milliseconds
+  ok   G3.2 Rev 3: request.changed → the case has Rev 3 (posted twice back to back)
+  ok   G3.2 Rev 3: the case's 15 synced fields equal the request's
+  ok   G3.2 upload row ZZT-NT-G3-CONFIRMED-UP1: the write is accepted
+  ok   G3.2 upload row ZZT-NT-G3-CONFIRMED-UP2: the write is accepted
+  ok   G3.2 both upload rows are stored with every field
+  ok   G3.2 removing a file marks its row (Upload_Removed_At / _By_Email), keeps the row and adds none
+  ok   G3.2 the other upload row is untouched
+  ok   G3.2 the screen's Documents_JSON (Rev 4) is accepted
+  ok   G3.2 request.changed after the upload/removal → the case's Documents_JSON
+  ok   G3.2 the case's Documents_JSON equals the request's
+  ok   G3.2 not covered: the attachment file itself (Upload_File) needs the browser's upload API
+
+== G3.3 ZZT-NT-G3-CONFIRMED: completeness confirmed and submitted; I-2
+  ok   G3.3 the supplier's completeness confirmation is accepted at fill-in
+  ok   G3.3 the fill-in submit moves the request to 'keep the CIQ up to date'
+  ok   G3.3 the request reads back the confirmation
+  ok   G3.3 completeness.confirmed (I-2) → the case records the confirmation
+  ok   G3.3 the case's Completeness_* fields equal the request's
+  ok   G3.3 the case's 15 synced fields equal the request's
+  ok   G3.3 the case phase is 'Review'
+  FAIL G3.3 I-2's Approve moves the case to 'Beiersdorf review and final release' (needs Thomas in the role Integration service) — {"_status":"InProgress","_current_step":"Waiting for supplier: CIQ","assigned":"RoEKl89I5nGx"}
+  ok   G3.3 a second completeness.confirmed is refused (the case already has it): the case is unchanged
+
+== G4.1 ZZT-NT-G4-RELEASE-ASKED: case created, started; I-1 creates the request (+ twins guard)
+  ok   G4.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   G4.1 case draft is at 'Create case'
+  ok   G4.1 Start submit accepted
+  ok   G4.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   G4.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   G4.1 case fields unchanged by the submit
+  ok   G4.1 case.started (I-1) → the case links its new request
+  ok   G4.1 case phase 'Supplier filling in the CIQ'
+  ok   G4.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   G4.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   G4.1 request has no Release_Flag yet
+  ok   G4.1 two more case.started posts create no second request (idempotent)
+  ok   G4.1 the case still links its first request
+
+== G4.2 ZZT-NT-G4-RELEASE-ASKED: the supplier saves three revisions, uploads and removes a file; request.changed
+  FAIL G4.2 at 'Supplier: fill in the CIQ' a supplier write cannot change the ReadOnly App_Case_Item_Id, Release_Flag, Request_Locked, Case_Phase_Label — {"status":200,"leaked":{"App_Case_Item_Id":"ZZT-FORGED-CASE","Release_Flag":"Requested","Request_Locked":"Yes","Case_Phase_Label":"Forged"}}
+  ok   G4.2 restored the leaked values (admin)
+  ok   G4.2 Rev 1: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   G4.2 Rev 1: the request reads back every answer field exactly
+  ok   G4.2 Rev 1: every JSON field parses and no time has milliseconds
+  ok   G4.2 Rev 1: request.changed → the case has Rev 1
+  ok   G4.2 Rev 1: the case's 15 synced fields equal the request's
+  ok   G4.2 Rev 2: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   G4.2 Rev 2: the request reads back every answer field exactly
+  ok   G4.2 Rev 2: every JSON field parses and no time has milliseconds
+  ok   G4.2 Rev 2: request.changed → the case has Rev 2
+  ok   G4.2 Rev 2: the case's 15 synced fields equal the request's
+  ok   G4.2 Rev 3: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   G4.2 Rev 3: the request reads back every answer field exactly
+  ok   G4.2 Rev 3: every JSON field parses and no time has milliseconds
+  ok   G4.2 Rev 3: request.changed → the case has Rev 3 (posted twice back to back)
+  ok   G4.2 Rev 3: the case's 15 synced fields equal the request's
+  ok   G4.2 upload row ZZT-NT-G4-RELEASE-ASKED-UP1: the write is accepted
+  ok   G4.2 upload row ZZT-NT-G4-RELEASE-ASKED-UP2: the write is accepted
+  ok   G4.2 both upload rows are stored with every field
+  ok   G4.2 removing a file marks its row (Upload_Removed_At / _By_Email), keeps the row and adds none
+  ok   G4.2 the other upload row is untouched
+  ok   G4.2 the screen's Documents_JSON (Rev 4) is accepted
+  ok   G4.2 request.changed after the upload/removal → the case's Documents_JSON
+  ok   G4.2 the case's Documents_JSON equals the request's
+  ok   G4.2 not covered: the attachment file itself (Upload_File) needs the browser's upload API
+
+== G4.3 ZZT-NT-G4-RELEASE-ASKED: completeness confirmed and submitted; I-2
+  ok   G4.3 the supplier's completeness confirmation is accepted at fill-in
+  ok   G4.3 the fill-in submit moves the request to 'keep the CIQ up to date'
+  ok   G4.3 the request reads back the confirmation
+  ok   G4.3 completeness.confirmed (I-2) → the case records the confirmation
+  ok   G4.3 the case's Completeness_* fields equal the request's
+  ok   G4.3 the case's 15 synced fields equal the request's
+  ok   G4.3 the case phase is 'Review'
+  FAIL G4.3 I-2's Approve moves the case to 'Beiersdorf review and final release' (needs Thomas in the role Integration service) — {"_status":"InProgress","_current_step":"Waiting for supplier: CIQ","assigned":"RoEKl89I5nGx"}
+  ok   G4.3 a second completeness.confirmed is refused (the case already has it): the case is unchanged
+
+== G4.3b ZZT-NT-G4-RELEASE-ASKED: the supplier keeps the CIQ up to date (Rev 5); the P-1 probe at 'keep'
+  ok   G4.3b Rev 5 at 'keep the CIQ up to date': P-1 reproduced: the user route refuses it at 'Supplier: keep the CIQ up to date' (050313)
+  ok   G4.3b Rev 5 at 'keep the CIQ up to date': written by the admin route instead (stand-in for the fixed permission)
+  ok   G4.3b Rev 5: the request reads back every answer field
+  ok   G4.3b Rev 5: request.changed → the case in review has Rev 5
+  ok   G4.3b Rev 5: the case's 15 synced fields equal the request's, and its completeness is kept
+  FAIL G4.3b P-1 probe at 'Supplier: keep the CIQ up to date': an Uploads row (the table is Editable here) is not stored (400); Answers_Rev (Editable field, section without permission) answers 400 — {"upload":{"status":400,"code":"KISSFLOW_ERROR_050313"},"field":{"status":400,"code":"KISSFLOW_ERROR_050313"}}
+
+== G4.4 ZZT-NT-G4-RELEASE-ASKED: open point(s) RMM: two rounds, edit, answer, close; history.updated
+  ok   G4.4 RMM: the open point draft reads back every Start field
+  ok   G4.4 RMM: the raise moves the point to 'Open point – RMM', assigned to the raiser
+  ok   G4.4 RMM: op.round → the point links its round-1 query
+  ok   G4.4 RMM: the query carries every field of the point
+  ok   G4.4 RMM: the query is at 'Supplier: respond', assigned to the portal contact
+  ok   G4.4 RMM: the raiser's edit: P-1 reproduced: the user route refuses it at 'Open point – RMM' (050313)
+  ok   G4.4 RMM: the raiser's edit: written by the admin route instead (stand-in for the fixed permission)
+  ok   G4.4 RMM: the raiser's edit is accepted at the point's step
+  ok   G4.4 RMM: op.edited → the open query shows the edit
+  ok   G4.4 RMM: the query has the edited justification, due date and an Edited_At without milliseconds
+  ok   G4.4 RMM: the supplier's answer: P-1 reproduced: the user route refuses it at 'Supplier: respond' (050313)
+  ok   G4.4 RMM: the supplier's answer: written by the admin route instead (stand-in for the fixed permission)
+  ok   G4.4 RMM: the supplier's answer is accepted at 'Supplier: respond'
+  ok   G4.4 RMM: the respond submit completes the query
+  ok   G4.4 RMM: query.answered (I-4) → the point has the answer
+  ok   G4.4 RMM: the point has all four answer fields and OP_Progress 'In progress'
+  ok   G4.4 RMM: the return (round 2): P-1 reproduced: the user route refuses it at 'Open point – RMM' (050313)
+  ok   G4.4 RMM: the return (round 2): written by the admin route instead (stand-in for the fixed permission)
+  ok   G4.4 RMM: the return (round 2) is accepted at the point's step
+  ok   G4.4 RMM: op.round → the point links its round-2 query
+  ok   G4.4 RMM: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond'
+  ok   G4.4 RMM: the answered round-1 query stays completed with its answer
+  ok   G4.4 RMM: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   G4.4 RMM: op.closed while the point has no outcome is refused (its query stays)
+  ok   G4.4 RMM: the close: P-1 reproduced: the user route refuses it at 'Open point – RMM' (050313)
+  ok   G4.4 RMM: the close: written by the admin route instead (stand-in for the fixed permission)
+  ok   G4.4 RMM: closing (outcome + submit) completes the point
+  ok   G4.4 RMM: op.closed → the open round-2 query is completed
+  ok   G4.4 RMM: op.edited on the closed point is refused
+  ok   G4.4 RMM: op.round on the closed point is refused (no new query)
+  ok   G4.4 RMM: exactly two queries exist for the point
+  ok   G4.4 history.updated → the request's Questions_History_JSON
+  ok   G4.4 the history reads back exactly and parses
+  ok   G4.4 history.updated with text that is not JSON is refused
+  ok   G4.4 history.updated with a JSON object (not a list) is refused
+
+== G4.5 ZZT-NT-G4-RELEASE-ASKED: release.requested (I-5) and the supplier's move to the release step
+  ok   G4.5 seeded an earlier round's Release_At / Release_By_Name on the request (admin) to prove the clear
+  ok   G4.5 release.requested (I-5) → the request asks for the final release
+  ok   G4.5 the request is locked, labelled, has its release contact and no earlier release
+  ok   G4.5 the case has Release_Requested_At (now, no milliseconds)
+  ok   G4.5 the supplier's move (submit only: Keep_Open_Gate is a formula, P-2) takes the request to 'give the final release', assigned to the release contact
+
+== G5.1 ZZT-NT-G5-REOPENED-REASKED: case created, started; I-1 creates the request (+ twins guard)
+  ok   G5.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   G5.1 case draft is at 'Create case'
+  ok   G5.1 Start submit accepted
+  ok   G5.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   G5.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   G5.1 case fields unchanged by the submit
+  ok   G5.1 case.started (I-1) → the case links its new request
+  ok   G5.1 case phase 'Supplier filling in the CIQ'
+  ok   G5.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   G5.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   G5.1 request has no Release_Flag yet
+  ok   G5.1 two more case.started posts create no second request (idempotent)
+  ok   G5.1 the case still links its first request
+
+== G5.2 ZZT-NT-G5-REOPENED-REASKED: the supplier saves three revisions, uploads and removes a file; request.changed
+  FAIL G5.2 at 'Supplier: fill in the CIQ' a supplier write cannot change the ReadOnly App_Case_Item_Id, Release_Flag, Request_Locked, Case_Phase_Label — {"status":200,"leaked":{"App_Case_Item_Id":"ZZT-FORGED-CASE","Release_Flag":"Requested","Request_Locked":"Yes","Case_Phase_Label":"Forged"}}
+  ok   G5.2 restored the leaked values (admin)
+  ok   G5.2 Rev 1: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   G5.2 Rev 1: the request reads back every answer field exactly
+  ok   G5.2 Rev 1: every JSON field parses and no time has milliseconds
+  ok   G5.2 Rev 1: request.changed → the case has Rev 1
+  ok   G5.2 Rev 1: the case's 15 synced fields equal the request's
+  ok   G5.2 Rev 2: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   G5.2 Rev 2: the request reads back every answer field exactly
+  ok   G5.2 Rev 2: every JSON field parses and no time has milliseconds
+  ok   G5.2 Rev 2: request.changed → the case has Rev 2
+  ok   G5.2 Rev 2: the case's 15 synced fields equal the request's
+  ok   G5.2 Rev 3: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   G5.2 Rev 3: the request reads back every answer field exactly
+  ok   G5.2 Rev 3: every JSON field parses and no time has milliseconds
+  ok   G5.2 Rev 3: request.changed → the case has Rev 3 (posted twice back to back)
+  ok   G5.2 Rev 3: the case's 15 synced fields equal the request's
+  ok   G5.2 upload row ZZT-NT-G5-REOPENED-REASKED-UP1: the write is accepted
+  ok   G5.2 upload row ZZT-NT-G5-REOPENED-REASKED-UP2: the write is accepted
+  ok   G5.2 both upload rows are stored with every field
+  ok   G5.2 removing a file marks its row (Upload_Removed_At / _By_Email), keeps the row and adds none
+  ok   G5.2 the other upload row is untouched
+  ok   G5.2 the screen's Documents_JSON (Rev 4) is accepted
+  ok   G5.2 request.changed after the upload/removal → the case's Documents_JSON
+  ok   G5.2 the case's Documents_JSON equals the request's
+  ok   G5.2 not covered: the attachment file itself (Upload_File) needs the browser's upload API
+
+== G5.3 ZZT-NT-G5-REOPENED-REASKED: completeness confirmed and submitted; I-2
+  ok   G5.3 the supplier's completeness confirmation is accepted at fill-in
+  ok   G5.3 the fill-in submit moves the request to 'keep the CIQ up to date'
+  ok   G5.3 the request reads back the confirmation
+  ok   G5.3 completeness.confirmed (I-2) → the case records the confirmation
+  ok   G5.3 the case's Completeness_* fields equal the request's
+  ok   G5.3 the case's 15 synced fields equal the request's
+  ok   G5.3 the case phase is 'Review'
+  FAIL G5.3 I-2's Approve moves the case to 'Beiersdorf review and final release' (needs Thomas in the role Integration service) — {"_status":"InProgress","_current_step":"Waiting for supplier: CIQ","assigned":"RoEKl89I5nGx"}
+  ok   G5.3 a second completeness.confirmed is refused (the case already has it): the case is unchanged
+
+== G5.3b ZZT-NT-G5-REOPENED-REASKED: the supplier keeps the CIQ up to date (Rev 5); the P-1 probe at 'keep'
+  ok   G5.3b Rev 5 at 'keep the CIQ up to date': P-1 reproduced: the user route refuses it at 'Supplier: keep the CIQ up to date' (050313)
+  ok   G5.3b Rev 5 at 'keep the CIQ up to date': written by the admin route instead (stand-in for the fixed permission)
+  ok   G5.3b Rev 5: the request reads back every answer field
+  ok   G5.3b Rev 5: request.changed → the case in review has Rev 5
+  ok   G5.3b Rev 5: the case's 15 synced fields equal the request's, and its completeness is kept
+  FAIL G5.3b scenario ran to the end — "TypeError: fetch failed\n    at node:internal/deps/undici/undici:13484:13\n    at async Object.call (file:///Users/thomas/Documents/Kissflow%20Projects/POC/Beiersdorf/kissflow-build/lib/kf.mjs:32:19)\n    at async Object.call (file:///Users/thomas/Documents/Kissflow%20Projects/POC/Beiersdorf/kissfl
+
+== G5.4 ZZT-NT-G5-REOPENED-REASKED: open point(s) REG: two rounds, edit, answer, close; history.updated
+  ok   G5.4 REG: the open point draft reads back every Start field
+  ok   G5.4 REG: the raise moves the point to 'Open point – Regulatory', assigned to the raiser
+  ok   G5.4 REG: op.round → the point links its round-1 query
+  ok   G5.4 REG: the query carries every field of the point
+  ok   G5.4 REG: the query is at 'Supplier: respond', assigned to the portal contact
+  ok   G5.4 REG: the raiser's edit: P-1 reproduced: the user route refuses it at 'Open point – Regulatory' (050313)
+  ok   G5.4 REG: the raiser's edit: written by the admin route instead (stand-in for the fixed permission)
+  ok   G5.4 REG: the raiser's edit is accepted at the point's step
+  ok   G5.4 REG: op.edited → the open query shows the edit
+  ok   G5.4 REG: the query has the edited justification, due date and an Edited_At without milliseconds
+  ok   G5.4 REG: the supplier's answer: P-1 reproduced: the user route refuses it at 'Supplier: respond' (050313)
+  ok   G5.4 REG: the supplier's answer: written by the admin route instead (stand-in for the fixed permission)
+  ok   G5.4 REG: the supplier's answer is accepted at 'Supplier: respond'
+  ok   G5.4 REG: the respond submit completes the query
+  ok   G5.4 REG: query.answered (I-4) → the point has the answer
+  ok   G5.4 REG: the point has all four answer fields and OP_Progress 'In progress'
+  ok   G5.4 REG: the return (round 2): P-1 reproduced: the user route refuses it at 'Open point – Regulatory' (050313)
+  ok   G5.4 REG: the return (round 2): written by the admin route instead (stand-in for the fixed permission)
+  ok   G5.4 REG: the return (round 2) is accepted at the point's step
+  ok   G5.4 REG: op.round → the point links its round-2 query
+  ok   G5.4 REG: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond'
+  ok   G5.4 REG: the answered round-1 query stays completed with its answer
+  ok   G5.4 REG: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   G5.4 REG: op.closed while the point has no outcome is refused (its query stays)
+  ok   G5.4 REG: the close: P-1 reproduced: the user route refuses it at 'Open point – Regulatory' (050313)
+  ok   G5.4 REG: the close: written by the admin route instead (stand-in for the fixed permission)
+  ok   G5.4 REG: closing (outcome + submit) completes the point
+  ok   G5.4 REG: op.closed → the open round-2 query is completed
+  ok   G5.4 REG: op.edited on the closed point is refused
+  ok   G5.4 REG: op.round on the closed point is refused (no new query)
+  ok   G5.4 REG: exactly two queries exist for the point
+  ok   G5.4 history.updated → the request's Questions_History_JSON
+  ok   G5.4 the history reads back exactly and parses
+  ok   G5.4 history.updated with text that is not JSON is refused
+  ok   G5.4 history.updated with a JSON object (not a list) is refused
+
+== G5.5 ZZT-NT-G5-REOPENED-REASKED: release.requested (I-5) and the supplier's move to the release step
+  ok   G5.5 seeded an earlier round's Release_At / Release_By_Name on the request (admin) to prove the clear
+  ok   G5.5 release.requested (I-5) → the request asks for the final release
+  ok   G5.5 the request is locked, labelled, has its release contact and no earlier release
+  ok   G5.5 the case has Release_Requested_At (now, no milliseconds)
+  ok   G5.5 the supplier's move (submit only: Keep_Open_Gate is a formula, P-2) takes the request to 'give the final release', assigned to the release contact
+
+== G5.6 ZZT-NT-G5-REOPENED-REASKED: review.reopened (I-6), the go-to back, and a second release.requested
+  ok   G5.6 review.reopened (I-6) → the request is flagged Reopened, unlocked, 'With Beiersdorf'
+  ok   G5.6 the request is unlocked and labelled 'With Beiersdorf'
+  ok   G5.6 a second review.reopened is refused (the release is no longer requested)
+  ok   G5.6 the reopen marker at the release step: P-1 reproduced: the user route refuses it at 'Supplier: give the final release' (050313)
+  ok   G5.6 the reopen marker at the release step: written by the admin route instead (stand-in for the fixed permission)
+  ok   G5.6 submitting 'give the final release' while Reopened takes the go-to back to 'keep the CIQ up to date'
+  ok   G5.6 release.given while Reopened is refused: the case stays open
+  ok   G5.6 round 2: seeded an earlier round's Release_At / Release_By_Name on the request (admin) to prove the clear
+  ok   G5.6 round 2: release.requested (I-5) → the request asks for the final release
+  ok   G5.6 round 2: the request is locked, labelled, has its release contact and no earlier release
+  ok   G5.6 round 2: the case has Release_Requested_At (now, no milliseconds)
+  ok   G5.6 round 2: the supplier's move (submit only: Keep_Open_Gate is a formula, P-2) takes the request to 'give the final release', assigned to the release contact
+
+== S3.1 ZZT-NT-S3: case created, started; I-1 creates the request (+ twins guard)
+  ok   S3.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   S3.1 case draft is at 'Create case'
+  ok   S3.1 Start submit accepted
+  ok   S3.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   S3.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   S3.1 case fields unchanged by the submit
+  ok   S3.1 case.started (I-1) → the case links its new request
+  ok   S3.1 case phase 'Supplier filling in the CIQ'
+  ok   S3.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   S3.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   S3.1 request has no Release_Flag yet
+  ok   S3.1 two more case.started posts create no second request (idempotent)
+  ok   S3.1 the case still links its first request
+
+== S3.2 ZZT-NT-S3: the supplier saves three revisions, uploads and removes a file; request.changed
+  FAIL S3.2 at 'Supplier: fill in the CIQ' a supplier write cannot change the ReadOnly App_Case_Item_Id, Release_Flag, Request_Locked, Case_Phase_Label — {"status":200,"leaked":{"App_Case_Item_Id":"ZZT-FORGED-CASE","Release_Flag":"Requested","Request_Locked":"Yes","Case_Phase_Label":"Forged"}}
+  ok   S3.2 restored the leaked values (admin)
+  ok   S3.2 Rev 1: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   S3.2 Rev 1: the request reads back every answer field exactly
+  ok   S3.2 Rev 1: every JSON field parses and no time has milliseconds
+  ok   S3.2 Rev 1: request.changed → the case has Rev 1
+  ok   S3.2 Rev 1: the case's 15 synced fields equal the request's
+  ok   S3.2 Rev 2: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   S3.2 Rev 2: the request reads back every answer field exactly
+  ok   S3.2 Rev 2: every JSON field parses and no time has milliseconds
+  ok   S3.2 Rev 2: request.changed → the case has Rev 2
+  ok   S3.2 Rev 2: the case's 15 synced fields equal the request's
+  ok   S3.2 Rev 3: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   S3.2 Rev 3: the request reads back every answer field exactly
+  ok   S3.2 Rev 3: every JSON field parses and no time has milliseconds
+  ok   S3.2 Rev 3: request.changed → the case has Rev 3 (posted twice back to back)
+  ok   S3.2 Rev 3: the case's 15 synced fields equal the request's
+  ok   S3.2 upload row ZZT-NT-S3-UP1: the write is accepted
+  ok   S3.2 upload row ZZT-NT-S3-UP2: the write is accepted
+  ok   S3.2 both upload rows are stored with every field
+  ok   S3.2 removing a file marks its row (Upload_Removed_At / _By_Email), keeps the row and adds none
+  ok   S3.2 the other upload row is untouched
+  ok   S3.2 the screen's Documents_JSON (Rev 4) is accepted
+  ok   S3.2 request.changed after the upload/removal → the case's Documents_JSON
+  ok   S3.2 the case's Documents_JSON equals the request's
+  ok   S3.2 not covered: the attachment file itself (Upload_File) needs the browser's upload API
+
+== S3.3 ZZT-NT-S3: completeness confirmed and submitted; I-2
+  ok   S3.3 the supplier's completeness confirmation is accepted at fill-in
+  ok   S3.3 the fill-in submit moves the request to 'keep the CIQ up to date'
+  ok   S3.3 the request reads back the confirmation
+  ok   S3.3 completeness.confirmed (I-2) → the case records the confirmation
+  ok   S3.3 the case's Completeness_* fields equal the request's
+  ok   S3.3 the case's 15 synced fields equal the request's
+  ok   S3.3 the case phase is 'Review'
+  FAIL S3.3 I-2's Approve moves the case to 'Beiersdorf review and final release' (needs Thomas in the role Integration service) — {"_status":"InProgress","_current_step":"Waiting for supplier: CIQ","assigned":"RoEKl89I5nGx"}
+  ok   S3.3 a second completeness.confirmed is refused (the case already has it): the case is unchanged
+
+== S3.3b ZZT-NT-S3: the supplier keeps the CIQ up to date (Rev 5); the P-1 probe at 'keep'
+  ok   S3.3b Rev 5 at 'keep the CIQ up to date': P-1 reproduced: the user route refuses it at 'Supplier: keep the CIQ up to date' (050313)
+  ok   S3.3b Rev 5 at 'keep the CIQ up to date': written by the admin route instead (stand-in for the fixed permission)
+  ok   S3.3b Rev 5: the request reads back every answer field
+  ok   S3.3b Rev 5: request.changed → the case in review has Rev 5
+  ok   S3.3b Rev 5: the case's 15 synced fields equal the request's, and its completeness is kept
+  FAIL S3.3b P-1 probe at 'Supplier: keep the CIQ up to date': an Uploads row (the table is Editable here) is not stored (400); Answers_Rev (Editable field, section without permission) answers 400 — {"upload":{"status":400,"code":"KISSFLOW_ERROR_050313"},"field":{"status":400,"code":"KISSFLOW_ERROR_050313"}}
+
+== S3.4 ZZT-NT-S3: open point(s) MIC + RMM: two rounds, edit, answer, close; history.updated
+  ok   S3.4 MIC: the open point draft reads back every Start field
+  ok   S3.4 MIC: the raise moves the point to 'Open point – Microbiology', assigned to the raiser
+  ok   S3.4 MIC: op.round → the point links its round-1 query
+  ok   S3.4 MIC: the query carries every field of the point
+  ok   S3.4 MIC: the query is at 'Supplier: respond', assigned to the portal contact
+  ok   S3.4 MIC: the raiser's edit: P-1 reproduced: the user route refuses it at 'Open point – Microbiology' (050313)
+  ok   S3.4 MIC: the raiser's edit: written by the admin route instead (stand-in for the fixed permission)
+  ok   S3.4 MIC: the raiser's edit is accepted at the point's step
+  ok   S3.4 MIC: op.edited → the open query shows the edit
+  ok   S3.4 MIC: the query has the edited justification, due date and an Edited_At without milliseconds
+  ok   S3.4 MIC: the supplier's answer: P-1 reproduced: the user route refuses it at 'Supplier: respond' (050313)
+  ok   S3.4 MIC: the supplier's answer: written by the admin route instead (stand-in for the fixed permission)
+  ok   S3.4 MIC: the supplier's answer is accepted at 'Supplier: respond'
+  ok   S3.4 MIC: the respond submit completes the query
+  ok   S3.4 MIC: query.answered (I-4) → the point has the answer
+  ok   S3.4 MIC: the point has all four answer fields and OP_Progress 'In progress'
+  ok   S3.4 MIC: the return (round 2): P-1 reproduced: the user route refuses it at 'Open point – Microbiology' (050313)
+  ok   S3.4 MIC: the return (round 2): written by the admin route instead (stand-in for the fixed permission)
+  ok   S3.4 MIC: the return (round 2) is accepted at the point's step
+  ok   S3.4 MIC: op.round → the point links its round-2 query
+  ok   S3.4 MIC: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond'
+  ok   S3.4 MIC: the answered round-1 query stays completed with its answer
+  ok   S3.4 MIC: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   S3.4 MIC: op.closed while the point has no outcome is refused (its query stays)
+  ok   S3.4 MIC: the close: P-1 reproduced: the user route refuses it at 'Open point – Microbiology' (050313)
+  ok   S3.4 MIC: the close: written by the admin route instead (stand-in for the fixed permission)
+  ok   S3.4 MIC: closing (outcome + submit) completes the point
+  ok   S3.4 MIC: op.closed → the open round-2 query is completed
+  ok   S3.4 MIC: op.edited on the closed point is refused
+  ok   S3.4 MIC: op.round on the closed point is refused (no new query)
+  ok   S3.4 MIC: exactly two queries exist for the point
+  ok   S3.4 RMM: the open point draft reads back every Start field
+  ok   S3.4 RMM: the raise moves the point to 'Open point – RMM', assigned to the raiser
+  ok   S3.4 RMM: op.round → the point links its round-1 query
+  ok   S3.4 RMM: the query carries every field of the point
+  ok   S3.4 RMM: the query is at 'Supplier: respond', assigned to the portal contact
+  ok   S3.4 RMM: the raiser's edit: P-1 reproduced: the user route refuses it at 'Open point – RMM' (050313)
+  ok   S3.4 RMM: the raiser's edit: written by the admin route instead (stand-in for the fixed permission)
+  ok   S3.4 RMM: the raiser's edit is accepted at the point's step
+  ok   S3.4 RMM: op.edited → the open query shows the edit
+  ok   S3.4 RMM: the query has the edited justification, due date and an Edited_At without milliseconds
+  ok   S3.4 RMM: the supplier's answer: P-1 reproduced: the user route refuses it at 'Supplier: respond' (050313)
+  ok   S3.4 RMM: the supplier's answer: written by the admin route instead (stand-in for the fixed permission)
+  ok   S3.4 RMM: the supplier's answer is accepted at 'Supplier: respond'
+  ok   S3.4 RMM: the respond submit completes the query
+  ok   S3.4 RMM: query.answered (I-4) → the point has the answer
+  ok   S3.4 RMM: the point has all four answer fields and OP_Progress 'In progress'
+  ok   S3.4 RMM: the return (round 2): P-1 reproduced: the user route refuses it at 'Open point – RMM' (050313)
+  ok   S3.4 RMM: the return (round 2): written by the admin route instead (stand-in for the fixed permission)
+  ok   S3.4 RMM: the return (round 2) is accepted at the point's step
+  ok   S3.4 RMM: op.round → the point links its round-2 query
+  ok   S3.4 RMM: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond'
+  ok   S3.4 RMM: the answered round-1 query stays completed with its answer
+  ok   S3.4 RMM: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   S3.4 RMM: op.closed while the point has no outcome is refused (its query stays)
+  ok   S3.4 RMM: the close: P-1 reproduced: the user route refuses it at 'Open point – RMM' (050313)
+  ok   S3.4 RMM: the close: written by the admin route instead (stand-in for the fixed permission)
+  ok   S3.4 RMM: closing (outcome + submit) completes the point
+  ok   S3.4 RMM: op.closed → the open round-2 query is completed
+  ok   S3.4 RMM: op.edited on the closed point is refused
+  ok   S3.4 RMM: op.round on the closed point is refused (no new query)
+  ok   S3.4 RMM: exactly two queries exist for the point
+  ok   S3.4 history.updated → the request's Questions_History_JSON
+  ok   S3.4 the history reads back exactly and parses
+  ok   S3.4 history.updated with text that is not JSON is refused
+  ok   S3.4 history.updated with a JSON object (not a list) is refused
+
+== S3.5 ZZT-NT-S3: release.requested (I-5) and the supplier's move to the release step
+  ok   S3.5 seeded an earlier round's Release_At / Release_By_Name on the request (admin) to prove the clear
+  ok   S3.5 release.requested (I-5) → the request asks for the final release
+  ok   S3.5 the request is locked, labelled, has its release contact and no earlier release
+  ok   S3.5 the case has Release_Requested_At (now, no milliseconds)
+  ok   S3.5 the supplier's move (submit only: Keep_Open_Gate is a formula, P-2) takes the request to 'give the final release', assigned to the release contact
+
+== S3.6 ZZT-NT-S3: review.reopened (I-6), the go-to back, and a second release.requested
+  ok   S3.6 review.reopened (I-6) → the request is flagged Reopened, unlocked, 'With Beiersdorf'
+  ok   S3.6 the request is unlocked and labelled 'With Beiersdorf'
+  ok   S3.6 a second review.reopened is refused (the release is no longer requested)
+  ok   S3.6 the reopen marker at the release step: P-1 reproduced: the user route refuses it at 'Supplier: give the final release' (050313)
+  ok   S3.6 the reopen marker at the release step: written by the admin route instead (stand-in for the fixed permission)
+  ok   S3.6 submitting 'give the final release' while Reopened takes the go-to back to 'keep the CIQ up to date'
+  ok   S3.6 release.given while Reopened is refused: the case stays open
+  ok   S3.6 round 2: seeded an earlier round's Release_At / Release_By_Name on the request (admin) to prove the clear
+  ok   S3.6 round 2: release.requested (I-5) → the request asks for the final release
+  ok   S3.6 round 2: the request is locked, labelled, has its release contact and no earlier release
+  ok   S3.6 round 2: the case has Release_Requested_At (now, no milliseconds)
+  ok   S3.6 round 2: the supplier's move (submit only: Keep_Open_Gate is a formula, P-2) takes the request to 'give the final release', assigned to the release contact
+
+== S3.7 ZZT-NT-S3: the supplier's final release; I-7 completes the case
+  ok   S3.7 the supplier's final release: P-1 reproduced: the user route refuses it at 'Supplier: give the final release' (050313)
+  ok   S3.7 the supplier's final release: written by the admin route instead (stand-in for the fixed permission)
+  ok   S3.7 the supplier's release (fields + submit) takes the request to 'view the released CIQ'
+  ok   S3.7 the request reads back the release
+  ok   S3.7 release.given (I-7) → the case is completed
+  ok   S3.7 the case has Final_Release_* and phase 'Completed'
+  ok   S3.7 a second release.given is refused (the case is completed)
+
+== S3.8 ZZT-NT-S3: a change report after the release; request.changed on the completed case
+  ok   S3.8 P-1 probe at 'Supplier: view the released CIQ': an Uploads row (the table is ReadOnly here) is not stored (400); Change_Report_Text (Editable field, section without permission) answers 400
+  ok   S3.8 at 'Supplier: view the released CIQ' a supplier write cannot change the ReadOnly Answers_JSON, Release_At
+  ok   S3.8 the supplier's change report: P-1 reproduced: the user route refuses it at 'Supplier: view the released CIQ' (050313)
+  ok   S3.8 the supplier's change report: written by the admin route instead (stand-in for the fixed permission)
+  ok   S3.8 request.changed after the release → the completed case has the change report
+  ok   S3.8 the case's change-report fields equal the request's and the case stays completed
+
+== SCAN every item created tonight, re-read: flow, JSON, times
+  ok   SCAN all 88 items read back cleanly
+
+DONE in 102 min, 814 calls: 44/83 scenarios pass, 1052/1180 checks

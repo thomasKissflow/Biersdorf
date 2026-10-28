@@ -1,0 +1,303 @@
+{
+ "step": "B1-case-fields",
+ "flow": "CIQ_Case_A00",
+ "what": "add the 19 §4.1 fields with explicit per-step levels; Start Mandatory/Editable as §4.1; S1/S7/End all ReadOnly",
+ "at": "2026-10-14T18:07:15.933Z",
+ "apply": false,
+ "liveMetaVersion": "1792001226001837",
+ "livePublishedAt": "2026-10-14T18:07:05Z",
+ "mutation": {
+  "added": [
+   {
+    "id": "Template_Version",
+    "type": "Text",
+    "column": "Column_1t2z34y"
+   },
+   {
+    "id": "Case_Phase",
+    "type": "Select",
+    "column": "Column_13hybf1",
+    "list": "CIQ_Case_Phase_A00"
+   },
+   {
+    "id": "Priority",
+    "type": "Select",
+    "column": "Column_1dxdxqb",
+    "list": "CIQ_Priority_A00"
+   },
+   {
+    "id": "Duplicate_Reason",
+    "type": "Textarea",
+    "column": "Column_1pzmo5f"
+   },
+   {
+    "id": "Follow_Up_Of_Case",
+    "type": "Text",
+    "column": "Column_qknb1j"
+   },
+   {
+    "id": "Follow_Up_Of_Report",
+    "type": "Text",
+    "column": "Column_12sghnr"
+   },
+   {
+    "id": "Cancel_Reason",
+    "type": "Textarea",
+    "column": "Column_1ogifzi"
+   },
+   {
+    "id": "Cancelled_By_Name",
+    "type": "Text",
+    "column": "Column_1l1tzh2"
+   },
+   {
+    "id": "Cancelled_At",
+    "type": "DateTime",
+    "column": "Column_14r31ww"
+   },
+   {
+    "id": "Cancelled_From_Phase",
+    "type": "Text",
+    "column": "Column_1xcuxpb"
+   },
+   {
+    "id": "Reactivate_Reason",
+    "type": "Textarea",
+    "column": "Column_1er4afk"
+   },
+   {
+    "id": "Reactivated_At",
+    "type": "DateTime",
+    "column": "Column_4ai269"
+   },
+   {
+    "id": "Release_Requested_At",
+    "type": "DateTime",
+    "column": "Column_k34bwn"
+   },
+   {
+    "id": "Portal_Release_Item_Id",
+    "type": "Text",
+    "column": "Column_1n6sy6l"
+   },
+   {
+    "id": "Final_Document_Hash",
+    "type": "Text",
+    "column": "Column_1nstxnw"
+   },
+   {
+    "id": "Final_Document_At",
+    "type": "DateTime",
+    "column": "Column_3dqbtp"
+   },
+   {
+    "id": "Undefined_Origin",
+    "type": "Select",
+    "column": "Column_i7jhi2",
+    "list": "CIQ_Yes_No_A00"
+   },
+   {
+    "id": "Case_Data_Item_Id",
+    "type": "Text",
+    "column": "Column_akmkk0"
+   },
+   {
+    "id": "Supplier_Files",
+    "type": "Attachment",
+    "column": "Column_1yawglj"
+   }
+  ],
+  "stripped": [
+   "SendBackToInitiator:Permission_da12jy",
+   "SendBackToInitiator:Permission_17arltn",
+   "SendBackToInitiator:Permission_4a85eh",
+   "SendBackToInitiator:Permission_c3fcr3",
+   "SendBackToInitiator:Permission_sroktg",
+   "SendBackToInitiator:Permission_16uuoma",
+   "SendBackToInitiator:Permission_b2mcs6",
+   "SendBackToInitiator:Permission_82u9jn",
+   "SendBackToInitiator:Permission_183ljs6",
+   "SendBackToInitiator:Permission_gtrlpk",
+   "SendBackToInitiator:Permission_4s8xhn",
+   "SendBackToInitiator:Permission_1o4a8gs",
+   "SendBackToInitiator:Permission_nr3ofq",
+   "SendBackToInitiator:Permission_9gy56o",
+   "SendBackToInitiator:Permission_ao1gbk",
+   "SendBackToInitiator:Permission_1njb0dn",
+   "SendBackToInitiator:Permission_mkhgkq",
+   "SendBackToInitiator:Permission_iev530",
+   "SendBackToInitiator:Permission_hfopq4"
+  ],
+  "levelChangesOnExistingFields": [
+   "Create case [Activity_p1i6xz]: Target_Markets_Text Editable → Mandatory",
+   "Create case [Activity_p1i6xz]: Release_Key Editable → Mandatory",
+   "Create case [Activity_p1i6xz]: Rule_Set_Version ReadOnly → Mandatory",
+   "Create case [Activity_p1i6xz]: Release_Manifest_JSON Mandatory → Editable",
+   "Create case [Activity_p1i6xz]: Reactivates_Case_Item Editable → ReadOnly",
+   "Create case [Activity_p1i6xz]: Request_Key Mandatory → ReadOnly",
+   "Create case [Activity_p1i6xz]: Overall_Approval_Required Mandatory → ReadOnly",
+   "Waiting for supplier: CIQ [Activity_1kltjdn]: Case_Contacts_JSON Editable → ReadOnly",
+   "Waiting for supplier: CIQ [Activity_1kltjdn]: Portal_Contact_Ids Editable → ReadOnly",
+   "Waiting for supplier: CIQ [Activity_1kltjdn]: Confirm_Contact_Ids Editable → ReadOnly",
+   "Waiting for supplier: CIQ [Activity_1kltjdn]: Supplier_Contact_Emails Editable → ReadOnly",
+   "Waiting for supplier: CIQ [Activity_1kltjdn]: Basic_Data_Received Mandatory → ReadOnly",
+   "Waiting for supplier: CIQ [Activity_1kltjdn]: Portal_Request_Item_Id Editable → ReadOnly",
+   "Beiersdorf review and final release [Activity_gwgj5o]: Case_Contacts_JSON Editable → ReadOnly",
+   "Beiersdorf review and final release [Activity_gwgj5o]: Portal_Contact_Ids Editable → ReadOnly",
+   "Beiersdorf review and final release [Activity_gwgj5o]: Confirm_Contact_Ids Editable → ReadOnly",
+   "Beiersdorf review and final release [Activity_gwgj5o]: Supplier_Contact_Emails Editable → ReadOnly",
+   "Beiersdorf review and final release [Activity_gwgj5o]: Final_Release_Confirm Editable → ReadOnly",
+   "Beiersdorf review and final release [Activity_gwgj5o]: Final_Release_By_Name Editable → ReadOnly",
+   "Beiersdorf review and final release [Activity_gwgj5o]: Final_Release_By_Email Editable → ReadOnly",
+   "Beiersdorf review and final release [Activity_gwgj5o]: Final_Release_By_Role Editable → ReadOnly",
+   "Beiersdorf review and final release [Activity_gwgj5o]: Final_Release_At Editable → ReadOnly",
+   "Beiersdorf review and final release [Activity_gwgj5o]: Released_Revs_JSON Editable → ReadOnly",
+   "Beiersdorf review and final release [Activity_gwgj5o]: Evidence_List_Text Editable → ReadOnly",
+   "Beiersdorf review and final release [Activity_gwgj5o]: Completion_Trigger Mandatory → ReadOnly",
+   "Beiersdorf review and final release [Activity_gwgj5o]: Open_Items_Count Editable → ReadOnly",
+   "Beiersdorf review and final release [Activity_gwgj5o]: Open_CR_Count Editable → ReadOnly"
+  ],
+  "matrixAfter": {
+   "Create case [Activity_p1i6xz]": {
+    "Mandatory": 21,
+    "Editable": 11,
+    "ReadOnly": 112
+   },
+   "Waiting for supplier: CIQ [Activity_1kltjdn]": {
+    "ReadOnly": 144
+   },
+   "Beiersdorf review and final release [Activity_gwgj5o]": {
+    "ReadOnly": 144
+   },
+   "End [Activity_ycf01a]": {
+    "ReadOnly": 144
+   }
+  }
+ },
+ "diffSummary": {
+  "added": 133,
+  "removed": 0,
+  "changed": 33,
+  "addedByKind": {
+   "Row": 19,
+   "Column": 19,
+   "Field": 19,
+   "Permission": 76
+  },
+  "removedByKind": {},
+  "changedByKind": {
+   "Model": 1,
+   "Column": 1,
+   "Permission": 27,
+   "Activity": 4
+  }
+ },
+ "changedNonPermission": [
+  {
+   "entity": "CIQ_Case_A00 Model CIQ Case",
+   "props": {
+    "Model::Field": {
+     "was": "[125]",
+     "now": "[144]"
+    }
+   }
+  },
+  {
+   "entity": "Column_1vy1fj6 Column Details",
+   "props": {
+    "Column::Row": {
+     "was": "[74]",
+     "now": "[93]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_p1i6xz Activity Create case",
+   "props": {
+    "Activity::Permission": {
+     "was": "[125]",
+     "now": "[144]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_1kltjdn Activity Waiting for supplier: CIQ",
+   "props": {
+    "Activity::Permission": {
+     "was": "[125]",
+     "now": "[144]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_gwgj5o Activity Beiersdorf review and final release",
+   "props": {
+    "Activity::Permission": {
+     "was": "[125]",
+     "now": "[144]"
+    }
+   }
+  },
+  {
+   "entity": "Activity_ycf01a Activity End",
+   "props": {
+    "Activity::Permission": {
+     "was": "[125]",
+     "now": "[144]"
+    }
+   }
+  }
+ ],
+ "preflight": {
+  "errors": [],
+  "warnings": [
+   "NO_ID",
+   "ORPHAN_ENTITY"
+  ]
+ },
+ "dryCheck": {
+  "fields": 144,
+  "newFieldsPresent": [
+   "Template_Version:Text",
+   "Case_Phase:Select→CIQ_Case_Phase_A00",
+   "Priority:Select→CIQ_Priority_A00",
+   "Duplicate_Reason:Textarea",
+   "Follow_Up_Of_Case:Text",
+   "Follow_Up_Of_Report:Text",
+   "Cancel_Reason:Textarea",
+   "Cancelled_By_Name:Text",
+   "Cancelled_At:DateTime",
+   "Cancelled_From_Phase:Text",
+   "Reactivate_Reason:Textarea",
+   "Reactivated_At:DateTime",
+   "Release_Requested_At:DateTime",
+   "Portal_Release_Item_Id:Text",
+   "Final_Document_Hash:Text",
+   "Final_Document_At:DateTime",
+   "Undefined_Origin:Select→CIQ_Yes_No_A00",
+   "Case_Data_Item_Id:Text",
+   "Supplier_Files:Attachment"
+  ],
+  "startMandatoryExact": true,
+  "startEditableExact": true,
+  "counts": {
+   "Create case [Activity_p1i6xz]": {
+    "Mandatory": 21,
+    "Editable": 11,
+    "ReadOnly": 112
+   },
+   "Waiting for supplier: CIQ [Activity_1kltjdn]": {
+    "ReadOnly": 144
+   },
+   "Beiersdorf review and final release [Activity_gwgj5o]": {
+    "ReadOnly": 144
+   },
+   "End [Activity_ycf01a]": {
+    "ReadOnly": 144
+   }
+  },
+  "permsOnNonTaskActivities": [
+   "SendBackToInitiator:0"
+  ]
+ }
+}

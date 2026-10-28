@@ -1,0 +1,394 @@
+{
+ "Root": "CIQ_op_round_Open_point_question_t_A00",
+ "CIQ_op_round_Open_point_question_t_A00": {
+  "Id": "CIQ_op_round_Open_point_question_t_A00",
+  "Description": "Plan v6 §4.1 op.round: the app posts {opItemId}; the open point's own fields become a CIQP Query round (create and submit) and its id is stored on the point.",
+  "Name": "CIQ op.round Open point question to supplier",
+  "Kind": "Integration",
+  "FlowType": "Integration",
+  "Integration::Trigger": [
+   "Trigger_opRound_webhook"
+  ],
+  "Integration::Action": [
+   "Action_opRound_read_app_item",
+   "Action_opRound_pick",
+   "Action_OR_create_query",
+   "Action_OR_store_query_id"
+  ],
+  "_application_id": "CIQ_Digital_A00"
+ },
+ "PublishedAt": "2026-10-20T10:27:03Z",
+ "PublishedBy": {
+  "_id": "UsEJUfjYLM8Y",
+  "Name": "Thomas",
+  "Kind": "User"
+ },
+ "_meta_version": "1792492023794279",
+ "Trigger_opRound_webhook": {
+  "Id": "Trigger_opRound_webhook",
+  "Kind": "Trigger",
+  "Type": "Create",
+  "Name": "Catch a webhook (POST)",
+  "IsInternalAuth": true,
+  "Connection": {},
+  "Integration": "CIQ_op_round_Open_point_question_t_A00",
+  "Connector": {
+   "_id": "Coowt2xE4WH9S",
+   "Name": "Webhooks by Kissflow",
+   "Version": "1.0.0",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/Coowt2xE4WH9S/1.0.0/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/Coowt2xE4WH9S/1.0.0/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/Coowt2xE4WH9S/1.0.0/Logo/Webhook.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "TriggerId": "WebhookTrigger",
+   "TriggerName": "Catch a webhook (POST)"
+  }
+ },
+ "Action_opRound_read_app_item": {
+  "Id": "Action_opRound_read_app_item",
+  "Kind": "Action",
+  "Type": "Search",
+  "Name": "Search an item",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQ_op_round_Open_point_question_t_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "Action_Kh4Jb2AoG",
+   "ActionName": "Search an item "
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_jgsnp1",
+   "FieldMapping_jgsnp3"
+  ]
+ },
+ "Action_opRound_pick": {
+  "Id": "Action_opRound_pick",
+  "Kind": "Action",
+  "Type": "Create",
+  "Name": "Run JavaScript",
+  "IsInternalAuth": true,
+  "Connection": {},
+  "Integration": "CIQ_op_round_Open_point_question_t_A00",
+  "Connector": {
+   "_id": "Co4m9q4JUbkV",
+   "Name": "Run script",
+   "Version": "1.0.0",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/Runscript.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "RunJSCode",
+   "ActionName": "Run JavaScript"
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_jgvwk9",
+   "FieldMapping_jgvwke"
+  ]
+ },
+ "Action_OR_create_query": {
+  "Id": "Action_OR_create_query",
+  "Kind": "Action",
+  "Type": "Create",
+  "Name": "Create and submit a new item",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQ_op_round_Open_point_question_t_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "CreateAndSubmitItem",
+   "ActionName": "Create and submit a new item"
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_jguay5"
+  ]
+ },
+ "Action_OR_store_query_id": {
+  "Id": "Action_OR_store_query_id",
+  "Kind": "Action",
+  "Type": "Update",
+  "Name": "Update an item",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQ_op_round_Open_point_question_t_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "UpdateAnItem",
+   "ActionName": "Update an item"
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_jgvwk7"
+  ]
+ },
+ "FieldMapping_jgsnp1": {
+  "Id": "FieldMapping_jgsnp1",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Field_FfgdBFhZt",
+  "Label": "Choose a process",
+  "Name": "process_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Action": "Action_opRound_read_app_item",
+  "SelectedDropdown": [
+   {
+    "FieldId": "CIQ_Open_Point_A00",
+    "FieldName": "CIQ Open Point - CIQ Digital",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_jgsnp2"
+  ]
+ },
+ "Property_jgsnp2": {
+  "Id": "Property_jgsnp2",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jgsnp1",
+  "Type": "Value",
+  "Value": [
+   "CIQ_Open_Point_A00"
+  ],
+  "Name": "process_id"
+ },
+ "FieldMapping_jgsnp3": {
+  "Id": "FieldMapping_jgsnp3",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Field_1D8EgGqhG",
+  "Label": "Search term",
+  "Name": "lookupValue",
+  "IsRequired": true,
+  "Action": "Action_opRound_read_app_item",
+  "FieldMapping::Property": [
+   "Property_jgsnq4"
+  ]
+ },
+ "Property_jgsnq4": {
+  "Id": "Property_jgsnq4",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jgsnp3",
+  "Type": "Field",
+  "Field": "context.Trigger_opRound_webhook.opItemId",
+  "Name": "lookupValue"
+ },
+ "FieldMapping_jguay5": {
+  "Id": "FieldMapping_jguay5",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField001",
+  "Label": "Choose a process",
+  "Name": "process_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Action": "Action_OR_create_query",
+  "SelectedDropdown": [
+   {
+    "FieldId": "CIQP_Query_A00",
+    "FieldName": "CIQP Query - CIQ Supplier Portal",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_jguay6"
+  ]
+ },
+ "Property_jguay6": {
+  "Id": "Property_jguay6",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jguay5",
+  "Type": "Value",
+  "Value": [
+   "CIQP_Query_A00"
+  ],
+  "Name": "process_id"
+ },
+ "FieldMapping_jgvwk7": {
+  "Id": "FieldMapping_jgvwk7",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField002",
+  "Label": "Choose a process",
+  "Name": "process_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Action": "Action_OR_store_query_id",
+  "SelectedDropdown": [
+   {
+    "FieldId": "CIQ_Open_Point_A00",
+    "FieldName": "CIQ Open Point - CIQ Digital",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_jgvwk8"
+  ]
+ },
+ "Property_jgvwk8": {
+  "Id": "Property_jgvwk8",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jgvwk7",
+  "Type": "Value",
+  "Value": [
+   "CIQ_Open_Point_A00"
+  ],
+  "Name": "process_id"
+ },
+ "FieldMapping_jgvwk9": {
+  "Id": "FieldMapping_jgvwk9",
+  "Kind": "FieldMapping",
+  "Type": "Object",
+  "FieldId": "InputFields",
+  "Label": "Input data",
+  "Name": "input_fields",
+  "IsDropdown": false,
+  "IsPaginated": false,
+  "HelpText": "Specify the input data that should be provided to your code",
+  "AutoRefresh": false,
+  "Action": "Action_opRound_pick",
+  "FieldMapping::FieldMapping": [
+   "FieldMapping_jgvwka",
+   "FieldMapping_jgvwkc"
+  ]
+ },
+ "FieldMapping_jgvwka": {
+  "Id": "FieldMapping_jgvwka",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "IsVisible": true,
+  "FieldMapping": "FieldMapping_jgvwk9",
+  "Name": "opItemId",
+  "Label": "opItemId",
+  "FieldMapping::Property": [
+   "Property_jgvwkb"
+  ]
+ },
+ "Property_jgvwkb": {
+  "Id": "Property_jgvwkb",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jgvwka",
+  "Type": "Field",
+  "Field": "context.Trigger_opRound_webhook.opItemId",
+  "Name": "opItemId"
+ },
+ "FieldMapping_jgvwkc": {
+  "Id": "FieldMapping_jgvwkc",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "IsVisible": true,
+  "FieldMapping": "FieldMapping_jgvwk9",
+  "Name": "rows",
+  "Label": "rows",
+  "FieldMapping::Property": [
+   "Property_jgvwkd"
+  ]
+ },
+ "Property_jgvwkd": {
+  "Id": "Property_jgvwkd",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jgvwkc",
+  "Type": "Field",
+  "Field": "context.Action_opRound_read_app_item.Data",
+  "Name": "rows"
+ },
+ "FieldMapping_jgvwke": {
+  "Id": "FieldMapping_jgvwke",
+  "Kind": "FieldMapping",
+  "Type": "Code",
+  "FieldId": "JSCode",
+  "Label": "JavaScript code",
+  "Name": "js_code",
+  "IsRequired": true,
+  "IsDropdown": false,
+  "IsPaginated": false,
+  "AutoRefresh": false,
+  "CodeLanguage": "javascript",
+  "Action": "Action_opRound_pick",
+  "FieldMapping::Property": [
+   "Property_jgvwkf"
+  ]
+ },
+ "Property_jgvwkf": {
+  "Id": "Property_jgvwkf",
+  "Kind": "Property",
+  "Type": "Code",
+  "Name": "js_code",
+  "Code": "// op.round · the open point the app's screen named (exact _id in the search result). Every value of the new CIQP Query\n// round comes from the point itself (the screen wrote it before posting); the payload carries only the id.\nconst id = String(inputData.opItemId || \"\").trim();\nlet rows = inputData.rows;\nif (typeof rows === \"string\") { try { rows = JSON.parse(rows); } catch (e) { rows = []; } }\nconst row = (Array.isArray(rows) ? rows : []).find((r) => r && r._id === id);\nif (!id || !row) throw new Error(`CIQ Open Point ${id || \"(no id)\"} was not found`);\nif (row.OP_Outcome) throw new Error(`Open point ${row.OP_Key} is closed (${row.OP_Outcome}): no new round`);\nconst assignees = String(row.Portal_Contact_Ids || \"\").split(/[,;\\s]+/).filter(Boolean).map((x) => ({ _id: x }));\nif (!assignees.length) throw new Error(`Open point ${row.OP_Key} names no portal contact (Portal_Contact_Ids)`);\nconst round = Number(row.Round_No) || 1;\nreturn {\n  opItemId: id,\n  Query_Key: row.Query_Key || `${row.OP_Key}-R${round}`,\n  Round_No: round,\n  App_Open_Point_Id: id,\n  Case_Code: row.Case_Code || \"\",\n  Cycle_No: Number(row.Cycle_No) || 1,\n  Supplier_Code: row.Supplier_Code || \"\",\n  Kind_Label: row.Kind_Label || \"Question\",\n  Responsible_Department: row.Responsible_Dept_Label || \"\",\n  Responsible_Name: row.Responsible_Name || \"\",\n  Ref_Label: row.Ref_Label || \"\",\n  Ref_Section_Key: row.Ref_Section_Key || \"\",\n  Ref_Field_Key: row.Ref_Field_Key || \"\",\n  Ref_Row_Id: row.Ref_Row_Id || \"\",\n  Question_Text: row.Question_Text || \"\",\n  Supplier_Justification: row.Supplier_Justification && row.Supplier_Justification !== \"—\" ? row.Supplier_Justification : \"\",\n  Supplier_Due_Date: row.Supplier_Due_Date || null,\n  assignees,\n};\n",
+  "FieldMapping": "FieldMapping_jgvwke"
+ }
+}

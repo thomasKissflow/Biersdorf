@@ -1,0 +1,32 @@
+{
+ "key": "opEdited",
+ "id": "CIQ_op_edited_Open_point_question__A00",
+ "at": "2026-10-20T12:16:37.683Z",
+ "mode": "test",
+ "steps": [
+  {
+   "step": "Action_opEdited_read_app_item",
+   "status": 200,
+   "ok": true,
+   "answer": "{\"_id\":\"CIQ_Open_Point_A00\",\"Data\":[{\"_id\":\"PkEP1MOgdLkk\",\"_activity_instance_id\":[\"PkEP1MSdLAb6\"],\"_current_assigned_to\":[{\"_id\":\"UsEJUfjYLM8Y\",\"Name\":\"Thomas\",\"Kind\":\"User\"}],\"_status\":\"InProgress\",\"Name\":\"CIQ Open Point from Thomas\",\"_created_at\":\"2026-10-20T10:32:04Z\",\"_created_by\":{\"_id\":\"UsEJUfjYLM8Y\",\"Name\":\"Thomas\",\"Kind\":\"User\"},\"OP_Key\":\"ZZT-INT-OP-1\",\"Round_No\":1,\"Query_Key\":\"ZZT-INT-OP-1-R1\",\"Case_Code\":\"ZZT-I1E\",\"Cycle_No\":1,\"Supplier_Code\":\"ZZT-SUP-DEV\",\"Case_Item_Id\":\"PkEP0tis9hWG\",\"OP_Kind\":\"Query\",\"OP_Dept\":\"QM\",\"Raised_By_Dept\":\"QM\",\"OP_To_Supplier\":\"Yes\",\"Ref_Kind\":\"Section\",\"Ref_Section_Key\":\"K4\",\"Ref_Label\":\"K4 · ZZT test section\",\"Kind_Label\":\"Question\",\"Question_Text\":\"ZZT test question, EDITED for the op.edited integration (fictional).\",\"Supplier_Justification\":\"ZZT test justification (fictional).\",\"Responsible_User\":{\"_id\":\"UsEJUfjYLM8Y\",\"Name\":\"Thomas\",\"Kind\":\"User\"},\"Responsible_Name\":\"ZZT Quentin Test\",\"Responsible_Dept_Label\":\"Quality Management\",\"Supplier_Due_Date\":\"2026-11-03\",\"Portal_Contact_Ids\":\"UsEJUfjYLM8Y\",\"Portal_Query_Item_Id\":\"PkEP2zdp4KRO\",\"OP_Progress\":\"Open\",\"Open_Num\":1,\"Start_Gate\":\"\",\"Raised_By_User\":{\"_id\":\"UsEJUfjYLM8Y\",\"Name\":\"Thomas\",\"Kind\":\"User\"},\"Raised_By_Name\":\"ZZT Quentin Test\",\"Thread_JSON\":\"{\\\"thread\\\":[{\\\"id\\\":\\\"ZZT-INT-OP-1-m1\\\",\\\"at\\\":\\\"2026-10-20T10:32:03Z\\\",\\\"by\\\":\\\"UsEJUfjYLM8Y\\\",\\\"side\\\":\\\"internal\\\",\\\"text\\\":\\\"ZZT test question for the op.round integration (fictional).\\\",\\\"action\\\":\\\"raised\\\"}],\\\"edits\\\":[]}\",\""
+  },
+  {
+   "step": "Action_opEdited_pick",
+   "status": 200,
+   "ok": true,
+   "answer": "{\"_id\":\"PkEP2zdp4KRO\",\"Question_Text\":\"ZZT test question, EDITED for the op.edited integration (fictional).\",\"Supplier_Justification\":\"ZZT test justification (fictional).\",\"Supplier_Due_Date\":\"2026-11-03\",\"Edited_At\":\"2026-10-20T12:16:47Z\"}"
+  },
+  {
+   "step": "Action_OE_update_query",
+   "status": 200,
+   "ok": true,
+   "answer": "{\"Question_Text\":\"ZZT test question, EDITED for the op.edited integration (fictional).\",\"Edited_At\":\"2026-10-20T12:16:47Z\",\"_modified_at\":\"2026-10-20T12:16:53Z\",\"_id\":\"PkEP2zdp4KRO\"}"
+  }
+ ],
+ "tested": [
+  "Action_opEdited_read_app_item:tested",
+  "Action_opEdited_pick:tested",
+  "Action_OE_update_query:tested"
+ ],
+ "result": "every action passed"
+}

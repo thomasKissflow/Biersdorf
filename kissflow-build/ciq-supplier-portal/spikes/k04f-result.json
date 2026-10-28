@@ -1,0 +1,71 @@
+[
+  {
+    "label": "M1 MultiUser field",
+    "preflight": [],
+    "draft": 200,
+    "publish": 200,
+    "item": "PkEK4UNpDyH4",
+    "create": 200,
+    "submit": 200,
+    "step": "Spike step",
+    "assigned": [
+      {
+        "_id": "UsEJUfjYLM8Y",
+        "Name": "Thomas",
+        "Kind": "User"
+      }
+    ],
+    "stored": {
+      "Probe_Multi": [
+        {
+          "_id": "UsEJUfjYLM8Y",
+          "Name": "Thomas",
+          "Kind": "User"
+        }
+      ]
+    }
+  },
+  {
+    "label": "M2 two User fields, A1 empty, A2 = me",
+    "preflight": [],
+    "draft": 200,
+    "publish": 200,
+    "item": "PkEK4UTVxLej",
+    "create": 200,
+    "submit": 200,
+    "step": "Spike step",
+    "assigned": [
+      {
+        "_id": "UsEJUfjYLM8Y",
+        "Name": "Thomas",
+        "Kind": "User"
+      }
+    ],
+    "stored": {
+      "Probe_A2": {
+        "_id": "UsEJUfjYLM8Y",
+        "Name": "Thomas",
+        "Kind": "User"
+      }
+    }
+  },
+  {
+    "label": "M3 two User fields, both empty",
+    "preflight": [],
+    "draft": 200,
+    "publish": 200,
+    "item": "PkEK4UWxBBDm",
+    "create": 200,
+    "submit": 400,
+    "submitErr": "There is no assignee for the next step Spike step.",
+    "step": "Start",
+    "assigned": [
+      {
+        "_id": "UsEJUfjYLM8Y",
+        "Name": "Thomas",
+        "Kind": "User"
+      }
+    ],
+    "stored": {}
+  }
+]

@@ -1,0 +1,299 @@
+{
+ "status": 200,
+ "body": {
+  "CIQ_Internal_Note_A00": {
+   "Id": "CIQ_Internal_Note_A00",
+   "Name": "CIQ Internal Note",
+   "Tables": [],
+   "Fields": [
+    {
+     "Id": "Note_Key",
+     "Name": "Note Key",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Internal_Note_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Case_Code",
+     "Name": "Case Code",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Internal_Note_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Cycle_No",
+     "Name": "Cycle No",
+     "Type": "Number",
+     "IsSystemField": false,
+     "Model": "CIQ_Internal_Note_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "Decimalpoint": null
+    },
+    {
+     "Id": "Case_Item_Id",
+     "Name": "Case Item Id",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Internal_Note_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Linked_Kind",
+     "Name": "Linked Kind",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Internal_Note_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Linked_Key",
+     "Name": "Linked Key",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Internal_Note_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Note_Text",
+     "Name": "Note Text",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Internal_Note_A00",
+     "Widget": null,
+     "Required": true,
+     "IsInternal": false
+    },
+    {
+     "Id": "Note_Author",
+     "Name": "Note Author",
+     "Type": "User",
+     "IsSystemField": false,
+     "Model": "CIQ_Internal_Note_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "SourceFlowId": "User",
+     "SourceFlowType": "User"
+    },
+    {
+     "Id": "Note_Dept",
+     "Name": "Note Dept",
+     "Type": "Select",
+     "IsSystemField": false,
+     "Model": "CIQ_Internal_Note_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Note_At",
+     "Name": "Note At",
+     "Type": "DateTime",
+     "IsSystemField": false,
+     "Model": "CIQ_Internal_Note_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    }
+   ],
+   "System": [
+    {
+     "Id": "Name",
+     "Name": "Name",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_created_by",
+     "Name": "Created by",
+     "Type": "User",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "SourceFlowId": "UserAbstract",
+     "SourceFlowType": null,
+     "Attributes": [
+      {
+       "Id": "Status",
+       "Name": "Status",
+       "Type": "DropdownList"
+      },
+      {
+       "Id": "FirstName",
+       "Name": "First name",
+       "Type": "Text"
+      },
+      {
+       "Id": "LastName",
+       "Name": "Last name",
+       "Type": "Text"
+      },
+      {
+       "Id": "ProfilePicture",
+       "Name": "Profile picture",
+       "Type": "ProfilePicture"
+      }
+     ]
+    },
+    {
+     "Id": "_modified_by",
+     "Name": "Modified by",
+     "Type": "User",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "SourceFlowId": "UserAbstract",
+     "SourceFlowType": null,
+     "Attributes": [
+      {
+       "Id": "Status",
+       "Name": "Status",
+       "Type": "DropdownList"
+      },
+      {
+       "Id": "FirstName",
+       "Name": "First name",
+       "Type": "Text"
+      },
+      {
+       "Id": "LastName",
+       "Name": "Last name",
+       "Type": "Text"
+      },
+      {
+       "Id": "ProfilePicture",
+       "Name": "Profile picture",
+       "Type": "ProfilePicture"
+      }
+     ]
+    },
+    {
+     "Id": "_created_at",
+     "Name": "Created at",
+     "Type": "DateTime",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_modified_at",
+     "Name": "Modified at",
+     "Type": "DateTime",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_deleted_at",
+     "Name": "Deleted at",
+     "Type": "DateTime",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true
+    },
+    {
+     "Id": "_deleted_by",
+     "Name": "Deleted by",
+     "Type": "User",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true,
+     "SourceFlowId": "UserAbstract",
+     "SourceFlowType": null,
+     "Attributes": [
+      {
+       "Id": "Status",
+       "Name": "Status",
+       "Type": "DropdownList"
+      },
+      {
+       "Id": "FirstName",
+       "Name": "First name",
+       "Type": "Text"
+      },
+      {
+       "Id": "LastName",
+       "Name": "Last name",
+       "Type": "Text"
+      },
+      {
+       "Id": "ProfilePicture",
+       "Name": "Profile picture",
+       "Type": "ProfilePicture"
+      }
+     ]
+    },
+    {
+     "Id": "_flow_name",
+     "Name": "Flow name",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_application_id",
+     "Name": "Application id",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true
+    },
+    {
+     "Id": "_flow_type",
+     "Name": "Flow type",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true
+    },
+    {
+     "Id": "_doc_version",
+     "Name": "DocVersion",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true
+    }
+   ]
+  }
+ }
+}

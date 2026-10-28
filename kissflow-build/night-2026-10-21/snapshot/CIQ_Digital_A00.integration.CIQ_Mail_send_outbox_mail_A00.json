@@ -1,0 +1,618 @@
+{
+ "type": "integration",
+ "name": "CIQ Mail – send outbox mail",
+ "status": "Live",
+ "isActive": false,
+ "list": {
+  "_id": "CIQ_Mail_send_outbox_mail_A00",
+  "_created_at": "2026-10-14T18:45:53Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-20T15:41:05Z",
+  "Name": "CIQ Mail – send outbox mail",
+  "Description": "R-1: sends each CIQ Mail Outbox row (one row = one e-mail, written by the CIQ Sync Service) and marks it Sent. Built OFF; Thomas switches it on.",
+  "Type": "Integration",
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "SharedWith": [],
+  "PageAccess": [],
+  "IsActive": false,
+  "AutoRetry": {
+   "IsEnabled": false
+  },
+  "Connectors": [
+   {
+    "_id": "Co4mIEiAdtSb",
+    "Name": "Kissflow Dataform",
+    "Entities": [
+     {
+      "_id": "ItemCreated",
+      "Kind": "Trigger",
+      "Name": "When an item is added to a dataform",
+      "Version": "1.5.4"
+     },
+     {
+      "_id": "UpdateAnItem",
+      "Kind": "Action",
+      "Name": "Update an item",
+      "Version": "1.5.4"
+     }
+    ]
+   },
+   {
+    "_id": "CoOj46v9fVh37",
+    "Name": "Email",
+    "Entities": [
+     {
+      "_id": "SendEmail",
+      "Kind": "Action",
+      "Name": "Send an email",
+      "Version": "1.0.6"
+     }
+    ]
+   }
+  ]
+ },
+ "draftStatus": 200,
+ "draft": {
+  "Root": "CIQ_Mail_send_outbox_mail_A00",
+  "CIQ_Mail_send_outbox_mail_A00": {
+   "Id": "CIQ_Mail_send_outbox_mail_A00",
+   "Description": "R-1: sends each CIQ Mail Outbox row (one row = one e-mail, written by the CIQ Sync Service) and marks it Sent. Built OFF; Thomas switches it on.",
+   "Name": "CIQ Mail – send outbox mail",
+   "Kind": "Integration",
+   "FlowType": "Integration",
+   "Integration::Trigger": [
+    "Trigger_CIQ_Mail_A00"
+   ],
+   "Integration::Action": [
+    "Action_CIQ_Mail_Send_A00",
+    "Action_CIQ_Mail_Sent_A00"
+   ],
+   "_application_id": "CIQ_Digital_A00"
+  },
+  "PublishedAt": "2026-10-20T15:41:04Z",
+  "PublishedBy": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_meta_version": "1792510864949996",
+  "Trigger_CIQ_Mail_A00": {
+   "Id": "Trigger_CIQ_Mail_A00",
+   "Kind": "Trigger",
+   "Type": "App",
+   "Name": "When an item is added to a dataform",
+   "IsInternalAuth": false,
+   "Connection": {
+    "_id": "CnEKHrH5GzkY",
+    "Name": "CIQ ZZ Spike Kissflow Dataform connection"
+   },
+   "Integration": "CIQ_Mail_send_outbox_mail_A00",
+   "Connector": {
+    "_id": "Co4mIEiAdtSb",
+    "Name": "Kissflow Dataform",
+    "Version": "1.5.4",
+    "Logo": {
+     "small": {
+      "key": "Account001/Connectors/Co4mIEiAdtSb/1.5.4/Logo/photos/24x24.png"
+     },
+     "medium": {
+      "key": "Account001/Connectors/Co4mIEiAdtSb/1.5.4/Logo/photos/128x128.png"
+     },
+     "original": {
+      "key": "Account001/Connectors/Co4mIEiAdtSb/1.5.4/Logo/Kissflow_Data_form.png"
+     }
+    },
+    "Status": "Published",
+    "WebsiteURL": "https://kissflow.com",
+    "TriggerId": "ItemCreated",
+    "TriggerName": "When an item is added to a dataform"
+   },
+   "Trigger::FieldMapping": [
+    "FieldMapping_b5b1"
+   ],
+   "Output": {
+    "_id": "SampleInstance001",
+    "Name": "Sample",
+    "_created_by": {
+     "_id": "Us000000000",
+     "Name": "Sample",
+     "Kind": "User"
+    },
+    "_modified_by": {
+     "_id": "Us000000000",
+     "Name": "Sample",
+     "Kind": "User"
+    },
+    "_created_at": "2024-01-01T00:00:00-00:00",
+    "_modified_at": "2024-01-01T00:00:00-00:00",
+    "_status": "Sample",
+    "Mail_Key": "Text data",
+    "Event_Code": "Text data",
+    "Audience": "Text data",
+    "To_Emails": "Text data",
+    "Subject": "Text data",
+    "Body_Text": "Text data",
+    "Link_Url": "Text data",
+    "Case_Code": "Text data",
+    "Related_Key": "Text data",
+    "Sent_Status": "Text data",
+    "Attempt_No": 0
+   },
+   "Trigger::Reference": [
+    "Reference_cJtT31pJM5"
+   ]
+  },
+  "Action_CIQ_Mail_Send_A00": {
+   "Id": "Action_CIQ_Mail_Send_A00",
+   "Kind": "Action",
+   "Type": "Create",
+   "Name": "Send an email",
+   "IsInternalAuth": true,
+   "Connection": {},
+   "Integration": "CIQ_Mail_send_outbox_mail_A00",
+   "Connector": {
+    "_id": "CoOj46v9fVh37",
+    "Name": "Email",
+    "Version": "1.0.6",
+    "Logo": {
+     "small": {
+      "key": "Account001/Connectors/CoOj46v9fVh37/1.0.6/Logo/photos/24x24.png"
+     },
+     "medium": {
+      "key": "Account001/Connectors/CoOj46v9fVh37/1.0.6/Logo/photos/128x128.png"
+     },
+     "original": {
+      "key": "Account001/Connectors/CoOj46v9fVh37/1.0.6/Logo/Email.png"
+     }
+    },
+    "Status": "Published",
+    "WebsiteURL": "https://kissflow.com",
+    "ActionId": "SendEmail",
+    "ActionName": "Send an email"
+   },
+   "Action::FieldMapping": [
+    "FieldMapping_b5b3",
+    "FieldMapping_b5m1",
+    "FieldMapping_b5m3",
+    "FieldMapping_b5m5",
+    "FieldMapping_b5m6",
+    "FieldMapping_b5m7",
+    "FieldMapping_b5m8",
+    "FieldMapping_b5m9",
+    "FieldMapping_b5ma"
+   ]
+  },
+  "Action_CIQ_Mail_Sent_A00": {
+   "Id": "Action_CIQ_Mail_Sent_A00",
+   "Kind": "Action",
+   "Type": "Create",
+   "Name": "Update an item",
+   "IsInternalAuth": false,
+   "Connection": {
+    "_id": "CnEKHrH5GzkY",
+    "Name": "CIQ ZZ Spike Kissflow Dataform connection"
+   },
+   "Integration": "CIQ_Mail_send_outbox_mail_A00",
+   "Connector": {
+    "_id": "Co4mIEiAdtSb",
+    "Name": "Kissflow Dataform",
+    "Version": "1.5.4",
+    "Logo": {
+     "small": {
+      "key": "Account001/Connectors/Co4mIEiAdtSb/1.5.4/Logo/photos/24x24.png"
+     },
+     "medium": {
+      "key": "Account001/Connectors/Co4mIEiAdtSb/1.5.4/Logo/photos/128x128.png"
+     },
+     "original": {
+      "key": "Account001/Connectors/Co4mIEiAdtSb/1.5.4/Logo/Kissflow_Data_form.png"
+     }
+    },
+    "Status": "Published",
+    "WebsiteURL": "https://kissflow.com",
+    "ActionId": "UpdateAnItem",
+    "ActionName": "Update an item"
+   },
+   "Action::FieldMapping": [
+    "FieldMapping_b5b5",
+    "FieldMapping_b5mc",
+    "FieldMapping_b5me",
+    "FieldMapping_b5mf",
+    "FieldMapping_b5mg",
+    "FieldMapping_b5mh",
+    "FieldMapping_b5mi",
+    "FieldMapping_b5mj",
+    "FieldMapping_b5mk",
+    "FieldMapping_b5ml",
+    "FieldMapping_b5mm",
+    "FieldMapping_b5mn",
+    "FieldMapping_b5mo",
+    "FieldMapping_b5mq"
+   ]
+  },
+  "FieldMapping_b5b1": {
+   "Id": "FieldMapping_b5b1",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "ActionField007",
+   "Label": "Choose a dataform",
+   "Name": "form_id",
+   "IsRequired": true,
+   "IsDropdown": true,
+   "AutoRefresh": true,
+   "Trigger": "Trigger_CIQ_Mail_A00",
+   "SelectedDropdown": [
+    {
+     "FieldId": "CIQ_Mail_Outbox_A00",
+     "FieldName": "CIQ Mail Outbox"
+    }
+   ],
+   "FieldMapping::Property": [
+    "Property_b5b2"
+   ]
+  },
+  "Property_b5b2": {
+   "Id": "Property_b5b2",
+   "Kind": "Property",
+   "FieldMapping": "FieldMapping_b5b1",
+   "Type": "Value",
+   "Value": [
+    "CIQ_Mail_Outbox_A00"
+   ],
+   "Name": "form_id"
+  },
+  "FieldMapping_b5b3": {
+   "Id": "FieldMapping_b5b3",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "Field_htDKY9uKu8",
+   "Label": "Body type",
+   "Name": "BodyType",
+   "IsRequired": true,
+   "IsDropdown": true,
+   "AutoRefresh": true,
+   "Action": "Action_CIQ_Mail_Send_A00",
+   "SelectedDropdown": [
+    {
+     "FieldId": "RichText",
+     "FieldName": "Rich text"
+    }
+   ],
+   "FieldMapping::Property": [
+    "Property_b5b4"
+   ]
+  },
+  "Property_b5b4": {
+   "Id": "Property_b5b4",
+   "Kind": "Property",
+   "FieldMapping": "FieldMapping_b5b3",
+   "Type": "Value",
+   "Value": [
+    "RichText"
+   ],
+   "Name": "BodyType"
+  },
+  "FieldMapping_b5b5": {
+   "Id": "FieldMapping_b5b5",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "ActionField004",
+   "Label": "Choose a dataform",
+   "Name": "form_id",
+   "IsRequired": true,
+   "IsDropdown": true,
+   "AutoRefresh": true,
+   "Action": "Action_CIQ_Mail_Sent_A00",
+   "SelectedDropdown": [
+    {
+     "FieldId": "CIQ_Mail_Outbox_A00",
+     "FieldName": "CIQ Mail Outbox"
+    }
+   ],
+   "FieldMapping::Property": [
+    "Property_b5b6"
+   ]
+  },
+  "Property_b5b6": {
+   "Id": "Property_b5b6",
+   "Kind": "Property",
+   "FieldMapping": "FieldMapping_b5b5",
+   "Type": "Value",
+   "Value": [
+    "CIQ_Mail_Outbox_A00"
+   ],
+   "Name": "form_id"
+  },
+  "FieldMapping_b5m1": {
+   "Id": "FieldMapping_b5m1",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "ActionField001",
+   "Label": "To",
+   "Name": "To",
+   "IsRequired": true,
+   "Action": "Action_CIQ_Mail_Send_A00",
+   "FieldMapping::Property": [
+    "Property_b5m2"
+   ]
+  },
+  "Property_b5m2": {
+   "Id": "Property_b5m2",
+   "Kind": "Property",
+   "FieldMapping": "FieldMapping_b5m1",
+   "Type": "Field",
+   "Field": "context.Trigger_CIQ_Mail_A00.To_Emails",
+   "Name": "To"
+  },
+  "FieldMapping_b5m3": {
+   "Id": "FieldMapping_b5m3",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "ActionField002",
+   "Label": "Subject",
+   "Name": "Subject",
+   "IsRequired": true,
+   "Action": "Action_CIQ_Mail_Send_A00",
+   "FieldMapping::Property": [
+    "Property_b5m4"
+   ]
+  },
+  "Property_b5m4": {
+   "Id": "Property_b5m4",
+   "Kind": "Property",
+   "FieldMapping": "FieldMapping_b5m3",
+   "Type": "Field",
+   "Field": "context.Trigger_CIQ_Mail_A00.Subject",
+   "Name": "Subject"
+  },
+  "FieldMapping_b5m5": {
+   "Id": "FieldMapping_b5m5",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "ActionField005",
+   "Label": "Cc",
+   "Name": "CC",
+   "IsRequired": false,
+   "Action": "Action_CIQ_Mail_Send_A00"
+  },
+  "FieldMapping_b5m6": {
+   "Id": "FieldMapping_b5m6",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "ActionField006",
+   "Label": "Bcc",
+   "Name": "Bcc",
+   "IsRequired": false,
+   "Action": "Action_CIQ_Mail_Send_A00"
+  },
+  "FieldMapping_b5m7": {
+   "Id": "FieldMapping_b5m7",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "ActionField007",
+   "Label": "Reply To",
+   "Name": "ReplyTo",
+   "IsRequired": false,
+   "Action": "Action_CIQ_Mail_Send_A00"
+  },
+  "FieldMapping_b5m8": {
+   "Id": "FieldMapping_b5m8",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "ActionField008",
+   "Label": "From",
+   "Name": "From",
+   "IsRequired": false,
+   "Action": "Action_CIQ_Mail_Send_A00"
+  },
+  "FieldMapping_b5m9": {
+   "Id": "FieldMapping_b5m9",
+   "Kind": "FieldMapping",
+   "Type": "Attachment",
+   "FieldId": "ActionField009",
+   "Label": "Attachments",
+   "Name": "Attachments",
+   "IsRequired": false,
+   "Action": "Action_CIQ_Mail_Send_A00",
+   "FieldMapping::FieldMapping": [
+    "FieldMapping_AedSrOTFkZ"
+   ]
+  },
+  "FieldMapping_b5ma": {
+   "Id": "FieldMapping_b5ma",
+   "Kind": "FieldMapping",
+   "Type": "RichText",
+   "FieldId": "ActionField011",
+   "Label": "Email body",
+   "Name": "Body",
+   "IsRequired": true,
+   "Action": "Action_CIQ_Mail_Send_A00",
+   "FieldMapping::Property": [
+    "Property_b5mb"
+   ]
+  },
+  "Property_b5mb": {
+   "Id": "Property_b5mb",
+   "Kind": "Property",
+   "FieldMapping": "FieldMapping_b5ma",
+   "Type": "Field",
+   "Field": "context.Trigger_CIQ_Mail_A00.Body_Text",
+   "Name": "Body"
+  },
+  "FieldMapping_b5mc": {
+   "Id": "FieldMapping_b5mc",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "ActionField005",
+   "Label": "Dataform item ID",
+   "Name": "instance_id",
+   "IsRequired": true,
+   "Action": "Action_CIQ_Mail_Sent_A00",
+   "FieldMapping::Property": [
+    "Property_b5md"
+   ]
+  },
+  "Property_b5md": {
+   "Id": "Property_b5md",
+   "Kind": "Property",
+   "FieldMapping": "FieldMapping_b5mc",
+   "Type": "Field",
+   "Field": "context.Trigger_CIQ_Mail_A00._id",
+   "Name": "instance_id"
+  },
+  "FieldMapping_b5me": {
+   "Id": "FieldMapping_b5me",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "Mail_Key",
+   "Label": "Mail Key",
+   "Name": "Mail_Key",
+   "IsRequired": false,
+   "Action": "Action_CIQ_Mail_Sent_A00"
+  },
+  "FieldMapping_b5mf": {
+   "Id": "FieldMapping_b5mf",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "Event_Code",
+   "Label": "Event Code",
+   "Name": "Event_Code",
+   "IsRequired": false,
+   "Action": "Action_CIQ_Mail_Sent_A00"
+  },
+  "FieldMapping_b5mg": {
+   "Id": "FieldMapping_b5mg",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "Audience",
+   "Label": "Audience",
+   "Name": "Audience",
+   "IsRequired": false,
+   "Action": "Action_CIQ_Mail_Sent_A00"
+  },
+  "FieldMapping_b5mh": {
+   "Id": "FieldMapping_b5mh",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "To_Emails",
+   "Label": "To Emails",
+   "Name": "To_Emails",
+   "IsRequired": false,
+   "Action": "Action_CIQ_Mail_Sent_A00"
+  },
+  "FieldMapping_b5mi": {
+   "Id": "FieldMapping_b5mi",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "Subject",
+   "Label": "Subject",
+   "Name": "Subject",
+   "IsRequired": false,
+   "Action": "Action_CIQ_Mail_Sent_A00"
+  },
+  "FieldMapping_b5mj": {
+   "Id": "FieldMapping_b5mj",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "Body_Text",
+   "Label": "Body Text",
+   "Name": "Body_Text",
+   "IsRequired": false,
+   "Action": "Action_CIQ_Mail_Sent_A00"
+  },
+  "FieldMapping_b5mk": {
+   "Id": "FieldMapping_b5mk",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "Link_Url",
+   "Label": "Link Url",
+   "Name": "Link_Url",
+   "IsRequired": false,
+   "Action": "Action_CIQ_Mail_Sent_A00"
+  },
+  "FieldMapping_b5ml": {
+   "Id": "FieldMapping_b5ml",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "Case_Code",
+   "Label": "Case Code",
+   "Name": "Case_Code",
+   "IsRequired": false,
+   "Action": "Action_CIQ_Mail_Sent_A00"
+  },
+  "FieldMapping_b5mm": {
+   "Id": "FieldMapping_b5mm",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "Related_Key",
+   "Label": "Related Key",
+   "Name": "Related_Key",
+   "IsRequired": false,
+   "Action": "Action_CIQ_Mail_Sent_A00"
+  },
+  "FieldMapping_b5mn": {
+   "Id": "FieldMapping_b5mn",
+   "Kind": "FieldMapping",
+   "Type": "Datetime",
+   "FieldId": "Created_At",
+   "Label": "Created At",
+   "Name": "Created_At",
+   "IsRequired": false,
+   "Action": "Action_CIQ_Mail_Sent_A00"
+  },
+  "FieldMapping_b5mo": {
+   "Id": "FieldMapping_b5mo",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "Sent_Status",
+   "Label": "Sent Status",
+   "Name": "Sent_Status",
+   "IsRequired": false,
+   "Action": "Action_CIQ_Mail_Sent_A00",
+   "FieldMapping::Property": [
+    "Property_b5mp"
+   ]
+  },
+  "Property_b5mp": {
+   "Id": "Property_b5mp",
+   "Kind": "Property",
+   "FieldMapping": "FieldMapping_b5mo",
+   "Type": "Value",
+   "Value": [
+    "Sent"
+   ],
+   "Name": "Sent_Status"
+  },
+  "FieldMapping_b5mq": {
+   "Id": "FieldMapping_b5mq",
+   "Kind": "FieldMapping",
+   "Type": "Number",
+   "FieldId": "Attempt_No",
+   "Label": "Attempt No",
+   "Name": "Attempt_No",
+   "IsRequired": false,
+   "Action": "Action_CIQ_Mail_Sent_A00"
+  },
+  "Reference_cJtT31pJM5": {
+   "Id": "Reference_cJtT31pJM5",
+   "Kind": "Reference",
+   "ReferencedFieldId": "ActionField007",
+   "ReferenceType": "Field",
+   "Trigger": "Trigger_CIQ_Mail_A00"
+  },
+  "FieldMapping_AedSrOTFkZ": {
+   "Id": "FieldMapping_AedSrOTFkZ",
+   "Kind": "FieldMapping",
+   "Type": "Attachment",
+   "Name": "Attachment",
+   "Label": "Attachment",
+   "IsMultiValue": true,
+   "FieldMapping": "FieldMapping_b5m9"
+  }
+ }
+}

@@ -1,0 +1,49 @@
+{
+  "Root": "Perm_ryccs8",
+  "Perm_ryccs8": {
+    "Id": "Perm_ryccs8",
+    "Kind": "FlowPermission",
+    "Role": "ciq_auditor",
+    "RoleName": "CIQ Auditor",
+    "Model": "CIQ_Notification_Log_A00",
+    "Level": "ReadOnly",
+    "Scope": "all",
+    "FlowPermission::Permission": [
+      "Permission_19bynhm",
+      "Permission_vp1mi9",
+      "Permission_1ue04lj",
+      "Permission_1facd7g",
+      "Permission_1lysx5j"
+    ]
+  },
+  "Permission_19bynhm": {
+    "Id": "Permission_19bynhm",
+    "Kind": "Permission",
+    "Column": "Event_Code",
+    "Permission": "ReadOnly"
+  },
+  "Permission_vp1mi9": {
+    "Id": "Permission_vp1mi9",
+    "Kind": "Permission",
+    "Column": "Recipient",
+    "Permission": "ReadOnly"
+  },
+  "Permission_1ue04lj": {
+    "Id": "Permission_1ue04lj",
+    "Kind": "Permission",
+    "Column": "Channel",
+    "Permission": "ReadOnly"
+  },
+  "Permission_1facd7g": {
+    "Id": "Permission_1facd7g",
+    "Kind": "Permission",
+    "Column": "Sent_At",
+    "Permission": "ReadOnly"
+  },
+  "Permission_1lysx5j": {
+    "Id": "Permission_1lysx5j",
+    "Kind": "Permission",
+    "Column": "Related_Key",
+    "Permission": "ReadOnly"
+  }
+}

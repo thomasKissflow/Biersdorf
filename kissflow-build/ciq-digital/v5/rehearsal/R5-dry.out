@@ -1,0 +1,72 @@
+{
+ "rehearsal": "R5",
+ "flow": "CIQ_ZZ_Spike_Case_A00",
+ "what": "remove the parallel block \"Spike review lanes\" (Parallel activity + 6 branch ProcessDefs + 6 branch activities + their Permissions/Resources/Expressions/Nodes)",
+ "at": "2026-10-14T17:56:28.223Z",
+ "apply": false,
+ "liveMetaVersion": "1792000556810236",
+ "livePublishedAt": "2026-10-14T17:55:56Z",
+ "mutation": {
+  "removed": {
+   "Activity": 7,
+   "ProcessDef": 6,
+   "Permission": 222,
+   "Resource": 6,
+   "Expression": 6,
+   "Node": 18
+  }
+ },
+ "diff": {
+  "added": [],
+  "removed": [
+   "ProcessDef_105gf9e ProcessDef Spike review – A",
+   "Permission_u1fwhz Permission",
+   "Permission_u1fwi0 Permission",
+   "Permission_u1fwi1 Permission",
+   "Permission_u1fwi2 Permission",
+   "Permission_u1fwi3 Permission",
+   "Permission_u1fwi4 Permission",
+   "Permission_us67fc Permission",
+   "Permission_lrpi0 Permission",
+   "Permission_lrph1 Permission",
+   "Permission_6a7ayc Permission",
+   "Permission_z4b6ds Permission"
+  ],
+  "changed": [
+   {
+    "entity": "ProcessDef_jghtaj ProcessDef",
+    "props": {
+     "ProcessDef::Activity": {
+      "was": [
+       "Activity_18dgdbl",
+       "Activity_194d12o",
+       "Activity_t7r746",
+       "Activity_90lk5i",
+       "Activity_1tuyhu",
+       "Activity_1t24obg"
+      ],
+      "now": [
+       "Activity_18dgdbl",
+       "Activity_194d12o",
+       "Activity_90lk5i",
+       "Activity_1tuyhu",
+       "Activity_1t24obg"
+      ]
+     }
+    }
+   }
+  ]
+ },
+ "diffSummary": {
+  "added": 0,
+  "removed": 265,
+  "changed": 1
+ },
+ "preflight": {
+  "errors": [],
+  "warnings": [
+   "NO_ID",
+   "ORPHAN_ENTITY"
+  ]
+ }
+}

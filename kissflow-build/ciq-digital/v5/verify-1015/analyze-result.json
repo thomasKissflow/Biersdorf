@@ -1,0 +1,2187 @@
+{
+ "at": "2026-10-15T03:21:29.016Z",
+ "counts": {
+  "PASS": 295,
+  "FAIL": 0,
+  "WARN": 16
+ },
+ "checks": [
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "step order",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → ProcessDef(Sequence)[\"ProcessDef::Activity\"]",
+   "detail": "[\"Create case\",\"Waiting for supplier: CIQ\",\"Beiersdorf review and final release\",\"End\"]"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "Waiting for supplier: CIQ owner = Integration service, no condition",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Activity_1kltjdn\"][\"Activity::Resource\"]",
+   "detail": "AppRole:RoEKl89I5nGx "
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "Beiersdorf review and final release owner = Integration service, no condition",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Activity_gwgj5o\"][\"Activity::Resource\"]",
+   "detail": "AppRole:RoEKl89I5nGx "
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "12 removed activities absent (scope check, completeness, Part 2 block + 6 lanes, 2 open-item checks, overall approval)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → keys",
+   "detail": "[]"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "no SLA keys on the two service steps (amended 15 Oct)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Activity_1kltjdn\"], [\"Activity_gwgj5o\"]",
+   "detail": "none"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "field Template_Version = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Template_Version\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "field Case_Phase = Select→CIQ_Case_Phase_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Case_Phase\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Case_Phase_A00"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "field Priority = Select→CIQ_Priority_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Priority\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Priority_A00"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "field Duplicate_Reason = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Duplicate_Reason\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "field Follow_Up_Of_Case = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Follow_Up_Of_Case\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "field Follow_Up_Of_Report = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Follow_Up_Of_Report\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "field Cancel_Reason = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Cancel_Reason\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "field Cancelled_By_Name = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Cancelled_By_Name\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "field Cancelled_At = DateTime",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Cancelled_At\"].Type/ReferredList/Required",
+   "detail": "DateTime"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "field Cancelled_From_Phase = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Cancelled_From_Phase\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "field Reactivate_Reason = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Reactivate_Reason\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "field Reactivated_At = DateTime",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Reactivated_At\"].Type/ReferredList/Required",
+   "detail": "DateTime"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "field Release_Requested_At = DateTime",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Release_Requested_At\"].Type/ReferredList/Required",
+   "detail": "DateTime"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "field Portal_Release_Item_Id = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Portal_Release_Item_Id\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "field Final_Document_Hash = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Final_Document_Hash\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "field Final_Document_At = DateTime",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Final_Document_At\"].Type/ReferredList/Required",
+   "detail": "DateTime"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "field Undefined_Origin = Select→CIQ_Yes_No_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Undefined_Origin\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Yes_No_A00"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "field Case_Data_Item_Id = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Case_Data_Item_Id\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "field Supplier_Files = Attachment",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Supplier_Files\"].Type/ReferredList/Required",
+   "detail": "Attachment"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "every field classified by the plan text (in use 63 / no longer used 81)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"CIQ_Case_A00\"][\"Model::Field\"]",
+   "detail": "{\"unclassified\":[],\"inUseMissing\":[]}"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "every model field published",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.allfields.json → CIQ_Case_A00.Fields[].Id",
+   "detail": "144 published / 144 model"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "Start Mandatory = the 21 of §4.1",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Activity_p1i6xz\"][\"Activity::Permission\"] (Mandatory)",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "Start Editable = the 11 of §4.1",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Activity_p1i6xz\"][\"Activity::Permission\"] (Editable)",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "Request_Key, Overall_Approval_Required no longer Mandatory",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Activity_p1i6xz\"] (Mandatory)",
+   "detail": ""
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "Create case: Hidden = exactly the 81 no-longer-used fields (P12)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Activity_p1i6xz\"][\"Activity::Permission\"] (Hidden)",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "Waiting for supplier: CIQ: Hidden = exactly the 81 no-longer-used fields (P12)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Activity_1kltjdn\"][\"Activity::Permission\"] (Hidden)",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "Waiting for supplier: CIQ: all 63 in-use fields ReadOnly",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Activity_1kltjdn\"][\"Activity::Permission\"] (ReadOnly)",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "Beiersdorf review and final release: Hidden = exactly the 81 no-longer-used fields (P12)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Activity_gwgj5o\"][\"Activity::Permission\"] (Hidden)",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "Beiersdorf review and final release: all 63 in-use fields ReadOnly",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Activity_gwgj5o\"][\"Activity::Permission\"] (ReadOnly)",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "End: Hidden = exactly the 81 no-longer-used fields (P12)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Activity_ycf01a\"][\"Activity::Permission\"] (Hidden)",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "End: all 63 in-use fields ReadOnly",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Activity_ycf01a\"][\"Activity::Permission\"] (ReadOnly)",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "Supplier_Files ReadOnly at every step incl. Start (night addition)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [Activity_*][\"Activity::Permission\"]",
+   "detail": ""
+  },
+  {
+   "area": "§4.1 CIQ Case",
+   "id": "service-only fields ReadOnly at Start (Case_Phase, Cancel_*, Release_*, Final_Document_*, Undefined_Origin, Case_Data_Item_Id)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_A00.draft.json → [\"Activity_p1i6xz\"] (ReadOnly)",
+   "detail": "ReadOnly does not stop a create from storing them (verifier 14 Oct): the service clears them on first sight (fixer hand-off)"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Review_Key = Text!",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Review_Key\"].Type/ReferredList/Required",
+   "detail": "Text!"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Case_Code = Text!",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Case_Code\"].Type/ReferredList/Required",
+   "detail": "Text!"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Cycle_No = Number",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Cycle_No\"].Type/ReferredList/Required",
+   "detail": "Number"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Case_Item_Id = Text!",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Case_Item_Id\"].Type/ReferredList/Required",
+   "detail": "Text!"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Supplier_Code = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Supplier_Code\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Trade_Name = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Trade_Name\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Review_Dept = Select→CIQ_Review_Dept_A00!",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Review_Dept\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Review_Dept_A00!"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Round_No = Number",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Round_No\"].Type/ReferredList/Required",
+   "detail": "Number"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Activation_Kind = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Activation_Kind\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Activation_Reason = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Activation_Reason\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Activated_By_Name = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Activated_By_Name\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Assignee_User = User",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Assignee_User\"].Type/ReferredList/Required",
+   "detail": "User"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Assignee_Name = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Assignee_Name\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Assignee_Email = Email",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Assignee_Email\"].Type/ReferredList/Required",
+   "detail": "Email"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Reassign_Reason = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Reassign_Reason\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Track_Status = Select→CIQ_Track_Status_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Track_Status\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Track_Status_A00"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Open_Count = Number",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Open_Count\"].Type/ReferredList/Required",
+   "detail": "Number"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field RMES_Gaps = Number",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"RMES_Gaps\"].Type/ReferredList/Required",
+   "detail": "Number"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Review_Gate = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Review_Gate\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Review_Confirm = Select→CIQ_Confirm_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Review_Confirm\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Confirm_A00"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Completed_By = User",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Completed_By\"].Type/ReferredList/Required",
+   "detail": "User"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Completed_By_Name = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Completed_By_Name\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Completed_By_Email = Email",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Completed_By_Email\"].Type/ReferredList/Required",
+   "detail": "Email"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Completed_At = DateTime",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Completed_At\"].Type/ReferredList/Required",
+   "detail": "DateTime"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field RMES_Decision = Select→CIQ_Decision_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"RMES_Decision\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Decision_A00"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field RMES_Decision_Reason = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"RMES_Decision_Reason\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Rejection_Handling = Select→CIQ_Rejection_Handling_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Rejection_Handling\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Rejection_Handling_A00"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Rejection_Note = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Rejection_Note\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field Rejected_Depts_Covered = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Rejected_Depts_Covered\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "field On_Behalf_Of = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"On_Behalf_Of\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "exactly the 30 fields of §4.2",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"CIQ_Review_A00\"][\"Model::Field\"]",
+   "detail": "30"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "Review_Gate formula (blank-safe)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Review_Gate\"][\"Field::Expression\"] → ExpressionStr",
+   "detail": "IF(OR(ISBLANK(Open_Count),ISBLANK(RMES_Gaps)),\"\",IF(Open_Count+RMES_Gaps=0,\"OK\",\"\"))"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "every model field published",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Review_A00.allfields.json → CIQ_Review_A00.Fields[].Id",
+   "detail": "30 published"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "step order Activate review → 6 conditional reviews → End",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → ProcessDef(Sequence)",
+   "detail": "[\"Activate review\",\"Review – Regulatory\",\"Review – Safety\",\"Review – QM\",\"Review – Microbiology\",\"Review – Sustainability\",\"Review – RMM\",\"End\"]"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "Start: all fields Editable (formula ReadOnly), no owner (service starts it by its Init grant)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Activity_47r3ow\"]",
+   "detail": "E 29 RO Review_Gate"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "Review – Regulatory: owner role RoEKl84Hca4w, condition Review_Dept = \"REG\"",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Activity_1wb6scg\"][\"Activity::Resource\"/\"Activity::Expression\"]",
+   "detail": "AppRole:RoEKl84Hca4w if Review_Dept = \"REG\""
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "Review – Regulatory: writable = §4.2 Editable (12), Mandatory = §4.2 (5)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Activity_1wb6scg\"][\"Activity::Permission\"]",
+   "detail": "{\"writable\":{\"missing\":[],\"extra\":[]},\"mandatory\":{\"missing\":[],\"extra\":[]}}"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "Review – Regulatory: native SLA (plan §4.2 \"review time (rem-3: 5 d)\"; V-35/V-36: native SLA on human steps for reporting, review 5 d)",
+   "status": "WARN",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Activity_1wb6scg\"] keys; entity kinds",
+   "detail": "not built: no SLA key on the activity and no SLA-like entity (kinds Model, Row, Column, Field, QueryDefinition, Node, Expression, ProcessDef, Permission, Activity, Resource, Appearance, Style, User). Same reason as the §4.1 amendment; review reminders come from the service (H-19, rem-3)"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "Review – Safety: owner role RoEKl84xAFRW, condition Review_Dept = \"SAF\"",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Activity_116f3su\"][\"Activity::Resource\"/\"Activity::Expression\"]",
+   "detail": "AppRole:RoEKl84xAFRW if Review_Dept = \"SAF\""
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "Review – Safety: writable = §4.2 Editable (12), Mandatory = §4.2 (5)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Activity_116f3su\"][\"Activity::Permission\"]",
+   "detail": "{\"writable\":{\"missing\":[],\"extra\":[]},\"mandatory\":{\"missing\":[],\"extra\":[]}}"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "Review – Safety: native SLA (plan §4.2 \"review time (rem-3: 5 d)\"; V-35/V-36: native SLA on human steps for reporting, review 5 d)",
+   "status": "WARN",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Activity_116f3su\"] keys; entity kinds",
+   "detail": "not built: no SLA key on the activity and no SLA-like entity (kinds Model, Row, Column, Field, QueryDefinition, Node, Expression, ProcessDef, Permission, Activity, Resource, Appearance, Style, User). Same reason as the §4.1 amendment; review reminders come from the service (H-19, rem-3)"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "Review – QM: owner role RoEKl85WB1yE, condition Review_Dept = \"QM\"",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Activity_12d3ab4\"][\"Activity::Resource\"/\"Activity::Expression\"]",
+   "detail": "AppRole:RoEKl85WB1yE if Review_Dept = \"QM\""
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "Review – QM: writable = §4.2 Editable (10), Mandatory = §4.2 (4)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Activity_12d3ab4\"][\"Activity::Permission\"]",
+   "detail": "{\"writable\":{\"missing\":[],\"extra\":[]},\"mandatory\":{\"missing\":[],\"extra\":[]}}"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "Review – QM: native SLA (plan §4.2 \"review time (rem-3: 5 d)\"; V-35/V-36: native SLA on human steps for reporting, review 5 d)",
+   "status": "WARN",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Activity_12d3ab4\"] keys; entity kinds",
+   "detail": "not built: no SLA key on the activity and no SLA-like entity (kinds Model, Row, Column, Field, QueryDefinition, Node, Expression, ProcessDef, Permission, Activity, Resource, Appearance, Style, User). Same reason as the §4.1 amendment; review reminders come from the service (H-19, rem-3)"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "Review – Microbiology: owner role RoEKl8647K2u, condition Review_Dept = \"MIC\"",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Activity_1wkxybl\"][\"Activity::Resource\"/\"Activity::Expression\"]",
+   "detail": "AppRole:RoEKl8647K2u if Review_Dept = \"MIC\""
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "Review – Microbiology: writable = §4.2 Editable (10), Mandatory = §4.2 (4)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Activity_1wkxybl\"][\"Activity::Permission\"]",
+   "detail": "{\"writable\":{\"missing\":[],\"extra\":[]},\"mandatory\":{\"missing\":[],\"extra\":[]}}"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "Review – Microbiology: native SLA (plan §4.2 \"review time (rem-3: 5 d)\"; V-35/V-36: native SLA on human steps for reporting, review 5 d)",
+   "status": "WARN",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Activity_1wkxybl\"] keys; entity kinds",
+   "detail": "not built: no SLA key on the activity and no SLA-like entity (kinds Model, Row, Column, Field, QueryDefinition, Node, Expression, ProcessDef, Permission, Activity, Resource, Appearance, Style, User). Same reason as the §4.1 amendment; review reminders come from the service (H-19, rem-3)"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "Review – Sustainability: owner role RoEKl86bQQrO, condition Review_Dept = \"SUS\"",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Activity_1um3oo7\"][\"Activity::Resource\"/\"Activity::Expression\"]",
+   "detail": "AppRole:RoEKl86bQQrO if Review_Dept = \"SUS\""
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "Review – Sustainability: writable = §4.2 Editable (10), Mandatory = §4.2 (4)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Activity_1um3oo7\"][\"Activity::Permission\"]",
+   "detail": "{\"writable\":{\"missing\":[],\"extra\":[]},\"mandatory\":{\"missing\":[],\"extra\":[]}}"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "Review – Sustainability: native SLA (plan §4.2 \"review time (rem-3: 5 d)\"; V-35/V-36: native SLA on human steps for reporting, review 5 d)",
+   "status": "WARN",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Activity_1um3oo7\"] keys; entity kinds",
+   "detail": "not built: no SLA key on the activity and no SLA-like entity (kinds Model, Row, Column, Field, QueryDefinition, Node, Expression, ProcessDef, Permission, Activity, Resource, Appearance, Style, User). Same reason as the §4.1 amendment; review reminders come from the service (H-19, rem-3)"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "Review – RMM: owner role RoEKl83f9jPF, condition Review_Dept = \"RMM\"",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Activity_1mh3ji6\"][\"Activity::Resource\"/\"Activity::Expression\"]",
+   "detail": "AppRole:RoEKl83f9jPF if Review_Dept = \"RMM\""
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "Review – RMM: writable = §4.2 Editable (13), Mandatory = §4.2 (4)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Activity_1mh3ji6\"][\"Activity::Permission\"]",
+   "detail": "{\"writable\":{\"missing\":[],\"extra\":[]},\"mandatory\":{\"missing\":[],\"extra\":[]}}"
+  },
+  {
+   "area": "§4.2 CIQ Review",
+   "id": "Review – RMM: native SLA (plan §4.2 \"review time (rem-3: 5 d)\"; V-35/V-36: native SLA on human steps for reporting, review 5 d)",
+   "status": "WARN",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Review_A00.draft.json → [\"Activity_1mh3ji6\"] keys; entity kinds",
+   "detail": "not built: no SLA key on the activity and no SLA-like entity (kinds Model, Row, Column, Field, QueryDefinition, Node, Expression, ProcessDef, Permission, Activity, Resource, Appearance, Style, User). Same reason as the §4.1 amendment; review reminders come from the service (H-19, rem-3)"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "'Waiting for supplier' Activity_4k7uck removed",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → keys",
+   "detail": ""
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "step order Raise → 6 'Open point – <Dept>' → End",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → ProcessDef(Sequence)",
+   "detail": "[\"Raise open point\",\"Open point – Regulatory\",\"Open point – Safety\",\"Open point – QM\",\"Open point – Microbiology\",\"Open point – Sustainability\",\"Open point – RMM\",\"End\"]"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Activity_uka3mx \"Open point – Regulatory\": condition OP_Dept = \"REG\"",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_uka3mx\"].Name / [\"Activity::Expression\"]",
+   "detail": "Open point – Regulatory if OP_Dept = \"REG\""
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Activity_uka3mx: owner = role RoEKl84Hca4w (plan table) — V-19 (b) asks for field assignment now that S-11 passed",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_uka3mx\"][\"Activity::Resource\"]",
+   "detail": "AppRole:RoEKl84Hca4w"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Activity_uka3mx: Editable = the 14, Mandatory = OP_Outcome",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_uka3mx\"][\"Activity::Permission\"]",
+   "detail": "{\"E\":{\"missing\":[],\"extra\":[]},\"M\":[\"OP_Outcome\"]}"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Activity_1kdump3 \"Open point – Safety\": condition OP_Dept = \"SAF\"",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_1kdump3\"].Name / [\"Activity::Expression\"]",
+   "detail": "Open point – Safety if OP_Dept = \"SAF\""
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Activity_1kdump3: owner = role RoEKl84xAFRW (plan table) — V-19 (b) asks for field assignment now that S-11 passed",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_1kdump3\"][\"Activity::Resource\"]",
+   "detail": "AppRole:RoEKl84xAFRW"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Activity_1kdump3: Editable = the 14, Mandatory = OP_Outcome",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_1kdump3\"][\"Activity::Permission\"]",
+   "detail": "{\"E\":{\"missing\":[],\"extra\":[]},\"M\":[\"OP_Outcome\"]}"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Activity_1go37bt \"Open point – QM\": condition OP_Dept = \"QM\"",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_1go37bt\"].Name / [\"Activity::Expression\"]",
+   "detail": "Open point – QM if OP_Dept = \"QM\""
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Activity_1go37bt: owner = role RoEKl85WB1yE (plan table) — V-19 (b) asks for field assignment now that S-11 passed",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_1go37bt\"][\"Activity::Resource\"]",
+   "detail": "AppRole:RoEKl85WB1yE"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Activity_1go37bt: Editable = the 14, Mandatory = OP_Outcome",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_1go37bt\"][\"Activity::Permission\"]",
+   "detail": "{\"E\":{\"missing\":[],\"extra\":[]},\"M\":[\"OP_Outcome\"]}"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Activity_hha7u2 \"Open point – Microbiology\": condition OP_Dept = \"MIC\"",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_hha7u2\"].Name / [\"Activity::Expression\"]",
+   "detail": "Open point – Microbiology if OP_Dept = \"MIC\""
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Activity_hha7u2: owner = role RoEKl8647K2u (plan table) — V-19 (b) asks for field assignment now that S-11 passed",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_hha7u2\"][\"Activity::Resource\"]",
+   "detail": "AppRole:RoEKl8647K2u"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Activity_hha7u2: Editable = the 14, Mandatory = OP_Outcome",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_hha7u2\"][\"Activity::Permission\"]",
+   "detail": "{\"E\":{\"missing\":[],\"extra\":[]},\"M\":[\"OP_Outcome\"]}"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Activity_y4af4g \"Open point – Sustainability\": condition OP_Dept = \"SUS\"",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_y4af4g\"].Name / [\"Activity::Expression\"]",
+   "detail": "Open point – Sustainability if OP_Dept = \"SUS\""
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Activity_y4af4g: owner = role RoEKl86bQQrO (plan table) — V-19 (b) asks for field assignment now that S-11 passed",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_y4af4g\"][\"Activity::Resource\"]",
+   "detail": "AppRole:RoEKl86bQQrO"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Activity_y4af4g: Editable = the 14, Mandatory = OP_Outcome",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_y4af4g\"][\"Activity::Permission\"]",
+   "detail": "{\"E\":{\"missing\":[],\"extra\":[]},\"M\":[\"OP_Outcome\"]}"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Activity_xc8fbb \"Open point – RMM\": condition OP_Dept = \"RMM\"",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_xc8fbb\"].Name / [\"Activity::Expression\"]",
+   "detail": "Open point – RMM if OP_Dept = \"RMM\""
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Activity_xc8fbb: owner = role RoEKl83f9jPF (plan table) — V-19 (b) asks for field assignment now that S-11 passed",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_xc8fbb\"][\"Activity::Resource\"]",
+   "detail": "AppRole:RoEKl83f9jPF"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Activity_xc8fbb: Editable = the 14, Mandatory = OP_Outcome",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_xc8fbb\"][\"Activity::Permission\"]",
+   "detail": "{\"E\":{\"missing\":[],\"extra\":[]},\"M\":[\"OP_Outcome\"]}"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "field Raised_By_User = User",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Raised_By_User\"].Type/ReferredList/Required",
+   "detail": "User"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "field Raised_By_Name = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Raised_By_Name\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "field Thread_JSON = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Thread_JSON\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "field Closed_At = DateTime",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Closed_At\"].Type/ReferredList/Required",
+   "detail": "DateTime"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "field Closed_By = User",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Closed_By\"].Type/ReferredList/Required",
+   "detail": "User"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "field OP_Dept = Select→CIQ_Review_Dept_A00!",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"OP_Dept\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Review_Dept_A00!"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "field OP_Outcome = Select→CIQ_OP_Outcome_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"OP_Outcome\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_OP_Outcome_A00"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "field OP_Progress = Select→CIQ_OP_Progress_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"OP_Progress\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_OP_Progress_A00"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "field OP_Kind = Select→CIQ_OP_Kind_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"OP_Kind\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_OP_Kind_A00"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "field OP_To_Supplier = Select→CIQ_Yes_No_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"OP_To_Supplier\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Yes_No_A00"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "field Ref_Internal_Key = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Ref_Internal_Key\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Open_Num = IF(ISBLANK(OP_Outcome),1,0) (amended 15 Oct)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Open_Num\"][\"Field::Expression\"] → ExpressionStr",
+   "detail": "IF(ISBLANK(OP_Outcome),1,0)"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "the plan's no-longer-used list matches 15 live fields",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"CIQ_Open_Point_A00\"][\"Model::Field\"]",
+   "detail": ""
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Start: Mandatory = the 16; every other used field Editable (formula Open_Num ReadOnly)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_18t0lhi\"][\"Activity::Permission\"]",
+   "detail": "{\"M\":{\"missing\":[],\"extra\":[]},\"all\":{\"missing\":[],\"extra\":[]}}"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Raise open point: Hidden = the 15 + table Rounds",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_18t0lhi\"][\"Activity::Permission\"] (Hidden)",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Open point – Regulatory: Hidden = the 15 + table Rounds",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_uka3mx\"][\"Activity::Permission\"] (Hidden)",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Open point – Safety: Hidden = the 15 + table Rounds",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_1kdump3\"][\"Activity::Permission\"] (Hidden)",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Open point – QM: Hidden = the 15 + table Rounds",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_1go37bt\"][\"Activity::Permission\"] (Hidden)",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Open point – Microbiology: Hidden = the 15 + table Rounds",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_hha7u2\"][\"Activity::Permission\"] (Hidden)",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Open point – Sustainability: Hidden = the 15 + table Rounds",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_y4af4g\"][\"Activity::Permission\"] (Hidden)",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Open point – RMM: Hidden = the 15 + table Rounds",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_xc8fbb\"][\"Activity::Permission\"] (Hidden)",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "End: Hidden = the 15 + table Rounds",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_i73i25\"][\"Activity::Permission\"] (Hidden)",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "every model field published",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Open_Point_A00.allfields.json → CIQ_Open_Point_A00.Fields[].Id",
+   "detail": "58 published / 58"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "native SLA on the 6 'Open point – <Dept>' steps (V-35: native SLA durations on human steps, for reporting)",
+   "status": "WARN",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Activity_uka3mx\" …]; entity kinds",
+   "detail": "not built: no SLA key and no SLA-like entity (kinds Model, Row, Column, Field, QueryDefinition, Expression, Node, ProcessDef, Permission, Activity, Resource, Appearance, Style, User)"
+  },
+  {
+   "area": "§4.3 CIQ Open Point",
+   "id": "Raiser_Assignee (MultiUser) for V-19 (b) field assignment",
+   "status": "WARN",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Open_Point_A00.draft.json → [\"Raiser_Assignee\"]",
+   "detail": "absent: S-11 passed live 15 Oct (v5/rehearsal/walks-result.json point.assignedToUser = true), so V-19 (b) now applies but is not built"
+  },
+  {
+   "area": "§4.4 CIQ Case Data",
+   "id": "header = the 43 fields of §4.4",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.draft.json → [\"CIQ_Case_Data_A00\"][\"Model::Field\"]",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.4 CIQ Case Data",
+   "id": "field Case_Code = Text!",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.draft.json → [\"Case_Code\"].Type/ReferredList/Required",
+   "detail": "Text!"
+  },
+  {
+   "area": "§4.4 CIQ Case Data",
+   "id": "field Case_Phase = Select→CIQ_Case_Phase_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.draft.json → [\"Case_Phase\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Case_Phase_A00"
+  },
+  {
+   "area": "§4.4 CIQ Case Data",
+   "id": "field Final_PDF = Attachment",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.draft.json → [\"Final_PDF\"].Type/ReferredList/Required",
+   "detail": "Attachment"
+  },
+  {
+   "area": "§4.4 CIQ Case Data",
+   "id": "field Sync_Note = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.draft.json → [\"Sync_Note\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.4 CIQ Case Data",
+   "id": "field Final_Document_JSON = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.draft.json → [\"Final_Document_JSON\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.4 CIQ Case Data",
+   "id": "field Answers_JSON = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.draft.json → [\"Answers_JSON\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.4 CIQ Case Data",
+   "id": "field Scope_JSON = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.draft.json → [\"Scope_JSON\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.4 CIQ Case Data",
+   "id": "field Tracks_JSON = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.draft.json → [\"Tracks_JSON\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.4 CIQ Case Data",
+   "id": "field Open_Points_JSON = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.draft.json → [\"Open_Points_JSON\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.4 CIQ Case Data",
+   "id": "field Confirmations_JSON = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.draft.json → [\"Confirmations_JSON\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.4 CIQ Case Data",
+   "id": "field Undefined_Origin = Select→CIQ_Yes_No_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.draft.json → [\"Undefined_Origin\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Yes_No_A00"
+  },
+  {
+   "area": "§4.4 CIQ Case Data",
+   "id": "child CIQ_Case_Data_A00_Components = §4.4 columns, published",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.draft.json → [\"CIQ_Case_Data_A00_Components\"][\"Model::Field\"]; kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.allfields.json → CIQ_Case_Data_A00_Components.Fields",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.4 CIQ Case Data",
+   "id": "child CIQ_Case_Data_A00_Documents = §4.4 columns, published",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.draft.json → [\"CIQ_Case_Data_A00_Documents\"][\"Model::Field\"]; kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.allfields.json → CIQ_Case_Data_A00_Documents.Fields",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.4 CIQ Case Data",
+   "id": "child CIQ_Case_Data_A00_Requested_Documents = §4.4 columns, published",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.draft.json → [\"CIQ_Case_Data_A00_Requested_Documents\"][\"Model::Field\"]; kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.allfields.json → CIQ_Case_Data_A00_Requested_Documents.Fields",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.4 CIQ Case Data",
+   "id": "child CIQ_Case_Data_A00_Change_Reports = §4.4 columns, published",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.draft.json → [\"CIQ_Case_Data_A00_Change_Reports\"][\"Model::Field\"]; kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.allfields.json → CIQ_Case_Data_A00_Change_Reports.Fields",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.4 CIQ Case Data",
+   "id": "field Doc_Attachment_Id = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.draft.json → [\"Doc_Attachment_Id\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.4 CIQ Case Data",
+   "id": "field Comp_Is_Additive = Select→CIQ_Yes_No_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.draft.json → [\"Comp_Is_Additive\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Yes_No_A00"
+  },
+  {
+   "area": "§4.4 CIQ Case Data",
+   "id": "field Req_Added_Later = Select→CIQ_Yes_No_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.draft.json → [\"Req_Added_Later\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Yes_No_A00"
+  },
+  {
+   "area": "§4.4 CIQ Case Data",
+   "id": "field Req_Kept = Select→CIQ_Yes_No_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.draft.json → [\"Req_Kept\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Yes_No_A00"
+  },
+  {
+   "area": "§4.4 CIQ Case Data",
+   "id": "field CR_By_Email = Email",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.draft.json → [\"CR_By_Email\"].Type/ReferredList/Required",
+   "detail": "Email"
+  },
+  {
+   "area": "§4.4 CIQ Case Data",
+   "id": "no Doc_File attachment column (replaced by Doc_Attachment_Id, night addition)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.draft.json → [\"Doc_File\"]",
+   "detail": "absent"
+  },
+  {
+   "area": "§4.4 CIQ Case Data",
+   "id": "header published",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Case_Data_A00.allfields.json → CIQ_Case_Data_A00.Fields",
+   "detail": "43"
+  },
+  {
+   "area": "§4.5 CIQ Mail Outbox",
+   "id": "exactly the 12 fields of §4.5",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Mail_Outbox_A00.draft.json → [\"CIQ_Mail_Outbox_A00\"][\"Model::Field\"]",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.5 CIQ Mail Outbox",
+   "id": "field Mail_Key = Text!",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Mail_Outbox_A00.draft.json → [\"Mail_Key\"].Type/ReferredList/Required",
+   "detail": "Text!"
+  },
+  {
+   "area": "§4.5 CIQ Mail Outbox",
+   "id": "field Event_Code = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Mail_Outbox_A00.draft.json → [\"Event_Code\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.5 CIQ Mail Outbox",
+   "id": "field Audience = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Mail_Outbox_A00.draft.json → [\"Audience\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.5 CIQ Mail Outbox",
+   "id": "field To_Emails = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Mail_Outbox_A00.draft.json → [\"To_Emails\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.5 CIQ Mail Outbox",
+   "id": "field Subject = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Mail_Outbox_A00.draft.json → [\"Subject\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.5 CIQ Mail Outbox",
+   "id": "field Body_Text = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Mail_Outbox_A00.draft.json → [\"Body_Text\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.5 CIQ Mail Outbox",
+   "id": "field Link_Url = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Mail_Outbox_A00.draft.json → [\"Link_Url\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.5 CIQ Mail Outbox",
+   "id": "field Case_Code = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Mail_Outbox_A00.draft.json → [\"Case_Code\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.5 CIQ Mail Outbox",
+   "id": "field Related_Key = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Mail_Outbox_A00.draft.json → [\"Related_Key\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.5 CIQ Mail Outbox",
+   "id": "field Created_At = DateTime",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Mail_Outbox_A00.draft.json → [\"Created_At\"].Type/ReferredList/Required",
+   "detail": "DateTime"
+  },
+  {
+   "area": "§4.5 CIQ Mail Outbox",
+   "id": "field Sent_Status = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Mail_Outbox_A00.draft.json → [\"Sent_Status\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.5 CIQ Mail Outbox",
+   "id": "field Attempt_No = Number",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Mail_Outbox_A00.draft.json → [\"Attempt_No\"].Type/ReferredList/Required",
+   "detail": "Number"
+  },
+  {
+   "area": "§4.13 CIQ Service Request",
+   "id": "exactly the 10 fields of §4.13 (incl. Attempt_No, night addition)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Service_Request_A00.draft.json → [\"CIQ_Service_Request_A00\"][\"Model::Field\"]",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "§4.13 CIQ Service Request",
+   "id": "field Request_Key = Text!",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Service_Request_A00.draft.json → [\"Request_Key\"].Type/ReferredList/Required",
+   "detail": "Text!"
+  },
+  {
+   "area": "§4.13 CIQ Service Request",
+   "id": "field Request_Code = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Service_Request_A00.draft.json → [\"Request_Code\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.13 CIQ Service Request",
+   "id": "field Case_Code = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Service_Request_A00.draft.json → [\"Case_Code\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.13 CIQ Service Request",
+   "id": "field Object_Key = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Service_Request_A00.draft.json → [\"Object_Key\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.13 CIQ Service Request",
+   "id": "field Payload_JSON = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Service_Request_A00.draft.json → [\"Payload_JSON\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.13 CIQ Service Request",
+   "id": "field Request_Status = Select→CIQ_Request_Status_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Service_Request_A00.draft.json → [\"Request_Status\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Request_Status_A00"
+  },
+  {
+   "area": "§4.13 CIQ Service Request",
+   "id": "field Result_Note = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Service_Request_A00.draft.json → [\"Result_Note\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.13 CIQ Service Request",
+   "id": "field Result_Item_Id = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Service_Request_A00.draft.json → [\"Result_Item_Id\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.13 CIQ Service Request",
+   "id": "field Processed_At = DateTime",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Service_Request_A00.draft.json → [\"Processed_At\"].Type/ReferredList/Required",
+   "detail": "DateTime"
+  },
+  {
+   "area": "§4.13 CIQ Service Request",
+   "id": "field Attempt_No = Number",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Service_Request_A00.draft.json → [\"Attempt_No\"].Type/ReferredList/Required",
+   "detail": "Number"
+  },
+  {
+   "area": "§4.6 CIQ Mail – send outbox mail",
+   "id": "exists, Status Live, IsActive false (Thomas switches on, S-3)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/integrations.json → [_id=CIQ_Mail_send_outbox_mail_A00].Status/IsActive",
+   "detail": "Live false"
+  },
+  {
+   "area": "§4.6 CIQ Mail – send outbox mail",
+   "id": "Dataform ItemCreated → Email SendEmail (To/Subject/Body) → Dataform UpdateAnItem Sent_Status=Sent",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Mail_send_outbox_mail_A00.draft.json → Kind=Trigger/Action/Property(FieldMapping)",
+   "detail": "{\"missing\":[],\"extra\":[\"Action_CIQ_Mail_Send_A00.BodyType=RichText\"]}"
+  },
+  {
+   "area": "§4.6 CIQ Mail – send outbox mail",
+   "id": "Link_Url not mapped (Body only; the service must put the link into Body_Text; Body type RichText)",
+   "status": "WARN",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Mail_send_outbox_mail_A00.draft.json → Property Body / BodyType",
+   "detail": "informational: the plan says Body ← Body_Text (plus the link)"
+  },
+  {
+   "area": "§4.14 not used",
+   "id": "CIQ_Z1_Case_completed_PDF_e_mails__A00 OFF",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/integrations.json → [_id=CIQ_Z1_Case_completed_PDF_e_mails__A00].IsActive",
+   "detail": "false"
+  },
+  {
+   "area": "§4.14 not used",
+   "id": "CIQ_Z2_Case_cancelled_neutral_e_ma_A00 OFF",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/integrations.json → [_id=CIQ_Z2_Case_cancelled_neutral_e_ma_A00].IsActive",
+   "detail": "false"
+  },
+  {
+   "area": "§4.14 not used",
+   "id": "CIQ_ZZ_Spike_log_point_completed_A00 OFF (Thomas, builder-only)",
+   "status": "WARN",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/integrations.json → [_id=CIQ_ZZ_Spike_log_point_completed_A00].IsActive; kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_ZZ_Spike_log_point_completed_A00.draft.json → Trigger",
+   "detail": "IsActive=true; trigger ItemCompleted on CIQ_ZZ_Spike_Point_A00 → CIQ_ZZ_Spike_Log_A00; last run 2026-10-15T03:03:27Z (runs 2)"
+  },
+  {
+   "area": "§4.14 not used",
+   "id": "CIQ_ZZ_Spike_log_register_created_A00 OFF (Thomas, builder-only)",
+   "status": "WARN",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/integrations.json → [_id=CIQ_ZZ_Spike_log_register_created_A00].IsActive; kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_ZZ_Spike_log_register_created_A00.draft.json → Trigger",
+   "detail": "IsActive=true; trigger ItemCreated on CIQ_ZZ_Spike_Register_A00 → CIQ_ZZ_Spike_Log_A00; last run 2026-10-07T17:35:05Z (runs 8)"
+  },
+  {
+   "area": "§4.7 CIQ Supplier",
+   "id": "field Supplier_City = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Supplier_A00.draft.json → [\"Supplier_City\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.7 CIQ Supplier",
+   "id": "field Contacts_Key = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Supplier_A00.draft.json → [\"Contacts_Key\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.7 CIQ Supplier",
+   "id": "field Contacts_Title = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Supplier_A00.draft.json → [\"Contacts_Title\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.7 CIQ Supplier",
+   "id": "field Contacts_Deactivated_At = DateTime",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Supplier_A00.draft.json → [\"Contacts_Deactivated_At\"].Type/ReferredList/Required",
+   "detail": "DateTime"
+  },
+  {
+   "area": "§4.7 CIQ Supplier",
+   "id": "field Supplier_Code = Text!",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Supplier_A00.draft.json → [\"Supplier_Code\"].Type/ReferredList/Required",
+   "detail": "Text!"
+  },
+  {
+   "area": "§4.7 CIQ Supplier",
+   "id": "field Supplier_Legal_Name = Text!",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Supplier_A00.draft.json → [\"Supplier_Legal_Name\"].Type/ReferredList/Required",
+   "detail": "Text!"
+  },
+  {
+   "area": "§4.7 CIQ Supplier",
+   "id": "field DUNS_Number = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Supplier_A00.draft.json → [\"DUNS_Number\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.7 CIQ Supplier",
+   "id": "field Supplier_Kind = Select→CIQ_Supplier_Kind_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Supplier_A00.draft.json → [\"Supplier_Kind\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Supplier_Kind_A00"
+  },
+  {
+   "area": "§4.7 CIQ Supplier",
+   "id": "field Supplier_Country_Code = Select→CIQ_Country_Code_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Supplier_A00.draft.json → [\"Supplier_Country_Code\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Country_Code_A00"
+  },
+  {
+   "area": "§4.7 CIQ Supplier",
+   "id": "field Supplier_Active = Select→CIQ_Yes_No_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Supplier_A00.draft.json → [\"Supplier_Active\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Yes_No_A00"
+  },
+  {
+   "area": "§4.7 CIQ Supplier",
+   "id": "field Supplier_Test = Select→CIQ_Yes_No_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Supplier_A00.draft.json → [\"Supplier_Test\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Yes_No_A00"
+  },
+  {
+   "area": "§4.7 CIQ Supplier",
+   "id": "field Contact_Portal_Ids_Text = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Supplier_A00.draft.json → [\"Contact_Portal_Ids_Text\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.7 CIQ Supplier",
+   "id": "field Pending_Invites = Number",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Supplier_A00.draft.json → [\"Pending_Invites\"].Type/ReferredList/Required",
+   "detail": "Number"
+  },
+  {
+   "area": "§4.7 CIQ Supplier",
+   "id": "field Contacts_Full_Name = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Supplier_A00.draft.json → [\"Contacts_Full_Name\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.7 CIQ Supplier",
+   "id": "field Contacts_Email = Email",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Supplier_A00.draft.json → [\"Contacts_Email\"].Type/ReferredList/Required",
+   "detail": "Email"
+  },
+  {
+   "area": "§4.7 CIQ Supplier",
+   "id": "field Contacts_Can_Confirm = Select→CIQ_Yes_No_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Supplier_A00.draft.json → [\"Contacts_Can_Confirm\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Yes_No_A00"
+  },
+  {
+   "area": "§4.7 CIQ Supplier",
+   "id": "field Contacts_Portal_User_Id = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Supplier_A00.draft.json → [\"Contacts_Portal_User_Id\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.7 CIQ Supplier",
+   "id": "field Contacts_Active = Select→CIQ_Yes_No_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Supplier_A00.draft.json → [\"Contacts_Active\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Yes_No_A00"
+  },
+  {
+   "area": "§4.7 CIQ Supplier",
+   "id": "field Contacts_Invite_Requested_At = DateTime",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Supplier_A00.draft.json → [\"Contacts_Invite_Requested_At\"].Type/ReferredList/Required",
+   "detail": "DateTime"
+  },
+  {
+   "area": "§4.7 CIQ Supplier",
+   "id": "field Contacts_Invited_At = DateTime",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Supplier_A00.draft.json → [\"Contacts_Invited_At\"].Type/ReferredList/Required",
+   "detail": "DateTime"
+  },
+  {
+   "area": "§4.7 CIQ Supplier",
+   "id": "new contact columns sit in the Contacts child table",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Supplier_A00.draft.json → [\"Contacts_Key\"].Model …",
+   "detail": ""
+  },
+  {
+   "area": "§4.7 CIQ Supplier",
+   "id": "published",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Supplier_A00.allfields.json → Fields, Contacts.Fields",
+   "detail": ""
+  },
+  {
+   "area": "§4.8 / §11 CIQ Config Version",
+   "id": "field Config_Key = Text!",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Config_Version_A00.draft.json → [\"Config_Key\"].Type/ReferredList/Required",
+   "detail": "Text!"
+  },
+  {
+   "area": "§4.8 / §11 CIQ Config Version",
+   "id": "field Config_Kind = Select→CIQ_Config_Kind_A00!",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Config_Version_A00.draft.json → [\"Config_Kind\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Config_Kind_A00!"
+  },
+  {
+   "area": "§4.8 / §11 CIQ Config Version",
+   "id": "field Version_Label = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Config_Version_A00.draft.json → [\"Version_Label\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.8 / §11 CIQ Config Version",
+   "id": "field Config_State = Select→CIQ_Config_State_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Config_Version_A00.draft.json → [\"Config_State\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Config_State_A00"
+  },
+  {
+   "area": "§4.8 / §11 CIQ Config Version",
+   "id": "field Payload_JSON = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Config_Version_A00.draft.json → [\"Payload_JSON\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.8 / §11 CIQ Config Version",
+   "id": "field Change_Note = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Config_Version_A00.draft.json → [\"Change_Note\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.8 / §11 CIQ Config Version",
+   "id": "field Published_By = User",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Config_Version_A00.draft.json → [\"Published_By\"].Type/ReferredList/Required",
+   "detail": "User"
+  },
+  {
+   "area": "§4.8 / §11 CIQ Config Version",
+   "id": "field Published_At = DateTime",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Config_Version_A00.draft.json → [\"Published_At\"].Type/ReferredList/Required",
+   "detail": "DateTime"
+  },
+  {
+   "area": "§4.8 / §11 CIQ Config Version",
+   "id": "field Release_Manifest_JSON = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Config_Version_A00.draft.json → [\"Release_Manifest_JSON\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.8 / §11 CIQ Config Version",
+   "id": "field Release_Bundle_JSON = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Config_Version_A00.draft.json → [\"Release_Bundle_JSON\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.8 / §11 CIQ Config Version",
+   "id": "field Manifest_Hash = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Config_Version_A00.draft.json → [\"Manifest_Hash\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.8 / §11 CIQ Config Version",
+   "id": "field Regression_Result_JSON = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Config_Version_A00.draft.json → [\"Regression_Result_JSON\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.8 / §11 CIQ Config Version",
+   "id": "CIQ Config Kind holds every §11.1 row kind",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/list-items/CIQ_Config_Kind_A00.json → body[]",
+   "detail": "[\"Template\",\"Section definition\",\"Rule set\",\"Section ownership\",\"RMES criteria\",\"Limit set\",\"Text bundle\",\"Reminders\",\"Settings\",\"Regression set\",\"Release\"]"
+  },
+  {
+   "area": "§4.8 / §11 CIQ Config Version",
+   "id": "CIQ Config State = Draft · Published · Retired",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/list-items/CIQ_Config_State_A00.json → body[]",
+   "detail": ""
+  },
+  {
+   "area": "§4.8 / §11 CIQ Config Version",
+   "id": "published",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Config_Version_A00.allfields.json",
+   "detail": "21"
+  },
+  {
+   "area": "§4.9 CIQ Scope Run",
+   "id": "field Run_Key = Text!",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Scope_Run_A00.draft.json → [\"Run_Key\"].Type/ReferredList/Required",
+   "detail": "Text!"
+  },
+  {
+   "area": "§4.9 CIQ Scope Run",
+   "id": "field Case_Code = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Scope_Run_A00.draft.json → [\"Case_Code\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.9 CIQ Scope Run",
+   "id": "field Scope_Trigger = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Scope_Run_A00.draft.json → [\"Scope_Trigger\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.9 CIQ Scope Run",
+   "id": "field Rule_Set_Version = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Scope_Run_A00.draft.json → [\"Rule_Set_Version\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.9 CIQ Scope Run",
+   "id": "field Result_JSON = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Scope_Run_A00.draft.json → [\"Result_JSON\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.9 CIQ Scope Run",
+   "id": "field Added_Section_Keys = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Scope_Run_A00.draft.json → [\"Added_Section_Keys\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.9 CIQ Scope Run",
+   "id": "field Lead_Departments = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Scope_Run_A00.draft.json → [\"Lead_Departments\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.9 CIQ Scope Run",
+   "id": "field Override_Justification = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Scope_Run_A00.draft.json → [\"Override_Justification\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.10 CIQ_RMES_Safety_A00",
+   "id": "Safety_Findings.Findings_Key Text (night addition)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_RMES_Safety_A00.draft.json → [\"Findings_Key\"].Type/Model",
+   "detail": "Text in Safety_Findings"
+  },
+  {
+   "area": "§4.10 CIQ_RMES_Safety_A00",
+   "id": "field Findings_Blocking = Select→CIQ_Yes_No_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_RMES_Safety_A00.draft.json → [\"Findings_Blocking\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Yes_No_A00"
+  },
+  {
+   "area": "§4.10 CIQ_RMES_Safety_A00",
+   "id": "field Editing_By = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_RMES_Safety_A00.draft.json → [\"Editing_By\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.10 CIQ_RMES_Safety_A00",
+   "id": "field Editing_Since = DateTime",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_RMES_Safety_A00.draft.json → [\"Editing_Since\"].Type/ReferredList/Required",
+   "detail": "DateTime"
+  },
+  {
+   "area": "§4.10 CIQ_RMES_Safety_A00",
+   "id": "field Result_Case = Reference",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_RMES_Safety_A00.draft.json → [\"Result_Case\"].Type/ReferredList/Required",
+   "detail": "Reference"
+  },
+  {
+   "area": "§4.10 CIQ_RMES_Safety_A00",
+   "id": "field RMES_Key = Text!",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_RMES_Safety_A00.draft.json → [\"RMES_Key\"].Type/ReferredList/Required",
+   "detail": "Text!"
+  },
+  {
+   "area": "§4.10 CIQ_RMES_Safety_A00",
+   "id": "Safety_Findings.Findings_Key published",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_RMES_Safety_A00.allfields.json → Safety_Findings.Fields",
+   "detail": ""
+  },
+  {
+   "area": "§4.10 CIQ_RMES_Regulatory_A00",
+   "id": "Regulatory_Findings.Findings_Key Text (night addition)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_RMES_Regulatory_A00.draft.json → [\"Findings_Key\"].Type/Model",
+   "detail": "Text in Regulatory_Findings"
+  },
+  {
+   "area": "§4.10 CIQ_RMES_Regulatory_A00",
+   "id": "field Findings_Blocking = Select→CIQ_Yes_No_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_RMES_Regulatory_A00.draft.json → [\"Findings_Blocking\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Yes_No_A00"
+  },
+  {
+   "area": "§4.10 CIQ_RMES_Regulatory_A00",
+   "id": "field Editing_By = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_RMES_Regulatory_A00.draft.json → [\"Editing_By\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.10 CIQ_RMES_Regulatory_A00",
+   "id": "field Editing_Since = DateTime",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_RMES_Regulatory_A00.draft.json → [\"Editing_Since\"].Type/ReferredList/Required",
+   "detail": "DateTime"
+  },
+  {
+   "area": "§4.10 CIQ_RMES_Regulatory_A00",
+   "id": "field Result_Case = Reference",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_RMES_Regulatory_A00.draft.json → [\"Result_Case\"].Type/ReferredList/Required",
+   "detail": "Reference"
+  },
+  {
+   "area": "§4.10 CIQ_RMES_Regulatory_A00",
+   "id": "field RMES_Key = Text!",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_RMES_Regulatory_A00.draft.json → [\"RMES_Key\"].Type/ReferredList/Required",
+   "detail": "Text!"
+  },
+  {
+   "area": "§4.10 CIQ_RMES_Regulatory_A00",
+   "id": "Regulatory_Findings.Findings_Key published",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_RMES_Regulatory_A00.allfields.json → Regulatory_Findings.Fields",
+   "detail": ""
+  },
+  {
+   "area": "§4.11 CIQ Internal Note",
+   "id": "field Note_Mentions_Emails = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Internal_Note_A00.draft.json → [\"Note_Mentions_Emails\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.11 CIQ Internal Note",
+   "id": "field Note_Mentions_Names = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Internal_Note_A00.draft.json → [\"Note_Mentions_Names\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.11 CIQ Internal Note",
+   "id": "field Linked_Kind = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Internal_Note_A00.draft.json → [\"Linked_Kind\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.11 CIQ Internal Note",
+   "id": "field Linked_Key = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Internal_Note_A00.draft.json → [\"Linked_Key\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.11 CIQ Internal Note",
+   "id": "field Note_Text = Textarea!",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Internal_Note_A00.draft.json → [\"Note_Text\"].Type/ReferredList/Required",
+   "detail": "Textarea!"
+  },
+  {
+   "area": "§4.11 CIQ Internal Note",
+   "id": "field Note_Dept = Select→CIQ_Department_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/CIQ_Internal_Note_A00.draft.json → [\"Note_Dept\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Department_A00"
+  },
+  {
+   "area": "§4.11 CIQ Internal Note",
+   "id": "mentions fields published",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Internal_Note_A00.allfields.json → Fields",
+   "detail": ""
+  },
+  {
+   "area": "§4.12 CIQ Audit Event",
+   "id": "field Event_Category = Select→CIQ_Event_Category_A00!",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Audit_Event_A00.draft.json → [\"Event_Category\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Event_Category_A00!"
+  },
+  {
+   "area": "§4.12 CIQ Audit Event",
+   "id": "field Actor_Side = Select→CIQ_Actor_Side_A00",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Audit_Event_A00.draft.json → [\"Actor_Side\"].Type/ReferredList/Required",
+   "detail": "Select→CIQ_Actor_Side_A00"
+  },
+  {
+   "area": "§4.12 CIQ Audit Event",
+   "id": "field Actor_Name = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Audit_Event_A00.draft.json → [\"Actor_Name\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.12 CIQ Audit Event",
+   "id": "field Actor_Email = Email",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Audit_Event_A00.draft.json → [\"Actor_Email\"].Type/ReferredList/Required",
+   "detail": "Email"
+  },
+  {
+   "area": "§4.12 CIQ Audit Event",
+   "id": "field Object_Key = Text",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Audit_Event_A00.draft.json → [\"Object_Key\"].Type/ReferredList/Required",
+   "detail": "Text"
+  },
+  {
+   "area": "§4.12 CIQ Audit Event",
+   "id": "field Old_Value_Text = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Audit_Event_A00.draft.json → [\"Old_Value_Text\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.12 CIQ Audit Event",
+   "id": "field New_Value_Text = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Audit_Event_A00.draft.json → [\"New_Value_Text\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§4.12 CIQ Audit Event",
+   "id": "field Event_Reason = Textarea",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/CIQ_Audit_Event_A00.draft.json → [\"Event_Reason\"].Type/ReferredList/Required",
+   "detail": "Textarea"
+  },
+  {
+   "area": "§5 lists",
+   "id": "CIQ_Case_Phase_A00 (new) exact",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/list-items/CIQ_Case_Phase_A00.json → body[]",
+   "detail": "[\"Supplier filling in the CIQ\",\"Review\",\"Awaiting final release\",\"Completed\",\"Cancelled\"]"
+  },
+  {
+   "area": "§5 lists",
+   "id": "CIQ_Track_Status_A00 (new) exact",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/list-items/CIQ_Track_Status_A00.json → body[]",
+   "detail": "[\"In review\",\"Waiting for supplier\",\"Reopened\",\"Completed\",\"Ended\"]"
+  },
+  {
+   "area": "§5 lists",
+   "id": "CIQ_Priority_A00 (new) exact",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/list-items/CIQ_Priority_A00.json → body[]",
+   "detail": "[\"Normal\",\"High\"]"
+  },
+  {
+   "area": "§5 lists",
+   "id": "CIQ_Rejection_Handling_A00 (new) exact",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/list-items/CIQ_Rejection_Handling_A00.json → body[]",
+   "detail": "[\"Continue to final release\",\"Cancel the case\"]"
+  },
+  {
+   "area": "§5 lists",
+   "id": "CIQ_Request_Status_A00 (new) exact",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/list-items/CIQ_Request_Status_A00.json → body[]",
+   "detail": "[\"Done\",\"Refused\",\"Failed\"]"
+  },
+  {
+   "area": "§5 lists",
+   "id": "CIQ_OP_Kind_A00 (changed): every old value kept + Finding",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/list-items/CIQ_OP_Kind_A00.json → body[]; v5/originals/CIQ_OP_Kind_A00.items.before-B1.json",
+   "detail": "6 → 7"
+  },
+  {
+   "area": "§5 lists",
+   "id": "CIQ_OP_Outcome_A00 (changed): every old value kept + Not accepted",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/list-items/CIQ_OP_Outcome_A00.json → body[]; v5/originals/CIQ_OP_Outcome_A00.items.before-B1.json",
+   "detail": "2 → 3"
+  },
+  {
+   "area": "§5 lists",
+   "id": "CIQ_Event_Category_A00 (changed): every old value kept + Supplier master, Review, Internal note",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/list-items/CIQ_Event_Category_A00.json → body[]; v5/originals/CIQ_Event_Category_A00.items.before-B1.json",
+   "detail": "17 → 20"
+  },
+  {
+   "area": "§5 lists",
+   "id": "the 16 unchanged lists exist and are Live",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/lists.json → [_id].Status",
+   "detail": "[]"
+  },
+  {
+   "area": "§5 lists",
+   "id": "CIQ Review Dept items are the codes the step conditions test (REG, SAF, QM, MIC, SUS, RMM)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/list-items/CIQ_Review_Dept_A00.json → body[]",
+   "detail": "[\"REG\",\"SAF\",\"QM\",\"MIC\",\"SUS\",\"RMM\"]"
+  },
+  {
+   "area": "§5 lists",
+   "id": "CIQ Decision = Approved · Rejected; CIQ Confirm = Confirmed",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/list-items/CIQ_Decision_A00.json, CIQ_Confirm_A00.json",
+   "detail": ""
+  },
+  {
+   "area": "§6 grants",
+   "id": "CIQ_Case_A00: members = plan grid exactly (no extra, no Delete)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/members.CIQ_Case_A00.json → body[]._id/Role/Permission",
+   "detail": "13 members"
+  },
+  {
+   "area": "§6 grants",
+   "id": "CIQ_Review_A00: members = plan grid exactly (no extra, no Delete)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/members.CIQ_Review_A00.json → body[]._id/Role/Permission",
+   "detail": "13 members"
+  },
+  {
+   "area": "§6 grants",
+   "id": "CIQ_Open_Point_A00: members = plan grid exactly (no extra, no Delete)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/members.CIQ_Open_Point_A00.json → body[]._id/Role/Permission",
+   "detail": "13 members"
+  },
+  {
+   "area": "§6 grants",
+   "id": "CIQ_Case_Data_A00: members = plan grid exactly (no extra, no Delete)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/members.CIQ_Case_Data_A00.json → body[]._id/Role/Permission",
+   "detail": "13 members"
+  },
+  {
+   "area": "§6 grants",
+   "id": "CIQ_Mail_Outbox_A00: members = plan grid exactly (no extra, no Delete)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/members.CIQ_Mail_Outbox_A00.json → body[]._id/Role/Permission",
+   "detail": "3 members"
+  },
+  {
+   "area": "§6 grants",
+   "id": "CIQ_Service_Request_A00: members = plan grid exactly (no extra, no Delete)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/members.CIQ_Service_Request_A00.json → body[]._id/Role/Permission",
+   "detail": "12 members"
+  },
+  {
+   "area": "§6 grants",
+   "id": "CIQ_Supplier_A00: members = plan grid exactly (no extra, no Delete)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/members.CIQ_Supplier_A00.json → body[]._id/Role/Permission",
+   "detail": "4 members"
+  },
+  {
+   "area": "§6 grants",
+   "id": "CIQ_Config_Version_A00: members = plan grid exactly (no extra, no Delete)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/members.CIQ_Config_Version_A00.json → body[]._id/Role/Permission",
+   "detail": "13 members"
+  },
+  {
+   "area": "§6 grants",
+   "id": "CIQ_Scope_Run_A00: members = plan grid exactly (no extra, no Delete)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/members.CIQ_Scope_Run_A00.json → body[]._id/Role/Permission",
+   "detail": "13 members"
+  },
+  {
+   "area": "§6 grants",
+   "id": "CIQ_RMES_Safety_A00: members = plan grid exactly (no extra, no Delete)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/members.CIQ_RMES_Safety_A00.json → body[]._id/Role/Permission",
+   "detail": "4 members"
+  },
+  {
+   "area": "§6 grants",
+   "id": "CIQ_RMES_Regulatory_A00: members = plan grid exactly (no extra, no Delete)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/members.CIQ_RMES_Regulatory_A00.json → body[]._id/Role/Permission",
+   "detail": "4 members"
+  },
+  {
+   "area": "§6 grants",
+   "id": "CIQ_Internal_Note_A00: members = plan grid exactly (no extra, no Delete)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/members.CIQ_Internal_Note_A00.json → body[]._id/Role/Permission",
+   "detail": "13 members"
+  },
+  {
+   "area": "§6 grants",
+   "id": "CIQ_Audit_Event_A00: members = plan grid exactly (no extra, no Delete)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/members.CIQ_Audit_Event_A00.json → body[]._id/Role/Permission",
+   "detail": "13 members"
+  },
+  {
+   "area": "§4.14 not used",
+   "id": "CIQ_Section_A00: members = plan grid exactly (no extra, no Delete)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/members.CIQ_Section_A00.json → body[]._id/Role/Permission",
+   "detail": "1 members"
+  },
+  {
+   "area": "§4.14 not used",
+   "id": "CIQ_Change_Request_A00: members = plan grid exactly (no extra, no Delete)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/members.CIQ_Change_Request_A00.json → body[]._id/Role/Permission",
+   "detail": "1 members"
+  },
+  {
+   "area": "§6 grants",
+   "id": "V-53: RMES own department only; Auditor reads both; REG not on Safety, SAF not on Regulatory",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/members.CIQ_RMES_Safety_A00.json, members.CIQ_RMES_Regulatory_A00.json",
+   "detail": "{\"saf\":[\"RoEKl84xAFRW\",\"RoEKl88CJiLP\",\"RoEKl88jv4dv\",\"RoEKl89I5nGx\"],\"reg\":[\"RoEKl84Hca4w\",\"RoEKl88CJiLP\",\"RoEKl88jv4dv\",\"RoEKl89I5nGx\"]}"
+  },
+  {
+   "area": "§4.14 not used",
+   "id": "Overall approver RoEKl8790ycA: no grant on any flow, no step resource",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/members.*.json; grep RoEKl8790ycA in postgen/live-v5 = roles.json only",
+   "detail": ""
+  },
+  {
+   "area": "§4.14 not used",
+   "id": "CIQ_ZZ_Spike_Case_A00: no members (§4.14 \"Leave\")",
+   "status": "WARN",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/members.CIQ_ZZ_Spike_Case_A00.json → body[]",
+   "detail": "Admin / Developer:Member:InitiateItems — the 15 Oct ZZ test grant for the S-11/S-12 walks"
+  },
+  {
+   "area": "§4.14 not used",
+   "id": "CIQ_ZZ_Spike_Point_A00: no members (§4.14 \"Leave\")",
+   "status": "WARN",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/members.CIQ_ZZ_Spike_Point_A00.json → body[]",
+   "detail": "Admin / Developer:Member:InitiateItems — the 15 Oct ZZ test grant for the S-11/S-12 walks"
+  },
+  {
+   "area": "§4.14 not used",
+   "id": "CIQ_ZZ_Spike_Log_A00: no members (§4.14 \"Leave\")",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/members.CIQ_ZZ_Spike_Log_A00.json → body[]",
+   "detail": ""
+  },
+  {
+   "area": "§4.14 not used",
+   "id": "CIQ_ZZ_Spike_Register_A00: no members (§4.14 \"Leave\")",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/v5/verify-1015/live/members.CIQ_ZZ_Spike_Register_A00.json → body[]",
+   "detail": ""
+  },
+  {
+   "area": "§6 roles (D38)",
+   "id": "RoEKl83f9jPF → \"Raw Material Manager (RMM)\" (plan §6 table)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/roles.json → [_id=RoEKl83f9jPF].Name; postgen/role-alignment.json",
+   "detail": "live \"Raw Material Manager (RMM)\""
+  },
+  {
+   "area": "§6 roles (D38)",
+   "id": "RoEKl84Hca4w → \"Regulatory Affairs reviewer\" (plan §6 table)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/roles.json → [_id=RoEKl84Hca4w].Name; postgen/role-alignment.json",
+   "detail": "live \"Regulatory Affairs reviewer\""
+  },
+  {
+   "area": "§6 roles (D38)",
+   "id": "RoEKl84xAFRW → \"Product Safety reviewer\" (plan §6 table)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/roles.json → [_id=RoEKl84xAFRW].Name; postgen/role-alignment.json",
+   "detail": "live \"Product Safety reviewer\""
+  },
+  {
+   "area": "§6 roles (D38)",
+   "id": "RoEKl85WB1yE → \"Quality Management reviewer\" (plan §6 table)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/roles.json → [_id=RoEKl85WB1yE].Name; postgen/role-alignment.json",
+   "detail": "live \"Quality Management reviewer\""
+  },
+  {
+   "area": "§6 roles (D38)",
+   "id": "RoEKl8647K2u → \"Microbiology reviewer\" (plan §6 table)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/roles.json → [_id=RoEKl8647K2u].Name; postgen/role-alignment.json",
+   "detail": "live \"Microbiology reviewer\""
+  },
+  {
+   "area": "§6 roles (D38)",
+   "id": "RoEKl86bQQrO → \"Sustainability reviewer\" (plan §6 table)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/roles.json → [_id=RoEKl86bQQrO].Name; postgen/role-alignment.json",
+   "detail": "live \"Sustainability reviewer\""
+  },
+  {
+   "area": "§6 roles (D38)",
+   "id": "RoEKwv6pxX3g → \"Customs & Trade Compliance\" (plan §6 table)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/roles.json → [_id=RoEKwv6pxX3g].Name; postgen/role-alignment.json",
+   "detail": "live \"Customs & Trade Compliance\""
+  },
+  {
+   "area": "§6 roles (D38)",
+   "id": "RoEKwvH8qaxG → \"Legal / IP\" (plan §6 table)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/roles.json → [_id=RoEKwvH8qaxG].Name; postgen/role-alignment.json",
+   "detail": "live \"Legal / IP\""
+  },
+  {
+   "area": "§6 roles (D38)",
+   "id": "RoEKl87f38Xw → \"Business administrator\" (plan §6 table)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/roles.json → [_id=RoEKl87f38Xw].Name; postgen/role-alignment.json",
+   "detail": "live \"Business administrator\""
+  },
+  {
+   "area": "§6 roles (D38)",
+   "id": "RoEKl88CJiLP → \"Auditor\" (plan §6 table)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/roles.json → [_id=RoEKl88CJiLP].Name; postgen/role-alignment.json",
+   "detail": "live \"Auditor\""
+  },
+  {
+   "area": "§6 roles (D38)",
+   "id": "RoEKwvR_cPvv → \"Business owner (reports)\" (plan §6 table)",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/roles.json → [_id=RoEKwvR_cPvv].Name; postgen/role-alignment.json",
+   "detail": "live \"Business owner (reports)\""
+  },
+  {
+   "area": "§6 roles (D38)",
+   "id": "RoEKl88jv4dv → \"Case administrator (technical)\" (plan §6 table)",
+   "status": "WARN",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/roles.json → [_id=RoEKl88jv4dv].Name; postgen/role-alignment.json",
+   "detail": "live \"Case administrator\" = the prepared D38 name in role-alignment.json (\"Case administrator\", technical: true)"
+  },
+  {
+   "area": "§6 roles (D38)",
+   "id": "RoEKl89I5nGx → \"Integration service (technical)\" (plan §6 table)",
+   "status": "WARN",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/roles.json → [_id=RoEKl89I5nGx].Name; postgen/role-alignment.json",
+   "detail": "live \"Integration service\" = the prepared D38 name in role-alignment.json (\"Integration service\", technical: true)"
+  },
+  {
+   "area": "§6 roles (D38)",
+   "id": "V-27 Overall approver deleted",
+   "status": "WARN",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/roles.json → [_id=RoEKl8790ycA]",
+   "detail": "still exists as \"Overall approver\", UserCount 1; no grants, no step (delete = Thomas's irreversible call)"
+  },
+  {
+   "area": "§6 roles (D38)",
+   "id": "15 roles listed; default User role gone",
+   "status": "PASS",
+   "evidence": "kissflow-build/ciq-digital/postgen/live-v5/roles.json → body[]",
+   "detail": "15"
+  }
+ ]
+}

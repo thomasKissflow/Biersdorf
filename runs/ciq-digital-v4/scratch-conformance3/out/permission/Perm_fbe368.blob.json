@@ -1,0 +1,49 @@
+{
+  "Root": "Perm_fbe368",
+  "Perm_fbe368": {
+    "Id": "Perm_fbe368",
+    "Kind": "FlowPermission",
+    "Role": "ciq_safety_reviewer",
+    "RoleName": "CIQ Safety Reviewer",
+    "Model": "Regulatory_Findings",
+    "Level": "ReadOnly",
+    "Scope": "all",
+    "FlowPermission::Permission": [
+      "Permission_djk0mu",
+      "Permission_1it7fay",
+      "Permission_1wm8awq",
+      "Permission_kq9upe",
+      "Permission_vxpn3i"
+    ]
+  },
+  "Permission_djk0mu": {
+    "Id": "Permission_djk0mu",
+    "Kind": "Permission",
+    "Column": "Findings_Text",
+    "Permission": "ReadOnly"
+  },
+  "Permission_1it7fay": {
+    "Id": "Permission_1it7fay",
+    "Kind": "Permission",
+    "Column": "Findings_Criterion_Code",
+    "Permission": "ReadOnly"
+  },
+  "Permission_1wm8awq": {
+    "Id": "Permission_1wm8awq",
+    "Kind": "Permission",
+    "Column": "Findings_Blocking",
+    "Permission": "ReadOnly"
+  },
+  "Permission_kq9upe": {
+    "Id": "Permission_kq9upe",
+    "Kind": "Permission",
+    "Column": "Findings_State",
+    "Permission": "ReadOnly"
+  },
+  "Permission_vxpn3i": {
+    "Id": "Permission_vxpn3i",
+    "Kind": "Permission",
+    "Column": "Findings_Linked_OP_Key",
+    "Permission": "ReadOnly"
+  }
+}

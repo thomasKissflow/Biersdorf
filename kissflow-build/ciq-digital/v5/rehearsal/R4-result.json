@@ -1,0 +1,194 @@
+{
+ "rehearsal": "R4",
+ "flow": "CIQ_ZZ_Spike_Case_A00",
+ "what": "remove step \"Spike not-equal step\" (Activity + Permissions + Resource + Expression/Nodes + ProcessDef ref)",
+ "at": "2026-10-14T17:55:53.852Z",
+ "apply": true,
+ "liveMetaVersion": "1792000541437430",
+ "livePublishedAt": "2026-10-14T17:55:41Z",
+ "mutation": {
+  "removed": {
+   "Activity": 1,
+   "Permission": 37,
+   "Resource": 1,
+   "Expression": 1,
+   "Node": 3
+  }
+ },
+ "diff": {
+  "added": [],
+  "removed": [
+   "Permission_581c44 Permission",
+   "Permission_581c45 Permission",
+   "Permission_581c46 Permission",
+   "Permission_581c47 Permission",
+   "Permission_581c48 Permission",
+   "Permission_581c49 Permission",
+   "Permission_5yrn1h Permission",
+   "Permission_1ath739 Permission",
+   "Permission_1ath72a Permission",
+   "Permission_13yxx41 Permission",
+   "Permission_1wt1sjh Permission",
+   "Permission_1athrul Permission",
+   "Permission_1athrtm Permission",
+   "Permission_14ffu2g Permission",
+   "Permission_1atyna5 Permission",
+   "Permission_1aubg90 Permission",
+   "Permission_1aubg97 Permission",
+   "Permission_14tq7bs Permission",
+   "Permission_13em65g Permission",
+   "Permission_1aud1ef Permission",
+   "Permission_1aud1cd Permission",
+   "Permission_1582upd Permission",
+   "Permission_17hx194 Permission",
+   "Permission_1audm5r Permission",
+   "Permission_1audm4s Permission",
+   "Permission_15oivja Permission",
+   "Permission_hsr4nf Permission",
+   "Permission_1aue6x3 Permission",
+   "Permission_1aue6w4 Permission",
+   "Permission_161z7dy Permission",
+   "Permission_145c7de Permission",
+   "Permission_azixsr Permission",
+   "Permission_152d7qa Permission",
+   "Permission_1youwya Permission",
+   "Permission_16lgkyt Permission",
+   "Resource_2tfwgq Resource",
+   "Expression_ptl1yy Expression",
+   "Node_x6crjz Node",
+   "Node_x6crk0 Node",
+   "Node_x6crk1 Node",
+   "Activity_1uarf0z Activity Spike not-equal step",
+   "Permission_cgj9k4 Permission",
+   "Permission_1wuwag9 Permission"
+  ],
+  "changed": [
+   {
+    "entity": "ProcessDef_jghtaj ProcessDef",
+    "props": {
+     "ProcessDef::Activity": {
+      "was": [
+       "Activity_18dgdbl",
+       "Activity_194d12o",
+       "Activity_t7r746",
+       "Activity_90lk5i",
+       "Activity_1tuyhu",
+       "Activity_1uarf0z",
+       "Activity_1t24obg"
+      ],
+      "now": [
+       "Activity_18dgdbl",
+       "Activity_194d12o",
+       "Activity_t7r746",
+       "Activity_90lk5i",
+       "Activity_1tuyhu",
+       "Activity_1t24obg"
+      ]
+     }
+    }
+   }
+  ]
+ },
+ "diffSummary": {
+  "added": 0,
+  "removed": 43,
+  "changed": 1
+ },
+ "preflight": {
+  "errors": [],
+  "warnings": [
+   "NO_ID",
+   "ORPHAN_ENTITY"
+  ]
+ },
+ "write": {
+  "ok": true,
+  "putDraft": 200,
+  "publish": 200,
+  "publishedAt": "2026-10-14T17:55:56Z"
+ },
+ "readBack": {
+  "metaVersion": "1792000556810236",
+  "publishedAt": "2026-10-14T17:55:56Z",
+  "diffVsSent": {
+   "added": [],
+   "removed": [],
+   "changed": []
+  },
+  "steps": [
+   "Create spike case [Activity_18dgdbl]  perms=37",
+   "Spike prepare [Activity_194d12o] AppRole:Admin / Developer perms=37",
+   "Spike review lanes [Activity_t7r746]  perms=0",
+   "  Spike review – A [Activity_7a5wvb] AppRole:Admin / Developer if Flag_A = \"Yes\" perms=37",
+   "  Spike review – B [Activity_7a5wvc] AppRole:Admin / Developer if Flag_B = \"Yes\" perms=37",
+   "  Spike review – C [Activity_7a5wvd] AppRole:Admin / Developer if Flag_C = \"Yes\" perms=37",
+   "  Spike review – D [Activity_7a5wve] AppRole:Admin / Developer if Flag_D = \"Yes\" perms=37",
+   "  Spike review – E [Activity_7a5wvf] AppRole:Admin / Developer if Flag_E = \"Yes\" perms=37",
+   "  Spike review – F [Activity_7a5wvg] AppRole:Admin / Developer if Flag_F = \"Yes\" perms=37",
+   "Spike hold check [Activity_90lk5i] AppRole:CIQ Integration Service if Hold_Flag = \"Yes\" perms=37",
+   "Spike gate check [Activity_1tuyhu] AppRole:Admin / Developer perms=37",
+   "End [Activity_1t24obg]  perms=37"
+  ],
+  "check": {
+   "gone": true,
+   "order": [
+    "Create spike case",
+    "Spike prepare",
+    "Spike review lanes",
+    "Spike review – A",
+    "Spike review – B",
+    "Spike review – C",
+    "Spike review – D",
+    "Spike review – E",
+    "Spike review – F",
+    "Spike hold check",
+    "Spike gate check",
+    "End"
+   ]
+  }
+ },
+ "publishedFields": {
+  "status": 200,
+  "ids": [
+   "Flag_A",
+   "Flag_B",
+   "Flag_C",
+   "Flag_D",
+   "Flag_E",
+   "Flag_F",
+   "Lane_A_Confirm",
+   "Lane_A_By",
+   "Lane_A_At",
+   "Lane_A_Note",
+   "Lane_B_Confirm",
+   "Lane_B_By",
+   "Lane_B_At",
+   "Lane_B_Note",
+   "Lane_C_Confirm",
+   "Lane_C_By",
+   "Lane_C_At",
+   "Lane_C_Note",
+   "Lane_D_Confirm",
+   "Lane_D_By",
+   "Lane_D_At",
+   "Lane_D_Note",
+   "Lane_E_Confirm",
+   "Lane_E_By",
+   "Lane_E_At",
+   "Lane_E_Note",
+   "Lane_F_Confirm",
+   "Lane_F_By",
+   "Lane_F_At",
+   "Lane_F_Note",
+   "Spike_Decision",
+   "Open_Count",
+   "Hold_Flag",
+   "Gate",
+   "Spike_V5_Note",
+   "Spike_V5_Phase"
+  ]
+ },
+ "run": {
+  "skipped": "no runtime: the ZZ processes have no initiator grant (key Start submit = 403 050302; the grant was refused by Claude's permission guard)"
+ }
+}

@@ -1,0 +1,1151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Component tokens — Beacon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* Beacon's :root block, spliced verbatim from starter/src/tokens.css (lines 66–558).
+   Nothing below is transcribed — the Value column is read at load from the browser's
+   own resolution of these declarations, so this page cannot drift from the contract. */
+:root {── Colour ───────────────────────────────────────────────────────────────
+     RAW HSL TRIPLETS, not whole colours. The bridge wraps each in `hsl()`, which is the
+     convention the existing stack already uses — keeping it means kf-ui.css keeps working
+     untouched, which is the requirement.
+
+     The cost is real and worth writing down rather than discovering later: a triplet cannot
+     carry alpha. Beacon's focus ring is `rgba(250,115,23,.38)` and it arrives here as an
+     opaque `--ring`. That is why `--ring-color` below is a separate whole-colour token —
+     the one place the triplet convention is bypassed, deliberately, because a focus ring
+     that loses its transparency stops looking like a ring.
+
+     ALL 32 are [SOURCE], each checked by converting back to hex and comparing against Beacon's
+     own `static get T()`. Under v2 only 29 could be: `secondary`, `secondary-foreground` and
+     `destructive-foreground` had no source, so I aliased the first two to muted and foreground
+     and guessed white for the third. Beacon v2.1 names all three and confirms every value. Its
+     changelog is explicit that secondary is a distinct RANK, not a synonym: "Same value as muted, named
+     apart so button rank and surface tint can move independently." */
+  --background: 222 71.4% 97.3%;            /* #f3f6fd  page canvas */
+  --foreground: 218.2 21.6% 10%;            /* #14181f  foreground-ink */
+  --card: 0 0% 100%;                        /* #ffffff  surface */
+  --card-foreground: 218.2 21.6% 10%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 218.2 21.6% 10%;
+
+  --primary: 23.9 88.8% 34.9%;              /* #a8490a  primary-strong */
+  --primary-foreground: 0 0% 100%;
+  --brand-accent: 24.3 95.8% 53.5%;         /* #fa7317  brand mark, focus ring, chart-1 */
+
+  --secondary: 222.9 33.3% 95.9%;           /* #f1f3f8  the quiet button fill — same value as
+                                                         muted, a separate RANK */
+  --secondary-foreground: 218.2 21.6% 10%;  /* #14181f  label ink on secondary — 14.1:1 */
+  --muted: 222.9 33.3% 95.9%;               /* #f1f3f8  "donut and bar tracks" */
+  --muted-foreground: 216 12% 41%;          /* #5c6675  body, labels, table cells */
+  --muted-hover: 220.9 61.1% 92.9%;         /* #e2e9f8 */
+  --meta-foreground: 214.3 9.4% 43.7%;      /* #656e7a  meta lines, mono IDs */
+  --foreground-subtle: 219.2 11.7% 43.5%;   /* #626b7c  eyebrows, section labels */
+  --foreground-disabled: 216.5 11.4% 60.6%; /* #8f98a6  deliberately below 4.5:1 */
+  --accent: 23.5 100% 95.5%;                /* #fff1e8 */
+  --accent-foreground: 23.9 88.8% 34.9%;    /* #a8490a */
+
+  --destructive: 2.4 61% 47.3%;             /* #c2352f  solid Reject/Delete fills */
+  --destructive-foreground: 0 0% 100%;      /* #ffffff  ink INSIDE the solid destructive fill,
+                                                         5.3:1 — NOT --destructive-ink */
+  --destructive-ink: 0 52.1% 42.5%;         /* #a53434  text on destructive-tinted surfaces */
+  --success: 149.4 62.7% 29.4%;             /* #1c7a4a */
+  --warning: 42.7 89.8% 46.3%;              /* #e0a30c */
+  --warning-foreground: 42.7 80.5% 16.1%;   /* #4a3708  warning is too light to carry white */
+  --info: 216.7 52.7% 48%;                  /* #3a6cbb */
+
+  --border: 220 27.3% 91.4%;                /* #e3e7ef  "Beacon's substitute for shadow" */
+  --input: 218.6 22.6% 87.8%;               /* #d9dee7  one step darker than border */
+  --border-accent: 22.3 59.3% 88.4%;        /* #f3ddd0  warm edge — a card needing attention */
+  --ring: 24.3 95.8% 53.5%;                 /* #fa7317  the focus ring is the BRAND orange */
+  --sidebar: 221.5 61.9% 95.9%;             /* #eef2fb  the nav rail — "cool putty" */
+  --sidebar-border: 221.1 42.2% 91.2%;
+
+  /* [SOURCE] The eight-step data ramp. Whole hex, not triplets: these are never composed
+     with alpha and never read through the hsl() bridge — a chart series is a literal fill.
+     chart-1 is the brand orange, so the first bar of any chart is the brand. */
+  --chart-1: #fa7317;  --chart-2: #14181f;  --chart-3: #3a6cbb;  --chart-4: #1c7a4a;
+  --chart-5: #e0a30c;  --chart-6: #7b8ab0;  --chart-7: #c2352f;  --chart-8: #8a5cc4;
+
+  /* ── Whole-value twins ────────────────────────────────────────────────────
+     THE RULE: a value that needs ALPHA or a GRADIENT cannot live in the triplet
+     convention — `hsl(222 71% 97%)` has nowhere to put an alpha channel and cannot be a
+     gradient at all. Such a value declares a WHOLE-VALUE TWIN beside its triplet, and the
+     bridge reads the twin first: `var(--x-color, hsl(var(--x)))`. Beacon needed exactly one
+     of these (--ring-color). Nimbus needs all four, which is why they are a named pattern
+     now rather than one special case.
+
+     Under Beacon every twin below resolves to its own triplet, so this section changes
+     nothing here — it exists so the parked languages have somewhere to land. */
+
+  /* The page ground. A whole `background` value, not a colour: Nimbus's product surface is an
+     eight-stop 180° gradient with a bloom and a diagonal ruling over it, and src/index.css
+     already feeds this straight into `body { background: … }` with background-attachment:fixed,
+     which is what a fixed gradient canvas needs. Beacon's ground is flat, so it is just the
+     triplet wrapped. */
+  --canvas: hsl(var(--background));
+
+  /* The card FILL. Beacon's cards are opaque white. Nimbus's are glass —
+     `rgba(255,255,255,.78)` over the gradient — and an opaque card there would erase the
+     language: its own §06 says "a plate is a change of translucency, not of height." */
+  --card-color: hsl(var(--card));
+
+  /* REMOVED 2026-08-12: --border-decor-color, a twin of --border. It existed for exactly one
+     reason — Nimbus's translucent white hairline edge (`rgba(255,255,255,.55)`), which needed
+     alpha the triplet convention can't hold. Nimbus is gone, and none of the nine languages that
+     replaced it declares its own edge colour either (checked: zero overrides across all 11
+     blocks) — the twin has been a pure passthrough to --border since the merge. `--color-edge`
+     below now reads --border directly. If a future language needs a translucent edge again, this
+     is the pattern to bring back — see DESIGN-LANGUAGE-GAPS.md for Nimbus's original numbers. */
+
+  /* The bar TRACK. Its own token because all three languages name it separately and disagree
+     about what it is: Beacon reuses `muted` and says so ("donut and bar tracks"), Checkpoint
+     declares a dedicated `track` that is NOT its border or its divider, and Nimbus's is
+     `chart-rule` — ink at 12%, i.e. alpha, "the only ruling in the system that sits behind
+     content rather than around it". Reading `bg-muted` for this worked only because Beacon
+     happens to answer both with one value. */
+  --track-color: hsl(var(--muted));
+
+  /* ── Text sitting ON the canvas ───────────────────────────────────────────
+     Page furniture — a catalog caption, a section note — is the one text in the app that is
+     NOT inside a card, so it takes the ground the language paints and nothing else.
+
+     Beacon and Checkpoint both have flat, pale grounds that carry ink at AA everywhere, so all
+     six tokens below are inert and this costs them nothing. Nimbus does not, and is explicit
+     that this is not a matter of picking a better ink: its ground crosses four bands, the
+     shallow one is "too light for white, too dark for ink", and the rule is absolute —
+     "§03 divides it into bands; nothing is placed on it without naming one." Because
+     `body` paints the gradient with background-attachment:fixed, scrolling moves text
+     between bands, so no single ink can be legal.
+
+     The doc's own answer is a plate, and it ships one: `labelStyle` is glass + a 1px glass
+     edge with ink on top. These tokens are that, lowered.
+
+     This is the one place the contract hands back a TREATMENT rather than a value, which is
+     normally the `card-elevation` mistake — a component class wearing a utility's name. It is
+     allowed here because the language genuinely answers as a unit: "how does text sit on my
+     canvas" is one decision, and splitting it into six utilities would let a caller take the
+     glass without the edge and get a fog. */
+  --canvas-chip-bg: transparent;
+  --canvas-chip-border: transparent;
+  --canvas-chip-borderw: 0;
+  --canvas-chip-radius: 0;
+  --canvas-chip-pad: 0;
+  --canvas-chip-width: auto;
+
+  /* ── Border widths — two roles ────────────────────────────────────────────
+     Under Beacon alone both are 1px, so this split buys nothing today. It is here
+     because an audit of the current components found SIX borders that carry meaning
+     (table rules, the rule under a truncated chart, the error panel outline) against
+     THREE that are decoration (card, specimen card, picker rail) — and nine of the
+     eleven parked languages set the card edge to 0. When the second language lands,
+     one width driving both would take the table rules down with the card edge.
+
+     Bare `border` resolves to the FUNCTIONAL width: the majority case, and the
+     fail-safe one — forget the right class and you get a visible line rather than an
+     invisible one. Cards opt in to the decorative width with `border-decor`. */
+
+  /* [SOURCE] Every Beacon product card, verbatim: `border: 1px solid #e3e7ef`.
+     The `border` token's own note: "Card edges and dividers — Beacon's substitute
+     for shadow." */
+  --border-decor: 1px;
+
+  /* [SOURCE] v2.1 added `border-width-functional`, and its role note is the split we had already
+     made, in its own words: "Table rules, list dividers, panel outlines. Equal to
+     border-width-medium here — named apart so a language that drops the card edge to 0 keeps its
+     rules." Deliberately not derived from --border-decor. */
+  --border-functional: 1px;
+
+  /* [SOURCE] ring-width 2px, ring `rgba(250,115,23,.38)`. Note the alpha — the current
+     shadcn bridge resolves ring through hsl(var(--ring)) and flattens it to an opaque
+     triplet. Keeping the ring colour as a raw value here is what fixes that. */
+  --ring-width: 2px;
+  --ring-color: rgba(250, 115, 23, 0.38);
+
+  /* ── Elevation ────────────────────────────────────────────────────────────
+     Named `--elev-*`, not `--shadow-*`: `--shadow-*` is a Tailwind theme namespace, and
+     a bridge entry reading `--shadow-sm: var(--shadow-sm)` is a self-reference that only
+     resolves by accident of declaration order. Contract tokens keep their own names and
+     the bridge maps them. Same reason for `--type-*` under Type. */
+
+  /* [SOURCE] Beacon's cards are bordered and carry no shadow — all nine product cards. */
+  /* Spelled `0 0 #0000`, not `none`, and this is mechanical rather than editorial — the token
+     still means "no shadow". Tailwind composes every shadow and ring into ONE box-shadow list
+     (`var(--tw-inset-shadow), …, var(--tw-ring-shadow), var(--tw-shadow)`), and the CSS keyword
+     `none` is only legal as a list's sole value. A `none` in that slot makes the whole
+     declaration invalid, which silently takes the FOCUS RING down with it. Tailwind's own
+     `shadow-none` emits `0 0 #0000` for exactly this reason. Caught on Button's `strong` rank,
+     which carries shadow-button and a focus ring at once. */
+  --elev-card: 0 0 #0000;
+  /* [SOURCE] v2.1 answers this, and the answer is that Beacon never lifts:
+     "Clickable cards only: the edge warms to border-accent over default-transition-duration.
+     A card that isn't a target does not respond — no lift, no shadow, no tint."
+     So the hover SHADOW stays `none` for every Beacon card; a clickable one changes its border
+     COLOUR instead (--card-hover-border). The slot still earns its place: five of the parked
+     languages do lift — Plush rises 5px, which is its whole identity. */
+  --elev-card-hover: 0 0 #0000;
+
+  /* NOT a token. v2.1's hover rule is "the edge warms to border-accent", and border-accent is
+     already in the contract — a --card-hover-border token would just be an alias holding a raw
+     triplet, which is a trap: it reads like a colour and isn't one. A clickable card writes
+     `hover:border-border-accent`, which the colour bridge already mints. Every chart card in
+     this app is static and must not use it: "A card that isn't a target does not respond." */
+
+  /* [SOURCE] Beacon's 7-step ladder, verbatim, with its own role notes. Beacon is the
+     only one of the twelve that documents a full ladder. Cards do not use it — they use
+     the border — but popovers, dropdowns and the app canvas do. */
+  --elev-2xs: 0 1px 1px rgba(20, 24, 31, 0.03);   /* chips */
+  --elev-xs:  0 1px 2px rgba(20, 24, 31, 0.05);   /* small controls */
+  --elev-sm:  0 1px 3px rgba(20, 24, 31, 0.06);   /* "Default card" — see note above */
+  --elev-md:  0 4px 12px -4px rgba(20, 24, 31, 0.1);   /* hover, dropdowns */
+  --elev-lg:  0 10px 26px -8px rgba(20, 24, 31, 0.14); /* popups */
+  --elev-xl:  0 18px 42px -14px rgba(20, 24, 31, 0.18);/* modals, overlays */
+  --elev-2xl: 0 32px 70px -24px rgba(20, 24, 31, 0.26);/* the floating app canvas */
+
+  /* ── Shape ────────────────────────────────────────────────────────────────
+     [SOURCE] radius 14px — "Card corner radius. Every rounded-sm/md/lg/xl derives from
+     it." The ladder in the bridge below is that sentence made mechanical.
+     Beacon states no floor; several parked languages do, so if one is ever needed it is
+     a new token, not a reinterpretation of this one. */
+  --radius: 14px;
+
+  /* [SOURCE] spacing 4px — "Base unit all gap/padding/margin numbers multiply." */
+  --spacing-base: 4px;
+
+  /* A surface INSIDE another surface. [OURS] for Beacon, which declares no such distinction —
+     its radius ladder has rungs but its cards all take `lg 14`. The token exists because the
+     other two do make the distinction and both step DOWN one rung for a nested surface:
+     Checkpoint 16 -> 14, Nimbus 20 -> 16 (its chart-plate, "a chart never touches the
+     gradient"). Beacon holding both at 14 is the honest answer, not a missing value. */
+  --radius-nested: var(--radius, 14px);
+
+  /* How far a clickable card lifts on hover. Beacon: it does not — "A card that isn't a target
+     does not respond — no lift, no shadow, no tint", and even a clickable one only warms its
+     edge. The token exists because Checkpoint's card rises 3px, which is a transform and so
+     cannot ride in --elev-card-hover with the shadow half. */
+  --card-hover-rise: 0px;
+
+  /* ── Card padding, by content role ────────────────────────────────────────
+     [SOURCE] and a REVERSAL. This file previously argued card padding should not be a token at
+     all, because Beacon shipped nine different card paddings and named none of them. v2.1 names
+     three, keyed to what the card holds, and all three land on the 4px base unit:
+       card-pad-metric 20px  "KPI and figure tiles — dense, the number carries the card."
+       card-pad-list   24px  "List and table cards, where rows bring their own rhythm."
+       card-pad-doc    28px  "Long-form and documentation cards — text needs the air."
+     So the spread was intent, not an oversight — and the 22px we had been using was never one
+     of them. A chart card is a list card. */
+  --card-pad-metric: 20px;
+  --card-pad-list: 24px;
+  --card-pad-doc: 28px;
+
+  /* ── Data-display geometry ────────────────────────────────────────────────
+     [SOURCE] Beacon's series-bar block, verbatim:
+       label `width: 74px; flex: none; font-size: 12px; color: #5c6675`
+       track `flex: 1; height: 10px; border-radius: 999px; background: #f1f3f8`
+       value `font-family: 'IBM Plex Mono'; font-size: 11.5px; width: 18px; text-align: right` */
+  --bar-height: 10px;
+  --bar-radius: 999px;
+  --data-text-size: 11.5px;
+
+  /* [SOURCE] v2.1 settles what these are: not fixed columns. Verbatim — "Label 74px and value
+     18px are MINIMUMS, not fixed columns — both grow to their content, the track absorbs the
+     difference." The markup changed with it, `width: 74px` -> `min-width: 74px`, so the row is a
+     flex line with a growing label rather than a fixed grid. */
+  --label-col-min: 74px;
+  --value-col-min: 18px;
+
+  /* [OURS] The one cap Beacon does not need. Its labels are words like "FOTT"; ours are grouped
+     model field names of unbounded length, and "grows to its content" would let one eat the whole
+     track. So the label grows from 74px, stops at 7rem, and truncates. */
+  --label-col-max: 7rem;
+
+  /* [SOURCE] 8px. v2.1 states it ("Rows sit 8px apart") and changed its own markup from
+     `gap: 9px` to `gap: 8px`, with the changelog explaining why: "snapped to the base unit from
+     a measured 9". Our 10px was measured off the v2 rendering and was never right. */
+  --bar-gap: 8px;
+
+  /* ── Motion ───────────────────────────────────────────────────────────────
+     [SOURCE] — all three, and a correction. An earlier pass of this file marked them [OURS] on
+     the claim that "Beacon states no durations and no easing anywhere". That was wrong: Beacon
+     has always carried a `motionTokens` block. I missed it while transcribing and then recorded
+     the omission as a fact. The values below match it exactly, so nothing ever rendered wrong —
+     but the provenance was inverted, which is the failure this marking exists to catch.
+       default-transition-duration         160ms  "Every hover and colour transition."
+       transition-duration-move            220ms  "Layout and position animations."
+       default-transition-timing-function  cubic-bezier(.4,0,.2,1) */
+  --motion-duration: 160ms;
+  --motion-duration-move: 220ms;
+  --motion-ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ── Controls — the button ranks ──────────────────────────────────────────
+     [SOURCE] Beacon §08, verbatim: "Pill actions, square-shouldered inputs, black tabs.
+     **Four button ranks, no more.**" All four are one geometry and four fills:
+       primary    #a8490a / #fff        hover #8a3c07
+       outline    #fff / #a8490a, 1.5px hover #fff1e8   (= --accent, exactly)
+       secondary  #f1f3f8 / #14181f     hover #e2e9f8   (= --muted-hover, exactly)
+       strong     #14181f / #fff        hover #2b323d
+     each `height:42px; padding:0 22px; border-radius:999px; DM Sans 13.5px/700`.
+
+     Note which colour fills a button: `primary-strong` #a8490a, not the brand orange. The doc
+     is explicit and it is an accessibility rule, not a preference — "Button fills use
+     primary-strong #a8490a — 5.8:1 behind white… Brand primary #fa7317 is 2.79:1 on white and
+     is never used behind text." Our --primary is already #a8490a and --brand-accent is the
+     orange, so the contract had this right; it is written down here so nobody 'fixes' it. */
+  --control-height: 42px;
+  --control-pad-x: 22px;
+  --control-radius: 999px;
+  --control-text: 13.5px;
+  --control-weight: 700;
+  --control-borderw: 1.5px;
+  /* The strong rank keeps its OWN radius. Under Beacon and Nimbus that is the same pill every
+     other rank takes, so this looks redundant here — it exists because Checkpoint's is not.
+     See the Checkpoint block. */
+  --control-radius-strong: var(--control-radius, 999px);
+  --primary-hover: 24.4 90.6% 27.8%;        /* #8a3c07 */
+
+  /* ── The primary rank's fill — [OURS], a departure from Beacon ──────────────────────────
+     Beacon fills its primary button with `primary-strong` #a8490a and reserves the brand orange
+     for the mark, the focus ring and chart-1 — "never used behind text". We use the brand
+     orange, because the brand read is what this button is for.
+
+     A11Y-DEBT — white on #fa7317 is 2.79:1 (hover #e06207, 3.55:1). Accepted deliberately;
+     contrast is a later dedicated pass across all twelve languages, not per-component work.
+     Grep A11Y-DEBT to find every instance when that pass happens. The fix here is a one-line
+     ink swap to hsl(var(--foreground)) → 6.38:1, which keeps the orange.
+
+     Scoped to the FILL, not to --primary itself: repointing --primary would drag the outline
+     rank along, where the same orange becomes ink on white. The outline rank still reads
+     --primary. The other two languages point these straight back at --primary. */
+  /* NOTE the shape here, because it differs and the difference is load-bearing. `--control-fill`
+     is a WHOLE VALUE — the bridge reads it as `var(--control-fill, hsl(var(--primary)))` and does
+     not wrap it, so a raw triplet here is an invalid `color` and the declaration is silently
+     dropped. `--control-fill-hover` is the opposite: the bridge wraps it, so it IS a triplet.
+     Getting these the wrong way round fails silently in both directions.
+     --control-fill-ink MERGED into --strong-foreground 2026-08-12 — both were "the ink on a
+     solid dark/saturated fill" in every one of the 11 languages, just declared for two different
+     consumers (a button fill vs a strong-rank surface). The bridge below now reads
+     --strong-foreground directly. */
+  --control-fill: hsl(var(--brand-accent));         /* #fa7317 */
+  --control-fill-hover: 25.2 93.9% 45.3%;           /* triplet — #e06207, 3.55:1 on white */
+
+  /* The outline rank is the one whose EDGE and INK are not the same decision across languages,
+     so it gets its own three. Beacon draws it in primary-strong (`1.5px solid #a8490a`, ink to
+     match, hover #fff1e8 — which is --accent exactly). Checkpoint draws a NEUTRAL outline
+     instead (`1px solid #e6e6e1`, ink #4a5462, hover #f6f6f4): under Checkpoint "violet is the
+     only fill that means commit", so a violet-edged quiet button would overclaim. Whole values,
+     because Nimbus's ghost edge is translucent white. */
+  --control-outline-edge: hsl(var(--primary));
+  --control-outline-ink: hsl(var(--primary));
+  --control-outline-hover: hsl(var(--accent));
+
+  /* The fourth rank. Beacon calls it "Third button" and draws it in foreground-ink; Checkpoint
+     calls it "New change" and adds a shadow; Nimbus has no black button at all. Named `strong`
+     rather than `black` because one of the three is not black. */
+  --strong: 218.2 21.6% 10%;                /* #14181f  = foreground */
+  --strong-foreground: 0 0% 100%;
+  --strong-hover: 216.9 16.3% 20.2%;        /* #2b323d */
+  --elev-button: 0 0 #0000;                 /* Beacon's buttons do not lift */
+
+  /* ── Status chips ─────────────────────────────────────────────────────────
+     [SOURCE] Beacon's chip builder, verbatim: `height:28px; padding:0 12px;
+     border-radius:999px; gap:7px; font-size:12px; font-weight:700` with a 7px round dot.
+
+     Seven tone roles, because seven is what Beacon's own map declares — go · wait · hold ·
+     risk · bad · flat · dark. Renamed to semantic roles the other languages can answer, since
+     "go" and "green" and "violet" are three vocabularies for the same slot.
+
+     Each tone is THREE values and they are genuinely three: `go` is bg #e6f5ec, ink #1c7a4a,
+     dot #2fa163 — the dot is LIGHTER than the ink on purpose, so deriving any of them from
+     another loses the language. `pending` and `strong` reuse --accent and --strong, where the
+     doc's own values already match exactly. */
+  --chip-height: 28px;
+  --chip-pad-x: 12px;
+  --chip-text: 12px;
+  /* [OURS] — the ONE value in this block that is not Beacon's. Its builder says 700 (quoted
+     verbatim above, and left that way); we run 500. A chip is a label beside data, not a heading,
+     and at 700 the seven tones read as competing for attention with the row they annotate. Set to
+     the same 500 in all three languages so a chip does not change weight when the language does —
+     see the matching notes in the Nimbus and Checkpoint blocks. Revert = 700 here, 600 on Nimbus,
+     delete Checkpoint's line. */
+  --chip-weight: 500;
+  --chip-gap: 7px;
+  --chip-dot: 7px;
+
+  --tone-success-bg: #e6f5ec;  --tone-success-fg: #1c7a4a;  --tone-success-dot: #2fa163;
+  --tone-warning-bg: #fdf4dd;  --tone-warning-fg: #7a5a07;  --tone-warning-dot: #e0a30c;
+  --tone-info-bg:    #eef1f9;  --tone-info-fg:    #495d86;  --tone-info-dot:    #7b8ab0;
+  --tone-danger-bg:  #fbe9e9;  --tone-danger-fg:  #a53434;  --tone-danger-dot:  #c2352f;
+  --tone-neutral-bg: #f1f3f8;  --tone-neutral-fg: #5c6675;  --tone-neutral-dot: #98a1b0;
+  --tone-pending-dot: #e06207;              /* bg/fg come from --accent / --accent-foreground,
+                                               which ARE Beacon's `wait` tone exactly */
+  --tone-strong-dot: #fa7317;               /* the brand orange, on the near-black chip */
+
+  /* ── Table rows ───────────────────────────────────────────────────────────
+     [SOURCE] Beacon's row, verbatim: `display:flex; align-items:center; gap:16px;
+     padding:15px 20px; border-bottom:1px solid #f1f3f8` — dropped on the last row — with
+     `style-hover="background:#f8fafe"`.
+
+     Two things worth noting because they look like mistakes and are not. The divider is
+     #f1f3f8, which is `muted`, NOT `border` (#e3e7ef) — a row rule inside a card is quieter
+     than the card's own edge. And #f8fafe, the hover, is in no palette table in the doc; it
+     exists only in the rendered markup, so it is [SOURCE] from the screen rather than from a
+     token row, and it is the one row value with no name of its own. */
+  --row-pad-y: 15px;
+  --row-pad-x: 20px;
+  --row-gap: 16px;
+  --row-divider: hsl(var(--muted));
+  --row-hover: #f8fafe;
+
+
+  /* ── Fields — Input / Select / Textarea ───────────────────────────────────
+     [SOURCE] §08 Elements, verbatim:
+       `height:46px; border:1px solid #d9dee7; border-radius:10px; background:#fff;
+        padding:0 14px; font-size:13.5px`
+     and the §08 headline names the shape as a deliberate contrast with the buttons:
+     "Pill actions, SQUARE-SHOULDERED INPUTS, black tabs."
+     Focus adds the ring and nothing else: `box-shadow:0 0 0 2px rgba(250,115,23,.38)`,
+     which is --ring-color at --ring-width, so focus needs no tokens of its own. */
+  --field-height: 46px;
+  --field-pad-x: 14px;
+  --field-radius: 10px;
+  /* --field-text MERGED into --control-text, --field-borderw MERGED into --border-functional
+     2026-08-12 — both identical to their survivor in every language; field-shape's utility below
+     now reads the merged names. */
+  --field-fill: hsl(var(--card));
+  --field-edge: hsl(var(--input));          /* "Input and select borders, one step darker" */
+  --field-focus-edge: hsl(var(--input));    /* Beacon's edge does not change on focus */
+
+  /* [OURS] Beacon declares no textarea — no multi-line field appears anywhere, and every
+     text-entry control shown is the same fixed 46px single-line box. This is that height
+     times three, a composition of a declared value rather than a new one, but the doc does
+     not ask for it. Same story in the other two languages. */
+  --field-multiline-min: 138px;
+
+  /* ── Tabs ─────────────────────────────────────────────────────────────────
+     [SOURCE] and one of the three things Beacon's §08 headline names outright — "Pill actions,
+     square-shouldered inputs, BLACK TABS." Verbatim:
+       `height:38px; padding:0 20px; border:0; border-radius:999px; font-size:13.5px`
+       active   `background:#14181f; color:#fff; font-weight:700`   (= --strong)
+       inactive `background:transparent; color:#5c6675; font-weight:500`
+       hover    active -> #2b323d (= --strong-hover) - inactive -> #f1f3f8 (= --muted)
+     The active fill and its hover are --strong / --strong-hover exactly, which the button's
+     fourth rank already declares — so a tab and a "Third button" stay the same black, which is
+     true in the source and would drift if they were separate tokens. */
+  --tab-height: 38px;
+  --tab-pad-x: 20px;
+  /* --tab-radius MERGED into --control-radius, --tab-text MERGED into --control-text 2026-08-12
+     — a tab's corner and label size were already the same decision as a button's in this
+     language; tab-shape's utility below now reads the merged names. */
+
+  /* ── StatTile / KPI ───────────────────────────────────────────────────────
+     [SOURCE] The `text-kpi` token — "Stat-card big numbers and the record-card figure" — plus
+     the rendered tile: label `12.5px` foreground-muted, `margin-top:12px` to the value row,
+     value `Poppins 32px/700, -.02em, line-height 1.1, tabular-nums`, suffix `12.5px`.
+     The figure recolours to primary-strong when the tile is flagged alarm — an attention state
+     on the NUMBER, not a badge beside it. That is --primary, so it needs no token. */
+  --kpi-text: 32px;
+  /* --kpi-weight MERGED into --control-weight 2026-08-12 — identical value; text-kpi's utility
+     below now reads the merged name. */
+  --kpi-tracking: -0.02em;
+  --kpi-label-text: 12.5px;
+  --kpi-gap: 12px;
+
+  /* ── Eyebrow ──────────────────────────────────────────────────────────────
+     [SOURCE: Checkpoint] The mono uppercase kicker above a figure or a band title —
+     `font-family: mono; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase`.
+     Only Checkpoint's source declares it, and these are its numbers verbatim.
+
+     [OURS] for Beacon and Nimbus: they inherit the metrics and supply their OWN mono face
+     through `--type-mono`, so the device reads in each language's voice. The alternative
+     considered and rejected was making `.eyebrow` fall back to each language's plain label —
+     that would leave one class meaning "mono uppercase kicker" in one language and "small grey
+     label" in the other two, which is precisely the silent divergence this contract exists to
+     stop. A class earns one meaning.
+
+     Deliberately NOT folded into `text-kpi-label`. That utility has four callers and two of
+     them are not eyebrows — the unit beside a figure (StatTile) and the month on a Calendar
+     date tile, which already sets its own `font-bold uppercase`. Re-voicing those to mono is
+     not what the source asks for, so the eyebrow gets its own utility and the KPI label keeps
+     its own. */
+  --eyebrow-text: 10.5px;
+  --eyebrow-tracking: 0.16em;
+
+  /* ── Avatar ───────────────────────────────────────────────────────────────
+     [SOURCE] 30x30, `border-radius:999px`, initials at `11px/700`, tinted from the accent
+     family — confirmed by the accent token's own note: "Tinted highlight surfaces — icon
+     tiles, selected rows, AVATAR CHIPS."
+     The radius is a token rather than a hard-coded 999px because the languages genuinely
+     disagree: Beacon draws a circle, Checkpoint a 9px rounded square. Shape is a language
+     decision here, not a component one — and it is the SAME decision a button's corner already
+     makes (Checkpoint's own notes below call 9px "the sm rung for controls," reused for avatar).
+     So --avatar-radius MERGED into --control-radius 2026-08-12; avatar-shape's utility now reads
+     the merged name. */
+  --avatar-size: 30px;
+  --avatar-text: 11px;
+
+  /* ── Overlay — Modal / Sheet ──────────────────────────────────────────────
+     [SOURCE] for the elevation only: `shadow-xl` is labelled "Modals, overlays" in the ladder.
+     [OURS] for everything else. Beacon renders no modal anywhere — no width, no padding, no
+     header/footer structure — and declares NO scrim: there is no `overlay`, `backdrop` or
+     `scrim` key in its palette. The values below are composed from Beacon's own tokens (the
+     doc-card padding, the xl radius rung, its ink at a plausible veil opacity). The
+     composition is ours and a retune should treat it as such. */
+  --scrim: rgba(20, 24, 31, 0.32);
+  --overlay-radius: calc(var(--radius, 14px) * 1.3);
+  --overlay-pad: var(--card-pad-doc, 28px);
+  --elev-overlay: var(--elev-xl);
+
+  /* ── Type ─────────────────────────────────────────────────────────────────
+     [SOURCE] Poppins for headings, DM Sans for body, IBM Plex Mono for data.
+     Beacon is one of six languages with a real monospace voice; the other six say they
+     have none and substitute uppercase sans at wide tracking. That is why `--type-mono`
+     is a token rather than a constant — a language without a mono points it at its sans,
+     and a component asking for the data voice still gets the language's answer. */
+  --type-display: Poppins, ui-sans-serif, system-ui, sans-serif;
+  --type-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --type-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: #fbfbfc; color: #18181b;
+  font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  font-size: 15px; -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1560px; margin: 0 auto; padding: 48px 28px 80px; }
+
+/* Three panes: per-component rows | the deduplicated token set | the merge groups. */
+.split { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr) minmax(0, 0.62fr);
+         gap: 26px; align-items: start; }
+@media (max-width: 1420px) { .split { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+                             .split .pane:last-child { grid-column: 1 / -1; } }
+@media (max-width: 980px)  { .split { grid-template-columns: 1fr; }
+                             .split .pane:last-child { grid-column: auto; } }
+h2.pane { font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+          color: #71717a; margin: 0 0 10px; }
+.uses { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 11.5px; color: #a1a1aa;
+        text-align: right; width: 34px; }
+.same { max-width: 190px; }
+.dupe { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 11px; color: #7c5c00;
+        background: #fdf4dd; border-radius: 5px; padding: 1.5px 6px; display: inline-block;
+        margin: 1px 0; }
+.dedicated { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 11px; color: #495d86;
+             background: #eef1f9; border-radius: 5px; padding: 1.5px 6px; display: inline-block; }
+.mint-note { margin: 10px 2px 0; font-size: 11.5px; color: #a1a1aa; }
+tr.applied { background: #f4faf6; }
+.done { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 10.5px; font-weight: 600;
+        color: #1c7a4a; background: #e6f5ec; border-radius: 4px; padding: 1.5px 6px;
+        display: inline-block; margin-right: 6px; }
+.dupe.struck { color: #8a8560; text-decoration: line-through; text-decoration-color: #c9c199; }
+
+h1 { font-size: 24px; font-weight: 600; letter-spacing: -.01em; margin: 0 0 6px; }
+.sub { margin: 0 0 32px; color: #71717a; font-size: 13.5px; }
+.sub code { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12px; }
+
+table { width: 100%; border-collapse: collapse; background: #fff;
+        border: 1px solid #e4e4e7; border-radius: 10px; overflow: hidden; }
+th { text-align: left; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+     color: #71717a; font-weight: 600; padding: 12px 16px;
+     border-bottom: 1px solid #e4e4e7; background: #fafafa; }
+td { padding: 11px 16px; border-bottom: 1px solid #f1f1f3; font-size: 13px; vertical-align: middle; }
+tr:last-child td { border-bottom: 0; }
+tr.start td { border-top: 1px solid #e4e4e7; }
+
+.comp { font-weight: 500; color: #18181b; white-space: nowrap; width: 130px; }
+.comp.cont { color: transparent; }              /* repeated name, kept for copy-paste */
+.tok  { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12px; white-space: nowrap; }
+.val  { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12px; color: #3f3f46; }
+
+/* 4th column — the colour itself */
+.color { white-space: nowrap; width: 128px; }
+.sw   { width: 26px; height: 18px; border-radius: 4px; border: 1px solid rgba(0,0,0,.14);
+        display: inline-block; vertical-align: -4px; margin-right: 9px;
+        background-color: #fff;                       /* so an alpha value reads as alpha */ }
+.hexn { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 11.5px; color: #71717a; }
+.none { color: #d4d4d8; }
+
+footer { margin-top: 22px; font-size: 11.5px; color: #a1a1aa; }
+footer code { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Component tokens — Beacon</h1>
+<p class="sub">Values resolved live from <code>starter/src/tokens.css</code>. One row per token a
+   component actually reads.</p>
+
+<div class="split">
+
+<div class="pane">
+<h2 class="pane">By component</h2>
+<table>
+  <thead>
+    <tr><th>Component</th><th>Token</th><th>Value</th><th>Color</th></tr>
+  </thead>
+  <tbody id="rows"><!-- rendered from COMPONENTS, below --></tbody>
+</table>
+</div>
+
+<div class="pane">
+<h2 class="pane">Unique tokens · <span id="ucount">—</span></h2>
+<table>
+  <thead>
+    <tr><th>Token</th><th>Value</th><th class="uses">Uses</th></tr>
+  </thead>
+  <tbody id="unique-rows"><!-- deduplicated from COMPONENTS --></tbody>
+</table>
+</div>
+
+<div class="pane">
+<h2 class="pane">Optimised · <span id="ocount">—</span></h2>
+<table>
+  <thead>
+    <tr><th>Name</th><th>Folds in</th><th>Shared value</th></tr>
+  </thead>
+  <tbody id="opt-rows"><!-- groups identical across all 11 languages --></tbody>
+</table>
+<p class="mint-note">✱ minted — the group spans different CSS property types, so no existing member's name covers the union</p>
+</div>
+
+</div>
+
+<footer>
+  Beacon block spliced verbatim from <code>starter/src/tokens.css</code> · tokens traced from
+  <code>starter/src/components/kit/*.jsx</code> · <span id="count">—</span>
+</footer>
+
+</div>
+
+<script>
+/* ── The inventory ───────────────────────────────────────────────────────────────────────────────
+ * One entry per kit component, listing the tokens that component's OWN markup reads. Tokens reached
+ * only through a composed child (a Board renders Cards) belong to the child, not here — otherwise
+ * Card's tokens would be copied into every component that renders one, and the table would stop
+ * telling you where a value actually comes from.
+ *
+ * `composes` names those children so the transitive set is still recoverable by following the links.
+ * Deliberately EXCLUDED throughout: Tailwind's fixed scale — padding and gap numbers, text-xs/sm/base,
+ * font weights, leading, tracking, and the fixed 2px `ring-2` — none of which a design language can
+ * move today.
+ */
+const COMPONENTS = [
+  { name: "Accordion", composes: [], tokens: [
+    "--border", "--foreground", "--primary", "--muted-foreground", "--ring-color", "--ring",
+    "--border-functional", "--ring-width", "--type-sans",
+    "--motion-duration", "--motion-duration-move", "--motion-ease",
+  ]},
+
+  { name: "Avatar", composes: [], tokens: [
+    "--accent", "--accent-foreground",
+    "--tone-success-bg", "--tone-success-fg", "--tone-warning-bg", "--tone-warning-fg",
+    "--tone-info-bg", "--tone-info-fg", "--tone-danger-bg", "--tone-danger-fg",
+    "--tone-neutral-bg", "--tone-neutral-fg", "--strong", "--strong-foreground",
+    "--card", "--muted", "--meta-foreground",
+    "--avatar-size", "--control-radius", "--avatar-text",
+    "--type-sans", "--type-mono",
+  ]},
+
+  { name: "Board", composes: ["Card", "StatusChip", "Avatar"], tokens: [
+    "--foreground", "--muted-foreground", "--meta-foreground", "--foreground-disabled",
+    "--tone-success-dot", "--tone-warning-dot", "--tone-info-dot", "--tone-danger-dot",
+    "--tone-neutral-dot",
+    "--chip-dot", "--data-text-size", "--type-mono",
+  ]},
+
+  { name: "Breadcrumb", composes: [], tokens: [
+    "--foreground", "--meta-foreground", "--foreground-disabled", "--ring-color", "--ring",
+    "--radius", "--ring-width",
+    "--motion-duration", "--motion-ease",
+  ]},
+
+  { name: "Buttons", composes: [], tokens: [
+    "--control-fill", "--control-fill-hover",
+    "--secondary", "--secondary-foreground", "--muted-hover",
+    "--control-outline-edge", "--control-outline-ink", "--control-outline-hover",
+    "--card-color", "--card", "--strong", "--strong-foreground", "--strong-hover",
+    "--ring-color", "--ring",
+    "--control-height", "--control-pad-x", "--control-radius", "--control-radius-strong",
+    "--control-text", "--control-weight", "--control-borderw", "--elev-button", "--ring-width",
+    "--type-sans",
+    "--motion-duration", "--motion-ease",
+  ]},
+
+  { name: "Chips", composes: [], tokens: [
+    "--tone-success-bg", "--tone-success-fg", "--tone-success-dot",
+    "--tone-warning-bg", "--tone-warning-fg", "--tone-warning-dot",
+    "--tone-info-bg", "--tone-info-fg", "--tone-info-dot",
+    "--tone-danger-bg", "--tone-danger-fg", "--tone-danger-dot",
+    "--tone-neutral-bg", "--tone-neutral-fg", "--tone-neutral-dot",
+    "--accent", "--accent-foreground", "--tone-pending-dot",
+    "--strong", "--strong-foreground", "--tone-strong-dot",
+    "--chip-height", "--chip-pad-x", "--chip-gap", "--chip-dot", "--chip-text", "--chip-weight",
+    "--type-sans",
+  ]},
+
+  { name: "Callout", composes: [], tokens: [
+    "--tone-success-bg", "--tone-success-fg", "--tone-success-dot",
+    "--tone-warning-bg", "--tone-warning-fg", "--tone-warning-dot",
+    "--tone-info-bg", "--tone-info-fg", "--tone-info-dot",
+    "--tone-danger-bg", "--tone-danger-fg", "--tone-danger-dot",
+    "--tone-neutral-bg", "--tone-neutral-fg", "--tone-neutral-dot",
+    "--accent", "--accent-foreground", "--tone-pending-dot",
+    "--ring-color", "--ring",
+    "--card-pad-list", "--radius", "--border-functional", "--chip-dot", "--ring-width",
+    "--type-sans",
+    "--motion-duration", "--motion-ease",
+  ]},
+
+  { name: "Cards", composes: [], tokens: [
+    "--card-color", "--card", "--card-foreground", "--border",
+    "--border-accent", "--foreground", "--muted-foreground", "--meta-foreground", "--primary",
+    "--accent", "--accent-foreground",
+    "--tone-success-bg", "--tone-success-fg", "--tone-warning-bg", "--tone-warning-fg",
+    "--tone-info-bg", "--tone-info-fg", "--tone-danger-bg", "--tone-danger-fg",
+    "--tone-neutral-bg", "--tone-neutral-fg", "--track-color", "--chart-1",
+    "--elev-card", "--elev-card-hover", "--card-hover-rise", "--border-decor",
+    "--radius", "--radius-nested",
+    "--card-pad-metric", "--card-pad-list", "--card-pad-doc",
+    "--bar-height", "--bar-radius",
+    "--kpi-gap", "--kpi-text", "--control-weight", "--kpi-tracking", "--kpi-label-text",
+    "--type-display", "--type-mono", "--data-text-size",
+    "--motion-duration-move", "--motion-ease",
+  ]},
+
+  { name: "Tables", composes: [], tokens: [
+    "--border", "--row-divider", "--row-hover", "--foreground", "--muted-foreground",
+    "--meta-foreground",
+    "--border-functional", "--row-pad-y", "--row-pad-x", "--row-gap",
+    "--type-sans", "--type-mono", "--data-text-size",
+    "--motion-duration", "--motion-ease",
+  ]},
+
+  { name: "TabStrip", composes: [], tokens: [
+    "--strong", "--strong-foreground", "--strong-hover", "--muted", "--muted-foreground",
+    "--foreground", "--meta-foreground", "--ring-color", "--ring",
+    "--tab-height", "--tab-pad-x", "--control-radius", "--control-text", "--ring-width",
+    "--type-sans", "--type-mono", "--data-text-size",
+    "--motion-duration", "--motion-ease",
+  ]},
+
+  { name: "Feed", composes: [], tokens: [
+    "--tone-success-bg", "--tone-success-fg", "--tone-success-dot",
+    "--tone-warning-bg", "--tone-warning-fg", "--tone-warning-dot",
+    "--tone-info-bg", "--tone-info-fg", "--tone-info-dot",
+    "--tone-danger-bg", "--tone-danger-fg", "--tone-danger-dot",
+    "--tone-neutral-bg", "--tone-neutral-fg", "--tone-neutral-dot",
+    "--tone-pending-dot", "--tone-strong-dot",
+    "--accent", "--accent-foreground", "--strong", "--strong-foreground",
+    "--border", "--card-color", "--card", "--foreground", "--muted-foreground",
+    "--meta-foreground", "--ring-color", "--ring",
+    "--border-functional", "--ring-width", "--chip-dot", "--radius", "--radius-nested",
+    "--avatar-size", "--control-radius", "--avatar-text",
+    "--type-sans", "--type-mono", "--data-text-size",
+    "--motion-duration", "--motion-ease",
+  ]},
+
+  { name: "FlowViews", composes: ["Timeline", "KanbanBoard", "EmptyState", "NoAccess", "Skeleton", "Callout"], tokens: [
+    "--foreground", "--muted-foreground", "--field-fill", "--card", "--field-edge", "--input",
+    "--field-height", "--field-pad-x", "--field-radius", "--border-functional",
+    "--type-mono", "--data-text-size",
+  ]},
+
+  { name: "Queue", composes: ["Button", "StatusChip", "Avatar"], tokens: [
+    "--row-divider", "--muted", "--row-hover", "--border",
+    "--card-color", "--card", "--card-foreground", "--foreground", "--muted-foreground",
+    "--meta-foreground", "--tone-warning-fg",
+    "--row-pad-y", "--row-pad-x", "--row-gap", "--border-functional", "--border-decor",
+    "--radius", "--card-pad-metric",
+    "--kpi-text", "--control-weight", "--kpi-tracking", "--kpi-label-text", "--kpi-gap",
+    "--type-display", "--type-mono", "--data-text-size",
+    "--motion-duration", "--motion-ease",
+  ]},
+
+  { name: "Progress", composes: [], tokens: [
+    "--track-color", "--foreground", "--muted-foreground",
+    "--tone-success-dot", "--tone-warning-dot", "--tone-info-dot", "--tone-danger-dot",
+    "--tone-neutral-dot",
+    "--chart-1", "--chart-2", "--chart-3", "--chart-4",
+    "--chart-5", "--chart-6", "--chart-7", "--chart-8",
+    "--bar-height", "--bar-radius", "--bar-gap", "--chip-dot",
+    "--label-col-min", "--label-col-max", "--value-col-min",
+    "--type-mono", "--data-text-size",
+    "--motion-duration-move",
+  ]},
+
+  { name: "Feedback", composes: [], tokens: [
+    "--foreground", "--muted-foreground", "--foreground-disabled",
+    "--tone-neutral-bg", "--tone-neutral-fg", "--tone-neutral-dot", "--track-color",
+    "--chip-height", "--chip-pad-x", "--chip-gap", "--chip-dot", "--chip-text", "--chip-weight",
+    "--avatar-size", "--control-radius", "--avatar-text", "--radius",
+    "--type-display", "--type-sans",
+  ]},
+
+  { name: "Calendar", composes: [], tokens: [
+    "--border", "--row-divider", "--row-hover", "--accent", "--accent-foreground",
+    "--foreground", "--muted-foreground", "--meta-foreground", "--ring-color", "--ring",
+    "--tone-success-dot", "--tone-warning-dot", "--tone-info-dot", "--tone-danger-dot",
+    "--tone-neutral-dot", "--tone-pending-dot", "--tone-strong-dot",
+    "--border-functional", "--ring-width", "--radius-nested", "--chip-dot",
+    "--row-pad-y", "--row-pad-x", "--row-gap", "--kpi-label-text",
+    "--type-mono", "--data-text-size",
+    "--motion-duration", "--motion-ease",
+  ]},
+
+  { name: "Layout", composes: [], tokens: [
+    "--foreground", "--muted-foreground", "--border",
+    "--canvas-chip-bg", "--canvas-chip-border", "--canvas-chip-borderw",
+    "--canvas-chip-radius", "--canvas-chip-pad", "--canvas-chip-width",
+    "--border-functional",
+    "--type-display",
+  ]},
+
+  { name: "Compat", composes: ["Card", "CardTitle", "Table", "Donut", "Legend", "BarChart", "LineChart", "Grid", "Split", "EmptyState"], tokens: [
+    "--chart-1", "--chart-2", "--chart-3", "--chart-4",
+    "--chart-5", "--chart-6", "--chart-7", "--chart-8",
+    "--accent", "--accent-foreground", "--foreground", "--muted-foreground",
+    "--meta-foreground", "--tone-success-fg", "--tone-danger-fg",
+    "--destructive", "--destructive-ink",
+    "--radius", "--radius-nested", "--border-functional", "--kpi-gap",
+    "--kpi-label-text", "--kpi-text", "--control-weight", "--kpi-tracking",
+    "--type-display", "--type-mono", "--data-text-size",
+  ]},
+
+  { name: "Fx", composes: ["StatusChip", "Button"], tokens: [
+    "--card-color", "--card-foreground", "--border", "--row-divider",
+    "--strong", "--strong-foreground", "--strong-hover", "--muted", "--muted-foreground",
+    "--foreground", "--meta-foreground", "--ring-color",
+    "--border-decor", "--border-functional", "--ring-width", "--elev-overlay",
+    "--card-pad-metric", "--radius",
+    "--tab-height", "--tab-pad-x", "--control-radius", "--control-text",
+    "--row-pad-y", "--row-pad-x", "--row-gap",
+    "--type-mono", "--data-text-size",
+    "--motion-duration", "--motion-duration-move", "--motion-ease",
+  ]},
+
+  { name: "Fields", composes: [], tokens: [
+    "--field-fill", "--card", "--field-edge", "--input", "--field-focus-edge",
+    "--control-outline-edge", "--primary", "--primary-foreground", "--muted",
+    "--foreground", "--foreground-subtle", "--foreground-disabled", "--meta-foreground",
+    "--ring-color", "--ring",
+    "--field-height", "--field-pad-x", "--field-radius", "--border-functional",
+    "--field-multiline-min",
+    "--control-height", "--control-pad-x", "--control-radius", "--control-text",
+    "--control-weight", "--control-borderw",
+    "--chip-height", "--chip-pad-x", "--chip-gap", "--chip-text", "--chip-weight",
+    "--ring-width",
+    "--type-sans",
+    "--motion-duration", "--motion-ease",
+  ]},
+
+  { name: "Forms", composes: ["Card", "Button", "Input", "Select", "Textarea", "Label", "Callout"], tokens: [
+    "--primary", "--foreground", "--muted-foreground", "--destructive-ink",
+  ]},
+
+  { name: "Floating", composes: [], tokens: [
+    "--popover", "--popover-foreground", "--accent", "--accent-foreground",
+    "--strong", "--strong-foreground", "--border",
+    "--foreground", "--foreground-subtle", "--muted-foreground", "--meta-foreground",
+    "--overlay-radius", "--overlay-pad", "--border-decor", "--elev-overlay", "--elev-xl",
+    "--radius",
+    "--type-display", "--type-sans", "--type-mono",
+    "--motion-duration", "--motion-ease",
+  ]},
+
+  { name: "Overlay", composes: [], tokens: [
+    "--card", "--card-foreground", "--muted", "--scrim", "--border",
+    "--foreground", "--muted-foreground", "--ring-color", "--ring",
+    "--overlay-radius", "--overlay-pad", "--border-decor", "--border-functional",
+    "--elev-overlay", "--elev-xl", "--radius", "--ring-width",
+    "--type-display",
+    "--motion-duration", "--motion-ease",
+  ]},
+
+  { name: "Command", composes: ["Modal"], tokens: [
+    "--popover", "--popover-foreground", "--accent", "--accent-foreground", "--border",
+    "--foreground", "--foreground-subtle", "--foreground-disabled", "--muted-foreground",
+    "--meta-foreground",
+    "--field-height", "--field-pad-x", "--field-radius", "--control-text",
+    "--border-functional", "--radius",
+    "--type-sans", "--type-mono",
+  ]},
+
+  { name: "DataCharts", composes: [], tokens: [
+    "--chart-1", "--chart-2", "--chart-3", "--chart-4",
+    "--chart-5", "--chart-6", "--chart-7", "--chart-8",
+    "--track-color", "--muted", "--card", "--background", "--foreground",
+    "--muted-foreground", "--border",
+    "--bar-radius", "--bar-height", "--bar-gap", "--border-decor", "--radius",
+    "--elev-overlay", "--elev-xl",
+    "--type-display", "--type-mono", "--data-text-size",
+    "--motion-duration-move", "--motion-ease",
+  ]},
+
+  { name: "Donut", composes: [], tokens: [
+    "--chart-1", "--chart-2", "--chart-3", "--chart-4",
+    "--chart-5", "--chart-6", "--chart-7", "--chart-8",
+    "--track-color", "--muted", "--foreground", "--muted-foreground",
+    "--chip-dot",
+    "--type-display", "--type-mono", "--data-text-size",
+    "--motion-duration-move",
+  ]},
+
+  { name: "ModelChart", composes: [], tokens: [
+    "--chart-1", "--chart-2", "--chart-3", "--chart-4",
+    "--chart-5", "--chart-6", "--chart-7", "--chart-8",
+    "--card", "--card-foreground", "--muted", "--track-color",
+    "--destructive", "--destructive-ink", "--border",
+    "--foreground", "--muted-foreground",
+    "--bar-radius", "--border-decor", "--border-functional", "--radius", "--elev-card",
+    "--type-display", "--type-mono", "--data-text-size",
+    "--motion-duration-move", "--motion-ease",
+  ]},
+];
+
+/* ── Render ──────────────────────────────────────────────────────────────────────────────────────
+ * Every value comes from the browser resolving the Beacon block inlined above. Nothing is typed in.
+ */
+const rs = getComputedStyle(document.documentElement);
+const raw = (t) => rs.getPropertyValue(t).trim();
+
+const hslToRgb = (h, s, l) => {
+  s /= 100; l /= 100;
+  const k = (n) => (n + h / 30) % 12, a = s * Math.min(l, 1 - l);
+  const f = (n) => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+  return [f(0), f(8), f(4)];
+};
+const toHex = (rgb) => "#" + rgb.map((x) => Math.round(x * 255).toString(16).padStart(2, "0")).join("");
+
+/* The contract holds colour in two shapes and the difference is load-bearing, so this DETECTS
+ * rather than assumes. A TRIPLET ("220 27.3% 91.4%") must be wrapped in hsl() — that is the bridge
+ * convention, and it cannot carry alpha. A WHOLE VALUE (the tone map's "#e6f5ec", --ring-color's
+ * rgba, --card-color's own hsl(var(...)) indirection) is used as-is, and is exactly the escape hatch
+ * for values needing alpha or a gradient. Wrapping one in hsl() or printing the other as a triplet
+ * would both be silently wrong. Everything else — px, ms, a font stack, a cubic-bezier, a
+ * box-shadow — is not a colour and gets no swatch. */
+const TRIPLET = /^([\d.]+)\s+([\d.]+)%\s+([\d.]+)%$/;
+const WHOLE   = /^(#|rgba?\(|hsla?\(|oklch\(|color\()/;
+
+function colorCell(tok) {
+  const v = raw(tok);
+  const m = TRIPLET.exec(v);
+  if (!m && !WHOLE.test(v)) return '<span class="none">—</span>';
+
+  const paint = m ? "hsl(var(" + tok + "))" : "var(" + tok + ")";
+  // A gradient rather than background-color, so the white chip underneath shows through alpha.
+  const sw = '<span class="sw" style="background-image:linear-gradient(' + paint + ',' + paint + ')"></span>';
+  const label = m ? toHex(hslToRgb(+m[1], +m[2], +m[3]))
+                  : (v.startsWith("#") ? v : "alpha");
+  return sw + '<span class="hexn">' + label + "</span>";
+}
+
+const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+
+const tbody = document.getElementById("rows");
+tbody.innerHTML = COMPONENTS.map((c) =>
+  c.tokens.map((tok, i) =>
+    '<tr' + (i === 0 ? ' class="start"' : "") + ">" +
+      '<td class="comp' + (i ? " cont" : "") + '">' + esc(c.name) + "</td>" +
+      '<td class="tok">' + esc(tok) + "</td>" +
+      '<td class="val">' + esc(raw(tok) || "—") + "</td>" +
+      '<td class="color">' + colorCell(tok) + "</td>" +
+    "</tr>"
+  ).join("")
+).join("");
+
+/* ── Right pane: the deduplicated token set ──────────────────────────────────────────────────────
+ * Derived from the SAME array the left table renders, never maintained separately — so the two
+ * panes cannot disagree. Order preserves first appearance; `uses` counts how many components read
+ * the token, which is the only fact the left pane can't show at a glance. */
+const uses = new Map();
+for (const c of COMPONENTS)
+  for (const tok of c.tokens) uses.set(tok, (uses.get(tok) || 0) + 1);
+
+/* ── Value-duplicate detection ───────────────────────────────────────────────────────────────────
+ * Two tokens are value-duplicates when they RESOLVE to the same thing, whatever shape they were
+ * declared in — `--muted: 222.9 33.3% 95.9%` (triplet), `--track-color: hsl(var(--muted))`
+ * (indirection; the browser hands back the substituted whole value) and a literal `#f1f3f8` are
+ * all one colour. So the grouping key is a NORMALISED value: any recognisable colour collapses
+ * to lowercase hex, everything else (px, ms, font stacks, beziers) to its trimmed string.
+ *
+ * The caveat that belongs next to this feature: the contract duplicates some values ON PURPOSE.
+ * Beacon's own comment on --secondary says "Same value as muted, named apart so button rank and
+ * surface tint can move independently" — a RANK, not a redundancy. And the indirection tokens
+ * (--track-color, --card-color, --canvas…) are the whole-value-twin pattern: same value here,
+ * different value under a language that needs alpha or a gradient. The column shows where values
+ * coincide; whether a coincidence is a merge candidate is a per-token judgement, and the roles
+ * are exactly what the names encode. */
+const normalize = (v) => {
+  v = v.trim();
+  let m = TRIPLET.exec(v);
+  if (m) return toHex(hslToRgb(+m[1], +m[2], +m[3]));
+  m = /^hsl\(\s*([\d.]+)[,\s]+([\d.]+)%[,\s]+([\d.]+)%\s*\)$/.exec(v);
+  if (m) return toHex(hslToRgb(+m[1], +m[2], +m[3]));
+  if (/^#[0-9a-fA-F]{6}$/.test(v)) return v.toLowerCase();
+  if (/^#[0-9a-fA-F]{3}$/.test(v)) return "#" + [...v.slice(1)].map((c) => c + c).join("").toLowerCase();
+  return v;
+};
+
+/* DECIDED (2026-08-12): the chart ramp stays dedicated. A chart slot is an ordinal — "series 1",
+ * not "the brand orange" — so --chart-1..8 never count as duplicates of the tokens they happen to
+ * share a value with, in either direction. Their rows say "dedicated" rather than "—". */
+const DEDICATED = (t) => /^--chart-\d$/.test(t);
+
+/* ── Mergeable — STALE METHODOLOGY, kept as history (see note below) ─────────────────────────────
+ * This table and the MERGEABLE object below it were computed against an 11-design-language contract:
+ * a sibling only counted when two tokens resolved to the same value in every one of eleven blocks
+ * (own declaration or Beacon inheritance, var() chains substituted, colours normalised to hex) — a
+ * Beacon-only coincidence, like --primary=--accent-foreground, was explicitly NOT enough, because a
+ * second language could and did break it.
+ *
+ * RETIRED 2026-08-12: all ten non-Beacon languages were retired the same day this page's rollout was
+ * tracked. The premise above no longer holds — there is no second language left to consult, so
+ * "identical across all N languages" is now just "identical in Beacon", which is a much LARGER and
+ * SIMPLER test. A fresh Beacon-only reaudit (engine/proto-kit/beacon-reaudit.mjs, run 2026-08-12,
+ * re-runnable any time tokens.css changes) found 22 value-equal groups against the current
+ * (post-APPLIED) contract — up from the 9 still-proposed here — because most of the caution below no
+ * longer applies with one language. That reaudit is NOT folded into MERGEABLE/NAMES yet: which
+ * canonical name survives each new group, and which of the 22 are genuine merges vs. documented
+ * ranks/accidental coincidences (a category that was never about language count — --chip-dot=--chip-gap
+ * is a diameter equalling a gap by coincidence regardless of how many languages exist), is a
+ * naming/judgement call for the next batch, the same way every prior batch on this page was proposed
+ * and confirmed before landing. The 9 groups below remain valid merge candidates (a stricter test than
+ * necessary now, not a wrong one) — they are just no longer the complete list.
+ *
+ * THE 22 GROUPS THEMSELVES (value → tokens; so the finding survives even unread if the script
+ * above is never re-run). [RANK]/[ACCIDENT] tags carry over from the script's own documented
+ * exclusions — not auto-dropped, just flagged as already-reasoned-about rather than fresh finds:
+ *   #14181f (ink)         --foreground, --card-foreground, --popover-foreground,
+ *                          --secondary-foreground, --strong
+ *   #ffffff (paper)        --card, --popover, --primary-foreground, --destructive-foreground,
+ *                          --strong-foreground
+ *   #f1f3f8                --track-color, --tone-neutral-bg, --row-divider
+ *   0                      --canvas-chip-borderw, --canvas-chip-radius, --canvas-chip-pad
+ *   14px                   --radius, --radius-nested, --field-pad-x
+ *   20px                   --card-pad-metric, --row-pad-x, --tab-pad-x   [ACCIDENT]
+ *   28px                   --card-pad-doc, --chip-height, --overlay-pad   [ACCIDENT]
+ *   999px                  --bar-radius, --control-radius, --control-radius-strong
+ *   12px                   --chip-pad-x, --chip-text, --kpi-gap
+ *   #a8490a (primary)      --primary, --accent-foreground
+ *   #fa7317 (brand)        --brand-accent, --ring
+ *   #f1f3f8                --secondary, --muted   [RANK — documented, see note above]
+ *   #ffffff                --card-color, --field-fill
+ *   transparent            --canvas-chip-bg, --canvas-chip-border
+ *   1px                    --border-decor, --border-functional
+ *   0 0 #0000              --elev-card-hover, --elev-button
+ *   0 18px 42px -14px rgba(20,24,31,.18)  --elev-xl, --elev-overlay
+ *   10px                   --bar-height, --field-radius
+ *   #fa7317                --control-fill, --tone-strong-dot
+ *   #a8490a                --control-outline-edge, --control-outline-ink
+ *   7px                    --chip-gap, --chip-dot   [ACCIDENT — a gap equalling a dot's diameter]
+ *   #d9dee7                --field-edge, --field-focus-edge
+ * (22 rows; --chart-1..8 excluded throughout per the DECIDED note above.)
+ *
+ * PRECOMPUTED by tmp/mergeable.mjs from starter/src/tokens.css. 15 groups · 35 tokens survived the
+ * 11-language test; 11 further Beacon-only groups died the moment a second language was consulted —
+ * those 11 are exactly the kind of group the Beacon-only reaudit now resurfaces.
+ *
+ * Reading the survivors still takes judgement: --muted=--secondary is a documented RANK ("named
+ * apart so button rank and surface tint can move independently") — still true regardless of language
+ * count. --card=--card-color were whole-value TWINS parked for a language needing alpha; with no
+ * language left to need one, --card-color's own reason to exist is worth revisiting, not just
+ * whether it merges. The genuinely mergeable tail is the geometry: --field-borderw=--border-functional,
+ * --control-radius=--avatar-radius=--tab-radius, --control-text=--tab-text=--field-text … */
+const MERGEABLE = {"--foreground":["--card-foreground","--popover-foreground"],"--card-foreground":["--foreground","--popover-foreground"],"--popover-foreground":["--foreground","--card-foreground"],"--card":["--card-color","--popover"],"--card-color":["--card","--popover"],"--popover":["--card","--card-color"],"--muted":["--secondary"],"--secondary":["--muted"],"--chip-dot":["--chip-gap"],"--chip-gap":["--chip-dot"],"--chip-height":["--overlay-pad"],"--overlay-pad":["--chip-height"],"--card-pad-metric":["--row-pad-x"],"--row-pad-x":["--card-pad-metric"],"--field-edge":["--input"],"--input":["--field-edge"],"--canvas-chip-bg":["--canvas-chip-border"],"--canvas-chip-border":["--canvas-chip-bg"],"--canvas-chip-borderw":["--canvas-chip-radius","--canvas-chip-pad"],"--canvas-chip-radius":["--canvas-chip-borderw","--canvas-chip-pad"],"--canvas-chip-pad":["--canvas-chip-borderw","--canvas-chip-radius"]};
+
+/* ── Applied ──────────────────────────────────────────────────────────────────────────────────────
+ * Groups actually merged in starter/src/tokens.css (and its two generated copies), tracked here by
+ * hand as each one lands, so this pane doubles as the rollout's status board. */
+const APPLIED = [
+  { name: "--border", folded: ["--border-decor-color"], date: "2026-08-12" },
+  { name: "--border-functional", folded: ["--field-borderw"], date: "2026-08-12" },
+  { name: "--strong-foreground", folded: ["--control-fill-ink"], date: "2026-08-12" },
+  { name: "--control-weight", folded: ["--kpi-weight"], date: "2026-08-12" },
+  { name: "--control-radius", folded: ["--avatar-radius", "--tab-radius"], date: "2026-08-12" },
+  { name: "--control-text", folded: ["--tab-text", "--field-text"], date: "2026-08-12" },
+];
+
+// Middle pane: every distinct token once — swatch folded into the Value cell.
+document.getElementById("unique-rows").innerHTML = [...uses.entries()].map(([tok, n]) => {
+  const c = colorCell(tok);
+  const valCell = (c.includes("sw") ? c + " " : "") + esc(raw(tok) || "—");
+  return "<tr>" +
+    '<td class="tok">' + esc(tok) + "</td>" +
+    '<td class="val">' + valCell + "</td>" +
+    '<td class="uses">' + n + "</td>" +
+  "</tr>";
+}).join("");
+document.getElementById("ucount").textContent = uses.size;
+
+/* Third pane: ONE ROW PER MERGE GROUP. The unique list stays purely descriptive; this pane is the
+ * optimisation answer on its own — each row (from the 11-language-era MERGEABLE table above; see
+ * its note on the newer, larger Beacon-only reaudit) is a set of tokens that resolved identically
+ * across every language that existed when they were computed, and could collapse to one name.
+ * Chart tokens are absent by the dedicated-ramp decision. */
+/* One canonical name per group. Rule: the most-used existing member survives and the others become
+ * its aliases — except where the union spans DIFFERENT CSS property types (a size + a gap, a
+ * width + a radius + a padding), where no member's name can honestly cover the whole group; those
+ * three get a minted name, marked ✱. Keyed by the group's sorted member list. */
+const NAMES = {
+  "--card-foreground+--foreground+--popover-foreground":    "--foreground",
+  "--card+--card-color+--popover":                          "--card",
+  "--muted+--secondary":                                    "--muted",
+  "--chip-dot+--chip-gap":                                  "--chip-unit ✱",
+  "--chip-height+--overlay-pad":                            "--plate-unit ✱",
+  "--card-pad-metric+--row-pad-x":                          "--row-pad-x",
+  "--field-edge+--input":                                   "--field-edge",
+  "--canvas-chip-bg+--canvas-chip-border":                  "--canvas-chip-bg",
+  "--canvas-chip-borderw+--canvas-chip-pad+--canvas-chip-radius": "--canvas-chip-frame ✱",
+};
+
+const groupRows = [];
+
+// Applied first — its value is read live off the CURRENT contract (there is no alias left to
+// read for comparison; the row exists to show what the merge looked like and confirm it stuck).
+for (const g of APPLIED) {
+  const c = colorCell(g.name);
+  const valCell = (c.includes("sw") ? c + " " : "") + esc(raw(g.name) || "—");
+  groupRows.push("<tr class=\"applied\">" +
+    '<td class="tok"><span class="done">✓ done</span> <strong>' + esc(g.name) + "</strong></td>" +
+    '<td class="same">' + g.folded.map((t) => '<span class="dupe struck">' + esc(t) + "</span>").join(" ") + "</td>" +
+    '<td class="val">' + valCell + "</td>" +
+  "</tr>");
+}
+
+const seen = new Set();
+let proposedCount = 0;
+for (const [tok, sibs] of Object.entries(MERGEABLE)) {
+  const key = [tok, ...sibs].sort().join("+");
+  if (seen.has(key)) continue;
+  seen.add(key);
+  proposedCount++;
+  const members = [tok, ...sibs];
+  const name = NAMES[key] || members[0];
+  const canonical = name.replace(" ✱", "");
+  const folded = members.filter((t) => t !== canonical);
+  const c = colorCell(members[0]);
+  const valCell = (c.includes("sw") ? c + " " : "") + esc(raw(members[0]) || "—");
+  groupRows.push("<tr>" +
+    '<td class="tok">' + esc(name) + "</td>" +
+    '<td class="same">' + folded.map((t) => '<span class="dupe">' + esc(t) + "</span>").join(" ") + "</td>" +
+    '<td class="val">' + valCell + "</td>" +
+  "</tr>");
+}
+document.getElementById("opt-rows").innerHTML = groupRows.join("");
+document.getElementById("ocount").textContent =
+  APPLIED.length + " applied · " + proposedCount + " proposed";
+
+// Footer count, so it can never disagree with the table.
+const total = COMPONENTS.reduce((n, c) => n + c.tokens.length, 0);
+document.getElementById("count").textContent =
+  COMPONENTS.length + " of 27 components · " + total + " token rows · " + uses.size + " unique";
+</script>
+</body>
+</html>

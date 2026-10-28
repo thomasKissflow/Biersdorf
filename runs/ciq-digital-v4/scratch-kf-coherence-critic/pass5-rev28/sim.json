@@ -1,0 +1,775 @@
+{
+ "scenarios": 30,
+ "ok": 30,
+ "failed": [],
+ "all": [
+  {
+   "id": "case-all-lanes-overall-approved",
+   "flow": "CIQ_Case_A00",
+   "ok": true,
+   "walked": [
+    "CASE_S0",
+    "CASE_S1",
+    "CASE_S2",
+    "CASE_S3",
+    "CASE_B_REG",
+    "CASE_B_SAF",
+    "CASE_B_QM",
+    "CASE_B_MIC",
+    "CASE_B_SUS",
+    "CASE_B_RMM",
+    "CASE_S5",
+    "CASE_S6",
+    "CASE_S7",
+    "CASE_S8"
+   ],
+   "skipped": [],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Hold_For_Open_Items": "No",
+    "Open_Items_Gate_Release": "OK",
+    "Open_Items_Gate_Close": "OK",
+    "REG_Gate": "OK",
+    "SAF_Gate": "OK",
+    "QM_Gate": "OK",
+    "MIC_Gate": "OK",
+    "SUS_Gate": "OK",
+    "RMM_Gate": "OK"
+   },
+   "issues": []
+  },
+  {
+   "id": "case-two-lanes-no-holds-overall-off",
+   "flow": "CIQ_Case_A00",
+   "ok": true,
+   "walked": [
+    "CASE_S0",
+    "CASE_S1",
+    "CASE_S2",
+    "CASE_S3",
+    "CASE_B_REG",
+    "CASE_B_SAF",
+    "CASE_S5",
+    "CASE_S7"
+   ],
+   "skipped": [
+    "CASE_B_QM",
+    "CASE_B_MIC",
+    "CASE_B_SUS",
+    "CASE_B_RMM",
+    "CASE_S6",
+    "CASE_S8"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Hold_For_Open_Items": "No",
+    "Open_Items_Gate_Release": "OK",
+    "Open_Items_Gate_Close": "OK",
+    "REG_Gate": "OK",
+    "SAF_Gate": "OK",
+    "QM_Gate": "",
+    "MIC_Gate": "",
+    "SUS_Gate": "",
+    "RMM_Gate": ""
+   },
+   "issues": []
+  },
+  {
+   "id": "case-overall-rejected-skips-ps11",
+   "flow": "CIQ_Case_A00",
+   "ok": true,
+   "walked": [
+    "CASE_S0",
+    "CASE_S1",
+    "CASE_S2",
+    "CASE_S3",
+    "CASE_B_SAF",
+    "CASE_S5",
+    "CASE_S6"
+   ],
+   "skipped": [
+    "CASE_B_REG",
+    "CASE_B_QM",
+    "CASE_B_MIC",
+    "CASE_B_SUS",
+    "CASE_B_RMM",
+    "CASE_S7",
+    "CASE_S8"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Hold_For_Open_Items": "No",
+    "Open_Items_Gate_Release": "OK",
+    "Open_Items_Gate_Close": "OK",
+    "REG_Gate": "",
+    "SAF_Gate": "OK",
+    "QM_Gate": "",
+    "MIC_Gate": "",
+    "SUS_Gate": "",
+    "RMM_Gate": ""
+   },
+   "issues": []
+  },
+  {
+   "id": "case-reg-rejected-overall-off",
+   "flow": "CIQ_Case_A00",
+   "ok": true,
+   "walked": [
+    "CASE_S0",
+    "CASE_S1",
+    "CASE_S2",
+    "CASE_S3",
+    "CASE_B_REG",
+    "CASE_B_QM",
+    "CASE_B_MIC",
+    "CASE_B_SUS",
+    "CASE_S5",
+    "CASE_S7"
+   ],
+   "skipped": [
+    "CASE_B_SAF",
+    "CASE_B_RMM",
+    "CASE_S6",
+    "CASE_S8"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Hold_For_Open_Items": "No",
+    "Open_Items_Gate_Release": "OK",
+    "Open_Items_Gate_Close": "OK",
+    "REG_Gate": "OK",
+    "SAF_Gate": "",
+    "QM_Gate": "OK",
+    "MIC_Gate": "OK",
+    "SUS_Gate": "OK",
+    "RMM_Gate": ""
+   },
+   "issues": []
+  },
+  {
+   "id": "case-branch-wrong-role-denied",
+   "flow": "CIQ_Case_A00",
+   "ok": true,
+   "walked": [
+    "CASE_S0",
+    "CASE_S1",
+    "CASE_S2",
+    "CASE_S3",
+    "CASE_B_REG"
+   ],
+   "skipped": [],
+   "observed_error": "SCENARIO_ROLE_DENIED",
+   "expected_error": "SCENARIO_ROLE_DENIED",
+   "final_formulas": {
+    "Hold_For_Open_Items": "Yes",
+    "Open_Items_Gate_Release": "",
+    "Open_Items_Gate_Close": "",
+    "REG_Gate": "",
+    "SAF_Gate": "",
+    "QM_Gate": "",
+    "MIC_Gate": "",
+    "SUS_Gate": "",
+    "RMM_Gate": ""
+   },
+   "issues": []
+  },
+  {
+   "id": "case-overall-approval-by-rmm-denied",
+   "flow": "CIQ_Case_A00",
+   "ok": true,
+   "walked": [
+    "CASE_S0",
+    "CASE_S1",
+    "CASE_S2",
+    "CASE_S3",
+    "CASE_B_QM",
+    "CASE_S5",
+    "CASE_S6"
+   ],
+   "skipped": [
+    "CASE_B_REG",
+    "CASE_B_SAF",
+    "CASE_B_MIC",
+    "CASE_B_SUS",
+    "CASE_B_RMM"
+   ],
+   "observed_error": "SCENARIO_ROLE_DENIED",
+   "expected_error": "SCENARIO_ROLE_DENIED",
+   "final_formulas": {
+    "Hold_For_Open_Items": "No",
+    "Open_Items_Gate_Release": "OK",
+    "Open_Items_Gate_Close": "OK",
+    "REG_Gate": "",
+    "SAF_Gate": "",
+    "QM_Gate": "OK",
+    "MIC_Gate": "",
+    "SUS_Gate": "",
+    "RMM_Gate": ""
+   },
+   "issues": []
+  },
+  {
+   "id": "case-create-by-reviewer-denied",
+   "flow": "CIQ_Case_A00",
+   "ok": true,
+   "walked": [
+    "CASE_S0"
+   ],
+   "skipped": [],
+   "observed_error": "SCENARIO_ROLE_DENIED",
+   "expected_error": "SCENARIO_ROLE_DENIED",
+   "final_formulas": {
+    "Hold_For_Open_Items": "Yes",
+    "Open_Items_Gate_Release": "",
+    "Open_Items_Gate_Close": "",
+    "REG_Gate": "",
+    "SAF_Gate": "",
+    "QM_Gate": "",
+    "MIC_Gate": "",
+    "SUS_Gate": "",
+    "RMM_Gate": ""
+   },
+   "issues": []
+  },
+  {
+   "id": "case-reg-confirm-missing",
+   "flow": "CIQ_Case_A00",
+   "ok": true,
+   "walked": [
+    "CASE_S0",
+    "CASE_S1",
+    "CASE_S2",
+    "CASE_S3",
+    "CASE_B_REG"
+   ],
+   "skipped": [],
+   "observed_error": "SCENARIO_MANDATORY_MISSING",
+   "expected_error": "SCENARIO_MANDATORY_MISSING",
+   "final_formulas": {
+    "Hold_For_Open_Items": "Yes",
+    "Open_Items_Gate_Release": "",
+    "Open_Items_Gate_Close": "",
+    "REG_Gate": "OK",
+    "SAF_Gate": "",
+    "QM_Gate": "",
+    "MIC_Gate": "",
+    "SUS_Gate": "",
+    "RMM_Gate": ""
+   },
+   "issues": []
+  },
+  {
+   "id": "case-saf-confirm-missing",
+   "flow": "CIQ_Case_A00",
+   "ok": true,
+   "walked": [
+    "CASE_S0",
+    "CASE_S1",
+    "CASE_S2",
+    "CASE_S3",
+    "CASE_B_SAF"
+   ],
+   "skipped": [],
+   "observed_error": "SCENARIO_MANDATORY_MISSING",
+   "expected_error": "SCENARIO_MANDATORY_MISSING",
+   "final_formulas": {
+    "Hold_For_Open_Items": "Yes",
+    "Open_Items_Gate_Release": "",
+    "Open_Items_Gate_Close": "",
+    "REG_Gate": "",
+    "SAF_Gate": "OK",
+    "QM_Gate": "",
+    "MIC_Gate": "",
+    "SUS_Gate": "",
+    "RMM_Gate": ""
+   },
+   "issues": []
+  },
+  {
+   "id": "case-qm-confirm-missing",
+   "flow": "CIQ_Case_A00",
+   "ok": true,
+   "walked": [
+    "CASE_S0",
+    "CASE_S1",
+    "CASE_S2",
+    "CASE_S3",
+    "CASE_B_QM"
+   ],
+   "skipped": [],
+   "observed_error": "SCENARIO_MANDATORY_MISSING",
+   "expected_error": "SCENARIO_MANDATORY_MISSING",
+   "final_formulas": {
+    "Hold_For_Open_Items": "Yes",
+    "Open_Items_Gate_Release": "",
+    "Open_Items_Gate_Close": "",
+    "REG_Gate": "",
+    "SAF_Gate": "",
+    "QM_Gate": "OK",
+    "MIC_Gate": "",
+    "SUS_Gate": "",
+    "RMM_Gate": ""
+   },
+   "issues": []
+  },
+  {
+   "id": "case-mic-confirm-missing",
+   "flow": "CIQ_Case_A00",
+   "ok": true,
+   "walked": [
+    "CASE_S0",
+    "CASE_S1",
+    "CASE_S2",
+    "CASE_S3",
+    "CASE_B_MIC"
+   ],
+   "skipped": [],
+   "observed_error": "SCENARIO_MANDATORY_MISSING",
+   "expected_error": "SCENARIO_MANDATORY_MISSING",
+   "final_formulas": {
+    "Hold_For_Open_Items": "Yes",
+    "Open_Items_Gate_Release": "",
+    "Open_Items_Gate_Close": "",
+    "REG_Gate": "",
+    "SAF_Gate": "",
+    "QM_Gate": "",
+    "MIC_Gate": "OK",
+    "SUS_Gate": "",
+    "RMM_Gate": ""
+   },
+   "issues": []
+  },
+  {
+   "id": "case-sus-confirm-missing",
+   "flow": "CIQ_Case_A00",
+   "ok": true,
+   "walked": [
+    "CASE_S0",
+    "CASE_S1",
+    "CASE_S2",
+    "CASE_S3",
+    "CASE_B_SUS"
+   ],
+   "skipped": [],
+   "observed_error": "SCENARIO_MANDATORY_MISSING",
+   "expected_error": "SCENARIO_MANDATORY_MISSING",
+   "final_formulas": {
+    "Hold_For_Open_Items": "Yes",
+    "Open_Items_Gate_Release": "",
+    "Open_Items_Gate_Close": "",
+    "REG_Gate": "",
+    "SAF_Gate": "",
+    "QM_Gate": "",
+    "MIC_Gate": "",
+    "SUS_Gate": "OK",
+    "RMM_Gate": ""
+   },
+   "issues": []
+  },
+  {
+   "id": "case-rmm-confirm-missing",
+   "flow": "CIQ_Case_A00",
+   "ok": true,
+   "walked": [
+    "CASE_S0",
+    "CASE_S1",
+    "CASE_S2",
+    "CASE_S3",
+    "CASE_B_RMM"
+   ],
+   "skipped": [],
+   "observed_error": "SCENARIO_MANDATORY_MISSING",
+   "expected_error": "SCENARIO_MANDATORY_MISSING",
+   "final_formulas": {
+    "Hold_For_Open_Items": "Yes",
+    "Open_Items_Gate_Release": "",
+    "Open_Items_Gate_Close": "",
+    "REG_Gate": "",
+    "SAF_Gate": "",
+    "QM_Gate": "",
+    "MIC_Gate": "",
+    "SUS_Gate": "",
+    "RMM_Gate": "OK"
+   },
+   "issues": []
+  },
+  {
+   "id": "op-reg-supplier-accepted",
+   "flow": "CIQ_Open_Point_A00",
+   "ok": true,
+   "walked": [
+    "OPNT_S0",
+    "OPNT_S1",
+    "OPNT_R_REG"
+   ],
+   "skipped": [
+    "OPNT_R_SAF",
+    "OPNT_R_QM",
+    "OPNT_R_MIC",
+    "OPNT_R_SUS",
+    "OPNT_R_RMM"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Open_Num": 0.0,
+    "Start_Gate": ""
+   },
+   "issues": []
+  },
+  {
+   "id": "op-saf-supplier-accepted",
+   "flow": "CIQ_Open_Point_A00",
+   "ok": true,
+   "walked": [
+    "OPNT_S0",
+    "OPNT_S1",
+    "OPNT_R_SAF"
+   ],
+   "skipped": [
+    "OPNT_R_REG",
+    "OPNT_R_QM",
+    "OPNT_R_MIC",
+    "OPNT_R_SUS",
+    "OPNT_R_RMM"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Open_Num": 0.0,
+    "Start_Gate": ""
+   },
+   "issues": []
+  },
+  {
+   "id": "op-qm-supplier-accepted",
+   "flow": "CIQ_Open_Point_A00",
+   "ok": true,
+   "walked": [
+    "OPNT_S0",
+    "OPNT_S1",
+    "OPNT_R_QM"
+   ],
+   "skipped": [
+    "OPNT_R_REG",
+    "OPNT_R_SAF",
+    "OPNT_R_MIC",
+    "OPNT_R_SUS",
+    "OPNT_R_RMM"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Open_Num": 0.0,
+    "Start_Gate": ""
+   },
+   "issues": []
+  },
+  {
+   "id": "op-mic-internal-accepted",
+   "flow": "CIQ_Open_Point_A00",
+   "ok": true,
+   "walked": [
+    "OPNT_S0",
+    "OPNT_R_MIC"
+   ],
+   "skipped": [
+    "OPNT_S1",
+    "OPNT_R_REG",
+    "OPNT_R_SAF",
+    "OPNT_R_QM",
+    "OPNT_R_SUS",
+    "OPNT_R_RMM"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Open_Num": 0.0,
+    "Start_Gate": "OK"
+   },
+   "issues": []
+  },
+  {
+   "id": "op-sus-internal-accepted",
+   "flow": "CIQ_Open_Point_A00",
+   "ok": true,
+   "walked": [
+    "OPNT_S0",
+    "OPNT_R_SUS"
+   ],
+   "skipped": [
+    "OPNT_S1",
+    "OPNT_R_REG",
+    "OPNT_R_SAF",
+    "OPNT_R_QM",
+    "OPNT_R_MIC",
+    "OPNT_R_RMM"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Open_Num": 0.0,
+    "Start_Gate": "OK"
+   },
+   "issues": []
+  },
+  {
+   "id": "op-rmm-internal-accepted",
+   "flow": "CIQ_Open_Point_A00",
+   "ok": true,
+   "walked": [
+    "OPNT_S0",
+    "OPNT_R_RMM"
+   ],
+   "skipped": [
+    "OPNT_S1",
+    "OPNT_R_REG",
+    "OPNT_R_SAF",
+    "OPNT_R_QM",
+    "OPNT_R_MIC",
+    "OPNT_R_SUS"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Open_Num": 0.0,
+    "Start_Gate": "OK"
+   },
+   "issues": []
+  },
+  {
+   "id": "op-withdrawn-by-owner",
+   "flow": "CIQ_Open_Point_A00",
+   "ok": true,
+   "walked": [
+    "OPNT_S0",
+    "OPNT_S1",
+    "OPNT_R_MIC"
+   ],
+   "skipped": [
+    "OPNT_R_REG",
+    "OPNT_R_SAF",
+    "OPNT_R_QM",
+    "OPNT_R_SUS",
+    "OPNT_R_RMM"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "Open_Num": 0.0,
+    "Start_Gate": ""
+   },
+   "issues": []
+  },
+  {
+   "id": "op-review-wrong-dept-denied",
+   "flow": "CIQ_Open_Point_A00",
+   "ok": true,
+   "walked": [
+    "OPNT_S0",
+    "OPNT_R_REG"
+   ],
+   "skipped": [
+    "OPNT_S1"
+   ],
+   "observed_error": "SCENARIO_ROLE_DENIED",
+   "expected_error": "SCENARIO_ROLE_DENIED",
+   "final_formulas": {
+    "Open_Num": 1.0,
+    "Start_Gate": "OK"
+   },
+   "issues": []
+  },
+  {
+   "id": "op-raise-by-overall-approver-denied",
+   "flow": "CIQ_Open_Point_A00",
+   "ok": true,
+   "walked": [
+    "OPNT_S0"
+   ],
+   "skipped": [],
+   "observed_error": "SCENARIO_ROLE_DENIED",
+   "expected_error": "SCENARIO_ROLE_DENIED",
+   "final_formulas": {
+    "Open_Num": 1.0,
+    "Start_Gate": ""
+   },
+   "issues": []
+  },
+  {
+   "id": "cr-all-assess-no-impact-confirmed",
+   "flow": "CIQ_Change_Request_A00",
+   "ok": true,
+   "walked": [
+    "CHRQ_S0",
+    "CHRQ_S1",
+    "CHRQ_B_REG",
+    "CHRQ_B_SAF",
+    "CHRQ_B_QM",
+    "CHRQ_B_MIC",
+    "CHRQ_B_SUS"
+   ],
+   "skipped": [],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "CR_Open_Num": 0.0
+   },
+   "issues": []
+  },
+  {
+   "id": "cr-all-assess-re-assessed",
+   "flow": "CIQ_Change_Request_A00",
+   "ok": true,
+   "walked": [
+    "CHRQ_S0",
+    "CHRQ_S1",
+    "CHRQ_B_REG",
+    "CHRQ_B_SAF",
+    "CHRQ_B_QM",
+    "CHRQ_B_MIC",
+    "CHRQ_B_SUS"
+   ],
+   "skipped": [],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "CR_Open_Num": 0.0
+   },
+   "issues": []
+  },
+  {
+   "id": "cr-all-assess-finding-raised",
+   "flow": "CIQ_Change_Request_A00",
+   "ok": true,
+   "walked": [
+    "CHRQ_S0",
+    "CHRQ_S1",
+    "CHRQ_B_REG",
+    "CHRQ_B_SAF",
+    "CHRQ_B_QM",
+    "CHRQ_B_MIC",
+    "CHRQ_B_SUS"
+   ],
+   "skipped": [],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "CR_Open_Num": 0.0
+   },
+   "issues": []
+  },
+  {
+   "id": "cr-partial-impact-rmm-fallback",
+   "flow": "CIQ_Change_Request_A00",
+   "ok": true,
+   "walked": [
+    "CHRQ_S0",
+    "CHRQ_S1",
+    "CHRQ_B_SAF",
+    "CHRQ_B_QM"
+   ],
+   "skipped": [
+    "CHRQ_B_REG",
+    "CHRQ_B_MIC",
+    "CHRQ_B_SUS"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "CR_Open_Num": 0.0
+   },
+   "issues": []
+  },
+  {
+   "id": "cr-refused-after-final-release",
+   "flow": "CIQ_Change_Request_A00",
+   "ok": true,
+   "walked": [
+    "CHRQ_S0",
+    "CHRQ_S1"
+   ],
+   "skipped": [
+    "CHRQ_B_REG",
+    "CHRQ_B_SAF",
+    "CHRQ_B_QM",
+    "CHRQ_B_MIC",
+    "CHRQ_B_SUS"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "CR_Open_Num": 0.0
+   },
+   "issues": [
+    "CHRQ_PAR: every arm skipped (join must still advance: R-01/K-PAR)"
+   ]
+  },
+  {
+   "id": "cr-refused-not-valid",
+   "flow": "CIQ_Change_Request_A00",
+   "ok": true,
+   "walked": [
+    "CHRQ_S0",
+    "CHRQ_S1"
+   ],
+   "skipped": [
+    "CHRQ_B_REG",
+    "CHRQ_B_SAF",
+    "CHRQ_B_QM",
+    "CHRQ_B_MIC",
+    "CHRQ_B_SUS"
+   ],
+   "observed_error": null,
+   "expected_error": null,
+   "final_formulas": {
+    "CR_Open_Num": 0.0
+   },
+   "issues": [
+    "CHRQ_PAR: every arm skipped (join must still advance: R-01/K-PAR)"
+   ]
+  },
+  {
+   "id": "cr-triage-by-reviewer-denied",
+   "flow": "CIQ_Change_Request_A00",
+   "ok": true,
+   "walked": [
+    "CHRQ_S0",
+    "CHRQ_S1"
+   ],
+   "skipped": [],
+   "observed_error": "SCENARIO_ROLE_DENIED",
+   "expected_error": "SCENARIO_ROLE_DENIED",
+   "final_formulas": {
+    "CR_Open_Num": 1.0
+   },
+   "issues": []
+  },
+  {
+   "id": "cr-assess-wrong-dept-denied",
+   "flow": "CIQ_Change_Request_A00",
+   "ok": true,
+   "walked": [
+    "CHRQ_S0",
+    "CHRQ_S1",
+    "CHRQ_B_MIC"
+   ],
+   "skipped": [
+    "CHRQ_B_REG",
+    "CHRQ_B_SAF",
+    "CHRQ_B_QM",
+    "CHRQ_B_SUS"
+   ],
+   "observed_error": "SCENARIO_ROLE_DENIED",
+   "expected_error": "SCENARIO_ROLE_DENIED",
+   "final_formulas": {
+    "CR_Open_Num": 1.0
+   },
+   "issues": []
+  }
+ ]
+}

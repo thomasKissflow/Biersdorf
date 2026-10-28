@@ -1,0 +1,1780 @@
+{
+ "type": "process",
+ "name": "CIQP Query",
+ "status": "Live",
+ "list": {
+  "_id": "CIQP_Query_A00",
+  "_created_at": "2026-10-06T21:10:33Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-16T14:28:51Z",
+  "Name": "CIQP Query",
+  "Description": "Supplier side of one Beiersdorf open point: question, reference, supplier due date, response and thread.",
+  "Type": "Process",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Supplier_Portal_A00",
+  "LastPublishedAt": "2026-10-15T19:30:28Z"
+ },
+ "draftStatus": 200,
+ "draft": {
+  "SendBackToInitiator": {
+   "Id": "SendBackToInitiator",
+   "Kind": "Activity",
+   "NodeType": "SendBackToInitiator",
+   "BaseMetadata": "Activity_rngj1n"
+  },
+  "PublishedAt": "2026-10-15T19:30:27Z",
+  "PublishedBy": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_meta_version": "1792092628161648",
+  "CIQP_Query_A00": {
+   "Id": "CIQP_Query_A00",
+   "Name": "CIQP Query",
+   "Kind": "Model",
+   "FlowType": "Process",
+   "Description": "One round of a Beiersdorf question, document request or additional part. The supplier responds; the review happens in the app.",
+   "_application_id": "CIQ_Supplier_Portal_A00",
+   "Model::Row": [
+    "Row_1xzy3yk"
+   ],
+   "Model::Field": [
+    "Query_Key",
+    "Round_No",
+    "Case_Code",
+    "Cycle_No",
+    "Supplier_Code",
+    "App_Open_Point_Id",
+    "Kind_Label",
+    "Responsible_Department",
+    "Responsible_Name",
+    "Ref_Kind",
+    "Ref_Section_Key",
+    "Ref_Field_Key",
+    "Ref_Row_Id",
+    "Ref_Doc_Id",
+    "Ref_Doc_File_Name",
+    "Ref_Doc_Uploaded_At",
+    "Ref_Label",
+    "Question_Text",
+    "Supplier_Justification",
+    "Supplier_Due_Date",
+    "Previous_Rounds_JSON",
+    "New_Section_Item_Key",
+    "Assigned_Contacts",
+    "Response_Kind",
+    "Response_Text",
+    "Response_Doc_Refs_JSON",
+    "Supplier_Responsible_Email",
+    "Edited_At",
+    "Edit_Note"
+   ],
+   "Model::ProcessDef": [
+    "ProcessDef_96cvd3"
+   ],
+   "RootProcessDef": "ProcessDef_96cvd3",
+   "Model::Appearance": [
+    "Appearance_96cvd3"
+   ],
+   "Button::Row": [
+    "Row_1fux94g"
+   ]
+  },
+  "Row_1xzy3yk": {
+   "Id": "Row_1xzy3yk",
+   "Kind": "Row",
+   "Model": "CIQP_Query_A00",
+   "Row::Column": [
+    "Column_1xzy3yk"
+   ]
+  },
+  "Column_1xzy3yk": {
+   "Id": "Column_1xzy3yk",
+   "Kind": "Column",
+   "Type": "Section",
+   "Name": "Details",
+   "Start": 0,
+   "End": 6,
+   "Row": "Row_1xzy3yk",
+   "Column::Row": [
+    "Row_1xzwvt2",
+    "Row_1xzwvt3",
+    "Row_1xzwvt4",
+    "Row_1xzwvt5",
+    "Row_1xzwvt6",
+    "Row_1xzwvt7",
+    "Row_1xzwvt8",
+    "Row_1xzwvt9",
+    "Row_1xzwvta",
+    "Row_1xzwvtb",
+    "Row_10xjehj",
+    "Row_10xjehk",
+    "Row_10xjehl",
+    "Row_10xjehm",
+    "Row_10xjehn",
+    "Row_10xjeho",
+    "Row_10xjehp",
+    "Row_10xjehq",
+    "Row_10xjehr"
+   ]
+  },
+  "Row_1xzwvt2": {
+   "Id": "Row_1xzwvt2",
+   "Kind": "Row",
+   "Column": "Column_1xzy3yk",
+   "Row::Column": [
+    "Column_1lc1r3z",
+    "Column_11nk8it"
+   ]
+  },
+  "Column_1lc1r3z": {
+   "Id": "Column_1lc1r3z",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_1xzwvt2",
+   "Column::Field": [
+    "Query_Key"
+   ]
+  },
+  "Column_11nk8it": {
+   "Id": "Column_11nk8it",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 3,
+   "End": 6,
+   "Row": "Row_1xzwvt2",
+   "Column::Field": [
+    "Round_No"
+   ]
+  },
+  "Row_1xzwvt3": {
+   "Id": "Row_1xzwvt3",
+   "Kind": "Row",
+   "Column": "Column_1xzy3yk",
+   "Row::Column": [
+    "Column_4hd08n",
+    "Column_11lgy31"
+   ]
+  },
+  "Column_4hd08n": {
+   "Id": "Column_4hd08n",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_1xzwvt3",
+   "Column::Field": [
+    "Case_Code"
+   ]
+  },
+  "Column_11lgy31": {
+   "Id": "Column_11lgy31",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 3,
+   "End": 6,
+   "Row": "Row_1xzwvt3",
+   "Column::Field": [
+    "Cycle_No"
+   ]
+  },
+  "Row_1xzwvt4": {
+   "Id": "Row_1xzwvt4",
+   "Kind": "Row",
+   "Column": "Column_1xzy3yk",
+   "Row::Column": [
+    "Column_15sjcnj",
+    "Column_uf5z1k"
+   ]
+  },
+  "Column_15sjcnj": {
+   "Id": "Column_15sjcnj",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_1xzwvt4",
+   "Column::Field": [
+    "Supplier_Code"
+   ]
+  },
+  "Column_uf5z1k": {
+   "Id": "Column_uf5z1k",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 3,
+   "End": 6,
+   "Row": "Row_1xzwvt4",
+   "Column::Field": [
+    "App_Open_Point_Id"
+   ]
+  },
+  "Row_1xzwvt5": {
+   "Id": "Row_1xzwvt5",
+   "Kind": "Row",
+   "Column": "Column_1xzy3yk",
+   "Row::Column": [
+    "Column_1uhumau",
+    "Column_1y16inu"
+   ]
+  },
+  "Column_1uhumau": {
+   "Id": "Column_1uhumau",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_1xzwvt5",
+   "Column::Field": [
+    "Kind_Label"
+   ]
+  },
+  "Column_1y16inu": {
+   "Id": "Column_1y16inu",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 3,
+   "End": 6,
+   "Row": "Row_1xzwvt5",
+   "Column::Field": [
+    "Responsible_Department"
+   ]
+  },
+  "Row_1xzwvt6": {
+   "Id": "Row_1xzwvt6",
+   "Kind": "Row",
+   "Column": "Column_1xzy3yk",
+   "Row::Column": [
+    "Column_9di6qv",
+    "Column_r57lxf"
+   ]
+  },
+  "Column_9di6qv": {
+   "Id": "Column_9di6qv",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_1xzwvt6",
+   "Column::Field": [
+    "Responsible_Name"
+   ]
+  },
+  "Column_r57lxf": {
+   "Id": "Column_r57lxf",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 3,
+   "End": 6,
+   "Row": "Row_1xzwvt6",
+   "Column::Field": [
+    "Ref_Kind"
+   ]
+  },
+  "Row_1xzwvt7": {
+   "Id": "Row_1xzwvt7",
+   "Kind": "Row",
+   "Column": "Column_1xzy3yk",
+   "Row::Column": [
+    "Column_ljespm",
+    "Column_s7h6fd"
+   ]
+  },
+  "Column_ljespm": {
+   "Id": "Column_ljespm",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_1xzwvt7",
+   "Column::Field": [
+    "Ref_Section_Key"
+   ]
+  },
+  "Column_s7h6fd": {
+   "Id": "Column_s7h6fd",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 3,
+   "End": 6,
+   "Row": "Row_1xzwvt7",
+   "Column::Field": [
+    "Ref_Field_Key"
+   ]
+  },
+  "Row_1xzwvt8": {
+   "Id": "Row_1xzwvt8",
+   "Kind": "Row",
+   "Column": "Column_1xzy3yk",
+   "Row::Column": [
+    "Column_gfuj8h",
+    "Column_7d7trz"
+   ]
+  },
+  "Column_gfuj8h": {
+   "Id": "Column_gfuj8h",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_1xzwvt8",
+   "Column::Field": [
+    "Ref_Row_Id"
+   ]
+  },
+  "Column_7d7trz": {
+   "Id": "Column_7d7trz",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 3,
+   "End": 6,
+   "Row": "Row_1xzwvt8",
+   "Column::Field": [
+    "Ref_Doc_Id"
+   ]
+  },
+  "Row_1xzwvt9": {
+   "Id": "Row_1xzwvt9",
+   "Kind": "Row",
+   "Column": "Column_1xzy3yk",
+   "Row::Column": [
+    "Column_aouvzm",
+    "Column_1otfqus"
+   ]
+  },
+  "Column_aouvzm": {
+   "Id": "Column_aouvzm",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_1xzwvt9",
+   "Column::Field": [
+    "Ref_Doc_File_Name"
+   ]
+  },
+  "Column_1otfqus": {
+   "Id": "Column_1otfqus",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 3,
+   "End": 6,
+   "Row": "Row_1xzwvt9",
+   "Column::Field": [
+    "Ref_Doc_Uploaded_At"
+   ]
+  },
+  "Row_1xzwvta": {
+   "Id": "Row_1xzwvta",
+   "Kind": "Row",
+   "Column": "Column_1xzy3yk",
+   "Row::Column": [
+    "Column_17f5f6l"
+   ]
+  },
+  "Column_17f5f6l": {
+   "Id": "Column_17f5f6l",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_1xzwvta",
+   "Column::Field": [
+    "Ref_Label"
+   ]
+  },
+  "Row_1xzwvtb": {
+   "Id": "Row_1xzwvtb",
+   "Kind": "Row",
+   "Column": "Column_1xzy3yk",
+   "Row::Column": [
+    "Column_1rnbdod"
+   ]
+  },
+  "Column_1rnbdod": {
+   "Id": "Column_1rnbdod",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 6,
+   "Row": "Row_1xzwvtb",
+   "Column::Field": [
+    "Question_Text"
+   ]
+  },
+  "Row_10xjehj": {
+   "Id": "Row_10xjehj",
+   "Kind": "Row",
+   "Column": "Column_1xzy3yk",
+   "Row::Column": [
+    "Column_qrfpbk"
+   ]
+  },
+  "Column_qrfpbk": {
+   "Id": "Column_qrfpbk",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 6,
+   "Row": "Row_10xjehj",
+   "Column::Field": [
+    "Supplier_Justification"
+   ]
+  },
+  "Row_10xjehk": {
+   "Id": "Row_10xjehk",
+   "Kind": "Row",
+   "Column": "Column_1xzy3yk",
+   "Row::Column": [
+    "Column_njan7z"
+   ]
+  },
+  "Column_njan7z": {
+   "Id": "Column_njan7z",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_10xjehk",
+   "Column::Field": [
+    "Supplier_Due_Date"
+   ]
+  },
+  "Row_10xjehl": {
+   "Id": "Row_10xjehl",
+   "Kind": "Row",
+   "Column": "Column_1xzy3yk",
+   "Row::Column": [
+    "Column_fo6u4x"
+   ]
+  },
+  "Column_fo6u4x": {
+   "Id": "Column_fo6u4x",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 6,
+   "Row": "Row_10xjehl",
+   "Column::Field": [
+    "Previous_Rounds_JSON"
+   ]
+  },
+  "Row_10xjehm": {
+   "Id": "Row_10xjehm",
+   "Kind": "Row",
+   "Column": "Column_1xzy3yk",
+   "Row::Column": [
+    "Column_vg4bhx",
+    "Column_1h8x6h9"
+   ]
+  },
+  "Column_vg4bhx": {
+   "Id": "Column_vg4bhx",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_10xjehm",
+   "Column::Field": [
+    "New_Section_Item_Key"
+   ]
+  },
+  "Column_1h8x6h9": {
+   "Id": "Column_1h8x6h9",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 3,
+   "End": 6,
+   "Row": "Row_10xjehm",
+   "Column::Field": [
+    "Assigned_Contacts"
+   ]
+  },
+  "Row_10xjehn": {
+   "Id": "Row_10xjehn",
+   "Kind": "Row",
+   "Column": "Column_1xzy3yk",
+   "Row::Column": [
+    "Column_1ok1aj9"
+   ]
+  },
+  "Column_1ok1aj9": {
+   "Id": "Column_1ok1aj9",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_10xjehn",
+   "Column::Field": [
+    "Response_Kind"
+   ]
+  },
+  "Row_10xjeho": {
+   "Id": "Row_10xjeho",
+   "Kind": "Row",
+   "Column": "Column_1xzy3yk",
+   "Row::Column": [
+    "Column_1ok8504"
+   ]
+  },
+  "Column_1ok8504": {
+   "Id": "Column_1ok8504",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 6,
+   "Row": "Row_10xjeho",
+   "Column::Field": [
+    "Response_Text"
+   ]
+  },
+  "Row_10xjehp": {
+   "Id": "Row_10xjehp",
+   "Kind": "Row",
+   "Column": "Column_1xzy3yk",
+   "Row::Column": [
+    "Column_xe4qj1"
+   ]
+  },
+  "Column_xe4qj1": {
+   "Id": "Column_xe4qj1",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 6,
+   "Row": "Row_10xjehp",
+   "Column::Field": [
+    "Response_Doc_Refs_JSON"
+   ]
+  },
+  "Row_10xjehq": {
+   "Id": "Row_10xjehq",
+   "Kind": "Row",
+   "Column": "Column_1xzy3yk",
+   "Row::Column": [
+    "Column_wm561t",
+    "Column_1q1jksk"
+   ]
+  },
+  "Column_wm561t": {
+   "Id": "Column_wm561t",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_10xjehq",
+   "Column::Field": [
+    "Supplier_Responsible_Email"
+   ]
+  },
+  "Column_1q1jksk": {
+   "Id": "Column_1q1jksk",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 3,
+   "End": 6,
+   "Row": "Row_10xjehq",
+   "Column::Field": [
+    "Edited_At"
+   ]
+  },
+  "Row_10xjehr": {
+   "Id": "Row_10xjehr",
+   "Kind": "Row",
+   "Column": "Column_1xzy3yk",
+   "Row::Column": [
+    "Column_1pwuj3w"
+   ]
+  },
+  "Column_1pwuj3w": {
+   "Id": "Column_1pwuj3w",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_10xjehr",
+   "Column::Field": [
+    "Edit_Note"
+   ]
+  },
+  "Query_Key": {
+   "Id": "Query_Key",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Query Key",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_1lc1r3z",
+   "Required": true
+  },
+  "Round_No": {
+   "Id": "Round_No",
+   "Kind": "Field",
+   "Type": "Number",
+   "Name": "Round No",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_11nk8it",
+   "Required": true
+  },
+  "Case_Code": {
+   "Id": "Case_Code",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Case Code",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_4hd08n",
+   "Required": true
+  },
+  "Cycle_No": {
+   "Id": "Cycle_No",
+   "Kind": "Field",
+   "Type": "Number",
+   "Name": "Cycle No",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_11lgy31",
+   "Required": true
+  },
+  "Supplier_Code": {
+   "Id": "Supplier_Code",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Supplier Code",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_15sjcnj",
+   "Required": true
+  },
+  "App_Open_Point_Id": {
+   "Id": "App_Open_Point_Id",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "App Open Point Id",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_uf5z1k",
+   "Required": true
+  },
+  "Kind_Label": {
+   "Id": "Kind_Label",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Kind Label",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_1uhumau",
+   "Required": true
+  },
+  "Responsible_Department": {
+   "Id": "Responsible_Department",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Responsible Department",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_1y16inu",
+   "Required": true
+  },
+  "Responsible_Name": {
+   "Id": "Responsible_Name",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Responsible Name",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_9di6qv",
+   "Required": true
+  },
+  "Ref_Kind": {
+   "Id": "Ref_Kind",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Ref Kind",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_r57lxf",
+   "Required": true
+  },
+  "Ref_Section_Key": {
+   "Id": "Ref_Section_Key",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Ref Section Key",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_ljespm",
+   "Required": true
+  },
+  "Ref_Field_Key": {
+   "Id": "Ref_Field_Key",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Ref Field Key",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_s7h6fd"
+  },
+  "Ref_Row_Id": {
+   "Id": "Ref_Row_Id",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Ref Row Id",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_gfuj8h"
+  },
+  "Ref_Doc_Id": {
+   "Id": "Ref_Doc_Id",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Ref Doc Id",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_7d7trz"
+  },
+  "Ref_Doc_File_Name": {
+   "Id": "Ref_Doc_File_Name",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Ref Doc File Name",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_aouvzm"
+  },
+  "Ref_Doc_Uploaded_At": {
+   "Id": "Ref_Doc_Uploaded_At",
+   "Kind": "Field",
+   "Type": "DateTime",
+   "Name": "Ref Doc Uploaded At",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_1otfqus"
+  },
+  "Ref_Label": {
+   "Id": "Ref_Label",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Ref Label",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_17f5f6l",
+   "Required": true
+  },
+  "Question_Text": {
+   "Id": "Question_Text",
+   "Kind": "Field",
+   "Type": "Textarea",
+   "Name": "Question Text",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_1rnbdod",
+   "Required": true
+  },
+  "Supplier_Justification": {
+   "Id": "Supplier_Justification",
+   "Kind": "Field",
+   "Type": "Textarea",
+   "Name": "Supplier Justification",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_qrfpbk",
+   "Required": true
+  },
+  "Supplier_Due_Date": {
+   "Id": "Supplier_Due_Date",
+   "Kind": "Field",
+   "Type": "Date",
+   "Name": "Supplier Due Date",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_njan7z",
+   "Required": true,
+   "Field::Node": [
+    "Node_sh42erzxia"
+   ]
+  },
+  "Previous_Rounds_JSON": {
+   "Id": "Previous_Rounds_JSON",
+   "Kind": "Field",
+   "Type": "Textarea",
+   "Name": "Previous Rounds JSON",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_fo6u4x"
+  },
+  "New_Section_Item_Key": {
+   "Id": "New_Section_Item_Key",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "New Section Item Key",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_vg4bhx"
+  },
+  "QueryDefinition_1h8x6h9": {
+   "Id": "QueryDefinition_1h8x6h9",
+   "Kind": "QueryDefinition",
+   "Field": "Assigned_Contacts",
+   "LHSModel": "User",
+   "FlowType": "User",
+   "LookupField": [],
+   "HiddenField": []
+  },
+  "Assigned_Contacts": {
+   "Id": "Assigned_Contacts",
+   "Kind": "Field",
+   "Type": "MultiUser",
+   "Name": "Assigned Contacts",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_1h8x6h9",
+   "Required": true,
+   "Field::QueryDefinition": [
+    "QueryDefinition_1h8x6h9"
+   ],
+   "Field::Node": [
+    "Node_ic9ijjm9i8",
+    "Node_po8117alvb"
+   ]
+  },
+  "Response_Kind": {
+   "Id": "Response_Kind",
+   "Kind": "Field",
+   "Type": "Select",
+   "Name": "Response Kind",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_1ok1aj9",
+   "ReferredList": "CIQP_Response_Kind_A00"
+  },
+  "Response_Text": {
+   "Id": "Response_Text",
+   "Kind": "Field",
+   "Type": "Textarea",
+   "Name": "Response Text",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_1ok8504"
+  },
+  "Response_Doc_Refs_JSON": {
+   "Id": "Response_Doc_Refs_JSON",
+   "Kind": "Field",
+   "Type": "Textarea",
+   "Name": "Response Doc Refs JSON",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_xe4qj1"
+  },
+  "Supplier_Responsible_Email": {
+   "Id": "Supplier_Responsible_Email",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Supplier Responsible Email",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_wm561t"
+  },
+  "Edited_At": {
+   "Id": "Edited_At",
+   "Kind": "Field",
+   "Type": "DateTime",
+   "Name": "Edited At",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_1q1jksk"
+  },
+  "Edit_Note": {
+   "Id": "Edit_Note",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Edit Note",
+   "Model": "CIQP_Query_A00",
+   "Column": "Column_1pwuj3w"
+  },
+  "ProcessDef_96cvd3": {
+   "Id": "ProcessDef_96cvd3",
+   "Kind": "ProcessDef",
+   "WorkflowType": "Sequence",
+   "Model": "CIQP_Query_A00",
+   "ProcessDef::Activity": [
+    "Activity_rngj1n",
+    "Activity_qohzey",
+    "Activity_49tjko"
+   ]
+  },
+  "Permission_1xuyjw8": {
+   "Id": "Permission_1xuyjw8",
+   "Kind": "Permission",
+   "Column": "Column_1lc1r3z",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_vx7vtk": {
+   "Id": "Permission_vx7vtk",
+   "Kind": "Permission",
+   "Column": "Column_11nk8it",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_109mpj2": {
+   "Id": "Permission_109mpj2",
+   "Kind": "Permission",
+   "Column": "Column_4hd08n",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_vvrfyy": {
+   "Id": "Permission_vvrfyy",
+   "Kind": "Permission",
+   "Column": "Column_11lgy31",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_ylyfwm": {
+   "Id": "Permission_ylyfwm",
+   "Kind": "Permission",
+   "Column": "Column_15sjcnj",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_78nt7y": {
+   "Id": "Permission_78nt7y",
+   "Kind": "Permission",
+   "Column": "Column_uf5z1k",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_4sj5ce": {
+   "Id": "Permission_4sj5ce",
+   "Kind": "Permission",
+   "Column": "Column_1uhumau",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_69jr6t": {
+   "Id": "Permission_69jr6t",
+   "Kind": "Permission",
+   "Column": "Column_1y16inu",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_13ff3qj": {
+   "Id": "Permission_13ff3qj",
+   "Kind": "Permission",
+   "Column": "Column_9di6qv",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_4c75gw": {
+   "Id": "Permission_4c75gw",
+   "Kind": "Permission",
+   "Column": "Column_r57lxf",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_1it2mr": {
+   "Id": "Permission_1it2mr",
+   "Kind": "Permission",
+   "Column": "Column_ljespm",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_51x9ju": {
+   "Id": "Permission_51x9ju",
+   "Kind": "Permission",
+   "Column": "Column_s7h6fd",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_1x8xhpw": {
+   "Id": "Permission_1x8xhpw",
+   "Kind": "Permission",
+   "Column": "Column_gfuj8h",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_123sfa2": {
+   "Id": "Permission_123sfa2",
+   "Kind": "Permission",
+   "Column": "Column_7d7trz",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_1tjhqoa": {
+   "Id": "Permission_1tjhqoa",
+   "Kind": "Permission",
+   "Column": "Column_aouvzm",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_14vvnf": {
+   "Id": "Permission_14vvnf",
+   "Kind": "Permission",
+   "Column": "Column_1otfqus",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_zm8to3": {
+   "Id": "Permission_zm8to3",
+   "Kind": "Permission",
+   "Column": "Column_17f5f6l",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_2ygegi": {
+   "Id": "Permission_2ygegi",
+   "Kind": "Permission",
+   "Column": "Column_1rnbdod",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_4wz5am": {
+   "Id": "Permission_4wz5am",
+   "Kind": "Permission",
+   "Column": "Column_qrfpbk",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_2tbg74": {
+   "Id": "Permission_2tbg74",
+   "Kind": "Permission",
+   "Column": "Column_njan7z",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_1wqn6fo": {
+   "Id": "Permission_1wqn6fo",
+   "Kind": "Permission",
+   "Column": "Column_fo6u4x",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_7wmquz": {
+   "Id": "Permission_7wmquz",
+   "Kind": "Permission",
+   "Column": "Column_vg4bhx",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_1ugvnm0": {
+   "Id": "Permission_1ugvnm0",
+   "Kind": "Permission",
+   "Column": "Column_1h8x6h9",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_xdwo8": {
+   "Id": "Permission_xdwo8",
+   "Kind": "Permission",
+   "Column": "Column_1ok1aj9",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_xi8bo": {
+   "Id": "Permission_xi8bo",
+   "Kind": "Permission",
+   "Column": "Column_1ok8504",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_95tvgl": {
+   "Id": "Permission_95tvgl",
+   "Kind": "Permission",
+   "Column": "Column_xe4qj1",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_8o5rng": {
+   "Id": "Permission_8o5rng",
+   "Kind": "Permission",
+   "Column": "Column_wm561t",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_149eem": {
+   "Id": "Permission_149eem",
+   "Kind": "Permission",
+   "Column": "Column_1q1jksk",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Permission_1umaa1": {
+   "Id": "Permission_1umaa1",
+   "Kind": "Permission",
+   "Column": "Column_1pwuj3w",
+   "Permission": "Editable",
+   "Activity": "Activity_rngj1n"
+  },
+  "Activity_rngj1n": {
+   "Id": "Activity_rngj1n",
+   "Kind": "Activity",
+   "NodeType": "StartEvent",
+   "Name": "Raise query",
+   "ProcessDef": "ProcessDef_96cvd3",
+   "Activity::Permission": [
+    "Permission_1xuyjw8",
+    "Permission_vx7vtk",
+    "Permission_109mpj2",
+    "Permission_vvrfyy",
+    "Permission_ylyfwm",
+    "Permission_78nt7y",
+    "Permission_4sj5ce",
+    "Permission_69jr6t",
+    "Permission_13ff3qj",
+    "Permission_4c75gw",
+    "Permission_1it2mr",
+    "Permission_51x9ju",
+    "Permission_1x8xhpw",
+    "Permission_123sfa2",
+    "Permission_1tjhqoa",
+    "Permission_14vvnf",
+    "Permission_zm8to3",
+    "Permission_2ygegi",
+    "Permission_4wz5am",
+    "Permission_2tbg74",
+    "Permission_1wqn6fo",
+    "Permission_7wmquz",
+    "Permission_1ugvnm0",
+    "Permission_xdwo8",
+    "Permission_xi8bo",
+    "Permission_95tvgl",
+    "Permission_8o5rng",
+    "Permission_149eem",
+    "Permission_1umaa1"
+   ]
+  },
+  "Permission_rnh3rc": {
+   "Id": "Permission_rnh3rc",
+   "Kind": "Permission",
+   "Column": "Column_1lc1r3z",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_1oquhns": {
+   "Id": "Permission_1oquhns",
+   "Kind": "Permission",
+   "Column": "Column_11nk8it",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_jrumm": {
+   "Id": "Permission_jrumm",
+   "Kind": "Permission",
+   "Column": "Column_4hd08n",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_1ope1t6": {
+   "Id": "Permission_1ope1t6",
+   "Kind": "Permission",
+   "Column": "Column_11lgy31",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_1rfl1qu": {
+   "Id": "Permission_1rfl1qu",
+   "Kind": "Permission",
+   "Column": "Column_15sjcnj",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_16jx0am": {
+   "Id": "Permission_16jx0am",
+   "Kind": "Permission",
+   "Column": "Column_uf5z1k",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_xm5r6m": {
+   "Id": "Permission_xm5r6m",
+   "Kind": "Permission",
+   "Column": "Column_1uhumau",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_z36d11": {
+   "Id": "Permission_z36d11",
+   "Kind": "Permission",
+   "Column": "Column_1y16inu",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_3pk8u3": {
+   "Id": "Permission_3pk8u3",
+   "Kind": "Permission",
+   "Column": "Column_9di6qv",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_13ngcjk": {
+   "Id": "Permission_13ngcjk",
+   "Kind": "Permission",
+   "Column": "Column_r57lxf",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_10u29pf": {
+   "Id": "Permission_10u29pf",
+   "Kind": "Permission",
+   "Column": "Column_ljespm",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_14d6gmi": {
+   "Id": "Permission_14d6gmi",
+   "Kind": "Permission",
+   "Column": "Column_s7h6fd",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_xj2mtg": {
+   "Id": "Permission_xj2mtg",
+   "Kind": "Permission",
+   "Column": "Column_gfuj8h",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_2dxkdm": {
+   "Id": "Permission_2dxkdm",
+   "Kind": "Permission",
+   "Column": "Column_7d7trz",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_ttmvru": {
+   "Id": "Permission_ttmvru",
+   "Kind": "Permission",
+   "Column": "Column_aouvzm",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_tyihhn": {
+   "Id": "Permission_tyihhn",
+   "Kind": "Permission",
+   "Column": "Column_1otfqus",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_1sfvfib": {
+   "Id": "Permission_1sfvfib",
+   "Kind": "Permission",
+   "Column": "Column_17f5f6l",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_vs30aq": {
+   "Id": "Permission_vs30aq",
+   "Kind": "Permission",
+   "Column": "Column_1rnbdod",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_1488cda": {
+   "Id": "Permission_1488cda",
+   "Kind": "Permission",
+   "Column": "Column_qrfpbk",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_124kn9s": {
+   "Id": "Permission_124kn9s",
+   "Kind": "Permission",
+   "Column": "Column_njan7z",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_x0sbj8": {
+   "Id": "Permission_x0sbj8",
+   "Kind": "Permission",
+   "Column": "Column_fo6u4x",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_177vxxn": {
+   "Id": "Permission_177vxxn",
+   "Kind": "Permission",
+   "Column": "Column_vg4bhx",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_o9e7h4": {
+   "Id": "Permission_o9e7h4",
+   "Kind": "Permission",
+   "Column": "Column_1h8x6h9",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_tr0iig": {
+   "Id": "Permission_tr0iig",
+   "Kind": "Permission",
+   "Column": "Column_1ok1aj9",
+   "Permission": "Mandatory",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_tr4u5w": {
+   "Id": "Permission_tr4u5w",
+   "Kind": "Permission",
+   "Column": "Column_1ok8504",
+   "Permission": "Editable",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_18h32j9": {
+   "Id": "Permission_18h32j9",
+   "Kind": "Permission",
+   "Column": "Column_xe4qj1",
+   "Permission": "Editable",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_17zeyq4": {
+   "Id": "Permission_17zeyq4",
+   "Kind": "Permission",
+   "Column": "Column_wm561t",
+   "Permission": "Editable",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_txw08u": {
+   "Id": "Permission_txw08u",
+   "Kind": "Permission",
+   "Column": "Column_1q1jksk",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Permission_uo8w49": {
+   "Id": "Permission_uo8w49",
+   "Kind": "Permission",
+   "Column": "Column_1pwuj3w",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_qohzey"
+  },
+  "Resource_fkcgxd": {
+   "Id": "Resource_fkcgxd",
+   "Kind": "Resource",
+   "ValueType": "Field",
+   "DisplayValue": "Assigned Contacts",
+   "Value": "Assigned_Contacts",
+   "Field": "Assigned_Contacts",
+   "Activity": "Activity_qohzey"
+  },
+  "Activity_qohzey": {
+   "Id": "Activity_qohzey",
+   "Kind": "Activity",
+   "NodeType": "UserTask",
+   "Name": "Supplier: respond",
+   "ProcessDef": "ProcessDef_96cvd3",
+   "Activity::Permission": [
+    "Permission_rnh3rc",
+    "Permission_1oquhns",
+    "Permission_jrumm",
+    "Permission_1ope1t6",
+    "Permission_1rfl1qu",
+    "Permission_16jx0am",
+    "Permission_xm5r6m",
+    "Permission_z36d11",
+    "Permission_3pk8u3",
+    "Permission_13ngcjk",
+    "Permission_10u29pf",
+    "Permission_14d6gmi",
+    "Permission_xj2mtg",
+    "Permission_2dxkdm",
+    "Permission_ttmvru",
+    "Permission_tyihhn",
+    "Permission_1sfvfib",
+    "Permission_vs30aq",
+    "Permission_1488cda",
+    "Permission_124kn9s",
+    "Permission_x0sbj8",
+    "Permission_177vxxn",
+    "Permission_o9e7h4",
+    "Permission_tr0iig",
+    "Permission_tr4u5w",
+    "Permission_18h32j9",
+    "Permission_17zeyq4",
+    "Permission_txw08u",
+    "Permission_uo8w49"
+   ],
+   "Activity::Resource": [
+    "Resource_fkcgxd"
+   ],
+   "ActivityDefaultSLA::SLA": [
+    "SLA_adb0v2pjzn"
+   ]
+  },
+  "Permission_rir58t": {
+   "Id": "Permission_rir58t",
+   "Kind": "Permission",
+   "Column": "Column_1lc1r3z",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_1om4j59": {
+   "Id": "Permission_1om4j59",
+   "Kind": "Permission",
+   "Column": "Column_11nk8it",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_1v9rlmb": {
+   "Id": "Permission_1v9rlmb",
+   "Kind": "Permission",
+   "Column": "Column_4hd08n",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_1oko3an": {
+   "Id": "Permission_1oko3an",
+   "Kind": "Permission",
+   "Column": "Column_11lgy31",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_1rav38b": {
+   "Id": "Permission_1rav38b",
+   "Kind": "Permission",
+   "Column": "Column_15sjcnj",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_128spb7": {
+   "Id": "Permission_128spb7",
+   "Kind": "Permission",
+   "Column": "Column_uf5z1k",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_xhfso3": {
+   "Id": "Permission_xhfso3",
+   "Kind": "Permission",
+   "Column": "Column_1uhumau",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_yygeii": {
+   "Id": "Permission_yygeii",
+   "Kind": "Permission",
+   "Column": "Column_1y16inu",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_1yfjzts": {
+   "Id": "Permission_1yfjzts",
+   "Kind": "Permission",
+   "Column": "Column_9di6qv",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_zcc1k5": {
+   "Id": "Permission_zcc1k5",
+   "Kind": "Permission",
+   "Column": "Column_r57lxf",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_wixyq0": {
+   "Id": "Permission_wixyq0",
+   "Kind": "Permission",
+   "Column": "Column_ljespm",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_10225n3": {
+   "Id": "Permission_10225n3",
+   "Kind": "Permission",
+   "Column": "Column_s7h6fd",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_t7ybu1": {
+   "Id": "Permission_t7ybu1",
+   "Kind": "Permission",
+   "Column": "Column_gfuj8h",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_1x3xbdb": {
+   "Id": "Permission_1x3xbdb",
+   "Kind": "Permission",
+   "Column": "Column_7d7trz",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_piiksf": {
+   "Id": "Permission_piiksf",
+   "Kind": "Permission",
+   "Column": "Column_aouvzm",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_ttsiz4": {
+   "Id": "Permission_ttsiz4",
+   "Kind": "Permission",
+   "Column": "Column_1otfqus",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_1sb5gzs": {
+   "Id": "Permission_1sb5gzs",
+   "Kind": "Permission",
+   "Column": "Column_17f5f6l",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_vnd1s7": {
+   "Id": "Permission_vnd1s7",
+   "Kind": "Permission",
+   "Column": "Column_1rnbdod",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_zx41dv": {
+   "Id": "Permission_zx41dv",
+   "Kind": "Permission",
+   "Column": "Column_qrfpbk",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_xtgcad": {
+   "Id": "Permission_xtgcad",
+   "Kind": "Permission",
+   "Column": "Column_njan7z",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_spo0jt": {
+   "Id": "Permission_spo0jt",
+   "Kind": "Permission",
+   "Column": "Column_fo6u4x",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_12wrmy8": {
+   "Id": "Permission_12wrmy8",
+   "Kind": "Permission",
+   "Column": "Column_vg4bhx",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_o4o8yl": {
+   "Id": "Permission_o4o8yl",
+   "Kind": "Permission",
+   "Column": "Column_1h8x6h9",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_tmajzx": {
+   "Id": "Permission_tmajzx",
+   "Kind": "Permission",
+   "Column": "Column_1ok1aj9",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_tmevnd": {
+   "Id": "Permission_tmevnd",
+   "Kind": "Permission",
+   "Column": "Column_1ok8504",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_145yrju": {
+   "Id": "Permission_145yrju",
+   "Kind": "Permission",
+   "Column": "Column_xe4qj1",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_13oanqp": {
+   "Id": "Permission_13oanqp",
+   "Kind": "Permission",
+   "Column": "Column_wm561t",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_tt61qb": {
+   "Id": "Permission_tt61qb",
+   "Kind": "Permission",
+   "Column": "Column_1q1jksk",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Permission_ujixlq": {
+   "Id": "Permission_ujixlq",
+   "Kind": "Permission",
+   "Column": "Column_1pwuj3w",
+   "Permission": "ReadOnly",
+   "Activity": "Activity_49tjko"
+  },
+  "Activity_49tjko": {
+   "Id": "Activity_49tjko",
+   "Kind": "Activity",
+   "NodeType": "EndEvent",
+   "Name": "End",
+   "ProcessDef": "ProcessDef_96cvd3",
+   "Activity::Permission": [
+    "Permission_rir58t",
+    "Permission_1om4j59",
+    "Permission_1v9rlmb",
+    "Permission_1oko3an",
+    "Permission_1rav38b",
+    "Permission_128spb7",
+    "Permission_xhfso3",
+    "Permission_yygeii",
+    "Permission_1yfjzts",
+    "Permission_zcc1k5",
+    "Permission_wixyq0",
+    "Permission_10225n3",
+    "Permission_t7ybu1",
+    "Permission_1x3xbdb",
+    "Permission_piiksf",
+    "Permission_ttsiz4",
+    "Permission_1sb5gzs",
+    "Permission_vnd1s7",
+    "Permission_zx41dv",
+    "Permission_xtgcad",
+    "Permission_spo0jt",
+    "Permission_12wrmy8",
+    "Permission_o4o8yl",
+    "Permission_tmajzx",
+    "Permission_tmevnd",
+    "Permission_145yrju",
+    "Permission_13oanqp",
+    "Permission_tt61qb",
+    "Permission_ujixlq"
+   ]
+  },
+  "Appearance_96cvd3": {
+   "Id": "Appearance_96cvd3",
+   "Kind": "Appearance",
+   "Model": "CIQP_Query_A00",
+   "Appearance::Style": [
+    "Style_96cvd3"
+   ]
+  },
+  "Style_96cvd3": {
+   "Id": "Style_96cvd3",
+   "Kind": "Style",
+   "Appearance": "Appearance_96cvd3"
+  },
+  "Row_1fux94g": {
+   "Id": "Row_1fux94g",
+   "Kind": "Row",
+   "Button": "CIQP_Query_A00"
+  },
+  "Root": "CIQP_Query_A00",
+  "SLA_adb0v2pjzn": {
+   "Id": "SLA_adb0v2pjzn",
+   "Kind": "SLA",
+   "ActivityDefaultSLA": "Activity_qohzey",
+   "SLA::Expression": [
+    "Expression_d64eeysxr9"
+   ],
+   "SLA::Notify": [
+    "Notify_sd97o7kj21",
+    "Notify_bp8pf0vvsf"
+   ]
+  },
+  "Expression_d64eeysxr9": {
+   "Id": "Expression_d64eeysxr9",
+   "Kind": "Expression",
+   "ExpressionStr": "Supplier_Due_Date",
+   "SLA": "SLA_adb0v2pjzn",
+   "Expression::Node": [
+    "Node_sh42erzxia"
+   ]
+  },
+  "Node_sh42erzxia": {
+   "Id": "Node_sh42erzxia",
+   "Kind": "Node",
+   "Type": "Field",
+   "Field": "Supplier_Due_Date",
+   "DataType": "Date",
+   "Expression": "Expression_d64eeysxr9"
+  },
+  "Notify_sd97o7kj21": {
+   "Id": "Notify_sd97o7kj21",
+   "Kind": "Notify",
+   "SLA": "SLA_adb0v2pjzn",
+   "Type": "Notify",
+   "Notify::Expression": [
+    "Expression_bvu7gaq2xb"
+   ],
+   "ValueType": "Expression",
+   "Value": "2",
+   "Unit": "Days",
+   "When": "Before"
+  },
+  "Expression_bvu7gaq2xb": {
+   "Id": "Expression_bvu7gaq2xb",
+   "Kind": "Expression",
+   "ExpressionStr": "Assigned_Contacts.get(0)",
+   "Notify": "Notify_sd97o7kj21",
+   "Expression::Node": [
+    "Node_rdj21tzs5x"
+   ]
+  },
+  "Node_rdj21tzs5x": {
+   "Id": "Node_rdj21tzs5x",
+   "Kind": "Node",
+   "Type": "Function",
+   "Value": "get",
+   "Syntax": "Chain",
+   "Expression": "Expression_bvu7gaq2xb",
+   "FieldRefCount": 1,
+   "Node::Node": [
+    "Node_ic9ijjm9i8",
+    "Node_ov4etaenkp"
+   ],
+   "DataType": "User",
+   "Category": "UserList"
+  },
+  "Node_ic9ijjm9i8": {
+   "Id": "Node_ic9ijjm9i8",
+   "Kind": "Node",
+   "Type": "Field",
+   "Field": "Assigned_Contacts",
+   "DataType": "UserList",
+   "Node": "Node_rdj21tzs5x"
+  },
+  "Node_ov4etaenkp": {
+   "Id": "Node_ov4etaenkp",
+   "Kind": "Node",
+   "Type": "Static",
+   "Value": "0",
+   "DataType": "Number",
+   "Node": "Node_rdj21tzs5x"
+  },
+  "Notify_bp8pf0vvsf": {
+   "Id": "Notify_bp8pf0vvsf",
+   "Kind": "Notify",
+   "SLA": "SLA_adb0v2pjzn",
+   "Type": "Notify",
+   "Notify::Expression": [
+    "Expression_i3po3s7a2s"
+   ],
+   "ValueType": "Expression",
+   "Value": "1",
+   "Unit": "Days",
+   "When": "After"
+  },
+  "Expression_i3po3s7a2s": {
+   "Id": "Expression_i3po3s7a2s",
+   "Kind": "Expression",
+   "ExpressionStr": "Assigned_Contacts.get(0)",
+   "Notify": "Notify_bp8pf0vvsf",
+   "Expression::Node": [
+    "Node_f800z7iq64"
+   ]
+  },
+  "Node_f800z7iq64": {
+   "Id": "Node_f800z7iq64",
+   "Kind": "Node",
+   "Type": "Function",
+   "Value": "get",
+   "Syntax": "Chain",
+   "Expression": "Expression_i3po3s7a2s",
+   "FieldRefCount": 1,
+   "Node::Node": [
+    "Node_po8117alvb",
+    "Node_0rd8z9e8m1"
+   ],
+   "DataType": "User",
+   "Category": "UserList"
+  },
+  "Node_po8117alvb": {
+   "Id": "Node_po8117alvb",
+   "Kind": "Node",
+   "Type": "Field",
+   "Field": "Assigned_Contacts",
+   "DataType": "UserList",
+   "Node": "Node_f800z7iq64"
+  },
+  "Node_0rd8z9e8m1": {
+   "Id": "Node_0rd8z9e8m1",
+   "Kind": "Node",
+   "Type": "Static",
+   "Value": "0",
+   "DataType": "Number",
+   "Node": "Node_f800z7iq64"
+  }
+ }
+}

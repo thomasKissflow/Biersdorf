@@ -1,0 +1,738 @@
+{
+  "branch": "main",
+  "revision": 24,
+  "receipt": {
+    "version": 1,
+    "status": "draft",
+    "compiler": "foundation-contract-v1",
+    "compilerDigest": "87251d7f3bd70019de5ff2045c5e3fa89f3c4250958ed777170c66679bef8ed7",
+    "inputDigest": "88a9ad367e59c190bb9994bd61ce83ec0b98bfc357664cc7e1122ba1c29753ab",
+    "findings": [
+      {
+        "slice": "automations",
+        "code": "FOUNDATION_MAPPING_EXPRESSION",
+        "path": "automations.ciq-z1-case-completed-notification-log.action.field_map.Case_Item_Id",
+        "message": "expected String, expression returns Reference",
+        "category": "invalid-business-logic",
+        "owners": [
+          "automations"
+        ],
+        "repairAction": "correct-owned-contract",
+        "repairStatus": "open"
+      },
+      {
+        "slice": "automations",
+        "code": "FOUNDATION_MAPPING_EXPRESSION",
+        "path": "automations.ciq-z1-case-completed-notification-log.action.field_map.Object_Item_Id",
+        "message": "expected String, expression returns Reference",
+        "category": "invalid-business-logic",
+        "owners": [
+          "automations"
+        ],
+        "repairAction": "correct-owned-contract",
+        "repairStatus": "open"
+      },
+      {
+        "slice": "automations",
+        "code": "FOUNDATION_ACTION_UNSUPPORTED",
+        "path": "automations.ciq-z2-cancellation-neutral-email.action.type",
+        "message": "no verified foundation action adapter for 'notify'",
+        "category": "unsupported-capability",
+        "owners": [
+          "platform"
+        ],
+        "repairAction": "implement-adapter",
+        "repairStatus": "open"
+      },
+      {
+        "slice": "automations",
+        "code": "FOUNDATION_MAPPING_EXPRESSION",
+        "path": "automations.ciq-z3-case-sla-breach-audit.action.field_map.Case_Item_Id",
+        "message": "expected String, expression returns Reference",
+        "category": "invalid-business-logic",
+        "owners": [
+          "automations"
+        ],
+        "repairAction": "correct-owned-contract",
+        "repairStatus": "open"
+      },
+      {
+        "slice": "automations",
+        "code": "FOUNDATION_MAPPING_EXPRESSION",
+        "path": "automations.ciq-z3-case-sla-breach-audit.action.field_map.Object_Item_Id",
+        "message": "expected String, expression returns Reference",
+        "category": "invalid-business-logic",
+        "owners": [
+          "automations"
+        ],
+        "repairAction": "correct-owned-contract",
+        "repairStatus": "open"
+      },
+      {
+        "slice": "automations",
+        "code": "FOUNDATION_MAPPING_EXPRESSION",
+        "path": "automations.ciq-z4-open-point-sla-breach-audit.action.field_map.Object_Item_Id",
+        "message": "expected String, expression returns Reference",
+        "category": "invalid-business-logic",
+        "owners": [
+          "automations"
+        ],
+        "repairAction": "correct-owned-contract",
+        "repairStatus": "open"
+      },
+      {
+        "code": "FOUNDATION_INITIATOR_CONTRACT_MISMATCH",
+        "slice": "security",
+        "owners": [
+          "security",
+          "workflow"
+        ],
+        "path": "security.satisfiability.initiators.CIQ_Open_Point_A00",
+        "expected": [
+          "ciq_rmm",
+          "ciq_regulatory_reviewer",
+          "ciq_safety_reviewer",
+          "ciq_qm_reviewer",
+          "ciq_microbiology_reviewer",
+          "ciq_sustainability_reviewer"
+        ],
+        "actual": [
+          "ciq_rmm"
+        ],
+        "message": "Informational initiators disagree with executable start ownership/grants. Reconcile both contracts; the summary never creates permission.",
+        "category": "invalid-business-logic",
+        "repairAction": "correct-owned-contract",
+        "repairStatus": "open"
+      },
+      {
+        "code": "FOUNDATION_INITIATOR_CONTRACT_MISMATCH",
+        "slice": "security",
+        "owners": [
+          "security",
+          "workflow"
+        ],
+        "path": "security.satisfiability.initiators.CIQ_Change_Request_A00",
+        "expected": [
+          "ciq_rmm",
+          "ciq_integration_service"
+        ],
+        "actual": [
+          "ciq_integration_service"
+        ],
+        "message": "Informational initiators disagree with executable start ownership/grants. Reconcile both contracts; the summary never creates permission.",
+        "category": "invalid-business-logic",
+        "repairAction": "correct-owned-contract",
+        "repairStatus": "open"
+      }
+    ],
+    "metrics": {
+      "checked": 47,
+      "reused": 0,
+      "units": [
+        {
+          "id": "data:CIQ_Case_A00",
+          "digest": "dc9b4dec0e15730bba58add7290ad51508ee10bc7a72e98e13e8ff4af75ac30c",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Open_Point_A00",
+          "digest": "bc222e3b41ee4913932b9250535165bc2fd0fceb4526c70637a8570e3ac216ce",
+          "reused": false
+        },
+        {
+          "id": "data:Rounds",
+          "digest": "ee1d94521852b51d8c408d11aafec2b32e75d67eb013294786b3e6231aa5b55c",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Change_Request_A00",
+          "digest": "f3f4bf544c89ac175f1a76ed26282605a2f2416571c34d6ad83bd1445e808c59",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Supplier_A00",
+          "digest": "d055f5ec421d48ef1fa7dbbf20dd3aae7c42ab123dd7a417be5e82fa09f4bb51",
+          "reused": false
+        },
+        {
+          "id": "data:Contacts",
+          "digest": "117879e3c2e14ea164bcc337cd5cdd77f049f37d8c8044046fa4d58f251c380d",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Config_Version_A00",
+          "digest": "7c47fc0ce95b1d07ca9bb75c962a53a85fa641b61e951ffbcb3432a57126d586",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Section_A00",
+          "digest": "2a3cc8ea7c0b3561fc84779da458bde63437140d304d06d2bcbfbf023785a64d",
+          "reused": false
+        },
+        {
+          "id": "data:Components",
+          "digest": "fd82b29766937e1008a27748ef4a1b5562bdc07d8d85026e76df7493b199c977",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Scope_Run_A00",
+          "digest": "58394be8da41c8ba2abb25684c0e4a24cdc4fb9edc384499c168a8fa9d57a417",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_RMES_Safety_A00",
+          "digest": "23d108e9c1358c9ca85ae2a23a1d9fcd64d6fa0d8b2c50f7133cb08a3c28b1ad",
+          "reused": false
+        },
+        {
+          "id": "data:Safety_Criteria",
+          "digest": "2407611274f915e75c6247a86d7102abc7e1275b993ee834859bb785bec02d4d",
+          "reused": false
+        },
+        {
+          "id": "data:Safety_Findings",
+          "digest": "2b5a6010560312e603cb5f13c5a79cb4fa24e5f117c7707a305a7b566e62318c",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_RMES_Regulatory_A00",
+          "digest": "aa3a42f555aa7242150cd3616ce11928c17375a73ac29208a997dfa23abb96a7",
+          "reused": false
+        },
+        {
+          "id": "data:Regulatory_Criteria",
+          "digest": "e64c5cb2e282a3641eda84635d3f4b305c24097c9904617ffdc2df2cd68f912a",
+          "reused": false
+        },
+        {
+          "id": "data:Regulatory_Findings",
+          "digest": "28fc6d0009d76a01072030445c191da78a5318d247ba9fc0159d76bb28e6dde3",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Internal_Note_A00",
+          "digest": "6a7d78f66c382fed0e07d5af759b2891524c302f6f8934c54cfb321c7c1eb4f3",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Audit_Event_A00",
+          "digest": "3ff8b799761a7bada12534e751b6675d29e7a0020c5948ba255518e875f10a5d",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Yes_No",
+          "digest": "5bb16449b6b3ca48bcfd4423f03a4affd9f72bff9caddd3499c21ac682bc5e5b",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Confirm",
+          "digest": "7d31b6e49f7abb8c307632b9dd5f3e6f0f7378b1eeb27efcb1c261a4499a0665",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Department",
+          "digest": "229befb382c4427d97ade5d5a1a584ed12cb862b72574621a95558715d72b6a7",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Review_Dept",
+          "digest": "16719d2da7cb0f9fd11cd35fe7e5c5f00e9ad5248bae106abd47500c25a24f58",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Decision",
+          "digest": "ae694b15ff7a68ecf80179c294ef766aa97b0e9ae5b6e864e1e481d77160b8c6",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_OP_Kind",
+          "digest": "9efffa024c1795436e36bc4b50812941fc18ccaf16f430a2765f8c28ab197e59",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_OP_Progress",
+          "digest": "1298a3d21f8d8e726bb80760f9d731ffa7670e2d80c4f3b90fc0fc5b09c587a4",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_OP_Outcome",
+          "digest": "65757651e383ffe2aae7cad50e34af17960b5a6126062d8e4816c829e1e30576",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Round_Outcome",
+          "digest": "c751efec4302b2acff5750fd1d03d4d55e598d4d1012ac2c17be2832eb16aa1f",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_CR_Outcome",
+          "digest": "93b489f4ae01b9c3d08bb704dbf2861ea6c45aa5f95f459b2cca322e34b27155",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Impact_Resolution",
+          "digest": "b1f0f9f32945bb15a192e229880db8127f9f5f5a36d4a4e96dce24286c468d12",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Config_Kind",
+          "digest": "2aff508ac97720722bf4f239b574c952527a0a7c41d8e3e6b0dea31b3c08616a",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Config_State",
+          "digest": "91d20fcdfba3794d22fda5208875d47cf2af18314b9b0eeeaf2814c9fdd1f8dc",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Release_Stage",
+          "digest": "189dbd6701e904f7a364f303e4501ede00da07b871658150d6b717c4558c53d2",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_RMES_Part",
+          "digest": "b4cb18cfef961f7439d3c2abf7a99c68ba6a89eb33cc7bded8f427cdafa7effb",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_RMES_Result",
+          "digest": "1e282751cd053ac1a88be930d5190f54ebe1b14de8156c7f6e8f44af0109660e",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_AI_State",
+          "digest": "c458813f17a75583368e276328822a4b2d004d40054243e4742a2c45d82310e9",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Supplier_Kind",
+          "digest": "7d0cf4a91fa1d1ced20507565e7aff9cb8ef9a95bc5cf711e1b921883f3d6412",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Contact_Role",
+          "digest": "19e006e46026a0f1b44ab5cc04fed3cfaac1cec506a781c2d5833de894c09473",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Country_Code",
+          "digest": "8e09659dd173e0c4adcbc12397a9e7baad628e0e13fb5da15eb79a95ecc95516",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Event_Category",
+          "digest": "05a602910a3d49bd0ac3747578902936eceace8ced48bf989760b2cb2af73b49",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Actor_Side",
+          "digest": "1cc0b3694d0cb839fb5dfe69a828c05956833fb6892a7945423aaecd29d0a998",
+          "reused": false
+        },
+        {
+          "id": "workflow:CIQ_Case_A00",
+          "digest": "4858c820fbc2a1f3f92e6656914a838eab3b8585da3ff103da742e9af8d627e0",
+          "reused": false
+        },
+        {
+          "id": "workflow:CIQ_Open_Point_A00",
+          "digest": "de226446dbec55d54a9d77b46f521c35e672dca4e072fc40073c1edf66f475b9",
+          "reused": false
+        },
+        {
+          "id": "workflow:CIQ_Change_Request_A00",
+          "digest": "cefbf6fa44ef98e73830fe326e392d6c6d8ab9361d3ace8ee4bc6e381a9fa5c0",
+          "reused": false
+        },
+        {
+          "id": "automation:ciq-z1-case-completed-notification-log",
+          "digest": "1923abeae3b495a976c5b4e77d88072cb859cc4e26a9ce28850883ea35fd004b",
+          "reused": false
+        },
+        {
+          "id": "automation:ciq-z2-cancellation-neutral-email",
+          "digest": "21af65f96ac2c7f70f78c492788841b4a328c78d5d4f9752cdb966d145a8b50d",
+          "reused": false
+        },
+        {
+          "id": "automation:ciq-z3-case-sla-breach-audit",
+          "digest": "5deeb14185f578f9cc850a7bd6d6e1c75dfc75d1cf50babf6cd58fdd360c2aad",
+          "reused": false
+        },
+        {
+          "id": "automation:ciq-z4-open-point-sla-breach-audit",
+          "digest": "2974ea1cb95801a27240b074eff55bdfa0f050e3f34694387f9af08f2b8a4a74",
+          "reused": false
+        }
+      ],
+      "durationMs": 59.00195800000006
+    }
+  },
+  "validation": {
+    "version": 1,
+    "status": "draft",
+    "compiler": "foundation-contract-v1",
+    "compilerDigest": "87251d7f3bd70019de5ff2045c5e3fa89f3c4250958ed777170c66679bef8ed7",
+    "inputDigest": "88a9ad367e59c190bb9994bd61ce83ec0b98bfc357664cc7e1122ba1c29753ab",
+    "findings": [
+      {
+        "slice": "automations",
+        "code": "FOUNDATION_MAPPING_EXPRESSION",
+        "path": "automations.ciq-z1-case-completed-notification-log.action.field_map.Case_Item_Id",
+        "message": "expected String, expression returns Reference",
+        "category": "invalid-business-logic",
+        "owners": [
+          "automations"
+        ],
+        "repairAction": "correct-owned-contract",
+        "repairStatus": "open"
+      },
+      {
+        "slice": "automations",
+        "code": "FOUNDATION_MAPPING_EXPRESSION",
+        "path": "automations.ciq-z1-case-completed-notification-log.action.field_map.Object_Item_Id",
+        "message": "expected String, expression returns Reference",
+        "category": "invalid-business-logic",
+        "owners": [
+          "automations"
+        ],
+        "repairAction": "correct-owned-contract",
+        "repairStatus": "open"
+      },
+      {
+        "slice": "automations",
+        "code": "FOUNDATION_ACTION_UNSUPPORTED",
+        "path": "automations.ciq-z2-cancellation-neutral-email.action.type",
+        "message": "no verified foundation action adapter for 'notify'",
+        "category": "unsupported-capability",
+        "owners": [
+          "platform"
+        ],
+        "repairAction": "implement-adapter",
+        "repairStatus": "open"
+      },
+      {
+        "slice": "automations",
+        "code": "FOUNDATION_MAPPING_EXPRESSION",
+        "path": "automations.ciq-z3-case-sla-breach-audit.action.field_map.Case_Item_Id",
+        "message": "expected String, expression returns Reference",
+        "category": "invalid-business-logic",
+        "owners": [
+          "automations"
+        ],
+        "repairAction": "correct-owned-contract",
+        "repairStatus": "open"
+      },
+      {
+        "slice": "automations",
+        "code": "FOUNDATION_MAPPING_EXPRESSION",
+        "path": "automations.ciq-z3-case-sla-breach-audit.action.field_map.Object_Item_Id",
+        "message": "expected String, expression returns Reference",
+        "category": "invalid-business-logic",
+        "owners": [
+          "automations"
+        ],
+        "repairAction": "correct-owned-contract",
+        "repairStatus": "open"
+      },
+      {
+        "slice": "automations",
+        "code": "FOUNDATION_MAPPING_EXPRESSION",
+        "path": "automations.ciq-z4-open-point-sla-breach-audit.action.field_map.Object_Item_Id",
+        "message": "expected String, expression returns Reference",
+        "category": "invalid-business-logic",
+        "owners": [
+          "automations"
+        ],
+        "repairAction": "correct-owned-contract",
+        "repairStatus": "open"
+      },
+      {
+        "code": "FOUNDATION_INITIATOR_CONTRACT_MISMATCH",
+        "slice": "security",
+        "owners": [
+          "security",
+          "workflow"
+        ],
+        "path": "security.satisfiability.initiators.CIQ_Open_Point_A00",
+        "expected": [
+          "ciq_rmm",
+          "ciq_regulatory_reviewer",
+          "ciq_safety_reviewer",
+          "ciq_qm_reviewer",
+          "ciq_microbiology_reviewer",
+          "ciq_sustainability_reviewer"
+        ],
+        "actual": [
+          "ciq_rmm"
+        ],
+        "message": "Informational initiators disagree with executable start ownership/grants. Reconcile both contracts; the summary never creates permission.",
+        "category": "invalid-business-logic",
+        "repairAction": "correct-owned-contract",
+        "repairStatus": "open"
+      },
+      {
+        "code": "FOUNDATION_INITIATOR_CONTRACT_MISMATCH",
+        "slice": "security",
+        "owners": [
+          "security",
+          "workflow"
+        ],
+        "path": "security.satisfiability.initiators.CIQ_Change_Request_A00",
+        "expected": [
+          "ciq_rmm",
+          "ciq_integration_service"
+        ],
+        "actual": [
+          "ciq_integration_service"
+        ],
+        "message": "Informational initiators disagree with executable start ownership/grants. Reconcile both contracts; the summary never creates permission.",
+        "category": "invalid-business-logic",
+        "repairAction": "correct-owned-contract",
+        "repairStatus": "open"
+      }
+    ],
+    "metrics": {
+      "checked": 47,
+      "reused": 0,
+      "units": [
+        {
+          "id": "data:CIQ_Case_A00",
+          "digest": "dc9b4dec0e15730bba58add7290ad51508ee10bc7a72e98e13e8ff4af75ac30c",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Open_Point_A00",
+          "digest": "bc222e3b41ee4913932b9250535165bc2fd0fceb4526c70637a8570e3ac216ce",
+          "reused": false
+        },
+        {
+          "id": "data:Rounds",
+          "digest": "ee1d94521852b51d8c408d11aafec2b32e75d67eb013294786b3e6231aa5b55c",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Change_Request_A00",
+          "digest": "f3f4bf544c89ac175f1a76ed26282605a2f2416571c34d6ad83bd1445e808c59",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Supplier_A00",
+          "digest": "d055f5ec421d48ef1fa7dbbf20dd3aae7c42ab123dd7a417be5e82fa09f4bb51",
+          "reused": false
+        },
+        {
+          "id": "data:Contacts",
+          "digest": "117879e3c2e14ea164bcc337cd5cdd77f049f37d8c8044046fa4d58f251c380d",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Config_Version_A00",
+          "digest": "7c47fc0ce95b1d07ca9bb75c962a53a85fa641b61e951ffbcb3432a57126d586",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Section_A00",
+          "digest": "2a3cc8ea7c0b3561fc84779da458bde63437140d304d06d2bcbfbf023785a64d",
+          "reused": false
+        },
+        {
+          "id": "data:Components",
+          "digest": "fd82b29766937e1008a27748ef4a1b5562bdc07d8d85026e76df7493b199c977",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Scope_Run_A00",
+          "digest": "58394be8da41c8ba2abb25684c0e4a24cdc4fb9edc384499c168a8fa9d57a417",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_RMES_Safety_A00",
+          "digest": "23d108e9c1358c9ca85ae2a23a1d9fcd64d6fa0d8b2c50f7133cb08a3c28b1ad",
+          "reused": false
+        },
+        {
+          "id": "data:Safety_Criteria",
+          "digest": "2407611274f915e75c6247a86d7102abc7e1275b993ee834859bb785bec02d4d",
+          "reused": false
+        },
+        {
+          "id": "data:Safety_Findings",
+          "digest": "2b5a6010560312e603cb5f13c5a79cb4fa24e5f117c7707a305a7b566e62318c",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_RMES_Regulatory_A00",
+          "digest": "aa3a42f555aa7242150cd3616ce11928c17375a73ac29208a997dfa23abb96a7",
+          "reused": false
+        },
+        {
+          "id": "data:Regulatory_Criteria",
+          "digest": "e64c5cb2e282a3641eda84635d3f4b305c24097c9904617ffdc2df2cd68f912a",
+          "reused": false
+        },
+        {
+          "id": "data:Regulatory_Findings",
+          "digest": "28fc6d0009d76a01072030445c191da78a5318d247ba9fc0159d76bb28e6dde3",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Internal_Note_A00",
+          "digest": "6a7d78f66c382fed0e07d5af759b2891524c302f6f8934c54cfb321c7c1eb4f3",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Audit_Event_A00",
+          "digest": "3ff8b799761a7bada12534e751b6675d29e7a0020c5948ba255518e875f10a5d",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Yes_No",
+          "digest": "5bb16449b6b3ca48bcfd4423f03a4affd9f72bff9caddd3499c21ac682bc5e5b",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Confirm",
+          "digest": "7d31b6e49f7abb8c307632b9dd5f3e6f0f7378b1eeb27efcb1c261a4499a0665",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Department",
+          "digest": "229befb382c4427d97ade5d5a1a584ed12cb862b72574621a95558715d72b6a7",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Review_Dept",
+          "digest": "16719d2da7cb0f9fd11cd35fe7e5c5f00e9ad5248bae106abd47500c25a24f58",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Decision",
+          "digest": "ae694b15ff7a68ecf80179c294ef766aa97b0e9ae5b6e864e1e481d77160b8c6",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_OP_Kind",
+          "digest": "9efffa024c1795436e36bc4b50812941fc18ccaf16f430a2765f8c28ab197e59",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_OP_Progress",
+          "digest": "1298a3d21f8d8e726bb80760f9d731ffa7670e2d80c4f3b90fc0fc5b09c587a4",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_OP_Outcome",
+          "digest": "65757651e383ffe2aae7cad50e34af17960b5a6126062d8e4816c829e1e30576",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Round_Outcome",
+          "digest": "c751efec4302b2acff5750fd1d03d4d55e598d4d1012ac2c17be2832eb16aa1f",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_CR_Outcome",
+          "digest": "93b489f4ae01b9c3d08bb704dbf2861ea6c45aa5f95f459b2cca322e34b27155",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Impact_Resolution",
+          "digest": "b1f0f9f32945bb15a192e229880db8127f9f5f5a36d4a4e96dce24286c468d12",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Config_Kind",
+          "digest": "2aff508ac97720722bf4f239b574c952527a0a7c41d8e3e6b0dea31b3c08616a",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Config_State",
+          "digest": "91d20fcdfba3794d22fda5208875d47cf2af18314b9b0eeeaf2814c9fdd1f8dc",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Release_Stage",
+          "digest": "189dbd6701e904f7a364f303e4501ede00da07b871658150d6b717c4558c53d2",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_RMES_Part",
+          "digest": "b4cb18cfef961f7439d3c2abf7a99c68ba6a89eb33cc7bded8f427cdafa7effb",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_RMES_Result",
+          "digest": "1e282751cd053ac1a88be930d5190f54ebe1b14de8156c7f6e8f44af0109660e",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_AI_State",
+          "digest": "c458813f17a75583368e276328822a4b2d004d40054243e4742a2c45d82310e9",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Supplier_Kind",
+          "digest": "7d0cf4a91fa1d1ced20507565e7aff9cb8ef9a95bc5cf711e1b921883f3d6412",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Contact_Role",
+          "digest": "19e006e46026a0f1b44ab5cc04fed3cfaac1cec506a781c2d5833de894c09473",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Country_Code",
+          "digest": "8e09659dd173e0c4adcbc12397a9e7baad628e0e13fb5da15eb79a95ecc95516",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Event_Category",
+          "digest": "05a602910a3d49bd0ac3747578902936eceace8ced48bf989760b2cb2af73b49",
+          "reused": false
+        },
+        {
+          "id": "data:CIQ_Actor_Side",
+          "digest": "1cc0b3694d0cb839fb5dfe69a828c05956833fb6892a7945423aaecd29d0a998",
+          "reused": false
+        },
+        {
+          "id": "workflow:CIQ_Case_A00",
+          "digest": "4858c820fbc2a1f3f92e6656914a838eab3b8585da3ff103da742e9af8d627e0",
+          "reused": false
+        },
+        {
+          "id": "workflow:CIQ_Open_Point_A00",
+          "digest": "de226446dbec55d54a9d77b46f521c35e672dca4e072fc40073c1edf66f475b9",
+          "reused": false
+        },
+        {
+          "id": "workflow:CIQ_Change_Request_A00",
+          "digest": "cefbf6fa44ef98e73830fe326e392d6c6d8ab9361d3ace8ee4bc6e381a9fa5c0",
+          "reused": false
+        },
+        {
+          "id": "automation:ciq-z1-case-completed-notification-log",
+          "digest": "1923abeae3b495a976c5b4e77d88072cb859cc4e26a9ce28850883ea35fd004b",
+          "reused": false
+        },
+        {
+          "id": "automation:ciq-z2-cancellation-neutral-email",
+          "digest": "21af65f96ac2c7f70f78c492788841b4a328c78d5d4f9752cdb966d145a8b50d",
+          "reused": false
+        },
+        {
+          "id": "automation:ciq-z3-case-sla-breach-audit",
+          "digest": "5deeb14185f578f9cc850a7bd6d6e1c75dfc75d1cf50babf6cd58fdd360c2aad",
+          "reused": false
+        },
+        {
+          "id": "automation:ciq-z4-open-point-sla-breach-audit",
+          "digest": "2974ea1cb95801a27240b074eff55bdfa0f050e3f34694387f9af08f2b8a4a74",
+          "reused": false
+        }
+      ],
+      "durationMs": 60.118000000000166
+    }
+  }
+}

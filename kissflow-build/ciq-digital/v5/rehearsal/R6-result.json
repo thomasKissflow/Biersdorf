@@ -1,0 +1,341 @@
+{
+ "rehearsal": "R6",
+ "flow": "CIQ_ZZ_Spike_Point_A00",
+ "what": "add-field Spike_Assignee (MultiUser) with per-step levels; \"Spike review\" assigned FROM that field",
+ "at": "2026-10-14T17:56:50.460Z",
+ "apply": true,
+ "liveMetaVersion": "1791998744250418",
+ "livePublishedAt": "2026-10-14T17:25:44Z",
+ "mutation": {
+  "field": {
+   "field": "Spike Assignee",
+   "id": "Spike_Assignee",
+   "column": "Column_h33jqf",
+   "type": "MultiUser",
+   "ref": null,
+   "stepPermissions": 5
+  },
+  "strippedNonTaskPerms": [
+   "SendBackToInitiator:Permission_lt6o30"
+  ],
+  "resourceWas": {
+   "Id": "Resource_1a0ot8o",
+   "Kind": "Resource",
+   "ValueType": "AppRole",
+   "DisplayValue": "Admin / Developer",
+   "Value": "RoEK3_3Jy9XU",
+   "Activity": "Activity_2yluch"
+  },
+  "resourceNow": {
+   "Id": "Resource_1a0ot8o",
+   "Kind": "Resource",
+   "ValueType": "Field",
+   "DisplayValue": "Spike Assignee",
+   "Value": "Spike_Assignee",
+   "Field": "Spike_Assignee",
+   "Activity": "Activity_2yluch"
+  }
+ },
+ "diff": {
+  "added": [
+   "Row_h33jqf Row",
+   "Column_h33jqf Column",
+   "QueryDefinition_20wezh QueryDefinition",
+   "Spike_Assignee Field Spike Assignee",
+   "Permission_1g7rrct Permission",
+   "Permission_7q93ly Permission",
+   "Permission_3edase Permission",
+   "Permission_1xgk266 Permission"
+  ],
+  "removed": [],
+  "changed": [
+   {
+    "entity": "CIQ_ZZ_Spike_Point_A00 Model CIQ ZZ Spike Point",
+    "props": {
+     "Model::Field": {
+      "was": [
+       "Round_No",
+       "Question_Text",
+       "Awaiting_Response",
+       "Response_Text",
+       "Due_Date",
+       "To_Supplier"
+      ],
+      "now": [
+       "Round_No",
+       "Question_Text",
+       "Awaiting_Response",
+       "Response_Text",
+       "Due_Date",
+       "To_Supplier",
+       "Spike_Assignee"
+      ]
+     }
+    }
+   },
+   {
+    "entity": "Column_aie672 Column Details",
+    "props": {
+     "Column::Row": {
+      "was": [
+       "Row_aicy1k",
+       "Row_aicy1l",
+       "Row_aicy1m",
+       "Row_aicy1n",
+       "Row_aicy1o"
+      ],
+      "now": [
+       "Row_aicy1k",
+       "Row_aicy1l",
+       "Row_aicy1m",
+       "Row_aicy1n",
+       "Row_aicy1o",
+       "Row_h33jqf"
+      ]
+     }
+    }
+   },
+   {
+    "entity": "Activity_1wjqod Activity Raise spike point",
+    "props": {
+     "Activity::Permission": {
+      "was": [
+       "Permission_bbnwf7",
+       "Permission_mdumq5",
+       "Permission_ln2nzf",
+       "Permission_kdrfut",
+       "Permission_1oxqn2i",
+       "Permission_dibfit",
+       "Permission_g6b77k"
+      ],
+      "now": [
+       "Permission_bbnwf7",
+       "Permission_mdumq5",
+       "Permission_ln2nzf",
+       "Permission_kdrfut",
+       "Permission_1oxqn2i",
+       "Permission_dibfit",
+       "Permission_g6b77k",
+       "Permission_1g7rrct"
+      ]
+     }
+    }
+   },
+   {
+    "entity": "Activity_1nm6syq Activity Spike waiting",
+    "props": {
+     "Activity::Permission": {
+      "was": [
+       "Permission_ywxaa4",
+       "Permission_1cxg0ye",
+       "Permission_198c1uc",
+       "Permission_1axcu32",
+       "Permission_gg7zbn",
+       "Permission_113ktdq",
+       "Permission_13rkl2h"
+      ],
+      "now": [
+       "Permission_ywxaa4",
+       "Permission_1cxg0ye",
+       "Permission_198c1uc",
+       "Permission_1axcu32",
+       "Permission_gg7zbn",
+       "Permission_113ktdq",
+       "Permission_13rkl2h",
+       "Permission_7q93ly"
+      ]
+     }
+    }
+   },
+   {
+    "entity": "Resource_1a0ot8o Resource",
+    "props": {
+     "ValueType": {
+      "was": "AppRole",
+      "now": "Field"
+     },
+     "DisplayValue": {
+      "was": "Admin / Developer",
+      "now": "Spike Assignee"
+     },
+     "Value": {
+      "was": "RoEK3_3Jy9XU",
+      "now": "Spike_Assignee"
+     },
+     "Field": {
+      "now": "Spike_Assignee"
+     }
+    }
+   },
+   {
+    "entity": "Activity_2yluch Activity Spike review",
+    "props": {
+     "Activity::Permission": {
+      "was": [
+       "Permission_y2zz50",
+       "Permission_18lk84u",
+       "Permission_18eeqp8",
+       "Permission_16lh19i",
+       "Permission_c4c6i3",
+       "Permission_109ni8m",
+       "Permission_12xn9xd"
+      ],
+      "now": [
+       "Permission_y2zz50",
+       "Permission_18lk84u",
+       "Permission_18eeqp8",
+       "Permission_16lh19i",
+       "Permission_c4c6i3",
+       "Permission_109ni8m",
+       "Permission_12xn9xd",
+       "Permission_3edase"
+      ]
+     }
+    }
+   },
+   {
+    "entity": "Activity_fdurmy Activity End",
+    "props": {
+     "Activity::Permission": {
+      "was": [
+       "Permission_c4pdj8",
+       "Permission_13mmxji",
+       "Permission_mg453g",
+       "Permission_11mjqo6",
+       "Permission_75evwr",
+       "Permission_ebcwmu",
+       "Permission_gzcobl"
+      ],
+      "now": [
+       "Permission_c4pdj8",
+       "Permission_13mmxji",
+       "Permission_mg453g",
+       "Permission_11mjqo6",
+       "Permission_75evwr",
+       "Permission_ebcwmu",
+       "Permission_gzcobl",
+       "Permission_1xgk266"
+      ]
+     }
+    }
+   }
+  ]
+ },
+ "diffSummary": {
+  "added": 8,
+  "removed": 0,
+  "changed": 7
+ },
+ "preflight": {
+  "errors": [],
+  "warnings": [
+   "NO_ID",
+   "ORPHAN_ENTITY"
+  ]
+ },
+ "pre": {
+  "oldItemsBefore": {
+   "PkEKOEvnYp7X": {
+    "step": "Spike review",
+    "assigned": [
+     {
+      "_id": "RoEKHLGDsV2J",
+      "Name": "CIQ ZZ Spike Role B",
+      "Kind": "AppRole"
+     }
+    ]
+   },
+   "PkEKIVxRRM9x": {
+    "step": "Spike review",
+    "assigned": [
+     {
+      "_id": "RoEKHLGDsV2J",
+      "Name": "CIQ ZZ Spike Role B",
+      "Kind": "AppRole"
+     }
+    ]
+   }
+  }
+ },
+ "write": {
+  "ok": true,
+  "putDraft": 200,
+  "publish": 200,
+  "publishedAt": "2026-10-14T17:56:54Z"
+ },
+ "readBack": {
+  "metaVersion": "1792000614989777",
+  "publishedAt": "2026-10-14T17:56:54Z",
+  "diffVsSent": {
+   "added": [],
+   "removed": [],
+   "changed": []
+  },
+  "steps": [
+   "Raise spike point [Activity_1wjqod]  perms=8",
+   "Spike waiting [Activity_1nm6syq] AppRole:Admin / Developer if To_Supplier = \"Yes\" perms=8",
+   "Spike review [Activity_2yluch] Field:Spike Assignee perms=8",
+   "End [Activity_fdurmy]  perms=8"
+  ],
+  "check": {
+   "resource": [
+    {
+     "Id": "Resource_1a0ot8o",
+     "Kind": "Resource",
+     "ValueType": "Field",
+     "DisplayValue": "Spike Assignee",
+     "Value": "Spike_Assignee",
+     "Field": "Spike_Assignee",
+     "Activity": "Activity_2yluch"
+    }
+   ],
+   "field": {
+    "Id": "Spike_Assignee",
+    "Kind": "Field",
+    "Type": "MultiUser",
+    "Name": "Spike Assignee",
+    "Model": "CIQ_ZZ_Spike_Point_A00",
+    "Column": "Column_h33jqf",
+    "Field::QueryDefinition": [
+     "QueryDefinition_20wezh"
+    ]
+   },
+   "qd": [
+    {
+     "Id": "QueryDefinition_20wezh",
+     "Kind": "QueryDefinition",
+     "Field": "Spike_Assignee",
+     "LHSModel": "User",
+     "FlowType": "User",
+     "LookupField": [],
+     "HiddenField": []
+    }
+   ]
+  }
+ },
+ "publishedFields": {
+  "status": 200,
+  "ids": [
+   "Round_No",
+   "Question_Text",
+   "Awaiting_Response",
+   "Response_Text",
+   "Due_Date",
+   "To_Supplier",
+   "Spike_Assignee"
+  ]
+ },
+ "run": {
+  "item": "PkEMwT11l9xu",
+  "create": 200,
+  "storedAtCreate": [
+   {
+    "_id": "UsEJUfjYLM8Y",
+    "Name": "Thomas",
+    "Kind": "User"
+   }
+  ],
+  "submitStart": 403,
+  "submitStartErr": "You don't have permission to submit this item anymore."
+ }
+}

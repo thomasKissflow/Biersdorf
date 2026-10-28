@@ -1,0 +1,310 @@
+{
+ "CIQ_Service_Request_A00": {
+  "Id": "CIQ_Service_Request_A00",
+  "Name": "CIQ Service Request",
+  "Kind": "Model",
+  "FlowType": "Form",
+  "Description": "The Workbench's command channel: a user states a request in a row; the CIQ Sync Service checks it and acts (Done / Refused / Failed).",
+  "_application_id": "CIQ_Digital_A00",
+  "Model::Row": [
+   "Row_1vjyklb"
+  ],
+  "Model::Field": [
+   "Request_Key",
+   "Request_Code",
+   "Case_Code",
+   "Object_Key",
+   "Payload_JSON",
+   "Request_Status",
+   "Result_Note",
+   "Result_Item_Id",
+   "Processed_At",
+   "Attempt_No"
+  ]
+ },
+ "Row_1vjyklb": {
+  "Id": "Row_1vjyklb",
+  "Kind": "Row",
+  "Model": "CIQ_Service_Request_A00",
+  "Row::Column": [
+   "Column_1vjyklb"
+  ]
+ },
+ "Column_1vjyklb": {
+  "Id": "Column_1vjyklb",
+  "Kind": "Column",
+  "Type": "Section",
+  "Name": "Details",
+  "Start": 0,
+  "End": 6,
+  "Row": "Row_1vjyklb",
+  "Column::Row": [
+   "Row_1vjxcft",
+   "Row_1vjxcfu",
+   "Row_1vjxcfv",
+   "Row_1vjxcfw",
+   "Row_1vjxcfx",
+   "Row_1vjxcfy",
+   "Row_1vjxcfz"
+  ]
+ },
+ "Row_1vjxcft": {
+  "Id": "Row_1vjxcft",
+  "Kind": "Row",
+  "Column": "Column_1vjyklb",
+  "Row::Column": [
+   "Column_14gwiw5",
+   "Column_1kxme0n"
+  ]
+ },
+ "Column_14gwiw5": {
+  "Id": "Column_14gwiw5",
+  "Kind": "Column",
+  "Type": "Field",
+  "Start": 0,
+  "End": 3,
+  "Row": "Row_1vjxcft",
+  "Column::Field": [
+   "Request_Key"
+  ]
+ },
+ "Column_1kxme0n": {
+  "Id": "Column_1kxme0n",
+  "Kind": "Column",
+  "Type": "Field",
+  "Start": 3,
+  "End": 6,
+  "Row": "Row_1vjxcft",
+  "Column::Field": [
+   "Request_Code"
+  ]
+ },
+ "Row_1vjxcfu": {
+  "Id": "Row_1vjxcfu",
+  "Kind": "Row",
+  "Column": "Column_1vjyklb",
+  "Row::Column": [
+   "Column_ma3szu",
+   "Column_1gjhsqb"
+  ]
+ },
+ "Column_ma3szu": {
+  "Id": "Column_ma3szu",
+  "Kind": "Column",
+  "Type": "Field",
+  "Start": 0,
+  "End": 3,
+  "Row": "Row_1vjxcfu",
+  "Column::Field": [
+   "Case_Code"
+  ]
+ },
+ "Column_1gjhsqb": {
+  "Id": "Column_1gjhsqb",
+  "Kind": "Column",
+  "Type": "Field",
+  "Start": 3,
+  "End": 6,
+  "Row": "Row_1vjxcfu",
+  "Column::Field": [
+   "Object_Key"
+  ]
+ },
+ "Row_1vjxcfv": {
+  "Id": "Row_1vjxcfv",
+  "Kind": "Row",
+  "Column": "Column_1vjyklb",
+  "Row::Column": [
+   "Column_2mk42f"
+  ]
+ },
+ "Column_2mk42f": {
+  "Id": "Column_2mk42f",
+  "Kind": "Column",
+  "Type": "Field",
+  "Start": 0,
+  "End": 6,
+  "Row": "Row_1vjxcfv",
+  "Column::Field": [
+   "Payload_JSON"
+  ]
+ },
+ "Row_1vjxcfw": {
+  "Id": "Row_1vjxcfw",
+  "Kind": "Row",
+  "Column": "Column_1vjyklb",
+  "Row::Column": [
+   "Column_1j89og"
+  ]
+ },
+ "Column_1j89og": {
+  "Id": "Column_1j89og",
+  "Kind": "Column",
+  "Type": "Field",
+  "Start": 0,
+  "End": 3,
+  "Row": "Row_1vjxcfw",
+  "Column::Field": [
+   "Request_Status"
+  ]
+ },
+ "Row_1vjxcfx": {
+  "Id": "Row_1vjxcfx",
+  "Kind": "Row",
+  "Column": "Column_1vjyklb",
+  "Row::Column": [
+   "Column_15r50nc"
+  ]
+ },
+ "Column_15r50nc": {
+  "Id": "Column_15r50nc",
+  "Kind": "Column",
+  "Type": "Field",
+  "Start": 0,
+  "End": 6,
+  "Row": "Row_1vjxcfx",
+  "Column::Field": [
+   "Result_Note"
+  ]
+ },
+ "Row_1vjxcfy": {
+  "Id": "Row_1vjxcfy",
+  "Kind": "Row",
+  "Column": "Column_1vjyklb",
+  "Row::Column": [
+   "Column_j7mzpp",
+   "Column_1wcidjk"
+  ]
+ },
+ "Column_j7mzpp": {
+  "Id": "Column_j7mzpp",
+  "Kind": "Column",
+  "Type": "Field",
+  "Start": 0,
+  "End": 3,
+  "Row": "Row_1vjxcfy",
+  "Column::Field": [
+   "Result_Item_Id"
+  ]
+ },
+ "Column_1wcidjk": {
+  "Id": "Column_1wcidjk",
+  "Kind": "Column",
+  "Type": "Field",
+  "Start": 3,
+  "End": 6,
+  "Row": "Row_1vjxcfy",
+  "Column::Field": [
+   "Processed_At"
+  ]
+ },
+ "Row_1vjxcfz": {
+  "Id": "Row_1vjxcfz",
+  "Kind": "Row",
+  "Column": "Column_1vjyklb",
+  "Row::Column": [
+   "Column_1zvt3j"
+  ]
+ },
+ "Column_1zvt3j": {
+  "Id": "Column_1zvt3j",
+  "Kind": "Column",
+  "Type": "Field",
+  "Start": 0,
+  "End": 3,
+  "Row": "Row_1vjxcfz",
+  "Column::Field": [
+   "Attempt_No"
+  ]
+ },
+ "Request_Key": {
+  "Id": "Request_Key",
+  "Kind": "Field",
+  "Type": "Text",
+  "Name": "Request Key",
+  "Model": "CIQ_Service_Request_A00",
+  "Column": "Column_14gwiw5",
+  "Required": true
+ },
+ "Request_Code": {
+  "Id": "Request_Code",
+  "Kind": "Field",
+  "Type": "Text",
+  "Name": "Request Code",
+  "Model": "CIQ_Service_Request_A00",
+  "Column": "Column_1kxme0n"
+ },
+ "Case_Code": {
+  "Id": "Case_Code",
+  "Kind": "Field",
+  "Type": "Text",
+  "Name": "Case Code",
+  "Model": "CIQ_Service_Request_A00",
+  "Column": "Column_ma3szu"
+ },
+ "Object_Key": {
+  "Id": "Object_Key",
+  "Kind": "Field",
+  "Type": "Text",
+  "Name": "Object Key",
+  "Model": "CIQ_Service_Request_A00",
+  "Column": "Column_1gjhsqb"
+ },
+ "Payload_JSON": {
+  "Id": "Payload_JSON",
+  "Kind": "Field",
+  "Type": "Textarea",
+  "Name": "Payload JSON",
+  "Model": "CIQ_Service_Request_A00",
+  "Column": "Column_2mk42f"
+ },
+ "Request_Status": {
+  "Id": "Request_Status",
+  "Kind": "Field",
+  "Type": "Select",
+  "Name": "Request Status",
+  "Model": "CIQ_Service_Request_A00",
+  "Column": "Column_1j89og",
+  "ReferredList": "CIQ_Request_Status_A00"
+ },
+ "Result_Note": {
+  "Id": "Result_Note",
+  "Kind": "Field",
+  "Type": "Textarea",
+  "Name": "Result Note",
+  "Model": "CIQ_Service_Request_A00",
+  "Column": "Column_15r50nc"
+ },
+ "Result_Item_Id": {
+  "Id": "Result_Item_Id",
+  "Kind": "Field",
+  "Type": "Text",
+  "Name": "Result Item Id",
+  "Model": "CIQ_Service_Request_A00",
+  "Column": "Column_j7mzpp"
+ },
+ "Processed_At": {
+  "Id": "Processed_At",
+  "Kind": "Field",
+  "Type": "DateTime",
+  "Name": "Processed At",
+  "Model": "CIQ_Service_Request_A00",
+  "Column": "Column_1wcidjk"
+ },
+ "Attempt_No": {
+  "Id": "Attempt_No",
+  "Kind": "Field",
+  "Type": "Number",
+  "Name": "Attempt No",
+  "Model": "CIQ_Service_Request_A00",
+  "Column": "Column_1zvt3j"
+ },
+ "Root": "CIQ_Service_Request_A00",
+ "PublishedAt": "2026-10-14T18:36:54Z",
+ "PublishedBy": {
+  "_id": "UsEJUfjYLM8Y",
+  "Name": "Thomas",
+  "Kind": "User"
+ },
+ "_meta_version": "1792003014398294"
+}

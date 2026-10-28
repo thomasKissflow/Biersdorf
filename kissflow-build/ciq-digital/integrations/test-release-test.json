@@ -1,0 +1,39 @@
+{
+ "key": "release",
+ "id": "CIQ_release_requested_Final_releas_A00",
+ "at": "2026-10-20T12:49:56.128Z",
+ "mode": "test",
+ "steps": [
+  {
+   "step": "Action_release_read_app_item",
+   "status": 200,
+   "ok": true,
+   "answer": "{\"_id\":\"CIQ_Case_A00\",\"Data\":[{\"_id\":\"PkEP3NegdbiE\",\"_activity_instance_id\":[\"PkEP3Wp6oJ06\"],\"_current_assigned_to\":[{\"_id\":\"RoEKl89I5nGx\",\"Name\":\"Integration service\",\"Kind\":\"AppRole\"}],\"_status\":\"InProgress\",\"Name\":\"CIQ Case from Thomas\",\"_created_at\":\"2026-10-20T12:38:33Z\",\"_created_by\":{\"_id\":\"UsEJUfjYLM8Y\",\"Name\":\"Thomas\",\"Kind\":\"User\"},\"Case_Code\":\"ZZT-C2\",\"Cycle_No\":1,\"Case_Title\":\"ZZT-C2 test case (fictional)\",\"Trade_Name\":\"ZZT test material (fictional)\",\"Main_INCI\":\"Tocopherol\",\"BDF_Material_No\":\"ZZT-C2-RM\",\"Supplier_Code\":\"ZZT-SUP-DEV\",\"Supplier_Legal_Name\":\"ZZT Dev Supplier (fictional)\",\"Case_Test\":\"Yes\",\"BDF_Contact_Name\":\"ZZT RMM (fictional)\",\"BDF_Contact_Email\":\"rmm.zzt@example.com\",\"Markets_Label\":\"EU\",\"Template_Label\":\"ZZT template (fictional)\",\"Supplier_Due_Date\":\"2026-11-03\",\"Case_Contacts_JSON\":\"[{\\\"id\\\":\\\"UsEJUfjYLM8Y\\\",\\\"name\\\":\\\"ZZT Contact (fictional)\\\",\\\"email\\\":\\\"zzt.contact@example.com\\\",\\\"title\\\":\\\"\\\",\\\"mayConfirm\\\":true}]\",\"Rule_Set_Version\":\"ZZT-RS\",\"Portal_Request_Item_Id\":\"PkEP3ObgLVt9\",\"Completeness_Confirm\":\"Confirmed\",\"Completeness_By_Name\":\"ZZT Contact (fictional)\",\"Completeness_By_Email\":\"zzt.contact@example.com\",\"Completeness_By_Role\":\"Supplier\",\"Completeness_At\":\"2026-10-20T12:45:23Z\",\"Hold_For_Open_Items\":\"Yes\",\"Open_Items_Gate_Release\":\"\",\"Open_Items_Gate_Close\":\"\",\"REG_Gate\":\"\",\"SAF_Gate\":\"\",\"QM_Gate\":\"\",\"MIC_Gate\":\"\",\"SUS_Gate\":\"\",\"RMM_Gate\":\"\",\"Template_Version\":\"ZZT-TPL\",\"Case_Phase\":\"Review\",\"Config_Bundle_JSON\":\"{\\\"format\\\":\\\"ciq-"
+  },
+  {
+   "step": "Action_release_pick",
+   "status": 200,
+   "ok": true,
+   "answer": "{\"caseId\":\"PkEP3NegdbiE\",\"releaseRequestedAt\":\"2026-10-20T12:50:06Z\",\"_id\":\"PkEP3ObgLVt9\",\"Release_Flag\":\"Requested\",\"Request_Locked\":\"Yes\",\"Case_Phase_Label\":\"Awaiting your final release\",\"Release_At\":null,\"Release_By_Name\":null,\"releaseContacts\":[{\"_id\":\"UsEJUfjYLM8Y\"}]}"
+  },
+  {
+   "step": "Action_RR_stamp_case",
+   "status": 200,
+   "ok": true,
+   "answer": "{\"Release_Requested_At\":\"2026-10-20T12:50:06Z\",\"_modified_at\":\"2026-10-20T12:50:13Z\",\"_id\":\"PkEP3NegdbiE\"}"
+  },
+  {
+   "step": "Action_RR_update_request",
+   "status": 200,
+   "ok": true,
+   "answer": "{\"Case_Phase_Label\":\"Awaiting your final release\",\"Request_Locked\":\"Yes\",\"Release_Flag\":\"Requested\",\"_modified_at\":\"2026-10-20T12:50:29Z\",\"_id\":\"PkEP3ObgLVt9\"}"
+  }
+ ],
+ "tested": [
+  "Action_release_read_app_item:tested",
+  "Action_release_pick:tested",
+  "Action_RR_stamp_case:tested",
+  "Action_RR_update_request:tested"
+ ],
+ "result": "every action passed"
+}

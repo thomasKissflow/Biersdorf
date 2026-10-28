@@ -1,0 +1,267 @@
+{
+  "Root": "CIQ_Delegation_A00",
+  "CIQ_Delegation_A00": {
+    "Id": "CIQ_Delegation_A00",
+    "Name": "CIQ Delegation",
+    "Kind": "Model",
+    "FlowType": "Form",
+    "Description": "",
+    "Model::Row": [
+      "Row_fz5zmq"
+    ],
+    "Model::Field": [
+      "Grantor",
+      "Delegate",
+      "Delegation_Scope",
+      "Delegation_Dept",
+      "Case_Code",
+      "Valid_From",
+      "Valid_To",
+      "Delegation_Reason"
+    ]
+  },
+  "Row_fz5zmq": {
+    "Id": "Row_fz5zmq",
+    "Kind": "Row",
+    "Model": "CIQ_Delegation_A00",
+    "Row::Column": [
+      "Column_fz5zmq"
+    ]
+  },
+  "Column_fz5zmq": {
+    "Id": "Column_fz5zmq",
+    "Kind": "Column",
+    "Type": "Section",
+    "Name": "Details",
+    "Start": 0,
+    "End": 6,
+    "Row": "Row_fz5zmq",
+    "Column::Row": [
+      "Row_fz4rh8",
+      "Row_fz4rh9",
+      "Row_fz4rha",
+      "Row_fz4rhb",
+      "Row_fz4rhc"
+    ]
+  },
+  "Row_fz4rh8": {
+    "Id": "Row_fz4rh8",
+    "Kind": "Row",
+    "Column": "Column_fz5zmq",
+    "Row::Column": [
+      "Column_92b190",
+      "Column_18tltiq"
+    ]
+  },
+  "Column_92b190": {
+    "Id": "Column_92b190",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_fz4rh8",
+    "Column::Field": [
+      "Grantor"
+    ]
+  },
+  "Column_18tltiq": {
+    "Id": "Column_18tltiq",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_fz4rh8",
+    "Column::Field": [
+      "Delegate"
+    ]
+  },
+  "Row_fz4rh9": {
+    "Id": "Row_fz4rh9",
+    "Kind": "Row",
+    "Column": "Column_fz5zmq",
+    "Row::Column": [
+      "Column_1p0nnf0",
+      "Column_18w0e7z"
+    ]
+  },
+  "Column_1p0nnf0": {
+    "Id": "Column_1p0nnf0",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_fz4rh9",
+    "Column::Field": [
+      "Delegation_Scope"
+    ]
+  },
+  "Column_18w0e7z": {
+    "Id": "Column_18w0e7z",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_fz4rh9",
+    "Column::Field": [
+      "Delegation_Dept"
+    ]
+  },
+  "Row_fz4rha": {
+    "Id": "Row_fz4rha",
+    "Kind": "Row",
+    "Column": "Column_fz5zmq",
+    "Row::Column": [
+      "Column_1jdup8t",
+      "Column_1mpjqre"
+    ]
+  },
+  "Column_1jdup8t": {
+    "Id": "Column_1jdup8t",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_fz4rha",
+    "Column::Field": [
+      "Case_Code"
+    ]
+  },
+  "Column_1mpjqre": {
+    "Id": "Column_1mpjqre",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_fz4rha",
+    "Column::Field": [
+      "Valid_From"
+    ]
+  },
+  "Row_fz4rhb": {
+    "Id": "Row_fz4rhb",
+    "Kind": "Row",
+    "Column": "Column_fz5zmq",
+    "Row::Column": [
+      "Column_2x9bd5"
+    ]
+  },
+  "Column_2x9bd5": {
+    "Id": "Column_2x9bd5",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_fz4rhb",
+    "Column::Field": [
+      "Valid_To"
+    ]
+  },
+  "Row_fz4rhc": {
+    "Id": "Row_fz4rhc",
+    "Kind": "Row",
+    "Column": "Column_fz5zmq",
+    "Row::Column": [
+      "Column_o4c95m"
+    ]
+  },
+  "Column_o4c95m": {
+    "Id": "Column_o4c95m",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 6,
+    "Row": "Row_fz4rhc",
+    "Column::Field": [
+      "Delegation_Reason"
+    ]
+  },
+  "QueryDefinition_92b190": {
+    "Id": "QueryDefinition_92b190",
+    "Kind": "QueryDefinition",
+    "Field": "Grantor",
+    "LHSModel": "User",
+    "FlowType": "User",
+    "LookupField": [],
+    "HiddenField": []
+  },
+  "Grantor": {
+    "Id": "Grantor",
+    "Kind": "Field",
+    "Type": "User",
+    "Name": "Grantor",
+    "Model": "CIQ_Delegation_A00",
+    "Column": "Column_92b190",
+    "Field::QueryDefinition": [
+      "QueryDefinition_92b190"
+    ]
+  },
+  "QueryDefinition_18tltiq": {
+    "Id": "QueryDefinition_18tltiq",
+    "Kind": "QueryDefinition",
+    "Field": "Delegate",
+    "LHSModel": "User",
+    "FlowType": "User",
+    "LookupField": [],
+    "HiddenField": []
+  },
+  "Delegate": {
+    "Id": "Delegate",
+    "Kind": "Field",
+    "Type": "User",
+    "Name": "Delegate",
+    "Model": "CIQ_Delegation_A00",
+    "Column": "Column_18tltiq",
+    "Field::QueryDefinition": [
+      "QueryDefinition_18tltiq"
+    ]
+  },
+  "Delegation_Scope": {
+    "Id": "Delegation_Scope",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Delegation_Scope",
+    "Model": "CIQ_Delegation_A00",
+    "Column": "Column_1p0nnf0"
+  },
+  "Delegation_Dept": {
+    "Id": "Delegation_Dept",
+    "Kind": "Field",
+    "Type": "Select",
+    "Name": "Delegation_Dept",
+    "Model": "CIQ_Delegation_A00",
+    "Column": "Column_18w0e7z",
+    "ReferredList": "CIQ_Department_A00"
+  },
+  "Case_Code": {
+    "Id": "Case_Code",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Case_Code",
+    "Model": "CIQ_Delegation_A00",
+    "Column": "Column_1jdup8t"
+  },
+  "Valid_From": {
+    "Id": "Valid_From",
+    "Kind": "Field",
+    "Type": "Date",
+    "Name": "Valid_From",
+    "Model": "CIQ_Delegation_A00",
+    "Column": "Column_1mpjqre"
+  },
+  "Valid_To": {
+    "Id": "Valid_To",
+    "Kind": "Field",
+    "Type": "Date",
+    "Name": "Valid_To",
+    "Model": "CIQ_Delegation_A00",
+    "Column": "Column_2x9bd5"
+  },
+  "Delegation_Reason": {
+    "Id": "Delegation_Reason",
+    "Kind": "Field",
+    "Type": "Textarea",
+    "Name": "Delegation_Reason",
+    "Model": "CIQ_Delegation_A00",
+    "Column": "Column_o4c95m"
+  }
+}

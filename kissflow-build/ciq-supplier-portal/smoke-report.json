@@ -1,0 +1,415 @@
+{
+  "at": "2026-10-07T10:32:23.157Z",
+  "version": "v3",
+  "pass": 16,
+  "total": 16,
+  "observations": [
+    {
+      "id": "P2-answers-readonly-at-start (admin key)",
+      "expect": "Baseline: with the ADMIN key, Answers_JSON sent at create IS stored although ReadOnly at Start (non-admin: MORNING-TESTS)",
+      "pass": true,
+      "evidence": {
+        "Answers_JSON": "{\"sent\":\"at create\"}"
+      },
+      "observation": true
+    },
+    {
+      "id": "P4a-confirm-readonly-at-start (admin key)",
+      "expect": "Baseline: with the ADMIN key, Supplier_Confirm sent at create IS stored although ReadOnly at Start (non-admin: MORNING-TESTS)",
+      "pass": true,
+      "evidence": {
+        "Supplier_Confirm": "Confirmed"
+      },
+      "observation": true
+    },
+    {
+      "id": "P6-creator-sees-it (admin key)",
+      "expect": "Baseline: the creator still lists the completed item in My Items (non-admin supplier: MORNING-TESTS)",
+      "pass": true,
+      "evidence": {
+        "inMyItems": 1,
+        "status": "Completed"
+      },
+      "observation": true
+    }
+  ],
+  "results": [
+    {
+      "id": "P1-routing",
+      "expect": "Start → 'Supplier: submit basic data', assigned to the USER in Assigned_Contacts (no role)",
+      "pass": true,
+      "evidence": {
+        "submit": 200,
+        "step": "Supplier: submit basic data",
+        "status": "InProgress",
+        "assigned": [
+          {
+            "_id": "UsEJUfjYLM8Y",
+            "Name": "Thomas",
+            "Kind": "User"
+          }
+        ]
+      },
+      "observation": false
+    },
+    {
+      "id": "P1-material",
+      "expect": "Main_INCI and BDF_Material_No are stored and read back (added 2026-10-07)",
+      "pass": true,
+      "evidence": {
+        "Main_INCI": "Tocopherol",
+        "BDF_Material_No": "RM-TEST-0001"
+      },
+      "observation": false
+    },
+    {
+      "id": "P1-requires-Assigned_Contacts",
+      "expect": "Without Assigned_Contacts the Start submit is refused",
+      "pass": true,
+      "evidence": {
+        "submit": 400,
+        "err": "Validation failed for the following fields: {'Assigned_Contacts': ['Value is required']}.",
+        "step": "Issue request",
+        "status": "Draft",
+        "assigned": [
+          {
+            "_id": "UsEJUfjYLM8Y",
+            "Name": "Thomas",
+            "Kind": "User"
+          }
+        ]
+      },
+      "observation": false
+    },
+    {
+      "id": "P1-requires-App_Case_Item_Id",
+      "expect": "Without App_Case_Item_Id the Start submit is refused",
+      "pass": true,
+      "evidence": {
+        "submit": 400,
+        "err": "Validation failed for the following fields: {'App_Case_Item_Id': ['Value is required']}.",
+        "step": "Issue request",
+        "status": "Draft",
+        "assigned": [
+          {
+            "_id": "UsEJUfjYLM8Y",
+            "Name": "Thomas",
+            "Kind": "User"
+          }
+        ]
+      },
+      "observation": false
+    },
+    {
+      "id": "P1-requires-Supplier_Code",
+      "expect": "Without Supplier_Code the Start submit is refused",
+      "pass": true,
+      "evidence": {
+        "submit": 400,
+        "err": "Validation failed for the following fields: {'Supplier_Code': ['Value is required']}.",
+        "step": "Issue request",
+        "status": "Draft",
+        "assigned": [
+          {
+            "_id": "UsEJUfjYLM8Y",
+            "Name": "Thomas",
+            "Kind": "User"
+          }
+        ]
+      },
+      "observation": false
+    },
+    {
+      "id": "P2-routing",
+      "expect": "Start → 'Supplier: fill in section', assigned to the user (field)",
+      "pass": true,
+      "evidence": {
+        "submit": 200,
+        "step": "Supplier: fill in section",
+        "status": "InProgress",
+        "assigned": [
+          {
+            "_id": "UsEJUfjYLM8Y",
+            "Name": "Thomas",
+            "Kind": "User"
+          }
+        ]
+      },
+      "observation": false
+    },
+    {
+      "id": "P2-K16-size",
+      "expect": "A 122 KB Definition_JSON round-trips byte-identical",
+      "pass": true,
+      "evidence": {
+        "sent": 124902,
+        "got": 124902
+      },
+      "observation": false
+    },
+    {
+      "id": "P2-answers-readonly-at-start (admin key)",
+      "expect": "Baseline: with the ADMIN key, Answers_JSON sent at create IS stored although ReadOnly at Start (non-admin: MORNING-TESTS)",
+      "pass": true,
+      "evidence": {
+        "Answers_JSON": "{\"sent\":\"at create\"}"
+      },
+      "observation": true
+    },
+    {
+      "id": "P3-routing",
+      "expect": "Start → 'Supplier: respond', assigned to the user (field)",
+      "pass": true,
+      "evidence": {
+        "submit": 200,
+        "step": "Supplier: respond",
+        "status": "InProgress",
+        "assigned": [
+          {
+            "_id": "UsEJUfjYLM8Y",
+            "Name": "Thomas",
+            "Kind": "User"
+          }
+        ]
+      },
+      "observation": false
+    },
+    {
+      "id": "P3-requires-justification",
+      "expect": "Without Supplier_Justification the Start submit is refused (REQ-PROC-030)",
+      "pass": true,
+      "evidence": {
+        "submit": 400,
+        "err": "Validation failed for the following fields: {'Supplier_Justification': ['Value is required']}.",
+        "step": "Raise query",
+        "status": "Draft",
+        "assigned": [
+          {
+            "_id": "UsEJUfjYLM8Y",
+            "Name": "Thomas",
+            "Kind": "User"
+          }
+        ]
+      },
+      "observation": false
+    },
+    {
+      "id": "P4a-routing",
+      "expect": "Start → 'Supplier: confirm completeness', assigned to the user (field)",
+      "pass": true,
+      "evidence": {
+        "submit": 200,
+        "step": "Supplier: confirm completeness",
+        "status": "InProgress",
+        "assigned": [
+          {
+            "_id": "UsEJUfjYLM8Y",
+            "Name": "Thomas",
+            "Kind": "User"
+          }
+        ]
+      },
+      "observation": false
+    },
+    {
+      "id": "P4a-confirm-readonly-at-start (admin key)",
+      "expect": "Baseline: with the ADMIN key, Supplier_Confirm sent at create IS stored although ReadOnly at Start (non-admin: MORNING-TESTS)",
+      "pass": true,
+      "evidence": {
+        "Supplier_Confirm": "Confirmed"
+      },
+      "observation": true
+    },
+    {
+      "id": "P4b-routing",
+      "expect": "Start → 'Supplier: release', assigned to the user (field)",
+      "pass": true,
+      "evidence": {
+        "submit": 200,
+        "step": "Supplier: release",
+        "status": "InProgress",
+        "assigned": [
+          {
+            "_id": "UsEJUfjYLM8Y",
+            "Name": "Thomas",
+            "Kind": "User"
+          }
+        ]
+      },
+      "observation": false
+    },
+    {
+      "id": "P5-routing",
+      "expect": "Start → 'Supplier: acknowledge', assigned to the user (field)",
+      "pass": true,
+      "evidence": {
+        "submit": 200,
+        "step": "Supplier: acknowledge",
+        "status": "InProgress",
+        "assigned": [
+          {
+            "_id": "UsEJUfjYLM8Y",
+            "Name": "Thomas",
+            "Kind": "User"
+          }
+        ]
+      },
+      "observation": false
+    },
+    {
+      "id": "P5-requires-app-id",
+      "expect": "Without App_Notice_Item_Id the Start submit is refused",
+      "pass": true,
+      "evidence": {
+        "submit": 400,
+        "err": "Validation failed for the following fields: {'App_Notice_Item_Id': ['Value is required']}.",
+        "step": "Send notice",
+        "status": "Draft",
+        "assigned": [
+          {
+            "_id": "UsEJUfjYLM8Y",
+            "Name": "Thomas",
+            "Kind": "User"
+          }
+        ]
+      },
+      "observation": false
+    },
+    {
+      "id": "P6-completes",
+      "expect": "Start submit completes the item at once (no portal step; triage happens in the app)",
+      "pass": true,
+      "evidence": {
+        "submit": 200,
+        "status": "Completed"
+      },
+      "observation": false
+    },
+    {
+      "id": "P6-creator-sees-it (admin key)",
+      "expect": "Baseline: the creator still lists the completed item in My Items (non-admin supplier: MORNING-TESTS)",
+      "pass": true,
+      "evidence": {
+        "inMyItems": 1,
+        "status": "Completed"
+      },
+      "observation": true
+    },
+    {
+      "id": "P6-requires-reason",
+      "expect": "Without Change_Reason the submit is refused",
+      "pass": true,
+      "evidence": {
+        "submit": 400,
+        "err": "Validation failed for the following fields: {'Change_Reason': ['Value is required']}.",
+        "step": "Submit change request",
+        "status": "Draft",
+        "assigned": [
+          {
+            "_id": "UsEJUfjYLM8Y",
+            "Name": "Thomas",
+            "Kind": "User"
+          }
+        ]
+      },
+      "observation": false
+    },
+    {
+      "id": "P7-create-and-list",
+      "expect": "A help article can be created (draft → submit) and is listed",
+      "pass": true,
+      "evidence": {
+        "draft": 200,
+        "submit": 200,
+        "listed": 6
+      },
+      "observation": false
+    }
+  ],
+  "cleanup": [
+    {
+      "proc": "CIQP_Request_A00",
+      "item": "PkEKHLwEKVNF",
+      "deleted": 200,
+      "after": 404
+    },
+    {
+      "proc": "CIQP_Request_A00",
+      "item": "PkEKHLyNgcrM",
+      "deleted": 200,
+      "after": 404
+    },
+    {
+      "proc": "CIQP_Request_A00",
+      "item": "PkEKHLzzau1Z",
+      "deleted": 200,
+      "after": 404
+    },
+    {
+      "proc": "CIQP_Request_A00",
+      "item": "PkEKHM1dRMob",
+      "deleted": 200,
+      "after": 404
+    },
+    {
+      "proc": "CIQP_Section_A00",
+      "item": "PkEKHM3sywDl",
+      "deleted": 200,
+      "after": 404
+    },
+    {
+      "proc": "CIQP_Query_A00",
+      "item": "PkEKHM5jTaJs",
+      "deleted": 200,
+      "after": 404
+    },
+    {
+      "proc": "CIQP_Query_A00",
+      "item": "PkEKHM7Urta1",
+      "deleted": 200,
+      "after": 404
+    },
+    {
+      "proc": "CIQP_Completeness_Confirmation_A00",
+      "item": "PkEKHM9CevxT",
+      "deleted": 200,
+      "after": 404
+    },
+    {
+      "proc": "CIQP_Final_Release_A00",
+      "item": "PkEKHMBGxxCS",
+      "deleted": 200,
+      "after": 404
+    },
+    {
+      "proc": "CIQP_Notice_A00",
+      "item": "PkEKHMDgcZzu",
+      "deleted": 200,
+      "after": 404
+    },
+    {
+      "proc": "CIQP_Notice_A00",
+      "item": "PkEKHMFNcouv",
+      "deleted": 200,
+      "after": 404
+    },
+    {
+      "proc": "CIQP_Change_Request_A00",
+      "item": "PkEKHMH2jWew",
+      "deleted": 200,
+      "after": 404
+    },
+    {
+      "proc": "CIQP_Change_Request_A00",
+      "item": "PkEKHMJIFvkQ",
+      "deleted": 200,
+      "after": 404
+    },
+    {
+      "form": "CIQP_Help_Article_A00",
+      "item": "PkEKHMLjdzBH",
+      "deleted": 200,
+      "stillListed": false
+    }
+  ]
+}

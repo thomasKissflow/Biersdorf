@@ -1,0 +1,221 @@
+{
+  "Root": "CIQ_Final_Document_A00",
+  "CIQ_Final_Document_A00": {
+    "Id": "CIQ_Final_Document_A00",
+    "Name": "CIQ Final Document",
+    "Kind": "Model",
+    "FlowType": "Form",
+    "Description": "",
+    "Model::Row": [
+      "Row_1sovnla"
+    ],
+    "Model::Field": [
+      "Case_Code",
+      "Doc_Purpose",
+      "Cycle_No",
+      "PDF_File",
+      "File_Hash",
+      "Sent_To",
+      "BFlow_Doc_Id"
+    ]
+  },
+  "Row_1sovnla": {
+    "Id": "Row_1sovnla",
+    "Kind": "Row",
+    "Model": "CIQ_Final_Document_A00",
+    "Row::Column": [
+      "Column_1sovnla"
+    ]
+  },
+  "Column_1sovnla": {
+    "Id": "Column_1sovnla",
+    "Kind": "Column",
+    "Type": "Section",
+    "Name": "Details",
+    "Start": 0,
+    "End": 6,
+    "Row": "Row_1sovnla",
+    "Column::Row": [
+      "Row_1souffs",
+      "Row_1soufft",
+      "Row_1souffu",
+      "Row_1souffv",
+      "Row_1souffw"
+    ]
+  },
+  "Row_1souffs": {
+    "Id": "Row_1souffs",
+    "Kind": "Row",
+    "Column": "Column_1sovnla",
+    "Row::Column": [
+      "Column_ngbhp5",
+      "Column_vcucsm"
+    ]
+  },
+  "Column_ngbhp5": {
+    "Id": "Column_ngbhp5",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_1souffs",
+    "Column::Field": [
+      "Case_Code"
+    ]
+  },
+  "Column_vcucsm": {
+    "Id": "Column_vcucsm",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_1souffs",
+    "Column::Field": [
+      "Doc_Purpose"
+    ]
+  },
+  "Row_1soufft": {
+    "Id": "Row_1soufft",
+    "Kind": "Row",
+    "Column": "Column_1sovnla",
+    "Row::Column": [
+      "Column_ccb29b"
+    ]
+  },
+  "Column_ccb29b": {
+    "Id": "Column_ccb29b",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_1soufft",
+    "Column::Field": [
+      "Cycle_No"
+    ]
+  },
+  "Row_1souffu": {
+    "Id": "Row_1souffu",
+    "Kind": "Row",
+    "Column": "Column_1sovnla",
+    "Row::Column": [
+      "Column_1wn2bgc"
+    ]
+  },
+  "Column_1wn2bgc": {
+    "Id": "Column_1wn2bgc",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 6,
+    "Row": "Row_1souffu",
+    "Column::Field": [
+      "PDF_File"
+    ]
+  },
+  "Row_1souffv": {
+    "Id": "Row_1souffv",
+    "Kind": "Row",
+    "Column": "Column_1sovnla",
+    "Row::Column": [
+      "Column_1x5ahd2",
+      "Column_1obv8qn"
+    ]
+  },
+  "Column_1x5ahd2": {
+    "Id": "Column_1x5ahd2",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_1souffv",
+    "Column::Field": [
+      "File_Hash"
+    ]
+  },
+  "Column_1obv8qn": {
+    "Id": "Column_1obv8qn",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_1souffv",
+    "Column::Field": [
+      "Sent_To"
+    ]
+  },
+  "Row_1souffw": {
+    "Id": "Row_1souffw",
+    "Kind": "Row",
+    "Column": "Column_1sovnla",
+    "Row::Column": [
+      "Column_eojczi"
+    ]
+  },
+  "Column_eojczi": {
+    "Id": "Column_eojczi",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_1souffw",
+    "Column::Field": [
+      "BFlow_Doc_Id"
+    ]
+  },
+  "Case_Code": {
+    "Id": "Case_Code",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Case_Code",
+    "Model": "CIQ_Final_Document_A00",
+    "Column": "Column_ngbhp5"
+  },
+  "Doc_Purpose": {
+    "Id": "Doc_Purpose",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Doc_Purpose",
+    "Model": "CIQ_Final_Document_A00",
+    "Column": "Column_vcucsm"
+  },
+  "Cycle_No": {
+    "Id": "Cycle_No",
+    "Kind": "Field",
+    "Type": "Number",
+    "Name": "Cycle_No",
+    "Model": "CIQ_Final_Document_A00",
+    "Column": "Column_ccb29b"
+  },
+  "PDF_File": {
+    "Id": "PDF_File",
+    "Kind": "Field",
+    "Type": "Attachment",
+    "Name": "PDF_File",
+    "Model": "CIQ_Final_Document_A00",
+    "Column": "Column_1wn2bgc"
+  },
+  "File_Hash": {
+    "Id": "File_Hash",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "File_Hash",
+    "Model": "CIQ_Final_Document_A00",
+    "Column": "Column_1x5ahd2"
+  },
+  "Sent_To": {
+    "Id": "Sent_To",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Sent_To",
+    "Model": "CIQ_Final_Document_A00",
+    "Column": "Column_1obv8qn"
+  },
+  "BFlow_Doc_Id": {
+    "Id": "BFlow_Doc_Id",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "BFlow_Doc_Id",
+    "Model": "CIQ_Final_Document_A00",
+    "Column": "Column_eojczi"
+  }
+}

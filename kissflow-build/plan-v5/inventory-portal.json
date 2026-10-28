@@ -1,0 +1,2723 @@
+{
+  "takenAt": "2026-10-14T16:02:39.555Z",
+  "source": "Live read-only GETs with kissflow-build/lib/kf.mjs client({ readOnly: true }) against the Development sandbox (account AcDOSunMEpSA). No writes.",
+  "container": {
+    "id": "CIQ_Supplier_Portal_A00",
+    "name": "CIQ Supplier Portal",
+    "type": "Portal",
+    "status": "Live",
+    "description": "Supplier portal for Cosmetic Ingredient Questionnaires: answer configuration questions, complete only the relevant sections, upload evidence and respond to Beiersdorf queries.",
+    "createdAt": "2026-10-06T20:10:08Z",
+    "createdBy": "Thomas",
+    "versionNumber": "1.0.1",
+    "buildNumber": 1,
+    "lastPublishedAt": "2026-10-14T06:52:39Z",
+    "lastPublishedBy": "Thomas",
+    "lastDeployedAt": "2026-10-07T09:38:29Z",
+    "customUiEnabled": true,
+    "keyPermissionsOnContainer": [
+      "Admin"
+    ]
+  },
+  "roles": [
+    {
+      "id": "RoEK3_yhR4wx",
+      "name": "Admin",
+      "description": "Administrator role with full privileges for this application.",
+      "userCount": 0,
+      "groupCount": null,
+      "members": [],
+      "preference": {
+        "DefaultNavigation": "Default",
+        "DefaultPage": "Default"
+      }
+    },
+    {
+      "id": "RoEK4XPKXCvH",
+      "name": "Supplier",
+      "description": "Every external supplier user. Acts only on items assigned to it through Assigned_Contacts; raises change requests.",
+      "userCount": 1,
+      "groupCount": null,
+      "members": [
+        {
+          "id": "UsEJUfjYLM8Y",
+          "name": "Thomas",
+          "kind": "User"
+        }
+      ],
+      "preference": null
+    },
+    {
+      "id": "RoEK3_ymADTV",
+      "name": "User",
+      "description": "An end-user role with limited privileges.",
+      "userCount": 0,
+      "groupCount": null,
+      "members": [],
+      "preference": {
+        "DefaultNavigation": "Default",
+        "DefaultPage": "Default"
+      }
+    }
+  ],
+  "flows": [
+    {
+      "specDrift": "none",
+      "type": "Process",
+      "id": "CIQP_Request_A00",
+      "name": "CIQP Request",
+      "status": "Live",
+      "createdAt": "2026-10-06T21:10:42Z",
+      "modifiedAt": "2026-10-07T11:00:11Z",
+      "lastPublishedAt": "2026-10-07T09:55:39Z",
+      "draftPublishedAt": "2026-10-07T09:55:39Z",
+      "descriptionFlowRecord": "Supplier-facing lifecycle of one CIQ case cycle: basic data, scope check, questionnaire, review wait, final release.",
+      "descriptionModel": "One CIQ case cycle as the supplier sees it: case header and the basic-data task. Created from the app case.",
+      "workflowType": "Sequence",
+      "fields": [
+        {
+          "id": "Request_Key",
+          "name": "Request Key",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Case_Code",
+          "name": "Case Code",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Cycle_No",
+          "name": "Cycle No",
+          "type": "Number",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Supplier_Code",
+          "name": "Supplier Code",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "App_Case_Item_Id",
+          "name": "App Case Item Id",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Trade_Name",
+          "name": "Trade Name",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Main_INCI",
+          "name": "Main INCI",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "BDF_Material_No",
+          "name": "BDF Material No",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Supplier_Display_Name",
+          "name": "Supplier Display Name",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "BDF_Contact_Name",
+          "name": "BDF Contact Name",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "BDF_Contact_Email",
+          "name": "BDF Contact Email",
+          "type": "Email",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Markets_Label",
+          "name": "Markets Label",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Template_Label",
+          "name": "Template Label",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Supplier_Due_Date",
+          "name": "Supplier Due Date",
+          "type": "Date",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Case_Contacts_JSON",
+          "name": "Case Contacts JSON",
+          "type": "Textarea",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Assigned_Contacts",
+          "name": "Assigned Contacts",
+          "type": "MultiUser",
+          "required": true,
+          "lookup": {
+            "kind": "User",
+            "target": "User",
+            "lookupFields": [],
+            "hiddenFields": []
+          },
+          "published": "same"
+        }
+      ],
+      "publishedOnlyFields": [],
+      "childTables": [],
+      "steps": [
+        {
+          "activityId": "Activity_1fvwo2u",
+          "name": "Issue request",
+          "nodeType": "StartEvent",
+          "assignee": null,
+          "condition": null,
+          "fieldPermissions": {
+            "Editable": [
+              "Request_Key",
+              "Case_Code",
+              "Cycle_No",
+              "Supplier_Code",
+              "App_Case_Item_Id",
+              "Trade_Name",
+              "Main_INCI",
+              "BDF_Material_No",
+              "Supplier_Display_Name",
+              "BDF_Contact_Name",
+              "BDF_Contact_Email",
+              "Markets_Label",
+              "Template_Label",
+              "Supplier_Due_Date",
+              "Case_Contacts_JSON",
+              "Assigned_Contacts"
+            ]
+          },
+          "fieldPermissionCounts": {
+            "Editable": 16
+          }
+        },
+        {
+          "activityId": "Activity_1njnliq",
+          "name": "Supplier: submit basic data",
+          "nodeType": "UserTask",
+          "assignee": [
+            {
+              "kind": "Field",
+              "field": "Assigned_Contacts",
+              "display": "Assigned Contacts"
+            }
+          ],
+          "condition": null,
+          "fieldPermissions": {
+            "ReadOnly": "16 columns"
+          },
+          "fieldPermissionCounts": {
+            "ReadOnly": 16
+          }
+        },
+        {
+          "activityId": "Activity_gafhuz",
+          "name": "End",
+          "nodeType": "EndEvent",
+          "assignee": null,
+          "condition": null,
+          "fieldPermissions": {
+            "ReadOnly": "16 columns"
+          },
+          "fieldPermissionCounts": {
+            "ReadOnly": 16
+          }
+        }
+      ],
+      "platformActivities": [
+        {
+          "id": "SendBackToInitiator",
+          "nodeType": "SendBackToInitiator",
+          "note": "platform-made (send back to initiator)"
+        }
+      ],
+      "runtimeWorkflowSteps": [
+        {
+          "activityId": "Activity_1njnliq",
+          "name": "Supplier: submit basic data"
+        }
+      ],
+      "layoutSections": [
+        "Details"
+      ],
+      "grants": [
+        {
+          "id": "RoEK4XPKXCvH",
+          "name": "Supplier",
+          "kind": "AppRole",
+          "role": "Member",
+          "permission": []
+        },
+        {
+          "id": "RoEK3_yhR4wx",
+          "name": "Admin",
+          "kind": "AppRole",
+          "role": "Member",
+          "permission": [
+            "InitiateItems",
+            "View"
+          ]
+        }
+      ],
+      "reports": [
+        {
+          "id": "CIQP_Request_A00_All_Items",
+          "name": "CIQP Request All Items",
+          "system": true,
+          "sharedWith": [
+            "User Thomas (Admin)"
+          ]
+        }
+      ],
+      "sharingWithApp": {
+        "shared": true,
+        "app": "CIQ Digital",
+        "permission": [
+          "Lookup"
+        ],
+        "allFields": true,
+        "allowedFields": []
+      },
+      "keyPermissions": [
+        "ViewChild",
+        "InitiateItems",
+        "Participated",
+        "View"
+      ],
+      "reads": {
+        "flowRecord": 200,
+        "draft": 200,
+        "allfields": 200,
+        "members": 200,
+        "reports": 200
+      }
+    },
+    {
+      "specDrift": "none",
+      "type": "Process",
+      "id": "CIQP_Section_A00",
+      "name": "CIQP Section",
+      "status": "Live",
+      "createdAt": "2026-10-06T21:10:18Z",
+      "modifiedAt": "2026-10-07T05:30:07Z",
+      "lastPublishedAt": "2026-10-07T04:25:22Z",
+      "draftPublishedAt": "2026-10-07T04:25:22Z",
+      "descriptionFlowRecord": "One released CIQ section of one case cycle: copied definition, the supplier's answers and uploads. Editable until the final release.",
+      "descriptionModel": "One released CIQ section of one case cycle: copied definition, the supplier's answers and uploads. Editable until the final release.",
+      "workflowType": "Sequence",
+      "fields": [
+        {
+          "id": "Section_Item_Key",
+          "name": "Section Item Key",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Case_Code",
+          "name": "Case Code",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Cycle_No",
+          "name": "Cycle No",
+          "type": "Number",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Supplier_Code",
+          "name": "Supplier Code",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "App_Section_Item_Id",
+          "name": "App Section Item Id",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Section_Key",
+          "name": "Section Key",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Section_Code",
+          "name": "Section Code",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Section_Title",
+          "name": "Section Title",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Section_Sort",
+          "name": "Section Sort",
+          "type": "Number",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Applicability_Label",
+          "name": "Applicability Label",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Supplier_Reason",
+          "name": "Supplier Reason",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Added_Later",
+          "name": "Added Later",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Section_Origin",
+          "name": "Section Origin",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Definition_JSON",
+          "name": "Definition JSON",
+          "type": "Textarea",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Definition_Hash",
+          "name": "Definition Hash",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Answers_JSON",
+          "name": "Answers JSON",
+          "type": "Textarea",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Answers_Rev",
+          "name": "Answers Rev",
+          "type": "Number",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Answers_Changed_At",
+          "name": "Answers Changed At",
+          "type": "DateTime",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Answers_Changed_By_Email",
+          "name": "Answers Changed By Email",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Editing_By",
+          "name": "Editing By",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Editing_Since",
+          "name": "Editing Since",
+          "type": "DateTime",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Supplier_Responsible_Email",
+          "name": "Supplier Responsible Email",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Supplier_Due_Date",
+          "name": "Supplier Due Date",
+          "type": "Date",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Assigned_Contacts",
+          "name": "Assigned Contacts",
+          "type": "MultiUser",
+          "required": true,
+          "lookup": {
+            "kind": "User",
+            "target": "User",
+            "lookupFields": [],
+            "hiddenFields": []
+          },
+          "published": "same"
+        },
+        {
+          "id": "Section_Done",
+          "name": "Section Done",
+          "type": "Select",
+          "required": false,
+          "list": {
+            "id": "CIQP_Yes_No_A00",
+            "name": "CIQP Yes No"
+          },
+          "published": "same"
+        },
+        {
+          "id": "Section_Release_Confirm",
+          "name": "Section Release Confirm",
+          "type": "Select",
+          "required": false,
+          "list": {
+            "id": "CIQP_Confirm_A00",
+            "name": "CIQP Confirm"
+          },
+          "published": "same"
+        }
+      ],
+      "publishedOnlyFields": [],
+      "childTables": [
+        {
+          "id": "CIQP_Section_A00_Uploads",
+          "name": "CIQP Section Uploads",
+          "label": "Uploads",
+          "parent": "CIQP_Section_A00",
+          "columns": [
+            {
+              "id": "Upload_Id",
+              "name": "Upload Id",
+              "type": "Text",
+              "required": false,
+              "published": "same"
+            },
+            {
+              "id": "Upload_Field_Key",
+              "name": "Upload Field Key",
+              "type": "Text",
+              "required": false,
+              "published": "same"
+            },
+            {
+              "id": "Upload_Row_Id",
+              "name": "Upload Row Id",
+              "type": "Text",
+              "required": false,
+              "published": "same"
+            },
+            {
+              "id": "Upload_Doc_Kind",
+              "name": "Upload Doc Kind",
+              "type": "Select",
+              "required": false,
+              "list": {
+                "id": "CIQP_Doc_Kind_A00",
+                "name": "CIQP Doc Kind"
+              },
+              "published": "same"
+            },
+            {
+              "id": "Upload_File",
+              "name": "Upload File",
+              "type": "Attachment",
+              "required": false,
+              "published": "same"
+            },
+            {
+              "id": "Upload_File_Name",
+              "name": "Upload File Name",
+              "type": "Text",
+              "required": false,
+              "published": "same"
+            },
+            {
+              "id": "Uploaded_By_Email",
+              "name": "Uploaded By Email",
+              "type": "Text",
+              "required": false,
+              "published": "same"
+            },
+            {
+              "id": "Uploaded_At",
+              "name": "Uploaded At",
+              "type": "DateTime",
+              "required": false,
+              "published": "same"
+            }
+          ],
+          "publishedInAllfields": true
+        }
+      ],
+      "steps": [
+        {
+          "activityId": "Activity_9ue2xi",
+          "name": "Release section",
+          "nodeType": "StartEvent",
+          "assignee": null,
+          "condition": null,
+          "fieldPermissions": {
+            "Editable": [
+              "Section_Item_Key",
+              "Case_Code",
+              "Cycle_No",
+              "Supplier_Code",
+              "App_Section_Item_Id",
+              "Section_Key",
+              "Section_Code",
+              "Section_Title",
+              "Section_Sort",
+              "Applicability_Label",
+              "Supplier_Reason",
+              "Added_Later",
+              "Section_Origin",
+              "Definition_JSON",
+              "Definition_Hash",
+              "Supplier_Due_Date",
+              "Assigned_Contacts"
+            ],
+            "ReadOnly": [
+              "Answers_JSON",
+              "Answers_Rev",
+              "Answers_Changed_At",
+              "Answers_Changed_By_Email",
+              "Editing_By",
+              "Editing_Since",
+              "Supplier_Responsible_Email",
+              "Section_Done",
+              "Section_Release_Confirm",
+              "[table] Uploads"
+            ]
+          },
+          "fieldPermissionCounts": {
+            "Editable": 17,
+            "ReadOnly": 10
+          }
+        },
+        {
+          "activityId": "Activity_ew11vl",
+          "name": "Supplier: fill in section",
+          "nodeType": "UserTask",
+          "assignee": [
+            {
+              "kind": "Field",
+              "field": "Assigned_Contacts",
+              "display": "Assigned Contacts"
+            }
+          ],
+          "condition": null,
+          "fieldPermissions": {
+            "ReadOnly": "17 columns",
+            "Editable": [
+              "Answers_JSON",
+              "Answers_Rev",
+              "Answers_Changed_At",
+              "Answers_Changed_By_Email",
+              "Editing_By",
+              "Editing_Since",
+              "Supplier_Responsible_Email",
+              "Section_Done",
+              "[table] Uploads"
+            ],
+            "Mandatory": [
+              "Section_Release_Confirm"
+            ]
+          },
+          "fieldPermissionCounts": {
+            "ReadOnly": 17,
+            "Editable": 9,
+            "Mandatory": 1
+          }
+        },
+        {
+          "activityId": "Activity_18g9iwn",
+          "name": "End",
+          "nodeType": "EndEvent",
+          "assignee": null,
+          "condition": null,
+          "fieldPermissions": {
+            "ReadOnly": "27 columns"
+          },
+          "fieldPermissionCounts": {
+            "ReadOnly": 27
+          }
+        }
+      ],
+      "platformActivities": [
+        {
+          "id": "SendBackToInitiator",
+          "nodeType": "SendBackToInitiator",
+          "note": "platform-made (send back to initiator)"
+        }
+      ],
+      "runtimeWorkflowSteps": [
+        {
+          "activityId": "Activity_ew11vl",
+          "name": "Supplier: fill in section"
+        }
+      ],
+      "layoutSections": [
+        "Details"
+      ],
+      "grants": [
+        {
+          "id": "RoEK4XPKXCvH",
+          "name": "Supplier",
+          "kind": "AppRole",
+          "role": "Member",
+          "permission": []
+        },
+        {
+          "id": "RoEK3_yhR4wx",
+          "name": "Admin",
+          "kind": "AppRole",
+          "role": "Member",
+          "permission": [
+            "InitiateItems",
+            "View"
+          ]
+        }
+      ],
+      "reports": [
+        {
+          "id": "CIQP_Section_A00_All_Items",
+          "name": "CIQP Section All Items",
+          "system": true,
+          "sharedWith": [
+            "User Thomas (Admin)"
+          ]
+        }
+      ],
+      "sharingWithApp": {
+        "shared": true,
+        "app": "CIQ Digital",
+        "permission": [
+          "Lookup"
+        ],
+        "allFields": true,
+        "allowedFields": []
+      },
+      "keyPermissions": [
+        "ViewChild",
+        "InitiateItems",
+        "View",
+        "Participated"
+      ],
+      "reads": {
+        "flowRecord": 200,
+        "draft": 200,
+        "allfields": 200,
+        "members": 200,
+        "reports": 200
+      }
+    },
+    {
+      "specDrift": "none",
+      "type": "Process",
+      "id": "CIQP_Query_A00",
+      "name": "CIQP Query",
+      "status": "Live",
+      "createdAt": "2026-10-06T21:10:33Z",
+      "modifiedAt": "2026-10-07T05:30:07Z",
+      "lastPublishedAt": "2026-10-07T04:25:25Z",
+      "draftPublishedAt": "2026-10-07T04:25:25Z",
+      "descriptionFlowRecord": "Supplier side of one Beiersdorf open point: question, reference, supplier due date, response and thread.",
+      "descriptionModel": "One round of a Beiersdorf question, document request or additional part. The supplier responds; the review happens in the app.",
+      "workflowType": "Sequence",
+      "fields": [
+        {
+          "id": "Query_Key",
+          "name": "Query Key",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Round_No",
+          "name": "Round No",
+          "type": "Number",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Case_Code",
+          "name": "Case Code",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Cycle_No",
+          "name": "Cycle No",
+          "type": "Number",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Supplier_Code",
+          "name": "Supplier Code",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "App_Open_Point_Id",
+          "name": "App Open Point Id",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Kind_Label",
+          "name": "Kind Label",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Responsible_Department",
+          "name": "Responsible Department",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Responsible_Name",
+          "name": "Responsible Name",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Ref_Kind",
+          "name": "Ref Kind",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Ref_Section_Key",
+          "name": "Ref Section Key",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Ref_Field_Key",
+          "name": "Ref Field Key",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Ref_Row_Id",
+          "name": "Ref Row Id",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Ref_Doc_Id",
+          "name": "Ref Doc Id",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Ref_Doc_File_Name",
+          "name": "Ref Doc File Name",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Ref_Doc_Uploaded_At",
+          "name": "Ref Doc Uploaded At",
+          "type": "DateTime",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Ref_Label",
+          "name": "Ref Label",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Question_Text",
+          "name": "Question Text",
+          "type": "Textarea",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Supplier_Justification",
+          "name": "Supplier Justification",
+          "type": "Textarea",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Supplier_Due_Date",
+          "name": "Supplier Due Date",
+          "type": "Date",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Previous_Rounds_JSON",
+          "name": "Previous Rounds JSON",
+          "type": "Textarea",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "New_Section_Item_Key",
+          "name": "New Section Item Key",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Assigned_Contacts",
+          "name": "Assigned Contacts",
+          "type": "MultiUser",
+          "required": true,
+          "lookup": {
+            "kind": "User",
+            "target": "User",
+            "lookupFields": [],
+            "hiddenFields": []
+          },
+          "published": "same"
+        },
+        {
+          "id": "Response_Kind",
+          "name": "Response Kind",
+          "type": "Select",
+          "required": false,
+          "list": {
+            "id": "CIQP_Response_Kind_A00",
+            "name": "CIQP Response Kind"
+          },
+          "published": "same"
+        },
+        {
+          "id": "Response_Text",
+          "name": "Response Text",
+          "type": "Textarea",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Response_Doc_Refs_JSON",
+          "name": "Response Doc Refs JSON",
+          "type": "Textarea",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Supplier_Responsible_Email",
+          "name": "Supplier Responsible Email",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        }
+      ],
+      "publishedOnlyFields": [],
+      "childTables": [],
+      "steps": [
+        {
+          "activityId": "Activity_rngj1n",
+          "name": "Raise query",
+          "nodeType": "StartEvent",
+          "assignee": null,
+          "condition": null,
+          "fieldPermissions": {
+            "Editable": [
+              "Query_Key",
+              "Round_No",
+              "Case_Code",
+              "Cycle_No",
+              "Supplier_Code",
+              "App_Open_Point_Id",
+              "Kind_Label",
+              "Responsible_Department",
+              "Responsible_Name",
+              "Ref_Kind",
+              "Ref_Section_Key",
+              "Ref_Field_Key",
+              "Ref_Row_Id",
+              "Ref_Doc_Id",
+              "Ref_Doc_File_Name",
+              "Ref_Doc_Uploaded_At",
+              "Ref_Label",
+              "Question_Text",
+              "Supplier_Justification",
+              "Supplier_Due_Date",
+              "Previous_Rounds_JSON",
+              "New_Section_Item_Key",
+              "Assigned_Contacts"
+            ],
+            "ReadOnly": [
+              "Response_Kind",
+              "Response_Text",
+              "Response_Doc_Refs_JSON",
+              "Supplier_Responsible_Email"
+            ]
+          },
+          "fieldPermissionCounts": {
+            "Editable": 23,
+            "ReadOnly": 4
+          }
+        },
+        {
+          "activityId": "Activity_qohzey",
+          "name": "Supplier: respond",
+          "nodeType": "UserTask",
+          "assignee": [
+            {
+              "kind": "Field",
+              "field": "Assigned_Contacts",
+              "display": "Assigned Contacts"
+            }
+          ],
+          "condition": null,
+          "fieldPermissions": {
+            "ReadOnly": "23 columns",
+            "Mandatory": [
+              "Response_Kind"
+            ],
+            "Editable": [
+              "Response_Text",
+              "Response_Doc_Refs_JSON",
+              "Supplier_Responsible_Email"
+            ]
+          },
+          "fieldPermissionCounts": {
+            "ReadOnly": 23,
+            "Mandatory": 1,
+            "Editable": 3
+          }
+        },
+        {
+          "activityId": "Activity_49tjko",
+          "name": "End",
+          "nodeType": "EndEvent",
+          "assignee": null,
+          "condition": null,
+          "fieldPermissions": {
+            "ReadOnly": "27 columns"
+          },
+          "fieldPermissionCounts": {
+            "ReadOnly": 27
+          }
+        }
+      ],
+      "platformActivities": [
+        {
+          "id": "SendBackToInitiator",
+          "nodeType": "SendBackToInitiator",
+          "note": "platform-made (send back to initiator)"
+        }
+      ],
+      "runtimeWorkflowSteps": [
+        {
+          "activityId": "Activity_qohzey",
+          "name": "Supplier: respond"
+        }
+      ],
+      "layoutSections": [
+        "Details"
+      ],
+      "grants": [
+        {
+          "id": "RoEK4XPKXCvH",
+          "name": "Supplier",
+          "kind": "AppRole",
+          "role": "Member",
+          "permission": []
+        },
+        {
+          "id": "RoEK3_yhR4wx",
+          "name": "Admin",
+          "kind": "AppRole",
+          "role": "Member",
+          "permission": [
+            "InitiateItems",
+            "View"
+          ]
+        }
+      ],
+      "reports": [
+        {
+          "id": "CIQP_Query_A00_All_Items",
+          "name": "CIQP Query All Items",
+          "system": true,
+          "sharedWith": [
+            "User Thomas (Admin)"
+          ]
+        }
+      ],
+      "sharingWithApp": {
+        "shared": true,
+        "app": "CIQ Digital",
+        "permission": [
+          "Lookup"
+        ],
+        "allFields": true,
+        "allowedFields": []
+      },
+      "keyPermissions": [
+        "InitiateItems",
+        "ViewChild",
+        "View",
+        "Participated"
+      ],
+      "reads": {
+        "flowRecord": 200,
+        "draft": 200,
+        "allfields": 200,
+        "members": 200,
+        "reports": 200
+      }
+    },
+    {
+      "specDrift": "none",
+      "type": "Process",
+      "id": "CIQP_Completeness_Confirmation_A00",
+      "name": "CIQP Completeness Confirmation",
+      "status": "Live",
+      "createdAt": "2026-10-07T04:25:26Z",
+      "modifiedAt": "2026-10-07T05:30:07Z",
+      "lastPublishedAt": "2026-10-07T04:25:28Z",
+      "draftPublishedAt": "2026-10-07T04:25:27Z",
+      "descriptionFlowRecord": "The supplier confirms that the questionnaire is complete (PS-05). This is not the final release: data stays editable. Created from the app case.",
+      "descriptionModel": "The supplier confirms that the questionnaire is complete (PS-05). This is not the final release: data stays editable. Created from the app case.",
+      "workflowType": "Sequence",
+      "fields": [
+        {
+          "id": "Confirmation_Key",
+          "name": "Confirmation Key",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Case_Code",
+          "name": "Case Code",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Cycle_No",
+          "name": "Cycle No",
+          "type": "Number",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Supplier_Code",
+          "name": "Supplier Code",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "App_Case_Item_Id",
+          "name": "App Case Item Id",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Declaration_Text",
+          "name": "Declaration Text",
+          "type": "Textarea",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Declaration_Text_Key",
+          "name": "Declaration Text Key",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Supplier_Due_Date",
+          "name": "Supplier Due Date",
+          "type": "Date",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Assigned_Contacts",
+          "name": "Assigned Contacts",
+          "type": "MultiUser",
+          "required": true,
+          "lookup": {
+            "kind": "User",
+            "target": "User",
+            "lookupFields": [],
+            "hiddenFields": []
+          },
+          "published": "same"
+        },
+        {
+          "id": "Supplier_Confirm",
+          "name": "Supplier Confirm",
+          "type": "Select",
+          "required": false,
+          "list": {
+            "id": "CIQP_Confirm_A00",
+            "name": "CIQP Confirm"
+          },
+          "published": "same"
+        },
+        {
+          "id": "Confirmed_By_Name",
+          "name": "Confirmed By Name",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Confirmed_By_Email",
+          "name": "Confirmed By Email",
+          "type": "Email",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Confirmed_By_Role",
+          "name": "Confirmed By Role",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Confirmed_At",
+          "name": "Confirmed At",
+          "type": "DateTime",
+          "required": false,
+          "published": "same"
+        }
+      ],
+      "publishedOnlyFields": [],
+      "childTables": [],
+      "steps": [
+        {
+          "activityId": "Activity_1324i3t",
+          "name": "Request completeness confirmation",
+          "nodeType": "StartEvent",
+          "assignee": null,
+          "condition": null,
+          "fieldPermissions": {
+            "Editable": [
+              "Confirmation_Key",
+              "Case_Code",
+              "Cycle_No",
+              "Supplier_Code",
+              "App_Case_Item_Id",
+              "Declaration_Text",
+              "Declaration_Text_Key",
+              "Supplier_Due_Date",
+              "Assigned_Contacts"
+            ],
+            "ReadOnly": [
+              "Supplier_Confirm",
+              "Confirmed_By_Name",
+              "Confirmed_By_Email",
+              "Confirmed_By_Role",
+              "Confirmed_At"
+            ]
+          },
+          "fieldPermissionCounts": {
+            "Editable": 9,
+            "ReadOnly": 5
+          }
+        },
+        {
+          "activityId": "Activity_1ag8hlf",
+          "name": "Supplier: confirm completeness",
+          "nodeType": "UserTask",
+          "assignee": [
+            {
+              "kind": "Field",
+              "field": "Assigned_Contacts",
+              "display": "Assigned Contacts"
+            }
+          ],
+          "condition": null,
+          "fieldPermissions": {
+            "ReadOnly": [
+              "Confirmation_Key",
+              "Case_Code",
+              "Cycle_No",
+              "Supplier_Code",
+              "App_Case_Item_Id",
+              "Declaration_Text",
+              "Declaration_Text_Key",
+              "Supplier_Due_Date",
+              "Assigned_Contacts"
+            ],
+            "Mandatory": [
+              "Supplier_Confirm",
+              "Confirmed_By_Name",
+              "Confirmed_By_Email",
+              "Confirmed_By_Role",
+              "Confirmed_At"
+            ]
+          },
+          "fieldPermissionCounts": {
+            "ReadOnly": 9,
+            "Mandatory": 5
+          }
+        },
+        {
+          "activityId": "Activity_16m5i9o",
+          "name": "End",
+          "nodeType": "EndEvent",
+          "assignee": null,
+          "condition": null,
+          "fieldPermissions": {
+            "ReadOnly": "14 columns"
+          },
+          "fieldPermissionCounts": {
+            "ReadOnly": 14
+          }
+        }
+      ],
+      "platformActivities": [
+        {
+          "id": "SendBackToInitiator",
+          "nodeType": "SendBackToInitiator",
+          "note": "platform-made (send back to initiator)"
+        }
+      ],
+      "runtimeWorkflowSteps": [
+        {
+          "activityId": "Activity_1ag8hlf",
+          "name": "Supplier: confirm completeness"
+        }
+      ],
+      "layoutSections": [
+        "Details"
+      ],
+      "grants": [
+        {
+          "id": "RoEK4XPKXCvH",
+          "name": "Supplier",
+          "kind": "AppRole",
+          "role": "Member",
+          "permission": []
+        },
+        {
+          "id": "RoEK3_yhR4wx",
+          "name": "Admin",
+          "kind": "AppRole",
+          "role": "Member",
+          "permission": [
+            "InitiateItems",
+            "View"
+          ]
+        }
+      ],
+      "reports": [
+        {
+          "id": "CIQP_Completeness_Confirmation_A00_All_Items",
+          "name": "CIQP Completeness Confirmation All Items",
+          "system": true,
+          "sharedWith": [
+            "User Thomas (Admin)"
+          ]
+        }
+      ],
+      "sharingWithApp": {
+        "shared": false,
+        "allowedFlows": []
+      },
+      "keyPermissions": [
+        "InitiateItems",
+        "ViewChild",
+        "Participated",
+        "View"
+      ],
+      "reads": {
+        "flowRecord": 200,
+        "draft": 200,
+        "allfields": 200,
+        "members": 200,
+        "reports": 200
+      }
+    },
+    {
+      "specDrift": "none",
+      "type": "Process",
+      "id": "CIQP_Final_Release_A00",
+      "name": "CIQP Final Release",
+      "status": "Live",
+      "createdAt": "2026-10-07T04:25:29Z",
+      "modifiedAt": "2026-10-07T05:30:07Z",
+      "lastPublishedAt": "2026-10-07T04:25:31Z",
+      "draftPublishedAt": "2026-10-07T04:25:31Z",
+      "descriptionFlowRecord": "The supplier's single final release of the questionnaire (PS-11). After it, nothing can be changed. Created from the app case.",
+      "descriptionModel": "The supplier's single final release of the questionnaire (PS-11). After it, nothing can be changed. Created from the app case.",
+      "workflowType": "Sequence",
+      "fields": [
+        {
+          "id": "Confirmation_Key",
+          "name": "Confirmation Key",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Case_Code",
+          "name": "Case Code",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Cycle_No",
+          "name": "Cycle No",
+          "type": "Number",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Supplier_Code",
+          "name": "Supplier Code",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "App_Case_Item_Id",
+          "name": "App Case Item Id",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Declaration_Text",
+          "name": "Declaration Text",
+          "type": "Textarea",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Declaration_Text_Key",
+          "name": "Declaration Text Key",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Supplier_Due_Date",
+          "name": "Supplier Due Date",
+          "type": "Date",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Assigned_Contacts",
+          "name": "Assigned Contacts",
+          "type": "MultiUser",
+          "required": true,
+          "lookup": {
+            "kind": "User",
+            "target": "User",
+            "lookupFields": [],
+            "hiddenFields": []
+          },
+          "published": "same"
+        },
+        {
+          "id": "Supplier_Confirm",
+          "name": "Supplier Confirm",
+          "type": "Select",
+          "required": false,
+          "list": {
+            "id": "CIQP_Confirm_A00",
+            "name": "CIQP Confirm"
+          },
+          "published": "same"
+        },
+        {
+          "id": "Confirmed_By_Name",
+          "name": "Confirmed By Name",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Confirmed_By_Email",
+          "name": "Confirmed By Email",
+          "type": "Email",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Confirmed_By_Role",
+          "name": "Confirmed By Role",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Confirmed_At",
+          "name": "Confirmed At",
+          "type": "DateTime",
+          "required": false,
+          "published": "same"
+        }
+      ],
+      "publishedOnlyFields": [],
+      "childTables": [],
+      "steps": [
+        {
+          "activityId": "Activity_sefw4p",
+          "name": "Request final release",
+          "nodeType": "StartEvent",
+          "assignee": null,
+          "condition": null,
+          "fieldPermissions": {
+            "Editable": [
+              "Confirmation_Key",
+              "Case_Code",
+              "Cycle_No",
+              "Supplier_Code",
+              "App_Case_Item_Id",
+              "Declaration_Text",
+              "Declaration_Text_Key",
+              "Supplier_Due_Date",
+              "Assigned_Contacts"
+            ],
+            "ReadOnly": [
+              "Supplier_Confirm",
+              "Confirmed_By_Name",
+              "Confirmed_By_Email",
+              "Confirmed_By_Role",
+              "Confirmed_At"
+            ]
+          },
+          "fieldPermissionCounts": {
+            "Editable": 9,
+            "ReadOnly": 5
+          }
+        },
+        {
+          "activityId": "Activity_1gx3sjo",
+          "name": "Supplier: release",
+          "nodeType": "UserTask",
+          "assignee": [
+            {
+              "kind": "Field",
+              "field": "Assigned_Contacts",
+              "display": "Assigned Contacts"
+            }
+          ],
+          "condition": null,
+          "fieldPermissions": {
+            "ReadOnly": [
+              "Confirmation_Key",
+              "Case_Code",
+              "Cycle_No",
+              "Supplier_Code",
+              "App_Case_Item_Id",
+              "Declaration_Text",
+              "Declaration_Text_Key",
+              "Supplier_Due_Date",
+              "Assigned_Contacts"
+            ],
+            "Mandatory": [
+              "Supplier_Confirm",
+              "Confirmed_By_Name",
+              "Confirmed_By_Email",
+              "Confirmed_By_Role",
+              "Confirmed_At"
+            ]
+          },
+          "fieldPermissionCounts": {
+            "ReadOnly": 9,
+            "Mandatory": 5
+          }
+        },
+        {
+          "activityId": "Activity_ofz8a4",
+          "name": "End",
+          "nodeType": "EndEvent",
+          "assignee": null,
+          "condition": null,
+          "fieldPermissions": {
+            "ReadOnly": "14 columns"
+          },
+          "fieldPermissionCounts": {
+            "ReadOnly": 14
+          }
+        }
+      ],
+      "platformActivities": [
+        {
+          "id": "SendBackToInitiator",
+          "nodeType": "SendBackToInitiator",
+          "note": "platform-made (send back to initiator)"
+        }
+      ],
+      "runtimeWorkflowSteps": [
+        {
+          "activityId": "Activity_1gx3sjo",
+          "name": "Supplier: release"
+        }
+      ],
+      "layoutSections": [
+        "Details"
+      ],
+      "grants": [
+        {
+          "id": "RoEK4XPKXCvH",
+          "name": "Supplier",
+          "kind": "AppRole",
+          "role": "Member",
+          "permission": []
+        },
+        {
+          "id": "RoEK3_yhR4wx",
+          "name": "Admin",
+          "kind": "AppRole",
+          "role": "Member",
+          "permission": [
+            "InitiateItems",
+            "View"
+          ]
+        }
+      ],
+      "reports": [
+        {
+          "id": "CIQP_Final_Release_A00_All_Items",
+          "name": "CIQP Final Release All Items",
+          "system": true,
+          "sharedWith": [
+            "User Thomas (Admin)"
+          ]
+        }
+      ],
+      "sharingWithApp": {
+        "shared": false,
+        "allowedFlows": []
+      },
+      "keyPermissions": [
+        "InitiateItems",
+        "ViewChild",
+        "Participated",
+        "View"
+      ],
+      "reads": {
+        "flowRecord": 200,
+        "draft": 200,
+        "allfields": 200,
+        "members": 200,
+        "reports": 200
+      }
+    },
+    {
+      "specDrift": "none",
+      "type": "Process",
+      "id": "CIQP_Notice_A00",
+      "name": "CIQP Notice",
+      "status": "Live",
+      "createdAt": "2026-10-07T04:25:32Z",
+      "modifiedAt": "2026-10-07T05:30:07Z",
+      "lastPublishedAt": "2026-10-07T04:39:37Z",
+      "draftPublishedAt": "2026-10-07T04:39:37Z",
+      "descriptionFlowRecord": "A message from Beiersdorf to the supplier, e.g. a change-request outcome, a scope change or a case closure. The supplier acknowledges it.",
+      "descriptionModel": "A message from Beiersdorf that the supplier acknowledges, e.g. a change-request outcome or a scope change. Not used for cancellation or closure (those go by e-mail, so no supplier task stays open).",
+      "workflowType": "Sequence",
+      "fields": [
+        {
+          "id": "Notice_Key",
+          "name": "Notice Key",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Notice_Kind",
+          "name": "Notice Kind",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Case_Code",
+          "name": "Case Code",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Cycle_No",
+          "name": "Cycle No",
+          "type": "Number",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Supplier_Code",
+          "name": "Supplier Code",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "App_Notice_Item_Id",
+          "name": "App Notice Item Id",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Notice_Title",
+          "name": "Notice Title",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Notice_Text",
+          "name": "Notice Text",
+          "type": "Textarea",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Related_Key",
+          "name": "Related Key",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Assigned_Contacts",
+          "name": "Assigned Contacts",
+          "type": "MultiUser",
+          "required": true,
+          "lookup": {
+            "kind": "User",
+            "target": "User",
+            "lookupFields": [],
+            "hiddenFields": []
+          },
+          "published": "same"
+        }
+      ],
+      "publishedOnlyFields": [],
+      "childTables": [],
+      "steps": [
+        {
+          "activityId": "Activity_nel5eh",
+          "name": "Send notice",
+          "nodeType": "StartEvent",
+          "assignee": null,
+          "condition": null,
+          "fieldPermissions": {
+            "Editable": [
+              "Notice_Key",
+              "Notice_Kind",
+              "Case_Code",
+              "Cycle_No",
+              "Supplier_Code",
+              "App_Notice_Item_Id",
+              "Notice_Title",
+              "Notice_Text",
+              "Related_Key",
+              "Assigned_Contacts"
+            ]
+          },
+          "fieldPermissionCounts": {
+            "Editable": 10
+          }
+        },
+        {
+          "activityId": "Activity_t6gsv3",
+          "name": "Supplier: acknowledge",
+          "nodeType": "UserTask",
+          "assignee": [
+            {
+              "kind": "Field",
+              "field": "Assigned_Contacts",
+              "display": "Assigned Contacts"
+            }
+          ],
+          "condition": null,
+          "fieldPermissions": {
+            "ReadOnly": [
+              "Notice_Key",
+              "Notice_Kind",
+              "Case_Code",
+              "Cycle_No",
+              "Supplier_Code",
+              "App_Notice_Item_Id",
+              "Notice_Title",
+              "Notice_Text",
+              "Related_Key",
+              "Assigned_Contacts"
+            ]
+          },
+          "fieldPermissionCounts": {
+            "ReadOnly": 10
+          }
+        },
+        {
+          "activityId": "Activity_1jztbgk",
+          "name": "End",
+          "nodeType": "EndEvent",
+          "assignee": null,
+          "condition": null,
+          "fieldPermissions": {
+            "ReadOnly": [
+              "Notice_Key",
+              "Notice_Kind",
+              "Case_Code",
+              "Cycle_No",
+              "Supplier_Code",
+              "App_Notice_Item_Id",
+              "Notice_Title",
+              "Notice_Text",
+              "Related_Key",
+              "Assigned_Contacts"
+            ]
+          },
+          "fieldPermissionCounts": {
+            "ReadOnly": 10
+          }
+        }
+      ],
+      "platformActivities": [
+        {
+          "id": "SendBackToInitiator",
+          "nodeType": "SendBackToInitiator",
+          "note": "platform-made (send back to initiator)"
+        }
+      ],
+      "runtimeWorkflowSteps": [
+        {
+          "activityId": "Activity_t6gsv3",
+          "name": "Supplier: acknowledge"
+        }
+      ],
+      "layoutSections": [
+        "Details"
+      ],
+      "grants": [
+        {
+          "id": "RoEK4XPKXCvH",
+          "name": "Supplier",
+          "kind": "AppRole",
+          "role": "Member",
+          "permission": []
+        },
+        {
+          "id": "RoEK3_yhR4wx",
+          "name": "Admin",
+          "kind": "AppRole",
+          "role": "Member",
+          "permission": [
+            "InitiateItems",
+            "View"
+          ]
+        }
+      ],
+      "reports": [
+        {
+          "id": "CIQP_Notice_A00_All_Items",
+          "name": "CIQP Notice All Items",
+          "system": true,
+          "sharedWith": [
+            "User Thomas (Admin)"
+          ]
+        }
+      ],
+      "sharingWithApp": {
+        "shared": false,
+        "allowedFlows": []
+      },
+      "keyPermissions": [
+        "InitiateItems",
+        "ViewChild",
+        "View",
+        "Participated"
+      ],
+      "reads": {
+        "flowRecord": 200,
+        "draft": 200,
+        "allfields": 200,
+        "members": 200,
+        "reports": 200
+      }
+    },
+    {
+      "specDrift": "none",
+      "type": "Process",
+      "id": "CIQP_Change_Request_A00",
+      "name": "CIQP Change Request",
+      "status": "Live",
+      "createdAt": "2026-10-06T21:10:38Z",
+      "modifiedAt": "2026-10-07T05:30:07Z",
+      "lastPublishedAt": "2026-10-07T04:25:36Z",
+      "draftPublishedAt": "2026-10-07T04:25:36Z",
+      "descriptionFlowRecord": "Supplier-initiated change request: triaged by RMM, assessed by the owning department. After the final release every request is refused and logged.",
+      "descriptionModel": "A correction or change notice raised by the supplier. Triage and assessment happen in the app; the outcome comes back as a CIQP Notice.",
+      "workflowType": "Sequence",
+      "fields": [
+        {
+          "id": "CR_Key",
+          "name": "CR Key",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Case_Code",
+          "name": "Case Code",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Cycle_No",
+          "name": "Cycle No",
+          "type": "Number",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Supplier_Code",
+          "name": "Supplier Code",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Change_Kind",
+          "name": "Change Kind",
+          "type": "Select",
+          "required": true,
+          "list": {
+            "id": "CIQP_Change_Kind_A00",
+            "name": "CIQP Change Kind"
+          },
+          "published": "same"
+        },
+        {
+          "id": "Section_Key",
+          "name": "Section Key",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Field_Key",
+          "name": "Field Key",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Row_Id",
+          "name": "Row Id",
+          "type": "Text",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Current_Value_Text",
+          "name": "Current Value Text",
+          "type": "Textarea",
+          "required": false,
+          "published": "same"
+        },
+        {
+          "id": "Proposed_Value_JSON",
+          "name": "Proposed Value JSON",
+          "type": "Textarea",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Change_Reason",
+          "name": "Change Reason",
+          "type": "Textarea",
+          "required": true,
+          "published": "same"
+        }
+      ],
+      "publishedOnlyFields": [],
+      "childTables": [],
+      "steps": [
+        {
+          "activityId": "Activity_cktkvw",
+          "name": "Submit change request",
+          "nodeType": "StartEvent",
+          "assignee": null,
+          "condition": null,
+          "fieldPermissions": {
+            "Editable": [
+              "CR_Key",
+              "Case_Code",
+              "Cycle_No",
+              "Supplier_Code",
+              "Change_Kind",
+              "Section_Key",
+              "Field_Key",
+              "Row_Id",
+              "Current_Value_Text",
+              "Proposed_Value_JSON",
+              "Change_Reason"
+            ]
+          },
+          "fieldPermissionCounts": {
+            "Editable": 11
+          }
+        },
+        {
+          "activityId": "Activity_1l91vu8",
+          "name": "End",
+          "nodeType": "EndEvent",
+          "assignee": null,
+          "condition": null,
+          "fieldPermissions": {
+            "ReadOnly": [
+              "CR_Key",
+              "Case_Code",
+              "Cycle_No",
+              "Supplier_Code",
+              "Change_Kind",
+              "Section_Key",
+              "Field_Key",
+              "Row_Id",
+              "Current_Value_Text",
+              "Proposed_Value_JSON",
+              "Change_Reason"
+            ]
+          },
+          "fieldPermissionCounts": {
+            "ReadOnly": 11
+          }
+        }
+      ],
+      "platformActivities": [
+        {
+          "id": "SendBackToInitiator",
+          "nodeType": "SendBackToInitiator",
+          "note": "platform-made (send back to initiator)"
+        }
+      ],
+      "runtimeWorkflowSteps": [],
+      "layoutSections": [
+        "Details"
+      ],
+      "grants": [
+        {
+          "id": "RoEK4XPKXCvH",
+          "name": "Supplier",
+          "kind": "AppRole",
+          "role": "Member",
+          "permission": [
+            "InitiateItems"
+          ]
+        },
+        {
+          "id": "RoEK3_yhR4wx",
+          "name": "Admin",
+          "kind": "AppRole",
+          "role": "Member",
+          "permission": [
+            "InitiateItems",
+            "View"
+          ]
+        }
+      ],
+      "reports": [
+        {
+          "id": "CIQP_Change_Request_A00_All_Items",
+          "name": "CIQP Change Request All Items",
+          "system": true,
+          "sharedWith": [
+            "User Thomas (Admin)"
+          ]
+        }
+      ],
+      "sharingWithApp": {
+        "shared": true,
+        "app": "CIQ Digital",
+        "permission": [
+          "Lookup"
+        ],
+        "allFields": true,
+        "allowedFields": []
+      },
+      "keyPermissions": [
+        "InitiateItems",
+        "ViewChild",
+        "Participated",
+        "View"
+      ],
+      "reads": {
+        "flowRecord": 200,
+        "draft": 200,
+        "allfields": 200,
+        "members": 200,
+        "reports": 200
+      }
+    },
+    {
+      "specDrift": "none",
+      "type": "Form",
+      "id": "CIQP_Help_Article_A00",
+      "name": "CIQP Help Article",
+      "status": "Live",
+      "createdAt": "2026-10-06T21:10:03Z",
+      "modifiedAt": "2026-10-07T04:26:27Z",
+      "lastPublishedAt": "2026-10-07T04:25:39Z",
+      "draftPublishedAt": "2026-10-07T04:25:38Z",
+      "descriptionFlowRecord": "Supplier-agnostic FAQ and quick-start guide (CIA #34). Every portal user may read every row by design.",
+      "descriptionModel": "Supplier-agnostic FAQ and quick-start guide (CIA #34). Every portal user may read every row by design.",
+      "workflowType": null,
+      "fields": [
+        {
+          "id": "Article_Title",
+          "name": "Article Title",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Article_Body",
+          "name": "Article Body",
+          "type": "Textarea",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Sort_Order",
+          "name": "Sort Order",
+          "type": "Number",
+          "required": false,
+          "published": "same"
+        }
+      ],
+      "publishedOnlyFields": [],
+      "childTables": [],
+      "steps": null,
+      "platformActivities": [],
+      "runtimeWorkflowSteps": null,
+      "layoutSections": [
+        "Details"
+      ],
+      "grants": [
+        {
+          "id": "RoEK4XPKXCvH",
+          "name": "Supplier",
+          "kind": "AppRole",
+          "role": "Viewer",
+          "permission": []
+        },
+        {
+          "id": "RoEK3_yhR4wx",
+          "name": "Admin",
+          "kind": "AppRole",
+          "role": "Member",
+          "permission": [
+            "Delete"
+          ]
+        }
+      ],
+      "reports": [],
+      "formViews": [],
+      "sharingWithApp": {
+        "shared": true,
+        "app": "CIQ Digital",
+        "permission": [
+          "Lookup"
+        ],
+        "allFields": true,
+        "allowedFields": []
+      },
+      "keyPermissions": [
+        "View",
+        "ReadOnly"
+      ],
+      "reads": {
+        "flowRecord": 200,
+        "draft": 200,
+        "allfields": 200,
+        "members": 200,
+        "reports": 200
+      }
+    },
+    {
+      "specDrift": "no spec entry (not part of portal-spec.mjs)",
+      "type": "Process",
+      "id": "ZZ_Spike_Assignee_A00",
+      "name": "ZZ Spike Assignee",
+      "status": "Live",
+      "createdAt": "2026-10-06T21:02:35Z",
+      "modifiedAt": "2026-10-07T05:25:06Z",
+      "lastPublishedAt": "2026-10-07T04:20:39Z",
+      "draftPublishedAt": "2026-10-07T04:20:38Z",
+      "descriptionFlowRecord": "Throwaway probe: field-driven step assignee. Safe to delete.",
+      "descriptionModel": "",
+      "workflowType": "Sequence",
+      "fields": [
+        {
+          "id": "Probe_Title",
+          "name": "Probe Title",
+          "type": "Text",
+          "required": true,
+          "published": "same"
+        },
+        {
+          "id": "Probe_Note",
+          "name": "Probe Note",
+          "type": "Textarea",
+          "required": false,
+          "published": "same"
+        }
+      ],
+      "publishedOnlyFields": [],
+      "childTables": [],
+      "steps": [
+        {
+          "activityId": "Activity_z5b98q",
+          "name": "Start",
+          "nodeType": "StartEvent",
+          "assignee": null,
+          "condition": null,
+          "fieldPermissions": {
+            "Editable": [
+              "Probe_Title",
+              "Probe_Note"
+            ]
+          },
+          "fieldPermissionCounts": {
+            "Editable": 2
+          }
+        },
+        {
+          "activityId": "Activity_1po4umr",
+          "name": "End",
+          "nodeType": "EndEvent",
+          "assignee": null,
+          "condition": null,
+          "fieldPermissions": {
+            "ReadOnly": [
+              "Probe_Title",
+              "Probe_Note"
+            ]
+          },
+          "fieldPermissionCounts": {
+            "ReadOnly": 2
+          }
+        }
+      ],
+      "platformActivities": [
+        {
+          "id": "SendBackToInitiator",
+          "nodeType": "SendBackToInitiator",
+          "note": "platform-made (send back to initiator)"
+        }
+      ],
+      "runtimeWorkflowSteps": [],
+      "layoutSections": [
+        "Details"
+      ],
+      "grants": [
+        {
+          "id": "RoEK3_yhR4wx",
+          "name": "Admin",
+          "kind": "AppRole",
+          "role": "Member",
+          "permission": [
+            "InitiateItems"
+          ]
+        }
+      ],
+      "reports": [
+        {
+          "id": "ZZ_Spike_Assignee_A00_All_Items",
+          "name": "ZZ Spike Assignee All Items",
+          "system": true,
+          "sharedWith": [
+            "User Thomas (Admin)"
+          ]
+        }
+      ],
+      "sharingWithApp": {
+        "shared": true,
+        "app": "CIQ Digital",
+        "permission": [
+          "Lookup"
+        ],
+        "allFields": true,
+        "allowedFields": []
+      },
+      "keyPermissions": [
+        "ViewChild",
+        "Participated"
+      ],
+      "reads": {
+        "flowRecord": 200,
+        "draft": 200,
+        "allfields": 200,
+        "members": 200,
+        "reports": 200
+      }
+    }
+  ],
+  "lists": [
+    {
+      "type": "List",
+      "id": "CIQP_Change_Kind_A00",
+      "name": "CIQP Change Kind",
+      "status": "Live",
+      "modifiedAt": "2026-10-06T21:53:05Z",
+      "values": [
+        "Metadata correction",
+        "Configuration answer change",
+        "Other correction",
+        "Change notice"
+      ],
+      "sharingWithApp": "NOT READABLE: list records carry no AllowedFlows/SharedWith attribute"
+    },
+    {
+      "type": "List",
+      "id": "CIQP_Doc_Kind_A00",
+      "name": "CIQP Doc Kind",
+      "status": "Live",
+      "modifiedAt": "2026-10-06T21:09:50Z",
+      "values": [
+        "SDS",
+        "CoA",
+        "Specification",
+        "Analysis",
+        "Certificate",
+        "Statement",
+        "Other"
+      ],
+      "sharingWithApp": "NOT READABLE: list records carry no AllowedFlows/SharedWith attribute"
+    },
+    {
+      "type": "List",
+      "id": "CIQP_Response_Kind_A00",
+      "name": "CIQP Response Kind",
+      "status": "Live",
+      "modifiedAt": "2026-10-06T21:09:49Z",
+      "values": [
+        "Answer",
+        "Document",
+        "Additional part completed",
+        "Cannot provide"
+      ],
+      "sharingWithApp": "NOT READABLE: list records carry no AllowedFlows/SharedWith attribute"
+    },
+    {
+      "type": "List",
+      "id": "CIQP_Confirm_A00",
+      "name": "CIQP Confirm",
+      "status": "Live",
+      "modifiedAt": "2026-10-06T21:09:45Z",
+      "values": [
+        "Confirmed"
+      ],
+      "sharingWithApp": "NOT READABLE: list records carry no AllowedFlows/SharedWith attribute"
+    },
+    {
+      "type": "List",
+      "id": "CIQP_Yes_No_A00",
+      "name": "CIQP Yes No",
+      "status": "Live",
+      "modifiedAt": "2026-10-06T21:09:43Z",
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "sharingWithApp": "NOT READABLE: list records carry no AllowedFlows/SharedWith attribute"
+    }
+  ],
+  "emptyFlowTypes": {
+    "case": 0,
+    "dataset": 0
+  },
+  "itemsVisibleToKey": {
+    "CIQP_Notice_A00": {
+      "myItems": 0,
+      "states": []
+    },
+    "CIQP_Final_Release_A00": {
+      "myItems": 0,
+      "states": []
+    },
+    "CIQP_Completeness_Confirmation_A00": {
+      "myItems": 0,
+      "states": []
+    },
+    "CIQP_Request_A00": {
+      "myItems": 0,
+      "states": []
+    },
+    "CIQP_Change_Request_A00": {
+      "myItems": 0,
+      "states": []
+    },
+    "CIQP_Query_A00": {
+      "myItems": 0,
+      "states": []
+    },
+    "CIQP_Section_A00": {
+      "myItems": 0,
+      "states": []
+    },
+    "ZZ_Spike_Assignee_A00": {
+      "myItems": 8,
+      "states": [
+        "Draft@Start",
+        "InProgress@Spike step",
+        "InProgress@Spike step",
+        "Draft@Start",
+        "InProgress@Spike step",
+        "Draft@Start",
+        "InProgress@Spike step",
+        "Draft@Start"
+      ]
+    },
+    "CIQP_Help_Article_A00": {
+      "rows": 5,
+      "titles": [
+        "10 What is the CIQ?",
+        "20 How your questionnaire is put together",
+        "30 Completeness confirmation and final release",
+        "40 Questions from Beiersdorf",
+        "50 Documents"
+      ]
+    }
+  },
+  "sharingWithApp": {
+    "CIQP_Request_A00": "shared: Lookup (all fields: true)",
+    "CIQP_Section_A00": "shared: Lookup (all fields: true)",
+    "CIQP_Query_A00": "shared: Lookup (all fields: true)",
+    "CIQP_Completeness_Confirmation_A00": "NOT shared",
+    "CIQP_Final_Release_A00": "NOT shared",
+    "CIQP_Notice_A00": "NOT shared",
+    "CIQP_Change_Request_A00": "shared: Lookup (all fields: true)",
+    "CIQP_Help_Article_A00": "shared: Lookup (all fields: true)",
+    "ZZ_Spike_Assignee_A00": "shared: Lookup (all fields: true)"
+  },
+  "appSideReferencesToPortal": [],
+  "navigation": [
+    {
+      "id": "Navigation001",
+      "name": "Main Navigation",
+      "default": true,
+      "menus": [
+        {
+          "id": "Menu001",
+          "name": "Home",
+          "targets": [
+            "Page:Home_Page_A01"
+          ]
+        }
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "id": "Home_Page_A01",
+      "name": "Home Page",
+      "description": "Default home page generated by Kissflow",
+      "read": 200,
+      "components": [
+        "Label (general/label)",
+        "Label (general/label)",
+        "Image (general/image)"
+      ],
+      "referencesPortalFlows": []
+    }
+  ],
+  "customUi": {
+    "enabled": true,
+    "components": [
+      {
+        "id": "CCEK4IlNaGsH",
+        "name": "App custom UI bundle",
+        "category": "Application",
+        "status": "Live",
+        "source": "Zip",
+        "layout": "Web",
+        "zip": "ciq-portal-ui-71810c31a7.zip",
+        "modifiedAt": "2026-10-07T10:54:29Z"
+      }
+    ],
+    "manifestDraftRead": 200,
+    "portalLastDeployedAt": "2026-10-07T09:38:29Z"
+  },
+  "integrations": {
+    "portal": [],
+    "appIntegrationsTouchingPortal": [],
+    "appIntegrationsAll": [
+      {
+        "id": "CIQ_Z2_Case_cancelled_neutral_e_ma_A00",
+        "name": "CIQ Z2 Case cancelled – neutral e-mail",
+        "status": "Live",
+        "isActive": false,
+        "touchesPortalFlows": []
+      },
+      {
+        "id": "CIQ_Z1_Case_completed_PDF_e_mails__A00",
+        "name": "CIQ Z1 Case completed – PDF, e-mails, notification event",
+        "status": "Live",
+        "isActive": false,
+        "touchesPortalFlows": []
+      },
+      {
+        "id": "CIQ_ZZ_Spike_log_point_completed_A00",
+        "name": "CIQ ZZ Spike log – point completed",
+        "status": "Live",
+        "isActive": true,
+        "touchesPortalFlows": []
+      },
+      {
+        "id": "CIQ_ZZ_Spike_log_register_created_A00",
+        "name": "CIQ ZZ Spike log – register created",
+        "status": "Live",
+        "isActive": true,
+        "touchesPortalFlows": []
+      }
+    ],
+    "connectionsAccountWide": [
+      {
+        "id": "CnEKHrH5GzkY",
+        "name": "CIQ ZZ Spike Kissflow Dataform connection",
+        "connector": "Kissflow Dataform 1.5.4"
+      },
+      {
+        "id": "CnEKHrHqXRKB",
+        "name": "CIQ ZZ Spike Kissflow Process connection",
+        "connector": "Kissflow Process 3.7.6"
+      }
+    ],
+    "connectorsSubscribedCount": 62
+  },
+  "requestLog": {
+    "total": 134,
+    "non200": [
+      {
+        "name": "portal-application-record",
+        "path": "/flow/2/AcDOSunMEpSA/application/CIQ_Supplier_Portal_A00",
+        "status": 404
+      },
+      {
+        "name": "portal-flows-all-2",
+        "path": "/flow/2/AcDOSunMEpSA/application/CIQ_Supplier_Portal_A00/flow?page_size=500&all_flows=true&_application_id=CIQ_Supplier_Portal_A00",
+        "status": 403
+      },
+      {
+        "name": "portal-pages",
+        "path": "/flow/2/AcDOSunMEpSA/application/CIQ_Supplier_Portal_A00/page/?_application_id=CIQ_Supplier_Portal_A00",
+        "status": 403
+      },
+      {
+        "name": "app-portalstyle-flows",
+        "path": "/flow/2/{acc}/portal/CIQ_Digital_A00/flow",
+        "status": 403,
+        "note": "first attempt 429 (rate limit), retried: 403"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "topic": "flows",
+      "text": "9 flows: 8 Processes (7 CIQP + the throwaway ZZ Spike Assignee) and 1 Form (CIQP Help Article); 5 Lists; no Boards (case) and no Datasets. All Live, all last published on 7 Oct 2026."
+    },
+    {
+      "id": "F2",
+      "topic": "drift",
+      "text": "No drift against kissflow-build/ciq-supplier-portal/portal-spec.mjs: every spec field exists with the spec type and Required flag, step names match, and every draft field is also in the published runtime allfields with the same type and Required flag."
+    },
+    {
+      "id": "F3",
+      "topic": "roles",
+      "text": "Role membership changed since BUILD-LOG (7 Oct): Admin now has 0 members (was Thomas); Supplier has 1 member, Thomas (internal Kissflow user), which the 7 Oct rule 'Supplier has no internal test member' would fail. No external supplier user is in the Supplier role yet. User has 0 members."
+    },
+    {
+      "id": "F4",
+      "topic": "sharing",
+      "text": "Sharing with the app is now readable: the container flow listing GET /flow/2/{acc}/portal/CIQ_Supplier_Portal_A00/flow returns AllowedFlows per flow. Shared with CIQ Digital (Permission Lookup, all fields): CIQP Request, Section, Query, Change Request, Help Article and ZZ Spike Assignee. NOT shared: CIQP Notice, Completeness Confirmation, Final Release. Likely cause (inference): these three were created at 04:25 on 7 Oct in the v3 rebuild, after Thomas shared the flows (BUILD-LOG: around 04:13). Lists show no sharing attribute."
+    },
+    {
+      "id": "F5",
+      "topic": "sharing",
+      "text": "The app does not use the sharing yet: no app flow draft, app navigation or app integration references any portal flow id."
+    },
+    {
+      "id": "F6",
+      "topic": "integrations",
+      "text": "The portal has 0 integrations. The app has 4 (CIQ Z1 and Z2, both inactive; two ZZ Spike logs, active); none touches a portal flow. Account-wide there are 2 connections (Kissflow Dataform 1.5.4 CnEKHrH5GzkY, Kissflow Process 3.7.6 CnEKHrHqXRKB). The K-09 / X1-X6 / Y4-Y6 portal integrations do not exist."
+    },
+    {
+      "id": "F7",
+      "topic": "ui",
+      "text": "Custom UI is enabled. One Application component CCEK4IlNaGsH, Live, source Zip, ciq-portal-ui-71810c31a7.zip (component last modified 7 Oct 10:54:29Z). Native navigation is only the default Home page (Kissflow template: 2 labels + 1 image, no flow reference)."
+    },
+    {
+      "id": "F8",
+      "topic": "ui",
+      "text": "The portal container was published on 14 Oct 2026 06:52:39Z by Thomas (VersionNumber 1.0.1, BuildNumber 1); no flow was republished. LastDeployedAt is still 7 Oct 09:38:29Z, earlier than the component upload (10:54:29Z); UI-LOG records Thomas's live Diagnostics check showing the 10:53 build, so the component publish seems to take effect without a portal redeploy (inference, not tested here)."
+    },
+    {
+      "id": "F9",
+      "topic": "descriptions",
+      "text": "Four flow records still carry the v2 description while the model (draft) carries the v3 one: CIQP Notice, Request, Query, Change Request. The ZZ spike has no model description. Which text Kissflow shows to users was not checked."
+    },
+    {
+      "id": "F10",
+      "topic": "items",
+      "text": "The key user has 0 items in My items on every CIQP process (the smoke tests deleted theirs). CIQP Help Article has 5 rows. ZZ Spike Assignee still holds 8 items from the spikes: 4 Draft at Start and 4 In progress at 'Spike step', a step that no longer exists in its workflow (Start -> End)."
+    },
+    {
+      "id": "F11",
+      "topic": "steps",
+      "text": "Every supplier step is assigned from the MultiUser field Assigned_Contacts (Resource ValueType Field). No step is owned by a role, no step has a condition, every workflow is Sequence. The draft shows no SLA, send-back, reject or e-mail switches on the activities (only the platform SendBackToInitiator activity)."
+    },
+    {
+      "id": "F12",
+      "topic": "roles",
+      "text": "Supplier role Preference is null (no default page or navigation); Admin and User have Default/Default."
+    }
+  ],
+  "notRead": [
+    {
+      "what": "Portal page list",
+      "how": "GET /flow/2/{acc}/application/CIQ_Supplier_Portal_A00/page/",
+      "result": "403. Pages were found through the container draft instead (DefaultPage + navigation): only Home_Page_A01."
+    },
+    {
+      "what": "Application-style flow list for the portal",
+      "how": "GET /flow/2/{acc}/application/CIQ_Supplier_Portal_A00/flow?all_flows=true",
+      "result": "403; the portal route /flow/2/{acc}/portal/{id}/flow answered 200 and is used instead."
+    },
+    {
+      "what": "Portal record on the application route",
+      "how": "GET /flow/2/{acc}/application/CIQ_Supplier_Portal_A00",
+      "result": "404 (it is a Portal); /flow/2/{acc}/portal/{id} and /app/{id}/info answered."
+    },
+    {
+      "what": "App flows through the portal route",
+      "how": "GET /flow/2/{acc}/portal/CIQ_Digital_A00/flow",
+      "result": "403 (429 first, retried)."
+    },
+    {
+      "what": "List sharing with the app",
+      "how": "list records and list listing",
+      "result": "No AllowedFlows/SharedWith attribute on lists; not readable."
+    },
+    {
+      "what": "Runtime proof of sharing",
+      "how": "admin key reads every portal flow under the app id with 200",
+      "result": "Admin-key reads can't prove what a non-admin app user can read; only the AllowedFlows metadata is evidence."
+    },
+    {
+      "what": "Per-step switches (send-back, reject, e-mail, SLA)",
+      "how": "process drafts",
+      "result": "Not present in the draft blob; their live setting is unknown (MT-12)."
+    },
+    {
+      "what": "Portal user directory / invited supplier users",
+      "how": "no documented GET endpoint",
+      "result": "Only role membership was read."
+    },
+    {
+      "what": "All items of each process",
+      "how": "processes list only through /myitems (key user)",
+      "result": "Counts are 'items the key user started', not all items. No admin all-items list over REST."
+    },
+    {
+      "what": "The deployed bundle's contents",
+      "how": "not downloaded",
+      "result": "Only the component record and manifest were read (zip name, Live, source Zip)."
+    },
+    {
+      "what": "Field-level visibility or form-view rules on the Help Article",
+      "how": "formview list",
+      "result": "200 with no form views; no reports on the form."
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+ "source": "kissflow-build/ciq-digital/postgen/readback-result.json (live GET, 2026-10-08T18:42:13.855Z)",
+ "roles": {
+  "Admin": "RoEK3_3Jy9XU",
+  "CIQ Business Admin": "RoEKl87f38Xw",
+  "CIQ Case Admin": "RoEKl88jv4dv",
+  "CIQ Integration Service": "RoEKl89I5nGx",
+  "CIQ Microbiology Reviewer": "RoEKl8647K2u",
+  "CIQ Overall Approver": "RoEKl8790ycA",
+  "CIQ QM Reviewer": "RoEKl85WB1yE",
+  "CIQ Reader": "RoEKl88CJiLP",
+  "CIQ Regulatory Reviewer": "RoEKl84Hca4w",
+  "CIQ RMM": "RoEKl83f9jPF",
+  "CIQ Safety Reviewer": "RoEKl84xAFRW",
+  "CIQ Sustainability Reviewer": "RoEKl86bQQrO",
+  "User": "RoEK3_3NtdWL"
+ },
+ "steps": {
+  "CIQ_Case_A00": {
+   "Create case": "Activity_p1i6xz",
+   "Waiting for supplier: basic data": "Activity_1kltjdn",
+   "Scope check": "Activity_1feompb",
+   "Waiting for supplier: completeness PS-05": "Activity_1a281c6",
+   "Part 2 – Beiersdorf review": "Activity_on1xvu",
+   "Review – Regulatory": "Activity_xnbq22",
+   "Review – Safety": "Activity_1armoq0",
+   "Review – QM": "Activity_1kxceje",
+   "Review – Microbiology": "Activity_1252uy3",
+   "Review – Sustainability": "Activity_h505sh",
+   "Review – RMM": "Activity_vrfxbc",
+   "Open items check – before release request": "Activity_1lo09cp",
+   "Overall approval": "Activity_dullxt",
+   "Waiting for supplier: final release PS-11": "Activity_gwgj5o",
+   "Open items check – before close": "Activity_luckcl",
+   "End": "Activity_ycf01a"
+  },
+  "CIQ_Change_Request_A00": {
+   "Receive change request": "Activity_oz37gb",
+   "Triage": "Activity_1o6v1xh",
+   "Assess impact": "Activity_1r9kcjd",
+   "Assess – Regulatory": "Activity_l2hx24",
+   "Assess – Safety": "Activity_rvv4pm",
+   "Assess – QM": "Activity_1v5xu30",
+   "Assess – Microbiology": "Activity_1d278v1",
+   "Assess – Sustainability": "Activity_1awvxhf",
+   "End": "Activity_2m19c"
+  },
+  "CIQ_Open_Point_A00": {
+   "Raise open point": "Activity_18t0lhi",
+   "Waiting for supplier": "Activity_4k7uck",
+   "Review – Regulatory": "Activity_uka3mx",
+   "Review – Safety": "Activity_1kdump3",
+   "Review – QM": "Activity_1go37bt",
+   "Review – Microbiology": "Activity_hha7u2",
+   "Review – Sustainability": "Activity_y4af4g",
+   "Review – RMM": "Activity_xc8fbb",
+   "End": "Activity_i73i25"
+  }
+ },
+ "childModels": {
+  "CIQ_Open_Point_A00": {
+   "Rounds": "Rounds"
+  },
+  "CIQ_RMES_Regulatory_A00": {
+   "Regulatory_Criteria": "Regulatory_Criteria",
+   "Regulatory_Findings": "Regulatory_Findings"
+  },
+  "CIQ_RMES_Safety_A00": {
+   "Safety_Criteria": "Safety_Criteria",
+   "Safety_Findings": "Safety_Findings"
+  },
+  "CIQ_Section_A00": {
+   "Components": "Components"
+  },
+  "CIQ_Supplier_A00": {
+   "Contacts": "Contacts"
+  }
+ }
+}

@@ -1,0 +1,118 @@
+{
+  "tag": "ZZT-114155",
+  "at": "2026-10-07T11:41:55.722Z",
+  "tests": [
+    {
+      "id": "T1a form create+submit with child rows via REST",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "id": "a664fe41-2194-4c66-97cf-e44f3ef7e436",
+        "err": "{\"type\":\"FieldNotFound\",\"error_code\":\"KISSFLOW_ERROR_01003\",\"en_message\":\"The field Spike_Lines does not exist in the flow CIQ ZZ Spike Register.\",\"message\":\"The field {field_name} does not exist in t"
+      }
+    },
+    {
+      "id": "T1b child rows stored",
+      "ok": false,
+      "detail": {
+        "keys": []
+      }
+    },
+    {
+      "id": "T1c embedded SUM Open_Lines = 1",
+      "ok": false,
+      "detail": {}
+    },
+    {
+      "id": "T1d integration 'register created' (Dataform ItemCreated → create Log row) fired",
+      "ok": false,
+      "detail": {
+        "waitedSeconds": 120,
+        "logRowsBefore": 2
+      }
+    },
+    {
+      "id": "T2 Spike Case created + Start submitted",
+      "ok": true,
+      "detail": {
+        "create": 200,
+        "submit": 200,
+        "id": "PkEKIVlB5ZUn",
+        "step": "Spike prepare",
+        "status": "InProgress",
+        "flags": "Yes,Yes,Yes,No,No,No"
+      }
+    },
+    {
+      "id": "T3a linked Register created",
+      "ok": false,
+      "detail": {
+        "status": 404,
+        "id": "c5335dfa-7212-4704-9792-fa68766eab0c"
+      }
+    },
+    {
+      "id": "T3b cross-flow SUM Case.Open_Count = 1 (after graft)",
+      "ok": false,
+      "detail": {
+        "Hold_Flag": "Yes",
+        "Gate": "OK"
+      }
+    },
+    {
+      "id": "T3c formulas over the aggregate",
+      "ok": false,
+      "detail": {
+        "Hold_Flag": "Yes",
+        "Gate": "OK"
+      }
+    },
+    {
+      "id": "T4 key acts at 'Spike prepare' (update+submit)",
+      "ok": false,
+      "detail": {
+        "myitemsStep": "Spike prepare",
+        "act": "PkEKIVlEg0pE",
+        "update": 400,
+        "submit": 400,
+        "err": "You don't have permission to submit this item anymore.",
+        "stepAfter": "Spike prepare"
+      }
+    },
+    {
+      "id": "T5 Point To_Supplier=No lands at 'Spike review'",
+      "ok": true,
+      "detail": {
+        "id": "PkEKIVviOqQs",
+        "create": 200,
+        "submit": 200,
+        "step": "Spike review",
+        "status": "InProgress"
+      }
+    },
+    {
+      "id": "T5 Point To_Supplier=Yes lands at 'Spike waiting'",
+      "ok": true,
+      "detail": {
+        "id": "PkEKIVxRRM9x",
+        "create": 200,
+        "submit": 200,
+        "step": "Spike waiting",
+        "status": "InProgress"
+      }
+    }
+  ],
+  "caseId": "PkEKIVlB5ZUn",
+  "points": [
+    {
+      "id": "PkEKIVviOqQs",
+      "To_Supplier": "No",
+      "step": "Spike review"
+    },
+    {
+      "id": "PkEKIVxRRM9x",
+      "To_Supplier": "Yes",
+      "step": "Spike waiting"
+    }
+  ]
+}

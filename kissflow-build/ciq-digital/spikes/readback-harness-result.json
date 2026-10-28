@@ -1,0 +1,856 @@
+{
+  "readAt": "2026-10-07T10:31:54.273Z",
+  "checks": [],
+  "CIQ_ZZ_Spike_Case_A00": {
+    "fieldCount": 36,
+    "fields": [
+      "Flag_A:Select",
+      "Flag_B:Select",
+      "Flag_C:Select",
+      "Flag_D:Select",
+      "Flag_E:Select",
+      "Flag_F:Select",
+      "Lane_A_Confirm:Select",
+      "Lane_A_By:Text",
+      "Lane_A_At:DateTime",
+      "Lane_A_Note:Text",
+      "Lane_B_Confirm:Select",
+      "Lane_B_By:Text",
+      "Lane_B_At:DateTime",
+      "Lane_B_Note:Text",
+      "Lane_C_Confirm:Select",
+      "Lane_C_By:Text",
+      "Lane_C_At:DateTime",
+      "Lane_C_Note:Text",
+      "Lane_D_Confirm:Select",
+      "Lane_D_By:Text",
+      "Lane_D_At:DateTime",
+      "Lane_D_Note:Text",
+      "Lane_E_Confirm:Select",
+      "Lane_E_By:Text",
+      "Lane_E_At:DateTime",
+      "Lane_E_Note:Text",
+      "Lane_F_Confirm:Select",
+      "Lane_F_By:Text",
+      "Lane_F_At:DateTime",
+      "Lane_F_Note:Text",
+      "Spike_Decision:Select",
+      "Open_Count:Number",
+      "Hold_Flag:Text",
+      "Gate:Text",
+      "Note_Text:Text@Spike_Case_Notes",
+      "Note_By:Text@Spike_Case_Notes"
+    ],
+    "activities": [
+      {
+        "id": "Activity_18dgdbl",
+        "node": "StartEvent",
+        "name": "Create spike case",
+        "roles": [],
+        "cond": [],
+        "branches": 0
+      },
+      {
+        "id": "Activity_194d12o",
+        "node": "UserTask",
+        "name": "Spike prepare",
+        "roles": [
+          "RoEKHLFdFsUJ"
+        ],
+        "cond": [],
+        "branches": 0
+      },
+      {
+        "id": "Activity_7a5wvb",
+        "node": "UserTask",
+        "name": "Spike review – A",
+        "roles": [
+          "RoEKHLFdFsUJ"
+        ],
+        "cond": [
+          "Flag_A = \"Yes\""
+        ],
+        "branches": 0
+      },
+      {
+        "id": "Activity_7a5wvc",
+        "node": "UserTask",
+        "name": "Spike review – B",
+        "roles": [
+          "RoEKHLGDsV2J"
+        ],
+        "cond": [
+          "Flag_B = \"Yes\""
+        ],
+        "branches": 0
+      },
+      {
+        "id": "Activity_7a5wvd",
+        "node": "UserTask",
+        "name": "Spike review – C",
+        "roles": [
+          "RoEKHLFdFsUJ"
+        ],
+        "cond": [
+          "Flag_C = \"Yes\""
+        ],
+        "branches": 0
+      },
+      {
+        "id": "Activity_7a5wve",
+        "node": "UserTask",
+        "name": "Spike review – D",
+        "roles": [
+          "RoEKHLGDsV2J"
+        ],
+        "cond": [
+          "Flag_D = \"Yes\""
+        ],
+        "branches": 0
+      },
+      {
+        "id": "Activity_7a5wvf",
+        "node": "UserTask",
+        "name": "Spike review – E",
+        "roles": [
+          "RoEKHLFdFsUJ"
+        ],
+        "cond": [
+          "Flag_E = \"Yes\""
+        ],
+        "branches": 0
+      },
+      {
+        "id": "Activity_7a5wvg",
+        "node": "UserTask",
+        "name": "Spike review – F",
+        "roles": [
+          "RoEKHLGDsV2J"
+        ],
+        "cond": [
+          "Flag_F = \"Yes\""
+        ],
+        "branches": 0
+      },
+      {
+        "id": "Activity_t7r746",
+        "node": "Parallel",
+        "name": "Spike review lanes",
+        "roles": [],
+        "cond": [],
+        "branches": 6
+      },
+      {
+        "id": "Activity_90lk5i",
+        "node": "UserTask",
+        "name": "Spike hold check",
+        "roles": [
+          "RoEKHLFdFsUJ"
+        ],
+        "cond": [
+          "Hold_Flag = \"Yes\""
+        ],
+        "branches": 0
+      },
+      {
+        "id": "Activity_1tuyhu",
+        "node": "UserTask",
+        "name": "Spike gated step",
+        "roles": [
+          "RoEKHLFdFsUJ"
+        ],
+        "cond": [],
+        "branches": 0
+      },
+      {
+        "id": "Activity_1uarf0z",
+        "node": "UserTask",
+        "name": "Spike not-equal step",
+        "roles": [
+          "RoEKHLGDsV2J"
+        ],
+        "cond": [
+          "Spike_Decision != \"Rejected\""
+        ],
+        "branches": 0
+      },
+      {
+        "id": "Activity_1t24obg",
+        "node": "EndEvent",
+        "name": "End",
+        "roles": [],
+        "cond": [],
+        "branches": 0
+      },
+      {
+        "id": "SendBackToInitiator",
+        "node": "SendBackToInitiator",
+        "roles": [],
+        "cond": [],
+        "branches": 0
+      }
+    ],
+    "aggregates": [],
+    "fieldExpressions": [
+      "IF(ISBLANK(Open_Count),\"Yes\",IF(Open_Count=0,\"No\",\"Yes\"))",
+      "IF(IF(ISBLANK(Open_Count),0,Open_Count)=0,\"OK\",\"\")"
+    ],
+    "stepPermissions": {
+      "Create spike case": {
+        "Flag_A": "ReadOnly",
+        "Flag_B": "ReadOnly",
+        "Flag_C": "ReadOnly",
+        "Flag_D": "ReadOnly",
+        "Flag_E": "ReadOnly",
+        "Flag_F": "ReadOnly",
+        "Lane_A_Confirm": "ReadOnly",
+        "Lane_A_By": "ReadOnly",
+        "Lane_A_At": "ReadOnly",
+        "Lane_A_Note": "ReadOnly",
+        "Lane_B_Confirm": "ReadOnly",
+        "Lane_B_By": "ReadOnly",
+        "Lane_B_At": "ReadOnly",
+        "Lane_B_Note": "ReadOnly",
+        "Lane_C_Confirm": "ReadOnly",
+        "Lane_C_By": "ReadOnly",
+        "Lane_C_At": "ReadOnly",
+        "Lane_C_Note": "ReadOnly",
+        "Lane_D_Confirm": "ReadOnly",
+        "Lane_D_By": "ReadOnly",
+        "Lane_D_At": "ReadOnly",
+        "Lane_D_Note": "ReadOnly",
+        "Lane_E_Confirm": "ReadOnly",
+        "Lane_E_By": "ReadOnly",
+        "Lane_E_At": "ReadOnly",
+        "Lane_E_Note": "ReadOnly",
+        "Lane_F_Confirm": "ReadOnly",
+        "Lane_F_By": "ReadOnly",
+        "Lane_F_At": "ReadOnly",
+        "Lane_F_Note": "ReadOnly",
+        "Spike_Decision": "ReadOnly",
+        "Open_Count": "ReadOnly",
+        "Hold_Flag": "ReadOnly",
+        "Gate": "ReadOnly",
+        "Column_10gpqol": "ReadOnly"
+      },
+      "Spike prepare": {
+        "Flag_A": "Editable",
+        "Flag_B": "Editable",
+        "Flag_C": "Editable",
+        "Flag_D": "Editable",
+        "Flag_E": "Editable",
+        "Flag_F": "Editable",
+        "Lane_A_Confirm": "ReadOnly",
+        "Lane_A_By": "ReadOnly",
+        "Lane_A_At": "ReadOnly",
+        "Lane_A_Note": "ReadOnly",
+        "Lane_B_Confirm": "ReadOnly",
+        "Lane_B_By": "ReadOnly",
+        "Lane_B_At": "ReadOnly",
+        "Lane_B_Note": "ReadOnly",
+        "Lane_C_Confirm": "ReadOnly",
+        "Lane_C_By": "ReadOnly",
+        "Lane_C_At": "ReadOnly",
+        "Lane_C_Note": "ReadOnly",
+        "Lane_D_Confirm": "ReadOnly",
+        "Lane_D_By": "ReadOnly",
+        "Lane_D_At": "ReadOnly",
+        "Lane_D_Note": "ReadOnly",
+        "Lane_E_Confirm": "ReadOnly",
+        "Lane_E_By": "ReadOnly",
+        "Lane_E_At": "ReadOnly",
+        "Lane_E_Note": "ReadOnly",
+        "Lane_F_Confirm": "ReadOnly",
+        "Lane_F_By": "ReadOnly",
+        "Lane_F_At": "ReadOnly",
+        "Lane_F_Note": "ReadOnly",
+        "Spike_Decision": "Editable",
+        "Open_Count": "ReadOnly",
+        "Hold_Flag": "ReadOnly",
+        "Gate": "ReadOnly",
+        "Column_10gpqol": "Editable"
+      },
+      "Spike review – A": {
+        "Flag_A": "ReadOnly",
+        "Flag_B": "ReadOnly",
+        "Flag_C": "ReadOnly",
+        "Flag_D": "ReadOnly",
+        "Flag_E": "ReadOnly",
+        "Flag_F": "ReadOnly",
+        "Lane_A_Confirm": "Mandatory",
+        "Lane_A_By": "Editable",
+        "Lane_A_At": "Editable",
+        "Lane_A_Note": "Editable",
+        "Lane_B_Confirm": "ReadOnly",
+        "Lane_B_By": "ReadOnly",
+        "Lane_B_At": "ReadOnly",
+        "Lane_B_Note": "ReadOnly",
+        "Lane_C_Confirm": "ReadOnly",
+        "Lane_C_By": "ReadOnly",
+        "Lane_C_At": "ReadOnly",
+        "Lane_C_Note": "ReadOnly",
+        "Lane_D_Confirm": "ReadOnly",
+        "Lane_D_By": "ReadOnly",
+        "Lane_D_At": "ReadOnly",
+        "Lane_D_Note": "ReadOnly",
+        "Lane_E_Confirm": "ReadOnly",
+        "Lane_E_By": "ReadOnly",
+        "Lane_E_At": "ReadOnly",
+        "Lane_E_Note": "ReadOnly",
+        "Lane_F_Confirm": "ReadOnly",
+        "Lane_F_By": "ReadOnly",
+        "Lane_F_At": "ReadOnly",
+        "Lane_F_Note": "ReadOnly",
+        "Spike_Decision": "ReadOnly",
+        "Open_Count": "ReadOnly",
+        "Hold_Flag": "ReadOnly",
+        "Gate": "ReadOnly",
+        "Column_10gpqol": "ReadOnly"
+      },
+      "Spike review – B": {
+        "Flag_A": "ReadOnly",
+        "Flag_B": "ReadOnly",
+        "Flag_C": "ReadOnly",
+        "Flag_D": "ReadOnly",
+        "Flag_E": "ReadOnly",
+        "Flag_F": "ReadOnly",
+        "Lane_A_Confirm": "ReadOnly",
+        "Lane_A_By": "ReadOnly",
+        "Lane_A_At": "ReadOnly",
+        "Lane_A_Note": "ReadOnly",
+        "Lane_B_Confirm": "Mandatory",
+        "Lane_B_By": "Editable",
+        "Lane_B_At": "Editable",
+        "Lane_B_Note": "Editable",
+        "Lane_C_Confirm": "ReadOnly",
+        "Lane_C_By": "ReadOnly",
+        "Lane_C_At": "ReadOnly",
+        "Lane_C_Note": "ReadOnly",
+        "Lane_D_Confirm": "ReadOnly",
+        "Lane_D_By": "ReadOnly",
+        "Lane_D_At": "ReadOnly",
+        "Lane_D_Note": "ReadOnly",
+        "Lane_E_Confirm": "ReadOnly",
+        "Lane_E_By": "ReadOnly",
+        "Lane_E_At": "ReadOnly",
+        "Lane_E_Note": "ReadOnly",
+        "Lane_F_Confirm": "ReadOnly",
+        "Lane_F_By": "ReadOnly",
+        "Lane_F_At": "ReadOnly",
+        "Lane_F_Note": "ReadOnly",
+        "Spike_Decision": "ReadOnly",
+        "Open_Count": "ReadOnly",
+        "Hold_Flag": "ReadOnly",
+        "Gate": "ReadOnly",
+        "Column_10gpqol": "ReadOnly"
+      },
+      "Spike review – C": {
+        "Flag_A": "ReadOnly",
+        "Flag_B": "ReadOnly",
+        "Flag_C": "ReadOnly",
+        "Flag_D": "ReadOnly",
+        "Flag_E": "ReadOnly",
+        "Flag_F": "ReadOnly",
+        "Lane_A_Confirm": "ReadOnly",
+        "Lane_A_By": "ReadOnly",
+        "Lane_A_At": "ReadOnly",
+        "Lane_A_Note": "ReadOnly",
+        "Lane_B_Confirm": "ReadOnly",
+        "Lane_B_By": "ReadOnly",
+        "Lane_B_At": "ReadOnly",
+        "Lane_B_Note": "ReadOnly",
+        "Lane_C_Confirm": "Mandatory",
+        "Lane_C_By": "Editable",
+        "Lane_C_At": "Editable",
+        "Lane_C_Note": "Editable",
+        "Lane_D_Confirm": "ReadOnly",
+        "Lane_D_By": "ReadOnly",
+        "Lane_D_At": "ReadOnly",
+        "Lane_D_Note": "ReadOnly",
+        "Lane_E_Confirm": "ReadOnly",
+        "Lane_E_By": "ReadOnly",
+        "Lane_E_At": "ReadOnly",
+        "Lane_E_Note": "ReadOnly",
+        "Lane_F_Confirm": "ReadOnly",
+        "Lane_F_By": "ReadOnly",
+        "Lane_F_At": "ReadOnly",
+        "Lane_F_Note": "ReadOnly",
+        "Spike_Decision": "ReadOnly",
+        "Open_Count": "ReadOnly",
+        "Hold_Flag": "ReadOnly",
+        "Gate": "ReadOnly",
+        "Column_10gpqol": "ReadOnly"
+      },
+      "Spike review – D": {
+        "Flag_A": "ReadOnly",
+        "Flag_B": "ReadOnly",
+        "Flag_C": "ReadOnly",
+        "Flag_D": "ReadOnly",
+        "Flag_E": "ReadOnly",
+        "Flag_F": "ReadOnly",
+        "Lane_A_Confirm": "ReadOnly",
+        "Lane_A_By": "ReadOnly",
+        "Lane_A_At": "ReadOnly",
+        "Lane_A_Note": "ReadOnly",
+        "Lane_B_Confirm": "ReadOnly",
+        "Lane_B_By": "ReadOnly",
+        "Lane_B_At": "ReadOnly",
+        "Lane_B_Note": "ReadOnly",
+        "Lane_C_Confirm": "ReadOnly",
+        "Lane_C_By": "ReadOnly",
+        "Lane_C_At": "ReadOnly",
+        "Lane_C_Note": "ReadOnly",
+        "Lane_D_Confirm": "Mandatory",
+        "Lane_D_By": "Editable",
+        "Lane_D_At": "Editable",
+        "Lane_D_Note": "Editable",
+        "Lane_E_Confirm": "ReadOnly",
+        "Lane_E_By": "ReadOnly",
+        "Lane_E_At": "ReadOnly",
+        "Lane_E_Note": "ReadOnly",
+        "Lane_F_Confirm": "ReadOnly",
+        "Lane_F_By": "ReadOnly",
+        "Lane_F_At": "ReadOnly",
+        "Lane_F_Note": "ReadOnly",
+        "Spike_Decision": "ReadOnly",
+        "Open_Count": "ReadOnly",
+        "Hold_Flag": "ReadOnly",
+        "Gate": "ReadOnly",
+        "Column_10gpqol": "ReadOnly"
+      },
+      "Spike review – E": {
+        "Flag_A": "ReadOnly",
+        "Flag_B": "ReadOnly",
+        "Flag_C": "ReadOnly",
+        "Flag_D": "ReadOnly",
+        "Flag_E": "ReadOnly",
+        "Flag_F": "ReadOnly",
+        "Lane_A_Confirm": "ReadOnly",
+        "Lane_A_By": "ReadOnly",
+        "Lane_A_At": "ReadOnly",
+        "Lane_A_Note": "ReadOnly",
+        "Lane_B_Confirm": "ReadOnly",
+        "Lane_B_By": "ReadOnly",
+        "Lane_B_At": "ReadOnly",
+        "Lane_B_Note": "ReadOnly",
+        "Lane_C_Confirm": "ReadOnly",
+        "Lane_C_By": "ReadOnly",
+        "Lane_C_At": "ReadOnly",
+        "Lane_C_Note": "ReadOnly",
+        "Lane_D_Confirm": "ReadOnly",
+        "Lane_D_By": "ReadOnly",
+        "Lane_D_At": "ReadOnly",
+        "Lane_D_Note": "ReadOnly",
+        "Lane_E_Confirm": "Mandatory",
+        "Lane_E_By": "Editable",
+        "Lane_E_At": "Editable",
+        "Lane_E_Note": "Editable",
+        "Lane_F_Confirm": "ReadOnly",
+        "Lane_F_By": "ReadOnly",
+        "Lane_F_At": "ReadOnly",
+        "Lane_F_Note": "ReadOnly",
+        "Spike_Decision": "ReadOnly",
+        "Open_Count": "ReadOnly",
+        "Hold_Flag": "ReadOnly",
+        "Gate": "ReadOnly",
+        "Column_10gpqol": "ReadOnly"
+      },
+      "Spike review – F": {
+        "Flag_A": "ReadOnly",
+        "Flag_B": "ReadOnly",
+        "Flag_C": "ReadOnly",
+        "Flag_D": "ReadOnly",
+        "Flag_E": "ReadOnly",
+        "Flag_F": "ReadOnly",
+        "Lane_A_Confirm": "ReadOnly",
+        "Lane_A_By": "ReadOnly",
+        "Lane_A_At": "ReadOnly",
+        "Lane_A_Note": "ReadOnly",
+        "Lane_B_Confirm": "ReadOnly",
+        "Lane_B_By": "ReadOnly",
+        "Lane_B_At": "ReadOnly",
+        "Lane_B_Note": "ReadOnly",
+        "Lane_C_Confirm": "ReadOnly",
+        "Lane_C_By": "ReadOnly",
+        "Lane_C_At": "ReadOnly",
+        "Lane_C_Note": "ReadOnly",
+        "Lane_D_Confirm": "ReadOnly",
+        "Lane_D_By": "ReadOnly",
+        "Lane_D_At": "ReadOnly",
+        "Lane_D_Note": "ReadOnly",
+        "Lane_E_Confirm": "ReadOnly",
+        "Lane_E_By": "ReadOnly",
+        "Lane_E_At": "ReadOnly",
+        "Lane_E_Note": "ReadOnly",
+        "Lane_F_Confirm": "Mandatory",
+        "Lane_F_By": "Editable",
+        "Lane_F_At": "Editable",
+        "Lane_F_Note": "Editable",
+        "Spike_Decision": "ReadOnly",
+        "Open_Count": "ReadOnly",
+        "Hold_Flag": "ReadOnly",
+        "Gate": "ReadOnly",
+        "Column_10gpqol": "ReadOnly"
+      },
+      "Spike review lanes": {},
+      "Spike hold check": {
+        "Flag_A": "ReadOnly",
+        "Flag_B": "ReadOnly",
+        "Flag_C": "ReadOnly",
+        "Flag_D": "ReadOnly",
+        "Flag_E": "ReadOnly",
+        "Flag_F": "ReadOnly",
+        "Lane_A_Confirm": "ReadOnly",
+        "Lane_A_By": "ReadOnly",
+        "Lane_A_At": "ReadOnly",
+        "Lane_A_Note": "ReadOnly",
+        "Lane_B_Confirm": "ReadOnly",
+        "Lane_B_By": "ReadOnly",
+        "Lane_B_At": "ReadOnly",
+        "Lane_B_Note": "ReadOnly",
+        "Lane_C_Confirm": "ReadOnly",
+        "Lane_C_By": "ReadOnly",
+        "Lane_C_At": "ReadOnly",
+        "Lane_C_Note": "ReadOnly",
+        "Lane_D_Confirm": "ReadOnly",
+        "Lane_D_By": "ReadOnly",
+        "Lane_D_At": "ReadOnly",
+        "Lane_D_Note": "ReadOnly",
+        "Lane_E_Confirm": "ReadOnly",
+        "Lane_E_By": "ReadOnly",
+        "Lane_E_At": "ReadOnly",
+        "Lane_E_Note": "ReadOnly",
+        "Lane_F_Confirm": "ReadOnly",
+        "Lane_F_By": "ReadOnly",
+        "Lane_F_At": "ReadOnly",
+        "Lane_F_Note": "ReadOnly",
+        "Spike_Decision": "ReadOnly",
+        "Open_Count": "ReadOnly",
+        "Hold_Flag": "ReadOnly",
+        "Gate": "ReadOnly",
+        "Column_10gpqol": "ReadOnly"
+      },
+      "Spike gated step": {
+        "Flag_A": "ReadOnly",
+        "Flag_B": "ReadOnly",
+        "Flag_C": "ReadOnly",
+        "Flag_D": "ReadOnly",
+        "Flag_E": "ReadOnly",
+        "Flag_F": "ReadOnly",
+        "Lane_A_Confirm": "ReadOnly",
+        "Lane_A_By": "ReadOnly",
+        "Lane_A_At": "ReadOnly",
+        "Lane_A_Note": "ReadOnly",
+        "Lane_B_Confirm": "ReadOnly",
+        "Lane_B_By": "ReadOnly",
+        "Lane_B_At": "ReadOnly",
+        "Lane_B_Note": "ReadOnly",
+        "Lane_C_Confirm": "ReadOnly",
+        "Lane_C_By": "ReadOnly",
+        "Lane_C_At": "ReadOnly",
+        "Lane_C_Note": "ReadOnly",
+        "Lane_D_Confirm": "ReadOnly",
+        "Lane_D_By": "ReadOnly",
+        "Lane_D_At": "ReadOnly",
+        "Lane_D_Note": "ReadOnly",
+        "Lane_E_Confirm": "ReadOnly",
+        "Lane_E_By": "ReadOnly",
+        "Lane_E_At": "ReadOnly",
+        "Lane_E_Note": "ReadOnly",
+        "Lane_F_Confirm": "ReadOnly",
+        "Lane_F_By": "ReadOnly",
+        "Lane_F_At": "ReadOnly",
+        "Lane_F_Note": "ReadOnly",
+        "Spike_Decision": "ReadOnly",
+        "Open_Count": "ReadOnly",
+        "Hold_Flag": "ReadOnly",
+        "Gate": "Mandatory",
+        "Column_10gpqol": "ReadOnly"
+      },
+      "Spike not-equal step": {
+        "Flag_A": "ReadOnly",
+        "Flag_B": "ReadOnly",
+        "Flag_C": "ReadOnly",
+        "Flag_D": "ReadOnly",
+        "Flag_E": "ReadOnly",
+        "Flag_F": "ReadOnly",
+        "Lane_A_Confirm": "ReadOnly",
+        "Lane_A_By": "ReadOnly",
+        "Lane_A_At": "ReadOnly",
+        "Lane_A_Note": "ReadOnly",
+        "Lane_B_Confirm": "ReadOnly",
+        "Lane_B_By": "ReadOnly",
+        "Lane_B_At": "ReadOnly",
+        "Lane_B_Note": "ReadOnly",
+        "Lane_C_Confirm": "ReadOnly",
+        "Lane_C_By": "ReadOnly",
+        "Lane_C_At": "ReadOnly",
+        "Lane_C_Note": "ReadOnly",
+        "Lane_D_Confirm": "ReadOnly",
+        "Lane_D_By": "ReadOnly",
+        "Lane_D_At": "ReadOnly",
+        "Lane_D_Note": "ReadOnly",
+        "Lane_E_Confirm": "ReadOnly",
+        "Lane_E_By": "ReadOnly",
+        "Lane_E_At": "ReadOnly",
+        "Lane_E_Note": "ReadOnly",
+        "Lane_F_Confirm": "ReadOnly",
+        "Lane_F_By": "ReadOnly",
+        "Lane_F_At": "ReadOnly",
+        "Lane_F_Note": "ReadOnly",
+        "Spike_Decision": "ReadOnly",
+        "Open_Count": "ReadOnly",
+        "Hold_Flag": "ReadOnly",
+        "Gate": "ReadOnly",
+        "Column_10gpqol": "ReadOnly"
+      },
+      "End": {
+        "Flag_A": "ReadOnly",
+        "Flag_B": "ReadOnly",
+        "Flag_C": "ReadOnly",
+        "Flag_D": "ReadOnly",
+        "Flag_E": "ReadOnly",
+        "Flag_F": "ReadOnly",
+        "Lane_A_Confirm": "ReadOnly",
+        "Lane_A_By": "ReadOnly",
+        "Lane_A_At": "ReadOnly",
+        "Lane_A_Note": "ReadOnly",
+        "Lane_B_Confirm": "ReadOnly",
+        "Lane_B_By": "ReadOnly",
+        "Lane_B_At": "ReadOnly",
+        "Lane_B_Note": "ReadOnly",
+        "Lane_C_Confirm": "ReadOnly",
+        "Lane_C_By": "ReadOnly",
+        "Lane_C_At": "ReadOnly",
+        "Lane_C_Note": "ReadOnly",
+        "Lane_D_Confirm": "ReadOnly",
+        "Lane_D_By": "ReadOnly",
+        "Lane_D_At": "ReadOnly",
+        "Lane_D_Note": "ReadOnly",
+        "Lane_E_Confirm": "ReadOnly",
+        "Lane_E_By": "ReadOnly",
+        "Lane_E_At": "ReadOnly",
+        "Lane_E_Note": "ReadOnly",
+        "Lane_F_Confirm": "ReadOnly",
+        "Lane_F_By": "ReadOnly",
+        "Lane_F_At": "ReadOnly",
+        "Lane_F_Note": "ReadOnly",
+        "Spike_Decision": "ReadOnly",
+        "Open_Count": "ReadOnly",
+        "Hold_Flag": "ReadOnly",
+        "Gate": "ReadOnly",
+        "Column_10gpqol": "ReadOnly"
+      },
+      "undefined": {}
+    },
+    "openCountQuery": [
+      {
+        "Id": "AggregateDefinition_1mdoyvz",
+        "Kind": "QueryDefinition",
+        "Field": "Open_Count",
+        "LHSModel": "CIQ_ZZ_Spike_Case_A00",
+        "FlowType": "Form",
+        "LookupField": [],
+        "AggregateType": "Sum",
+        "LHSModelApplicationId": "CIQ_Digital_A00",
+        "QueryDefinition::Criteria": [
+          "Criteria_1rshz3i"
+        ],
+        "AggregateField": "Open_Lines"
+      }
+    ]
+  },
+  "CIQ_ZZ_Spike_Point_A00": {
+    "fieldCount": 10,
+    "fields": [
+      "Round_No:Number",
+      "Question_Text:Textarea",
+      "Awaiting_Response:Text",
+      "Response_Text:Textarea",
+      "Due_Date:Date",
+      "To_Supplier:Select",
+      "Spike_Rounds_Round_No:Number@Spike_Rounds",
+      "Question:Text@Spike_Rounds",
+      "Response:Text@Spike_Rounds",
+      "Outcome:Text@Spike_Rounds"
+    ],
+    "activities": [
+      {
+        "id": "Activity_1wjqod",
+        "node": "StartEvent",
+        "name": "Raise spike point",
+        "roles": [],
+        "cond": [],
+        "branches": 0
+      },
+      {
+        "id": "Activity_1nm6syq",
+        "node": "UserTask",
+        "name": "Spike waiting",
+        "roles": [
+          "RoEKHLFdFsUJ"
+        ],
+        "cond": [
+          "To_Supplier = \"Yes\""
+        ],
+        "branches": 0
+      },
+      {
+        "id": "Activity_2yluch",
+        "node": "UserTask",
+        "name": "Spike review",
+        "roles": [
+          "RoEKHLGDsV2J"
+        ],
+        "cond": [],
+        "branches": 0
+      },
+      {
+        "id": "Activity_fdurmy",
+        "node": "EndEvent",
+        "name": "End",
+        "roles": [],
+        "cond": [],
+        "branches": 0
+      },
+      {
+        "id": "SendBackToInitiator",
+        "node": "SendBackToInitiator",
+        "roles": [],
+        "cond": [],
+        "branches": 0
+      }
+    ],
+    "aggregates": [],
+    "fieldExpressions": [],
+    "stepPermissions": {
+      "Raise spike point": {
+        "Round_No": "Editable",
+        "Question_Text": "Editable",
+        "Awaiting_Response": "Editable",
+        "Response_Text": "ReadOnly",
+        "Due_Date": "Editable",
+        "To_Supplier": "Editable",
+        "Column_1ik6iuy": "ReadOnly"
+      },
+      "Spike waiting": {
+        "Round_No": "ReadOnly",
+        "Question_Text": "ReadOnly",
+        "Awaiting_Response": "ReadOnly",
+        "Response_Text": "Editable",
+        "Due_Date": "ReadOnly",
+        "To_Supplier": "ReadOnly",
+        "Column_1ik6iuy": "ReadOnly"
+      },
+      "Spike review": {
+        "Round_No": "ReadOnly",
+        "Question_Text": "ReadOnly",
+        "Awaiting_Response": "ReadOnly",
+        "Response_Text": "ReadOnly",
+        "Due_Date": "ReadOnly",
+        "To_Supplier": "ReadOnly",
+        "Column_1ik6iuy": "Editable"
+      },
+      "End": {
+        "Round_No": "ReadOnly",
+        "Question_Text": "ReadOnly",
+        "Awaiting_Response": "ReadOnly",
+        "Response_Text": "ReadOnly",
+        "Due_Date": "ReadOnly",
+        "To_Supplier": "ReadOnly",
+        "Column_1ik6iuy": "ReadOnly"
+      },
+      "undefined": {}
+    }
+  },
+  "CIQ_ZZ_Spike_Register_A00": {
+    "fields": [
+      "Register_Key:Text",
+      "Register_Case:Reference",
+      "Open_Lines:Number",
+      "Line_Text:Text@Spike_Lines",
+      "Line_Open:Number@Spike_Lines"
+    ],
+    "aggregates": [],
+    "queries": [
+      {
+        "id": "QueryDefinition_1rgp1hq",
+        "LHSModel": "CIQ_ZZ_Spike_Case_A00",
+        "FlowType": "Process"
+      },
+      {
+        "id": "AggregateDefinition_xond6i",
+        "LHSModel": "CIQ_ZZ_Spike_Register_A00",
+        "FlowType": "Form"
+      }
+    ]
+  },
+  "CIQ_ZZ_Spike_Log_A00": {
+    "fields": [
+      "Log_Key:Text",
+      "Log_Source:Text",
+      "Log_Event:Text",
+      "Log_Item_Id:Text",
+      "Log_At:DateTime",
+      "Log_Payload:Textarea"
+    ],
+    "aggregates": [],
+    "queries": []
+  },
+  "CIQ_ZZ_Spike_Yes_No_A00": {
+    "status": 200,
+    "Name": "CIQ ZZ Spike Yes No",
+    "itemsStatus": 200,
+    "items": [
+      "Yes",
+      "No"
+    ]
+  },
+  "CIQ_ZZ_Spike_Decision_A00": {
+    "status": 200,
+    "Name": "CIQ ZZ Spike Decision",
+    "itemsStatus": 200,
+    "items": [
+      "Approved",
+      "Rejected"
+    ]
+  },
+  "CIQ_ZZ_Spike_log_register_created_A00": {
+    "trigger": {},
+    "action": {},
+    "topKinds": [
+      "Integration",
+      "User"
+    ]
+  },
+  "CIQ_ZZ_Spike_log_point_completed_A00": {
+    "trigger": {},
+    "action": {},
+    "topKinds": [
+      "Integration",
+      "User"
+    ]
+  },
+  "roles": [
+    {
+      "_id": "RoEK3_3Jy9XU",
+      "Name": "Admin",
+      "UserCount": 1
+    },
+    {
+      "_id": "RoEKHLFdFsUJ",
+      "Name": "CIQ ZZ Spike Role A",
+      "UserCount": 1
+    },
+    {
+      "_id": "RoEKHLGDsV2J",
+      "Name": "CIQ ZZ Spike Role B",
+      "UserCount": 1
+    },
+    {
+      "_id": "RoEK3_3NtdWL",
+      "Name": "User",
+      "UserCount": 1
+    }
+  ]
+}

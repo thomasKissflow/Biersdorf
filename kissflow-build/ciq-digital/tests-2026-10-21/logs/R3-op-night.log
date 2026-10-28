@@ -1,0 +1,43 @@
+
+ RUN  v2.1.9 /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/prototype
+
+stdout | live/op.live.ts > S-OP: open points, every department in turn across runs (SPEC §4) > raise, edit, the supplier's answer, accept / return / close, the threads
+S-OP R3 (live): 3/18 pass; 103 Kissflow calls, 15 min (budget 204 min)
+    35  S1 supplier: the run's supplier with the self contact
+     9  S2 case: createCase, I-1 creates its CIQP Request
+    40  S3 completeness: the supplier fills in and confirms (portal), I-2
+    19  C1 clean-up: adopt late portal items, delete this suite's ledger items (withdraw, admin DELETE, GET 404)
+results: /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/kissflow-build/ciq-digital/tests-2026-10-21/results/R3/S-OP.json
+
+ ❯ live/op.live.ts (1 test | 1 failed) 944333ms
+   × S-OP: open points, every department in turn across runs (SPEC §4) > raise, edit, the supplier's answer, accept / return / close, the threads 944333ms
+     → expected [ Array(1) ] to deeply equal []
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  live/op.live.ts > S-OP: open points, every department in turn across runs (SPEC §4) > raise, edit, the supplier's answer, accept / return / close, the threads
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- Array []
++ Array [
++   "S3 completeness: the supplier fills in and confirms (portal), I-2: fail (failed: I-2 wrote the completeness and phase Review on the case; RMM's screen shows the case in review; no hand-off failed after its save)",
++ ]
+
+ ❯ live/op.live.ts:590:21
+    589|       }, { last: true });
+    590|     } else
+    591|       await step("C1 clean-up: adopt late portal items, delete this su…
+       |          ^
+    592|         await sweepLate(w, s, before, { since, late });
+    593|         await deleteOwn(w, s, before);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  00:42:39
+   Duration  945.53s (transform 549ms, setup 0ms, collect 1.03s, tests 944.33s, environment 0ms, prepare 40ms)
+

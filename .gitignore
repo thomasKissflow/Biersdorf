@@ -1,0 +1,27 @@
+.env
+.env.*
+!.env.example
+*.kf-env
+node_modules/
+dist/
+# Kissflow App Builder plugin: per-folder connection file and local agent memory
+.kf-env
+MEMORY-LOCAL.md
+
+# --- 28 Oct: added for the GitHub push ---
+# OS / build output
+.DS_Store
+dist*/
+**/node_modules
+# Secrets: files that hold the access key, the hand-off webhook tokens (SET:current) or the mail hook.
+# They stay on disk only. Never commit them; regenerate or share them outside git.
+kissflow-build/CIQ-prod-seed-INTERNAL.xlsx
+kissflow-build/CIQ-prod-seed-config-version-INTERNAL.xlsx
+kissflow-build/night-2026-10-21/prod-seed/config-version.json
+kissflow-build/prod-seed-postman/CIQ-prod-seed-config-version.postman_collection.json
+kissflow-build/night-2026-10-21/backups/SET-current-*
+kissflow-build/night-2026-10-21/backups/config-version.before-mailhook.json
+kissflow-build/night-2026-10-20/integrations/backups/SET_current.*
+kissflow-build/night-2026-10-20/integrations/state.json
+# REST request logs (trimmed request/response bodies; may carry tokens or item data)
+*requests*.jsonl

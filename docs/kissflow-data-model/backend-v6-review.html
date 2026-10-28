@@ -1,0 +1,416 @@
+<title>CIQ Backend Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one reading column; every section is a table whose last column is Thomas's comment box. */
+:root {
+  --bg: oklch(0.975 0.004 255); --surface: oklch(1 0 0); --surface-2: oklch(0.965 0.006 255);
+  --line: oklch(0.905 0.01 255); --line-strong: oklch(0.84 0.015 255);
+  --ink: oklch(0.24 0.04 262); --ink-2: oklch(0.43 0.03 262); --ink-3: oklch(0.56 0.02 262);
+  --brand: oklch(0.38 0.19 262); --brand-soft: oklch(0.95 0.03 262);
+  --ok: oklch(0.48 0.13 155); --ok-soft: oklch(0.95 0.04 155);
+  --warn: oklch(0.52 0.13 70); --warn-soft: oklch(0.96 0.05 85);
+  --bad: oklch(0.5 0.17 25); --bad-soft: oklch(0.96 0.03 25);
+  --note: oklch(0.985 0.03 95);
+  --sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: oklch(0.18 0.02 262); --surface: oklch(0.22 0.025 262); --surface-2: oklch(0.25 0.025 262);
+  --line: oklch(0.32 0.03 262); --line-strong: oklch(0.4 0.03 262);
+  --ink: oklch(0.95 0.01 262); --ink-2: oklch(0.8 0.02 262); --ink-3: oklch(0.68 0.02 262);
+  --brand: oklch(0.74 0.14 262); --brand-soft: oklch(0.3 0.07 262);
+  --ok: oklch(0.78 0.14 155); --ok-soft: oklch(0.3 0.06 155);
+  --warn: oklch(0.8 0.13 80); --warn-soft: oklch(0.32 0.06 80);
+  --bad: oklch(0.76 0.14 25); --bad-soft: oklch(0.32 0.07 25);
+  --note: oklch(0.26 0.03 95);
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: oklch(0.18 0.02 262); --surface: oklch(0.22 0.025 262); --surface-2: oklch(0.25 0.025 262);
+  --line: oklch(0.32 0.03 262); --line-strong: oklch(0.4 0.03 262);
+  --ink: oklch(0.95 0.01 262); --ink-2: oklch(0.8 0.02 262); --ink-3: oklch(0.68 0.02 262);
+  --brand: oklch(0.74 0.14 262); --brand-soft: oklch(0.3 0.07 262);
+  --ok: oklch(0.78 0.14 155); --ok-soft: oklch(0.3 0.06 155);
+  --warn: oklch(0.8 0.13 80); --warn-soft: oklch(0.32 0.06 80);
+  --bad: oklch(0.76 0.14 25); --bad-soft: oklch(0.32 0.07 25);
+  --note: oklch(0.26 0.03 95);
+  color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.6 var(--sans); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 72px; display: grid; gap: 40px; }
+header.top { display: grid; gap: 12px; }
+.eyebrow { font: 600 12px/1 var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--brand); }
+h1 { font: 700 clamp(28px, 4vw, 38px)/1.15 var(--sans); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+h2 { font: 600 21px/1.3 var(--sans); margin: 0; text-wrap: balance; }
+h3 { font: 600 15px/1.4 var(--sans); margin: 0; }
+p { margin: 0; }
+.lead { font-size: 16.5px; color: var(--ink-2); max-width: 74ch; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: 500 12.5px/1 var(--sans); padding: 7px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); }
+.chip b { color: var(--ink); font-weight: 600; }
+nav.toc { display: flex; flex-wrap: wrap; gap: 8px; }
+nav.toc a { font-size: 13px; color: var(--ink-2); text-decoration: none; border: 1px solid var(--line); background: var(--surface); padding: 5px 11px; border-radius: 999px; }
+nav.toc a:hover, nav.toc a:focus-visible { border-color: var(--brand); color: var(--brand); outline: none; }
+.savebar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 14px; }
+.savebar .state { font-size: 13.5px; color: var(--ink-2); }
+.savebar .state b { color: var(--ink); }
+.btn { font: 500 13.5px/1 var(--sans); color: var(--brand); background: var(--brand-soft); border: 1px solid transparent; padding: 9px 13px; border-radius: 8px; cursor: pointer; }
+.btn:hover { border-color: var(--brand); }
+.btn:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+section { display: grid; gap: 14px; scroll-margin-top: 72px; }
+section .intro { color: var(--ink-2); max-width: 78ch; }
+section .intro + .intro { margin-top: -4px; }
+.sec-head { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.sec-no { font: 600 13px/1 var(--mono); color: var(--brand); }
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { text-align: left; font: 600 12px/1.3 var(--sans); letter-spacing: .04em; text-transform: uppercase; color: var(--ink-3); background: var(--surface-2); padding: 10px 12px; border-bottom: 1px solid var(--line); }
+td { vertical-align: top; padding: 12px; border-top: 1px solid var(--line); min-width: 0; }
+tr:first-child td { border-top: 0; }
+td.idc { white-space: nowrap; width: 1%; }
+.rid { font: 600 12px/1 var(--mono); color: var(--ink-3); background: var(--surface-2); border: 1px solid var(--line); padding: 4px 6px; border-radius: 6px; }
+td .name { font-weight: 600; color: var(--ink); }
+td .fid { display: block; font: 400 12px/1.4 var(--mono); color: var(--ink-3); margin-top: 2px; word-break: break-all; }
+td ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 3px; }
+td p + p { margin-top: 6px; }
+code { font: 500 12.5px/1.4 var(--mono); background: var(--surface-2); border: 1px solid var(--line); border-radius: 5px; padding: 0 4px; word-break: break-word; }
+td.cm { width: 30%; min-width: 220px; background: var(--note); }
+textarea.cbox { width: 100%; min-height: 70px; resize: vertical; font: 14px/1.5 var(--sans); color: var(--ink); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 8px; padding: 8px 10px; }
+textarea.cbox:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; border-color: var(--brand); }
+textarea.cbox::placeholder { color: var(--ink-3); }
+.cstate { display: block; font-size: 12px; color: var(--ink-3); margin-top: 4px; min-height: 1em; }
+.cstate.ok { color: var(--ok); }
+.cstate.err { color: var(--bad); }
+.pill { display: inline-block; font: 600 11.5px/1 var(--sans); letter-spacing: .02em; padding: 5px 8px; border-radius: 999px; white-space: nowrap; }
+.pill.keep { color: var(--ok); background: var(--ok-soft); }
+.pill.rework { color: var(--brand); background: var(--brand-soft); }
+.pill.hold { color: var(--warn); background: var(--warn-soft); }
+.pill.drop { color: var(--bad); background: var(--bad-soft); }
+.pill.tag { color: var(--ink-2); background: var(--surface-2); border: 1px solid var(--line); }
+.status { display: block; margin-top: 6px; font-size: 13px; color: var(--ink-3); }
+.subhead { font: 600 13px/1.3 var(--sans); letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); margin-top: 6px; }
+footer { color: var(--ink-3); font-size: 13px; display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 18px; }
+#copyfallback { width: 100%; min-height: 160px; font: 13px/1.5 var(--mono); }
+@media (max-width: 760px) {
+  .wrap { padding-inline: 16px; }
+  .tablewrap { overflow: visible; border: 0; background: transparent; }
+  table, tbody, tr, td { display: block; width: 100%; }
+  thead { display: none; }
+  tr { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; }
+  td { border-top: 1px solid var(--line); }
+  td.idc { width: 100%; }
+  td[data-label]:not(.idc)::before { content: attr(data-label); display: block; font: 600 11px/1.3 var(--sans); letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 4px; }
+  td.cm { width: 100%; min-width: 0; }
+}
+@media (prefers-reduced-motion: no-preference) { .btn, nav.toc a { transition: border-color .15s, color .15s; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">Kissflow-internal · for Thomas · 15 Oct 2026</span>
+    <h1>CIQ backend review</h1>
+    <p class="lead">Your comments go in the yellow column on the right of every table. They save as you type, and I read them from here. Nothing on this page is built or tested, and nothing has been written to Kissflow.</p>
+    <div class="chips">
+      <span class="chip"><b>No external service</b> for the portal ↔ app connection</span>
+      <span class="chip"><b>Tests wait</b> for your dev deploy and sharing</span>
+      <span class="chip"><b>Dev sandbox only</b>: the production account stays off-limits unless you change that rule</span>
+    </div>
+    <nav class="toc" aria-label="Sections">
+      <a href="#s1">1. Your approach: sharing + SDK</a>
+      <a href="#s2">2. Who reacts</a>
+      <a href="#s3">3. Write-back options</a>
+      <a href="#s4">4. What's in Kissflow today</a>
+      <a href="#s5">5. Draft backend model</a>
+      <a href="#s6">6. Before and after your deploy</a>
+    </nav>
+  </header>
+
+  <div class="savebar" role="status">
+    <span class="state" id="savestate">Loading comments…</span>
+    <button class="btn" id="copyall" type="button">Copy all comments</button>
+  </div>
+  <div id="copywrap" hidden>
+    <p class="intro">Copying didn't work here. Select this text and copy it:</p>
+    <textarea id="copyfallback" readonly></textarea>
+  </div>
+
+  <div id="sections"></div>
+
+  <footer>
+    <p>Sources: the app's live readback on 15 Oct at 09:20 IST (167 checks passed), the portal's live check on 14 Oct at 23:44 IST (433 of 434), and plan v5. I haven't re-read Kissflow since, as you asked for no tests. If you've archived flows since then, section 4 is a few hours old.</p>
+    <p>Kissflow-internal. Don't share this page with Beiersdorf.</p>
+  </footer>
+</div>
+
+<script>
+const P = {
+  keep: '<span class="pill keep">Keep</span>',
+  rework: '<span class="pill rework">Keep, rework</span>',
+  hold: '<span class="pill hold">Hold</span>',
+  drop: '<span class="pill drop">Drop</span>',
+  clean: '<span class="pill drop">Clean out</span>',
+  q: (n) => '<span class="pill tag">See ' + n + '</span>',
+};
+
+const SECTIONS = [
+  {
+    id: "s1", no: "1", title: "Your approach: sharing between app and portal, read with the SDK",
+    intro: ["Most of what the service did can be handled this way. People read as themselves through the Kissflow SDK, and the sharing settings decide what each person may see. Access keys never go into a browser."],
+    cols: ["Job", "How it works without the service"],
+    rows: [
+      ["J-01", "Supplier sees the case (material, due date, locked values, contacts)", "<p>The portal screen reads the app's CIQ Case through sharing, only the cases that name the supplier. Your report idea fits here: an e-mail field on the case, and a report filtered on it.</p><p><b>One condition:</b> Kissflow must apply that filter to the signed-in user. If the screen passes the e-mail as a parameter, a supplier could change it and see another supplier's cases (test T-02).</p>"],
+      ["J-02", "Supplier sees the questionnaire version of the case", "Read through sharing. The config form holds internal notes, so share only supplier-safe fields, or give the supplier a supplier-safe copy (Q-05)."],
+      ["J-03", "Beiersdorf sees the supplier's answers and files", "The Workbench reads the portal's CIQP Request through sharing. CIQP Request and CIQP Query are already shared with the app (lookup, all fields). CIQP Final Release isn't shared yet."],
+      ["J-04", "Supplier sees questions from Beiersdorf", "The portal reads the app's open points through sharing, supplier-safe fields only, filtered to the supplier."],
+      ["J-05", "E-mails", "Native Kissflow integrations, as you first described for the open-point mails: the app sends Beiersdorf-side events, the portal sends supplier-side events."],
+      ["J-06", "Reminders and escalations", "Kissflow's own step deadlines (SLAs) on the supplier and review steps. Their reminder e-mails go to whoever holds the step. An integration on \"deadline passed\" escalates to the RMM."],
+      ["J-07", "Final PDF", "Your call: Kissflow's built-in PDF action, the Workbench building it when someone opens the released case, or the external script Beiersdorf agreed to on 12 Oct (for the PDF only, not the connection)."],
+    ],
+  },
+  {
+    id: "s2", no: "2", title: "The hard part sharing doesn't solve: who reacts when the other side acts",
+    intro: ["Sharing gives reading. These moments also need something to create or move items on the other side."],
+    cols: ["Moment", "What must happen"],
+    rows: [
+      ["M-1", "RMM starts a case", "The supplier's request item must exist in the portal."],
+      ["M-2", "The supplier confirms completeness", "The app case moves on and the department reviews start. Beiersdorf decided the RMM doesn't click here."],
+      ["M-3", "All reviews are done", "The supplier gets the release task and the questionnaire locks. When the supplier releases, the case completes."],
+      ["M-4", "The supplier changes an answer during review", "A department's completed review reopens if the change is in a section it leads or co-leads (your rule from today)."],
+    ],
+    after: {
+      title: "Native options for each moment, best first",
+      cols: ["Option", "How it works", "Where it stands"],
+      rows: [
+        ["O-a", "The supplier creates their own items", "On login, the portal reads the cases the supplier is named on through sharing. The supplier's screen then creates their CIQ request, their answer to a question and their release. Bonus: items a supplier creates stay in their \"My items\" for good.", "The pieces work on the portal. Supplier-started items are untested (T-09)."],
+        ["O-b", "A Kissflow integration across the two areas", "For example, a step on the app case triggers \"create item\" in a portal process.", "Not proven. The builder seemed to offer only processes from the integration's own area. Forms from both areas were listed (T-08)."],
+        ["O-c", "The Workbench reacts when a Beiersdorf user opens it", "For example, it sees \"completeness confirmed\" and starts the reviews as that user.", "Simple, but it only happens when someone opens the app."],
+        ["O-rec", "My suggestion", "Option a for everything the supplier starts. For the app side, test b first and keep c as the fallback.", "To decide after the tests."],
+      ],
+    },
+  },
+  {
+    id: "s3", no: "3", title: "Your write-back options, written down for testing",
+    intro: ["Your idea, as I understood it: the portal writes straight into the parent case in the app, so the app case stays the single source of truth. Guard rails make sure every save lands. Your fallback is a twin process in each area, synced at completion. We test this after your deploy and sharing."],
+    cols: ["Option", "How it works", "What it needs, and what could fail"],
+    rows: [
+      ["W-1", "<span class=\"name\">Your preferred option: write straight into the app case</span>", "<p>The portal screen saves each section into the parent case in the app, through a webhook integration in the app (a step that writes back).</p><p><b>Your guard rails:</b> check that each save landed, resync when the supplier moves to the next section, and show the supplier \"Data synced\".</p><p>One source of truth: the app case.</p>", "<p>See the notes N-1 to N-5 below. In short:</p><ul><li>the write must go through an integration;</li><li>the webhook address must stay out of the browser;</li><li>an integration may not be allowed to write into a running process item.</li></ul><p>Tests T-06 and T-07.</p>"],
+      ["W-2", "<span class=\"name\">Your fallback: the same process in both areas, synced at completion</span>", "The supplier works on the portal twin. When a step completes, an integration copies the data to the app twin.", "<p>The supplier can still change answers during review, until the release request, and a change reopens reviews. A sync only at completion would miss those changes.</p><p>So W-2 also needs a sync on every later change, or the app reads the later changes live through sharing.</p>"],
+      ["W-3", "<span class=\"name\">My first suggestion</span>", "Options a, b and c from section 2 move the work between the areas. The answers stay where the supplier wrote them, and the app reads them through sharing.", "The same tests as section 2 (T-08, T-09)."],
+      ["W-1B", "<span class=\"name\">A variant that keeps your single source of truth</span>", "<p>Each fact has one home. The supplier's answers live only in the supplier's portal request, and the app reads them through sharing. Beiersdorf's data lives only in the app, and the portal reads it.</p><p>Nothing is copied, so nothing needs syncing. The final document is the one frozen copy, made at release.</p>", "<p>No writes cross between the areas, so there's nothing to resync.</p><p><b>Trade-offs:</b></p><ul><li>app reports may not be able to include portal fields (untested);</li><li>the PDF needs data from both areas.</li></ul><p>Tests T-04 and T-05.</p>"],
+    ],
+    after: {
+      title: "Notes on W-1: things the tests must check, not reasons against it",
+      cols: ["Note", "What it means"],
+      rows: [
+        ["N-1", "A supplier can't write the app case directly. Portal users aren't app users, and after the first step only the person holding the step can change a process item. So the write has to go through an integration."],
+        ["N-2", "An integration writing into a running process item may hit the same refusal our access key hit (code 050313). If it does, the answers go into an app form row linked to the case, because forms can be updated at any time. That is still one source of truth in the app."],
+        ["N-3", "The webhook address must never sit in the supplier's browser. Anyone who copies it could write into any case, and an integration can't check who called. So the call should start on the Kissflow side: the supplier saves into their own portal item, and a portal integration passes it on. Kissflow then vouches for who saved."],
+        ["N-4", "Integrations have no \"field changed\" trigger, so a save in the middle of a step fires nothing. Each save would need to create a row, for example in a small portal \"save\" form, to fire the integration. The integration can't check that the case named on that row belongs to that supplier."],
+        ["N-5", "<p>Guard rails that make W-1 safe (yours plus mine):</p><ul><li>a save number on every save (<code>Answers_Rev</code>), so an older save never overwrites a newer one;</li><li>read back after every save;</li><li>resync at the next section and whenever the page opens;</li><li>a visible \"Saved to Beiersdorf\" or \"Not synced yet\" marker;</li><li>no release while a save is still pending.</li></ul>"],
+      ],
+    },
+  },
+  {
+    id: "s4", no: "4", title: "What's in Kissflow today, and how each object is modelled",
+    intro: ["Every process and form in both containers, with the role each one has under the new approach. The \"Clean out\" rows are the ones you can archive before your deploy."],
+    groups: [
+      {
+        title: "Supplier portal · CIQ_Supplier_Portal_A00 · one role: Supplier",
+        cols: ["Object", "Type", "How it's modelled", "New approach"],
+        rows: [
+          ["P-01", "<span class=\"name\">CIQP Request</span><span class=\"fid\">CIQP_Request_A00</span>", "Process", "<p><b>\"The CIQ\": one item per case cycle.</b> Steps:</p><ul><li>Issue request;</li><li>Supplier: fill in the CIQ, assigned to the case's supplier contacts (<code>Assigned_Contacts</code>). Submitting it is the completeness confirmation;</li><li>Supplier: keep the CIQ up to date, held to the end and never submitted, so the supplier keeps seeing the case;</li><li>End.</li></ul><p>About 60 fields hold:</p><ul><li>the case header and the questionnaire version (<code>Config_Bundle_JSON</code>);</li><li>the values Beiersdorf sets;</li><li>the answers as JSON: answers, who answered, justifications, K2.1 components, scope and requested documents;</li><li>completeness, the phase label, the lock flag, the question history and change reports.</li></ul><p>Child table \"Uploads\" has one row per file. The files themselves sit in <code>Supplier_Files</code>.</p><p>Shared with the app: lookup, all fields.</p>", P.rework + "<span class=\"status\">The core of the portal. The fields the service wrote (questionnaire version, Beiersdorf values, phase, lock, question history, change receipts) would be read from the shared app case instead, because nobody on the Beiersdorf side can write a portal item without the service.</span>"],
+          ["P-02", "<span class=\"name\">CIQP Query</span><span class=\"fid\">CIQP_Query_A00</span>", "Process", "<p>One item per question round. Steps: Start, then Supplier: respond (Answer · Document · Cannot provide), then End.</p><p>Files sent with an answer go to the request's Uploads table.</p><p>Shared with the app.</p>", P.keep + "<span class=\"status\">Who creates it changes: " + "see Q-03.</span>"],
+          ["P-03", "<span class=\"name\">CIQP Final Release</span><span class=\"fid\">CIQP_Final_Release_A00</span>", "Process", "<p>The \"give the final release\" task. Steps: Start, then Supplier: release, then End.</p><p>It's assigned to the contacts who may confirm and has a 3-day SLA. Not shared with the app today.</p>", P.keep + "<span class=\"status\">Share it with the app. Who creates it: Q-03.</span>"],
+          ["P-04", "<span class=\"name\">CIQP Help Article</span><span class=\"fid\">CIQP_Help_Article_A00</span>", "Form", "The Help page content, 9 rows. Suppliers can only read it. One text still says answers stay editable \"until you give the final release\" and needs updating for the lock rule.", P.keep],
+          ["P-05", "<span class=\"name\">CIQP Section, CIQP Completeness Confirmation, CIQP Notice, CIQP Change Request</span>", "Process", "The old per-section design from 7–8 Oct. Suppliers have had no access since 14 Oct.", P.clean],
+          ["P-06", "<span class=\"name\">ZZ Spike Assignee</span>", "Process", "A test probe from 7 Oct.", P.clean],
+          ["P-07", "<span class=\"name\">Lists</span>", "List", "<p>CIQP Doc Kind, CIQP Response Kind, CIQP Confirm and CIQP Yes No are in use.</p><p>CIQP Change Kind is no longer used.</p>", P.keep],
+          ["P-08", "<span class=\"name\">Role: Supplier</span>", "Role", "For external supplier users only. You're a member for dev tests, as the dev supplier ZZT-SUP-DEV.", P.keep],
+        ],
+      },
+      {
+        title: "Internal app · CIQ_Digital_A00 · Beiersdorf users only",
+        cols: ["Object", "Type", "How it's modelled", "New approach"],
+        rows: [
+          ["A-01", "<span class=\"name\">CIQ Case</span><span class=\"fid\">CIQ_Case_A00</span>", "Process", "<p><b>The backbone: one item per case cycle, started by the RMM.</b> Steps:</p><ul><li>Create case (RMM);</li><li>Waiting for supplier: CIQ;</li><li>Beiersdorf review and final release;</li><li>End.</li></ul><p>The two middle steps are held by the \"Integration service\" role, because the service moved them on. The phase is a field (<code>Case_Phase</code>), so cancel, reactivate and review ⇄ release are field changes.</p><p>It has 144 fields. About 70 are obsolete and hidden, because Kissflow can't delete fields.</p>", P.rework + "<span class=\"status\">The one process to show Beiersdorf. Its middle steps need a real holder now (Q-01).</span>"],
+          ["A-02", "<span class=\"name\">CIQ Review</span><span class=\"fid\">CIQ_Review_A00</span>", "Process", "<p>One item per department review, RMM included. A review starts at completeness, at a late activation, at a reopen or at a reactivation.</p><p>Each department (Regulatory, Safety, QM, Microbiology, Sustainability, RMM) has its own conditional step, assigned to the department's role. Safety and Regulatory also record the RMES decision.</p>", P.keep + "<span class=\"status\">Who starts it changes (Q-02).</span>"],
+          ["A-03", "<span class=\"name\">CIQ Open Point</span><span class=\"fid\">CIQ_Open_Point_A00</span>", "Process", "<p>One item per open point. It stays at the raising department's step through every round, and only the raiser gets that step (<code>Raiser_Assignee</code>, proven 15 Oct).</p><p>The thread is kept as JSON (<code>Thread_JSON</code>) for the history and the final PDF.</p>", P.keep + "<span class=\"status\">The raiser creates it directly in the Workbench. Until now only the service could.</span>"],
+          ["A-04", "<span class=\"name\">CIQ Case Data</span><span class=\"fid\">CIQ_Case_Data_A00</span>", "Form", "One row per case: the Workbench's list data, and the mirror of the supplier's answers, documents and components. Only the service writes it.", P.hold + "<span class=\"status\">Drop it if sharing and reports work (T-04, T-05).</span>"],
+          ["A-05", "<span class=\"name\">CIQ Service Request</span><span class=\"fid\">CIQ_Service_Request_A00</span>", "Form", "The Workbench's command channel to the service (\"raise this point\", \"cancel this case\").", P.drop + "<span class=\"status\">There's no service to read it.</span>"],
+          ["A-06", "<span class=\"name\">CIQ Mail Outbox</span> + integration <span class=\"name\">CIQ Mail – send outbox mail</span>", "Form + Integration", "One row per e-mail. The integration sends each new row. It isn't switched on yet.", P.keep + "<span class=\"status\">The Workbench writes rows as the user, and integrations write rows on events (Q-08).</span>"],
+          ["A-07", "<span class=\"name\">CIQ Supplier</span><span class=\"fid\">CIQ_Supplier_A00</span>", "Form", "The supplier master. Its Contacts child table holds may confirm, portal user id and invite state. The Business administrator edits it. It holds the dev supplier ZZT-SUP-DEV.", P.keep],
+          ["A-08", "<span class=\"name\">CIQ Config Version</span><span class=\"fid\">CIQ_Config_Version_A00</span>", "Form", "Rule sets, questionnaire versions and releases as versioned rows. 12 seed rows.", P.keep + "<span class=\"status\">The supplier needs a supplier-safe view, because the rows hold internal notes (Q-05).</span>"],
+          ["A-09", "<span class=\"name\">CIQ Scope Run</span><span class=\"fid\">CIQ_Scope_Run_A00</span>", "Form", "One row per scope milestone: completeness, later growth, a department's addition, a reactivation.", P.keep + "<span class=\"status\">Written by the Workbench.</span>"],
+          ["A-10", "<span class=\"name\">CIQ RMES Safety, CIQ RMES Regulatory</span>", "Form", "The department's criteria, results and findings. Only the department itself (and the Auditor) sees them.", P.keep + "<span class=\"status\">Created by the Workbench when the department's review starts.</span>"],
+          ["A-11", "<span class=\"name\">CIQ Internal Note</span><span class=\"fid\">CIQ_Internal_Note_A00</span>", "Form", "Internal notes with @mentions.", P.keep],
+          ["A-12", "<span class=\"name\">CIQ Audit Event</span><span class=\"fid\">CIQ_Audit_Event_A00</span>", "Form", "The case history and the global audit log. In v5 only the service writes it, so nobody can edit the trail.", P.rework + "<span class=\"status\">Who writes it: Q-06.</span>"],
+          ["A-13", "<span class=\"name\">CIQ Section</span> (form), <span class=\"name\">CIQ Change Request</span> (process)", "Form, Process", "The old design. Sections are configuration data now, and change reports live on the request.", P.clean],
+          ["A-14", "<span class=\"name\">CIQ ZZ Spike Case, CIQ ZZ Spike Point</span> (processes), <span class=\"name\">CIQ ZZ Spike Log, CIQ ZZ Spike Register</span> (forms)", "Process, Form", "Test flows from the spikes.", P.clean],
+          ["A-15", "<span class=\"name\">Integrations CIQ Z1</span> (case completed) and <span class=\"name\">CIQ Z2</span> (case cancelled)", "Integration", "Empty and switched off since 8 Oct.", P.clean],
+          ["A-16", "<span class=\"name\">Lists</span>", "List", "<p>In use: CIQ Case Phase, Track Status, Priority, Rejection Handling, OP Kind, OP Outcome, Event Category, Yes No, Confirm, Decision, Department, Review Dept, OP Progress, Config Kind and State, Release Stage, RMES Part and Result.</p><p>CIQ Request Status only served the Service Request.</p>", P.keep],
+          ["A-17", "<span class=\"name\">Roles</span> (14)", "Role", "RMM, the 5 department reviewers, Customs, Legal, Business administrator, Auditor, Business owner, Case administrator, Integration service, Admin.", P.keep + "<span class=\"status\">\"Integration service\" loses its job. Q-01 decides whether it stays.</span>"],
+        ],
+      },
+    ],
+  },
+  {
+    id: "s5", no: "5", title: "Draft backend model: principles and the open choices",
+    intro: ["A first draft for us to work on together. The shape stays close to v5: CIQ Case is the one process we show Beiersdorf, with the reviews, open points and the supplier's request around it. What changes is who moves the work, now that there's no service."],
+    cols: ["Principle", "What it means for the model"],
+    rows: [
+      ["PR-1", "One home per fact", "Each piece of data belongs to one container, and the other side reads it through sharing. The only copy is the frozen final document. (Pending your choice in Q-04.)"],
+      ["PR-2", "Every step has a real holder", "A supplier or a Beiersdorf role holds every step, so Kissflow's own task e-mails and SLA reminders reach the right person. No step is held by a technical user."],
+      ["PR-3", "People act as themselves", "Every write goes through the Kissflow SDK as the signed-in user, or through a Kissflow integration. No access key in any browser, and no external service between the containers."],
+      ["PR-4", "Kissflow enforces the locks where it can", "A field that is read-only at a step is enforced by Kissflow itself. A lock that only the screen applies can be bypassed."],
+      ["PR-5", "Your standing rules", "A process only where there are steps with SLAs. Forms for data. Child tables before extra records. The portal has only the Supplier role. Every Beiersdorf decision is an app step."],
+    ],
+    after: {
+      title: "Open choices, with my recommendation",
+      cols: ["Choice", "Options", "My recommendation"],
+      rows: [
+        ["Q-01", "<p><b>Who holds the two middle steps of CIQ Case?</b></p><ul><li><b>a.</b> The case's RMM (assigned from <code>Owner_RMM</code>), moved on by an integration when the supplier confirms completeness or releases.</li><li><b>b.</b> The RMM, moved on by the Workbench when the RMM next opens the case. It's automatic, with no button.</li><li><b>c.</b> A single \"In progress\" step held by the RMM until the end.</li></ul>", "<p>a if T-07 or T-08 passes, else b.</p><p>Either way, a native SLA on \"Waiting for supplier\" reminds the RMM when the supplier is late. That is the escalation Beiersdorf asked for.</p>"],
+        ["Q-02", "<p><b>Who starts the department reviews at completeness?</b></p><ul><li><b>a.</b> An integration on the completeness event creates one CIQ Review per department in scope. This needs bulk create, or one action per department with a condition (T-11).</li><li><b>b.</b> The Workbench creates a department's review when one of its members first opens the case. The SLA then starts later.</li></ul>", "Test a. Keep b as the fallback, with \"new case for your department\" on each department's home page."],
+        ["Q-03", "<p><b>Who creates the supplier's items (the request, each question round, the release)?</b></p><ul><li><b>a.</b> The supplier's own screen creates them, from the shared app items.</li><li><b>b.</b> An app integration creates them across the containers.</li></ul>", "<p>a. It uses pieces that work on the portal, and the supplier keeps their items.</p><p>The catch: question answers then have no supplier task, so reminders about questions come by e-mail.</p>"],
+        ["Q-04", "<p><b>Where do the supplier's answers live?</b></p><ul><li><b>a.</b> In the app, written from the portal through an integration (your W-1).</li><li><b>b.</b> In the supplier's portal request, with the app reading them through sharing (W-1B).</li></ul>", "Test both in the same round. If both work, choose b unless the app must hold the answers for its own reports."],
+        ["Q-05", "<p><b>How does the supplier read the questionnaire version?</b> Config rows hold internal notes.</p><ul><li><b>a.</b> Share only the supplier-safe fields of CIQ Config Version.</li><li><b>b.</b> The Workbench copies the supplier-safe bundle onto the case when the RMM creates it. Writing at Start is proven.</li></ul>", "b. The case already pins its release at Start, and a large text field holds 122 KB (proven)."],
+        ["Q-06", "<p><b>Who writes the audit trail?</b></p><ul><li><b>a.</b> Integrations on process events (items created, steps submitted). People stay read-only.</li><li><b>b.</b> The Workbench, as the user, for the detailed rows.</li></ul>", "a for everything Kissflow can see, b for the detail. b is safe only if \"edit without delete\" works on forms (T-13)."],
+        ["Q-07", "<p><b>How does the lock at the final release work?</b></p><ul><li><b>a.</b> As a step: the supplier's request moves to a release step where every answer is read-only.</li><li><b>b.</b> The screen refuses edits while the shared case says \"Awaiting final release\".</li></ul>", "<p>Test a. It's the only lock Kissflow enforces itself.</p><p>The catch: a process can't move backwards, so a reopen after the release request needs a new item.</p>"],
+        ["Q-08", "<p><b>How do e-mails go out?</b></p><ul><li><b>a.</b> Kissflow's own task and SLA e-mails, plus the outbox and its one integration for everything else.</li><li><b>b.</b> One integration per event, with the recipients mapped from fields.</li></ul>", "a. It needs the fewest integrations and keeps a log of every mail."],
+      ],
+    },
+  },
+  {
+    id: "s6", no: "6", title: "Before and after your deploy",
+    intro: ["The B rows are for you, before any test. The T rows are mine, and I run them only after you say go."],
+    cols: ["Step", "What"],
+    rows: [
+      ["B-1", "You: clean out", "Archive the \"Clean out\" rows in section 4. Keep the dev supplier ZZT-SUP-DEV and the 12 configuration rows."],
+      ["B-2", "You: deploy", "Deploy the app and the portal once, in the dev sandbox."],
+      ["B-3", "You: set sharing", "<p><b>Portal → app:</b> CIQP Request, CIQP Query and CIQP Final Release.</p><p><b>App → portal:</b> CIQ Case and CIQ Open Point, supplier-safe fields only, plus the questionnaire source (Q-05).</p>"],
+      ["B-4", "You: second supplier user", "Create one more external supplier user for a different fictional supplier, so we can test that suppliers can't see each other's cases."],
+      ["B-5", "You: S-1 clicks", "Run the Diagnostics tests in the portal: can a real supplier save through the custom screen?"],
+      ["T-01", "Supplier reads their case", "A supplier reads their own shared app case through the SDK."],
+      ["T-02", "Suppliers stay apart", "The second supplier sees none of the first supplier's cases, even when the screen asks for them by id or by e-mail."],
+      ["T-03", "Only safe fields", "The internal fields of cases and open points can't be read from the portal."],
+      ["T-04", "Your report idea", "A process report filtered on the signed-in user lists only that user's items, both for a supplier and for a reviewer who isn't an admin. If this works, it can replace CIQ Case Data."],
+      ["T-05", "Workbench reads the portal", "A Beiersdorf user who isn't an admin reads the supplier's answers and files from the shared CIQP Request."],
+      ["T-06", "W-1 write path", "<ul><li><b>a.</b> A direct SDK write from the portal into the shared app case. I expect Kissflow to refuse it.</li><li><b>b.</b> A portal save, then an integration, then the app case or an app form row. I'll time it, read it back and test the resync.</li></ul>"],
+      ["T-07", "Webhook trigger", "What the webhook trigger accepts, whether it can be protected, and whether it can update a running case."],
+      ["T-08", "Cross-container create", "An app integration creates an item in a portal process (option b), and the reverse."],
+      ["T-09", "Supplier-started items", "A supplier creates their own CIQP Query and CIQP Final Release items (option a)."],
+      ["T-10", "Native reminders", "Kissflow's SLA reminders reach the supplier on a portal step and the RMM on an app step."],
+      ["T-11", "Several reviews from one event", "\"Create and submit in bulk\", or one action per department with a condition."],
+      ["T-12", "Mail integration", "Switch on the outbox integration, then send one harmless test row to you."],
+      ["T-13", "Audit can't be edited", "Audit rows written by an integration can't be edited or deleted by people. I'll also check \"edit without delete\" on forms."],
+    ],
+  },
+];
+
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const allRows = [];
+
+function tableHTML(cols, rows, sectionTitle) {
+  let h = '<div class="tablewrap"><table><thead><tr><th>#</th>';
+  cols.forEach((c) => (h += "<th>" + esc(c) + "</th>"));
+  h += '<th>Your comment</th></tr></thead><tbody>';
+  rows.forEach((r) => {
+    const id = r[0];
+    allRows.push({ id, label: sectionTitle });
+    h += '<tr><td class="idc" data-label="#"><span class="rid">' + esc(id) + "</span></td>";
+    for (let i = 1; i < r.length; i++) h += '<td data-label="' + esc(cols[i - 1]) + '">' + r[i] + "</td>";
+    h += '<td class="cm" data-label="Your comment"><textarea class="cbox" id="c-' + esc(id) + '" data-row="' + esc(id) + '" aria-label="Your comment on ' + esc(id) + '" placeholder="Comment on ' + esc(id) + '…"></textarea><span class="cstate" id="s-' + esc(id) + '"></span></td></tr>';
+  });
+  return h + "</tbody></table></div>";
+}
+
+(function render() {
+  let out = "";
+  SECTIONS.forEach((s) => {
+    out += '<section id="' + s.id + '"><div class="sec-head"><span class="sec-no">' + s.no + '</span><h2>' + esc(s.title) + "</h2></div>";
+    (s.intro || []).forEach((p) => (out += '<p class="intro">' + p + "</p>"));
+    if (s.rows) out += tableHTML(s.cols, s.rows, s.title);
+    if (s.groups) s.groups.forEach((g) => { out += '<h3 class="subhead">' + esc(g.title) + "</h3>" + tableHTML(g.cols, g.rows, g.title); });
+    if (s.after) out += '<h3 class="subhead">' + esc(s.after.title) + "</h3>" + tableHTML(s.after.cols, s.after.rows, s.after.title);
+    out += "</section>";
+  });
+  document.getElementById("sections").innerHTML = out;
+})();
+
+const boxes = Array.from(document.querySelectorAll("textarea.cbox"));
+const stateEl = document.getElementById("savestate");
+const LS = "ciq-backend-review-drafts";
+let db = null, saveMode = "local";
+const timers = {}, lastSaved = {}, writing = {};
+
+function autosize(t) { t.style.height = "auto"; t.style.height = Math.max(70, t.scrollHeight + 2) + "px"; }
+function count() { return boxes.filter((b) => b.value.trim()).length; }
+function setRowState(id, text, cls) { const el = document.getElementById("s-" + id); if (el) { el.textContent = text; el.className = "cstate" + (cls ? " " + cls : ""); } }
+function refreshBar() {
+  const n = count();
+  const where = saveMode === "db" ? "saved for you and readable by Claude" : "kept in this browser only. Use \"Copy all comments\" and paste them into the chat";
+  stateEl.innerHTML = "<b>" + n + "</b> comment" + (n === 1 ? "" : "s") + " · " + where;
+}
+function readLocal() { try { return JSON.parse(localStorage.getItem(LS) || "{}"); } catch (e) { return {}; } }
+function writeLocal() { try { const o = {}; boxes.forEach((b) => { if (b.value.trim()) o[b.dataset.row] = b.value; }); localStorage.setItem(LS, JSON.stringify(o)); } catch (e) {} }
+
+async function saveRow(id, text) {
+  if (saveMode !== "db") { writeLocal(); setRowState(id, text.trim() ? "Kept in this browser" : "", ""); refreshBar(); return; }
+  if (writing[id]) { timers[id] = setTimeout(() => saveRow(id, document.getElementById("c-" + id).value), 400); return; }
+  if (lastSaved[id] === text) { refreshBar(); return; }
+  writing[id] = true; setRowState(id, "Saving…", "");
+  try {
+    const ref = db.doc("comments/" + id);
+    if (text.trim()) await ref.set({ row: id, text, updatedAt: new Date().toISOString().replace(/\.\d{3}Z$/, "Z") });
+    else await ref.delete();
+    lastSaved[id] = text; setRowState(id, text.trim() ? "Saved" : "", "ok");
+  } catch (e) {
+    setRowState(id, e && e.code === "invalid_argument" ? "You can't save comments in this view" : "Not saved. It will retry when you type again", "err");
+  } finally { writing[id] = false; refreshBar(); }
+}
+
+boxes.forEach((b) => {
+  b.addEventListener("input", () => {
+    autosize(b);
+    const id = b.dataset.row;
+    clearTimeout(timers[id]);
+    setRowState(id, "Typing…", "");
+    timers[id] = setTimeout(() => saveRow(id, b.value), 900);
+  });
+  b.addEventListener("blur", () => { const id = b.dataset.row; clearTimeout(timers[id]); saveRow(id, b.value); });
+});
+
+(function loadLocal() { const o = readLocal(); boxes.forEach((b) => { if (o[b.dataset.row]) { b.value = o[b.dataset.row]; autosize(b); } }); refreshBar(); })();
+
+(async function connect() {
+  try { db = window.claude && window.claude.use ? await window.claude.use("db") : null; } catch (e) { db = null; }
+  if (!db) { saveMode = "local"; refreshBar(); return; }
+  saveMode = "db";
+  const local = readLocal();
+  db.collection("comments").onSnapshot((snap) => {
+    const seen = {};
+    snap.docs.forEach((d) => {
+      const v = d.data() || {}; const id = d.id; seen[id] = true;
+      const t = document.getElementById("c-" + id);
+      if (!t) return;
+      lastSaved[id] = v.text || "";
+      if (document.activeElement !== t && !timers[id + "_dirty"]) { t.value = v.text || ""; autosize(t); setRowState(id, v.text ? "Saved" : "", "ok"); }
+    });
+    refreshBar();
+  }, () => { saveMode = "local"; refreshBar(); });
+  // Move drafts typed before the store answered into the store, one row at a time.
+  for (const id of Object.keys(local)) { const t = document.getElementById("c-" + id); if (t && t.value.trim()) await saveRow(id, t.value); }
+  try { localStorage.removeItem(LS); } catch (e) {}
+})();
+
+document.getElementById("copyall").addEventListener("click", () => {
+  const lines = [];
+  boxes.forEach((b) => { if (b.value.trim()) lines.push(b.dataset.row + ": " + b.value.trim()); });
+  const text = lines.length ? lines.join("\n\n") : "(no comments yet)";
+  const fallback = () => { const w = document.getElementById("copywrap"), f = document.getElementById("copyfallback"); f.value = text; w.hidden = false; f.focus(); f.select(); };
+  try {
+    navigator.clipboard.writeText(text).then(() => { const b = document.getElementById("copyall"); b.textContent = "Copied"; setTimeout(() => (b.textContent = "Copy all comments"), 1600); }, fallback);
+  } catch (e) { fallback(); }
+});
+</script>

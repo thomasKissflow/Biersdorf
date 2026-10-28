@@ -1,0 +1,57 @@
+
+ RUN  v2.1.9 /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/prototype
+
+stdout | live/op.live.ts > S-OP: open points, every department in turn across runs (SPEC §4) > raise, edit, the supplier's answer, accept / return / close, the threads
+S-OP R3 (live): 17/18 pass; 578 Kissflow calls, 145 min (budget 396 min)
+    35  S1 supplier: the run's supplier with the self contact
+     9  S2 case: createCase, I-1 creates its CIQP Request
+    37  S3 completeness: the supplier fills in and confirms (portal), I-2
+    59  S4 reviews: ensureReviews starts the scope's review tracks
+    37  P1 MIC 1 raise: op.round makes the CIQP Query
+    24  P1 MIC 2 edit: op.edited updates the query
+    27  P1 MIC 3 supplier answer, round 1 (portal writer, I-4)
+    25  P1 MIC 4 return: round 2, a new query (op.round)
+    28  P1 MIC 3 supplier answer, round 2 (portal writer, I-4)
+    24  P1 MIC 4 accept: the point ends, history.updated
+    39  P2 SUS 1 raise: op.round makes the CIQP Query
+    30  P2 SUS 3 supplier answer, round 1 (portal writer, I-4)
+    25  P2 SUS 4 accept: the point ends, history.updated
+    51  P3 RMM 1 raise: op.round makes the CIQP Query
+    33  P3 RMM 4 close while the query is open: op.closed
+     3  T1 thread: Thread_JSON holds every round's text
+     8  T2 thread: the questions history on the request
+    84  C1 clean-up: adopt late portal items, delete this suite's ledger items (withdraw, admin DELETE, GET 404)
+results: /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/kissflow-build/ciq-digital/tests-2026-10-21/results/R3/S-OP.json
+
+ ❯ live/op.live.ts (1 test | 1 failed) 10530779ms
+   × S-OP: open points, every department in turn across runs (SPEC §4) > raise, edit, the supplier's answer, accept / return / close, the threads 10530778ms
+     → expected [ Array(1) ] to deeply equal []
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  live/op.live.ts > S-OP: open points, every department in turn across runs (SPEC §4) > raise, edit, the supplier's answer, accept / return / close, the threads
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- Array []
++ Array [
++   "C1 clean-up: adopt late portal items, delete this suite's ledger items (withdraw, admin DELETE, GET 404): fail (failed: CIQ_Audit_Event_A00 PkEPY8Grh4hT is deleted (read again: not found); CIQ_Review_A00 PkEPY7gVJ2o0 is deleted (read again: not found); CIQ_Audit_Event_A00 PkEPY7PFsrWR is deleted (read again: not found); CIQ_Review_A00 PkEPY6oukQ88 is deleted (read again: not found); CIQP_Request_A00 PkEPY0cFJMbn is deleted (read again: not found); CIQ_Audit_Event_A00 PkEPY0tHrnX3 is deleted (read again: not found); CIQ_Case_A00 PkEPY0AfGW1d is deleted (read again: not found))",
++ ]
+
+ ❯ live/op.live.ts:605:21
+    603|     }
+    604|     const notPass = rec.steps.filter((x) => (w.live ? x.status === "fa…
+    605|     expect(notPass).toEqual([]);
+       |                     ^
+    606|   }, TIMEOUT_MS);
+    607| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  01:30:14
+   Duration  10531.98s (transform 543ms, setup 0ms, collect 1.01s, tests 10530.78s, environment 0ms, prepare 35ms)
+

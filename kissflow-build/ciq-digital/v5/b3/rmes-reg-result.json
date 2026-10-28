@@ -1,0 +1,74 @@
+{
+ "step": "B3-rmes-reg",
+ "at": "2026-10-14T18:37:39.181Z",
+ "apply": true,
+ "offline": false,
+ "flow": "CIQ_RMES_Regulatory_A00",
+ "livePublishedAt": "2026-10-08T18:39:19Z",
+ "liveMetaVersion": "1791484759360364",
+ "mutation": {
+  "header": [],
+  "child": [
+   {
+    "id": "Findings_Key",
+    "type": "Text",
+    "column": "Column_12bpb3s",
+    "model": "Regulatory_Findings"
+   }
+  ]
+ },
+ "diffSummary": {
+  "added": [
+   "Column_12bpb3s Column",
+   "Findings_Key Field Finding Key"
+  ],
+  "changed": [
+   {
+    "entity": "Regulatory_Findings Model Findings",
+    "props": [
+     "Model::Field"
+    ]
+   },
+   {
+    "entity": "Row_1537iuu Row",
+    "props": [
+     "Row::Column"
+    ]
+   }
+  ],
+  "removed": []
+ },
+ "preflight": {
+  "errors": [],
+  "warnings": [
+   "NO_ID"
+  ]
+ },
+ "write": {
+  "ok": true,
+  "putDraft": 200,
+  "publish": 200,
+  "publishedAt": "2026-10-14T18:37:41Z"
+ },
+ "readBack": {
+  "publishedAt": "2026-10-14T18:37:41Z",
+  "diffVsSent": {
+   "added": [],
+   "removed": [],
+   "changedCount": 0,
+   "changed": []
+  }
+ },
+ "published": {
+  "status": 200,
+  "headerPresent": [],
+  "tables": [
+   "Regulatory_Criteria",
+   "Regulatory_Findings"
+  ],
+  "childPresent": [
+   "Regulatory_Findings.Findings_Key:true"
+  ]
+ },
+ "calls": 5
+}

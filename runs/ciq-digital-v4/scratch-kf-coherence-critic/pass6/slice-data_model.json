@@ -1,0 +1,2854 @@
+{
+  "branch": "main",
+  "revision": 30,
+  "key": "data_model",
+  "content": {
+    "flows": {
+      "CIQ_Case_A00": {
+        "name": "CIQ Case",
+        "flowType": "Process",
+        "fields": [
+          {
+            "id": "Case_Code",
+            "name": "Case Code",
+            "type": "Text"
+          },
+          {
+            "id": "Cycle_No",
+            "name": "Cycle No",
+            "type": "Number"
+          },
+          {
+            "id": "Case_Title",
+            "name": "Case Title",
+            "type": "Text"
+          },
+          {
+            "id": "Reactivates_Case_Item",
+            "name": "Reactivates Case Item",
+            "type": "Text"
+          },
+          {
+            "id": "Trade_Name",
+            "name": "Trade Name",
+            "type": "Text"
+          },
+          {
+            "id": "Main_INCI",
+            "name": "Main INCI",
+            "type": "Text"
+          },
+          {
+            "id": "BDF_Material_No",
+            "name": "BDF Material No",
+            "type": "Text"
+          },
+          {
+            "id": "SAP_Material_No",
+            "name": "SAP Material No",
+            "type": "Text"
+          },
+          {
+            "id": "IRMA_Ref",
+            "name": "IRMA Ref",
+            "type": "Text"
+          },
+          {
+            "id": "Supplier_Code",
+            "name": "Supplier Code",
+            "type": "Text"
+          },
+          {
+            "id": "Supplier_Legal_Name",
+            "name": "Supplier Legal Name",
+            "type": "Text"
+          },
+          {
+            "id": "Owner_RMM",
+            "name": "Owner RMM",
+            "type": "User"
+          },
+          {
+            "id": "Target_Markets_Text",
+            "name": "Target Markets Text",
+            "type": "Text"
+          },
+          {
+            "id": "Origin_Types",
+            "name": "Origin Types",
+            "type": "Text"
+          },
+          {
+            "id": "Case_Test",
+            "name": "Case Test",
+            "type": "Select",
+            "referredList": "CIQ_Yes_No"
+          },
+          {
+            "id": "Request_Key",
+            "name": "Request Key",
+            "type": "Text"
+          },
+          {
+            "id": "BDF_Contact_Name",
+            "name": "BDF Contact Name",
+            "type": "Text"
+          },
+          {
+            "id": "BDF_Contact_Email",
+            "name": "BDF Contact Email",
+            "type": "Email"
+          },
+          {
+            "id": "Markets_Label",
+            "name": "Markets Label",
+            "type": "Text"
+          },
+          {
+            "id": "Template_Label",
+            "name": "Template Label",
+            "type": "Text"
+          },
+          {
+            "id": "Supplier_Due_Date",
+            "name": "Supplier Due Date",
+            "type": "Date"
+          },
+          {
+            "id": "Case_Contacts_JSON",
+            "name": "Case Contacts JSON",
+            "type": "Textarea"
+          },
+          {
+            "id": "Portal_Contact_Ids",
+            "name": "Portal Contact Ids",
+            "type": "Text"
+          },
+          {
+            "id": "Confirm_Contact_Ids",
+            "name": "Confirm Contact Ids",
+            "type": "Text"
+          },
+          {
+            "id": "Supplier_Contact_Emails",
+            "name": "Supplier Contact Emails",
+            "type": "Textarea"
+          },
+          {
+            "id": "Release_Item_Id",
+            "name": "Release Item Id",
+            "type": "Text"
+          },
+          {
+            "id": "Release_Key",
+            "name": "Release Key",
+            "type": "Text"
+          },
+          {
+            "id": "Manifest_Hash",
+            "name": "Manifest Hash",
+            "type": "Text"
+          },
+          {
+            "id": "Release_Manifest_JSON",
+            "name": "Release Manifest JSON",
+            "type": "Textarea"
+          },
+          {
+            "id": "Rule_Set_Version",
+            "name": "Rule Set Version",
+            "type": "Text"
+          },
+          {
+            "id": "Overall_Approval_Required",
+            "name": "Overall Approval Required",
+            "type": "Text"
+          },
+          {
+            "id": "Basic_Data_Received",
+            "name": "Basic Data Received",
+            "type": "Text"
+          },
+          {
+            "id": "Portal_Request_Item_Id",
+            "name": "Portal Request Item Id",
+            "type": "Text"
+          },
+          {
+            "id": "Dept_REG_Active",
+            "name": "Dept REG Active",
+            "type": "Select",
+            "referredList": "CIQ_Yes_No"
+          },
+          {
+            "id": "Dept_SAF_Active",
+            "name": "Dept SAF Active",
+            "type": "Select",
+            "referredList": "CIQ_Yes_No"
+          },
+          {
+            "id": "Dept_QM_Active",
+            "name": "Dept QM Active",
+            "type": "Select",
+            "referredList": "CIQ_Yes_No"
+          },
+          {
+            "id": "Dept_MIC_Active",
+            "name": "Dept MIC Active",
+            "type": "Select",
+            "referredList": "CIQ_Yes_No"
+          },
+          {
+            "id": "Dept_SUS_Active",
+            "name": "Dept SUS Active",
+            "type": "Select",
+            "referredList": "CIQ_Yes_No"
+          },
+          {
+            "id": "Dept_RMM_Active",
+            "name": "Dept RMM Active",
+            "type": "Select",
+            "referredList": "CIQ_Yes_No"
+          },
+          {
+            "id": "Initial_Scope_Run_Key",
+            "name": "Initial Scope Run Key",
+            "type": "Text"
+          },
+          {
+            "id": "Completeness_Request_Key",
+            "name": "Completeness Request Key",
+            "type": "Text"
+          },
+          {
+            "id": "Completeness_Declaration_Text",
+            "name": "Completeness Declaration Text",
+            "type": "Textarea"
+          },
+          {
+            "id": "Completeness_Text_Key",
+            "name": "Completeness Text Key",
+            "type": "Text"
+          },
+          {
+            "id": "Completeness_Due_Date",
+            "name": "Completeness Due Date",
+            "type": "Date"
+          },
+          {
+            "id": "Completeness_Confirm",
+            "name": "Completeness Confirm",
+            "type": "Text"
+          },
+          {
+            "id": "Completeness_By_Name",
+            "name": "Completeness By Name",
+            "type": "Text"
+          },
+          {
+            "id": "Completeness_By_Email",
+            "name": "Completeness By Email",
+            "type": "Email"
+          },
+          {
+            "id": "Completeness_By_Role",
+            "name": "Completeness By Role",
+            "type": "Text"
+          },
+          {
+            "id": "Completeness_At",
+            "name": "Completeness At",
+            "type": "DateTime"
+          },
+          {
+            "id": "RMES_Key",
+            "name": "RMES Key",
+            "type": "Text"
+          },
+          {
+            "id": "RMES_Created_At",
+            "name": "RMES Created At",
+            "type": "DateTime"
+          },
+          {
+            "id": "Final_Release_Request_Key",
+            "name": "Final Release Request Key",
+            "type": "Text"
+          },
+          {
+            "id": "Final_Release_Declaration_Text",
+            "name": "Final Release Declaration Text",
+            "type": "Textarea"
+          },
+          {
+            "id": "Final_Release_Text_Key",
+            "name": "Final Release Text Key",
+            "type": "Text"
+          },
+          {
+            "id": "Final_Release_Due_Date",
+            "name": "Final Release Due Date",
+            "type": "Date"
+          },
+          {
+            "id": "Final_Release_Confirm",
+            "name": "Final Release Confirm",
+            "type": "Text"
+          },
+          {
+            "id": "Final_Release_By_Name",
+            "name": "Final Release By Name",
+            "type": "Text"
+          },
+          {
+            "id": "Final_Release_By_Email",
+            "name": "Final Release By Email",
+            "type": "Email"
+          },
+          {
+            "id": "Final_Release_By_Role",
+            "name": "Final Release By Role",
+            "type": "Text"
+          },
+          {
+            "id": "Final_Release_At",
+            "name": "Final Release At",
+            "type": "DateTime"
+          },
+          {
+            "id": "Released_Revs_JSON",
+            "name": "Released Revs JSON",
+            "type": "Textarea"
+          },
+          {
+            "id": "Evidence_List_Text",
+            "name": "Evidence List Text",
+            "type": "Textarea"
+          },
+          {
+            "id": "Completion_Trigger",
+            "name": "Completion Trigger",
+            "type": "Text"
+          },
+          {
+            "id": "REG_Review_Confirm",
+            "name": "REG Review Confirm",
+            "type": "Select",
+            "referredList": "CIQ_Confirm"
+          },
+          {
+            "id": "REG_Completed_By",
+            "name": "REG Completed By",
+            "type": "User"
+          },
+          {
+            "id": "REG_Completed_By_Email",
+            "name": "REG Completed By Email",
+            "type": "Email"
+          },
+          {
+            "id": "REG_Completed_At",
+            "name": "REG Completed At",
+            "type": "DateTime"
+          },
+          {
+            "id": "REG_On_Behalf_Of",
+            "name": "REG On Behalf Of",
+            "type": "Text"
+          },
+          {
+            "id": "REG_RMES_Decision",
+            "name": "REG Internal RMES decision",
+            "type": "Select",
+            "referredList": "CIQ_Decision"
+          },
+          {
+            "id": "REG_RMES_Decision_Reason",
+            "name": "REG RMES Decision Reason",
+            "type": "Textarea"
+          },
+          {
+            "id": "SAF_Review_Confirm",
+            "name": "SAF Review Confirm",
+            "type": "Select",
+            "referredList": "CIQ_Confirm"
+          },
+          {
+            "id": "SAF_Completed_By",
+            "name": "SAF Completed By",
+            "type": "User"
+          },
+          {
+            "id": "SAF_Completed_By_Email",
+            "name": "SAF Completed By Email",
+            "type": "Email"
+          },
+          {
+            "id": "SAF_Completed_At",
+            "name": "SAF Completed At",
+            "type": "DateTime"
+          },
+          {
+            "id": "SAF_On_Behalf_Of",
+            "name": "SAF On Behalf Of",
+            "type": "Text"
+          },
+          {
+            "id": "SAF_RMES_Decision",
+            "name": "SAF Internal RMES decision",
+            "type": "Select",
+            "referredList": "CIQ_Decision"
+          },
+          {
+            "id": "SAF_RMES_Decision_Reason",
+            "name": "SAF RMES Decision Reason",
+            "type": "Textarea"
+          },
+          {
+            "id": "QM_Review_Confirm",
+            "name": "QM Review Confirm",
+            "type": "Select",
+            "referredList": "CIQ_Confirm"
+          },
+          {
+            "id": "QM_Completed_By",
+            "name": "QM Completed By",
+            "type": "User"
+          },
+          {
+            "id": "QM_Completed_By_Email",
+            "name": "QM Completed By Email",
+            "type": "Email"
+          },
+          {
+            "id": "QM_Completed_At",
+            "name": "QM Completed At",
+            "type": "DateTime"
+          },
+          {
+            "id": "QM_On_Behalf_Of",
+            "name": "QM On Behalf Of",
+            "type": "Text"
+          },
+          {
+            "id": "MIC_Review_Confirm",
+            "name": "MIC Review Confirm",
+            "type": "Select",
+            "referredList": "CIQ_Confirm"
+          },
+          {
+            "id": "MIC_Completed_By",
+            "name": "MIC Completed By",
+            "type": "User"
+          },
+          {
+            "id": "MIC_Completed_By_Email",
+            "name": "MIC Completed By Email",
+            "type": "Email"
+          },
+          {
+            "id": "MIC_Completed_At",
+            "name": "MIC Completed At",
+            "type": "DateTime"
+          },
+          {
+            "id": "MIC_On_Behalf_Of",
+            "name": "MIC On Behalf Of",
+            "type": "Text"
+          },
+          {
+            "id": "SUS_Review_Confirm",
+            "name": "SUS Review Confirm",
+            "type": "Select",
+            "referredList": "CIQ_Confirm"
+          },
+          {
+            "id": "SUS_Completed_By",
+            "name": "SUS Completed By",
+            "type": "User"
+          },
+          {
+            "id": "SUS_Completed_By_Email",
+            "name": "SUS Completed By Email",
+            "type": "Email"
+          },
+          {
+            "id": "SUS_Completed_At",
+            "name": "SUS Completed At",
+            "type": "DateTime"
+          },
+          {
+            "id": "SUS_On_Behalf_Of",
+            "name": "SUS On Behalf Of",
+            "type": "Text"
+          },
+          {
+            "id": "RMM_Review_Confirm",
+            "name": "RMM Review Confirm",
+            "type": "Select",
+            "referredList": "CIQ_Confirm"
+          },
+          {
+            "id": "RMM_Completed_By",
+            "name": "RMM Completed By",
+            "type": "User"
+          },
+          {
+            "id": "RMM_Completed_By_Email",
+            "name": "RMM Completed By Email",
+            "type": "Email"
+          },
+          {
+            "id": "RMM_Completed_At",
+            "name": "RMM Completed At",
+            "type": "DateTime"
+          },
+          {
+            "id": "RMM_On_Behalf_Of",
+            "name": "RMM On Behalf Of",
+            "type": "Text"
+          },
+          {
+            "id": "Open_Items_Count",
+            "name": "Open Items Count",
+            "type": "Number"
+          },
+          {
+            "id": "Open_CR_Count",
+            "name": "Open CR Count",
+            "type": "Number"
+          },
+          {
+            "id": "REG_Open_Count",
+            "name": "REG Open Count",
+            "type": "Number"
+          },
+          {
+            "id": "REG_RMES_Gaps",
+            "name": "REG RMES Gaps",
+            "type": "Number"
+          },
+          {
+            "id": "SAF_Open_Count",
+            "name": "SAF Open Count",
+            "type": "Number"
+          },
+          {
+            "id": "SAF_RMES_Gaps",
+            "name": "SAF RMES Gaps",
+            "type": "Number"
+          },
+          {
+            "id": "QM_Open_Count",
+            "name": "QM Open Count",
+            "type": "Number"
+          },
+          {
+            "id": "MIC_Open_Count",
+            "name": "MIC Open Count",
+            "type": "Number"
+          },
+          {
+            "id": "SUS_Open_Count",
+            "name": "SUS Open Count",
+            "type": "Number"
+          },
+          {
+            "id": "RMM_Open_Count",
+            "name": "RMM Open Count",
+            "type": "Number"
+          },
+          {
+            "id": "Hold_For_Open_Items",
+            "name": "Hold For Open Items",
+            "type": "Text",
+            "formula": "IF(OR(ISBLANK(Open_Items_Count),ISBLANK(Open_CR_Count)),\"Yes\",IF(Open_Items_Count+Open_CR_Count=0,\"No\",\"Yes\"))"
+          },
+          {
+            "id": "Open_Items_Gate_Release",
+            "name": "Open Items Gate Release",
+            "type": "Text",
+            "formula": "IF(NOT(ISBLANK(Hold_Override_Reason_Release)),\"OK\",IF(OR(ISBLANK(Open_Items_Count),ISBLANK(Open_CR_Count)),\"\",IF(Open_Items_Count+Open_CR_Count=0,\"OK\",\"\")))"
+          },
+          {
+            "id": "Open_Items_Gate_Close",
+            "name": "Open Items Gate Close",
+            "type": "Text",
+            "formula": "IF(NOT(ISBLANK(Hold_Override_Reason_Close)),\"OK\",IF(OR(ISBLANK(Open_Items_Count),ISBLANK(Open_CR_Count)),\"\",IF(Open_Items_Count+Open_CR_Count=0,\"OK\",\"\")))"
+          },
+          {
+            "id": "Hold_Note",
+            "name": "Hold Note",
+            "type": "Textarea"
+          },
+          {
+            "id": "Hold_Override_Reason_Release",
+            "name": "Hold Override Reason Release",
+            "type": "Textarea"
+          },
+          {
+            "id": "Hold_Override_Reason_Close",
+            "name": "Hold Override Reason Close",
+            "type": "Textarea"
+          },
+          {
+            "id": "REG_Gate",
+            "name": "REG Gate",
+            "type": "Text",
+            "formula": "IF(OR(ISBLANK(REG_Open_Count),ISBLANK(REG_RMES_Gaps)),\"\",IF(REG_Open_Count+REG_RMES_Gaps=0,\"OK\",\"\"))"
+          },
+          {
+            "id": "SAF_Gate",
+            "name": "SAF Gate",
+            "type": "Text",
+            "formula": "IF(OR(ISBLANK(SAF_Open_Count),ISBLANK(SAF_RMES_Gaps)),\"\",IF(SAF_Open_Count+SAF_RMES_Gaps=0,\"OK\",\"\"))"
+          },
+          {
+            "id": "QM_Gate",
+            "name": "QM Gate",
+            "type": "Text",
+            "formula": "IF(ISBLANK(QM_Open_Count),\"\",IF(QM_Open_Count=0,\"OK\",\"\"))"
+          },
+          {
+            "id": "MIC_Gate",
+            "name": "MIC Gate",
+            "type": "Text",
+            "formula": "IF(ISBLANK(MIC_Open_Count),\"\",IF(MIC_Open_Count=0,\"OK\",\"\"))"
+          },
+          {
+            "id": "SUS_Gate",
+            "name": "SUS Gate",
+            "type": "Text",
+            "formula": "IF(ISBLANK(SUS_Open_Count),\"\",IF(SUS_Open_Count=0,\"OK\",\"\"))"
+          },
+          {
+            "id": "RMM_Gate",
+            "name": "RMM Gate",
+            "type": "Text",
+            "formula": "IF(ISBLANK(RMM_Open_Count),\"\",IF(RMM_Open_Count=0,\"OK\",\"\"))"
+          },
+          {
+            "id": "Late_Completions_Text",
+            "name": "Late Completions Text",
+            "type": "Textarea"
+          },
+          {
+            "id": "Overall_Decision",
+            "name": "Overall Decision",
+            "type": "Select",
+            "referredList": "CIQ_Decision"
+          },
+          {
+            "id": "Overall_Reason",
+            "name": "Overall Reason",
+            "type": "Textarea"
+          },
+          {
+            "id": "Overall_Decided_By",
+            "name": "Overall Decided By",
+            "type": "User"
+          },
+          {
+            "id": "Supplier_Closing_Text",
+            "name": "Supplier Closing Text",
+            "type": "Textarea"
+          },
+          {
+            "id": "Final_PDF",
+            "name": "Final PDF",
+            "type": "Attachment"
+          }
+        ],
+        "computed": [],
+        "child_tables": []
+      },
+      "CIQ_Open_Point_A00": {
+        "name": "CIQ Open Point",
+        "flowType": "Process",
+        "fields": [
+          {
+            "id": "OP_Key",
+            "name": "OP Key",
+            "type": "Text"
+          },
+          {
+            "id": "Round_No",
+            "name": "Round No",
+            "type": "Number"
+          },
+          {
+            "id": "Query_Key",
+            "name": "Query Key",
+            "type": "Text"
+          },
+          {
+            "id": "Case_Code",
+            "name": "Case Code",
+            "type": "Text"
+          },
+          {
+            "id": "Cycle_No",
+            "name": "Cycle No",
+            "type": "Number"
+          },
+          {
+            "id": "Supplier_Code",
+            "name": "Supplier Code",
+            "type": "Text"
+          },
+          {
+            "id": "Case_Item_Id",
+            "name": "Case Item Id",
+            "type": "Text"
+          },
+          {
+            "id": "OP_Kind",
+            "name": "OP Kind",
+            "type": "Select",
+            "referredList": "CIQ_OP_Kind"
+          },
+          {
+            "id": "OP_Dept",
+            "name": "OP Dept",
+            "type": "Select",
+            "referredList": "CIQ_Review_Dept"
+          },
+          {
+            "id": "Raised_By_Dept",
+            "name": "Raised By Dept",
+            "type": "Select",
+            "referredList": "CIQ_Review_Dept"
+          },
+          {
+            "id": "OP_To_Supplier",
+            "name": "OP To Supplier",
+            "type": "Select",
+            "referredList": "CIQ_Yes_No"
+          },
+          {
+            "id": "Ref_Kind",
+            "name": "Ref Kind",
+            "type": "Text"
+          },
+          {
+            "id": "Ref_Section_Key",
+            "name": "Ref Section Key",
+            "type": "Text"
+          },
+          {
+            "id": "Ref_Field_Key",
+            "name": "Ref Field Key",
+            "type": "Text"
+          },
+          {
+            "id": "Ref_Row_Id",
+            "name": "Ref Row Id",
+            "type": "Text"
+          },
+          {
+            "id": "Ref_Doc_Id",
+            "name": "Ref Doc Id",
+            "type": "Text"
+          },
+          {
+            "id": "Ref_Doc_File_Name",
+            "name": "Ref Doc File Name",
+            "type": "Text"
+          },
+          {
+            "id": "Ref_Doc_Uploaded_At",
+            "name": "Ref Doc Uploaded At",
+            "type": "DateTime"
+          },
+          {
+            "id": "Ref_Label",
+            "name": "Ref Label",
+            "type": "Text"
+          },
+          {
+            "id": "Ref_Internal_Key",
+            "name": "Ref Internal Key",
+            "type": "Text"
+          },
+          {
+            "id": "Kind_Label",
+            "name": "Kind Label",
+            "type": "Text"
+          },
+          {
+            "id": "Question_Text",
+            "name": "Question Text",
+            "type": "Textarea"
+          },
+          {
+            "id": "Supplier_Justification",
+            "name": "Supplier Justification",
+            "type": "Textarea"
+          },
+          {
+            "id": "Internal_Justification",
+            "name": "Internal Justification",
+            "type": "Textarea"
+          },
+          {
+            "id": "Responsible_User",
+            "name": "Responsible User",
+            "type": "User"
+          },
+          {
+            "id": "Responsible_Name",
+            "name": "Responsible Name",
+            "type": "Text"
+          },
+          {
+            "id": "Responsible_Dept_Label",
+            "name": "Responsible Dept Label",
+            "type": "Text"
+          },
+          {
+            "id": "Internal_Due_Date",
+            "name": "Internal Due Date",
+            "type": "Date"
+          },
+          {
+            "id": "Supplier_Due_Date",
+            "name": "Supplier Due Date",
+            "type": "Date"
+          },
+          {
+            "id": "New_Section_Item_Key",
+            "name": "New Section Item Key",
+            "type": "Text"
+          },
+          {
+            "id": "Portal_Contact_Ids",
+            "name": "Portal Contact Ids",
+            "type": "Text"
+          },
+          {
+            "id": "Thread_Text",
+            "name": "Thread Text",
+            "type": "Textarea"
+          },
+          {
+            "id": "Awaiting_Response",
+            "name": "Awaiting Response",
+            "type": "Text"
+          },
+          {
+            "id": "Response_Kind",
+            "name": "Response Kind",
+            "type": "Text"
+          },
+          {
+            "id": "Response_Text",
+            "name": "Response Text",
+            "type": "Textarea"
+          },
+          {
+            "id": "Response_Doc_Refs_JSON",
+            "name": "Response Doc Refs JSON",
+            "type": "Textarea"
+          },
+          {
+            "id": "Supplier_Responsible_Email",
+            "name": "Supplier Responsible Email",
+            "type": "Text"
+          },
+          {
+            "id": "Portal_Query_Item_Id",
+            "name": "Portal Query Item Id",
+            "type": "Text"
+          },
+          {
+            "id": "OP_Progress",
+            "name": "OP Progress",
+            "type": "Select",
+            "referredList": "CIQ_OP_Progress"
+          },
+          {
+            "id": "OP_Outcome",
+            "name": "OP Outcome",
+            "type": "Select",
+            "referredList": "CIQ_OP_Outcome"
+          },
+          {
+            "id": "Outcome_Reason",
+            "name": "Outcome Reason",
+            "type": "Textarea"
+          },
+          {
+            "id": "Return_Reason",
+            "name": "Return Reason",
+            "type": "Textarea"
+          },
+          {
+            "id": "Accepted_Doc_File_Name",
+            "name": "Accepted Doc File Name",
+            "type": "Text"
+          },
+          {
+            "id": "Accepted_Doc_Uploaded_At",
+            "name": "Accepted Doc Uploaded At",
+            "type": "DateTime"
+          },
+          {
+            "id": "Reviewed_By",
+            "name": "Reviewed By",
+            "type": "User"
+          },
+          {
+            "id": "Reviewed_By_Email",
+            "name": "Reviewed By Email",
+            "type": "Email"
+          },
+          {
+            "id": "Reviewed_At",
+            "name": "Reviewed At",
+            "type": "DateTime"
+          },
+          {
+            "id": "Reviewed_Answers_Rev",
+            "name": "Reviewed Answers Rev",
+            "type": "Number"
+          },
+          {
+            "id": "Late_Decision",
+            "name": "Late Decision",
+            "type": "Select",
+            "referredList": "CIQ_Decision"
+          },
+          {
+            "id": "Late_Decision_Reason",
+            "name": "Late Decision Reason",
+            "type": "Textarea"
+          },
+          {
+            "id": "On_Behalf_Of",
+            "name": "On Behalf Of",
+            "type": "Text"
+          },
+          {
+            "id": "Open_Num",
+            "name": "Open Num",
+            "type": "Number",
+            "formula": "IF(OP_Outcome=\"Accepted\",0,IF(OP_Outcome=\"Withdrawn\",0,1))"
+          },
+          {
+            "id": "Start_Gate",
+            "name": "Start Gate",
+            "type": "Text",
+            "formula": "IF(OP_To_Supplier=\"No\",\"OK\",IF(OR(ISBLANK(Ref_Kind),ISBLANK(Ref_Section_Key),ISBLANK(Ref_Label),ISBLANK(Kind_Label),ISBLANK(Question_Text),ISBLANK(Supplier_Justification),ISBLANK(Supplier_Due_Date),ISBLANK(Responsible_Name),ISBLANK(Responsible_Dept_Label),ISBLANK(Query_Key),ISBLANK(Portal_Contact_Ids),ISBLANK(Awaiting_Response)),\"\",IF(Awaiting_Response=\"Yes\",\"OK\",\"\")))"
+          }
+        ],
+        "computed": [],
+        "child_tables": [
+          {
+            "id": "Rounds",
+            "name": "Rounds",
+            "fields": [
+              {
+                "id": "Rounds_Round_No",
+                "name": "Round No",
+                "type": "Number"
+              },
+              {
+                "id": "Rounds_Question_Text",
+                "name": "Question Text",
+                "type": "Textarea"
+              },
+              {
+                "id": "Rounds_Response_Kind",
+                "name": "Response Kind",
+                "type": "Text"
+              },
+              {
+                "id": "Rounds_Response_Text",
+                "name": "Response Text",
+                "type": "Textarea"
+              },
+              {
+                "id": "Rounds_Outcome",
+                "name": "Outcome",
+                "type": "Select",
+                "referredList": "CIQ_Round_Outcome"
+              },
+              {
+                "id": "Rounds_Reason",
+                "name": "Reason",
+                "type": "Textarea"
+              },
+              {
+                "id": "Rounds_Doc_File_Name",
+                "name": "Doc File Name",
+                "type": "Text"
+              },
+              {
+                "id": "Rounds_Doc_Uploaded_At",
+                "name": "Doc Uploaded At",
+                "type": "DateTime"
+              },
+              {
+                "id": "Rounds_Reviewed_By",
+                "name": "Reviewed By",
+                "type": "User"
+              },
+              {
+                "id": "Rounds_Reviewed_At",
+                "name": "Reviewed At",
+                "type": "DateTime"
+              }
+            ]
+          }
+        ]
+      },
+      "CIQ_Change_Request_A00": {
+        "name": "CIQ Change Request",
+        "flowType": "Process",
+        "fields": [
+          {
+            "id": "CR_Key",
+            "name": "CR Key",
+            "type": "Text"
+          },
+          {
+            "id": "Case_Code",
+            "name": "Case Code",
+            "type": "Text"
+          },
+          {
+            "id": "Cycle_No",
+            "name": "Cycle No",
+            "type": "Number"
+          },
+          {
+            "id": "Supplier_Code",
+            "name": "Supplier Code",
+            "type": "Text"
+          },
+          {
+            "id": "Change_Kind",
+            "name": "Change Kind",
+            "type": "Text"
+          },
+          {
+            "id": "Section_Key",
+            "name": "Section Key",
+            "type": "Text"
+          },
+          {
+            "id": "Field_Key",
+            "name": "Field Key",
+            "type": "Text"
+          },
+          {
+            "id": "Row_Id",
+            "name": "Row Id",
+            "type": "Text"
+          },
+          {
+            "id": "Current_Value_Text",
+            "name": "Current Value Text",
+            "type": "Textarea"
+          },
+          {
+            "id": "Proposed_Value_JSON",
+            "name": "Proposed Value JSON",
+            "type": "Textarea"
+          },
+          {
+            "id": "Change_Reason",
+            "name": "Change Reason",
+            "type": "Textarea"
+          },
+          {
+            "id": "Portal_CR_Item_Id",
+            "name": "Portal CR Item Id",
+            "type": "Text"
+          },
+          {
+            "id": "Raised_By_Portal_User",
+            "name": "Raised By Portal User",
+            "type": "Text"
+          },
+          {
+            "id": "Case_Item_Id",
+            "name": "Case Item Id",
+            "type": "Text"
+          },
+          {
+            "id": "Contact_Verified",
+            "name": "Contact Verified",
+            "type": "Select",
+            "referredList": "CIQ_Yes_No"
+          },
+          {
+            "id": "CR_Outcome",
+            "name": "CR Outcome",
+            "type": "Select",
+            "referredList": "CIQ_CR_Outcome"
+          },
+          {
+            "id": "Triage_Note",
+            "name": "Triage Note",
+            "type": "Textarea"
+          },
+          {
+            "id": "Scope_Run_Key",
+            "name": "Scope Run Key",
+            "type": "Text"
+          },
+          {
+            "id": "Impact_REG",
+            "name": "Impact REG",
+            "type": "Select",
+            "referredList": "CIQ_Yes_No"
+          },
+          {
+            "id": "Impact_SAF",
+            "name": "Impact SAF",
+            "type": "Select",
+            "referredList": "CIQ_Yes_No"
+          },
+          {
+            "id": "Impact_QM",
+            "name": "Impact QM",
+            "type": "Select",
+            "referredList": "CIQ_Yes_No"
+          },
+          {
+            "id": "Impact_MIC",
+            "name": "Impact MIC",
+            "type": "Select",
+            "referredList": "CIQ_Yes_No"
+          },
+          {
+            "id": "Impact_SUS",
+            "name": "Impact SUS",
+            "type": "Select",
+            "referredList": "CIQ_Yes_No"
+          },
+          {
+            "id": "Notice_Key",
+            "name": "Notice Key",
+            "type": "Text"
+          },
+          {
+            "id": "Notice_Kind",
+            "name": "Notice Kind",
+            "type": "Text"
+          },
+          {
+            "id": "Notice_Title",
+            "name": "Notice Title",
+            "type": "Text"
+          },
+          {
+            "id": "Supplier_Outcome_Text",
+            "name": "Supplier Outcome Text",
+            "type": "Textarea"
+          },
+          {
+            "id": "Portal_Contact_Ids",
+            "name": "Portal Contact Ids",
+            "type": "Text"
+          },
+          {
+            "id": "REG_Assessment",
+            "name": "REG Assessment",
+            "type": "Select",
+            "referredList": "CIQ_Impact_Resolution"
+          },
+          {
+            "id": "REG_Assess_Note",
+            "name": "REG Assess Note",
+            "type": "Textarea"
+          },
+          {
+            "id": "REG_Assessed_By",
+            "name": "REG Assessed By",
+            "type": "User"
+          },
+          {
+            "id": "REG_Assessed_At",
+            "name": "REG Assessed At",
+            "type": "DateTime"
+          },
+          {
+            "id": "SAF_Assessment",
+            "name": "SAF Assessment",
+            "type": "Select",
+            "referredList": "CIQ_Impact_Resolution"
+          },
+          {
+            "id": "SAF_Assess_Note",
+            "name": "SAF Assess Note",
+            "type": "Textarea"
+          },
+          {
+            "id": "SAF_Assessed_By",
+            "name": "SAF Assessed By",
+            "type": "User"
+          },
+          {
+            "id": "SAF_Assessed_At",
+            "name": "SAF Assessed At",
+            "type": "DateTime"
+          },
+          {
+            "id": "QM_Assessment",
+            "name": "QM Assessment",
+            "type": "Select",
+            "referredList": "CIQ_Impact_Resolution"
+          },
+          {
+            "id": "QM_Assess_Note",
+            "name": "QM Assess Note",
+            "type": "Textarea"
+          },
+          {
+            "id": "QM_Assessed_By",
+            "name": "QM Assessed By",
+            "type": "User"
+          },
+          {
+            "id": "QM_Assessed_At",
+            "name": "QM Assessed At",
+            "type": "DateTime"
+          },
+          {
+            "id": "MIC_Assessment",
+            "name": "MIC Assessment",
+            "type": "Select",
+            "referredList": "CIQ_Impact_Resolution"
+          },
+          {
+            "id": "MIC_Assess_Note",
+            "name": "MIC Assess Note",
+            "type": "Textarea"
+          },
+          {
+            "id": "MIC_Assessed_By",
+            "name": "MIC Assessed By",
+            "type": "User"
+          },
+          {
+            "id": "MIC_Assessed_At",
+            "name": "MIC Assessed At",
+            "type": "DateTime"
+          },
+          {
+            "id": "SUS_Assessment",
+            "name": "SUS Assessment",
+            "type": "Select",
+            "referredList": "CIQ_Impact_Resolution"
+          },
+          {
+            "id": "SUS_Assess_Note",
+            "name": "SUS Assess Note",
+            "type": "Textarea"
+          },
+          {
+            "id": "SUS_Assessed_By",
+            "name": "SUS Assessed By",
+            "type": "User"
+          },
+          {
+            "id": "SUS_Assessed_At",
+            "name": "SUS Assessed At",
+            "type": "DateTime"
+          },
+          {
+            "id": "CR_Open_Num",
+            "name": "CR Open Num",
+            "type": "Number",
+            "formula": "IF(ISBLANK(CR_Outcome),1,0)+IF(Impact_REG=\"Yes\",IF(ISBLANK(REG_Assessment),1,0),0)+IF(Impact_SAF=\"Yes\",IF(ISBLANK(SAF_Assessment),1,0),0)+IF(Impact_QM=\"Yes\",IF(ISBLANK(QM_Assessment),1,0),0)+IF(Impact_MIC=\"Yes\",IF(ISBLANK(MIC_Assessment),1,0),0)+IF(Impact_SUS=\"Yes\",IF(ISBLANK(SUS_Assessment),1,0),0)"
+          }
+        ],
+        "computed": [],
+        "child_tables": []
+      },
+      "CIQ_Supplier_A00": {
+        "name": "CIQ Supplier",
+        "flowType": "Form",
+        "fields": [
+          {
+            "id": "Supplier_Code",
+            "name": "Supplier Code",
+            "type": "Text",
+            "required": true
+          },
+          {
+            "id": "Supplier_Legal_Name",
+            "name": "Supplier Legal Name",
+            "type": "Text",
+            "required": true
+          },
+          {
+            "id": "DUNS_Number",
+            "name": "DUNS Number",
+            "type": "Text"
+          },
+          {
+            "id": "Supplier_Kind",
+            "name": "Supplier Kind",
+            "type": "Select",
+            "referredList": "CIQ_Supplier_Kind"
+          },
+          {
+            "id": "Supplier_Country_Code",
+            "name": "Supplier Country Code",
+            "type": "Select",
+            "referredList": "CIQ_Country_Code"
+          },
+          {
+            "id": "SAP_Vendor_Id",
+            "name": "SAP Vendor Id",
+            "type": "Text"
+          },
+          {
+            "id": "Teamcenter_Supplier_Id",
+            "name": "Teamcenter Supplier Id",
+            "type": "Text"
+          },
+          {
+            "id": "Supplier_Active",
+            "name": "Supplier Active",
+            "type": "Select",
+            "referredList": "CIQ_Yes_No"
+          },
+          {
+            "id": "Supplier_Test",
+            "name": "Supplier Test",
+            "type": "Select",
+            "referredList": "CIQ_Yes_No"
+          },
+          {
+            "id": "Contact_Portal_Ids_Text",
+            "name": "Contact Portal Ids Text",
+            "type": "Textarea"
+          },
+          {
+            "id": "Pending_Invites",
+            "name": "Pending Invites",
+            "type": "Number"
+          }
+        ],
+        "computed": [],
+        "child_tables": [
+          {
+            "id": "Contacts",
+            "name": "Contacts",
+            "fields": [
+              {
+                "id": "Contacts_Full_Name",
+                "name": "Full Name",
+                "type": "Text"
+              },
+              {
+                "id": "Contacts_Email",
+                "name": "Email",
+                "type": "Email"
+              },
+              {
+                "id": "Contacts_Role",
+                "name": "Contact Role",
+                "type": "Select",
+                "referredList": "CIQ_Contact_Role"
+              },
+              {
+                "id": "Contacts_Can_Confirm",
+                "name": "Can Confirm",
+                "type": "Select",
+                "referredList": "CIQ_Yes_No"
+              },
+              {
+                "id": "Contacts_Portal_User_Id",
+                "name": "Portal User Id",
+                "type": "Text"
+              },
+              {
+                "id": "Contacts_Active",
+                "name": "Contact Active",
+                "type": "Select",
+                "referredList": "CIQ_Yes_No"
+              },
+              {
+                "id": "Contacts_Invite_Requested_At",
+                "name": "Invite Requested At",
+                "type": "DateTime"
+              },
+              {
+                "id": "Contacts_Invited_At",
+                "name": "Invited At",
+                "type": "DateTime"
+              }
+            ]
+          }
+        ]
+      },
+      "CIQ_Config_Version_A00": {
+        "name": "CIQ Config Version",
+        "flowType": "Form",
+        "fields": [
+          {
+            "id": "Config_Key",
+            "name": "Config Key",
+            "type": "Text",
+            "required": true
+          },
+          {
+            "id": "Config_Kind",
+            "name": "Config Kind",
+            "type": "Select",
+            "referredList": "CIQ_Config_Kind",
+            "required": true
+          },
+          {
+            "id": "Version_Label",
+            "name": "Version Label",
+            "type": "Text"
+          },
+          {
+            "id": "Config_State",
+            "name": "Config State",
+            "type": "Select",
+            "referredList": "CIQ_Config_State"
+          },
+          {
+            "id": "Section_Key",
+            "name": "Section Key",
+            "type": "Text"
+          },
+          {
+            "id": "Section_Rev",
+            "name": "Section Rev",
+            "type": "Number"
+          },
+          {
+            "id": "Payload_JSON",
+            "name": "Payload JSON",
+            "type": "Textarea"
+          },
+          {
+            "id": "Internal_Annotations_JSON",
+            "name": "Internal Annotations JSON",
+            "type": "Textarea"
+          },
+          {
+            "id": "Content_Hash",
+            "name": "Content Hash",
+            "type": "Text"
+          },
+          {
+            "id": "Evaluator_Version",
+            "name": "Evaluator Version",
+            "type": "Text"
+          },
+          {
+            "id": "Change_Note",
+            "name": "Change Note",
+            "type": "Textarea"
+          },
+          {
+            "id": "Published_By",
+            "name": "Published By",
+            "type": "User"
+          },
+          {
+            "id": "Published_At",
+            "name": "Published At",
+            "type": "DateTime"
+          },
+          {
+            "id": "Release_Key",
+            "name": "Release Key",
+            "type": "Text"
+          },
+          {
+            "id": "Release_Label",
+            "name": "Release Label",
+            "type": "Text"
+          },
+          {
+            "id": "Release_Stage",
+            "name": "Release Stage",
+            "type": "Select",
+            "referredList": "CIQ_Release_Stage"
+          },
+          {
+            "id": "Release_Manifest_JSON",
+            "name": "Release Manifest JSON",
+            "type": "Textarea"
+          },
+          {
+            "id": "Release_Bundle_JSON",
+            "name": "Release Bundle JSON",
+            "type": "Textarea"
+          },
+          {
+            "id": "Manifest_Hash",
+            "name": "Manifest Hash",
+            "type": "Text"
+          },
+          {
+            "id": "Regression_Result_JSON",
+            "name": "Regression Result JSON",
+            "type": "Textarea"
+          },
+          {
+            "id": "Test_Case_Codes",
+            "name": "Test Case Codes",
+            "type": "Text"
+          }
+        ],
+        "computed": [],
+        "child_tables": []
+      },
+      "CIQ_Section_A00": {
+        "name": "CIQ Section",
+        "flowType": "Form",
+        "fields": [
+          {
+            "id": "Section_Item_Key",
+            "name": "Section Item Key",
+            "type": "Text",
+            "required": true
+          },
+          {
+            "id": "Case_Code",
+            "name": "Case Code",
+            "type": "Text",
+            "required": true
+          },
+          {
+            "id": "Cycle_No",
+            "name": "Cycle No",
+            "type": "Number",
+            "required": true
+          },
+          {
+            "id": "Supplier_Code",
+            "name": "Supplier Code",
+            "type": "Text",
+            "required": true
+          },
+          {
+            "id": "Section_Key",
+            "name": "Section Key",
+            "type": "Text",
+            "required": true
+          },
+          {
+            "id": "Section_Code",
+            "name": "Section Code",
+            "type": "Text",
+            "required": true
+          },
+          {
+            "id": "Section_Title",
+            "name": "Section Title",
+            "type": "Text",
+            "required": true
+          },
+          {
+            "id": "Section_Sort",
+            "name": "Section Sort",
+            "type": "Number"
+          },
+          {
+            "id": "Applicability_Label",
+            "name": "Applicability Label",
+            "type": "Text"
+          },
+          {
+            "id": "Supplier_Reason",
+            "name": "Supplier Reason",
+            "type": "Text"
+          },
+          {
+            "id": "Added_Later",
+            "name": "Added Later",
+            "type": "Text"
+          },
+          {
+            "id": "Section_Origin",
+            "name": "Section Origin",
+            "type": "Text",
+            "required": true
+          },
+          {
+            "id": "Definition_JSON",
+            "name": "Definition JSON",
+            "type": "Textarea",
+            "required": true
+          },
+          {
+            "id": "Definition_Hash",
+            "name": "Definition Hash",
+            "type": "Text",
+            "required": true
+          },
+          {
+            "id": "Supplier_Due_Date",
+            "name": "Supplier Due Date",
+            "type": "Date"
+          },
+          {
+            "id": "Portal_Contact_Ids",
+            "name": "Portal Contact Ids",
+            "type": "Text",
+            "required": true
+          },
+          {
+            "id": "Case_Item_Id",
+            "name": "Case Item Id",
+            "type": "Text"
+          },
+          {
+            "id": "Lead_Dept",
+            "name": "Lead Dept",
+            "type": "Select",
+            "referredList": "CIQ_Department"
+          },
+          {
+            "id": "Query_Owner_Dept",
+            "name": "Query Owner Dept",
+            "type": "Select",
+            "referredList": "CIQ_Review_Dept"
+          },
+          {
+            "id": "Co_Review_Depts",
+            "name": "Co Review Depts",
+            "type": "Text"
+          },
+          {
+            "id": "Scope_Run_Key",
+            "name": "Scope Run Key",
+            "type": "Text"
+          },
+          {
+            "id": "Derivation_Kind",
+            "name": "Derivation Kind",
+            "type": "Text"
+          },
+          {
+            "id": "Override_Justification",
+            "name": "Override Justification",
+            "type": "Textarea"
+          },
+          {
+            "id": "Section_Def_Key",
+            "name": "Section Def Key",
+            "type": "Text"
+          },
+          {
+            "id": "Source_Content_Hash",
+            "name": "Source Content Hash",
+            "type": "Text"
+          },
+          {
+            "id": "Created_By_Key",
+            "name": "Created By Key",
+            "type": "Text"
+          },
+          {
+            "id": "Search_INCI",
+            "name": "Search INCI",
+            "type": "Textarea"
+          },
+          {
+            "id": "Search_CAS",
+            "name": "Search CAS",
+            "type": "Textarea"
+          },
+          {
+            "id": "Search_Origin_Types",
+            "name": "Search Origin Types",
+            "type": "Text"
+          },
+          {
+            "id": "Search_DUNS",
+            "name": "Search DUNS",
+            "type": "Text"
+          },
+          {
+            "id": "Source_Answers_Rev",
+            "name": "Source Answers Rev",
+            "type": "Number"
+          },
+          {
+            "id": "Rebuilt_At",
+            "name": "Rebuilt At",
+            "type": "DateTime"
+          }
+        ],
+        "computed": [],
+        "child_tables": [
+          {
+            "id": "Components",
+            "name": "Components",
+            "fields": [
+              {
+                "id": "Components_Row_Id",
+                "name": "Row Id",
+                "type": "Text"
+              },
+              {
+                "id": "Components_INCI",
+                "name": "INCI",
+                "type": "Text"
+              },
+              {
+                "id": "Components_CAS_No",
+                "name": "CAS No",
+                "type": "Text"
+              },
+              {
+                "id": "Components_EC_No",
+                "name": "EC No",
+                "type": "Text"
+              },
+              {
+                "id": "Components_Function",
+                "name": "Component Function",
+                "type": "Text"
+              },
+              {
+                "id": "Components_Is_Additive",
+                "name": "Is Additive",
+                "type": "Select",
+                "referredList": "CIQ_Yes_No"
+              },
+              {
+                "id": "Components_Origin",
+                "name": "Component Origin",
+                "type": "Text"
+              },
+              {
+                "id": "Components_Conc_Min",
+                "name": "Conc Min",
+                "type": "Number"
+              },
+              {
+                "id": "Components_Conc_Max",
+                "name": "Conc Max",
+                "type": "Number"
+              }
+            ]
+          }
+        ]
+      },
+      "CIQ_Scope_Run_A00": {
+        "name": "CIQ Scope Run",
+        "flowType": "Form",
+        "fields": [
+          {
+            "id": "Run_Key",
+            "name": "Run Key",
+            "type": "Text",
+            "required": true
+          },
+          {
+            "id": "Case_Code",
+            "name": "Case Code",
+            "type": "Text"
+          },
+          {
+            "id": "Cycle_No",
+            "name": "Cycle No",
+            "type": "Number"
+          },
+          {
+            "id": "Case_Item_Id",
+            "name": "Case Item Id",
+            "type": "Text"
+          },
+          {
+            "id": "Run_No",
+            "name": "Run No",
+            "type": "Number"
+          },
+          {
+            "id": "Scope_Trigger",
+            "name": "Scope Trigger",
+            "type": "Text"
+          },
+          {
+            "id": "Related_Key",
+            "name": "Related Key",
+            "type": "Text"
+          },
+          {
+            "id": "Release_Item_Id",
+            "name": "Release Item Id",
+            "type": "Text"
+          },
+          {
+            "id": "Rule_Set_Version",
+            "name": "Rule Set Version",
+            "type": "Text"
+          },
+          {
+            "id": "Evaluator_Version",
+            "name": "Evaluator Version",
+            "type": "Text"
+          },
+          {
+            "id": "Input_JSON",
+            "name": "Input JSON",
+            "type": "Textarea"
+          },
+          {
+            "id": "Input_Hash",
+            "name": "Input Hash",
+            "type": "Text"
+          },
+          {
+            "id": "Result_JSON",
+            "name": "Result JSON",
+            "type": "Textarea"
+          },
+          {
+            "id": "Added_Section_Keys",
+            "name": "Added Section Keys",
+            "type": "Textarea"
+          },
+          {
+            "id": "Lead_Departments",
+            "name": "Lead Departments",
+            "type": "Text"
+          },
+          {
+            "id": "Override_Justification",
+            "name": "Override Justification",
+            "type": "Textarea"
+          },
+          {
+            "id": "Run_By",
+            "name": "Run By",
+            "type": "User"
+          },
+          {
+            "id": "Run_At",
+            "name": "Run At",
+            "type": "DateTime"
+          }
+        ],
+        "computed": [],
+        "child_tables": []
+      },
+      "CIQ_RMES_Safety_A00": {
+        "name": "CIQ RMES Safety",
+        "flowType": "Form",
+        "fields": [
+          {
+            "id": "RMES_Key",
+            "name": "RMES Key",
+            "type": "Text",
+            "required": true
+          },
+          {
+            "id": "Result_Case",
+            "name": "Result Case",
+            "type": "Reference",
+            "ref": "CIQ_Case_A00"
+          },
+          {
+            "id": "Case_Item_Id",
+            "name": "Case Item Id",
+            "type": "Text"
+          },
+          {
+            "id": "Case_Code",
+            "name": "Case Code",
+            "type": "Text"
+          },
+          {
+            "id": "Cycle_No",
+            "name": "Cycle No",
+            "type": "Number"
+          },
+          {
+            "id": "Open_Criteria_Count",
+            "name": "Open Criteria Count",
+            "type": "Number"
+          },
+          {
+            "id": "Open_Blocking_Findings_Count",
+            "name": "Open Blocking Findings Count",
+            "type": "Number"
+          },
+          {
+            "id": "Editing_By",
+            "name": "Editing By",
+            "type": "Text"
+          },
+          {
+            "id": "Editing_Since",
+            "name": "Editing Since",
+            "type": "DateTime"
+          },
+          {
+            "id": "RMES_Voided",
+            "name": "RMES Voided",
+            "type": "Select",
+            "referredList": "CIQ_Yes_No"
+          }
+        ],
+        "computed": [],
+        "child_tables": [
+          {
+            "id": "Safety_Criteria",
+            "name": "Criteria",
+            "fields": [
+              {
+                "id": "Criteria_Code",
+                "name": "Criterion Code",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_Part",
+                "name": "RMES Part",
+                "type": "Select",
+                "referredList": "CIQ_RMES_Part"
+              },
+              {
+                "id": "Criteria_Title",
+                "name": "Criterion Title",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_Applicable",
+                "name": "Applicable",
+                "type": "Select",
+                "referredList": "CIQ_Yes_No"
+              },
+              {
+                "id": "Criteria_Applicability_Basis",
+                "name": "Applicability Basis",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_Override_Reason",
+                "name": "Override Reason",
+                "type": "Textarea"
+              },
+              {
+                "id": "Criteria_Prefill_Value",
+                "name": "Prefill Value",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_Source_Section_Key",
+                "name": "Source Section Key",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_Source_Field_Key",
+                "name": "Source Field Key",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_Source_Row_Id",
+                "name": "Source Row Id",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_Source_Value_Text",
+                "name": "Source Value Text",
+                "type": "Textarea"
+              },
+              {
+                "id": "Criteria_Source_Answers_Rev",
+                "name": "Source Answers Rev",
+                "type": "Number"
+              },
+              {
+                "id": "Criteria_Source_Doc_File_Name",
+                "name": "Source Doc File Name",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_Source_Doc_Uploaded_At",
+                "name": "Source Doc Uploaded At",
+                "type": "DateTime"
+              },
+              {
+                "id": "Criteria_Result",
+                "name": "Result",
+                "type": "Select",
+                "referredList": "CIQ_RMES_Result"
+              },
+              {
+                "id": "Criteria_Comment",
+                "name": "Comment",
+                "type": "Textarea"
+              },
+              {
+                "id": "Criteria_Recorded_By",
+                "name": "Recorded By",
+                "type": "User"
+              },
+              {
+                "id": "Criteria_Recorded_At",
+                "name": "Recorded At",
+                "type": "DateTime"
+              },
+              {
+                "id": "Criteria_Reported_Value",
+                "name": "Reported Value",
+                "type": "Number"
+              },
+              {
+                "id": "Criteria_Reported_Unit",
+                "name": "Reported Unit",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_Limit_Value",
+                "name": "Limit Value",
+                "type": "Number"
+              },
+              {
+                "id": "Criteria_Limit_Comparator",
+                "name": "Limit Comparator",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_Limit_Set_Version",
+                "name": "Limit Set Version",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_Limit_Pass",
+                "name": "Limit Pass",
+                "type": "Select",
+                "referredList": "CIQ_Yes_No"
+              },
+              {
+                "id": "Criteria_Impact_Resolution",
+                "name": "Impact Resolution",
+                "type": "Select",
+                "referredList": "CIQ_Impact_Resolution"
+              },
+              {
+                "id": "Criteria_AI_Suggestion_Text",
+                "name": "AI Suggestion Text",
+                "type": "Textarea"
+              },
+              {
+                "id": "Criteria_AI_Source_Quote",
+                "name": "AI Source Quote",
+                "type": "Textarea"
+              },
+              {
+                "id": "Criteria_AI_Source_Doc_File_Name",
+                "name": "AI Source Doc File Name",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_AI_Source_Doc_Uploaded_At",
+                "name": "AI Source Doc Uploaded At",
+                "type": "DateTime"
+              },
+              {
+                "id": "Criteria_AI_State",
+                "name": "AI State",
+                "type": "Select",
+                "referredList": "CIQ_AI_State"
+              },
+              {
+                "id": "Criteria_AI_Decided_By",
+                "name": "AI Confirmed By",
+                "type": "User"
+              },
+              {
+                "id": "Criteria_AI_Decided_At",
+                "name": "AI Confirmed At",
+                "type": "DateTime"
+              },
+              {
+                "id": "Criteria_Open_Num",
+                "name": "Open Num",
+                "type": "Number",
+                "formula": "IF(Criteria_Applicable=\"No\",0,IF(ISBLANK(Criteria_Result),1,IF(OR(Criteria_Result=\"Available\",Criteria_Result=\"Plausible\",Criteria_Result=\"Listed\"),0,IF(ISBLANK(Criteria_Comment),1,0))))"
+              }
+            ]
+          },
+          {
+            "id": "Safety_Findings",
+            "name": "Findings",
+            "fields": [
+              {
+                "id": "Findings_Text",
+                "name": "Finding Text",
+                "type": "Textarea"
+              },
+              {
+                "id": "Findings_Criterion_Code",
+                "name": "Criterion Code",
+                "type": "Text"
+              },
+              {
+                "id": "Findings_Blocking",
+                "name": "Blocking",
+                "type": "Select",
+                "referredList": "CIQ_Yes_No"
+              },
+              {
+                "id": "Findings_State",
+                "name": "Finding State",
+                "type": "Text"
+              },
+              {
+                "id": "Findings_Linked_OP_Key",
+                "name": "Linked OP Key",
+                "type": "Text"
+              }
+            ]
+          }
+        ]
+      },
+      "CIQ_RMES_Regulatory_A00": {
+        "name": "CIQ RMES Regulatory",
+        "flowType": "Form",
+        "fields": [
+          {
+            "id": "RMES_Key",
+            "name": "RMES Key",
+            "type": "Text",
+            "required": true
+          },
+          {
+            "id": "Result_Case",
+            "name": "Result Case",
+            "type": "Reference",
+            "ref": "CIQ_Case_A00"
+          },
+          {
+            "id": "Case_Item_Id",
+            "name": "Case Item Id",
+            "type": "Text"
+          },
+          {
+            "id": "Case_Code",
+            "name": "Case Code",
+            "type": "Text"
+          },
+          {
+            "id": "Cycle_No",
+            "name": "Cycle No",
+            "type": "Number"
+          },
+          {
+            "id": "Open_Criteria_Count",
+            "name": "Open Criteria Count",
+            "type": "Number"
+          },
+          {
+            "id": "Open_Blocking_Findings_Count",
+            "name": "Open Blocking Findings Count",
+            "type": "Number"
+          },
+          {
+            "id": "Editing_By",
+            "name": "Editing By",
+            "type": "Text"
+          },
+          {
+            "id": "Editing_Since",
+            "name": "Editing Since",
+            "type": "DateTime"
+          },
+          {
+            "id": "RMES_Voided",
+            "name": "RMES Voided",
+            "type": "Select",
+            "referredList": "CIQ_Yes_No"
+          }
+        ],
+        "computed": [],
+        "child_tables": [
+          {
+            "id": "Regulatory_Criteria",
+            "name": "Criteria",
+            "fields": [
+              {
+                "id": "Criteria_Code",
+                "name": "Criterion Code",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_Part",
+                "name": "RMES Part",
+                "type": "Select",
+                "referredList": "CIQ_RMES_Part"
+              },
+              {
+                "id": "Criteria_Title",
+                "name": "Criterion Title",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_Applicable",
+                "name": "Applicable",
+                "type": "Select",
+                "referredList": "CIQ_Yes_No"
+              },
+              {
+                "id": "Criteria_Applicability_Basis",
+                "name": "Applicability Basis",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_Override_Reason",
+                "name": "Override Reason",
+                "type": "Textarea"
+              },
+              {
+                "id": "Criteria_Prefill_Value",
+                "name": "Prefill Value",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_Source_Section_Key",
+                "name": "Source Section Key",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_Source_Field_Key",
+                "name": "Source Field Key",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_Source_Row_Id",
+                "name": "Source Row Id",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_Source_Value_Text",
+                "name": "Source Value Text",
+                "type": "Textarea"
+              },
+              {
+                "id": "Criteria_Source_Answers_Rev",
+                "name": "Source Answers Rev",
+                "type": "Number"
+              },
+              {
+                "id": "Criteria_Source_Doc_File_Name",
+                "name": "Source Doc File Name",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_Source_Doc_Uploaded_At",
+                "name": "Source Doc Uploaded At",
+                "type": "DateTime"
+              },
+              {
+                "id": "Criteria_Result",
+                "name": "Result",
+                "type": "Select",
+                "referredList": "CIQ_RMES_Result"
+              },
+              {
+                "id": "Criteria_Comment",
+                "name": "Comment",
+                "type": "Textarea"
+              },
+              {
+                "id": "Criteria_Recorded_By",
+                "name": "Recorded By",
+                "type": "User"
+              },
+              {
+                "id": "Criteria_Recorded_At",
+                "name": "Recorded At",
+                "type": "DateTime"
+              },
+              {
+                "id": "Criteria_Reported_Value",
+                "name": "Reported Value",
+                "type": "Number"
+              },
+              {
+                "id": "Criteria_Reported_Unit",
+                "name": "Reported Unit",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_Limit_Value",
+                "name": "Limit Value",
+                "type": "Number"
+              },
+              {
+                "id": "Criteria_Limit_Comparator",
+                "name": "Limit Comparator",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_Limit_Set_Version",
+                "name": "Limit Set Version",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_Limit_Pass",
+                "name": "Limit Pass",
+                "type": "Select",
+                "referredList": "CIQ_Yes_No"
+              },
+              {
+                "id": "Criteria_Impact_Resolution",
+                "name": "Impact Resolution",
+                "type": "Select",
+                "referredList": "CIQ_Impact_Resolution"
+              },
+              {
+                "id": "Criteria_AI_Suggestion_Text",
+                "name": "AI Suggestion Text",
+                "type": "Textarea"
+              },
+              {
+                "id": "Criteria_AI_Source_Quote",
+                "name": "AI Source Quote",
+                "type": "Textarea"
+              },
+              {
+                "id": "Criteria_AI_Source_Doc_File_Name",
+                "name": "AI Source Doc File Name",
+                "type": "Text"
+              },
+              {
+                "id": "Criteria_AI_Source_Doc_Uploaded_At",
+                "name": "AI Source Doc Uploaded At",
+                "type": "DateTime"
+              },
+              {
+                "id": "Criteria_AI_State",
+                "name": "AI State",
+                "type": "Select",
+                "referredList": "CIQ_AI_State"
+              },
+              {
+                "id": "Criteria_AI_Decided_By",
+                "name": "AI Confirmed By",
+                "type": "User"
+              },
+              {
+                "id": "Criteria_AI_Decided_At",
+                "name": "AI Confirmed At",
+                "type": "DateTime"
+              },
+              {
+                "id": "Criteria_Open_Num",
+                "name": "Open Num",
+                "type": "Number",
+                "formula": "IF(Criteria_Applicable=\"No\",0,IF(ISBLANK(Criteria_Result),1,IF(OR(Criteria_Result=\"Available\",Criteria_Result=\"Plausible\",Criteria_Result=\"Listed\"),0,IF(ISBLANK(Criteria_Comment),1,0))))"
+              }
+            ]
+          },
+          {
+            "id": "Regulatory_Findings",
+            "name": "Findings",
+            "fields": [
+              {
+                "id": "Findings_Text",
+                "name": "Finding Text",
+                "type": "Textarea"
+              },
+              {
+                "id": "Findings_Criterion_Code",
+                "name": "Criterion Code",
+                "type": "Text"
+              },
+              {
+                "id": "Findings_Blocking",
+                "name": "Blocking",
+                "type": "Select",
+                "referredList": "CIQ_Yes_No"
+              },
+              {
+                "id": "Findings_State",
+                "name": "Finding State",
+                "type": "Text"
+              },
+              {
+                "id": "Findings_Linked_OP_Key",
+                "name": "Linked OP Key",
+                "type": "Text"
+              }
+            ]
+          }
+        ]
+      },
+      "CIQ_Internal_Note_A00": {
+        "name": "CIQ Internal Note",
+        "flowType": "Form",
+        "fields": [
+          {
+            "id": "Note_Key",
+            "name": "Note Key",
+            "type": "Text"
+          },
+          {
+            "id": "Case_Code",
+            "name": "Case Code",
+            "type": "Text"
+          },
+          {
+            "id": "Cycle_No",
+            "name": "Cycle No",
+            "type": "Number"
+          },
+          {
+            "id": "Case_Item_Id",
+            "name": "Case Item Id",
+            "type": "Text"
+          },
+          {
+            "id": "Linked_Kind",
+            "name": "Linked Kind",
+            "type": "Text"
+          },
+          {
+            "id": "Linked_Key",
+            "name": "Linked Key",
+            "type": "Text"
+          },
+          {
+            "id": "Note_Text",
+            "name": "Note Text",
+            "type": "Textarea",
+            "required": true
+          },
+          {
+            "id": "Note_Author",
+            "name": "Note Author",
+            "type": "User"
+          },
+          {
+            "id": "Note_Dept",
+            "name": "Note Dept",
+            "type": "Select",
+            "referredList": "CIQ_Department"
+          },
+          {
+            "id": "Note_At",
+            "name": "Note At",
+            "type": "DateTime"
+          }
+        ],
+        "computed": [],
+        "child_tables": []
+      },
+      "CIQ_Audit_Event_A00": {
+        "name": "CIQ Audit Event",
+        "flowType": "Form",
+        "fields": [
+          {
+            "id": "Event_Key",
+            "name": "Event Key",
+            "type": "Text"
+          },
+          {
+            "id": "Case_Code",
+            "name": "Case Code",
+            "type": "Text"
+          },
+          {
+            "id": "Cycle_No",
+            "name": "Cycle No",
+            "type": "Number"
+          },
+          {
+            "id": "Case_Item_Id",
+            "name": "Case Item Id",
+            "type": "Text"
+          },
+          {
+            "id": "Event_At",
+            "name": "Event At",
+            "type": "DateTime"
+          },
+          {
+            "id": "Event_Category",
+            "name": "Event Category",
+            "type": "Select",
+            "referredList": "CIQ_Event_Category",
+            "required": true
+          },
+          {
+            "id": "Action_Code",
+            "name": "Action Code",
+            "type": "Text"
+          },
+          {
+            "id": "Actor_Side",
+            "name": "Actor Side",
+            "type": "Select",
+            "referredList": "CIQ_Actor_Side"
+          },
+          {
+            "id": "Actor_Name",
+            "name": "Actor Name",
+            "type": "Text"
+          },
+          {
+            "id": "Actor_Email",
+            "name": "Actor Email",
+            "type": "Email"
+          },
+          {
+            "id": "Actor_Dept",
+            "name": "Actor Dept",
+            "type": "Select",
+            "referredList": "CIQ_Department"
+          },
+          {
+            "id": "Actor_Role_Id",
+            "name": "Actor Role Id",
+            "type": "Text"
+          },
+          {
+            "id": "On_Behalf_Of",
+            "name": "On Behalf Of",
+            "type": "Text"
+          },
+          {
+            "id": "Object_Kind",
+            "name": "Object Kind",
+            "type": "Text"
+          },
+          {
+            "id": "Object_Key",
+            "name": "Object Key",
+            "type": "Text"
+          },
+          {
+            "id": "Object_Item_Id",
+            "name": "Object Item Id",
+            "type": "Text"
+          },
+          {
+            "id": "Object_State",
+            "name": "Object State",
+            "type": "Text"
+          },
+          {
+            "id": "Old_Value_Text",
+            "name": "Old Value Text",
+            "type": "Textarea"
+          },
+          {
+            "id": "New_Value_Text",
+            "name": "New Value Text",
+            "type": "Textarea"
+          },
+          {
+            "id": "Source_Doc_File_Name",
+            "name": "Source Doc File Name",
+            "type": "Text"
+          },
+          {
+            "id": "Source_Doc_Uploaded_At",
+            "name": "Source Doc Uploaded At",
+            "type": "DateTime"
+          },
+          {
+            "id": "Source_Answers_Rev",
+            "name": "Source Answers Rev",
+            "type": "Number"
+          },
+          {
+            "id": "Config_Keys",
+            "name": "Config Keys",
+            "type": "Text"
+          },
+          {
+            "id": "Event_Reason",
+            "name": "Event Reason",
+            "type": "Textarea"
+          },
+          {
+            "id": "Notify_Recipient",
+            "name": "Notify Recipient",
+            "type": "Textarea"
+          },
+          {
+            "id": "Notify_Channel",
+            "name": "Notify Channel",
+            "type": "Text"
+          },
+          {
+            "id": "Delegation_Valid_From",
+            "name": "Delegation Valid From",
+            "type": "Date"
+          },
+          {
+            "id": "Delegation_Valid_To",
+            "name": "Delegation Valid To",
+            "type": "Date"
+          },
+          {
+            "id": "Portal_Activity_Ref",
+            "name": "Portal Activity Ref",
+            "type": "Text"
+          },
+          {
+            "id": "Snapshot_JSON",
+            "name": "Snapshot JSON",
+            "type": "Textarea"
+          },
+          {
+            "id": "Event_File",
+            "name": "Event File",
+            "type": "Attachment"
+          }
+        ],
+        "computed": [],
+        "child_tables": []
+      },
+      "CIQ_Yes_No": {
+        "name": "CIQ Yes No",
+        "items": [
+          "Yes",
+          "No"
+        ]
+      },
+      "CIQ_Confirm": {
+        "name": "CIQ Confirm",
+        "items": [
+          "Confirmed"
+        ]
+      },
+      "CIQ_Department": {
+        "name": "CIQ Department",
+        "items": [
+          "RMM",
+          "REG",
+          "SAF",
+          "QM",
+          "MIC",
+          "SUS",
+          "CUS",
+          "LEG"
+        ]
+      },
+      "CIQ_Review_Dept": {
+        "name": "CIQ Review Dept",
+        "items": [
+          "REG",
+          "SAF",
+          "QM",
+          "MIC",
+          "SUS",
+          "RMM"
+        ]
+      },
+      "CIQ_Decision": {
+        "name": "CIQ Decision",
+        "items": [
+          "Approved",
+          "Rejected"
+        ]
+      },
+      "CIQ_OP_Kind": {
+        "name": "CIQ OP Kind",
+        "items": [
+          "Query",
+          "Document request",
+          "Additional part",
+          "Internal review",
+          "Department review",
+          "Contact update"
+        ]
+      },
+      "CIQ_OP_Progress": {
+        "name": "CIQ OP Progress",
+        "items": [
+          "Open",
+          "In progress"
+        ]
+      },
+      "CIQ_OP_Outcome": {
+        "name": "CIQ OP Outcome",
+        "items": [
+          "Accepted",
+          "Withdrawn"
+        ]
+      },
+      "CIQ_Round_Outcome": {
+        "name": "CIQ Round Outcome",
+        "items": [
+          "Accepted",
+          "Returned",
+          "Withdrawn"
+        ]
+      },
+      "CIQ_CR_Outcome": {
+        "name": "CIQ CR Outcome",
+        "items": [
+          "Accepted",
+          "Accepted – scope extended",
+          "Refused – after final release",
+          "Refused – not valid"
+        ]
+      },
+      "CIQ_Impact_Resolution": {
+        "name": "CIQ Impact Resolution",
+        "items": [
+          "No impact confirmed",
+          "Re-assessed",
+          "Finding raised"
+        ]
+      },
+      "CIQ_Config_Kind": {
+        "name": "CIQ Config Kind",
+        "items": [
+          "Template",
+          "Section definition",
+          "Rule set",
+          "Section ownership",
+          "RMES criteria",
+          "Limit set",
+          "Text bundle",
+          "Reminders",
+          "Settings",
+          "Regression set",
+          "Release"
+        ]
+      },
+      "CIQ_Config_State": {
+        "name": "CIQ Config State",
+        "items": [
+          "Draft",
+          "Published",
+          "Retired"
+        ]
+      },
+      "CIQ_Release_Stage": {
+        "name": "CIQ Release Stage",
+        "items": [
+          "Test",
+          "Live"
+        ]
+      },
+      "CIQ_RMES_Part": {
+        "name": "CIQ RMES Part",
+        "items": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ]
+      },
+      "CIQ_RMES_Result": {
+        "name": "CIQ RMES Result",
+        "items": [
+          "Available",
+          "Not available",
+          "Plausible",
+          "Implausible",
+          "Listed",
+          "Not listed",
+          "Negative",
+          "Not applicable"
+        ]
+      },
+      "CIQ_AI_State": {
+        "name": "CIQ AI State",
+        "items": [
+          "Proposed",
+          "Confirmed",
+          "Discarded"
+        ]
+      },
+      "CIQ_Supplier_Kind": {
+        "name": "CIQ Supplier Kind",
+        "items": [
+          "Manufacturer",
+          "Distributor",
+          "Trader"
+        ]
+      },
+      "CIQ_Contact_Role": {
+        "name": "CIQ Contact Role",
+        "items": [
+          "Coordinator",
+          "Quality",
+          "Regulatory",
+          "Key account",
+          "Other"
+        ]
+      },
+      "CIQ_Country_Code": {
+        "name": "CIQ Country Code",
+        "items": [
+          "AT",
+          "BE",
+          "BG",
+          "HR",
+          "CY",
+          "CZ",
+          "DK",
+          "EE",
+          "FI",
+          "FR",
+          "DE",
+          "GR",
+          "HU",
+          "IE",
+          "IT",
+          "LV",
+          "LT",
+          "LU",
+          "MT",
+          "NL",
+          "PL",
+          "PT",
+          "RO",
+          "SK",
+          "SI",
+          "ES",
+          "SE",
+          "GB",
+          "TR",
+          "CN",
+          "US",
+          "CA"
+        ]
+      },
+      "CIQ_Event_Category": {
+        "name": "CIQ Event Category",
+        "items": [
+          "Case",
+          "Scope",
+          "Section",
+          "Section review",
+          "Snapshot",
+          "Open point",
+          "RMES",
+          "Change request",
+          "Configuration",
+          "Notification",
+          "Delegation",
+          "Assignment",
+          "Change attempt",
+          "Cancellation",
+          "Access",
+          "Item created",
+          "Final PDF"
+        ]
+      },
+      "CIQ_Actor_Side": {
+        "name": "CIQ Actor Side",
+        "items": [
+          "BDF",
+          "Supplier",
+          "System"
+        ]
+      }
+    }
+  }
+}

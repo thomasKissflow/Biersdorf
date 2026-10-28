@@ -1,0 +1,3599 @@
+{
+ "suite": "integrity-end",
+ "run": "OFF",
+ "startedAt": "2026-10-25T19:13:36.045Z",
+ "savedAt": "2026-10-25T19:13:36.113Z",
+ "counts": {
+  "pass": 10,
+  "fail": 0,
+  "blocked": 0,
+  "not-run": 0
+ },
+ "steps": [
+  {
+   "name": "integrations: the 12 hand-offs are Live and ON",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "integration list rows of both apps (code, id, Status, IsActive)",
+      "value": [
+       {
+        "code": "case.started",
+        "id": "CIQ_I_1_Case_to_supplier_request_A00",
+        "app": "CIQ_Digital_A00",
+        "status": "Live",
+        "isActive": true
+       },
+       {
+        "code": "review.reopened",
+        "id": "CIQ_Review_reopened_to_supplier_re_A00",
+        "app": "CIQ_Digital_A00",
+        "status": "Live",
+        "isActive": true
+       },
+       {
+        "code": "op.round",
+        "id": "CIQ_op_round_Open_point_question_t_A00",
+        "app": "CIQ_Digital_A00",
+        "status": "Live",
+        "isActive": true
+       },
+       {
+        "code": "op.edited",
+        "id": "CIQ_op_edited_Open_point_question__A00",
+        "app": "CIQ_Digital_A00",
+        "status": "Live",
+        "isActive": true
+       },
+       {
+        "code": "op.closed",
+        "id": "CIQ_op_closed_Open_point_closed_A00",
+        "app": "CIQ_Digital_A00",
+        "status": "Live",
+        "isActive": true
+       },
+       {
+        "code": "release.requested",
+        "id": "CIQ_release_requested_Final_releas_A00",
+        "app": "CIQ_Digital_A00",
+        "status": "Live",
+        "isActive": true
+       },
+       {
+        "code": "history.updated",
+        "id": "CIQ_history_updated_Questions_hist_A00",
+        "app": "CIQ_Digital_A00",
+        "status": "Live",
+        "isActive": true
+       },
+       {
+        "code": "case.cancelled",
+        "id": "CIQ_case_cancelled_Case_cancelled_A00",
+        "app": "CIQ_Digital_A00",
+        "status": "Live",
+        "isActive": true
+       },
+       {
+        "code": "requestChanged",
+        "id": "CIQP_Request_changed_to_case_A00",
+        "app": "CIQ_Supplier_Portal_A00",
+        "status": "Live",
+        "isActive": true
+       },
+       {
+        "code": "completenessConfirmed",
+        "id": "CIQP_Completeness_confirmed_to_cas_A00",
+        "app": "CIQ_Supplier_Portal_A00",
+        "status": "Live",
+        "isActive": true
+       },
+       {
+        "code": "queryAnswered",
+        "id": "CIQP_Query_answered_to_open_point_A00",
+        "app": "CIQ_Supplier_Portal_A00",
+        "status": "Live",
+        "isActive": true
+       },
+       {
+        "code": "releaseGiven",
+        "id": "CIQP_Final_release_to_case_A00",
+        "app": "CIQ_Supplier_Portal_A00",
+        "status": "Live",
+        "isActive": true
+       }
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "every hand-off integration is listed, Live and ON",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {}
+   },
+   "ms": 4,
+   "at": "2026-10-25T19:13:36.062Z"
+  },
+  {
+   "name": "names: every flow of both apps follows the naming rule; the code's flows exist with their names",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "flow list rows of both apps (app, type, id, Name, Status)",
+      "value": [
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "process",
+        "id": "CIQ_Case_A00",
+        "name": "CIQ Case",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "process",
+        "id": "CIQ_Case_Thomas_A00",
+        "name": "CIQ Case - Thomas",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "process",
+        "id": "CIQ_Change_Request_A00",
+        "name": "CIQ Change Request",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "process",
+        "id": "CIQ_Open_Point_A00",
+        "name": "CIQ Open Point",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "process",
+        "id": "CIQ_Review_A00",
+        "name": "CIQ Review",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "process",
+        "id": "CIQ_ZZ_Spike_Case_A00",
+        "name": "CIQ ZZ Spike Case",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "process",
+        "id": "CIQ_ZZ_Spike_Point_A00",
+        "name": "CIQ ZZ Spike Point",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "form",
+        "id": "CIQ_Audit_Event_A00",
+        "name": "CIQ Audit Event",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "form",
+        "id": "CIQ_Case_Data_A00",
+        "name": "CIQ Case Data",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "form",
+        "id": "CIQ_Config_Version_A00",
+        "name": "CIQ Config Version",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "form",
+        "id": "CIQ_Internal_Note_A00",
+        "name": "CIQ Internal Note",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "form",
+        "id": "CIQ_Mail_Outbox_A00",
+        "name": "CIQ Mail Outbox",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "form",
+        "id": "CIQ_RMES_Regulatory_A00",
+        "name": "CIQ RMES Regulatory",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "form",
+        "id": "CIQ_RMES_Safety_A00",
+        "name": "CIQ RMES Safety",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "form",
+        "id": "CIQ_Scope_Run_A00",
+        "name": "CIQ Scope Run",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "form",
+        "id": "CIQ_Section_A00",
+        "name": "CIQ Section",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "form",
+        "id": "CIQ_Service_Request_A00",
+        "name": "CIQ Service Request",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "form",
+        "id": "CIQ_Supplier_A00",
+        "name": "CIQ Supplier",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "form",
+        "id": "CIQ_ZZ_Spike_Log_A00",
+        "name": "CIQ ZZ Spike Log",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "form",
+        "id": "CIQ_ZZ_Spike_Register_A00",
+        "name": "CIQ ZZ Spike Register",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_AI_State_A00",
+        "name": "CIQ AI State",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_Actor_Side_A00",
+        "name": "CIQ Actor Side",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_CR_Outcome_A00",
+        "name": "CIQ CR Outcome",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_Case_Phase_A00",
+        "name": "CIQ Case Phase",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_Config_Kind_A00",
+        "name": "CIQ Config Kind",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_Config_State_A00",
+        "name": "CIQ Config State",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_Confirm_A00",
+        "name": "CIQ Confirm",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_Contact_Role_A00",
+        "name": "CIQ Contact Role",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_Country_Code_A00",
+        "name": "CIQ Country Code",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_Decision_A00",
+        "name": "CIQ Decision",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_Department_A00",
+        "name": "CIQ Department",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_Event_Category_A00",
+        "name": "CIQ Event Category",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_Impact_Resolution_A00",
+        "name": "CIQ Impact Resolution",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_OP_Kind_A00",
+        "name": "CIQ OP Kind",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_OP_Outcome_A00",
+        "name": "CIQ OP Outcome",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_OP_Progress_A00",
+        "name": "CIQ OP Progress",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_Priority_A00",
+        "name": "CIQ Priority",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_RMES_Part_A00",
+        "name": "CIQ RMES Part",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_RMES_Result_A00",
+        "name": "CIQ RMES Result",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_Rejection_Handling_A00",
+        "name": "CIQ Rejection Handling",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_Release_Stage_A00",
+        "name": "CIQ Release Stage",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_Request_Status_A00",
+        "name": "CIQ Request Status",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_Review_Dept_A00",
+        "name": "CIQ Review Dept",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_Round_Outcome_A00",
+        "name": "CIQ Round Outcome",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_Supplier_Kind_A00",
+        "name": "CIQ Supplier Kind",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_Track_Status_A00",
+        "name": "CIQ Track Status",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_Yes_No_A00",
+        "name": "CIQ Yes No",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_ZZ_Spike_Decision_A00",
+        "name": "CIQ ZZ Spike Decision",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "CIQ_ZZ_Spike_Yes_No_A00",
+        "name": "CIQ ZZ Spike Yes No",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "list",
+        "id": "Yes_No_A00",
+        "name": "Yes/No",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "integration",
+        "id": "CIQ_I_1_Case_to_supplier_request_A00",
+        "name": "CIQ I-1 Case to supplier request",
+        "status": "Live",
+        "isActive": true
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "integration",
+        "id": "CIQ_Mail_send_outbox_mail_A00",
+        "name": "CIQ Mail – send outbox mail",
+        "status": "Live",
+        "isActive": false
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "integration",
+        "id": "CIQ_Review_reopened_to_supplier_re_A00",
+        "name": "CIQ Review reopened to supplier request",
+        "status": "Live",
+        "isActive": true
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "integration",
+        "id": "CIQ_Z1_Case_completed_PDF_e_mails__A00",
+        "name": "CIQ Z1 Case completed – PDF, e-mails, notification event",
+        "status": "Live",
+        "isActive": false
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "integration",
+        "id": "CIQ_Z2_Case_cancelled_neutral_e_ma_A00",
+        "name": "CIQ Z2 Case cancelled – neutral e-mail",
+        "status": "Live",
+        "isActive": false
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "integration",
+        "id": "CIQ_case_cancelled_Case_cancelled_A00",
+        "name": "CIQ case.cancelled Case cancelled",
+        "status": "Live",
+        "isActive": true
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "integration",
+        "id": "CIQ_history_updated_Questions_hist_A00",
+        "name": "CIQ history.updated Questions history to supplier",
+        "status": "Live",
+        "isActive": true
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "integration",
+        "id": "CIQ_op_closed_Open_point_closed_A00",
+        "name": "CIQ op.closed Open point closed",
+        "status": "Live",
+        "isActive": true
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "integration",
+        "id": "CIQ_op_edited_Open_point_question__A00",
+        "name": "CIQ op.edited Open point question edited",
+        "status": "Live",
+        "isActive": true
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "integration",
+        "id": "CIQ_op_round_Open_point_question_t_A00",
+        "name": "CIQ op.round Open point question to supplier",
+        "status": "Live",
+        "isActive": true
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "integration",
+        "id": "CIQ_release_requested_Final_releas_A00",
+        "name": "CIQ release.requested Final release requested",
+        "status": "Live",
+        "isActive": true
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "integration",
+        "id": "Mail_Integration_Thomas_A00",
+        "name": "Mail Integration - Thomas",
+        "status": "Live",
+        "isActive": false
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "integration",
+        "id": "Test_A00",
+        "name": "Test",
+        "status": "Live",
+        "isActive": false
+       },
+       {
+        "app": "CIQ_Supplier_Portal_A00",
+        "type": "process",
+        "id": "CIQP_Change_Request_A00",
+        "name": "ZZZ (Not in Use) CIQP Change Request",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Supplier_Portal_A00",
+        "type": "process",
+        "id": "CIQP_Completeness_Confirmation_A00",
+        "name": "ZZZ (Not in Use) CIQP Completeness Confirmation",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Supplier_Portal_A00",
+        "type": "process",
+        "id": "CIQP_Final_Release_A00",
+        "name": "CIQP Final Release",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Supplier_Portal_A00",
+        "type": "process",
+        "id": "CIQP_Notice_A00",
+        "name": "ZZZ (Not in Use) CIQP Notice",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Supplier_Portal_A00",
+        "type": "process",
+        "id": "CIQP_Query_A00",
+        "name": "CIQP Query",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Supplier_Portal_A00",
+        "type": "process",
+        "id": "CIQP_Request_A00",
+        "name": "CIQP Request",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Supplier_Portal_A00",
+        "type": "process",
+        "id": "CIQP_Section_A00",
+        "name": "ZZZ (Not in Use) CIQP Section",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Supplier_Portal_A00",
+        "type": "process",
+        "id": "ZZ_Spike_Assignee_A00",
+        "name": "ZZ Spike Assignee",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Supplier_Portal_A00",
+        "type": "form",
+        "id": "CIQP_Help_Article_A00",
+        "name": "CIQP Help Article",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Supplier_Portal_A00",
+        "type": "list",
+        "id": "CIQP_Change_Kind_A00",
+        "name": "CIQP Change Kind",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Supplier_Portal_A00",
+        "type": "list",
+        "id": "CIQP_Confirm_A00",
+        "name": "CIQP Confirm",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Supplier_Portal_A00",
+        "type": "list",
+        "id": "CIQP_Doc_Kind_A00",
+        "name": "CIQP Doc Kind",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Supplier_Portal_A00",
+        "type": "list",
+        "id": "CIQP_Response_Kind_A00",
+        "name": "CIQP Response Kind",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Supplier_Portal_A00",
+        "type": "list",
+        "id": "CIQP_Yes_No_A00",
+        "name": "CIQP Yes No",
+        "status": "Live"
+       },
+       {
+        "app": "CIQ_Supplier_Portal_A00",
+        "type": "integration",
+        "id": "CIQP_Completeness_confirmed_to_cas_A00",
+        "name": "CIQP Completeness confirmed to case",
+        "status": "Live",
+        "isActive": true
+       },
+       {
+        "app": "CIQ_Supplier_Portal_A00",
+        "type": "integration",
+        "id": "CIQP_Final_release_to_case_A00",
+        "name": "CIQP Final release to case",
+        "status": "Live",
+        "isActive": true
+       },
+       {
+        "app": "CIQ_Supplier_Portal_A00",
+        "type": "integration",
+        "id": "CIQP_Query_answered_to_open_point_A00",
+        "name": "CIQP Query answered to open point",
+        "status": "Live",
+        "isActive": true
+       },
+       {
+        "app": "CIQ_Supplier_Portal_A00",
+        "type": "integration",
+        "id": "CIQP_Request_changed_to_case_A00",
+        "name": "CIQP Request changed to case",
+        "status": "Live",
+        "isActive": true
+       }
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "every flow list was read",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "every flow name starts \"CIQ \" (app) or \"CIQP \" (portal), or is a listed exception",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "flow names are unique across both apps",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "every flow the code uses is listed in its app",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "every flow the code uses is Live",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "every flow the code names has that name (load.ts FLOW_LABEL, portal.ts FLOWS)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "every flow id the code names (…_A00) is a flow of one of the apps",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "exceptions": [
+      {
+       "app": "CIQ_Digital_A00",
+       "type": "process",
+       "id": "CIQ_Case_Thomas_A00",
+       "name": "CIQ Case - Thomas",
+       "kind": "personal",
+       "follows": true,
+       "why": "Thomas's own copy of CIQ Case (SPEC §1: never written)"
+      },
+      {
+       "app": "CIQ_Digital_A00",
+       "type": "process",
+       "id": "CIQ_ZZ_Spike_Case_A00",
+       "name": "CIQ ZZ Spike Case",
+       "kind": "spike",
+       "follows": true,
+       "why": "a spike (test flow of the build)"
+      },
+      {
+       "app": "CIQ_Digital_A00",
+       "type": "process",
+       "id": "CIQ_ZZ_Spike_Point_A00",
+       "name": "CIQ ZZ Spike Point",
+       "kind": "spike",
+       "follows": true,
+       "why": "a spike (test flow of the build)"
+      },
+      {
+       "app": "CIQ_Digital_A00",
+       "type": "form",
+       "id": "CIQ_Case_Data_A00",
+       "name": "CIQ Case Data",
+       "kind": "retired",
+       "follows": true,
+       "why": "retired (ids.ts D-13: CIQ Case Data)"
+      },
+      {
+       "app": "CIQ_Digital_A00",
+       "type": "form",
+       "id": "CIQ_Mail_Outbox_A00",
+       "name": "CIQ Mail Outbox",
+       "kind": "retired",
+       "follows": true,
+       "why": "retired (ids.ts D-14: Mail Outbox)"
+      },
+      {
+       "app": "CIQ_Digital_A00",
+       "type": "form",
+       "id": "CIQ_Service_Request_A00",
+       "name": "CIQ Service Request",
+       "kind": "retired",
+       "follows": true,
+       "why": "retired (ids.ts D-14: Service Request)"
+      },
+      {
+       "app": "CIQ_Digital_A00",
+       "type": "form",
+       "id": "CIQ_ZZ_Spike_Log_A00",
+       "name": "CIQ ZZ Spike Log",
+       "kind": "spike",
+       "follows": true,
+       "why": "a spike (test flow of the build)"
+      },
+      {
+       "app": "CIQ_Digital_A00",
+       "type": "form",
+       "id": "CIQ_ZZ_Spike_Register_A00",
+       "name": "CIQ ZZ Spike Register",
+       "kind": "spike",
+       "follows": true,
+       "why": "a spike (test flow of the build)"
+      },
+      {
+       "app": "CIQ_Digital_A00",
+       "type": "list",
+       "id": "CIQ_ZZ_Spike_Decision_A00",
+       "name": "CIQ ZZ Spike Decision",
+       "kind": "spike",
+       "follows": true,
+       "why": "a spike (test flow of the build)"
+      },
+      {
+       "app": "CIQ_Digital_A00",
+       "type": "list",
+       "id": "CIQ_ZZ_Spike_Yes_No_A00",
+       "name": "CIQ ZZ Spike Yes No",
+       "kind": "spike",
+       "follows": true,
+       "why": "a spike (test flow of the build)"
+      },
+      {
+       "app": "CIQ_Digital_A00",
+       "type": "list",
+       "id": "Yes_No_A00",
+       "name": "Yes/No",
+       "kind": "other",
+       "follows": false,
+       "why": "list \"Yes/No\" without the CIQ prefix (created by Thomas on 16 Oct)"
+      },
+      {
+       "app": "CIQ_Digital_A00",
+       "type": "integration",
+       "id": "Mail_Integration_Thomas_A00",
+       "name": "Mail Integration - Thomas",
+       "kind": "personal",
+       "follows": false,
+       "why": "Thomas's own integration"
+      },
+      {
+       "app": "CIQ_Digital_A00",
+       "type": "integration",
+       "id": "Test_A00",
+       "name": "Test",
+       "kind": "other",
+       "follows": false,
+       "why": "integration \"Test\" (switched off)"
+      },
+      {
+       "app": "CIQ_Supplier_Portal_A00",
+       "type": "process",
+       "id": "CIQP_Change_Request_A00",
+       "name": "ZZZ (Not in Use) CIQP Change Request",
+       "kind": "retired",
+       "follows": false,
+       "why": "retired (portal.ts v5: false)"
+      },
+      {
+       "app": "CIQ_Supplier_Portal_A00",
+       "type": "process",
+       "id": "CIQP_Completeness_Confirmation_A00",
+       "name": "ZZZ (Not in Use) CIQP Completeness Confirmation",
+       "kind": "retired",
+       "follows": false,
+       "why": "retired (portal.ts v5: false)"
+      },
+      {
+       "app": "CIQ_Supplier_Portal_A00",
+       "type": "process",
+       "id": "CIQP_Final_Release_A00",
+       "name": "CIQP Final Release",
+       "kind": "retired",
+       "follows": true,
+       "why": "retired (portal.ts v5: false)"
+      },
+      {
+       "app": "CIQ_Supplier_Portal_A00",
+       "type": "process",
+       "id": "CIQP_Notice_A00",
+       "name": "ZZZ (Not in Use) CIQP Notice",
+       "kind": "retired",
+       "follows": false,
+       "why": "retired (portal.ts v5: false)"
+      },
+      {
+       "app": "CIQ_Supplier_Portal_A00",
+       "type": "process",
+       "id": "CIQP_Section_A00",
+       "name": "ZZZ (Not in Use) CIQP Section",
+       "kind": "retired",
+       "follows": false,
+       "why": "retired (portal.ts v5: false)"
+      },
+      {
+       "app": "CIQ_Supplier_Portal_A00",
+       "type": "process",
+       "id": "ZZ_Spike_Assignee_A00",
+       "name": "ZZ Spike Assignee",
+       "kind": "spike",
+       "follows": false,
+       "why": "a spike (test flow of the build)"
+      }
+     ],
+     "notUsedByTheCode": [
+      "process CIQ_Change_Request_A00 \"CIQ Change Request\"",
+      "form CIQ_Section_A00 \"CIQ Section\"",
+      "list CIQ_AI_State_A00 \"CIQ AI State\"",
+      "list CIQ_Actor_Side_A00 \"CIQ Actor Side\"",
+      "list CIQ_CR_Outcome_A00 \"CIQ CR Outcome\"",
+      "list CIQ_Case_Phase_A00 \"CIQ Case Phase\"",
+      "list CIQ_Config_Kind_A00 \"CIQ Config Kind\"",
+      "list CIQ_Config_State_A00 \"CIQ Config State\"",
+      "list CIQ_Confirm_A00 \"CIQ Confirm\"",
+      "list CIQ_Contact_Role_A00 \"CIQ Contact Role\"",
+      "list CIQ_Country_Code_A00 \"CIQ Country Code\"",
+      "list CIQ_Decision_A00 \"CIQ Decision\"",
+      "list CIQ_Department_A00 \"CIQ Department\"",
+      "list CIQ_Event_Category_A00 \"CIQ Event Category\"",
+      "list CIQ_Impact_Resolution_A00 \"CIQ Impact Resolution\"",
+      "list CIQ_OP_Kind_A00 \"CIQ OP Kind\"",
+      "list CIQ_OP_Outcome_A00 \"CIQ OP Outcome\"",
+      "list CIQ_OP_Progress_A00 \"CIQ OP Progress\"",
+      "list CIQ_Priority_A00 \"CIQ Priority\"",
+      "list CIQ_RMES_Part_A00 \"CIQ RMES Part\"",
+      "list CIQ_RMES_Result_A00 \"CIQ RMES Result\"",
+      "list CIQ_Rejection_Handling_A00 \"CIQ Rejection Handling\"",
+      "list CIQ_Release_Stage_A00 \"CIQ Release Stage\"",
+      "list CIQ_Request_Status_A00 \"CIQ Request Status\"",
+      "list CIQ_Review_Dept_A00 \"CIQ Review Dept\"",
+      "list CIQ_Round_Outcome_A00 \"CIQ Round Outcome\"",
+      "list CIQ_Supplier_Kind_A00 \"CIQ Supplier Kind\"",
+      "list CIQ_Track_Status_A00 \"CIQ Track Status\"",
+      "list CIQ_Yes_No_A00 \"CIQ Yes No\"",
+      "list Yes_No_A00 \"Yes/No\"",
+      "integration CIQ_Mail_send_outbox_mail_A00 \"CIQ Mail – send outbox mail\"",
+      "integration CIQ_Z1_Case_completed_PDF_e_mails__A00 \"CIQ Z1 Case completed – PDF, e-mails, notification event\"",
+      "integration CIQ_Z2_Case_cancelled_neutral_e_ma_A00 \"CIQ Z2 Case cancelled – neutral e-mail\"",
+      "integration Test_A00 \"Test\"",
+      "list CIQP_Change_Kind_A00 \"CIQP Change Kind\"",
+      "list CIQP_Confirm_A00 \"CIQP Confirm\"",
+      "list CIQP_Doc_Kind_A00 \"CIQP Doc Kind\"",
+      "list CIQP_Response_Kind_A00 \"CIQP Response Kind\"",
+      "list CIQP_Yes_No_A00 \"CIQP Yes No\""
+     ]
+    }
+   },
+   "ms": 9,
+   "at": "2026-10-25T19:13:36.066Z"
+  },
+  {
+   "name": "names: the code's field ids against each flow's fields",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ_Case_A00 fields (id: type, model)",
+      "value": {
+       "Case_Code": "Text",
+       "Cycle_No": "Number",
+       "Case_Title": "Text",
+       "Reactivates_Case_Item": "Text",
+       "Trade_Name": "Text",
+       "Main_INCI": "Text",
+       "BDF_Material_No": "Text",
+       "SAP_Material_No": "Text",
+       "IRMA_Ref": "Text",
+       "Supplier_Code": "Text",
+       "Supplier_Legal_Name": "Text",
+       "Owner_RMM": "User",
+       "Target_Markets_Text": "Text",
+       "Origin_Types": "Text",
+       "Case_Test": "Select",
+       "Request_Key": "Text",
+       "BDF_Contact_Name": "Text",
+       "BDF_Contact_Email": "Email",
+       "Markets_Label": "Text",
+       "Template_Label": "Text",
+       "Supplier_Due_Date": "Date",
+       "Case_Contacts_JSON": "Textarea",
+       "Portal_Contact_Ids": "Text",
+       "Confirm_Contact_Ids": "Text",
+       "Supplier_Contact_Emails": "Textarea",
+       "Release_Item_Id": "Text",
+       "Release_Key": "Text",
+       "Manifest_Hash": "Text",
+       "Release_Manifest_JSON": "Textarea",
+       "Rule_Set_Version": "Text",
+       "Overall_Approval_Required": "Text",
+       "Basic_Data_Received": "Text",
+       "Portal_Request_Item_Id": "Text",
+       "Dept_REG_Active": "Select",
+       "Dept_SAF_Active": "Select",
+       "Dept_QM_Active": "Select",
+       "Dept_MIC_Active": "Select",
+       "Dept_SUS_Active": "Select",
+       "Dept_RMM_Active": "Select",
+       "Initial_Scope_Run_Key": "Text",
+       "Completeness_Request_Key": "Text",
+       "Completeness_Declaration_Text": "Textarea",
+       "Completeness_Text_Key": "Text",
+       "Completeness_Due_Date": "Date",
+       "Completeness_Confirm": "Text",
+       "Completeness_By_Name": "Text",
+       "Completeness_By_Email": "Email",
+       "Completeness_By_Role": "Text",
+       "Completeness_At": "DateTime",
+       "RMES_Key": "Text",
+       "RMES_Created_At": "DateTime",
+       "Final_Release_Request_Key": "Text",
+       "Final_Release_Declaration_Text": "Textarea",
+       "Final_Release_Text_Key": "Text",
+       "Final_Release_Due_Date": "Date",
+       "Final_Release_Confirm": "Text",
+       "Final_Release_By_Name": "Text",
+       "Final_Release_By_Email": "Email",
+       "Final_Release_By_Role": "Text",
+       "Final_Release_At": "DateTime",
+       "Released_Revs_JSON": "Textarea",
+       "Evidence_List_Text": "Textarea",
+       "Completion_Trigger": "Text",
+       "REG_Review_Confirm": "Select",
+       "REG_Completed_By": "User",
+       "REG_Completed_By_Email": "Email",
+       "REG_Completed_At": "DateTime",
+       "REG_On_Behalf_Of": "Text",
+       "REG_RMES_Decision": "Select",
+       "REG_RMES_Decision_Reason": "Textarea",
+       "SAF_Review_Confirm": "Select",
+       "SAF_Completed_By": "User",
+       "SAF_Completed_By_Email": "Email",
+       "SAF_Completed_At": "DateTime",
+       "SAF_On_Behalf_Of": "Text",
+       "SAF_RMES_Decision": "Select",
+       "SAF_RMES_Decision_Reason": "Textarea",
+       "QM_Review_Confirm": "Select",
+       "QM_Completed_By": "User",
+       "QM_Completed_By_Email": "Email",
+       "QM_Completed_At": "DateTime",
+       "QM_On_Behalf_Of": "Text",
+       "MIC_Review_Confirm": "Select",
+       "MIC_Completed_By": "User",
+       "MIC_Completed_By_Email": "Email",
+       "MIC_Completed_At": "DateTime",
+       "MIC_On_Behalf_Of": "Text",
+       "SUS_Review_Confirm": "Select",
+       "SUS_Completed_By": "User",
+       "SUS_Completed_By_Email": "Email",
+       "SUS_Completed_At": "DateTime",
+       "SUS_On_Behalf_Of": "Text",
+       "RMM_Review_Confirm": "Select",
+       "RMM_Completed_By": "User",
+       "RMM_Completed_By_Email": "Email",
+       "RMM_Completed_At": "DateTime",
+       "RMM_On_Behalf_Of": "Text",
+       "Open_Items_Count": "Number",
+       "Open_CR_Count": "Number",
+       "REG_Open_Count": "Number",
+       "REG_RMES_Gaps": "Number",
+       "SAF_Open_Count": "Number",
+       "SAF_RMES_Gaps": "Number",
+       "QM_Open_Count": "Number",
+       "MIC_Open_Count": "Number",
+       "SUS_Open_Count": "Number",
+       "RMM_Open_Count": "Number",
+       "Hold_For_Open_Items": "Text",
+       "Open_Items_Gate_Release": "Text",
+       "Open_Items_Gate_Close": "Text",
+       "Hold_Note": "Textarea",
+       "Hold_Override_Reason_Release": "Textarea",
+       "Hold_Override_Reason_Close": "Textarea",
+       "REG_Gate": "Text",
+       "SAF_Gate": "Text",
+       "QM_Gate": "Text",
+       "MIC_Gate": "Text",
+       "SUS_Gate": "Text",
+       "RMM_Gate": "Text",
+       "Late_Completions_Text": "Textarea",
+       "Overall_Decision": "Select",
+       "Overall_Reason": "Textarea",
+       "Overall_Decided_By": "User",
+       "Supplier_Closing_Text": "Textarea",
+       "Final_PDF": "Attachment",
+       "Template_Version": "Text",
+       "Case_Phase": "Select",
+       "Priority": "Select",
+       "Duplicate_Reason": "Textarea",
+       "Follow_Up_Of_Case": "Text",
+       "Follow_Up_Of_Report": "Text",
+       "Cancel_Reason": "Textarea",
+       "Cancelled_By_Name": "Text",
+       "Cancelled_At": "DateTime",
+       "Cancelled_From_Phase": "Text",
+       "Reactivate_Reason": "Textarea",
+       "Reactivated_At": "DateTime",
+       "Release_Requested_At": "DateTime",
+       "Portal_Release_Item_Id": "Text",
+       "Final_Document_Hash": "Text",
+       "Final_Document_At": "DateTime",
+       "Undefined_Origin": "Select",
+       "Case_Data_Item_Id": "Text",
+       "Supplier_Files": "Attachment",
+       "Config_Bundle_JSON": "Textarea",
+       "Config_Bundle_Hash": "Text",
+       "BDF_Set_JSON": "Textarea",
+       "Portal_Assignees_JSON": "Textarea",
+       "Release_Assignees_JSON": "Textarea",
+       "Config_Answers_JSON": "Textarea",
+       "Answers_JSON": "Textarea",
+       "Answered_By_JSON": "Textarea",
+       "Justifications_JSON": "Textarea",
+       "Components_JSON": "Textarea",
+       "Scope_JSON": "Textarea",
+       "Requested_Docs_JSON": "Textarea",
+       "Documents_JSON": "Textarea",
+       "Answers_Rev": "Number",
+       "Answers_Changed_At": "DateTime",
+       "Answers_Changed_By_Email": "Text",
+       "Change_Report_Text": "Textarea",
+       "Change_Report_Rev": "Number",
+       "Change_Report_By_Email": "Text",
+       "Change_Report_At": "DateTime"
+      }
+     },
+     {
+      "what": "CIQ_Review_A00 fields (id: type, model)",
+      "value": {
+       "Review_Key": "Text",
+       "Case_Code": "Text",
+       "Cycle_No": "Number",
+       "Case_Item_Id": "Text",
+       "Supplier_Code": "Text",
+       "Trade_Name": "Text",
+       "Review_Dept": "Select",
+       "Round_No": "Number",
+       "Activation_Kind": "Text",
+       "Activation_Reason": "Textarea",
+       "Activated_By_Name": "Text",
+       "Assignee_User": "User",
+       "Assignee_Name": "Text",
+       "Assignee_Email": "Email",
+       "Reassign_Reason": "Textarea",
+       "Track_Status": "Select",
+       "Open_Count": "Number",
+       "RMES_Gaps": "Number",
+       "Review_Gate": "Text",
+       "Review_Confirm": "Select",
+       "Completed_By": "User",
+       "Completed_By_Name": "Text",
+       "Completed_By_Email": "Email",
+       "Completed_At": "DateTime",
+       "RMES_Decision": "Select",
+       "RMES_Decision_Reason": "Textarea",
+       "Rejection_Handling": "Select",
+       "Rejection_Note": "Textarea",
+       "Rejected_Depts_Covered": "Text",
+       "On_Behalf_Of": "Text"
+      }
+     },
+     {
+      "what": "CIQ_Open_Point_A00 fields (id: type, model)",
+      "value": {
+       "OP_Key": "Text",
+       "Round_No": "Number",
+       "Query_Key": "Text",
+       "Case_Code": "Text",
+       "Cycle_No": "Number",
+       "Supplier_Code": "Text",
+       "Case_Item_Id": "Text",
+       "OP_Kind": "Select",
+       "OP_Dept": "Select",
+       "Raised_By_Dept": "Select",
+       "OP_To_Supplier": "Select",
+       "Ref_Kind": "Text",
+       "Ref_Section_Key": "Text",
+       "Ref_Field_Key": "Text",
+       "Ref_Row_Id": "Text",
+       "Ref_Doc_Id": "Text",
+       "Ref_Doc_File_Name": "Text",
+       "Ref_Doc_Uploaded_At": "DateTime",
+       "Ref_Label": "Text",
+       "Ref_Internal_Key": "Text",
+       "Kind_Label": "Text",
+       "Question_Text": "Textarea",
+       "Supplier_Justification": "Textarea",
+       "Internal_Justification": "Textarea",
+       "Responsible_User": "User",
+       "Responsible_Name": "Text",
+       "Responsible_Dept_Label": "Text",
+       "Internal_Due_Date": "Date",
+       "Supplier_Due_Date": "Date",
+       "New_Section_Item_Key": "Text",
+       "Portal_Contact_Ids": "Text",
+       "Thread_Text": "Textarea",
+       "Awaiting_Response": "Text",
+       "Response_Kind": "Text",
+       "Response_Text": "Textarea",
+       "Response_Doc_Refs_JSON": "Textarea",
+       "Supplier_Responsible_Email": "Text",
+       "Portal_Query_Item_Id": "Text",
+       "OP_Progress": "Select",
+       "OP_Outcome": "Select",
+       "Outcome_Reason": "Textarea",
+       "Return_Reason": "Textarea",
+       "Accepted_Doc_File_Name": "Text",
+       "Accepted_Doc_Uploaded_At": "DateTime",
+       "Reviewed_By": "User",
+       "Reviewed_By_Email": "Email",
+       "Reviewed_At": "DateTime",
+       "Reviewed_Answers_Rev": "Number",
+       "Late_Decision": "Select",
+       "Late_Decision_Reason": "Textarea",
+       "On_Behalf_Of": "Text",
+       "Open_Num": "Number",
+       "Start_Gate": "Text",
+       "Rounds_Round_No": "Number in Rounds",
+       "Rounds_Question_Text": "Textarea in Rounds",
+       "Rounds_Response_Kind": "Text in Rounds",
+       "Rounds_Response_Text": "Textarea in Rounds",
+       "Rounds_Outcome": "Select in Rounds",
+       "Rounds_Reason": "Textarea in Rounds",
+       "Rounds_Doc_File_Name": "Text in Rounds",
+       "Rounds_Doc_Uploaded_At": "DateTime in Rounds",
+       "Rounds_Reviewed_By": "User in Rounds",
+       "Rounds_Reviewed_At": "DateTime in Rounds",
+       "Raised_By_User": "User",
+       "Raised_By_Name": "Text",
+       "Thread_JSON": "Textarea",
+       "Closed_At": "DateTime",
+       "Closed_By": "User",
+       "Raiser_Assignee": "MultiUser",
+       "Raised_By_Email": "Text"
+      }
+     },
+     {
+      "what": "CIQ_Audit_Event_A00 fields (id: type, model)",
+      "value": {
+       "Event_Key": "Text",
+       "Case_Code": "Text",
+       "Cycle_No": "Number",
+       "Case_Item_Id": "Text",
+       "Event_At": "DateTime",
+       "Event_Category": "Select",
+       "Action_Code": "Text",
+       "Actor_Side": "Select",
+       "Actor_Name": "Text",
+       "Actor_Email": "Email",
+       "Actor_Dept": "Select",
+       "Actor_Role_Id": "Text",
+       "On_Behalf_Of": "Text",
+       "Object_Kind": "Text",
+       "Object_Key": "Text",
+       "Object_Item_Id": "Text",
+       "Object_State": "Text",
+       "Old_Value_Text": "Textarea",
+       "New_Value_Text": "Textarea",
+       "Source_Doc_File_Name": "Text",
+       "Source_Doc_Uploaded_At": "DateTime",
+       "Source_Answers_Rev": "Number",
+       "Config_Keys": "Text",
+       "Event_Reason": "Textarea",
+       "Notify_Recipient": "Textarea",
+       "Notify_Channel": "Text",
+       "Delegation_Valid_From": "Date",
+       "Delegation_Valid_To": "Date",
+       "Portal_Activity_Ref": "Text",
+       "Snapshot_JSON": "Textarea",
+       "Event_File": "Attachment",
+       "Ref_Flow_Id": "Text",
+       "Ref_Item_Id": "Text",
+       "Ref_Activity_Instance_Id": "Text"
+      }
+     },
+     {
+      "what": "CIQ_Internal_Note_A00 fields (id: type, model)",
+      "value": {
+       "Note_Key": "Text",
+       "Case_Code": "Text",
+       "Cycle_No": "Number",
+       "Case_Item_Id": "Text",
+       "Linked_Kind": "Text",
+       "Linked_Key": "Text",
+       "Note_Text": "Textarea",
+       "Note_Author": "User",
+       "Note_Dept": "Select",
+       "Note_At": "DateTime",
+       "Note_Mentions_Emails": "Text",
+       "Note_Mentions_Names": "Text"
+      }
+     },
+     {
+      "what": "CIQ_RMES_Safety_A00 fields (id: type, model)",
+      "value": {
+       "RMES_Key": "Text",
+       "Result_Case": "Reference",
+       "Case_Item_Id": "Text",
+       "Case_Code": "Text",
+       "Cycle_No": "Number",
+       "Open_Criteria_Count": "Number",
+       "Open_Blocking_Findings_Count": "Number",
+       "Editing_By": "Text",
+       "Editing_Since": "DateTime",
+       "RMES_Voided": "Select",
+       "Criteria_Code": "Text in Safety_Criteria",
+       "Criteria_Part": "Select in Safety_Criteria",
+       "Criteria_Title": "Text in Safety_Criteria",
+       "Criteria_Applicable": "Select in Safety_Criteria",
+       "Criteria_Applicability_Basis": "Text in Safety_Criteria",
+       "Criteria_Override_Reason": "Textarea in Safety_Criteria",
+       "Criteria_Prefill_Value": "Text in Safety_Criteria",
+       "Criteria_Source_Section_Key": "Text in Safety_Criteria",
+       "Criteria_Source_Field_Key": "Text in Safety_Criteria",
+       "Criteria_Source_Row_Id": "Text in Safety_Criteria",
+       "Criteria_Source_Value_Text": "Textarea in Safety_Criteria",
+       "Criteria_Source_Answers_Rev": "Number in Safety_Criteria",
+       "Criteria_Source_Doc_File_Name": "Text in Safety_Criteria",
+       "Criteria_Source_Doc_Uploaded_At": "DateTime in Safety_Criteria",
+       "Criteria_Result": "Select in Safety_Criteria",
+       "Criteria_Comment": "Textarea in Safety_Criteria",
+       "Criteria_Recorded_By": "User in Safety_Criteria",
+       "Criteria_Recorded_At": "DateTime in Safety_Criteria",
+       "Criteria_Reported_Value": "Number in Safety_Criteria",
+       "Criteria_Reported_Unit": "Text in Safety_Criteria",
+       "Criteria_Limit_Value": "Number in Safety_Criteria",
+       "Criteria_Limit_Comparator": "Text in Safety_Criteria",
+       "Criteria_Limit_Set_Version": "Text in Safety_Criteria",
+       "Criteria_Limit_Pass": "Select in Safety_Criteria",
+       "Criteria_Impact_Resolution": "Select in Safety_Criteria",
+       "Criteria_AI_Suggestion_Text": "Textarea in Safety_Criteria",
+       "Criteria_AI_Source_Quote": "Textarea in Safety_Criteria",
+       "Criteria_AI_Source_Doc_File_Name": "Text in Safety_Criteria",
+       "Criteria_AI_Source_Doc_Uploaded_At": "DateTime in Safety_Criteria",
+       "Criteria_AI_State": "Select in Safety_Criteria",
+       "Criteria_AI_Decided_By": "User in Safety_Criteria",
+       "Criteria_AI_Decided_At": "DateTime in Safety_Criteria",
+       "Criteria_Open_Num": "Number in Safety_Criteria",
+       "Findings_Text": "Textarea in Safety_Findings",
+       "Findings_Criterion_Code": "Text in Safety_Findings",
+       "Findings_Blocking": "Select in Safety_Findings",
+       "Findings_State": "Text in Safety_Findings",
+       "Findings_Linked_OP_Key": "Text in Safety_Findings",
+       "Findings_Key": "Text in Safety_Findings"
+      }
+     },
+     {
+      "what": "CIQ_RMES_Regulatory_A00 fields (id: type, model)",
+      "value": {
+       "RMES_Key": "Text",
+       "Result_Case": "Reference",
+       "Case_Item_Id": "Text",
+       "Case_Code": "Text",
+       "Cycle_No": "Number",
+       "Open_Criteria_Count": "Number",
+       "Open_Blocking_Findings_Count": "Number",
+       "Editing_By": "Text",
+       "Editing_Since": "DateTime",
+       "RMES_Voided": "Select",
+       "Criteria_Code": "Text in Regulatory_Criteria",
+       "Criteria_Part": "Select in Regulatory_Criteria",
+       "Criteria_Title": "Text in Regulatory_Criteria",
+       "Criteria_Applicable": "Select in Regulatory_Criteria",
+       "Criteria_Applicability_Basis": "Text in Regulatory_Criteria",
+       "Criteria_Override_Reason": "Textarea in Regulatory_Criteria",
+       "Criteria_Prefill_Value": "Text in Regulatory_Criteria",
+       "Criteria_Source_Section_Key": "Text in Regulatory_Criteria",
+       "Criteria_Source_Field_Key": "Text in Regulatory_Criteria",
+       "Criteria_Source_Row_Id": "Text in Regulatory_Criteria",
+       "Criteria_Source_Value_Text": "Textarea in Regulatory_Criteria",
+       "Criteria_Source_Answers_Rev": "Number in Regulatory_Criteria",
+       "Criteria_Source_Doc_File_Name": "Text in Regulatory_Criteria",
+       "Criteria_Source_Doc_Uploaded_At": "DateTime in Regulatory_Criteria",
+       "Criteria_Result": "Select in Regulatory_Criteria",
+       "Criteria_Comment": "Textarea in Regulatory_Criteria",
+       "Criteria_Recorded_By": "User in Regulatory_Criteria",
+       "Criteria_Recorded_At": "DateTime in Regulatory_Criteria",
+       "Criteria_Reported_Value": "Number in Regulatory_Criteria",
+       "Criteria_Reported_Unit": "Text in Regulatory_Criteria",
+       "Criteria_Limit_Value": "Number in Regulatory_Criteria",
+       "Criteria_Limit_Comparator": "Text in Regulatory_Criteria",
+       "Criteria_Limit_Set_Version": "Text in Regulatory_Criteria",
+       "Criteria_Limit_Pass": "Select in Regulatory_Criteria",
+       "Criteria_Impact_Resolution": "Select in Regulatory_Criteria",
+       "Criteria_AI_Suggestion_Text": "Textarea in Regulatory_Criteria",
+       "Criteria_AI_Source_Quote": "Textarea in Regulatory_Criteria",
+       "Criteria_AI_Source_Doc_File_Name": "Text in Regulatory_Criteria",
+       "Criteria_AI_Source_Doc_Uploaded_At": "DateTime in Regulatory_Criteria",
+       "Criteria_AI_State": "Select in Regulatory_Criteria",
+       "Criteria_AI_Decided_By": "User in Regulatory_Criteria",
+       "Criteria_AI_Decided_At": "DateTime in Regulatory_Criteria",
+       "Criteria_Open_Num": "Number in Regulatory_Criteria",
+       "Findings_Text": "Textarea in Regulatory_Findings",
+       "Findings_Criterion_Code": "Text in Regulatory_Findings",
+       "Findings_Blocking": "Select in Regulatory_Findings",
+       "Findings_State": "Text in Regulatory_Findings",
+       "Findings_Linked_OP_Key": "Text in Regulatory_Findings",
+       "Findings_Key": "Text in Regulatory_Findings"
+      }
+     },
+     {
+      "what": "CIQ_Supplier_A00 fields (id: type, model)",
+      "value": {
+       "Supplier_Code": "Text",
+       "Supplier_Legal_Name": "Text",
+       "DUNS_Number": "Text",
+       "Supplier_Kind": "Select",
+       "Supplier_Country_Code": "Select",
+       "SAP_Vendor_Id": "Text",
+       "Teamcenter_Supplier_Id": "Text",
+       "Supplier_Active": "Select",
+       "Supplier_Test": "Select",
+       "Contact_Portal_Ids_Text": "Textarea",
+       "Pending_Invites": "Number",
+       "Contacts_Full_Name": "Text in Contacts",
+       "Contacts_Email": "Email in Contacts",
+       "Contacts_Role": "Select in Contacts",
+       "Contacts_Can_Confirm": "Select in Contacts",
+       "Contacts_Portal_User_Id": "Text in Contacts",
+       "Contacts_Active": "Select in Contacts",
+       "Contacts_Invite_Requested_At": "DateTime in Contacts",
+       "Contacts_Invited_At": "DateTime in Contacts",
+       "Supplier_City": "Text",
+       "Contacts_Key": "Text in Contacts",
+       "Contacts_Title": "Text in Contacts",
+       "Contacts_Deactivated_At": "DateTime in Contacts"
+      }
+     },
+     {
+      "what": "CIQ_Config_Version_A00 fields (id: type, model)",
+      "value": {
+       "Config_Key": "Text",
+       "Config_Kind": "Select",
+       "Version_Label": "Text",
+       "Config_State": "Select",
+       "Section_Key": "Text",
+       "Section_Rev": "Number",
+       "Payload_JSON": "Textarea",
+       "Internal_Annotations_JSON": "Textarea",
+       "Content_Hash": "Text",
+       "Evaluator_Version": "Text",
+       "Change_Note": "Textarea",
+       "Published_By": "User",
+       "Published_At": "DateTime",
+       "Release_Key": "Text",
+       "Release_Label": "Text",
+       "Release_Stage": "Select",
+       "Release_Manifest_JSON": "Textarea",
+       "Release_Bundle_JSON": "Textarea",
+       "Manifest_Hash": "Text",
+       "Regression_Result_JSON": "Textarea",
+       "Test_Case_Codes": "Text"
+      }
+     },
+     {
+      "what": "CIQ_Scope_Run_A00 fields (id: type, model)",
+      "value": {
+       "Run_Key": "Text",
+       "Case_Code": "Text",
+       "Cycle_No": "Number",
+       "Case_Item_Id": "Text",
+       "Run_No": "Number",
+       "Scope_Trigger": "Text",
+       "Related_Key": "Text",
+       "Release_Item_Id": "Text",
+       "Rule_Set_Version": "Text",
+       "Evaluator_Version": "Text",
+       "Input_JSON": "Textarea",
+       "Input_Hash": "Text",
+       "Result_JSON": "Textarea",
+       "Added_Section_Keys": "Textarea",
+       "Lead_Departments": "Text",
+       "Override_Justification": "Textarea",
+       "Run_By": "User",
+       "Run_At": "DateTime"
+      }
+     },
+     {
+      "what": "CIQP_Request_A00 fields (id: type, model)",
+      "value": {
+       "Request_Key": "Text",
+       "Case_Code": "Text",
+       "Cycle_No": "Number",
+       "Supplier_Code": "Text",
+       "App_Case_Item_Id": "Text",
+       "Trade_Name": "Text",
+       "Main_INCI": "Text",
+       "BDF_Material_No": "Text",
+       "Supplier_Display_Name": "Text",
+       "BDF_Contact_Name": "Text",
+       "BDF_Contact_Email": "Email",
+       "Markets_Label": "Text",
+       "Template_Label": "Text",
+       "Supplier_Due_Date": "Date",
+       "Case_Contacts_JSON": "Textarea",
+       "Assigned_Contacts": "MultiUser",
+       "Rule_Set_Version": "Text",
+       "Template_Version": "Text",
+       "Config_Bundle_JSON": "Textarea",
+       "Config_Bundle_Hash": "Text",
+       "BDF_Set_JSON": "Textarea",
+       "Config_Answers_JSON": "Textarea",
+       "Answers_JSON": "Textarea",
+       "Answered_By_JSON": "Textarea",
+       "Justifications_JSON": "Textarea",
+       "Components_JSON": "Textarea",
+       "Scope_JSON": "Textarea",
+       "Manual_Scope_JSON": "Textarea",
+       "Requested_Docs_JSON": "Textarea",
+       "Answers_Rev": "Number",
+       "Answers_Changed_At": "DateTime",
+       "Answers_Changed_By_Email": "Text",
+       "Editing_By": "Text",
+       "Editing_Since": "DateTime",
+       "Completeness_Confirm": "Select",
+       "Completeness_By_Name": "Text",
+       "Completeness_By_Email": "Email",
+       "Completeness_By_Role": "Text",
+       "Completeness_At": "DateTime",
+       "Case_Phase_Label": "Text",
+       "Request_Locked": "Select",
+       "Questions_History_JSON": "Textarea",
+       "Release_By_Name": "Text",
+       "Release_At": "DateTime",
+       "Change_Report_Text": "Textarea",
+       "Change_Report_Rev": "Number",
+       "Change_Report_By_Email": "Text",
+       "Change_Report_At": "DateTime",
+       "Change_Reports_JSON": "Textarea",
+       "Keep_Open_Gate": "Text",
+       "Supplier_Files": "Attachment",
+       "Upload_Id": "Text in CIQP_Request_A00_Uploads",
+       "Upload_Section_Key": "Text in CIQP_Request_A00_Uploads",
+       "Upload_Field_Key": "Text in CIQP_Request_A00_Uploads",
+       "Upload_Row_Id": "Text in CIQP_Request_A00_Uploads",
+       "Upload_Doc_Kind": "Select in CIQP_Request_A00_Uploads",
+       "Upload_File": "Attachment in CIQP_Request_A00_Uploads",
+       "Upload_File_Name": "Text in CIQP_Request_A00_Uploads",
+       "Uploaded_By_Email": "Text in CIQP_Request_A00_Uploads",
+       "Uploaded_At": "DateTime in CIQP_Request_A00_Uploads",
+       "Upload_Attachment_Id": "Text in CIQP_Request_A00_Uploads",
+       "Release_Contacts": "MultiUser",
+       "Release_Flag": "Text",
+       "Upload_Removed_At": "DateTime in CIQP_Request_A00_Uploads",
+       "Upload_Removed_By_Email": "Text in CIQP_Request_A00_Uploads",
+       "Documents_JSON": "Textarea",
+       "Release_By_Email": "Email",
+       "Release_By_Role": "Text",
+       "Review_Depts": "Text"
+      }
+     },
+     {
+      "what": "CIQP_Query_A00 fields (id: type, model)",
+      "value": {
+       "Query_Key": "Text",
+       "Round_No": "Number",
+       "Case_Code": "Text",
+       "Cycle_No": "Number",
+       "Supplier_Code": "Text",
+       "App_Open_Point_Id": "Text",
+       "Kind_Label": "Text",
+       "Responsible_Department": "Text",
+       "Responsible_Name": "Text",
+       "Ref_Kind": "Text",
+       "Ref_Section_Key": "Text",
+       "Ref_Field_Key": "Text",
+       "Ref_Row_Id": "Text",
+       "Ref_Doc_Id": "Text",
+       "Ref_Doc_File_Name": "Text",
+       "Ref_Doc_Uploaded_At": "DateTime",
+       "Ref_Label": "Text",
+       "Question_Text": "Textarea",
+       "Supplier_Justification": "Textarea",
+       "Supplier_Due_Date": "Date",
+       "Previous_Rounds_JSON": "Textarea",
+       "New_Section_Item_Key": "Text",
+       "Assigned_Contacts": "MultiUser",
+       "Response_Kind": "Select",
+       "Response_Text": "Textarea",
+       "Response_Doc_Refs_JSON": "Textarea",
+       "Supplier_Responsible_Email": "Text",
+       "Edited_At": "DateTime",
+       "Edit_Note": "Text"
+      }
+     },
+     {
+      "what": "CIQP_Final_Release_A00 fields (id: type, model)",
+      "value": {
+       "Confirmation_Key": "Text",
+       "Case_Code": "Text",
+       "Cycle_No": "Number",
+       "Supplier_Code": "Text",
+       "App_Case_Item_Id": "Text",
+       "Declaration_Text": "Textarea",
+       "Declaration_Text_Key": "Text",
+       "Supplier_Due_Date": "Date",
+       "Assigned_Contacts": "MultiUser",
+       "Supplier_Confirm": "Select",
+       "Confirmed_By_Name": "Text",
+       "Confirmed_By_Email": "Email",
+       "Confirmed_By_Role": "Text",
+       "Confirmed_At": "DateTime"
+      }
+     },
+     {
+      "what": "CIQP_Help_Article_A00 fields (id: type, model)",
+      "value": {
+       "Article_Title": "Text",
+       "Article_Body": "Textarea",
+       "Sort_Order": "Number"
+      }
+     },
+     {
+      "what": "CIQP_Section_A00 fields (id: type, model)",
+      "value": {
+       "Section_Item_Key": "Text",
+       "Case_Code": "Text",
+       "Cycle_No": "Number",
+       "Supplier_Code": "Text",
+       "App_Section_Item_Id": "Text",
+       "Section_Key": "Text",
+       "Section_Code": "Text",
+       "Section_Title": "Text",
+       "Section_Sort": "Number",
+       "Applicability_Label": "Text",
+       "Supplier_Reason": "Text",
+       "Added_Later": "Text",
+       "Section_Origin": "Text",
+       "Definition_JSON": "Textarea",
+       "Definition_Hash": "Text",
+       "Answers_JSON": "Textarea",
+       "Answers_Rev": "Number",
+       "Answers_Changed_At": "DateTime",
+       "Answers_Changed_By_Email": "Text",
+       "Editing_By": "Text",
+       "Editing_Since": "DateTime",
+       "Supplier_Responsible_Email": "Text",
+       "Supplier_Due_Date": "Date",
+       "Assigned_Contacts": "MultiUser",
+       "Section_Done": "Select",
+       "Section_Release_Confirm": "Select",
+       "Upload_Id": "Text in CIQP_Section_A00_Uploads",
+       "Upload_Field_Key": "Text in CIQP_Section_A00_Uploads",
+       "Upload_Row_Id": "Text in CIQP_Section_A00_Uploads",
+       "Upload_Doc_Kind": "Select in CIQP_Section_A00_Uploads",
+       "Upload_File": "Attachment in CIQP_Section_A00_Uploads",
+       "Upload_File_Name": "Text in CIQP_Section_A00_Uploads",
+       "Uploaded_By_Email": "Text in CIQP_Section_A00_Uploads",
+       "Uploaded_At": "DateTime in CIQP_Section_A00_Uploads"
+      }
+     },
+     {
+      "what": "CIQP_Completeness_Confirmation_A00 fields (id: type, model)",
+      "value": {
+       "Confirmation_Key": "Text",
+       "Case_Code": "Text",
+       "Cycle_No": "Number",
+       "Supplier_Code": "Text",
+       "App_Case_Item_Id": "Text",
+       "Declaration_Text": "Textarea",
+       "Declaration_Text_Key": "Text",
+       "Supplier_Due_Date": "Date",
+       "Assigned_Contacts": "MultiUser",
+       "Supplier_Confirm": "Select",
+       "Confirmed_By_Name": "Text",
+       "Confirmed_By_Email": "Email",
+       "Confirmed_By_Role": "Text",
+       "Confirmed_At": "DateTime"
+      }
+     },
+     {
+      "what": "CIQP_Notice_A00 fields (id: type, model)",
+      "value": {
+       "Notice_Key": "Text",
+       "Notice_Kind": "Text",
+       "Case_Code": "Text",
+       "Cycle_No": "Number",
+       "Supplier_Code": "Text",
+       "App_Notice_Item_Id": "Text",
+       "Notice_Title": "Text",
+       "Notice_Text": "Textarea",
+       "Related_Key": "Text",
+       "Assigned_Contacts": "MultiUser"
+      }
+     },
+     {
+      "what": "CIQP_Change_Request_A00 fields (id: type, model)",
+      "value": {
+       "CR_Key": "Text",
+       "Case_Code": "Text",
+       "Cycle_No": "Number",
+       "Supplier_Code": "Text",
+       "Change_Kind": "Select",
+       "Section_Key": "Text",
+       "Field_Key": "Text",
+       "Row_Id": "Text",
+       "Current_Value_Text": "Textarea",
+       "Proposed_Value_JSON": "Textarea",
+       "Change_Reason": "Textarea"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "CIQ_Case_A00: its draft has fields",
+      "ok": true,
+      "detail": {
+       "flow": "CIQ_Case_A00",
+       "app": "CIQ_Digital_A00",
+       "modifiedAt": "2026-10-19T21:50:07Z",
+       "lastPublishedAt": "2026-10-19T20:58:09Z",
+       "draftAfterPublish": true
+      }
+     },
+     {
+      "label": "CIQ_Review_A00: its draft has fields",
+      "ok": true,
+      "detail": {
+       "flow": "CIQ_Review_A00",
+       "app": "CIQ_Digital_A00",
+       "modifiedAt": "2026-10-19T21:55:07Z",
+       "lastPublishedAt": "2026-10-19T20:52:25Z",
+       "draftAfterPublish": true
+      }
+     },
+     {
+      "label": "CIQ_Open_Point_A00: its draft has fields",
+      "ok": true,
+      "detail": {
+       "flow": "CIQ_Open_Point_A00",
+       "app": "CIQ_Digital_A00",
+       "modifiedAt": "2026-10-19T21:55:07Z",
+       "lastPublishedAt": "2026-10-19T20:52:31Z",
+       "draftAfterPublish": true
+      }
+     },
+     {
+      "label": "CIQ_Audit_Event_A00: its draft has fields",
+      "ok": true,
+      "detail": {
+       "flow": "CIQ_Audit_Event_A00",
+       "app": "CIQ_Digital_A00",
+       "modifiedAt": "2026-10-19T20:52:37Z",
+       "lastPublishedAt": "2026-10-19T20:52:37Z",
+       "draftAfterPublish": false
+      }
+     },
+     {
+      "label": "CIQ_Internal_Note_A00: its draft has fields",
+      "ok": true,
+      "detail": {
+       "flow": "CIQ_Internal_Note_A00",
+       "app": "CIQ_Digital_A00",
+       "modifiedAt": "2026-10-19T20:51:08Z",
+       "lastPublishedAt": "2026-10-14T18:37:48Z",
+       "draftAfterPublish": true
+      }
+     },
+     {
+      "label": "CIQ_RMES_Safety_A00: its draft has fields",
+      "ok": true,
+      "detail": {
+       "flow": "CIQ_RMES_Safety_A00",
+       "app": "CIQ_Digital_A00",
+       "modifiedAt": "2026-10-19T20:51:01Z",
+       "lastPublishedAt": "2026-10-14T18:37:35Z",
+       "draftAfterPublish": true
+      }
+     },
+     {
+      "label": "CIQ_RMES_Regulatory_A00: its draft has fields",
+      "ok": true,
+      "detail": {
+       "flow": "CIQ_RMES_Regulatory_A00",
+       "app": "CIQ_Digital_A00",
+       "modifiedAt": "2026-10-19T20:51:04Z",
+       "lastPublishedAt": "2026-10-14T18:37:42Z",
+       "draftAfterPublish": true
+      }
+     },
+     {
+      "label": "CIQ_Supplier_A00: its draft has fields",
+      "ok": true,
+      "detail": {
+       "flow": "CIQ_Supplier_A00",
+       "app": "CIQ_Digital_A00",
+       "modifiedAt": "2026-10-19T20:50:50Z",
+       "lastPublishedAt": "2026-10-16T07:42:32Z",
+       "draftAfterPublish": true
+      }
+     },
+     {
+      "label": "CIQ_Config_Version_A00: its draft has fields",
+      "ok": true,
+      "detail": {
+       "flow": "CIQ_Config_Version_A00",
+       "app": "CIQ_Digital_A00",
+       "modifiedAt": "2026-10-19T20:50:53Z",
+       "lastPublishedAt": "2026-10-08T18:39:15Z",
+       "draftAfterPublish": true
+      }
+     },
+     {
+      "label": "CIQ_Scope_Run_A00: its draft has fields",
+      "ok": true,
+      "detail": {
+       "flow": "CIQ_Scope_Run_A00",
+       "app": "CIQ_Digital_A00",
+       "modifiedAt": "2026-10-19T20:50:57Z",
+       "lastPublishedAt": "2026-10-08T18:39:17Z",
+       "draftAfterPublish": true
+      }
+     },
+     {
+      "label": "CIQP_Request_A00: its draft has fields",
+      "ok": true,
+      "detail": {
+       "flow": "CIQP_Request_A00",
+       "app": "CIQ_Supplier_Portal_A00",
+       "modifiedAt": "2026-10-20T06:52:31Z",
+       "lastPublishedAt": "2026-10-19T20:57:59Z",
+       "draftAfterPublish": true
+      }
+     },
+     {
+      "label": "CIQP_Query_A00: its draft has fields",
+      "ok": true,
+      "detail": {
+       "flow": "CIQP_Query_A00",
+       "app": "CIQ_Supplier_Portal_A00",
+       "modifiedAt": "2026-10-16T14:28:51Z",
+       "lastPublishedAt": "2026-10-15T19:30:28Z",
+       "draftAfterPublish": true
+      }
+     },
+     {
+      "label": "CIQP_Final_Release_A00: its draft has fields",
+      "ok": true,
+      "detail": {
+       "flow": "CIQP_Final_Release_A00",
+       "app": "CIQ_Supplier_Portal_A00",
+       "modifiedAt": "2026-10-19T20:47:24Z",
+       "lastPublishedAt": "2026-10-07T04:25:31Z",
+       "draftAfterPublish": true
+      }
+     },
+     {
+      "label": "CIQP_Help_Article_A00: its draft has fields",
+      "ok": true,
+      "detail": {
+       "flow": "CIQP_Help_Article_A00",
+       "app": "CIQ_Supplier_Portal_A00",
+       "modifiedAt": "2026-10-16T14:28:54Z",
+       "lastPublishedAt": "2026-10-16T07:32:10Z",
+       "draftAfterPublish": true
+      }
+     },
+     {
+      "label": "CIQP_Section_A00: its draft has fields",
+      "ok": true,
+      "detail": {
+       "flow": "CIQP_Section_A00",
+       "app": "CIQ_Supplier_Portal_A00",
+       "modifiedAt": "2026-10-15T16:34:29Z",
+       "lastPublishedAt": "2026-10-15T16:34:28Z",
+       "draftAfterPublish": false
+      }
+     },
+     {
+      "label": "CIQP_Completeness_Confirmation_A00: its draft has fields",
+      "ok": true,
+      "detail": {
+       "flow": "CIQP_Completeness_Confirmation_A00",
+       "app": "CIQ_Supplier_Portal_A00",
+       "modifiedAt": "2026-10-15T16:34:20Z",
+       "lastPublishedAt": "2026-10-15T16:34:19Z",
+       "draftAfterPublish": false
+      }
+     },
+     {
+      "label": "CIQP_Notice_A00: its draft has fields",
+      "ok": true,
+      "detail": {
+       "flow": "CIQP_Notice_A00",
+       "app": "CIQ_Supplier_Portal_A00",
+       "modifiedAt": "2026-10-15T16:34:10Z",
+       "lastPublishedAt": "2026-10-15T16:34:09Z",
+       "draftAfterPublish": false
+      }
+     },
+     {
+      "label": "CIQP_Change_Request_A00: its draft has fields",
+      "ok": true,
+      "detail": {
+       "flow": "CIQP_Change_Request_A00",
+       "app": "CIQ_Supplier_Portal_A00",
+       "modifiedAt": "2026-10-15T16:33:59Z",
+       "lastPublishedAt": "2026-10-15T16:33:58Z",
+       "draftAfterPublish": false
+      }
+     },
+     {
+      "label": "every field id the code names is a field (or table) of a flow it uses",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Case_A00: every field and table the code declares for it exists",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Case_A00: every field the code treats as a formula is one (an Expression in the draft)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Review_A00: every field and table the code declares for it exists",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Review_A00: every field the code treats as a formula is one (an Expression in the draft)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Open_Point_A00: every field and table the code declares for it exists",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Open_Point_A00: every field the code treats as a formula is one (an Expression in the draft)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Audit_Event_A00: every field and table the code declares for it exists",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Audit_Event_A00: every field the code treats as a formula is one (an Expression in the draft)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Internal_Note_A00: every field and table the code declares for it exists",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Internal_Note_A00: every field the code treats as a formula is one (an Expression in the draft)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_RMES_Safety_A00: every field and table the code declares for it exists",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_RMES_Safety_A00: every field the code treats as a formula is one (an Expression in the draft)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_RMES_Regulatory_A00: every field and table the code declares for it exists",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_RMES_Regulatory_A00: every field the code treats as a formula is one (an Expression in the draft)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Supplier_A00: every field and table the code declares for it exists",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Supplier_A00: every field the code treats as a formula is one (an Expression in the draft)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Config_Version_A00: every field and table the code declares for it exists",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Config_Version_A00: every field the code treats as a formula is one (an Expression in the draft)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Scope_Run_A00: every field and table the code declares for it exists",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Scope_Run_A00: every field the code treats as a formula is one (an Expression in the draft)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQP_Request_A00: every field and table the code declares for it exists",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQP_Request_A00: every field the code treats as a formula is one (an Expression in the draft)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQP_Query_A00: every field and table the code declares for it exists",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQP_Query_A00: every field the code treats as a formula is one (an Expression in the draft)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQP_Final_Release_A00: every field and table the code declares for it exists",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQP_Final_Release_A00: every field the code treats as a formula is one (an Expression in the draft)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQP_Help_Article_A00: every field and table the code declares for it exists",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQP_Help_Article_A00: every field the code treats as a formula is one (an Expression in the draft)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQP_Section_A00: every field and table the code declares for it exists",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQP_Section_A00: every field the code treats as a formula is one (an Expression in the draft)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQP_Completeness_Confirmation_A00: every field and table the code declares for it exists",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQP_Completeness_Confirmation_A00: every field the code treats as a formula is one (an Expression in the draft)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQP_Notice_A00: every field and table the code declares for it exists",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQP_Notice_A00: every field the code treats as a formula is one (an Expression in the draft)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQP_Change_Request_A00: every field and table the code declares for it exists",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQP_Change_Request_A00: every field the code treats as a formula is one (an Expression in the draft)",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "sources": [
+      {
+       "flow": "CIQ_Case_A00",
+       "app": "CIQ_Digital_A00",
+       "modifiedAt": "2026-10-19T21:50:07Z",
+       "lastPublishedAt": "2026-10-19T20:58:09Z",
+       "draftAfterPublish": true,
+       "source": "snapshot CIQ_Digital_A00.process.CIQ_Case_A00.json (flow unchanged since 2026-10-19T21:50:07Z)",
+       "fields": 164,
+       "tables": []
+      },
+      {
+       "flow": "CIQ_Review_A00",
+       "app": "CIQ_Digital_A00",
+       "modifiedAt": "2026-10-19T21:55:07Z",
+       "lastPublishedAt": "2026-10-19T20:52:25Z",
+       "draftAfterPublish": true,
+       "source": "snapshot CIQ_Digital_A00.process.CIQ_Review_A00.json (flow unchanged since 2026-10-19T21:55:07Z)",
+       "fields": 30,
+       "tables": []
+      },
+      {
+       "flow": "CIQ_Open_Point_A00",
+       "app": "CIQ_Digital_A00",
+       "modifiedAt": "2026-10-19T21:55:07Z",
+       "lastPublishedAt": "2026-10-19T20:52:31Z",
+       "draftAfterPublish": true,
+       "source": "snapshot CIQ_Digital_A00.process.CIQ_Open_Point_A00.json (flow unchanged since 2026-10-19T21:55:07Z)",
+       "overlay": [
+        "Raised_By_Email (Text, as Raised_By_Name): added 22 Oct 14:31 IST by the portal session (Text; Editable at \"Raise open point\", ReadOnly at every other step, as Raised_By_Name; agreed with the app session for the load-time redesign); the app's raise (src/app-live/write/encode.ts opStartFields) writes it, op.round copies it to the query"
+       ],
+       "fields": 70,
+       "tables": [
+        "Rounds"
+       ]
+      },
+      {
+       "flow": "CIQ_Audit_Event_A00",
+       "app": "CIQ_Digital_A00",
+       "modifiedAt": "2026-10-19T20:52:37Z",
+       "lastPublishedAt": "2026-10-19T20:52:37Z",
+       "draftAfterPublish": false,
+       "source": "snapshot CIQ_Digital_A00.form.CIQ_Audit_Event_A00.json (flow unchanged since 2026-10-19T20:52:37Z)",
+       "fields": 34,
+       "tables": []
+      },
+      {
+       "flow": "CIQ_Internal_Note_A00",
+       "app": "CIQ_Digital_A00",
+       "modifiedAt": "2026-10-19T20:51:08Z",
+       "lastPublishedAt": "2026-10-14T18:37:48Z",
+       "draftAfterPublish": true,
+       "source": "snapshot CIQ_Digital_A00.form.CIQ_Internal_Note_A00.json (flow unchanged since 2026-10-19T20:51:08Z)",
+       "fields": 12,
+       "tables": []
+      },
+      {
+       "flow": "CIQ_RMES_Safety_A00",
+       "app": "CIQ_Digital_A00",
+       "modifiedAt": "2026-10-19T20:51:01Z",
+       "lastPublishedAt": "2026-10-14T18:37:35Z",
+       "draftAfterPublish": true,
+       "source": "snapshot CIQ_Digital_A00.form.CIQ_RMES_Safety_A00.json (flow unchanged since 2026-10-19T20:51:01Z)",
+       "fields": 49,
+       "tables": [
+        "Safety_Criteria",
+        "Safety_Findings"
+       ]
+      },
+      {
+       "flow": "CIQ_RMES_Regulatory_A00",
+       "app": "CIQ_Digital_A00",
+       "modifiedAt": "2026-10-19T20:51:04Z",
+       "lastPublishedAt": "2026-10-14T18:37:42Z",
+       "draftAfterPublish": true,
+       "source": "snapshot CIQ_Digital_A00.form.CIQ_RMES_Regulatory_A00.json (flow unchanged since 2026-10-19T20:51:04Z)",
+       "fields": 49,
+       "tables": [
+        "Regulatory_Criteria",
+        "Regulatory_Findings"
+       ]
+      },
+      {
+       "flow": "CIQ_Supplier_A00",
+       "app": "CIQ_Digital_A00",
+       "modifiedAt": "2026-10-19T20:50:50Z",
+       "lastPublishedAt": "2026-10-16T07:42:32Z",
+       "draftAfterPublish": true,
+       "source": "snapshot CIQ_Digital_A00.form.CIQ_Supplier_A00.json (flow unchanged since 2026-10-19T20:50:50Z)",
+       "fields": 23,
+       "tables": [
+        "Contacts"
+       ]
+      },
+      {
+       "flow": "CIQ_Config_Version_A00",
+       "app": "CIQ_Digital_A00",
+       "modifiedAt": "2026-10-19T20:50:53Z",
+       "lastPublishedAt": "2026-10-08T18:39:15Z",
+       "draftAfterPublish": true,
+       "source": "snapshot CIQ_Digital_A00.form.CIQ_Config_Version_A00.json (flow unchanged since 2026-10-19T20:50:53Z)",
+       "fields": 21,
+       "tables": []
+      },
+      {
+       "flow": "CIQ_Scope_Run_A00",
+       "app": "CIQ_Digital_A00",
+       "modifiedAt": "2026-10-19T20:50:57Z",
+       "lastPublishedAt": "2026-10-08T18:39:17Z",
+       "draftAfterPublish": true,
+       "source": "snapshot CIQ_Digital_A00.form.CIQ_Scope_Run_A00.json (flow unchanged since 2026-10-19T20:50:57Z)",
+       "fields": 18,
+       "tables": []
+      },
+      {
+       "flow": "CIQP_Request_A00",
+       "app": "CIQ_Supplier_Portal_A00",
+       "modifiedAt": "2026-10-20T06:52:31Z",
+       "lastPublishedAt": "2026-10-19T20:57:59Z",
+       "draftAfterPublish": true,
+       "source": "snapshot CIQ_Supplier_Portal_A00.process.CIQP_Request_A00.json (flow unchanged since 2026-10-20T06:52:31Z)",
+       "overlay": [
+        "Release_By_Email (Email, as Release_By_Name): added 21 Oct 09:59Z (15:29 IST) by the portal session's kissflow-build/night-2026-10-21/release-fields.mjs (REQ-PROC-042, Thomas approved 21 Oct; the draft before it: backups/CIQP_Request_A00-before-release-fields-2026-10-21T095948245Z.json); the portal's final release (src/portal/data/liveActions.ts) writes it",
+        "Release_By_Role (Text, as Release_By_Name): added 21 Oct 09:59Z (15:29 IST) by the portal session's kissflow-build/night-2026-10-21/release-fields.mjs (REQ-PROC-042, Thomas approved 21 Oct; the draft before it: backups/CIQP_Request_A00-before-release-fields-2026-10-21T095948245Z.json); the portal's final release (src/portal/data/liveActions.ts) writes it",
+        "Review_Depts (Text, as Completeness_By_Role): added 22 Oct by the portal session (Text; Editable at \"Supplier: fill in the CIQ\", ReadOnly at every other step, as Completeness_By_Role; the load-time redesign's phase 2): the portal's completeness confirmation (src/portal/data/liveActions.ts) writes it, I-2 copies it to the case for E-A"
+       ],
+       "fields": 69,
+       "tables": [
+        "CIQP_Request_A00_Uploads"
+       ]
+      },
+      {
+       "flow": "CIQP_Query_A00",
+       "app": "CIQ_Supplier_Portal_A00",
+       "modifiedAt": "2026-10-16T14:28:51Z",
+       "lastPublishedAt": "2026-10-15T19:30:28Z",
+       "draftAfterPublish": true,
+       "source": "snapshot CIQ_Supplier_Portal_A00.process.CIQP_Query_A00.json (flow unchanged since 2026-10-16T14:28:51Z)",
+       "fields": 29,
+       "tables": []
+      },
+      {
+       "flow": "CIQP_Final_Release_A00",
+       "app": "CIQ_Supplier_Portal_A00",
+       "modifiedAt": "2026-10-19T20:47:24Z",
+       "lastPublishedAt": "2026-10-07T04:25:31Z",
+       "draftAfterPublish": true,
+       "source": "snapshot CIQ_Supplier_Portal_A00.process.CIQP_Final_Release_A00.json (flow unchanged since 2026-10-19T20:47:24Z)",
+       "fields": 14,
+       "tables": []
+      },
+      {
+       "flow": "CIQP_Help_Article_A00",
+       "app": "CIQ_Supplier_Portal_A00",
+       "modifiedAt": "2026-10-16T14:28:54Z",
+       "lastPublishedAt": "2026-10-16T07:32:10Z",
+       "draftAfterPublish": true,
+       "source": "snapshot CIQ_Supplier_Portal_A00.form.CIQP_Help_Article_A00.json (flow unchanged since 2026-10-16T14:28:54Z)",
+       "fields": 3,
+       "tables": []
+      },
+      {
+       "flow": "CIQP_Section_A00",
+       "app": "CIQ_Supplier_Portal_A00",
+       "modifiedAt": "2026-10-15T16:34:29Z",
+       "lastPublishedAt": "2026-10-15T16:34:28Z",
+       "draftAfterPublish": false,
+       "source": "snapshot CIQ_Supplier_Portal_A00.process.CIQP_Section_A00.json (flow unchanged since 2026-10-15T16:34:29Z)",
+       "fields": 34,
+       "tables": [
+        "CIQP_Section_A00_Uploads"
+       ]
+      },
+      {
+       "flow": "CIQP_Completeness_Confirmation_A00",
+       "app": "CIQ_Supplier_Portal_A00",
+       "modifiedAt": "2026-10-15T16:34:20Z",
+       "lastPublishedAt": "2026-10-15T16:34:19Z",
+       "draftAfterPublish": false,
+       "source": "snapshot CIQ_Supplier_Portal_A00.process.CIQP_Completeness_Confirmation_A00.json (flow unchanged since 2026-10-15T16:34:20Z)",
+       "fields": 14,
+       "tables": []
+      },
+      {
+       "flow": "CIQP_Notice_A00",
+       "app": "CIQ_Supplier_Portal_A00",
+       "modifiedAt": "2026-10-15T16:34:10Z",
+       "lastPublishedAt": "2026-10-15T16:34:09Z",
+       "draftAfterPublish": false,
+       "source": "snapshot CIQ_Supplier_Portal_A00.process.CIQP_Notice_A00.json (flow unchanged since 2026-10-15T16:34:10Z)",
+       "fields": 10,
+       "tables": []
+      },
+      {
+       "flow": "CIQP_Change_Request_A00",
+       "app": "CIQ_Supplier_Portal_A00",
+       "modifiedAt": "2026-10-15T16:33:59Z",
+       "lastPublishedAt": "2026-10-15T16:33:58Z",
+       "draftAfterPublish": false,
+       "source": "snapshot CIQ_Supplier_Portal_A00.process.CIQP_Change_Request_A00.json (flow unchanged since 2026-10-15T16:33:59Z)",
+       "fields": 11,
+       "tables": []
+      }
+     ],
+     "changedAfterPublish": [
+      "CIQ_Case_A00: modified 2026-10-19T21:50:07Z, published 2026-10-19T20:58:09Z",
+      "CIQ_Review_A00: modified 2026-10-19T21:55:07Z, published 2026-10-19T20:52:25Z",
+      "CIQ_Open_Point_A00: modified 2026-10-19T21:55:07Z, published 2026-10-19T20:52:31Z",
+      "CIQ_Internal_Note_A00: modified 2026-10-19T20:51:08Z, published 2026-10-14T18:37:48Z",
+      "CIQ_RMES_Safety_A00: modified 2026-10-19T20:51:01Z, published 2026-10-14T18:37:35Z",
+      "CIQ_RMES_Regulatory_A00: modified 2026-10-19T20:51:04Z, published 2026-10-14T18:37:42Z",
+      "CIQ_Supplier_A00: modified 2026-10-19T20:50:50Z, published 2026-10-16T07:42:32Z",
+      "CIQ_Config_Version_A00: modified 2026-10-19T20:50:53Z, published 2026-10-08T18:39:15Z",
+      "CIQ_Scope_Run_A00: modified 2026-10-19T20:50:57Z, published 2026-10-08T18:39:17Z",
+      "CIQP_Request_A00: modified 2026-10-20T06:52:31Z, published 2026-10-19T20:57:59Z",
+      "CIQP_Query_A00: modified 2026-10-16T14:28:51Z, published 2026-10-15T19:30:28Z",
+      "CIQP_Final_Release_A00: modified 2026-10-19T20:47:24Z, published 2026-10-07T04:25:31Z",
+      "CIQP_Help_Article_A00: modified 2026-10-16T14:28:54Z, published 2026-10-16T07:32:10Z"
+     ],
+     "scan": {
+      "files": 71,
+      "names": 276,
+      "uses": 1076
+     },
+     "perFlow": {
+      "CIQ_Case_A00": {
+       "codeLacks": [],
+       "flowOnly": [
+        "Basic_Data_Received",
+        "Cancelled_By_Name",
+        "Case_Data_Item_Id",
+        "Completeness_Due_Date",
+        "Completeness_Request_Key",
+        "Completeness_Text_Key",
+        "Completion_Trigger",
+        "Dept_MIC_Active",
+        "Dept_QM_Active",
+        "Dept_REG_Active",
+        "Dept_RMM_Active",
+        "Dept_SAF_Active",
+        "Dept_SUS_Active",
+        "Evidence_List_Text",
+        "Final_Document_At",
+        "Final_Document_Hash",
+        "Final_PDF",
+        "Final_Release_Confirm",
+        "Final_Release_Due_Date",
+        "Final_Release_Request_Key",
+        "Final_Release_Text_Key",
+        "Hold_Note",
+        "Hold_Override_Reason_Close",
+        "Hold_Override_Reason_Release",
+        "Initial_Scope_Run_Key",
+        "Late_Completions_Text",
+        "MIC_Completed_At",
+        "MIC_Completed_By",
+        "MIC_Completed_By_Email",
+        "MIC_On_Behalf_Of",
+        "MIC_Open_Count",
+        "MIC_Review_Confirm",
+        "Open_CR_Count",
+        "Open_Items_Count",
+        "Origin_Types",
+        "Overall_Approval_Required",
+        "Overall_Decided_By",
+        "Overall_Decision",
+        "Overall_Reason",
+        "Portal_Release_Item_Id",
+        "Priority",
+        "QM_Completed_At",
+        "QM_Completed_By",
+        "QM_Completed_By_Email",
+        "QM_On_Behalf_Of",
+        "QM_Open_Count",
+        "QM_Review_Confirm",
+        "REG_Completed_At",
+        "REG_Completed_By",
+        "REG_Completed_By_Email",
+        "REG_On_Behalf_Of",
+        "REG_Open_Count",
+        "REG_RMES_Decision",
+        "REG_RMES_Decision_Reason",
+        "REG_RMES_Gaps",
+        "REG_Review_Confirm",
+        "RMES_Created_At",
+        "RMM_Completed_At",
+        "RMM_Completed_By",
+        "RMM_Completed_By_Email",
+        "RMM_On_Behalf_Of",
+        "RMM_Open_Count",
+        "RMM_Review_Confirm",
+        "Reactivate_Reason",
+        "Reactivates_Case_Item",
+        "Release_Requested_At",
+        "Released_Revs_JSON",
+        "SAF_Completed_At",
+        "SAF_Completed_By",
+        "SAF_Completed_By_Email",
+        "SAF_On_Behalf_Of",
+        "SAF_Open_Count",
+        "SAF_RMES_Decision",
+        "SAF_RMES_Decision_Reason",
+        "SAF_RMES_Gaps",
+        "SAF_Review_Confirm",
+        "SUS_Completed_At",
+        "SUS_Completed_By",
+        "SUS_Completed_By_Email",
+        "SUS_On_Behalf_Of",
+        "SUS_Open_Count",
+        "SUS_Review_Confirm",
+        "Supplier_Closing_Text",
+        "Undefined_Origin"
+       ]
+      },
+      "CIQ_Review_A00": {
+       "codeLacks": [],
+       "flowOnly": []
+      },
+      "CIQ_Open_Point_A00": {
+       "codeLacks": [],
+       "flowOnly": [
+        "Accepted_Doc_File_Name",
+        "Accepted_Doc_Uploaded_At",
+        "Internal_Due_Date",
+        "Internal_Justification",
+        "Late_Decision",
+        "Late_Decision_Reason",
+        "New_Section_Item_Key",
+        "Reviewed_Answers_Rev",
+        "Reviewed_At",
+        "Reviewed_By",
+        "Reviewed_By_Email",
+        "Rounds",
+        "Rounds_Doc_File_Name",
+        "Rounds_Doc_Uploaded_At",
+        "Rounds_Outcome",
+        "Rounds_Question_Text",
+        "Rounds_Reason",
+        "Rounds_Response_Kind",
+        "Rounds_Response_Text",
+        "Rounds_Reviewed_At",
+        "Rounds_Reviewed_By",
+        "Rounds_Round_No",
+        "Thread_Text"
+       ]
+      },
+      "CIQ_Audit_Event_A00": {
+       "codeLacks": [],
+       "flowOnly": [
+        "Config_Keys",
+        "Delegation_Valid_From",
+        "Delegation_Valid_To",
+        "Event_File",
+        "Old_Value_Text",
+        "Portal_Activity_Ref",
+        "Source_Answers_Rev",
+        "Source_Doc_File_Name",
+        "Source_Doc_Uploaded_At"
+       ]
+      },
+      "CIQ_Internal_Note_A00": {
+       "codeLacks": [],
+       "flowOnly": []
+      },
+      "CIQ_RMES_Safety_A00": {
+       "codeLacks": [],
+       "flowOnly": [
+        "Criteria_AI_Decided_At",
+        "Criteria_AI_Decided_By",
+        "Criteria_AI_Source_Doc_File_Name",
+        "Criteria_AI_Source_Doc_Uploaded_At",
+        "Criteria_AI_Source_Quote",
+        "Criteria_AI_State",
+        "Criteria_Impact_Resolution",
+        "Criteria_Limit_Comparator",
+        "Criteria_Override_Reason",
+        "Criteria_Prefill_Value",
+        "Criteria_Source_Answers_Rev",
+        "Criteria_Source_Doc_File_Name",
+        "Criteria_Source_Doc_Uploaded_At",
+        "Criteria_Source_Row_Id"
+       ]
+      },
+      "CIQ_RMES_Regulatory_A00": {
+       "codeLacks": [],
+       "flowOnly": [
+        "Criteria_AI_Decided_At",
+        "Criteria_AI_Decided_By",
+        "Criteria_AI_Source_Doc_File_Name",
+        "Criteria_AI_Source_Doc_Uploaded_At",
+        "Criteria_AI_Source_Quote",
+        "Criteria_AI_State",
+        "Criteria_Impact_Resolution",
+        "Criteria_Limit_Comparator",
+        "Criteria_Override_Reason",
+        "Criteria_Prefill_Value",
+        "Criteria_Source_Answers_Rev",
+        "Criteria_Source_Doc_File_Name",
+        "Criteria_Source_Doc_Uploaded_At",
+        "Criteria_Source_Row_Id"
+       ]
+      },
+      "CIQ_Supplier_A00": {
+       "codeLacks": [],
+       "flowOnly": [
+        "Contact_Portal_Ids_Text",
+        "Contacts",
+        "Contacts_Invite_Requested_At",
+        "Contacts_Invited_At",
+        "Pending_Invites",
+        "SAP_Vendor_Id",
+        "Supplier_Test",
+        "Teamcenter_Supplier_Id"
+       ]
+      },
+      "CIQ_Config_Version_A00": {
+       "codeLacks": [],
+       "flowOnly": [
+        "Evaluator_Version",
+        "Internal_Annotations_JSON",
+        "Regression_Result_JSON",
+        "Release_Label",
+        "Release_Stage",
+        "Section_Key",
+        "Section_Rev",
+        "Test_Case_Codes"
+       ]
+      },
+      "CIQ_Scope_Run_A00": {
+       "codeLacks": [],
+       "flowOnly": [
+        "Added_Section_Keys",
+        "Evaluator_Version",
+        "Input_Hash",
+        "Input_JSON",
+        "Lead_Departments",
+        "Override_Justification",
+        "Related_Key",
+        "Result_JSON",
+        "Run_At",
+        "Run_By",
+        "Run_Key",
+        "Run_No",
+        "Scope_Trigger"
+       ]
+      },
+      "CIQP_Request_A00": {
+       "codeLacks": [],
+       "flowOnly": [
+        "App_Case_Item_Id",
+        "Keep_Open_Gate",
+        "Release_Contacts",
+        "Upload_File"
+       ]
+      },
+      "CIQP_Query_A00": {
+       "codeLacks": [],
+       "flowOnly": [
+        "App_Open_Point_Id",
+        "New_Section_Item_Key"
+       ]
+      },
+      "CIQP_Final_Release_A00": {
+       "codeLacks": [],
+       "flowOnly": [
+        "App_Case_Item_Id",
+        "Declaration_Text",
+        "Declaration_Text_Key"
+       ]
+      },
+      "CIQP_Help_Article_A00": {
+       "codeLacks": [],
+       "flowOnly": []
+      },
+      "CIQP_Section_A00": {
+       "codeLacks": [],
+       "flowOnly": [
+        "Added_Later",
+        "App_Section_Item_Id",
+        "Applicability_Label",
+        "CIQP_Section_A00_Uploads",
+        "Definition_Hash",
+        "Definition_JSON",
+        "Section_Code",
+        "Section_Done",
+        "Section_Key",
+        "Section_Origin",
+        "Section_Release_Confirm",
+        "Section_Sort",
+        "Section_Title",
+        "Supplier_Reason",
+        "Upload_File"
+       ]
+      },
+      "CIQP_Completeness_Confirmation_A00": {
+       "codeLacks": [],
+       "flowOnly": [
+        "App_Case_Item_Id",
+        "Declaration_Text",
+        "Declaration_Text_Key"
+       ]
+      },
+      "CIQP_Notice_A00": {
+       "codeLacks": [],
+       "flowOnly": [
+        "App_Notice_Item_Id",
+        "Notice_Kind",
+        "Notice_Text",
+        "Notice_Title",
+        "Related_Key"
+       ]
+      },
+      "CIQP_Change_Request_A00": {
+       "codeLacks": [],
+       "flowOnly": [
+        "Change_Kind",
+        "Change_Reason",
+        "Current_Value_Text",
+        "Field_Key",
+        "Proposed_Value_JSON",
+        "Row_Id",
+        "Section_Key"
+       ]
+      }
+     }
+    }
+   },
+   "ms": 8,
+   "at": "2026-10-25T19:13:36.075Z"
+  },
+  {
+   "name": "names: the code's steps exist with their names",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ_Case_A00 steps (activity id: name)",
+      "value": {
+       "Activity_p1i6xz": "Create case",
+       "Activity_1kltjdn": "Waiting for supplier: CIQ",
+       "Activity_gwgj5o": "Beiersdorf review and final release",
+       "Activity_ycf01a": "End",
+       "SendBackToInitiator": ""
+      }
+     },
+     {
+      "what": "CIQ_Review_A00 steps (activity id: name)",
+      "value": {
+       "Activity_47r3ow": "Activate review",
+       "Activity_1wb6scg": "Review – Regulatory",
+       "Activity_116f3su": "Review – Safety",
+       "Activity_12d3ab4": "Review – QM",
+       "Activity_1wkxybl": "Review – Microbiology",
+       "Activity_1um3oo7": "Review – Sustainability",
+       "Activity_1mh3ji6": "Review – RMM",
+       "Activity_1xjk2tg": "End",
+       "SendBackToInitiator": ""
+      }
+     },
+     {
+      "what": "CIQ_Open_Point_A00 steps (activity id: name)",
+      "value": {
+       "Activity_18t0lhi": "Raise open point",
+       "Activity_uka3mx": "Open point – Regulatory",
+       "Activity_1kdump3": "Open point – Safety",
+       "Activity_1go37bt": "Open point – QM",
+       "Activity_hha7u2": "Open point – Microbiology",
+       "Activity_y4af4g": "Open point – Sustainability",
+       "Activity_xc8fbb": "Open point – RMM",
+       "Activity_i73i25": "End",
+       "SendBackToInitiator": ""
+      }
+     },
+     {
+      "what": "CIQP_Request_A00 steps (activity id: name)",
+      "value": {
+       "SendBackToInitiator": "",
+       "Activity_1fvwo2u": "Issue request",
+       "Activity_15rz7z2": "Supplier: fill in the CIQ",
+       "Activity_1mhx3t7": "Supplier: keep the CIQ up to date",
+       "Activity_gafhuz": "End",
+       "Activity_wlo2cfxnqa": "Supplier: give the final release",
+       "Activity_y26mqp691u": "Back to keep the CIQ up to date, if reopened",
+       "Activity_vngcws1q8w": "Supplier: view the released CIQ"
+      }
+     },
+     {
+      "what": "CIQP_Query_A00 steps (activity id: name)",
+      "value": {
+       "SendBackToInitiator": "",
+       "Activity_rngj1n": "Raise query",
+       "Activity_qohzey": "Supplier: respond",
+       "Activity_49tjko": "End"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "CIQ_Case_A00: every step the code knows exists with that name",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Review_A00: every step the code knows exists with that name",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Open_Point_A00: every step the code knows exists with that name",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQP_Request_A00: every step the code knows exists with that name",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQP_Query_A00: every step the code knows exists with that name",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-25T19:13:36.085Z"
+  },
+  {
+   "name": "names: the roles of both apps match ids.ts ROLES and portal.ts ROLES",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ_Digital_A00 roles (id, Name, UserCount)",
+      "value": [
+       {
+        "id": "RoEK3_3Jy9XU",
+        "name": "Admin / Developer",
+        "userCount": 1
+       },
+       {
+        "id": "RoEKl88CJiLP",
+        "name": "Auditor",
+        "userCount": 0
+       },
+       {
+        "id": "RoEKl87f38Xw",
+        "name": "Business administrator",
+        "userCount": 1
+       },
+       {
+        "id": "RoEKwvR_cPvv",
+        "name": "Business owner (reports)",
+        "userCount": 0
+       },
+       {
+        "id": "RoEKl88jv4dv",
+        "name": "Case administrator",
+        "userCount": 0
+       },
+       {
+        "id": "RoEKwv6pxX3g",
+        "name": "Customs & Trade Compliance",
+        "userCount": 0
+       },
+       {
+        "id": "RoEKl89I5nGx",
+        "name": "Integration service",
+        "userCount": 0
+       },
+       {
+        "id": "RoEKwvH8qaxG",
+        "name": "Legal / IP",
+        "userCount": 0
+       },
+       {
+        "id": "RoEKl8647K2u",
+        "name": "Microbiology reviewer",
+        "userCount": 0
+       },
+       {
+        "id": "RoEKl84xAFRW",
+        "name": "Product Safety reviewer",
+        "userCount": 0
+       },
+       {
+        "id": "RoEKl85WB1yE",
+        "name": "Quality Management reviewer",
+        "userCount": 0
+       },
+       {
+        "id": "RoEKl83f9jPF",
+        "name": "Raw Material Manager (RMM)",
+        "userCount": 0
+       },
+       {
+        "id": "RoEKl84Hca4w",
+        "name": "Regulatory Affairs reviewer",
+        "userCount": 0
+       },
+       {
+        "id": "RoEKl86bQQrO",
+        "name": "Sustainability reviewer",
+        "userCount": 0
+       }
+      ]
+     },
+     {
+      "what": "CIQ_Supplier_Portal_A00 roles (id, Name, UserCount)",
+      "value": [
+       {
+        "id": "RoEK3_yhR4wx",
+        "name": "Admin",
+        "userCount": 1
+       },
+       {
+        "id": "RoEK4XPKXCvH",
+        "name": "Supplier",
+        "userCount": 0
+       },
+       {
+        "id": "RoENYK1Y3GRn",
+        "name": "Test",
+        "userCount": 0
+       },
+       {
+        "id": "RoEK3_ymADTV",
+        "name": "User",
+        "userCount": 0
+       }
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "CIQ_Digital_A00: every role the code knows exists with that name",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Digital_A00: role names are unique",
+      "ok": true,
+      "detail": [
+       "Admin / Developer",
+       "Auditor",
+       "Business administrator",
+       "Business owner (reports)",
+       "Case administrator",
+       "Customs & Trade Compliance",
+       "Integration service",
+       "Legal / IP",
+       "Microbiology reviewer",
+       "Product Safety reviewer",
+       "Quality Management reviewer",
+       "Raw Material Manager (RMM)",
+       "Regulatory Affairs reviewer",
+       "Sustainability reviewer"
+      ]
+     },
+     {
+      "label": "CIQ_Supplier_Portal_A00: every role the code knows exists with that name",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Supplier_Portal_A00: role names are unique",
+      "ok": true,
+      "detail": [
+       "Admin",
+       "Supplier",
+       "Test",
+       "User"
+      ]
+     }
+    ],
+    "notes": {
+     "CIQ_Digital_A00 roles the code does not know": [
+      "Admin / Developer"
+     ],
+     "CIQ_Supplier_Portal_A00 roles the code does not know": [
+      "Test",
+      "User"
+     ],
+     "members": {
+      "CIQ_Digital_A00": {
+       "Admin / Developer": 1,
+       "Auditor": 0,
+       "Business administrator": 1,
+       "Business owner (reports)": 0,
+       "Case administrator": 0,
+       "Customs & Trade Compliance": 0,
+       "Integration service": 0,
+       "Legal / IP": 0,
+       "Microbiology reviewer": 0,
+       "Product Safety reviewer": 0,
+       "Quality Management reviewer": 0,
+       "Raw Material Manager (RMM)": 0,
+       "Regulatory Affairs reviewer": 0,
+       "Sustainability reviewer": 0
+      },
+      "CIQ_Supplier_Portal_A00": {
+       "Admin": 1,
+       "Supplier": 0,
+       "Test": 0,
+       "User": 0
+      }
+     }
+    }
+   },
+   "ms": 1,
+   "at": "2026-10-25T19:13:36.086Z"
+  },
+  {
+   "name": "no corruption: nothing that is not this run's changed during the run",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "items per flow (My items rows and form list rows), with their _modified_at",
+      "value": {
+       "CIQ_Audit_Event_A00": 46,
+       "CIQ_Internal_Note_A00": 2,
+       "CIQ_RMES_Safety_A00": 2,
+       "CIQ_RMES_Regulatory_A00": 2,
+       "CIQ_Supplier_A00": 2,
+       "CIQ_Config_Version_A00": 13,
+       "CIQ_Case_A00": 3,
+       "CIQ_Review_A00": 12,
+       "CIQ_Open_Point_A00": 3
+      }
+     },
+     {
+      "what": "the diff from the start (this run's ledger items left out)",
+      "value": {
+       "changed": [],
+       "removed": [],
+       "added": [],
+       "same": 85,
+       "startedAt": "2026-10-25T19:13:36.003Z"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "every flow was read",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "every flow was compared (read at the start and now)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "no item that is not this run's changed, appeared or went away",
+      "ok": true,
+      "detail": {
+       "changed": 0,
+       "removed": 0,
+       "added": 0
+      }
+     }
+    ],
+    "notes": {}
+   },
+   "ms": 1,
+   "at": "2026-10-25T19:13:36.088Z"
+  },
+  {
+   "name": "no corruption: every ledger item of this run reads back (or is gone where it should be)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ_Supplier_A00 FmSup2 (Supplier_Code=s1 Supplier_Legal_Name=ZZT-N21-OFF Supplier; stage saved)",
+      "value": {
+       "raw": {
+        "_id": "FmSup2",
+        "_modified_at": "2026-10-25T19:13:36Z",
+        "Supplier_Code": "s1",
+        "Supplier_Legal_Name": "ZZT-N21-OFF Supplier"
+       },
+       "mapped": {
+        "id": "s1",
+        "name": "ZZT-N21-OFF Supplier",
+        "contacts": 1,
+        "active": true
+       }
+      }
+     },
+     {
+      "what": "CIQ_Audit_Event_A00 FmAudit4 (Event_Key=EV-LOG-20261025191336-piv2 Action_Code=supplier.changed; stage saved)",
+      "value": {
+       "raw": {
+        "_id": "FmAudit4",
+        "_modified_at": "2026-10-25T19:13:37Z",
+        "Event_Key": "EV-LOG-20261025191336-piv2",
+        "Action_Code": "supplier.changed",
+        "Object_Item_Id": "FmSup2"
+       },
+       "mapped": {
+        "code": "supplier.changed",
+        "label": "Changed supplier master"
+       }
+      }
+     },
+     {
+      "what": "CIQ_Case_A00 PkCase5 (Case_Code=ZZT-N21-OFF-INT-C01 Supplier_Code=SUP-ZZT-SOLVARO; stage Start)",
+      "value": {
+       "raw": {
+        "_id": "PkCase5",
+        "_status": "InProgress",
+        "_current_step": "Waiting for supplier: CIQ",
+        "_modified_at": "2026-10-25T19:13:40Z",
+        "Case_Code": "ZZT-N21-OFF-INT-C01",
+        "Cycle_No": 1,
+        "Supplier_Code": "SUP-ZZT-SOLVARO",
+        "Supplier_Legal_Name": "Solvaro Oleochemicals S.A.",
+        "Portal_Request_Item_Id": "PkReq1"
+       },
+       "mapped": {
+        "id": "ZZT-N21-OFF-INT-C01",
+        "phase": "supplier-input",
+        "materialName": "ZZT-N21-OFF Glycerin",
+        "supplierId": "SUP-ZZT-SOLVARO",
+        "dueDate": "2026-11-30T16:00:00.000Z",
+        "reviews": 0,
+        "openPoints": 0,
+        "notes": 1
+       }
+      }
+     },
+     {
+      "what": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-OFF-INT-C01 Event_Key=EV-ZZT-N21-OFF-INT-C01-20261025191336-nats; stage saved)",
+      "value": {
+       "raw": {
+        "_id": "FmAudit9",
+        "_modified_at": "2026-10-25T19:13:41Z",
+        "Case_Code": "ZZT-N21-OFF-INT-C01",
+        "Cycle_No": 1,
+        "Event_Key": "EV-ZZT-N21-OFF-INT-C01-20261025191336-nats",
+        "Action_Code": "case.created",
+        "Case_Item_Id": "PkCase5",
+        "Object_Item_Id": "PkCase5"
+       },
+       "mapped": {
+        "code": "case.created",
+        "label": "Created case",
+        "caseId": "ZZT-N21-OFF-INT-C01"
+       }
+      }
+     },
+     {
+      "what": "CIQP_Request_A00 PkReq1 (Request_Key=ZZT-N21-OFF-INT-C01|1 (created by I-1); stage fill)",
+      "value": {
+       "raw": {
+        "_id": "PkReq1",
+        "_status": "InProgress",
+        "_current_step": "Supplier: fill in the CIQ",
+        "_modified_at": "2026-10-25T19:13:38Z",
+        "Case_Code": "ZZT-N21-OFF-INT-C01",
+        "Cycle_No": 1,
+        "Request_Key": "ZZT-N21-OFF-INT-C01|1",
+        "Supplier_Code": "SUP-ZZT-SOLVARO",
+        "App_Case_Item_Id": "PkCase5"
+       },
+       "mapped": {
+        "code": "ZZT-N21-OFF-INT-C01",
+        "step": "fill",
+        "queries": 0
+       }
+      }
+     },
+     {
+      "what": "CIQ_Internal_Note_A00 FmNote11 (Case_Code=ZZT-N21-OFF-INT-C01 Note_Key=ZZT-N21-OFF-INT-C01-n1; stage saved)",
+      "value": {
+       "raw": {
+        "_id": "FmNote11",
+        "_modified_at": "2026-10-25T19:13:42Z",
+        "Case_Code": "ZZT-N21-OFF-INT-C01",
+        "Cycle_No": 1,
+        "Note_Key": "ZZT-N21-OFF-INT-C01-n1",
+        "Case_Item_Id": "PkCase5"
+       },
+       "mapped": {
+        "caseId": "ZZT-N21-OFF-INT-C01",
+        "id": "ZZT-N21-OFF-INT-C01-n1",
+        "by": "UsRmmKatrin",
+        "dept": "RMM",
+        "text": "ZZT-N21-OFF note: the CoA is from 2025."
+       }
+      }
+     },
+     {
+      "what": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-OFF-INT-C01 Event_Key=EV-ZZT-N21-OFF-INT-C01-20261025191336-a4dq; stage saved)",
+      "value": {
+       "raw": {
+        "_id": "FmAudit13",
+        "_modified_at": "2026-10-25T19:13:43Z",
+        "Case_Code": "ZZT-N21-OFF-INT-C01",
+        "Cycle_No": 1,
+        "Event_Key": "EV-ZZT-N21-OFF-INT-C01-20261025191336-a4dq",
+        "Action_Code": "note.added",
+        "Case_Item_Id": "PkCase5",
+        "Object_Item_Id": "FmNote11"
+       },
+       "mapped": {
+        "code": "note.added",
+        "label": "Added internal note",
+        "caseId": "ZZT-N21-OFF-INT-C01"
+       }
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "no warning of the app's loads names an item of this run",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Supplier_A00 FmSup2 (Supplier_Code=s1 Supplier_Legal_Name=ZZT-N21-OFF Supplier; stage saved): Supplier_Code is as the ledger recorded it",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Supplier_A00 FmSup2 (Supplier_Code=s1 Supplier_Legal_Name=ZZT-N21-OFF Supplier; stage saved): is OFF's (names only its ledger items, or carries \"ZZT-N21-OFF\")",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Supplier_A00 FmSup2 (Supplier_Code=s1 Supplier_Legal_Name=ZZT-N21-OFF Supplier; stage saved): is a supplier on the screens",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Supplier_A00 FmSup2 (Supplier_Code=s1 Supplier_Legal_Name=ZZT-N21-OFF Supplier; stage saved): maps Supplier_Code → id",
+      "ok": true,
+      "detail": {
+       "raw": "s1",
+       "mapped": "s1"
+      }
+     },
+     {
+      "label": "CIQ_Supplier_A00 FmSup2 (Supplier_Code=s1 Supplier_Legal_Name=ZZT-N21-OFF Supplier; stage saved): maps Supplier_Legal_Name → name",
+      "ok": true,
+      "detail": {
+       "raw": "ZZT-N21-OFF Supplier",
+       "mapped": "ZZT-N21-OFF Supplier"
+      }
+     },
+     {
+      "label": "CIQ_Supplier_A00 FmSup2 (Supplier_Code=s1 Supplier_Legal_Name=ZZT-N21-OFF Supplier; stage saved): has contact rows (its Contacts table was read)",
+      "ok": true,
+      "detail": 1
+     },
+     {
+      "label": "CIQ_Supplier_A00 FmSup2 (Supplier_Code=s1 Supplier_Legal_Name=ZZT-N21-OFF Supplier; stage saved): every contact row is one contact on the screens (as many as rows)",
+      "ok": true,
+      "detail": {
+       "rows": [
+        "Contacts_kkkq3m8av7"
+       ],
+       "mapped": [
+        "Contacts_kkkq3m8av7"
+       ]
+      }
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit4 (Event_Key=EV-LOG-20261025191336-piv2 Action_Code=supplier.changed; stage saved): Event_Key is as the ledger recorded it",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit4 (Event_Key=EV-LOG-20261025191336-piv2 Action_Code=supplier.changed; stage saved): Action_Code is as the ledger recorded it",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit4 (Event_Key=EV-LOG-20261025191336-piv2 Action_Code=supplier.changed; stage saved): is OFF's (names only its ledger items, or carries \"ZZT-N21-OFF\")",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit4 (Event_Key=EV-LOG-20261025191336-piv2 Action_Code=supplier.changed; stage saved): Action_Code is a code the app reads (auditMap ACTION_LABEL)",
+      "ok": true,
+      "detail": "supplier.changed"
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit4 (Event_Key=EV-LOG-20261025191336-piv2 Action_Code=supplier.changed; stage saved): Snapshot_JSON is there and reads as the app's snapshot (parseSnapshot)",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase5 (Case_Code=ZZT-N21-OFF-INT-C01 Supplier_Code=SUP-ZZT-SOLVARO; stage Start): Case_Code is as the ledger recorded it",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase5 (Case_Code=ZZT-N21-OFF-INT-C01 Supplier_Code=SUP-ZZT-SOLVARO; stage Start): Supplier_Code is as the ledger recorded it",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase5 (Case_Code=ZZT-N21-OFF-INT-C01 Supplier_Code=SUP-ZZT-SOLVARO; stage Start): is OFF's (names only its ledger items, or carries \"ZZT-N21-OFF\")",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase5 (Case_Code=ZZT-N21-OFF-INT-C01 Supplier_Code=SUP-ZZT-SOLVARO; stage Start): Case_Code carries \"ZZT-N21-OFF\"",
+      "ok": true,
+      "detail": "ZZT-N21-OFF-INT-C01"
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase5 (Case_Code=ZZT-N21-OFF-INT-C01 Supplier_Code=SUP-ZZT-SOLVARO; stage Start): has the app's audit snapshot of its header (case.created)",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase5 (Case_Code=ZZT-N21-OFF-INT-C01 Supplier_Code=SUP-ZZT-SOLVARO; stage Start): Case_Code is as its audit (case.created)",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase5 (Case_Code=ZZT-N21-OFF-INT-C01 Supplier_Code=SUP-ZZT-SOLVARO; stage Start): Trade_Name is as its audit (case.created)",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase5 (Case_Code=ZZT-N21-OFF-INT-C01 Supplier_Code=SUP-ZZT-SOLVARO; stage Start): Main_INCI is as its audit (case.created)",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase5 (Case_Code=ZZT-N21-OFF-INT-C01 Supplier_Code=SUP-ZZT-SOLVARO; stage Start): BDF_Material_No is as its audit (case.created)",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase5 (Case_Code=ZZT-N21-OFF-INT-C01 Supplier_Code=SUP-ZZT-SOLVARO; stage Start): Supplier_Code is as its audit (case.created)",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase5 (Case_Code=ZZT-N21-OFF-INT-C01 Supplier_Code=SUP-ZZT-SOLVARO; stage Start): Supplier_Due_Date is as its audit (case.created)",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase5 (Case_Code=ZZT-N21-OFF-INT-C01 Supplier_Code=SUP-ZZT-SOLVARO; stage Start): Cycle_No is as its audit (case.created)",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase5 (Case_Code=ZZT-N21-OFF-INT-C01 Supplier_Code=SUP-ZZT-SOLVARO; stage Start): is a case on the screens",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase5 (Case_Code=ZZT-N21-OFF-INT-C01 Supplier_Code=SUP-ZZT-SOLVARO; stage Start): maps Case_Code → id",
+      "ok": true,
+      "detail": {
+       "raw": "ZZT-N21-OFF-INT-C01",
+       "mapped": "ZZT-N21-OFF-INT-C01"
+      }
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase5 (Case_Code=ZZT-N21-OFF-INT-C01 Supplier_Code=SUP-ZZT-SOLVARO; stage Start): maps Trade_Name → materialName",
+      "ok": true,
+      "detail": {
+       "raw": "ZZT-N21-OFF Glycerin",
+       "mapped": "ZZT-N21-OFF Glycerin"
+      }
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase5 (Case_Code=ZZT-N21-OFF-INT-C01 Supplier_Code=SUP-ZZT-SOLVARO; stage Start): maps Main_INCI → inci",
+      "ok": true,
+      "detail": {
+       "raw": "Glycerin",
+       "mapped": "Glycerin"
+      }
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase5 (Case_Code=ZZT-N21-OFF-INT-C01 Supplier_Code=SUP-ZZT-SOLVARO; stage Start): maps BDF_Material_No → materialNo",
+      "ok": true,
+      "detail": {
+       "raw": "ZZT-N21-OFF-RM-1",
+       "mapped": "ZZT-N21-OFF-RM-1"
+      }
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase5 (Case_Code=ZZT-N21-OFF-INT-C01 Supplier_Code=SUP-ZZT-SOLVARO; stage Start): maps Supplier_Code → supplierId",
+      "ok": true,
+      "detail": {
+       "raw": "SUP-ZZT-SOLVARO",
+       "mapped": "SUP-ZZT-SOLVARO"
+      }
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase5 (Case_Code=ZZT-N21-OFF-INT-C01 Supplier_Code=SUP-ZZT-SOLVARO; stage Start): maps Supplier_Due_Date → dueDate",
+      "ok": true,
+      "detail": {
+       "raw": "2026-11-30",
+       "mapped": "2026-11-30"
+      }
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase5 (Case_Code=ZZT-N21-OFF-INT-C01 Supplier_Code=SUP-ZZT-SOLVARO; stage Start): maps Cycle_No → cycleNo",
+      "ok": true,
+      "detail": {
+       "raw": 1,
+       "mapped": 1
+      }
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase5 (Case_Code=ZZT-N21-OFF-INT-C01 Supplier_Code=SUP-ZZT-SOLVARO; stage Start): maps Portal_Request_Item_Id",
+      "ok": true,
+      "detail": {
+       "raw": "PkReq1",
+       "mapped": "PkReq1"
+      }
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-OFF-INT-C01 Event_Key=EV-ZZT-N21-OFF-INT-C01-20261025191336-nats; stage saved): Case_Code is as the ledger recorded it",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-OFF-INT-C01 Event_Key=EV-ZZT-N21-OFF-INT-C01-20261025191336-nats; stage saved): Event_Key is as the ledger recorded it",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-OFF-INT-C01 Event_Key=EV-ZZT-N21-OFF-INT-C01-20261025191336-nats; stage saved): is OFF's (names only its ledger items, or carries \"ZZT-N21-OFF\")",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-OFF-INT-C01 Event_Key=EV-ZZT-N21-OFF-INT-C01-20261025191336-nats; stage saved): Case_Code carries \"ZZT-N21-OFF\"",
+      "ok": true,
+      "detail": "ZZT-N21-OFF-INT-C01"
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-OFF-INT-C01 Event_Key=EV-ZZT-N21-OFF-INT-C01-20261025191336-nats; stage saved): Action_Code is a code the app reads (auditMap ACTION_LABEL)",
+      "ok": true,
+      "detail": "case.created"
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-OFF-INT-C01 Event_Key=EV-ZZT-N21-OFF-INT-C01-20261025191336-nats; stage saved): Snapshot_JSON is there and reads as the app's snapshot (parseSnapshot)",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-OFF-INT-C01 Event_Key=EV-ZZT-N21-OFF-INT-C01-20261025191336-nats; stage saved): names a case on the screens",
+      "ok": true,
+      "detail": "PkCase5"
+     },
+     {
+      "label": "CIQP_Request_A00 PkReq1 (Request_Key=ZZT-N21-OFF-INT-C01|1 (created by I-1); stage fill): Request_Key is as the ledger recorded it",
+      "ok": true
+     },
+     {
+      "label": "CIQP_Request_A00 PkReq1 (Request_Key=ZZT-N21-OFF-INT-C01|1 (created by I-1); stage fill): is OFF's (names only its ledger items, or carries \"ZZT-N21-OFF\")",
+      "ok": true
+     },
+     {
+      "label": "CIQP_Request_A00 PkReq1 (Request_Key=ZZT-N21-OFF-INT-C01|1 (created by I-1); stage fill): Case_Code carries \"ZZT-N21-OFF\"",
+      "ok": true,
+      "detail": "ZZT-N21-OFF-INT-C01"
+     },
+     {
+      "label": "CIQP_Request_A00 PkReq1 (Request_Key=ZZT-N21-OFF-INT-C01|1 (created by I-1); stage fill): is on the self contact's screen (the portal's own load)",
+      "ok": true
+     },
+     {
+      "label": "CIQP_Request_A00 PkReq1 (Request_Key=ZZT-N21-OFF-INT-C01|1 (created by I-1); stage fill): maps Case_Code → the bundle's code",
+      "ok": true,
+      "detail": {
+       "raw": "ZZT-N21-OFF-INT-C01",
+       "mapped": "ZZT-N21-OFF-INT-C01"
+      }
+     },
+     {
+      "label": "CIQ_Internal_Note_A00 FmNote11 (Case_Code=ZZT-N21-OFF-INT-C01 Note_Key=ZZT-N21-OFF-INT-C01-n1; stage saved): Case_Code is as the ledger recorded it",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Internal_Note_A00 FmNote11 (Case_Code=ZZT-N21-OFF-INT-C01 Note_Key=ZZT-N21-OFF-INT-C01-n1; stage saved): Note_Key is as the ledger recorded it",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Internal_Note_A00 FmNote11 (Case_Code=ZZT-N21-OFF-INT-C01 Note_Key=ZZT-N21-OFF-INT-C01-n1; stage saved): is OFF's (names only its ledger items, or carries \"ZZT-N21-OFF\")",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Internal_Note_A00 FmNote11 (Case_Code=ZZT-N21-OFF-INT-C01 Note_Key=ZZT-N21-OFF-INT-C01-n1; stage saved): Case_Code carries \"ZZT-N21-OFF\"",
+      "ok": true,
+      "detail": "ZZT-N21-OFF-INT-C01"
+     },
+     {
+      "label": "CIQ_Internal_Note_A00 FmNote11 (Case_Code=ZZT-N21-OFF-INT-C01 Note_Key=ZZT-N21-OFF-INT-C01-n1; stage saved): has the app's audit snapshot (note.added)",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Internal_Note_A00 FmNote11 (Case_Code=ZZT-N21-OFF-INT-C01 Note_Key=ZZT-N21-OFF-INT-C01-n1; stage saved): Note_Key is as its audit (note.added)",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Internal_Note_A00 FmNote11 (Case_Code=ZZT-N21-OFF-INT-C01 Note_Key=ZZT-N21-OFF-INT-C01-n1; stage saved): Note_Text is as its audit (note.added)",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Internal_Note_A00 FmNote11 (Case_Code=ZZT-N21-OFF-INT-C01 Note_Key=ZZT-N21-OFF-INT-C01-n1; stage saved): is a note on its case",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Internal_Note_A00 FmNote11 (Case_Code=ZZT-N21-OFF-INT-C01 Note_Key=ZZT-N21-OFF-INT-C01-n1; stage saved): maps Note_Text → text",
+      "ok": true,
+      "detail": {
+       "raw": "ZZT-N21-OFF note: the CoA is from 2025.",
+       "mapped": "ZZT-N21-OFF note: the CoA is from 2025."
+      }
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-OFF-INT-C01 Event_Key=EV-ZZT-N21-OFF-INT-C01-20261025191336-a4dq; stage saved): Case_Code is as the ledger recorded it",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-OFF-INT-C01 Event_Key=EV-ZZT-N21-OFF-INT-C01-20261025191336-a4dq; stage saved): Event_Key is as the ledger recorded it",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-OFF-INT-C01 Event_Key=EV-ZZT-N21-OFF-INT-C01-20261025191336-a4dq; stage saved): is OFF's (names only its ledger items, or carries \"ZZT-N21-OFF\")",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-OFF-INT-C01 Event_Key=EV-ZZT-N21-OFF-INT-C01-20261025191336-a4dq; stage saved): Case_Code carries \"ZZT-N21-OFF\"",
+      "ok": true,
+      "detail": "ZZT-N21-OFF-INT-C01"
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-OFF-INT-C01 Event_Key=EV-ZZT-N21-OFF-INT-C01-20261025191336-a4dq; stage saved): Action_Code is a code the app reads (auditMap ACTION_LABEL)",
+      "ok": true,
+      "detail": "note.added"
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-OFF-INT-C01 Event_Key=EV-ZZT-N21-OFF-INT-C01-20261025191336-a4dq; stage saved): Snapshot_JSON is there and reads as the app's snapshot (parseSnapshot)",
+      "ok": true
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-OFF-INT-C01 Event_Key=EV-ZZT-N21-OFF-INT-C01-20261025191336-a4dq; stage saved): names a case on the screens",
+      "ok": true,
+      "detail": "PkCase5"
+     }
+    ],
+    "notes": {
+     "skipped": [
+      "CIQ_Supplier_A00 DraftSup1: a form's draft id (the user's single draft), not an item",
+      "CIQ_Audit_Event_A00 DraftAudit3: a form's draft id (the user's single draft), not an item",
+      "CIQ_Audit_Event_A00 DraftAudit8: a form's draft id (the user's single draft), not an item",
+      "CIQ_Internal_Note_A00 DraftNote10: a form's draft id (the user's single draft), not an item",
+      "CIQ_Audit_Event_A00 DraftAudit12: a form's draft id (the user's single draft), not an item"
+     ],
+     "expect": "OFF keeps its items at their stages"
+    }
+   },
+   "ms": 9,
+   "at": "2026-10-25T19:13:36.091Z"
+  },
+  {
+   "name": "no corruption: this run's items (JSON parses, real user ids, valid dates)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "this run's items checked (flow, id, fields)",
+      "value": [
+       {
+        "flow": "CIQ_Supplier_A00",
+        "id": "FmSup2",
+        "fields": 13
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit4",
+        "fields": 20
+       },
+       {
+        "flow": "CIQ_Case_A00",
+        "id": "PkCase5",
+        "fields": 41
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit9",
+        "fields": 28
+       },
+       {
+        "flow": "CIQP_Request_A00",
+        "id": "PkReq1",
+        "fields": 35
+       },
+       {
+        "flow": "CIQ_Internal_Note_A00",
+        "id": "FmNote11",
+        "fields": 15
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit13",
+        "fields": 24
+       }
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "every JSON field parses and holds no self: id; every user field a real user; every date valid",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {}
+   },
+   "ms": 4,
+   "at": "2026-10-25T19:13:36.103Z"
+  },
+  {
+   "name": "no corruption: every other item the key reads (JSON parses, real user ids, valid dates)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "rows checked per flow (form rows in full, process items as their My items rows)",
+      "value": {
+       "CIQ_Audit_Event_A00": 46,
+       "CIQ_Internal_Note_A00": 2,
+       "CIQ_RMES_Safety_A00": 2,
+       "CIQ_RMES_Regulatory_A00": 2,
+       "CIQ_Supplier_A00": 2,
+       "CIQ_Config_Version_A00": 13,
+       "CIQ_Case_A00": 3,
+       "CIQ_Review_A00": 12,
+       "CIQ_Open_Point_A00": 3
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "every JSON field parses and holds no self: id; every user field a real user; every date valid",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {}
+   },
+   "ms": 2,
+   "at": "2026-10-25T19:13:36.109Z"
+  },
+  {
+   "name": "read-only: S-INTEGRITY wrote nothing (so it has nothing of its own to clean up)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "this phase's client calls per method, and its logged requests",
+      "value": {
+       "calls": {
+        "app.formList": 11,
+        "app.myItems": 6,
+        "portal.listMine": 2,
+        "app.oneRead": 2,
+        "app.adminList": 3,
+        "app.myTasks": 7,
+        "app.formGet": 1,
+        "app.adminGet": 2,
+        "portal.oneRead": 1,
+        "portal.listTasks": 5,
+        "portal.getFull": 1,
+        "portal.adminGet": 1
+       },
+       "requests": 0
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "no write call (create, update, submit, PUT, withdraw, delete, webhook)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "every logged request is a read (classifyPath)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "no new ledger line",
+      "ok": true,
+      "detail": {
+       "before": 12,
+       "after": 12
+      }
+     }
+    ],
+    "notes": {
+     "cleanup": "S-INTEGRITY creates no items, so OFF has nothing of its own to delete"
+    }
+   },
+   "ms": 0,
+   "at": "2026-10-25T19:13:36.113Z"
+  }
+ ]
+}

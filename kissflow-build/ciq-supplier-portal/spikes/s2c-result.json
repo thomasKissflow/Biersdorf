@@ -1,0 +1,40 @@
+{
+  "at": "2026-10-14T17:56:57.535Z",
+  "results": [
+    {
+      "id": "S2c-both-files-kept",
+      "pass": true,
+      "ev": {
+        "count": 2,
+        "names": [
+          "ZZT-sds-v1.pdf",
+          "ZZT-sds-v2.pdf"
+        ]
+      }
+    },
+    {
+      "id": "S2c-download-file-1",
+      "pass": true,
+      "ev": {
+        "status": 302,
+        "bytes": 202
+      }
+    },
+    {
+      "id": "S2c-download-file-2",
+      "pass": true,
+      "ev": {
+        "status": 302,
+        "bytes": 202
+      }
+    },
+    {
+      "id": "S2c-cleanup",
+      "pass": true,
+      "ev": {
+        "del": 200,
+        "after": 404
+      }
+    }
+  ]
+}

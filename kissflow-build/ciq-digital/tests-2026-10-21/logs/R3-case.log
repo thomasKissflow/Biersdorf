@@ -1,0 +1,61 @@
+
+ RUN  v2.1.9 /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/prototype
+
+stdout | live/case.live.ts > S-CASE: a case from the supplier master to the final release, and a cancelled one
+S-CASE R3 (live): /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/kissflow-build/ciq-digital/tests-2026-10-21/results/R3/S-CASE.json
+pass     0 integrations ON [2 calls]
+pass     1 supplier master [22 calls]
+pass     2 draft [14 calls]
+pass     3 started (I-1) [19 calls]
+pass     4a answers saved (request.changed) [9 calls]
+pass     4b completeness confirmed (I-2 fields) [8 calls]
+pass     4c I-2 Approve [1 calls]
+pass     5 reviews (ensureReviews) [66 calls]
+pass     6a RMES Safety [60 calls]
+pass     6b RMES Regulatory [62 calls]
+blocked  7 review completion [31 calls] — 050201: "Review – RMM" is held by Raw Material Manager (RMM), which has no members; the app refused first (The RMM review of this case is not one of your open t
+pass     8 release requested [40 calls]
+pass     9 final release (I-7) [28 calls]
+pass     10 cancelled case [50 calls]
+not-run  11 cleanup [73 calls] — stopped: Stopped on GET /form/2/AcDOSunMEpSA/CIQ_Audit_Event_A00/PkEPOMSzkZ_5: 429 Too Many Requests. No retry; nothing calls Kissflow for 20 minutes.
+calls: 492
+
+ ❯ live/case.live.ts (16 tests | 1 failed) 1512951ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 0 the integrations are ON (read-only) 5970ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 1 supplier master: the app's addSupplier, Thomas as self contact and a placeholder 66413ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 2 draft: the app's Start gate leaves a draft; it is discarded (R1 keeps one) 42328ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 3 started: createCase, I-1 makes the request 61312ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 4a the supplier saves answers through the portal's writer (request.changed) 27503ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 4b the supplier confirms completeness (I-2's fields) 24885ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 4c I-2's Approve moves the case on (expected blocked: Integration service has no members) 6591ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 5 reviews: the RMM's load starts them (ensureReviews) 200108ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 6a RMES Safety: ensureRmes creates the record, saveRmes writes a result and a finding 180689ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 6b RMES Regulatory: ensureRmes creates the record, saveRmes writes a result and a finding 186638ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 7 review completion (expected blocked: 050201), the gate by admin PUT 93170ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 8 release requested, as ensureRelease sends it 128951ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 9 final release: the supplier releases, I-7 completes the case 91951ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 10 cancel: a second case is started, then cancelled (case.cancelled) 158019ms
+   × S-CASE: a case from the supplier master to the final release, and a cancelled one > 11 cleanup: R2, R3 (and offline) delete their own items; R1 keeps the showcase 218829ms
+     → Stopped on GET /form/2/AcDOSunMEpSA/CIQ_Audit_Event_A00/PkEPOMSzkZ_5: 429 Too Many Requests. No retry; nothing calls Kissflow for 20 minutes.
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  live/case.live.ts > S-CASE: a case from the supplier master to the final release, and a cancelled one > 11 cleanup: R2, R3 (and offline) delete their own items; R1 keeps the showcase
+StopError: Stopped on GET /form/2/AcDOSunMEpSA/CIQ_Audit_Event_A00/PkEPOMSzkZ_5: 429 Too Many Requests. No retry; nothing calls Kissflow for 20 minutes.
+ ❯ Object.check live/lib/queue.ts:243:22
+    241|     check(status, body, label) {
+    242|       const why = challengeOf(status, body);
+    243|       if (why) throw new StopError(`Stopped on ${label}: ${why}. No re…
+       |                      ^
+    244|     },
+    245|     stopped: () => stop,
+ ❯ live/lib/liveClient.ts:432:15
+ ❯ live/lib/queue.ts:227:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 15 passed (16)
+   Start at  15:56:48
+   Duration  1514.21s (transform 613ms, setup 0ms, collect 1.10s, tests 1512.95s, environment 0ms, prepare 34ms)
+

@@ -1,0 +1,125 @@
+{
+ "key": "opEdited",
+ "id": "CIQ_op_edited_Open_point_question__A00",
+ "run": "G3USQ",
+ "mode": "apply",
+ "startedAt": "2026-10-21T18:28:27.434Z",
+ "steps": [
+  {
+   "step": 1,
+   "what": "deactivate",
+   "at": "2026-10-21T18:29:50.016Z"
+  },
+  {
+   "step": 2,
+   "what": "harden-apply",
+   "at": "2026-10-21T18:29:57.035Z"
+  },
+  {
+   "step": 3,
+   "what": "capture",
+   "at": "2026-10-21T18:30:17.405Z"
+  },
+  {
+   "step": 4,
+   "what": "tests",
+   "at": "2026-10-21T18:30:30.755Z"
+  },
+  {
+   "step": 4,
+   "test": "Action_opEdited_read_app_item",
+   "status": 200,
+   "pass": true,
+   "answer": "{\"_id\":\"CIQ_Open_Point_A00\",\"Data\":[{\"_id\":\"PkEPVmf5pIKU\",\"_activity_instance_id\":[\"PkEPVmmFB2Pc\"],\"_current_assigned_to\":[{\"_id\":\"UsEJUfjYLM8Y\",\"Name\":\"Thomas\",\"Kind\":\"User\"}],\"_status\":\"InProgress\",\"Name\":\"CIQ Open Point from Thomas\",\"_created_at\":\"2026-10-21T18:17:26Z\",\"_created_by\":{\"_id\":\"UsEJUfjYLM8Y\",\"Name\":\"Thomas\",\"Kind\":\"User\"},\"OP_Key\":\"ZZT-N21-A3-FO2DM-OP1\",\"Round_No\":2,\"Query_Key\":\"ZZT-N21-A3-FO2DM-OP1-R2\",\"Case_Code\":\"ZZT-N21-A3-FO2DM-C1\",\"Cycle_No\":1,\"Supplier_Code\":\"ZZT-SUP-A3\",\"Case_Item_Id\":\"PkEPVlrp7HwN\",\"OP_Kind\":\"Query\",\"OP_Dept\":\"QM\",\"Raised_By_Dept\":\"QM\",\"OP_To_Supplier\":\"Yes\",\"Ref_Kind\":\"Section\",\"Ref_Section_Key\":\"K4\",\"Ref_Label\":\"K4 · ZZT test section\",\"Kind_Label\":\"Question\",\"Question_Text\":\"ZZT ZZT-N21-A3-FO2DM-OP1 question, EDITED before the op.edited capture (fictional).\",\"Supplier_Justification\":\"ZZT test justification (fictional).\",\"Responsible_User\":{\"_id\":\"UsEJUfjYLM8Y\",\"Name\":\"Thomas\",\"Kind\":\"User\"},\"Responsible_Name\":\"ZZT Quentin Test (fictional)\",\"Responsible_Dept_Label\":\"Quality Management\",\"Supplier_Due_Date\":\"2026-11-04\",\"Portal_Contact_Ids\":\"UsEJUfjYLM8Y\",\"Portal_Query_Item_Id\":\"PkEPVrlbLg1o\",\"OP_Progress\":\"Open\",\"Open_Num\":1,\"Start_Gate\":\"\",\"Raised_By_User\":{\"_id\":\"UsEJUfjYLM8Y\",\"Name\":\"Thomas\",\"Kind\":\"User\"},\"Raised_By_Name\":\"ZZT Quentin Test (fictional)\",\"Thread_JSON\":\"[]\",\"Raiser_Assignee\":[{\"_id\":\"UsEJUfjYLM8Y\",\"Name\":\"Thomas\",\"Kind\":\"User\"}]}]}"
+  },
+  {
+   "step": 4,
+   "test": "Action_opEdited_read_target",
+   "status": 200,
+   "pass": true,
+   "answer": "{\"_id\":\"CIQP_Query_A00\",\"Data\":[{\"_id\":\"PkEPVrlbLg1o\",\"_activity_instance_id\":[\"PkEPVrlpvlpO\"],\"_current_assigned_to\":[{\"_id\":\"UsEJUfjYLM8Y\",\"Name\":\"Thomas\",\"Kind\":\"User\"}],\"_status\":\"InProgress\",\"Name\":\"CIQP Query from Thomas\",\"_created_at\":\"2026-10-21T18:22:30Z\",\"_created_by\":{\"_id\":\"UsEJUfjYLM8Y\",\"Name\":\"Thomas\",\"Kind\":\"User\"},\"Query_Key\":\"ZZT-N21-A3-FO2DM-OP1-R2\",\"Round_No\":2,\"Case_Code\":\"ZZT-N21-A3-FO2DM-C1\",\"Cycle_No\":1,\"Supplier_Code\":\"ZZT-SUP-A3\",\"App_Open_Point_Id\":\"PkEPVmf5pIKU\",\"Kind_Label\":\"Question\",\"Responsible_Department\":\"Quality Management\",\"Responsible_Name\":\"ZZT Quentin Test (fictional)\",\"Ref_Kind\":\"Section\",\"Ref_Section_Key\":\"K4\",\"Ref_Field_Key\":\"\",\"Ref_Row_Id\":\"\",\"Ref_Doc_Id\":\"\",\"Ref_Doc_File_Name\":\"\",\"Ref_Label\":\"K4 · ZZT test section\",\"Question_Text\":\"ZZT ZZT-N21-A3-FO2DM-OP1 question for the hardening apply test (fictional).\",\"Supplier_Justification\":\"ZZT test justification (fictional).\",\"Supplier_Due_Date\":\"2026-11-04\",\"New_Section_Item_Key\":\"\",\"Assigned_Contacts\":[{\"_id\":\"UsEJUfjYLM8Y\",\"Name\":\"Thomas\",\"Kind\":\"User\"}]},{\"_id\":\"PkEPVpT6e4Cd\",\"_activity_instance_id\":[\"PkEPVpTLTt6J\"],\"_current_assigned_to\":[{\"_id\":\"UsEJUfjYLM8Y\",\"Name\":\"Thomas\",\"Kind\":\"User\"}],\"_status\":\"InProgress\",\"Name\":\"CIQP Query from Thomas\",\"_created_at\":\"2026-10-21T18:20:13Z\",\"_created_by\":{\"_id\":\"UsEJUfjYLM8Y\",\"Name\":\"Thomas\",\"Kind\":\"User\"},\"Query_Key\":\"ZZT-N21-A3-FO2DM-OP1-R1\",\"Round_No\":1,\"Case_Code\":\"ZZT-N21-A3-FO2DM-C1\",\"Cycle_No\":1,\"Supplier_Code\":\"ZZT-SUP-A3\",\"App_Open_Poi"
+  },
+  {
+   "step": 4,
+   "test": "Action_opEdited_pick",
+   "status": 200,
+   "pass": true,
+   "answer": "{\"_id\":\"PkEPVrlbLg1o\",\"Question_Text\":\"ZZT ZZT-N21-A3-FO2DM-OP1 question, EDITED before the op.edited capture (fictional).\",\"Supplier_Justification\":\"ZZT test justification (fictional).\",\"Supplier_Due_Date\":\"2026-11-04\",\"Edited_At\":\"2026-10-21T18:31:25Z\"}"
+  },
+  {
+   "step": 4,
+   "test": "Action_OE_update_query",
+   "status": 200,
+   "pass": true,
+   "answer": "{\"Question_Text\":\"ZZT ZZT-N21-A3-FO2DM-OP1 question, EDITED before the op.edited capture (fictional).\",\"Edited_At\":\"2026-10-21T18:31:25Z\",\"_modified_at\":\"2026-10-21T18:31:45Z\",\"_id\":\"PkEPVrlbLg1o\"}"
+  },
+  {
+   "step": 5,
+   "what": "trigger sample",
+   "at": "2026-10-21T18:32:22.707Z"
+  },
+  {
+   "step": 6,
+   "what": "publish + activate",
+   "at": "2026-10-21T18:32:43.270Z"
+  }
+ ],
+ "checks": [
+  {
+   "label": "edit P1's Question_Text again (admin PUT)",
+   "pass": true
+  },
+  {
+   "label": "op.edited on P1 → R2q carries the new question: applied (shown after 7 s)",
+   "pass": true,
+   "detail": {
+    "webhook": 200
+   },
+   "kind": "accepted",
+   "code": "op.edited",
+   "sent": {
+    "opItemId": "PkEPVmf5pIKU",
+    "idempotencyKey": "ZZT-N21-A3-opEdited-mvig9wri-13"
+   }
+  },
+  {
+   "label": "op.edited on P2 (forged link to R1q): refused, target(s) unchanged after 45 s",
+   "pass": true,
+   "detail": {
+    "webhook": 200,
+    "changed": []
+   },
+   "kind": "refused",
+   "code": "op.edited",
+   "sent": {
+    "opItemId": "PkEPVyfDQ2DP",
+    "idempotencyKey": "ZZT-N21-A3-opEdited-mvigac3g-14"
+   },
+   "expect": "CIQP Query PkEPVpT6e4Cd does not name open point ZZT-N21-A3-G3USQ-OP2 (PkEPVyfDQ2DP) back",
+   "verifiedBy": "target read-back (Run history is not readable over REST)"
+  },
+  {
+   "label": "the 45-s refusal window is long enough: the slowest accepted hand-off here showed after 7 s (at most 23 s)",
+   "pass": true,
+   "detail": "a hand-off may take longer than the refusal window: a refused check above may have been read before a wrong write landed; re-read its target and check Run history"
+  }
+ ],
+ "backups": {
+  "preflight": "backups/CIQ_op_edited_Open_point_question__A00.preflight.2026-10-21T18-28-41-256Z.json",
+  "unhardened": "backups/CIQ_op_edited_Open_point_question__A00.before-harden.2026-10-21T18-30-03-709Z.json",
+  "beforeHarden": "backups/CIQ_op_edited_Open_point_question__A00.before-harden.2026-10-21T18-30-03-709Z.json",
+  "beforeTests": "backups/CIQ_op_edited_Open_point_question__A00.before-tests.2026-10-21T18-30-37-274Z.json"
+ },
+ "result": "done",
+ "fixture": {
+  "P1": "PkEPVmf5pIKU",
+  "P2": "PkEPVyfDQ2DP",
+  "R1q": "PkEPVpT6e4Cd",
+  "R2q": "PkEPVrlbLg1o"
+ },
+ "liveChecks": "all passed",
+ "code": 0,
+ "calls": 45,
+ "hooks": 3,
+ "endedAt": "2026-10-21T18:34:22.137Z"
+}

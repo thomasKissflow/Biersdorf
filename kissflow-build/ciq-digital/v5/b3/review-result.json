@@ -1,0 +1,275 @@
+{
+ "step": "B3-review",
+ "at": "2026-10-15T02:58:08.855Z",
+ "apply": true,
+ "offline": false,
+ "flow": "CIQ Review",
+ "type": "process",
+ "nameTaken": null,
+ "create": {
+  "status": 200,
+  "id": "CIQ_Review_A00"
+ },
+ "id": "CIQ_Review_A00",
+ "idAsExpected": true,
+ "preflight": {
+  "errors": [],
+  "warnings": []
+ },
+ "kinds": {
+  "Model": 1,
+  "Row": 20,
+  "Column": 31,
+  "Field": 30,
+  "QueryDefinition": 2,
+  "Node": 33,
+  "Expression": 7,
+  "ProcessDef": 1,
+  "Permission": 240,
+  "Activity": 8,
+  "Resource": 6,
+  "Appearance": 1,
+  "Style": 1
+ },
+ "built": {
+  "fields": 30,
+  "required": [
+   "Review_Key",
+   "Case_Code",
+   "Case_Item_Id",
+   "Review_Dept"
+  ],
+  "children": [],
+  "formulas": [
+   "Review_Gate: IF(OR(ISBLANK(Open_Count),ISBLANK(RMES_Gaps)),\"\",IF(Open_Count+RMES_Gaps=0,\"OK\",\"\"))",
+   "Activity_1wb6scg: Review_Dept = \"REG\"",
+   "Activity_116f3su: Review_Dept = \"SAF\"",
+   "Activity_12d3ab4: Review_Dept = \"QM\"",
+   "Activity_1wkxybl: Review_Dept = \"MIC\"",
+   "Activity_1um3oo7: Review_Dept = \"SUS\"",
+   "Activity_1mh3ji6: Review_Dept = \"RMM\""
+  ],
+  "steps": [
+   "Activate review [Activity_47r3ow]  perms=30",
+   "Review – Regulatory [Activity_1wb6scg] AppRole:CIQ Regulatory Reviewer if Review_Dept = \"REG\" perms=30",
+   "Review – Safety [Activity_116f3su] AppRole:CIQ Safety Reviewer if Review_Dept = \"SAF\" perms=30",
+   "Review – QM [Activity_12d3ab4] AppRole:CIQ QM Reviewer if Review_Dept = \"QM\" perms=30",
+   "Review – Microbiology [Activity_1wkxybl] AppRole:CIQ Microbiology Reviewer if Review_Dept = \"MIC\" perms=30",
+   "Review – Sustainability [Activity_1um3oo7] AppRole:CIQ Sustainability Reviewer if Review_Dept = \"SUS\" perms=30",
+   "Review – RMM [Activity_1mh3ji6] AppRole:CIQ RMM if Review_Dept = \"RMM\" perms=30",
+   "End [Activity_1xjk2tg]  perms=30"
+  ],
+  "levels": {
+   "Activate review": {
+    "Editable": [
+     "Review_Key",
+     "Case_Code",
+     "Cycle_No",
+     "Case_Item_Id",
+     "Supplier_Code",
+     "Trade_Name",
+     "Review_Dept",
+     "Round_No",
+     "Activation_Kind",
+     "Activation_Reason",
+     "Activated_By_Name",
+     "Assignee_User",
+     "Assignee_Name",
+     "Assignee_Email",
+     "Reassign_Reason",
+     "Track_Status",
+     "Open_Count",
+     "RMES_Gaps",
+     "Review_Confirm",
+     "Completed_By",
+     "Completed_By_Name",
+     "Completed_By_Email",
+     "Completed_At",
+     "RMES_Decision",
+     "RMES_Decision_Reason",
+     "Rejection_Handling",
+     "Rejection_Note",
+     "Rejected_Depts_Covered",
+     "On_Behalf_Of"
+    ],
+    "ReadOnly": 1
+   },
+   "Review – Regulatory": {
+    "ReadOnly": 17,
+    "Editable": [
+     "Assignee_User",
+     "Assignee_Name",
+     "Assignee_Email",
+     "Reassign_Reason",
+     "Completed_By_Name",
+     "Completed_By_Email",
+     "RMES_Decision_Reason",
+     "On_Behalf_Of"
+    ],
+    "Mandatory": [
+     "Review_Gate",
+     "Review_Confirm",
+     "Completed_By",
+     "Completed_At",
+     "RMES_Decision"
+    ]
+   },
+   "Review – Safety": {
+    "ReadOnly": 17,
+    "Editable": [
+     "Assignee_User",
+     "Assignee_Name",
+     "Assignee_Email",
+     "Reassign_Reason",
+     "Completed_By_Name",
+     "Completed_By_Email",
+     "RMES_Decision_Reason",
+     "On_Behalf_Of"
+    ],
+    "Mandatory": [
+     "Review_Gate",
+     "Review_Confirm",
+     "Completed_By",
+     "Completed_At",
+     "RMES_Decision"
+    ]
+   },
+   "Review – QM": {
+    "ReadOnly": 19,
+    "Editable": [
+     "Assignee_User",
+     "Assignee_Name",
+     "Assignee_Email",
+     "Reassign_Reason",
+     "Completed_By_Name",
+     "Completed_By_Email",
+     "On_Behalf_Of"
+    ],
+    "Mandatory": [
+     "Review_Gate",
+     "Review_Confirm",
+     "Completed_By",
+     "Completed_At"
+    ]
+   },
+   "Review – Microbiology": {
+    "ReadOnly": 19,
+    "Editable": [
+     "Assignee_User",
+     "Assignee_Name",
+     "Assignee_Email",
+     "Reassign_Reason",
+     "Completed_By_Name",
+     "Completed_By_Email",
+     "On_Behalf_Of"
+    ],
+    "Mandatory": [
+     "Review_Gate",
+     "Review_Confirm",
+     "Completed_By",
+     "Completed_At"
+    ]
+   },
+   "Review – Sustainability": {
+    "ReadOnly": 19,
+    "Editable": [
+     "Assignee_User",
+     "Assignee_Name",
+     "Assignee_Email",
+     "Reassign_Reason",
+     "Completed_By_Name",
+     "Completed_By_Email",
+     "On_Behalf_Of"
+    ],
+    "Mandatory": [
+     "Review_Gate",
+     "Review_Confirm",
+     "Completed_By",
+     "Completed_At"
+    ]
+   },
+   "Review – RMM": {
+    "ReadOnly": 16,
+    "Editable": [
+     "Assignee_User",
+     "Assignee_Name",
+     "Assignee_Email",
+     "Reassign_Reason",
+     "Completed_By_Name",
+     "Completed_By_Email",
+     "Rejection_Handling",
+     "Rejection_Note",
+     "Rejected_Depts_Covered",
+     "On_Behalf_Of"
+    ],
+    "Mandatory": [
+     "Review_Gate",
+     "Review_Confirm",
+     "Completed_By",
+     "Completed_At"
+    ]
+   },
+   "End": {
+    "ReadOnly": 30
+   }
+  }
+ },
+ "write": {
+  "ok": true,
+  "putDraft": 200,
+  "publish": 200,
+  "publishedAt": "2026-10-15T02:58:14Z"
+ },
+ "readBack": {
+  "publishedAt": "2026-10-15T02:58:14Z",
+  "diffVsSent": {
+   "added": [
+    "SendBackToInitiator Activity",
+    "PublishedBy User Thomas"
+   ],
+   "removed": [],
+   "changedCount": 0,
+   "changed": []
+  }
+ },
+ "published": {
+  "status": 200,
+  "fields": 30,
+  "missing": [],
+  "requiredPublished": [
+   "Review_Key",
+   "Case_Code",
+   "Case_Item_Id",
+   "Review_Dept"
+  ],
+  "tables": [],
+  "childColumns": {},
+  "workflow": [
+   {
+    "id": "Activity_1wb6scg",
+    "name": "Review – Regulatory"
+   },
+   {
+    "id": "Activity_116f3su",
+    "name": "Review – Safety"
+   },
+   {
+    "id": "Activity_12d3ab4",
+    "name": "Review – QM"
+   },
+   {
+    "id": "Activity_1wkxybl",
+    "name": "Review – Microbiology"
+   },
+   {
+    "id": "Activity_1um3oo7",
+    "name": "Review – Sustainability"
+   },
+   {
+    "id": "Activity_1mh3ji6",
+    "name": "Review – RMM"
+   }
+  ]
+ },
+ "calls": 7
+}

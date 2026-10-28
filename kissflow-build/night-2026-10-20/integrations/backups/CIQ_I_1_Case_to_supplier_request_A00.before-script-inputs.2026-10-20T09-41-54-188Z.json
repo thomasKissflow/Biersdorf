@@ -1,0 +1,754 @@
+{
+ "Root": "CIQ_I_1_Case_to_supplier_request_A00",
+ "CIQ_I_1_Case_to_supplier_request_A00": {
+  "Id": "CIQ_I_1_Case_to_supplier_request_A00",
+  "Description": "Plan v6 I-1: when a CIQ Case enters 'Waiting for supplier: CIQ', create the supplier's CIQP Request in the portal and store its id on the case.",
+  "Name": "CIQ I-1 Case to supplier request",
+  "Kind": "Integration",
+  "FlowType": "Integration",
+  "Integration::Trigger": [
+   "Trigger_I1_case_enters_wait"
+  ],
+  "Integration::Action": [
+   "Action_I1_parse_assignees",
+   "Action_I1_create_request",
+   "Action_I1_store_request_id"
+  ],
+  "_application_id": "CIQ_Digital_A00"
+ },
+ "PublishedAt": "2026-10-20T09:41:51Z",
+ "PublishedBy": {
+  "_id": "UsEJUfjYLM8Y",
+  "Name": "Thomas",
+  "Kind": "User"
+ },
+ "_meta_version": "1792489311892657",
+ "Trigger_I1_case_enters_wait": {
+  "Id": "Trigger_I1_case_enters_wait",
+  "Kind": "Trigger",
+  "Type": "App",
+  "Name": "When an item enters this step",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQ_I_1_Case_to_supplier_request_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "TriggerId": "ItemEntersToStep",
+   "TriggerName": "When an item enters this step"
+  },
+  "Trigger::FieldMapping": [
+   "FieldMapping_I1T_1lla8",
+   "FieldMapping_I1T_3lla8"
+  ],
+  "Trigger::Reference": [
+   "Reference_XNPTu2Iz8l"
+  ],
+  "Output": {
+   "_id": "ZZT-I1-SAMPLE-CASE",
+   "Name": "ZZT-I1S",
+   "_created_by": {
+    "_id": "UsEJUfjYLM8Y",
+    "Name": "Thomas",
+    "Kind": "User"
+   },
+   "_modified_by": {
+    "_id": "UsEJUfjYLM8Y",
+    "Name": "Thomas",
+    "Kind": "User"
+   },
+   "_created_at": "2026-10-20T09:26:46-08:00 America/Los_Angeles",
+   "_modified_at": "2026-10-20T09:26:46-08:00 America/Los_Angeles",
+   "_is_deleted": true,
+   "_deleted_at": "2026-10-20T09:26:46-08:00 America/Los_Angeles",
+   "_deleted_by": {
+    "_id": "UsEJUfjYLM8Y",
+    "Name": "Thomas",
+    "Kind": "User"
+   },
+   "_flow_name": "Text data",
+   "_application_id": "Text data",
+   "_flow_type": "Text data",
+   "_doc_version": "Text data",
+   "_current_step": "Text data",
+   "_current_assigned_to": [
+    {
+     "_id": "UsEJUfjYLM8Y",
+     "Name": "Thomas",
+     "Kind": "User"
+    },
+    {
+     "_id": "everyone",
+     "Name": "Everyone",
+     "Kind": "Group"
+    }
+   ],
+   "_completed_at": "2026-10-20T09:26:46-08:00 America/Los_Angeles",
+   "_status": "Text data",
+   "_stage": 4726,
+   "_restart_info": {
+    "Key": "Text Data"
+   },
+   "_reopen_info": "Text data",
+   "_root_process_instance": "Text data",
+   "_submitted_at": "2026-10-20T09:26:46-08:00 America/Los_Angeles",
+   "_request_number": 3348,
+   "_is_public_form": true,
+   "_counter": 6141,
+   "_last_completed_step": "Text data",
+   "_progress": 3847,
+   "_note": {
+    "Key": "Text Data"
+   },
+   "_expire_at": "2026-10-20T09:26:46-08:00 America/Los_Angeles",
+   "_source_instance": "Text data",
+   "_triggered_integrations": {
+    "Key": "Text Data"
+   },
+   "_subflow": {
+    "Key": "Text Data"
+   },
+   "_watchers": "Text data",
+   "Case_Code": "ZZT-I1S",
+   "Cycle_No": 1,
+   "Case_Title": "Text data",
+   "Reactivates_Case_Item": "Text data",
+   "Trade_Name": "ZZT sample material (fictional)",
+   "Main_INCI": "Tocopherol",
+   "BDF_Material_No": "ZZT-RM-I1S",
+   "SAP_Material_No": "Text data",
+   "IRMA_Ref": "Text data",
+   "Supplier_Code": "ZZT-SUP-DEV",
+   "Supplier_Legal_Name": "ZZT Dev Supplier (fictional)",
+   "Owner_RMM": {
+    "_id": "UsEJUfjYLM8Y",
+    "Name": "Thomas",
+    "Kind": "User"
+   },
+   "Target_Markets_Text": "Text data",
+   "Origin_Types": "Text data",
+   "Case_Test": "No",
+   "Request_Key": "",
+   "BDF_Contact_Name": "ZZT RMM (fictional)",
+   "BDF_Contact_Email": "rmm.zzt@example.com",
+   "Markets_Label": "EU",
+   "Template_Label": "ZZT template (fictional)",
+   "Supplier_Due_Date": "2026-11-03",
+   "Case_Contacts_JSON": "[{\"id\":\"UsEJUfjYLM8Y\",\"name\":\"ZZT Contact (fictional)\",\"email\":\"zzt.contact@example.com\",\"title\":\"\",\"mayConfirm\":true}]",
+   "Portal_Contact_Ids": "Text data",
+   "Confirm_Contact_Ids": "Text data",
+   "Supplier_Contact_Emails": "Text value",
+   "Release_Item_Id": "Text data",
+   "Release_Key": "Text data",
+   "Manifest_Hash": "Text data",
+   "Release_Manifest_JSON": "Text value",
+   "Rule_Set_Version": "ZZT-RS",
+   "Overall_Approval_Required": "Text data",
+   "Basic_Data_Received": "Text data",
+   "Portal_Request_Item_Id": "",
+   "Dept_REG_Active": "No",
+   "Dept_SAF_Active": "Yes",
+   "Dept_QM_Active": "No",
+   "Dept_MIC_Active": "Yes",
+   "Dept_SUS_Active": "Yes",
+   "Dept_RMM_Active": "Yes",
+   "Initial_Scope_Run_Key": "Text data",
+   "Completeness_Request_Key": "Text data",
+   "Completeness_Declaration_Text": "Text value",
+   "Completeness_Text_Key": "Text data",
+   "Completeness_Due_Date": "2026-10-20",
+   "Completeness_Confirm": "Text data",
+   "Completeness_By_Name": "Text data",
+   "Completeness_By_Email": "thomas@kissflow.com",
+   "Completeness_By_Role": "Text data",
+   "Completeness_At": "2026-10-20T09:26:46-08:00 America/Los_Angeles",
+   "RMES_Key": "Text data",
+   "RMES_Created_At": "2026-10-20T09:26:46-08:00 America/Los_Angeles",
+   "Final_Release_Request_Key": "Text data",
+   "Final_Release_Declaration_Text": "Text value",
+   "Final_Release_Text_Key": "Text data",
+   "Final_Release_Due_Date": "2026-10-20",
+   "Final_Release_Confirm": "Text data",
+   "Final_Release_By_Name": "Text data",
+   "Final_Release_By_Email": "thomas@kissflow.com",
+   "Final_Release_By_Role": "Text data",
+   "Final_Release_At": "2026-10-20T09:26:46-08:00 America/Los_Angeles",
+   "Released_Revs_JSON": "Text value",
+   "Evidence_List_Text": "Text value",
+   "Completion_Trigger": "Text data",
+   "REG_Review_Confirm": "Confirmed",
+   "REG_Completed_By": {
+    "_id": "UsEJUfjYLM8Y",
+    "Name": "Thomas",
+    "Kind": "User"
+   },
+   "REG_Completed_By_Email": "thomas@kissflow.com",
+   "REG_Completed_At": "2026-10-20T09:26:46-08:00 America/Los_Angeles",
+   "REG_On_Behalf_Of": "Text data",
+   "REG_RMES_Decision": "Approved",
+   "REG_RMES_Decision_Reason": "Text value",
+   "SAF_Review_Confirm": "Confirmed",
+   "SAF_Completed_By": {
+    "_id": "UsEJUfjYLM8Y",
+    "Name": "Thomas",
+    "Kind": "User"
+   },
+   "SAF_Completed_By_Email": "thomas@kissflow.com",
+   "SAF_Completed_At": "2026-10-20T09:26:46-08:00 America/Los_Angeles",
+   "SAF_On_Behalf_Of": "Text data",
+   "SAF_RMES_Decision": "Approved",
+   "SAF_RMES_Decision_Reason": "Text value",
+   "QM_Review_Confirm": "Confirmed",
+   "QM_Completed_By": {
+    "_id": "UsEJUfjYLM8Y",
+    "Name": "Thomas",
+    "Kind": "User"
+   },
+   "QM_Completed_By_Email": "thomas@kissflow.com",
+   "QM_Completed_At": "2026-10-20T09:26:46-08:00 America/Los_Angeles",
+   "QM_On_Behalf_Of": "Text data",
+   "MIC_Review_Confirm": "Confirmed",
+   "MIC_Completed_By": {
+    "_id": "UsEJUfjYLM8Y",
+    "Name": "Thomas",
+    "Kind": "User"
+   },
+   "MIC_Completed_By_Email": "thomas@kissflow.com",
+   "MIC_Completed_At": "2026-10-20T09:26:46-08:00 America/Los_Angeles",
+   "MIC_On_Behalf_Of": "Text data",
+   "SUS_Review_Confirm": "Confirmed",
+   "SUS_Completed_By": {
+    "_id": "UsEJUfjYLM8Y",
+    "Name": "Thomas",
+    "Kind": "User"
+   },
+   "SUS_Completed_By_Email": "thomas@kissflow.com",
+   "SUS_Completed_At": "2026-10-20T09:26:46-08:00 America/Los_Angeles",
+   "SUS_On_Behalf_Of": "Text data",
+   "RMM_Review_Confirm": "Confirmed",
+   "RMM_Completed_By": {
+    "_id": "UsEJUfjYLM8Y",
+    "Name": "Thomas",
+    "Kind": "User"
+   },
+   "RMM_Completed_By_Email": "thomas@kissflow.com",
+   "RMM_Completed_At": "2026-10-20T09:26:46-08:00 America/Los_Angeles",
+   "RMM_On_Behalf_Of": "Text data",
+   "Open_Items_Count": 9075,
+   "Open_CR_Count": 5014,
+   "REG_Open_Count": 4862,
+   "REG_RMES_Gaps": 5204,
+   "SAF_Open_Count": 8299,
+   "SAF_RMES_Gaps": 7525,
+   "QM_Open_Count": 7198,
+   "MIC_Open_Count": 8282,
+   "SUS_Open_Count": 5781,
+   "RMM_Open_Count": 8616,
+   "Hold_For_Open_Items": "Text data",
+   "Open_Items_Gate_Release": "Text data",
+   "Open_Items_Gate_Close": "Text data",
+   "Hold_Note": "Text value",
+   "Hold_Override_Reason_Release": "Text value",
+   "Hold_Override_Reason_Close": "Text value",
+   "REG_Gate": "Text data",
+   "SAF_Gate": "Text data",
+   "QM_Gate": "Text data",
+   "MIC_Gate": "Text data",
+   "SUS_Gate": "Text data",
+   "RMM_Gate": "Text data",
+   "Late_Completions_Text": "Text value",
+   "Overall_Decision": "Approved",
+   "Overall_Reason": "Text value",
+   "Overall_Decided_By": {
+    "_id": "UsEJUfjYLM8Y",
+    "Name": "Thomas",
+    "Kind": "User"
+   },
+   "Supplier_Closing_Text": "Text value",
+   "Final_PDF": [
+    {
+     "fileExtension": "jpg",
+     "id": "Attachment001",
+     "key": "Sample_Process/Instance001/Step001/Attachment001/Sample_Image.jpg",
+     "name": "Sample_Image.jpg",
+     "size": 38052,
+     "photos": [
+      {
+       "fileExtension": "jpg",
+       "height": 744,
+       "key": "Sample_Process/Instance001/Step001/Attachment001/Sample_Image.jpg",
+       "name": "Sample_Image.jpg",
+       "size": 3048912,
+       "width": 1366
+      },
+      {
+       "fileExtension": "jpeg",
+       "height": 654,
+       "key": "Sample_Process/Instance001/Step001/Attachment001/photos/1200x800.jpeg",
+       "name": "1200x800.jpeg",
+       "size": 22693,
+       "width": 1200
+      },
+      {
+       "fileExtension": "jpeg",
+       "height": 55,
+       "key": "Sample_Process/Instance001/Step001/Attachment001/photos/100x100.jpeg",
+       "name": "100x100.jpeg",
+       "size": 1197,
+       "width": 100
+      }
+     ]
+    }
+   ],
+   "Template_Version": "ZZT-TPL",
+   "Case_Phase": "Review",
+   "Priority": "High",
+   "Duplicate_Reason": "Text value",
+   "Follow_Up_Of_Case": "Text data",
+   "Follow_Up_Of_Report": "Text data",
+   "Cancel_Reason": "Text value",
+   "Cancelled_By_Name": "Text data",
+   "Cancelled_At": "2026-10-20T09:26:46-08:00 America/Los_Angeles",
+   "Cancelled_From_Phase": "Text data",
+   "Reactivate_Reason": "Text value",
+   "Reactivated_At": "2026-10-20T09:26:46-08:00 America/Los_Angeles",
+   "Release_Requested_At": "2026-10-20T09:26:46-08:00 America/Los_Angeles",
+   "Portal_Release_Item_Id": "Text data",
+   "Final_Document_Hash": "Text data",
+   "Final_Document_At": "2026-10-20T09:26:46-08:00 America/Los_Angeles",
+   "Undefined_Origin": "No",
+   "Case_Data_Item_Id": "Text data",
+   "Supplier_Files": [
+    {
+     "fileExtension": "jpg",
+     "id": "Attachment001",
+     "key": "Sample_Process/Instance001/Step001/Attachment001/Sample_Image.jpg",
+     "name": "Sample_Image.jpg",
+     "size": 38052,
+     "photos": [
+      {
+       "fileExtension": "jpg",
+       "height": 744,
+       "key": "Sample_Process/Instance001/Step001/Attachment001/Sample_Image.jpg",
+       "name": "Sample_Image.jpg",
+       "size": 3048912,
+       "width": 1366
+      },
+      {
+       "fileExtension": "jpeg",
+       "height": 654,
+       "key": "Sample_Process/Instance001/Step001/Attachment001/photos/1200x800.jpeg",
+       "name": "1200x800.jpeg",
+       "size": 22693,
+       "width": 1200
+      },
+      {
+       "fileExtension": "jpeg",
+       "height": 55,
+       "key": "Sample_Process/Instance001/Step001/Attachment001/photos/100x100.jpeg",
+       "name": "100x100.jpeg",
+       "size": 1197,
+       "width": 100
+      }
+     ]
+    }
+   ],
+   "Config_Bundle_JSON": "{\"format\":\"ciq-bundle/1\",\"zzt\":true}",
+   "Config_Bundle_Hash": "zzt-sample",
+   "BDF_Set_JSON": "{}",
+   "Portal_Assignees_JSON": "[{\"_id\":\"UsEJUfjYLM8Y\"}]",
+   "Release_Assignees_JSON": "[{\"_id\":\"UsEJUfjYLM8Y\"}]",
+   "Config_Answers_JSON": "Text value",
+   "Answers_JSON": "Text value",
+   "Answered_By_JSON": "Text value",
+   "Justifications_JSON": "Text value",
+   "Components_JSON": "Text value",
+   "Scope_JSON": "Text value",
+   "Requested_Docs_JSON": "Text value",
+   "Documents_JSON": "Text value",
+   "Answers_Rev": 5644,
+   "Answers_Changed_At": "2026-10-20T09:26:46-08:00 America/Los_Angeles",
+   "Answers_Changed_By_Email": "Text data",
+   "Change_Report_Text": "Text value",
+   "Change_Report_Rev": 7444,
+   "Change_Report_By_Email": "Text data",
+   "Change_Report_At": "2026-10-20T09:26:46-08:00 America/Los_Angeles",
+   "_flow_id": "CIQ_Case_A00",
+   "_current_context": [
+    {
+     "_id": "Text Data",
+     "_activity_id": "Text Data",
+     "Name": "Text Data",
+     "AssignedTo": [
+      {
+       "_id": "Text Data",
+       "Name": "Text Data",
+       "Kind": "User"
+      }
+     ]
+    }
+   ],
+   "_previous_context": [
+    {
+     "_id": "Text Data",
+     "_activity_id": "Text Data",
+     "Name": "Text Data",
+     "AssignedTo": [
+      {
+       "_id": "Text Data",
+       "Name": "Text Data",
+       "Kind": "User"
+      }
+     ]
+    }
+   ],
+   "_last_action_performed_by": {
+    "_id": "UsEJUfjYLM8Y",
+    "Name": "Thomas",
+    "Kind": "User"
+   },
+   "_last_action_performed_at": "2026-10-20T09:26:46-08:00 America/Los_Angeles"
+  },
+  "IsTested": true
+ },
+ "Action_I1_create_request": {
+  "Id": "Action_I1_create_request",
+  "Kind": "Action",
+  "Type": "Create",
+  "Name": "Create and submit a new item",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQ_I_1_Case_to_supplier_request_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "CreateAndSubmitItem",
+   "ActionName": "Create and submit a new item"
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_I1A_5lnoz"
+  ]
+ },
+ "Action_I1_store_request_id": {
+  "Id": "Action_I1_store_request_id",
+  "Kind": "Action",
+  "Type": "Update",
+  "Name": "Update an item",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQ_I_1_Case_to_supplier_request_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "UpdateAnItem",
+   "ActionName": "Update an item"
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_I1A_7lp7j"
+  ]
+ },
+ "FieldMapping_I1T_1lla8": {
+  "Id": "FieldMapping_I1T_1lla8",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Field009",
+  "Label": "Choose a process",
+  "Name": "process_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Trigger": "Trigger_I1_case_enters_wait",
+  "SelectedDropdown": [
+   {
+    "FieldId": "CIQ_Case_A00",
+    "FieldName": "CIQ Case",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_I1T_2lla8"
+  ]
+ },
+ "Property_I1T_2lla8": {
+  "Id": "Property_I1T_2lla8",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_I1T_1lla8",
+  "Type": "Value",
+  "Value": [
+   "CIQ_Case_A00"
+  ],
+  "Name": "process_id"
+ },
+ "FieldMapping_I1T_3lla8": {
+  "Id": "FieldMapping_I1T_3lla8",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Field011",
+  "Label": "Choose workflow step",
+  "Name": "step_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Trigger": "Trigger_I1_case_enters_wait",
+  "SelectedDropdown": [
+   {
+    "FieldId": "Activity_1kltjdn",
+    "FieldName": "Waiting for supplier: CIQ",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_I1T_4lla8"
+  ]
+ },
+ "Property_I1T_4lla8": {
+  "Id": "Property_I1T_4lla8",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_I1T_3lla8",
+  "Type": "Value",
+  "Value": [
+   "Activity_1kltjdn"
+  ],
+  "Name": "step_id"
+ },
+ "FieldMapping_I1A_5lnoz": {
+  "Id": "FieldMapping_I1A_5lnoz",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField001",
+  "Label": "Choose a process",
+  "Name": "process_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Action": "Action_I1_create_request",
+  "SelectedDropdown": [
+   {
+    "FieldId": "CIQP_Request_A00",
+    "FieldName": "CIQP Request - CIQ Supplier Portal",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_I1A_6lnoz"
+  ]
+ },
+ "Property_I1A_6lnoz": {
+  "Id": "Property_I1A_6lnoz",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_I1A_5lnoz",
+  "Type": "Value",
+  "Value": [
+   "CIQP_Request_A00"
+  ],
+  "Name": "process_id"
+ },
+ "FieldMapping_I1A_7lp7j": {
+  "Id": "FieldMapping_I1A_7lp7j",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField002",
+  "Label": "Choose a process",
+  "Name": "process_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Action": "Action_I1_store_request_id",
+  "SelectedDropdown": [
+   {
+    "FieldId": "CIQ_Case_A00",
+    "FieldName": "CIQ Case - CIQ Digital",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_I1A_8lp7j"
+  ]
+ },
+ "Property_I1A_8lp7j": {
+  "Id": "Property_I1A_8lp7j",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_I1A_7lp7j",
+  "Type": "Value",
+  "Value": [
+   "CIQ_Case_A00"
+  ],
+  "Name": "process_id"
+ },
+ "Action_I1_parse_assignees": {
+  "Id": "Action_I1_parse_assignees",
+  "Kind": "Action",
+  "Type": "Create",
+  "Name": "Run JavaScript",
+  "IsInternalAuth": true,
+  "Connection": {},
+  "Integration": "CIQ_I_1_Case_to_supplier_request_A00",
+  "Connector": {
+   "_id": "Co4m9q4JUbkV",
+   "Name": "Run script",
+   "Version": "1.0.0",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/Runscript.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "RunJSCode",
+   "ActionName": "Run JavaScript"
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_A_CZSIRa_G",
+   "FieldMapping_nY6YUELr8A"
+  ],
+  "Output": {
+   "typeofInput": "undefined",
+   "typeofInputData": "object",
+   "typeofInputFields": "undefined",
+   "typeofContext": "object",
+   "inputErr": "ReferenceError: input is not defined",
+   "inputDataKeys": [
+    "assignees"
+   ],
+   "inputFieldsErr": "ReferenceError: input_fields is not defined"
+  },
+  "IsTested": true
+ },
+ "Reference_XNPTu2Iz8l": {
+  "Id": "Reference_XNPTu2Iz8l",
+  "Kind": "Reference",
+  "ReferencedFieldId": "Field009",
+  "ReferenceType": "Field",
+  "Trigger": "Trigger_I1_case_enters_wait"
+ },
+ "FieldMapping_A_CZSIRa_G": {
+  "Id": "FieldMapping_A_CZSIRa_G",
+  "Kind": "FieldMapping",
+  "Type": "Object",
+  "FieldId": "InputFields",
+  "Label": "Input data",
+  "Name": "input_fields",
+  "IsDropdown": false,
+  "IsPaginated": false,
+  "HelpText": "Specify the input data that should be provided to your code",
+  "AutoRefresh": false,
+  "Action": "Action_I1_parse_assignees",
+  "FieldMapping::FieldMapping": [
+   "FieldMapping_rgyg-gDmT6"
+  ]
+ },
+ "FieldMapping_nY6YUELr8A": {
+  "Id": "FieldMapping_nY6YUELr8A",
+  "Kind": "FieldMapping",
+  "Type": "Code",
+  "FieldId": "JSCode",
+  "Label": "JavaScript code",
+  "Name": "js_code",
+  "IsRequired": true,
+  "IsDropdown": false,
+  "IsPaginated": false,
+  "AutoRefresh": false,
+  "CodeLanguage": "javascript",
+  "Action": "Action_I1_parse_assignees",
+  "FieldMapping::Property": [
+   "Property_mSHGTjnBxd"
+  ]
+ },
+ "Property_mSHGTjnBxd": {
+  "Id": "Property_mSHGTjnBxd",
+  "Kind": "Property",
+  "Type": "Code",
+  "Name": "js_code",
+  "Code": "// probe: where the Input data lands (temporary; replaced by the real parser)\nlet output = { inputData: JSON.stringify(inputData).slice(0, 800), contextKeys: Object.keys(context || {}).join(\",\") };\ntry { output.ctx = JSON.stringify(context).slice(0, 1500); } catch (e) { output.ctxErr = String(e); }\nreturn output;\n",
+  "FieldMapping": "FieldMapping_nY6YUELr8A"
+ },
+ "FieldMapping_rgyg-gDmT6": {
+  "Id": "FieldMapping_rgyg-gDmT6",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "IsVisible": true,
+  "FieldMapping": "FieldMapping_A_CZSIRa_G",
+  "Name": "assignees",
+  "Label": "assignees",
+  "FieldMapping::Property": [
+   "Property_ORxVFVfYWd"
+  ]
+ },
+ "Property_ORxVFVfYWd": {
+  "Id": "Property_ORxVFVfYWd",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_rgyg-gDmT6",
+  "Type": "Field",
+  "Field": "context.Trigger_I1_case_enters_wait.Portal_Assignees_JSON",
+  "Name": "assignees",
+  "Property::Reference": [
+   "Reference_vnUHyNkTBb"
+  ]
+ },
+ "Reference_vnUHyNkTBb": {
+  "Id": "Reference_vnUHyNkTBb",
+  "Kind": "Reference",
+  "Type": "Value",
+  "StepId": "Action_I1_parse_assignees",
+  "SourceProperty": "Property_I1T_2lla8",
+  "FieldId": "Portal_Assignees_JSON",
+  "Property": "Property_ORxVFVfYWd"
+ }
+}

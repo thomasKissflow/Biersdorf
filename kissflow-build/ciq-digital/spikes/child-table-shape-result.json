@@ -1,0 +1,135 @@
+{
+  "at": "2026-10-07T11:57:08.493Z",
+  "tests": [
+    {
+      "id": "F0 read before",
+      "ok": true,
+      "detail": {
+        "Open_Lines": null,
+        "rows": 0,
+        "readKeys": []
+      }
+    },
+    {
+      "id": "F1 add row with values (Form)",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "rows": [
+          {
+            "_id": "Spike_Lines_rE1HuoAdps",
+            "Line_Text": "blocking line",
+            "Line_Open": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "F1b embedded SUM Open_Lines = 1",
+      "ok": false,
+      "detail": {}
+    },
+    {
+      "id": "F1c K-20F cross-flow SUM: Case.Open_Count = 1, Hold_Flag Yes, Gate blank",
+      "ok": false,
+      "detail": {
+        "Open_Count": null,
+        "Hold_Flag": "Yes",
+        "Gate": "OK"
+      }
+    },
+    {
+      "id": "F2 modify row (Form)",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "row": {
+          "_id": "Spike_Lines_rE1HuoAdps",
+          "_created_by": {
+            "_id": "UsEJUfjYLM8Y",
+            "Name": "Thomas",
+            "Kind": "User"
+          },
+          "_modified_by": {
+            "_id": "UsEJUfjYLM8Y",
+            "Name": "Thomas",
+            "Kind": "User"
+          },
+          "_created_at": "2026-10-07T11:57:09Z",
+          "_modified_at": "2026-10-07T11:57:17Z",
+          "Line_Text": "blocking line",
+          "Line_Open": 0
+        }
+      }
+    },
+    {
+      "id": "F2c Case.Open_Count recalculates to 0, Gate OK",
+      "ok": false,
+      "detail": {
+        "Open_Count": null,
+        "Hold_Flag": "Yes",
+        "Gate": "OK"
+      }
+    },
+    {
+      "id": "F3 add 2nd row then delete it (Form)",
+      "ok": true,
+      "detail": {
+        "add": 200,
+        "rowsAfterAdd": 2,
+        "delete": 200,
+        "rowsAfterDelete": [
+          "Spike_Lines_rE1HuoAdps"
+        ]
+      }
+    },
+    {
+      "id": "F4 restore blocking line for the gate click",
+      "ok": true,
+      "detail": {
+        "Open_Count": null,
+        "Gate": "OK"
+      }
+    },
+    {
+      "id": "P1 add row on a PROCESS child table at Start",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "rows": [
+          {
+            "_id": "Spike_Rounds_uDZlQqSkPI",
+            "Question": "q1",
+            "Outcome": "Returned"
+          }
+        ]
+      }
+    },
+    {
+      "id": "P2 modify process child row",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "id": "P3 delete process child row",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "rowsLeft": 0
+      }
+    },
+    {
+      "id": "P4 throwaway Point draft deleted",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "id": "PkEKIiKgflqN"
+      }
+    }
+  ],
+  "regRow": "Spike_Lines_rE1HuoAdps",
+  "regItem": "PkEKIWtnoX7B",
+  "caseItem": "PkEKIVlB5ZUn"
+}

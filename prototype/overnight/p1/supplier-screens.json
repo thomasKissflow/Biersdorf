@@ -1,0 +1,322 @@
+{
+ "area": "Data and test foundation (domain model, seed, persistence, supplier master, inbox, final document, AS-08 open points, E2E harness)",
+ "summary": "The prototype's data layer is a set of pure actions over one AppState, saved to localStorage under \"bdf-ciq-prototype\" with a SCHEMA gate. Today that state is the rich replayed seed: 36 cases, 10 suppliers and 20 fixed supplier users (seed.ts:28, :111-199, :411-419; store.tsx:27-39). The demo needs a different start: no cases, the 11 internal role holders and one fictional supplier (Solvaro Oleochemicals, s1) with 2 contacts. The rich seed stays as a fixture for the tests and for the portal's demo preview.\n\nGaps the final app needs, in order:\n1. **Supplier master.** There is no model or actions for it. Suppliers and contacts are hard-coded, and the supplier personas are fixed to u-sup-1 and u-sup-2 (types.ts:389-402, catalog.ts:431-457, RoleSwitcher.tsx:26-29). New contacts must become switchable personas.\n2. **No mail model.** The only notification record is the audit text \"Notified supplier\" (actions.ts:122, :410).\n3. **No final document.** The only trace is an audit line that still names the file after a review version (actions.ts:557-562), which BRM v2 removed.\n4. **Open points (AS-08).** They have no edit or history, and decisions are taken at department level instead of by the raiser (OpenPointsPanel.tsx:147-169; reviewResponse actions.ts:439 has no actor check).\n5. **Missing guards.** Several actions skip the state guards that the freeze and the release gate depend on. Concrete bugs:\n   - A point raised in final-release leaves the case releasable (actions.ts:408 with finalRelease :565-575).\n   - supplierRespond can reopen a closed point (actions.ts:415-437).\n   - A completed case can be cancelled or have a review reopened (actions.ts:550-555, :577-586).\n   - setComponents, setJustification and uploadDocument have no freeze check (actions.ts:250-279).\n6. **No E2E harness or test ids.** The prototype has no harness and no data-testid at all.\n\n**Proposal:**\n- Split the seed into `buildDemoStart` and `buildScenarioSeed`, move SCHEMA to its own module and bump it to 7, and add a pure persistence module with a `?reset` wipe.\n- Add `src/domain/suppliers.ts`, `personas.ts`, `mail.ts`, `finalDocument.ts`, `permissions.ts` and the open-point edit and close actions, all pure and unit-tested.\n- Keep new shared-type fields optional, or extend StoreApi into an AppStoreApi, so the live portal (LiveSupplierStore.tsx:265-273, map.ts:411-457) and its harness compile and stay green.\n- Add `scripts/harness-prototype.mjs`. It drives the built `dist/` through every role from the empty start, plus fixture-injected edge scenarios, using data-testid and data-status/data-phase attributes, and reads assertions from localStorage.",
+ "items": [
+  {
+   "id": "D-01",
+   "kind": "data",
+   "title": "Empty demo start: buildDemoStart() (role holders + one supplier, no cases)",
+   "current": "src/domain/seed.ts:411-419 buildSeed() replays the 36 SPECS (seed.ts:111-199) over 15 internal users (seed.ts:49-65) and 10 suppliers / 20 contacts (seed.ts:67-81). store.tsx:38 loads it, store.tsx:122-125 resets to it.",
+   "decision": "change",
+   "details": "src/domain/seed.ts keeps SCHEMA (re-exported), caseById, and exports buildDemoStart(): AppState plus buildSeed = buildDemoStart for compatibility. It is deterministic, with no Date.now in the data.\n\nContents:\n- users: exactly one per internal persona, 11 users: u-rmm Katrin Vogel, u-reg Dr. Jonas Albrecht, u-saf Dr. Mira Hansen, u-qm Lena Krause, u-mic Tobias Keller, u-sus Sophie Wagner, u-cus Felix Schulz, u-leg Dr. Anna Becker, u-admin Nina Hoffmann, u-auditor Paul Neumann, u-owner Dr. Claudia Richter. There are no second team members (u-rmm-2, u-reg-2, u-saf-2, u-qm-2), so assigneeFor (actions.ts:316-320) always assigns the persona holder and every review lands in 'My reviews' unassigned to anyone else.\n- suppliers: one, s1 'Solvaro Oleochemicals S.A.', DUNS '471203958', Spain, Tarragona, manufacturer, active, contactIds [u-sup-1, u-sup-2].\n- supplier users: u-sup-1 Elena Márquez (Regulatory Manager, elena.marquez@solvaro.example, mayConfirm) and u-sup-2 Ravi Menon (QA Specialist, ravi.menon@solvaro.example, mayConfirm). These are the same ids as today, so the portal demo pin, the tests and the legacy 'supplier'/'supplier2' aliases keep working.\n- Empty: cases [], mail [], toasts [].\n- Copied from baseState (seed.ts:385-407): templates (v1 published, v2 draft), activeRuleSet RS-2026.1, ownership, reminders.\n- personaId 'rmm'.\n\nThe first case created gets CIQ-2026-0101 (actions.ts:71: max(100,…)+1) and its first point OP-0101-01.",
+   "priority": "must"
+  },
+  {
+   "id": "D-02",
+   "kind": "data",
+   "title": "Rich scenario seed becomes a fixture: src/domain/fixtures/scenarios.ts buildScenarioSeed()",
+   "current": "SPECS, play(), DOC_FOR and valueFor live in seed.ts:83-383 and ship in the app bundle. Tests import buildSeed: seed.test.ts:2,21; attention.test.ts:2-6; lib.test.ts:3-8.",
+   "decision": "change",
+   "details": "Move SUPPLIER_DEFS (all 10), SPECS, play, DOC_FOR and valueFor unchanged into src/domain/fixtures/scenarios.ts, exporting buildScenarioSeed(). It returns the same 36 cases, so the existing assertions hold. It now also generates mail and finalDocument for the 12 completed cases, because the actions emit them.\n\nRe-point the three existing test files to buildScenarioSeed. The prototype app never imports fixtures/, so no demo data ships in dist/. The only other importer is the portal demo preview (D-04).",
+   "priority": "must"
+  },
+  {
+   "id": "D-03",
+   "kind": "data",
+   "title": "SCHEMA 6 → 7 in its own module; call-build stub kept in sync",
+   "current": "SCHEMA = 6 at seed.ts:28. Duplicate SCHEMA = 6 at src/call/seedStub.ts:5 (vite.call.config.ts aliases @/domain/seed to it). LiveSupplierStore.tsx:10 imports SCHEMA from @/domain/seed, which pulls the whole seed into the portal bundle.",
+   "decision": "change",
+   "details": "1. Create src/domain/schema.ts: `export const SCHEMA = 7; export const STORAGE_KEY = \"bdf-ciq-prototype\";`. It has no imports.\n2. seed.ts re-exports SCHEMA.\n3. seedStub.ts imports SCHEMA from @/domain/schema and exports buildDemoStart, plus the buildSeed alias, returning the empty stub state with mail: []. The call view keeps compiling, with no demo data.\n4. LiveSupplierStore imports from @/domain/schema.\n\nOn the next load, any browser holding schema-6 data, including Thomas's own browser at 127.0.0.1:5310, falls back to the empty start, through the store.tsx:33 check. Bump SCHEMA again in the morning only if someone tests in Thomas's browser before the demo. Add `npm run build:call` to the overnight gate, because the alias contract changes.",
+   "priority": "must"
+  },
+  {
+   "id": "D-04",
+   "kind": "data",
+   "title": "Pure persistence module + ?reset wipe + safe Reset button",
+   "current": "store.tsx:27-47: load and save are inline. Persona validity is checked only against the static PERSONA_BY_ID (store.tsx:33). Reset (store.tsx:122-125, button at Shells.tsx:105-106) restores buildSeed with no confirmation.",
+   "decision": "change",
+   "details": "Create src/store/persist.ts with:\n- `loadState(raw: string | null, fallback: () => AppState): AppState`. It returns the fallback when the JSON is invalid, the schema differs, a required array (cases, users, suppliers, mail) is missing, or personaById(state, personaId) is undefined (for example a deactivated or unknown contact).\n- `saveState(storage, key, s)`, which drops toasts.\n\nIn StoreProvider:\n- New props `initial = buildDemoStart`, `storageKey = STORAGE_KEY`, `persist = true`.\n- When the location has the `reset` query parameter (`http://127.0.0.1:5310/?reset#/`), clear the key before loading and remove the parameter with history.replaceState. This serves both the morning wipe and the harness.\n- reset() restores initial(). It keeps the current persona only if personaById still resolves it; otherwise it returns to rmm. It toasts 'Demo data reset: no cases, one supplier.'\n\nIn Shells: the Reset button opens a confirmation modal before resetting (testids reset-demo, reset-demo-confirm). The text: 'Remove every case, e-mail and added supplier and contact? Back to the role holders and Solvaro.'",
+   "priority": "must"
+  },
+  {
+   "id": "D-05",
+   "kind": "data",
+   "title": "Portal demo preview keeps fictional rich data and does not persist",
+   "current": "src/portal/demo/DemoSupplierStore.tsx:7-27 wraps StoreProvider (default seed). It pins persona 'supplier' through setPersona, persisting to the same key on the portal origin.",
+   "decision": "change",
+   "details": "Use `<StoreProvider initial={buildScenarioSeed} persist={false}>` and pin persona 'sup:u-sup-1' (or the legacy alias 'supplier', resolved by personaById). This is a minimal portal edit. harness-portal.mjs 'outside' (lines 131-139) and the 'admin' preview (lines 247-251) still see 'Preview of the supplier view with demo data', Solvaro's cases and no Kissflow writes. Run node scripts/harness-portal.mjs in the gate.",
+   "priority": "must"
+  },
+  {
+   "id": "S-01",
+   "kind": "data",
+   "title": "Supplier master model (mirrors final-app F1 CIQ Supplier + Contacts)",
+   "current": "types.ts:380-387 Supplier {id,name,duns,country,type,contactIds}. Contacts are plain Users (types.ts:369-378) with no active, may-confirm or history fields. City exists only in seed SUPPLIER_DEFS (seed.ts:67).",
+   "decision": "change",
+   "details": "Supplier gains these fields, all optional so the portal's map.ts:457 literal still compiles:\n- `city?: string`\n- `active?: boolean`, default true, read through isActive(x) = x.active !== false\n- `vendorNo?: string` (SAP vendor id, display only)\n- `createdAt?: string`, `createdBy?: string`\n- `history?: SupplierEvent[]`, where `SupplierEvent = { at: string; by: string; action: \"Created supplier\"|\"Changed supplier\"|\"Deactivated supplier\"|\"Reactivated supplier\"|\"Added contact\"|\"Changed contact\"|\"Deactivated contact\"|\"Reactivated contact\"; detail: string }`\n\nUser gains `active?: boolean`, `mayConfirm?: boolean` (default true) and `createdAt?`/`createdBy?`.\n\nThis matches app-plan-v4 F1 (docs/kissflow-data-model/app-plan-v4-processes-and-forms.md:208): legal name, DUNS, kind, country, SAP id, active; Contacts with name, e-mail, role, may confirm, active. As in the final app there is no delete anywhere, only deactivation. Cases keep a snapshot of the name, DUNS and e-mails in their answers (actions.ts:98-104), so renaming a supplier or changing its DUNS never rewrites a running or completed CIQ (E-P-84).",
+   "priority": "must"
+  },
+  {
+   "id": "S-02",
+   "kind": "action",
+   "title": "Supplier and contact actions with validation (src/domain/suppliers.ts)",
+   "current": "missing (NewCase.tsx:105-106 only picks from state.suppliers)",
+   "decision": "add",
+   "details": "All functions are pure. Each returns the same state plus a danger toast when validation fails, or `{ state, id }` on success.\n\nValidators, used by both the form and the action:\n- `validateSupplier(state, input, editingId?)` returns `{ errors: Partial<Record<'name'|'duns'|'country'|'type'|'contacts', string>>, warnings: string[] }`.\n- `validateContact(state, input, editingUserId?)` returns errors for name, email and title.\n\nRules:\n- **Name:** required, trimmed. A duplicate after normalisation (lowercase, punctuation and legal forms GmbH/AG/S.A./Ltd/Inc/S.r.l./Kft./Lda/Sdn Bhd/Co. stripped) is a warning only (E-D-36). The form requires the tick 'Add anyway', and the action takes `ackDuplicateName`.\n- **DUNS:** required. Spaces and hyphens are stripped, and the value must then be exactly 9 digits, stored as a string so leading zeros survive (E-D-35). A duplicate DUNS against any supplier, inactive included, is a hard error that names the existing supplier.\n- **Country:** required.\n- **Type:** manufacturer or distributor.\n- **Contacts on add:** at least one.\n- **Contact e-mail:** required. Format `^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$`. Unique case-insensitively across ALL users, internal and other suppliers included; the message names the holder. This is a prototype simplification of the final app's one-row-per-supplier rule.\n- **Contact name:** required. Title optional, defaulting to 'Supplier contact'. mayConfirm defaults to true.\n\nActions:\n- `addSupplier(s, by, input, at)`: id `s<n>` (max numeric suffix + 1; 's2' in the demo). Creates the contact Users with id `u-<supplierId>-c<k>`, initials, side supplier, supplierId, active. History 'Created supplier' and one 'Added contact' per contact.\n- `updateSupplier(s, by, id, patch, at)`: changes only. The history detail lists from→to.\n- `setSupplierActive(s, by, id, active, at)`.\n- `addContact(s, by, supplierId, input, at)`.\n- `updateContact(s, by, userId, patch, at)`.\n- `setContactActive(s, by, userId, active, at)`.\n\nPermission: the acting user must hold capability 'supplier.edit' (P-01); otherwise a danger toast and no change.",
+   "priority": "must"
+  },
+  {
+   "id": "S-03",
+   "kind": "edge-case",
+   "title": "Deactivation rules for suppliers and contacts",
+   "current": "missing",
+   "decision": "add",
+   "details": "**Deactivating a contact:**\n- Refused if the contact is the last active contact (or the last active mayConfirm contact) on any case that is not closed. The toast names the case and asks to add or assign another contact first (REQ-CTL-003: no task without a person).\n- Once deactivated, the contact: is hidden from the role switcher; is excluded from mail recipients and from NewCase contact pickers; cannot act (supplier actions return a danger toast 'This contact is no longer active'); keeps all attribution in answers, audit and the final document.\n- If the current persona is deactivated, the store switches to rmm.\n\n**Deactivating a supplier:**\n- The supplier is hidden from the NewCase supplier select (selectableSuppliers(state)), and createCase refuses it.\n- Open cases continue. The contacts stay active for those open cases.\n- It can be reactivated.\n\nBoth leave a history entry. There is no delete action at all.",
+   "priority": "must"
+  },
+  {
+   "id": "S-04",
+   "kind": "data",
+   "title": "Dynamic supplier personas: every active contact is switchable",
+   "current": "PersonaId is a fixed union (types.ts:389-402). catalog.ts:431-457 binds 'supplier' and 'supplier2' to u-sup-1 and u-sup-2. RoleSwitcher.tsx:26-29 and :50 iterate the static PERSONAS. store.tsx:111-112 resolves PERSONA_BY_ID[state.personaId]. LiveSupplierStore.tsx:266,270 uses personaId 'supplier' and PERSONA_BY_ID.supplier.",
+   "decision": "change",
+   "details": "1. **Types:** `type InternalPersonaId = 'rmm'|'reg'|'saf'|'qm'|'mic'|'sus'|'cus'|'leg'|'admin'|'auditor'|'owner'` and `type PersonaId = InternalPersonaId | 'supplier' | 'supplier2' | `sup:${string}``. The legacy pair stays for the portal and the understanding page.\n2. **src/domain/personas.ts:**\n   - `INTERNAL_PERSONAS` (the catalog entries, with the nav fixed per FINAL-APP-SPEC).\n   - `supplierPersona(user, supplier): Persona` with id `sup:<userId>`, label `Supplier contact · <supplier name>`, side supplier, landing /portal, nav My requests / Tasks / Help (catalog.ts:438-442).\n   - `personasOf(state)`: the internal personas, then for each active supplier (sorted by name) its active contacts.\n   - `personaById(state, id)`: internal ids come from the catalog and are static, so the call build with empty users still works. `sup:` ids resolve against users. The legacy aliases map 'supplier'→'sup:u-sup-1' and 'supplier2'→'sup:u-sup-2' when those users exist.\n3. **Store:** persona = personaById(state, state.personaId) ?? rmm. setPersona refuses unknown ids.\n4. **RoleSwitcher:** a 'Beiersdorf (internal)' group, then one group per supplier titled with the supplier name, each item showing name and title. testids: role-switcher, role-option-<personaId with ':' replaced by '-'> (for example role-option-sup-u-sup-1).\n5. **Unchanged:** keep the static catalog PERSONAS and PERSONA_BY_ID for features/understanding (Roles.tsx:16-26, Intro.tsx:11-12, StepDrawer.tsx:40) and for LiveSupplierStore. The portal compiles unchanged.\n6. **Feedback:** after addSupplier or addContact, toast 'Elena … can now open the supplier portal (switch role to see it).'",
+   "priority": "must"
+  },
+  {
+   "id": "S-05",
+   "kind": "edge-case",
+   "title": "A supplier contact sees only the cases they are a contact on",
+   "current": "src/features/supplier/lib.ts:17-23 useSupplierScope filters only by me.supplierId, so a newly added contact would see every request of the company.",
+   "decision": "change",
+   "details": "Add the domain selector `casesVisibleTo(state, user)`: c.supplierId === user.supplierId && (c.supplierContactIds.includes(user.id) || !c.liveScope).\n\nThe liveScope guard keeps the live portal behaviour. Mapped live cases have no liveScope, and Kissflow already scopes them; harness-portal 'supplier2' (lines 254-265) expects Ben to see ZZ-A.\n\nuseSupplierScope and supplierTasks (selectors.ts:214-226) take the user. This applies E-P-10 and E-D-77 (case supplier AND named contact).",
+   "priority": "should"
+  },
+  {
+   "id": "S-06",
+   "kind": "action",
+   "title": "Change case contacts mid-case (contact leaves, E-P-08)",
+   "current": "missing. supplierContactIds is fixed at createCase (actions.ts:89).",
+   "decision": "add",
+   "details": "`setCaseContacts(s, by, caseId, contactIds, at)` is RMM only (capability case.manage).\n\nGuards:\n- The case is not closed.\n- Every id is an active contact of the case's supplier.\n- At least one is mayConfirm.\n\nEffects:\n- Audit 'Changed supplier contacts' from→to.\n- A case-invited mail to the newly added contacts only.\n- Removed contacts lose visibility (S-05) and stop receiving mails. Their earlier answers keep their attribution.\n\nThis mirrors the final app's 'Contact update' point (app-plan-v4:163). UI: a 'Supplier contacts' card on case detail with Edit.",
+   "priority": "should"
+  },
+  {
+   "id": "S-07",
+   "kind": "requirement",
+   "title": "Domain-level case creation validation + duplicate warning",
+   "current": "Validation exists only in the UI (NewCase.tsx:57-67). createCase (actions.ts:69-124) accepts anything. pickSupplier (NewCase.tsx:74-77) preselects all contactIds, inactive ones included.",
+   "decision": "change",
+   "details": "`validateNewCase(state, input, at)` returns field errors.\n- The supplier must exist and be active.\n- contactIds: at least one, all active contacts of that supplier, at least one mayConfirm.\n- materialName, inci and materialNo are required after trimming.\n- Markets: at least one.\n- dueDate must be after `at`. The seed replays historic dates against its own `at`.\n\ncreateCase returns a danger toast on errors.\n\nDuplicate check (E-P-01): `openDuplicates(state, supplierId, materialName)` returns non-closed cases with the same supplier and the same normalised trade name. The UI shows testid newcase-duplicate-warning and needs 'Start anyway' plus a reason. The input gains `duplicateReason?`, and the audit records 'Started although CIQ-… is open for the same material'.\n\nNewCase preselects only active contacts and links 'Add a new supplier' (opens /suppliers/new with ?returnTo=/cases/new).",
+   "priority": "should"
+  },
+  {
+   "id": "S-08",
+   "kind": "requirement",
+   "title": "Only active, may-confirm case contacts give the two supplier confirmations",
+   "current": "confirmCompleteness (actions.ts:351-374) and finalRelease (actions.ts:565-575) accept any 'by'.",
+   "decision": "change",
+   "details": "Guard both actions with `canConfirm(state, c, by)`: the user is supplier side, active, in c.supplierContactIds and mayConfirm. Otherwise return a danger toast: 'Only a contact allowed to give confirmations can do this; ask <names>.'\n\nAlso guard all supplier data actions (setAnswer, setComponents, setJustification, uploadDocument, saveConfig, supplierRespond) to active case contacts, or internal 'system'.\n\nThe Confirmation snapshot already stores name, e-mail and role (actions.ts:49-53). Unit tests cover a contact with mayConfirm false, an inactive contact and another supplier's contact.",
+   "priority": "should"
+  },
+  {
+   "id": "M-01",
+   "kind": "data",
+   "title": "Mail model stored in state (inbox per person)",
+   "current": "missing. The only notification record is the audit text 'Notified supplier' (actions.ts:122, :410).",
+   "decision": "add",
+   "details": "In types.ts:\n```ts\nexport type MailEvent = 'case-invited'|'review-assigned'|'op-raised'|'op-answered'|'op-returned'|'op-edited'|'op-closed'|'release-requested'|'release-withdrawn'|'case-completed'|'release-receipt'|'case-cancelled'|'case-reactivated';\nexport interface Mail {\n  id: string; at: string; event: MailEvent;\n  audience: Side;\n  to: string[]; cc?: string[];\n  subject: string; body: string;\n  caseId: string; openPointId?: string; documentId?: string;\n  link: string;\n  channel: 'open-point-webhook'|'task-notification'|'final-document';\n  readBy: string[];\n}\n```\n- `audience` is never mixed in one mail.\n- `to` and `cc` hold user ids, resolved to e-mails for display.\n- `link` is the in-app route the button opens.\n- `channel` names the final-app mechanism: R-1 generic webhook, native or portal task e-mail, or the AS-12 release script.\n- `id` is `M-0001`, from mail.length + 1, so it is deterministic.\n\n`AppState.mail: Mail[]` is required. LiveSupplierStore.tsx:266 adds `mail: []`, a one-line portal change.",
+   "priority": "must"
+  },
+  {
+   "id": "M-02",
+   "kind": "requirement",
+   "title": "Who receives what: event → recipient matrix",
+   "current": "Static table only, in EmailPreviews.tsx:11-20. No mail is generated.",
+   "decision": "add",
+   "details": "The actions append mails through `sendMail(state, draft)`, one mail per event per audience.\n\n- **case-invited** (createCase; contacts added in setCaseContacts): the active case contacts, supplier audience, channel task-notification.\n- **review-assigned** (confirmCompleteness): each activated track assignee, RMM owner included, one mail each, internal.\n- **op-raised** (raiseOpenPoint by a reviewer or by the system for an additional part): the active case contacts, supplier, webhook.\n- **op-answered** (supplierRespond, answer or cannot-provide): the raiser only (op.createdBy, or op.responsibleId when createdBy is 'system'), internal, webhook.\n- **op-returned** (reviewResponse return): case contacts, supplier, webhook. The body includes the return reason, which the UI already marks 'the supplier sees this' (OpenPointsPanel.tsx:84).\n- **op-edited** (editOpenPoint): case contacts, supplier, webhook, with a changed-fields list.\n- **op-closed** (accept, not-accepted, withdraw): case contacts, supplier, webhook. Neutral text 'closed by Beiersdorf; no action needed'. The not-accepted reason and the withdraw reason are never included.\n- **release-requested** (the last completeReview): case contacts, exactly one per request (REQ-PROC-040), supplier, task-notification.\n- **release-withdrawn** (final-release back to review through ensureTracks actions.ts:340-342 or reopenReview :553): case contacts, supplier.\n- **case-completed** (finalRelease, then complete): the RMM owner, internal, channel final-document, with documentId = finalDocument.id and the link to /cases/:id/document.\n- **release-receipt** (same moment): case contacts, supplier, with no document attached (the final document is internal).\n- **case-cancelled** (cancelCase): a neutral supplier mail to case contacts without the reason, and an internal mail to the assignees of non-completed tracks. Individual withdrawn points send no extra mails (E-P-92).\n- **case-reactivated**: case contacts, plus internal mail to the track assignees.\n\nDeactivated users are never recipients. A mail with no recipients is not created.",
+   "priority": "must"
+  },
+  {
+   "id": "M-03",
+   "kind": "requirement",
+   "title": "Supplier-safe composition in one module; every mail logged on the case",
+   "current": "Notification content is scattered as audit strings (actions.ts:122, :410). EmailPreviews.tsx:46-53 builds previews ad hoc from seeded cases.",
+   "decision": "change",
+   "details": "src/domain/mail.ts holds compose(event, ctx), a pure function with subject and body templates. Examples:\n- 'CIQ-2026-0101 · HELIOSOFT 200: please fill in the Cosmetic Ingredient Questionnaire'\n- 'CIQ-2026-0101: Beiersdorf has a question on K2.1 › component 2 › CAS number'\n- 'CIQ-2026-0101 OP-0101-01: Solvaro Oleochemicals answered your question'\n- 'CIQ-2026-0101: please give the final CIQ release'\n- 'CIQ-2026-0101 completed: final CIQ document'\n\n**Supplier-audience bodies** use only: material name, case id, the supplier kind label (lib.ts:173-180), the reference label, the question, the supplier-safe justification (lib.ts:182, which blanks finding-based ones), the due date, the return reason, the RMM owner as the Beiersdorf contact, and the portal link.\n\nThey never contain: department names, reviewer names other than the RMM owner, internal notes, findings, RMES content, decisions, not-accepted or withdraw reasons, or the cancellation reason (E-D-74).\n\nEach sendMail also writes the case audit entry 'Sent e-mail' with event, recipients and subject (REQ-CTL-010). This replaces the two 'Notified supplier' strings.",
+   "priority": "must"
+  },
+  {
+   "id": "M-04",
+   "kind": "action",
+   "title": "Inbox selectors and read state; inbox is a simulated mailbox, not an app tab",
+   "current": "missing",
+   "decision": "add",
+   "details": "Selectors:\n- `mailFor(state, userId)`: mails where to or cc includes the user, newest first.\n- `unreadCount(state, userId)`.\n\nActions `markMailRead(s, userId, mailId)` and `markAllRead(s, userId)`.\n\nStore: add an `AppStoreApi extends StoreApi` holding the new internal-only methods: supplier master, setCaseContacts, editOpenPoint, closeOpenPoint, mail read. The portal's LiveSupplierStore (LiveSupplierStore.tsx:265) keeps implementing only StoreApi.\n\nUI proposal for the layout owner: an envelope button with an unread badge in both shells' top bars, next to the RoleSwitcher. It opens a drawer titled 'E-mail inbox of <name> (simulated)'. The drawer is not a navigation item, so the app's screen list stays equal to the final app. Opening a mail marks it read, and its button follows `link`.\n\ntestids: mail-button, mail-unread-count (data-count), mail-drawer, mail-item-<mailId> (data-event, data-read), mail-open-link.",
+   "priority": "must"
+  },
+  {
+   "id": "M-05",
+   "kind": "duplicate",
+   "title": "One source of truth for notifications (audit strings, EmailPreviews table, new mail)",
+   "current": "EmailPreviews.tsx:11-20 has a hand-written EVENTS table. pick() (EmailPreviews.tsx:46-53) needs seeded review cases and shows nothing on the empty start. The audit strings sit at actions.ts:122 and :410.",
+   "decision": "merge",
+   "details": "Export the M-02 matrix from domain/mail.ts as `MAIL_EVENTS` (event, trigger, internal recipients, supplier recipients, channel). The admin notification screen renders that matrix. Its previews call compose() on a fixed fictional sample context when the state has no case, so the empty start still shows real templates. Remove the old 'Notified supplier' audit strings in favour of 'Sent e-mail'.",
+   "priority": "should"
+  },
+  {
+   "id": "F-01",
+   "kind": "data",
+   "title": "FinalDocument: immutable snapshot generated automatically at the final release",
+   "current": "actions.ts:557-562 complete() only writes the audit line 'Generated final PDF' naming `${c.id}_v${c.reviewVersion}.pdf`. BRM v2 REQ-PROC-016 removed the review version. CaseDetail.tsx:238-240 and PhaseViews.tsx:229-236 say the PDF is not generated.",
+   "decision": "add",
+   "details": "Add `CiqCase.finalDocument?: FinalDocument` (optional, so map.ts compiles).\n\n```ts\ninterface FinalDocument {\n  id: string;\n  caseId: string;\n  fileName: string;\n  generatedAt: string;\n  trigger: 'final-release';\n  generatedBy: 'system';\n  fingerprint: string;\n  header: { caseId; materialName; inci; materialNo; supplierName; supplierDuns; manufacturer; site; ownerName; createdAt; templateVersion; ruleSetVersion; markets: Market[] };\n  metadata: { id: ConfigQuestionId; code; label; value: string }[];\n  sections: { sectionId; code; title; applicability: 'mandatory'|'optional'; addedLater: boolean; reason: string; fields: { fieldId; label; value: string; justification?: string; by?: string; at?: string }[] }[];\n  components: ComponentRow[];\n  waivers: { key; label; text }[];\n  evidence: { name; kind; section: string; field?: string; uploadedBy: string; uploadedAt: string; sizeKb: number }[];\n  openPoints: { id; kind; raisedBy: string; raisedAt; ref: string; question: string; outcome: string; closedBy?; closedAt?; rounds: number; thread: { at; by: string; side: Side; action: string; text: string; document?: string; internal: boolean }[]; changes: { at; by; text }[] }[];\n  confirmations: Confirmation[];\n}\n```\n\nField notes:\n- `id`: `${caseId}-FINAL`.\n- `fileName`: `${caseId}_CIQ_final.pdf`, with no review version.\n- `generatedAt`: the release time.\n- `fingerprint`: FNV-1a 32-bit hex over the canonical JSON of the document without the fingerprint, shown as 'Document fingerprint'.\n- `metadata`: SF-01 to SF-12 as released.\n- `sections`: only sections that are not N.A.\n- `waivers`: K5.1 and other justifications.\n- `evidence`: a list only, no attachments (R-2).\n- `openPoints`: every point, every message as text. For a document the thread holds 'name (uploaded date)' only; `internal` is true for the not-accepted note. `changes` holds the AS-08 edit history.\n- `confirmations`: completeness, every dept-completion (RMM's included) and final-release, in time order.\n\nBuild it with the pure `buildFinalDocument(state, c, at)` in src/domain/finalDocument.ts. complete() calls it after the final-release confirmation. Then:\n- audit 'Generated final document' with fileName and fingerprint;\n- mail case-completed to the RMM owner, carrying documentId;\n- audit 'Filed final document at the case; B-Flow filing manual in the MVP'.\n\nAlso export `verifyFinalDocument(doc): boolean`, which recomputes the fingerprint. The document is internal: suppliers never see it. Supplier release receipt: 'Beiersdorf has filed the final document.'",
+   "priority": "must"
+  },
+  {
+   "id": "F-02",
+   "kind": "edge-case",
+   "title": "Final document content rules (what is in, what is out)",
+   "current": "missing",
+   "decision": "add",
+   "details": "**In:**\n- answers of mandatory and optional active sections at release time;\n- K2.1 rows;\n- justifications instead of values ('Not provided: <justification>');\n- the evidence list with uploader and upload date;\n- every open point, withdrawn and not-accepted included, with all rounds, edits, returns and cannot-provide in order, with who, when and the reference label (R-2);\n- the three confirmation kinds;\n- the CIQ ID;\n- the template and rule-set versions.\n\n**Out:**\n- answers kept in sections that closed before completeness (AS-03 keeps them in c.answers but they are not released);\n- attachments themselves;\n- internal notes (REQ-PROC-020);\n- RMES criteria, findings and decisions (not in REQ-PROC-046; open question to Beiersdorf, E-P-71).\n\nIt is generated exactly once. A second finalRelease is refused with 'This CIQ is already released' (today actions.ts:568 gives the misleading 'requested only after…' message).",
+   "priority": "must"
+  },
+  {
+   "id": "F-03",
+   "kind": "edge-case",
+   "title": "Freeze and state guards on every mutating action (REQ-PROC-043, E-D-73)",
+   "current": "Guards are missing or silent:\n- setAnswer silently ignores closed cases (actions.ts:240).\n- setComponents (:250), setJustification (:254) and uploadDocument (:263, which also uses getCase(...)! non-null) have no guard.\n- raiseOpenPoint (:388), supplierRespond (:415), reviewResponse (:439), recordCriterion and addFinding (:464, :474), and closeFinding and findingToQuery have none.\n- reopenReview (:550) can reopen a track on a completed case.\n- cancelCase (:577) can cancel a completed or already cancelled case.",
+   "decision": "change",
+   "details": "Add the helper `guardOpen(s, c, by, what)`. On a completed or cancelled case it returns a danger toast 'This CIQ is frozen since the final release' (or 'cancelled') and appends the audit entry 'Change attempt rejected' with the attempted action ('rejected and logged', REQ-PROC-043). Apply it to every supplier-data, open-point and RMES action, and to reopenReview, cancelCase and extendScope.\n\nThe exception is addInternalNote, which stays allowed after the freeze (E-P-68).\n\nThe finalDocument must deep-equal before and after every rejected attempt (unit test). cancelCase is allowed only in supplier-input, review and final-release. reactivateCase is allowed only on cancelled cases, as today (:590).",
+   "priority": "must"
+  },
+  {
+   "id": "F-04",
+   "kind": "screen",
+   "title": "On-screen final document view (internal), opened from the case and from RMM's mail",
+   "current": "CaseDetail.tsx:238-240 shows the file name and 'PDF not generated in the prototype'. The supplier view has a disabled 'Download PDF' button (PhaseViews.tsx:229-236).",
+   "decision": "add",
+   "details": "Route /cases/:id/document, internal side only (SideGuard). It is a printable page (window.print button) rendering FinalDocument: header, metadata, sections, components, evidence list, open-point threads, confirmations, fingerprint. The page has no navigation entry and no extra tab. The case header shows a 'Final CIQ document' button when finalDocument exists, and the Documents tab lists it first.\n\nRemove the supplier 'Download PDF' button and its demo note: the document goes to RMM (D-3).\n\ntestids: final-document-open, final-document, fd-section-<sectionId>, fd-op-<opId>, fd-confirmations, fd-fingerprint.",
+   "priority": "should"
+  },
+  {
+   "id": "O-01",
+   "kind": "data",
+   "title": "Open point change history (AS-08)",
+   "current": "OpenPoint (types.ts:226-243) has no edit history, closedBy, closedAt or reason. Message.action (types.ts:222) has no 'edited' or 'withdrawn'.",
+   "decision": "change",
+   "details": "OpenPoint gains:\n- `history?: OpenPointChange[]` (optional for map.ts), where `interface OpenPointChange { id: string; at: string; by: string; kind: 'edited'|'closed'; changes: { field: 'question'|'justification'|'dueDate'|'ref'|'kind'; from: string; to: string }[]; outcome?: 'accepted'|'not-accepted'|'withdrawn'; reason?: string }`\n- `closedBy?`, `closedAt?`, `updatedAt?`\n\nMessage.action gains 'edited' and 'withdrawn'. Both are supplier-visible messages ('Beiersdorf changed the question: …' / 'Beiersdorf withdrew this question; no action needed'), so the supplier's thread (visibleThread lib.ts:168) shows them. The 'note' action stays internal.",
+   "priority": "must"
+  },
+  {
+   "id": "O-02",
+   "kind": "action",
+   "title": "editOpenPoint and closeOpenPoint, only by the raiser",
+   "current": "reviewResponse (actions.ts:439-462) checks no actor. The UI decides per department (OpenPointsPanel.tsx:147, :169 canAct). There is no edit action.",
+   "decision": "add",
+   "details": "Selector `managerOf(op) = op.createdBy === 'system' ? op.responsibleId : op.createdBy`, and `canManagePoint(state, userId, op)`.\n\n**editOpenPoint(s, by, caseId, opId, patch: { question?, justification?, dueDate?, ref?, kind? }, at)**\n\nGuards:\n- guardOpen;\n- by === managerOf(op), otherwise toast 'Only <name>, who raised OP-…, can change it';\n- op not closed;\n- at least one real change;\n- the question is not blank;\n- dueDate ≥ today.\n\nEffects:\n- update the fields; push history 'edited'; push the thread message 'edited';\n- if the question or reference changed while the point is in-progress (already answered): status → open, rounds + 1, the raising track → waiting-supplier (the supplier must answer the changed question);\n- a change to the due date or justification alone keeps the status;\n- audit 'Changed open point';\n- mail op-edited.\n\n**closeOpenPoint(s, by, caseId, opId, outcome, reason, at)**\n\nThe outcome is 'accepted', 'not-accepted' or 'withdrawn'. Guards: guardOpen and raiser only. 'accepted' and 'not-accepted' require status in-progress. 'withdrawn' is allowed from open or in-progress. not-accepted and withdrawn require a reason.\n\nEffects:\n- status closed with outcome, closedBy and closedAt;\n- history 'closed';\n- a thread message: accepted (visible), note (internal) or withdrawn (visible);\n- track status recomputed as in actions.ts:454;\n- not-accepted on SAF or REG adds the closed finding as today (actions.ts:457-459);\n- audit;\n- mail op-closed.\n\nreviewResponse keeps 'return' with the same raiser guard, plus a guard that the status is in-progress. Its accept and not-accepted paths delegate to closeOpenPoint. The supplier view updates through the shared store, which stands in for the final app's portal update by integration.",
+   "priority": "must"
+  },
+  {
+   "id": "O-03",
+   "kind": "edge-case",
+   "title": "Open-point guard bugs that break the release gate",
+   "current": "1. A point raised while the case is in final-release changes no track (actions.ts:408, `r.status !== 'completed'`), and finalRelease checks only the phase (actions.ts:568), so the supplier can release with an open point.\n2. supplierRespond (actions.ts:415-437) never checks op.status, so it can turn a closed or withdrawn point back to in-progress.\n3. reviewResponse 'accept' closes an unanswered open point.\n4. raiseOpenPoint is possible in supplier-input.",
+   "decision": "change",
+   "details": "raiseOpenPoint is allowed only in phase review and only for a track that exists and is not completed. A completed department reopens its review first (reopenReview), which also withdraws a release request and mails release-withdrawn.\n\nfinalRelease additionally refuses while any point is unresolved or any track is not completed (defence in depth). supplierRespond requires status 'open'. Unit test each case.",
+   "priority": "must"
+  },
+  {
+   "id": "O-04",
+   "kind": "edge-case",
+   "title": "Withdrawing an additional-part point; cancel withdraws silently",
+   "current": "cancelCase (actions.ts:580) marks open points withdrawn. Nothing is defined for withdrawing an additional-part point.",
+   "decision": "keep",
+   "details": "Withdrawing an 'additional-part' point leaves the section in scope, because the scope only grows (REQ-CFG-008). It removes the supplier task (supplierTasks reads status 'open', selectors.ts:222) and unblocks the track.\n\nCancellation keeps withdrawing every unresolved point with one neutral case-cancelled mail, with no per-point mails and no withdraw history rows (reason 'case cancelled').\n\nReactivation does not reopen withdrawn points (CaseActions.tsx:106 already says so).",
+   "priority": "should"
+  },
+  {
+   "id": "O-05",
+   "kind": "edge-case",
+   "title": "Raiser unavailable: documented reassignment of an open point",
+   "current": "missing",
+   "decision": "add",
+   "details": "`reassignOpenPoint(s, by, caseId, opId, toUserId, reason)` by the RMM owner (REQ-PROC-034 'unless a documented reassignment'). The target is an active internal user of the same department, or RMM for the RMM track. It sets responsibleId and writes history and audit. Afterwards managerOf uses responsibleId whenever `op.reassignedTo` is set.\n\nThere is only one user per department in the demo start, so this is for completeness only.",
+   "priority": "nice"
+  },
+  {
+   "id": "P-01",
+   "kind": "requirement",
+   "title": "Central capability matrix instead of persona-id checks",
+   "current": "The checks are scattered:\n- Gates.tsx:8: admin, owner and auditor pass the AdminGate.\n- rmm/shared.tsx:56: canManage = persona.id === 'rmm'.\n- admin/shared.tsx:13: canEdit = admin.\n- NotesTab.tsx:14: canWrite unless auditor.",
+   "decision": "add",
+   "details": "src/domain/permissions.ts exports `can(persona: Persona, cap: Capability): boolean`, with unit tests for every pair of persona and capability.\n\nCapabilities:\n- case.create\n- case.manage (cancel, reactivate, contacts)\n- supplier.view\n- supplier.edit\n- review.act (own track)\n- config.edit\n- config.view\n- reports.view\n- audit.view\n- notes.write\n- portal.act\n\nMatrix:\n- RMM: case.*, supplier.view and supplier.edit, review.act, reports, notes.\n- REG, SAF, QM, MIC, SUS: review.act, notes.\n- CUS and LEG: read only, notes.\n- Admin: config.*, supplier.view.\n- Auditor: audit.view, config.view, supplier.view.\n- Owner: reports.view, config.view, supplier.view.\n- Supplier contacts: portal.act only.\n\nThe domain actions take the acting user and check the same matrix through the user's persona, so a UI slip cannot write. The supplier master follows app-plan-v4:208 (RMM writes, Business Admin views). Thomas may decide to give Admin edit rights instead.",
+   "priority": "should"
+  },
+  {
+   "id": "P-02",
+   "kind": "data",
+   "title": "Persona nav arrays: drop 'Our understanding', add 'Suppliers'",
+   "current": "The '/understanding' nav items are in catalog.ts:341 (RMM), :358 (reviewers), :399 (admin) and :427 (owner). There is no suppliers route.",
+   "decision": "change",
+   "details": "Remove the four /understanding nav entries. Keep the routes /understanding/call (App.tsx:54) and the src/call build. Decide whether the plain /understanding route (App.tsx:71) goes, together with the layout owner.\n\nAdd { to: '/suppliers', label: 'Suppliers', icon: 'Building2' } for RMM, Admin, Auditor and Owner. Routes: /suppliers (list), /suppliers/new and /suppliers/:id (header, contacts, cases of this supplier, history). Edit controls appear only with supplier.edit.\n\nThe final nav per role is owned by FINAL-APP-SPEC. This item covers only the data-side arrays.",
+   "priority": "should"
+  },
+  {
+   "id": "E-01",
+   "kind": "edge-case",
+   "title": "Empty start renders without broken numbers or crashes",
+   "current": "metrics.ts:11 avg returns 0 on empty arrays. Other reports and charts were never run on zero cases. The EmailPreviews pick() returns undefined on the empty start.",
+   "decision": "add",
+   "details": "Unit test: kpis(buildDemoStart()) returns all zeros, and pipeline and deptWorkload return arrays with zero counts.\n\nHarness P00 asserts on every persona's landing page and every nav page:\n- the body text contains none of 'NaN', 'Infinity', 'undefined' or 'Invalid Date';\n- each list shows its empty-state testid: empty-dashboard, empty-cases, empty-reviews, empty-informed, empty-reports, empty-audit, empty-portal, empty-tasks, empty-mail;\n- there are no page errors or console errors.",
+   "priority": "must"
+  },
+  {
+   "id": "T-01",
+   "kind": "test",
+   "title": "Unit test suites (vitest, node) for the new foundation",
+   "current": "The tests are seed.test.ts (336 lines), rules.test.ts, attention.test.ts, lib.test.ts and the portal tests. All of them depend on the rich seed.",
+   "decision": "add",
+   "details": "New files:\n- **seed.demo.test.ts:**\n  - 0 cases and 0 mails;\n  - 1 supplier with 2 active mayConfirm contacts;\n  - one user per internal persona;\n  - personasOf has 11 + 2 entries, and every persona resolves;\n  - every user id referenced exists;\n  - deterministic (JSON equal on two builds);\n  - SCHEMA === 7 and seedStub SCHEMA === SCHEMA.\n- **persist.test.ts:** invalid JSON, schema 6, an unknown persona, a deactivated-contact persona and missing arrays each give the empty start; valid state round-trips without toasts.\n- **suppliers.test.ts:** the S-02 rules (8-digit DUNS, letters, '012 345-678' kept with its leading zero, duplicate DUNS against an inactive supplier, duplicate e-mail against an internal or a foreign contact, name warning plus ack), the S-03 deactivation rules, and permission refusal for REG.\n- **personas.test.ts:** a new contact appears as sup:<id>, an inactive one disappears, legacy aliases resolve.\n- **mail.test.ts:**\n  - every M-02 row, recipients exact;\n  - exactly one release-requested across N completions;\n  - a withdrawn and re-sent request gives 2 mails in total;\n  - supplier bodies are free of planted sentinels (internal note, finding text, not-accepted reason, cancellation reason) and of the department labels in DEPT_LABEL;\n  - 'Sent e-mail' audit per mail;\n  - read state per user.\n- **openPoints.test.ts:** the O-02 and O-03 rules, including a non-raiser in the same department, the RMM owner, another department, a closed point, a past due date, a no-op edit, an edit of an answered point reopening it, withdraw unblocking completeReview, a system additional part managed by its responsible person, and supplierRespond on a closed point refused.\n- **finalDocument.test.ts:** run from buildDemoStart through the domain only (testkit). Assert the F-01 and F-02 content: the CIQ ID; the field count equals the released answered fields; the closed-section answer is excluded; all thread messages appear in order; the three confirmation kinds; verifyFinalDocument is true; the mail to the owner carries documentId; the F-03 freeze guards each refuse and log while the document stays deep-equal.\n- **permissions.test.ts:** the whole matrix.\n\nShared helper src/domain/testkit.ts, imported only by tests and the fixtures script:\n- `fillAllRequired(state, caseId, by)`, a generic value per FieldDef type plus components, reusing the scenario valueFor;\n- `toReview(state, …)`;\n- `completeAllTracks(state, caseId)`, covering RMES results and decisions.",
+   "priority": "must"
+  },
+  {
+   "id": "T-02",
+   "kind": "test",
+   "title": "E2E harness scripts/harness-prototype.mjs (Playwright, built dist/, no backend)",
+   "current": "missing. Patterns to copy: scripts/harness-portal.mjs:15-17 (playwright-core loaded from the Promotion Management node_modules path), :198-201 (random-port 127.0.0.1 servers), :207-250 (scenario, see, check, shot helpers), :21 (fixtures through vite-node).",
+   "decision": "add",
+   "details": "**Server:** serve dist/ (from npm run build, base '' and HashRouter) with a tiny static node:http server on a random 127.0.0.1 port, with MIME types for js, css, woff, woff2 and webp. Option `--ui http://127.0.0.1:5310` targets the dev server instead.\n\n**Isolation and fixtures:**\n- Each scenario gets a fresh browser context: empty localStorage gives the empty start.\n- Edge scenarios inject a prepared state with a one-time addInitScript, guarded by sessionStorage so reloads keep the scenario's own changes.\n- The states come from `scripts/prototype-fixtures.ts`, run through node_modules/.bin/vite-node: `inReview`, `allButRmm`, `finalRelease`, `completed` and `cancelled`, all built from buildDemoStart through the testkit, with sentinel strings planted in internal notes, findings, the not-accepted reason and the cancellation reason.\n\n**Assertions:**\n- UI: getByTestId, plus data-status, data-phase and data-count attributes.\n- State: `page.evaluate(() => JSON.parse(localStorage.getItem('bdf-ciq-prototype')))` for mail counts, phases, finalDocument and history. The app needs no test hook.\n\n**Role switching:** a helper `as(personaId)` clicks role-switcher, then role-option-<id>, then waits for the landing page.\n\n**Generic questionnaire filler:**\n- It iterates `[data-testid^=q-field-]` with data-field-type and data-required.\n- Values: text 'Harness value'; email 'qa@solvaro.example'; number '1'; range 0/1; yes/no clicks q-yesno-<id>-no; single takes the first option; multi takes the first chip; file uses setInputFiles with an in-memory 'harness.pdf'.\n- It adds a K2.1 row through q-component-add.\n- It loops through the blocker list (blocker-item with data-section and data-field), at most 4 passes, until confirm-completeness is enabled.\n\n**Output:** dist-harness-prototype/report.json and <scenario>-<tag>.png, outside dist/ so the build output stays clean.\n\n**CLI:** `node scripts/harness-prototype.mjs [P00 P02 …] [--ui url] [--list] [--viewport WxH] [--screens] [--verify-empty]`. The script fails with a non-zero exit code. package.json gets `\"harness:prototype\": \"node scripts/harness-prototype.mjs\"`.",
+   "priority": "must"
+  },
+  {
+   "id": "T-03",
+   "kind": "test",
+   "title": "data-testid conventions",
+   "current": "The prototype has no data-testid outside src/workbench. The only hook is id='field-<FLD>' (FieldRenderer.tsx:176).",
+   "decision": "add",
+   "details": "**Convention:** kebab-case `<area>-<thing>[-<id>]`, with record ids appended verbatim (case-row-CIQ-2026-0101, op-card-OP-0101-01, mail-item-M-0003) and persona ids with ':' replaced by '-'. State goes into data-status, data-phase, data-count, data-read and data-tone attributes, never into the testid. Each testid is unique per page, and lists repeat only with an id suffix.\n\n**Required set by area:**\n- **Shell:** role-switcher, role-option-*, nav-<route-slug> (nav-rmm, nav-review, nav-cases, nav-cases-new, nav-suppliers, nav-reports, nav-audit, nav-admin-rules, nav-portal, nav-portal-tasks, nav-portal-help), reset-demo, reset-demo-confirm, mail-*, toast (data-tone), empty-*.\n- **Suppliers:** supplier-row-<id>, supplier-add, supplier-name, supplier-duns, supplier-country, supplier-city, supplier-type, supplier-name-ack, contact-name-<i>, contact-email-<i>, contact-title-<i>, contact-may-confirm-<i>, contact-add-row, supplier-save, field-error-<field>, contact-row-<userId> (data-active), contact-deactivate-<userId>, supplier-deactivate.\n- **New case:** newcase-material, newcase-inci, newcase-material-no, newcase-supplier, newcase-contact-<userId>, newcase-market-<EU>, newcase-due, newcase-priority, newcase-duplicate-warning, newcase-submit.\n- **Case:** case-row-<id> (data-phase), case-header (data-phase), case-tab-<key>, case-cancel, case-cancel-reason, case-cancel-confirm, case-reactivate, case-contacts-edit, final-document-*.\n- **Portal:** portal-request-<caseId>, q-section-<sectionId> (data-applicability), q-field-<fieldId> (data-field-type, data-required, data-answered), q-config-<SF>-<value>, q-yesno-<id>-yes and q-yesno-<id>-no, q-upload-<fieldId>, q-component-add, q-justify-<fieldId>, blocker-item, confirm-completeness, confirm-agree, confirm-submit, task-<opId>, answer-<opId>, answer-text, answer-cannot, answer-send, final-release, final-release-agree, final-release-submit.\n- **Review:** review-row-<caseId>, ask-supplier-<fieldId|sectionId>, raise-question, raise-due, raise-justification, raise-send, op-card-<opId> (data-status, data-outcome), op-accept-<opId>, op-return-<opId>, op-not-accepted-<opId>, op-edit-<opId>, op-withdraw-<opId>, op-reason, op-confirm, rmes-result-<critId>-<result>, rmes-decision-<SAF|REG>-<approved|rejected>, complete-review, complete-review-confirm, review-blockers (data-count).",
+   "priority": "must"
+  },
+  {
+   "id": "T-04",
+   "kind": "test",
+   "title": "E2E scenario catalogue (empty start through every role, plus edge cases)",
+   "current": "missing",
+   "decision": "add",
+   "details": "- **P00 empty-start:**\n  - For each of the 11 internal and 2 supplier personas: switch, the landing page renders, the nav equals the spec list, empty-* testids are visible, mail-unread-count shows 0, no NaN, Infinity or undefined text, no errors.\n  - The role switcher shows exactly 13 options.\n  - /suppliers lists 1 supplier with 2 contacts.\n  - No 'Our understanding' in any nav, and #/understanding/call still renders.\n- **P01 supplier-master:**\n  - RMM adds a supplier: DUNS '12345' gives an error; Solvaro's DUNS gives a duplicate error; a valid DUNS saves.\n  - RMM adds a 3rd contact, which shows up in the role switcher; that contact's portal is empty (not a contact on any case).\n  - Deactivating the contact removes it from the switcher.\n  - A deactivated supplier is missing from the newcase-supplier options.\n  - REG has no Suppliers nav, and #/suppliers/new shows no editor.\n- **P02 happy-path (the demo, one context):**\n  - RMM creates a case for Solvaro, EU and US, with both contacts: CIQ-2026-0101, and one case-invited mail each for Elena and Ravi.\n  - Elena opens the mail link and answers SF-01 vegetable and SF-08 yes: the A1 section appears live. SF-08 no: A1 goes. The filler completes the CIQ; the blocker list then empties; she confirms completeness.\n  - Ravi sees the same case with Elena's attribution.\n  - review-assigned mails reach the reviewers. REG raises a query (supplier mail 1). Elena answers (REG mail). REG edits the question of the answered point: status back to open, op-edited mail, the supplier sees the changed text. Elena answers again. REG returns; Elena answers; REG accepts (op-closed mail).\n  - SAF records RMES results and an Approved decision.\n  - QM, MIC and SUS complete. RMM completes last: exactly one release-requested mail.\n  - Elena gives the final release: phase completed; the RMM inbox holds case-completed linking to the document; fd-op-<id> shows every round; fd-confirmations has completeness, every completion and the release.\n  - Auditor: the audit trail lists 'Sent e-mail' and 'Generated final document'. Owner: reports show 1 completed case.\n- **P03 as08-permissions** (inReview fixture): RMM viewing REG's point sees no op-edit, op-withdraw or op-accept controls. REG withdraws with a reason: the supplier task disappears, the supplier mail carries no reason, the review-blockers count drops.\n- **P04 release-gate** (allButRmm fixture):\n  - No release mail yet. RMM completes: 1 mail.\n  - The supplier changes SF-09 to yes: K6.17 is added, the phase goes back to review, a release-withdrawn mail goes out, and SUS gets an additional-part task.\n  - The task is answered, accepted and completed: release-requested count 2.\n  - SAF raising a point during final-release is refused until SAF reopens its review.\n- **P05 freeze** (completed fixture):\n  - Supplier: no enabled inputs, no final-release button, no final document link.\n  - Internal: no ask or raise controls; the document's fingerprint is stable across a reload.\n  - A localStorage-injected attempt is out of scope; the domain unit tests cover it.\n- **P06 cancel-reactivate:**\n  - The cancel button stays disabled without a reason.\n  - The supplier sees the neutral withdrawn banner without the reason sentinel, and its mail likewise.\n  - The tasks are gone. Reactivation sends a case-reactivated mail.\n- **P07 confidentiality** (inReview and cancelled fixtures): every supplier page and supplier mail body excludes all sentinels and the department labels.\n- **P08 access-guards:**\n  - A supplier at #/cases, #/review, #/suppliers, #/admin/rules or #/cases/:id/document lands on /portal.\n  - An internal user at #/portal lands on their own landing page.\n  - CUS and LEG have no raise buttons. The Auditor and Owner see config read only.\n- **P09 reset:** after data exists, reset-demo then reset-demo-confirm gives 0 cases, 0 mails, 1 supplier, and the added suppliers and contacts are gone.\n- **P10 persistence:** a preloaded schema-6 state, corrupt JSON, or a sup:<deleted> persona each give the empty start. '?reset' wipes a schema-7 state.\n- **P11 mobile** (390x844): the key pages (dashboard, new case, suppliers, portal case, review workspace, document) have scrollWidth ≤ innerWidth.",
+   "priority": "must"
+  },
+  {
+   "id": "T-05",
+   "kind": "test",
+   "title": "Gate and morning verification",
+   "current": "OVERNIGHT-LOG.md gate: npm run typecheck && npm test && npm run build && npm run build:portal && node scripts/harness-portal.mjs",
+   "decision": "change",
+   "details": "**New gate:** `npm run typecheck && npm test && npm run build && npm run build:portal && npm run build:call && node scripts/harness-portal.mjs && node scripts/harness-prototype.mjs`.\n\n**Morning (P7):**\n1. Run `node scripts/harness-prototype.mjs --verify-empty --ui http://127.0.0.1:5310` against `npm run dev`. It runs P00 and saves one screenshot per persona for DEMO-GUIDE.\n2. In Thomas's own browser, open `http://127.0.0.1:5310/?reset#/` once. Schema-6 data is dropped automatically anyway; this wipes anything tested since.\n3. Confirm the empty start by eye: Solvaro only, inbox 0.\n\nThe harness contexts never touch Thomas's browser profile.",
+   "priority": "should"
+  }
+ ],
+ "proposals": "## 1. Module layout (all pure, unit-tested; nothing under src/workbench is touched)\n- `src/domain/schema.ts`\n  - Exports `SCHEMA = 7` and `STORAGE_KEY`.\n  - It has no imports, so the portal and the call build can import it without pulling in seed data.\n- `src/domain/seed.ts`\n  - Exports `buildDemoStart()`, `buildSeed` (alias, for compatibility), `SCHEMA` (re-export) and `caseById`.\n- `src/domain/fixtures/scenarios.ts`\n  - Exports `buildScenarioSeed()`: today's 36 replayed cases.\n  - It is imported only by the tests, `scripts/prototype-fixtures.ts` and the portal's `DemoSupplierStore`.\n- `src/domain/personas.ts`\n  - Exports `INTERNAL_PERSONAS`, `supplierPersona`, `personasOf` and `personaById` (legacy aliases `supplier`/`supplier2` → `sup:u-sup-1`/`sup:u-sup-2`).\n- `src/domain/suppliers.ts`\n  - Validators plus add/update/activate actions for suppliers and contacts, and `selectableSuppliers`.\n- `src/domain/mail.ts`\n  - Exports `MAIL_EVENTS` (the matrix), `compose`, `sendMail`, `mailFor`, `unreadCount`, `markMailRead` and `markAllRead`.\n- `src/domain/finalDocument.ts`\n  - Exports `buildFinalDocument`, `fingerprint` (FNV-1a 32-bit over canonical JSON) and `verifyFinalDocument`.\n- `src/domain/permissions.ts`\n  - Exports `Capability` and `can()`.\n- `src/domain/testkit.ts`\n  - Test-only helpers: `fillAllRequired`, `toReview`, `completeAllTracks`, `toCompleted`.\n- `src/store/persist.ts`\n  - Exports `loadState`, `saveState` and the `?reset` handling.\n- `StoreProvider({ initial, storageKey, persist })`.\n- `AppStoreApi extends StoreApi`\n  - Holds the new internal-only methods.\n  - The live portal store (`LiveSupplierStore.tsx:265`) keeps implementing the unchanged `StoreApi`. Its only edit is adding `mail: []` to its state.\n\n## 2. Type deltas\n- The fields new on shared types are optional, so the portal's `map.ts` literals keep compiling.\n```ts\n// types.ts\ntype InternalPersonaId = 'rmm'|'reg'|'saf'|'qm'|'mic'|'sus'|'cus'|'leg'|'admin'|'auditor'|'owner';\ntype PersonaId = InternalPersonaId | 'supplier' | 'supplier2' | `sup:${string}`;\ninterface User { /* … */ active?: boolean; mayConfirm?: boolean; createdAt?: string; createdBy?: string }\ninterface Supplier { /* … */ city?: string; active?: boolean; vendorNo?: string; createdAt?: string; createdBy?: string; history?: SupplierEvent[] }\ninterface OpenPoint { /* … */ history?: OpenPointChange[]; closedBy?: string; closedAt?: string; updatedAt?: string }\ntype MessageAction = 'raised'|'answered'|'returned'|'accepted'|'cannot-provide'|'note'|'edited'|'withdrawn';\ninterface CiqCase { /* … */ finalDocument?: FinalDocument }\ninterface AppState { /* … */ mail: Mail[] }\n```\n\n## 3. Demo start, exactly\n- **Internal users:** 11, one per persona:\n  - u-rmm Katrin Vogel, u-reg Dr. Jonas Albrecht, u-saf Dr. Mira Hansen, u-qm Lena Krause, u-mic Tobias Keller, u-sus Sophie Wagner;\n  - u-cus Felix Schulz, u-leg Dr. Anna Becker, u-admin Nina Hoffmann, u-auditor Paul Neumann, u-owner Dr. Claudia Richter.\n- **Supplier:** 1. s1 Solvaro Oleochemicals S.A., DUNS 471203958, Tarragona, Spain, manufacturer.\n- **Supplier contacts:** 2.\n  - u-sup-1 Elena Márquez, Regulatory Manager.\n  - u-sup-2 Ravi Menon, QA Specialist.\n  - Both are active and may confirm.\n- **Empty:** 0 cases, 0 mails.\n- **Configuration:** templates v1 (published) and v2 (draft), rule set RS-2026.1, section ownership, reminders.\n- **Persona:** rmm.\n- **Why no second internal team members:** each review then lands with the person Thomas switches to. In assigneeFor, the round-robin over a one-person team always returns the persona holder.\n\n## 4. Mail flow in the demo (expected inbox counts after the P02 walkthrough)\n- **Elena and Ravi each receive:**\n  - case-invited;\n  - every op-raised, op-returned, op-edited and op-closed;\n  - one release-requested;\n  - release-receipt.\n- **Each reviewer receives:**\n  - review-assigned;\n  - op-answered for its own points.\n- **Katrin (RMM) receives:**\n  - review-assigned (her own RMM review);\n  - case-completed, which links to `/cases/CIQ-2026-0101/document`.\n\nThe harness asserts these exact counts from the stored state.\n\n## 5. Final-app traceability\n- **Mail channels:** each mail's `channel` names the final-app mechanism.\n  - `open-point-webhook`: the generic R-1 integration, used in both the portal and the app.\n  - `task-notification`: native Kissflow and portal task e-mails (X1, X5).\n  - `final-document`: the AS-12 release webhook plus external script, which also e-mails RMM.\n- **Point changes:** the raiser's edits and closes write `history` rows. These correspond to the API update the portal must receive (AS-08).\n- **Final document:** `FinalDocument` is the content contract for the external PDF script.\n  - The PDF is fixed and immutable, with a fingerprint.\n  - No review version in the file name: BRM v2 removed it.\n\n## 6. Implementation order for P3 (domain)\n1. Schema, seed split and persist, with the existing tests moved to the scenario fixtures (they must stay green).\n2. Personas and suppliers.\n3. Guards: freeze, state and permission (fixes the O-03 and F-03 bugs).\n4. Open-point edit and close.\n5. Mail.\n6. Final document.\n7. Testkit and the new suites.\n8. `prototype-fixtures.ts`.\n9. Harness skeleton with P00 and P10. The screen agents add their testids while the harness grows P01–P11.\n\n## 7. Open points to confirm with Thomas (defaults are already applied in this design)\n- **Who may edit suppliers:** RMM only, with Admin as view-only, following app-plan-v4:208. The alternative is giving Admin edit rights as well.\n- **Duplicate contact e-mail across suppliers:** blocked in the prototype. The final app allows one row per supplier.\n- **Who sees which cases:** a supplier contact sees only the cases it is named on.\n- **What the final document leaves out:** RMES decisions and internal notes. The not-accepted note is included, flagged as internal, because the document is internal to RMM.\n- **Supplier copy of the PDF:** suppliers get no PDF, only a release receipt.\n- **Editing an answered point:** changing the question of a point the supplier has already answered sends it back to the supplier as a new round. Changing only the due date or the justification does not."
+}

@@ -1,0 +1,52 @@
+/* Portal-only styles: the branded loader. Plain CSS (not utilities) so portal.html's static loader, painted before
+   the bundle runs, uses the very same rules. Colours come from the theme tokens in styles.css. */
+.brand-loader {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 24px;
+  background: var(--bg);
+}
+.brand-loader-logo {
+  height: 30px;
+  width: auto;
+}
+.brand-loader-track {
+  position: relative;
+  height: 3px;
+  width: 160px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--surface-3);
+}
+.brand-loader-bar {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 40%;
+  border-radius: 999px;
+  background: var(--brand);
+  animation: brand-loader-slide 1.1s ease-in-out infinite;
+}
+.brand-loader-label {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-3);
+}
+@keyframes brand-loader-slide {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .brand-loader-bar {
+    animation: none;
+    width: 100%;
+    opacity: 0.5;
+  }
+}

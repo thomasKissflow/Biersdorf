@@ -1,0 +1,74 @@
+{
+ "step": "B2-raiser-walk (V-19 b)",
+ "at": "2026-10-15T03:38:12.324Z",
+ "tag": "ZZT-B2R-10150338",
+ "plan": "create 1 ZZT open point (OP_Dept QM, Raiser_Assignee [Thomas]) → submit Start → expect \"Open point – QM\" [User:Thomas] → admin PUT OP_Outcome Accepted → submit → Completed",
+ "definition": {
+  "metaVersion": "1792035484191059",
+  "qmOwner": "Field:Raiser_Assignee",
+  "fieldType": "MultiUser"
+ },
+ "create": {
+  "status": 200,
+  "item": "PkEN5juxhq2_",
+  "startAct": "PkEN5juz6u3u",
+  "metaVersion": "1792035484191059"
+ },
+ "atStart": {
+  "status": "Draft",
+  "Raiser_Assignee": [
+   {
+    "_id": "UsEJUfjYLM8Y",
+    "Name": "Thomas",
+    "Kind": "User"
+   }
+  ],
+  "OP_Dept": "QM"
+ },
+ "submitStart": {
+  "status": 200
+ },
+ "atReview": {
+  "status": "InProgress",
+  "ctx": [
+   {
+    "step": "Open point – QM",
+    "activity": "Activity_1go37bt",
+    "act": "PkEN5jxor2EP",
+    "assigned": [
+     {
+      "kind": "User",
+      "id": "UsEJUfjYLM8Y",
+      "name": "Thomas"
+     }
+    ]
+   }
+  ],
+  "current_assigned_to": [
+   "User:Thomas:UsEJUfjYLM8Y"
+  ],
+  "stepOk": true,
+  "assignedToThomasOnly": true
+ },
+ "adminPut": {
+  "status": 200,
+  "readBack": {
+   "OP_Outcome": "Accepted",
+   "Closed_At": "2026-10-15T03:38:18Z",
+   "Closed_By": "UsEJUfjYLM8Y",
+   "Thread_JSON": "2 entries"
+  }
+ },
+ "submitReview": {
+  "status": 200,
+  "act": "PkEN5jxor2EP"
+ },
+ "end": {
+  "status": "Completed",
+  "OP_Outcome": "Accepted",
+  "Open_Num": 0
+ },
+ "pathText": "Raise open point → Open point – QM [User:Thomas] → Completed",
+ "pass": true,
+ "calls": 9
+}

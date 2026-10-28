@@ -1,0 +1,1127 @@
+{
+ "at": "2026-10-15T03:50:33.600Z",
+ "app": "CIQ_Digital_A00",
+ "plan": "plan-v5-final.md (+15 Oct amendments)",
+ "calls": 48,
+ "counts": {
+  "PASS": 167,
+  "FAIL": 0,
+  "WARN": 5
+ },
+ "byArea": {
+  "inventory": {
+   "PASS": 16,
+   "FAIL": 0,
+   "WARN": 0
+  },
+  "lists": {
+   "PASS": 8,
+   "FAIL": 0,
+   "WARN": 0
+  },
+  "CIQ Case": {
+   "PASS": 33,
+   "FAIL": 0,
+   "WARN": 0
+  },
+  "CIQ Open Point": {
+   "PASS": 35,
+   "FAIL": 0,
+   "WARN": 0
+  },
+  "CIQ Review": {
+   "PASS": 11,
+   "FAIL": 0,
+   "WARN": 0
+  },
+  "CIQ Case Data": {
+   "PASS": 11,
+   "FAIL": 0,
+   "WARN": 0
+  },
+  "CIQ Mail Outbox": {
+   "PASS": 6,
+   "FAIL": 0,
+   "WARN": 0
+  },
+  "CIQ Service Request": {
+   "PASS": 6,
+   "FAIL": 0,
+   "WARN": 0
+  },
+  "CIQ Supplier": {
+   "PASS": 5,
+   "FAIL": 0,
+   "WARN": 0
+  },
+  "CIQ RMES Safety": {
+   "PASS": 2,
+   "FAIL": 0,
+   "WARN": 0
+  },
+  "CIQ RMES Regulatory": {
+   "PASS": 2,
+   "FAIL": 0,
+   "WARN": 0
+  },
+  "CIQ Internal Note": {
+   "PASS": 2,
+   "FAIL": 0,
+   "WARN": 0
+  },
+  "kept forms": {
+   "PASS": 3,
+   "FAIL": 0,
+   "WARN": 0
+  },
+  "integrations": {
+   "PASS": 4,
+   "FAIL": 0,
+   "WARN": 2
+  },
+  "roles (Thomas)": {
+   "PASS": 8,
+   "FAIL": 0,
+   "WARN": 3
+  },
+  "grants (Thomas)": {
+   "PASS": 15,
+   "FAIL": 0,
+   "WARN": 0
+  }
+ },
+ "checks": [
+  {
+   "area": "inventory",
+   "id": "flow CIQ_Case_A00",
+   "status": "PASS",
+   "detail": "exists"
+  },
+  {
+   "area": "inventory",
+   "id": "flow CIQ_Open_Point_A00",
+   "status": "PASS",
+   "detail": "exists"
+  },
+  {
+   "area": "inventory",
+   "id": "flow CIQ_Review_A00",
+   "status": "PASS",
+   "detail": "exists"
+  },
+  {
+   "area": "inventory",
+   "id": "flow CIQ_Case_Data_A00",
+   "status": "PASS",
+   "detail": "exists"
+  },
+  {
+   "area": "inventory",
+   "id": "flow CIQ_Mail_Outbox_A00",
+   "status": "PASS",
+   "detail": "exists"
+  },
+  {
+   "area": "inventory",
+   "id": "flow CIQ_Service_Request_A00",
+   "status": "PASS",
+   "detail": "exists"
+  },
+  {
+   "area": "inventory",
+   "id": "flow CIQ_Supplier_A00",
+   "status": "PASS",
+   "detail": "exists"
+  },
+  {
+   "area": "inventory",
+   "id": "flow CIQ_Config_Version_A00",
+   "status": "PASS",
+   "detail": "exists"
+  },
+  {
+   "area": "inventory",
+   "id": "flow CIQ_Scope_Run_A00",
+   "status": "PASS",
+   "detail": "exists"
+  },
+  {
+   "area": "inventory",
+   "id": "flow CIQ_RMES_Safety_A00",
+   "status": "PASS",
+   "detail": "exists"
+  },
+  {
+   "area": "inventory",
+   "id": "flow CIQ_RMES_Regulatory_A00",
+   "status": "PASS",
+   "detail": "exists"
+  },
+  {
+   "area": "inventory",
+   "id": "flow CIQ_Internal_Note_A00",
+   "status": "PASS",
+   "detail": "exists"
+  },
+  {
+   "area": "inventory",
+   "id": "flow CIQ_Audit_Event_A00",
+   "status": "PASS",
+   "detail": "exists"
+  },
+  {
+   "area": "lists",
+   "id": "CIQ_Case_Phase_A00",
+   "status": "PASS",
+   "detail": "[\"Supplier filling in the CIQ\",\"Review\",\"Awaiting final release\",\"Completed\",\"Cancelled\"]"
+  },
+  {
+   "area": "lists",
+   "id": "CIQ_Track_Status_A00",
+   "status": "PASS",
+   "detail": "[\"In review\",\"Waiting for supplier\",\"Reopened\",\"Completed\",\"Ended\"]"
+  },
+  {
+   "area": "lists",
+   "id": "CIQ_Priority_A00",
+   "status": "PASS",
+   "detail": "[\"Normal\",\"High\"]"
+  },
+  {
+   "area": "lists",
+   "id": "CIQ_Rejection_Handling_A00",
+   "status": "PASS",
+   "detail": "[\"Continue to final release\",\"Cancel the case\"]"
+  },
+  {
+   "area": "lists",
+   "id": "CIQ_Request_Status_A00",
+   "status": "PASS",
+   "detail": "[\"Done\",\"Refused\",\"Failed\"]"
+  },
+  {
+   "area": "lists",
+   "id": "CIQ_OP_Kind_A00",
+   "status": "PASS",
+   "detail": "[\"Query\",\"Document request\",\"Additional part\",\"Internal review\",\"Department review\",\"Contact update\",\"Finding\"]"
+  },
+  {
+   "area": "lists",
+   "id": "CIQ_OP_Outcome_A00",
+   "status": "PASS",
+   "detail": "[\"Accepted\",\"Withdrawn\",\"Not accepted\"]"
+  },
+  {
+   "area": "lists",
+   "id": "CIQ_Event_Category_A00",
+   "status": "PASS",
+   "detail": "[\"Case\",\"Scope\",\"Section\",\"Section review\",\"Snapshot\",\"Open point\",\"RMES\",\"Change request\",\"Configuration\",\"Notification\",\"Delegation\",\"Assignment\",\"Change attempt\",\"Cancellation\",\"Access\",\"Item created\",\"Final PDF\",\"Supplier master\",\"Review\",\"Internal note\"]"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "steps",
+   "status": "PASS",
+   "detail": "[\"Create case\",\"Waiting for supplier: CIQ\",\"Beiersdorf review and final release\",\"End\"]"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "owner Waiting for supplier: CIQ",
+   "status": "PASS",
+   "detail": "AppRole:RoEKl89I5nGx"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "owner Beiersdorf review and final release",
+   "status": "PASS",
+   "detail": "AppRole:RoEKl89I5nGx"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "field Template_Version",
+   "status": "PASS",
+   "detail": "Text"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "field Case_Phase",
+   "status": "PASS",
+   "detail": "Select→CIQ_Case_Phase_A00"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "field Priority",
+   "status": "PASS",
+   "detail": "Select→CIQ_Priority_A00"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "field Duplicate_Reason",
+   "status": "PASS",
+   "detail": "Textarea"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "field Follow_Up_Of_Case",
+   "status": "PASS",
+   "detail": "Text"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "field Follow_Up_Of_Report",
+   "status": "PASS",
+   "detail": "Text"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "field Cancel_Reason",
+   "status": "PASS",
+   "detail": "Textarea"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "field Cancelled_By_Name",
+   "status": "PASS",
+   "detail": "Text"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "field Cancelled_At",
+   "status": "PASS",
+   "detail": "DateTime"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "field Cancelled_From_Phase",
+   "status": "PASS",
+   "detail": "Text"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "field Reactivate_Reason",
+   "status": "PASS",
+   "detail": "Textarea"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "field Reactivated_At",
+   "status": "PASS",
+   "detail": "DateTime"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "field Release_Requested_At",
+   "status": "PASS",
+   "detail": "DateTime"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "field Portal_Release_Item_Id",
+   "status": "PASS",
+   "detail": "Text"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "field Final_Document_Hash",
+   "status": "PASS",
+   "detail": "Text"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "field Final_Document_At",
+   "status": "PASS",
+   "detail": "DateTime"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "field Undefined_Origin",
+   "status": "PASS",
+   "detail": "Select→CIQ_Yes_No_A00"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "field Case_Data_Item_Id",
+   "status": "PASS",
+   "detail": "Text"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "field Supplier_Files",
+   "status": "PASS",
+   "detail": "Attachment"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "published fields = model fields",
+   "status": "PASS",
+   "detail": "144 published / 144 in the model"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "Start Mandatory (21, §4.1)",
+   "status": "PASS",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "Start Editable (11, §4.1)",
+   "status": "PASS",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "Create case: the 81 unused fields Hidden (P12)",
+   "status": "PASS",
+   "detail": "Hidden"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "Waiting for supplier: CIQ: the 81 unused fields Hidden (P12)",
+   "status": "PASS",
+   "detail": "Hidden"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "Waiting for supplier: CIQ: in-use fields ReadOnly",
+   "status": "PASS",
+   "detail": "ReadOnly 63/63"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "Beiersdorf review and final release: the 81 unused fields Hidden (P12)",
+   "status": "PASS",
+   "detail": "Hidden"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "Beiersdorf review and final release: in-use fields ReadOnly",
+   "status": "PASS",
+   "detail": "ReadOnly 63/63"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "End: the 81 unused fields Hidden (P12)",
+   "status": "PASS",
+   "detail": "Hidden"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "End: in-use fields ReadOnly",
+   "status": "PASS",
+   "detail": "ReadOnly 63/63"
+  },
+  {
+   "area": "CIQ Case",
+   "id": "no native SLA on 'Waiting for supplier: CIQ' (plan amended 15 Oct: reminders from the service)",
+   "status": "PASS",
+   "detail": "[\"Id\",\"Kind\",\"NodeType\",\"Name\",\"ProcessDef\",\"Activity::Permission\",\"Activity::Resource\"]"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "'Waiting for supplier' Activity_4k7uck removed",
+   "status": "PASS",
+   "detail": "removed"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Activity_uka3mx name \"Open point – Regulatory\"",
+   "status": "PASS",
+   "detail": "Open point – Regulatory"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Activity_uka3mx owner + condition",
+   "status": "PASS",
+   "detail": "Field:Raiser_Assignee if OP_Dept = \"REG\""
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Activity_uka3mx Mandatory = OP_Outcome; Editable = the 14 of §4.3",
+   "status": "PASS",
+   "detail": "M 1 E 14"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Activity_1kdump3 name \"Open point – Safety\"",
+   "status": "PASS",
+   "detail": "Open point – Safety"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Activity_1kdump3 owner + condition",
+   "status": "PASS",
+   "detail": "Field:Raiser_Assignee if OP_Dept = \"SAF\""
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Activity_1kdump3 Mandatory = OP_Outcome; Editable = the 14 of §4.3",
+   "status": "PASS",
+   "detail": "M 1 E 14"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Activity_1go37bt name \"Open point – QM\"",
+   "status": "PASS",
+   "detail": "Open point – QM"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Activity_1go37bt owner + condition",
+   "status": "PASS",
+   "detail": "Field:Raiser_Assignee if OP_Dept = \"QM\""
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Activity_1go37bt Mandatory = OP_Outcome; Editable = the 14 of §4.3",
+   "status": "PASS",
+   "detail": "M 1 E 14"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Activity_hha7u2 name \"Open point – Microbiology\"",
+   "status": "PASS",
+   "detail": "Open point – Microbiology"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Activity_hha7u2 owner + condition",
+   "status": "PASS",
+   "detail": "Field:Raiser_Assignee if OP_Dept = \"MIC\""
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Activity_hha7u2 Mandatory = OP_Outcome; Editable = the 14 of §4.3",
+   "status": "PASS",
+   "detail": "M 1 E 14"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Activity_y4af4g name \"Open point – Sustainability\"",
+   "status": "PASS",
+   "detail": "Open point – Sustainability"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Activity_y4af4g owner + condition",
+   "status": "PASS",
+   "detail": "Field:Raiser_Assignee if OP_Dept = \"SUS\""
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Activity_y4af4g Mandatory = OP_Outcome; Editable = the 14 of §4.3",
+   "status": "PASS",
+   "detail": "M 1 E 14"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Activity_xc8fbb name \"Open point – RMM\"",
+   "status": "PASS",
+   "detail": "Open point – RMM"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Activity_xc8fbb owner + condition",
+   "status": "PASS",
+   "detail": "Field:Raiser_Assignee if OP_Dept = \"RMM\""
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Activity_xc8fbb Mandatory = OP_Outcome; Editable = the 14 of §4.3",
+   "status": "PASS",
+   "detail": "M 1 E 14"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "field Raised_By_User",
+   "status": "PASS",
+   "detail": "User"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "field Raised_By_Name",
+   "status": "PASS",
+   "detail": "Text"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "field Thread_JSON",
+   "status": "PASS",
+   "detail": "Textarea"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "field Closed_At",
+   "status": "PASS",
+   "detail": "DateTime"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "field Closed_By",
+   "status": "PASS",
+   "detail": "User"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Start Mandatory (16, §4.3)",
+   "status": "PASS",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Open_Num = IF(ISBLANK(OP_Outcome),1,0) (amended 15 Oct)",
+   "status": "PASS",
+   "detail": "IF(ISBLANK(OP_Outcome),1,0)"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "OP_Dept field-level Required (amended 15 Oct)",
+   "status": "PASS",
+   "detail": "true"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Raise open point: unused fields + Rounds Hidden",
+   "status": "PASS",
+   "detail": "Hidden"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Open point – Regulatory: unused fields + Rounds Hidden",
+   "status": "PASS",
+   "detail": "Hidden"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Open point – Safety: unused fields + Rounds Hidden",
+   "status": "PASS",
+   "detail": "Hidden"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Open point – QM: unused fields + Rounds Hidden",
+   "status": "PASS",
+   "detail": "Hidden"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Open point – Microbiology: unused fields + Rounds Hidden",
+   "status": "PASS",
+   "detail": "Hidden"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Open point – Sustainability: unused fields + Rounds Hidden",
+   "status": "PASS",
+   "detail": "Hidden"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "Open point – RMM: unused fields + Rounds Hidden",
+   "status": "PASS",
+   "detail": "Hidden"
+  },
+  {
+   "area": "CIQ Open Point",
+   "id": "End: unused fields + Rounds Hidden",
+   "status": "PASS",
+   "detail": "Hidden"
+  },
+  {
+   "area": "CIQ Review",
+   "id": "field Review_Key",
+   "status": "PASS",
+   "detail": "Text Required"
+  },
+  {
+   "area": "CIQ Review",
+   "id": "field Case_Code",
+   "status": "PASS",
+   "detail": "Text Required"
+  },
+  {
+   "area": "CIQ Review",
+   "id": "field Case_Item_Id",
+   "status": "PASS",
+   "detail": "Text Required"
+  },
+  {
+   "area": "CIQ Review",
+   "id": "field Review_Dept",
+   "status": "PASS",
+   "detail": "Select→CIQ_Review_Dept_A00 Required"
+  },
+  {
+   "area": "CIQ Review",
+   "id": "Review_Gate formula",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "area": "CIQ Review",
+   "id": "Review – Regulatory owner + condition",
+   "status": "PASS",
+   "detail": "AppRole:RoEKl84Hca4w if Review_Dept = \"REG\""
+  },
+  {
+   "area": "CIQ Review",
+   "id": "Review – Safety owner + condition",
+   "status": "PASS",
+   "detail": "AppRole:RoEKl84xAFRW if Review_Dept = \"SAF\""
+  },
+  {
+   "area": "CIQ Review",
+   "id": "Review – QM owner + condition",
+   "status": "PASS",
+   "detail": "AppRole:RoEKl85WB1yE if Review_Dept = \"QM\""
+  },
+  {
+   "area": "CIQ Review",
+   "id": "Review – Microbiology owner + condition",
+   "status": "PASS",
+   "detail": "AppRole:RoEKl8647K2u if Review_Dept = \"MIC\""
+  },
+  {
+   "area": "CIQ Review",
+   "id": "Review – Sustainability owner + condition",
+   "status": "PASS",
+   "detail": "AppRole:RoEKl86bQQrO if Review_Dept = \"SUS\""
+  },
+  {
+   "area": "CIQ Review",
+   "id": "Review – RMM owner + condition",
+   "status": "PASS",
+   "detail": "AppRole:RoEKl83f9jPF if Review_Dept = \"RMM\""
+  },
+  {
+   "area": "CIQ Case Data",
+   "id": "header fields (sync/ids.mjs F.caseData.header)",
+   "status": "PASS",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "CIQ Case Data",
+   "id": "field Case_Code",
+   "status": "PASS",
+   "detail": "Text Required"
+  },
+  {
+   "area": "CIQ Case Data",
+   "id": "field Sync_Note",
+   "status": "PASS",
+   "detail": "Textarea"
+  },
+  {
+   "area": "CIQ Case Data",
+   "id": "field Final_Document_JSON",
+   "status": "PASS",
+   "detail": "Textarea"
+  },
+  {
+   "area": "CIQ Case Data",
+   "id": "field Final_PDF",
+   "status": "PASS",
+   "detail": "Attachment"
+  },
+  {
+   "area": "CIQ Case Data",
+   "id": "field Case_Phase",
+   "status": "PASS",
+   "detail": "Select→CIQ_Case_Phase_A00"
+  },
+  {
+   "area": "CIQ Case Data",
+   "id": "child CIQ_Case_Data_A00_Components",
+   "status": "PASS",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "CIQ Case Data",
+   "id": "child CIQ_Case_Data_A00_Documents",
+   "status": "PASS",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "CIQ Case Data",
+   "id": "child CIQ_Case_Data_A00_Requested_Documents",
+   "status": "PASS",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "CIQ Case Data",
+   "id": "child CIQ_Case_Data_A00_Change_Reports",
+   "status": "PASS",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "CIQ Case Data",
+   "id": "field CIQ_Case_Data_A00_Documents.Doc_Attachment_Id",
+   "status": "PASS",
+   "detail": "Text in CIQ_Case_Data_A00_Documents"
+  },
+  {
+   "area": "CIQ Mail Outbox",
+   "id": "fields",
+   "status": "PASS",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "CIQ Mail Outbox",
+   "id": "field Mail_Key",
+   "status": "PASS",
+   "detail": "Text Required"
+  },
+  {
+   "area": "CIQ Mail Outbox",
+   "id": "field Attempt_No",
+   "status": "PASS",
+   "detail": "Number"
+  },
+  {
+   "area": "CIQ Mail Outbox",
+   "id": "field To_Emails",
+   "status": "PASS",
+   "detail": "Textarea"
+  },
+  {
+   "area": "CIQ Mail Outbox",
+   "id": "field Body_Text",
+   "status": "PASS",
+   "detail": "Textarea"
+  },
+  {
+   "area": "CIQ Mail Outbox",
+   "id": "field Created_At",
+   "status": "PASS",
+   "detail": "DateTime"
+  },
+  {
+   "area": "CIQ Service Request",
+   "id": "fields",
+   "status": "PASS",
+   "detail": "{\"missing\":[],\"extra\":[]}"
+  },
+  {
+   "area": "CIQ Service Request",
+   "id": "field Request_Key",
+   "status": "PASS",
+   "detail": "Text Required"
+  },
+  {
+   "area": "CIQ Service Request",
+   "id": "field Attempt_No",
+   "status": "PASS",
+   "detail": "Number"
+  },
+  {
+   "area": "CIQ Service Request",
+   "id": "field Payload_JSON",
+   "status": "PASS",
+   "detail": "Textarea"
+  },
+  {
+   "area": "CIQ Service Request",
+   "id": "field Processed_At",
+   "status": "PASS",
+   "detail": "DateTime"
+  },
+  {
+   "area": "CIQ Service Request",
+   "id": "field Request_Status",
+   "status": "PASS",
+   "detail": "Select→CIQ_Request_Status_A00"
+  },
+  {
+   "area": "CIQ Supplier",
+   "id": "field Supplier_City",
+   "status": "PASS",
+   "detail": "Text"
+  },
+  {
+   "area": "CIQ Supplier",
+   "id": "field Contacts.Contacts_Key",
+   "status": "PASS",
+   "detail": "Text in Contacts"
+  },
+  {
+   "area": "CIQ Supplier",
+   "id": "field Contacts.Contacts_Title",
+   "status": "PASS",
+   "detail": "Text in Contacts"
+  },
+  {
+   "area": "CIQ Supplier",
+   "id": "field Contacts.Contacts_Deactivated_At",
+   "status": "PASS",
+   "detail": "DateTime in Contacts"
+  },
+  {
+   "area": "CIQ Supplier",
+   "id": "published (allfields)",
+   "status": "PASS",
+   "detail": "{\"header\":true,\"contacts\":[\"Contacts_Full_Name\",\"Contacts_Email\",\"Contacts_Role\",\"Contacts_Can_Confirm\",\"Contacts_Portal_User_Id\",\"Contacts_Active\",\"Contacts_Invite_Requested_At\",\"Contacts_Invited_At\",\"Contacts_Key\",\"Contacts_Title\",\"Contacts_Deactivated_At\"]}"
+  },
+  {
+   "area": "CIQ RMES Safety",
+   "id": "field Safety_Findings.Findings_Key",
+   "status": "PASS",
+   "detail": "Text in Safety_Findings"
+  },
+  {
+   "area": "CIQ RMES Safety",
+   "id": "published Safety_Findings.Findings_Key",
+   "status": "PASS",
+   "detail": "[\"Findings_Text\",\"Findings_Criterion_Code\",\"Findings_Blocking\",\"Findings_State\",\"Findings_Linked_OP_Key\",\"Findings_Key\"]"
+  },
+  {
+   "area": "CIQ RMES Regulatory",
+   "id": "field Regulatory_Findings.Findings_Key",
+   "status": "PASS",
+   "detail": "Text in Regulatory_Findings"
+  },
+  {
+   "area": "CIQ RMES Regulatory",
+   "id": "published Regulatory_Findings.Findings_Key",
+   "status": "PASS",
+   "detail": "[\"Findings_Text\",\"Findings_Criterion_Code\",\"Findings_Blocking\",\"Findings_State\",\"Findings_Linked_OP_Key\",\"Findings_Key\"]"
+  },
+  {
+   "area": "CIQ Internal Note",
+   "id": "field Note_Mentions_Emails",
+   "status": "PASS",
+   "detail": "Text"
+  },
+  {
+   "area": "CIQ Internal Note",
+   "id": "field Note_Mentions_Names",
+   "status": "PASS",
+   "detail": "Text"
+  },
+  {
+   "area": "kept forms",
+   "id": "CIQ_Audit_Event_A00 fields (sync/ids.mjs)",
+   "status": "PASS",
+   "detail": "[]"
+  },
+  {
+   "area": "kept forms",
+   "id": "CIQ_Config_Version_A00 fields (sync/ids.mjs)",
+   "status": "PASS",
+   "detail": "[]"
+  },
+  {
+   "area": "kept forms",
+   "id": "CIQ_Scope_Run_A00 fields (sync/ids.mjs)",
+   "status": "PASS",
+   "detail": "[]"
+  },
+  {
+   "area": "integrations",
+   "id": "CIQ Mail – send outbox mail exists, published, OFF",
+   "status": "PASS",
+   "detail": "Live IsActive=false"
+  },
+  {
+   "area": "integrations",
+   "id": "mail: trigger ItemCreated + SendEmail + UpdateAnItem, 7 bindings",
+   "status": "PASS",
+   "detail": "{\"missing\":[],\"extra\":[\"Action_CIQ_Mail_Send_A00.BodyType=RichText\"]}"
+  },
+  {
+   "area": "integrations",
+   "id": "CIQ_Z1_Case_completed_PDF_e_mails__A00 OFF (§4.14)",
+   "status": "PASS",
+   "detail": "IsActive=false"
+  },
+  {
+   "area": "integrations",
+   "id": "CIQ_Z2_Case_cancelled_neutral_e_ma_A00 OFF (§4.14)",
+   "status": "PASS",
+   "detail": "IsActive=false"
+  },
+  {
+   "area": "integrations",
+   "id": "CIQ_ZZ_Spike_log_point_completed_A00 OFF (§4.14: Thomas, builder-only)",
+   "status": "WARN",
+   "detail": "missing"
+  },
+  {
+   "area": "integrations",
+   "id": "CIQ_ZZ_Spike_log_register_created_A00 OFF (§4.14: Thomas, builder-only)",
+   "status": "WARN",
+   "detail": "missing"
+  },
+  {
+   "area": "roles (Thomas)",
+   "id": "RoEKl83f9jPF → \"Raw Material Manager (RMM)\" (D38)",
+   "status": "PASS",
+   "detail": "live \"Raw Material Manager (RMM)\""
+  },
+  {
+   "area": "roles (Thomas)",
+   "id": "RoEKl84Hca4w → \"Regulatory Affairs reviewer\" (D38)",
+   "status": "PASS",
+   "detail": "live \"Regulatory Affairs reviewer\""
+  },
+  {
+   "area": "roles (Thomas)",
+   "id": "RoEKl84xAFRW → \"Product Safety reviewer\" (D38)",
+   "status": "PASS",
+   "detail": "live \"Product Safety reviewer\""
+  },
+  {
+   "area": "roles (Thomas)",
+   "id": "RoEKl85WB1yE → \"Quality Management reviewer\" (D38)",
+   "status": "PASS",
+   "detail": "live \"Quality Management reviewer\""
+  },
+  {
+   "area": "roles (Thomas)",
+   "id": "RoEKl8647K2u → \"Microbiology reviewer\" (D38)",
+   "status": "PASS",
+   "detail": "live \"Microbiology reviewer\""
+  },
+  {
+   "area": "roles (Thomas)",
+   "id": "RoEKl86bQQrO → \"Sustainability reviewer\" (D38)",
+   "status": "PASS",
+   "detail": "live \"Sustainability reviewer\""
+  },
+  {
+   "area": "roles (Thomas)",
+   "id": "RoEKl87f38Xw → \"Business administrator\" (D38)",
+   "status": "PASS",
+   "detail": "live \"Business administrator\""
+  },
+  {
+   "area": "roles (Thomas)",
+   "id": "RoEKl88CJiLP → \"Auditor\" (D38)",
+   "status": "PASS",
+   "detail": "live \"Auditor\""
+  },
+  {
+   "area": "roles (Thomas)",
+   "id": "RoEKl88jv4dv → \"Case administrator (technical)\" (D38)",
+   "status": "WARN",
+   "detail": "live \"Case administrator\""
+  },
+  {
+   "area": "roles (Thomas)",
+   "id": "RoEKl89I5nGx → \"Integration service (technical)\" (D38)",
+   "status": "WARN",
+   "detail": "live \"Integration service\""
+  },
+  {
+   "area": "roles (Thomas)",
+   "id": "CIQ Overall Approver (V-27)",
+   "status": "WARN",
+   "detail": "deleted"
+  },
+  {
+   "area": "grants (Thomas)",
+   "id": "CIQ_Case_A00 §6",
+   "status": "PASS",
+   "detail": "0 to change, 0 to remove (grants-v5.mjs, dry run)"
+  },
+  {
+   "area": "grants (Thomas)",
+   "id": "CIQ_Review_A00 §6",
+   "status": "PASS",
+   "detail": "0 to change, 0 to remove (grants-v5.mjs, dry run)"
+  },
+  {
+   "area": "grants (Thomas)",
+   "id": "CIQ_Open_Point_A00 §6",
+   "status": "PASS",
+   "detail": "0 to change, 0 to remove (grants-v5.mjs, dry run)"
+  },
+  {
+   "area": "grants (Thomas)",
+   "id": "CIQ_Case_Data_A00 §6",
+   "status": "PASS",
+   "detail": "0 to change, 0 to remove (grants-v5.mjs, dry run)"
+  },
+  {
+   "area": "inventory",
+   "id": "CIQ_Case_Data_A00 has its §6 member grants (applied 15 Oct)",
+   "status": "PASS",
+   "detail": "13 members"
+  },
+  {
+   "area": "grants (Thomas)",
+   "id": "CIQ_Mail_Outbox_A00 §6",
+   "status": "PASS",
+   "detail": "0 to change, 0 to remove (grants-v5.mjs, dry run)"
+  },
+  {
+   "area": "inventory",
+   "id": "CIQ_Mail_Outbox_A00 has its §6 member grants (applied 15 Oct)",
+   "status": "PASS",
+   "detail": "3 members"
+  },
+  {
+   "area": "grants (Thomas)",
+   "id": "CIQ_Service_Request_A00 §6",
+   "status": "PASS",
+   "detail": "0 to change, 0 to remove (grants-v5.mjs, dry run)"
+  },
+  {
+   "area": "inventory",
+   "id": "CIQ_Service_Request_A00 has its §6 member grants (applied 15 Oct)",
+   "status": "PASS",
+   "detail": "12 members"
+  },
+  {
+   "area": "grants (Thomas)",
+   "id": "CIQ_Supplier_A00 §6",
+   "status": "PASS",
+   "detail": "0 to change, 0 to remove (grants-v5.mjs, dry run)"
+  },
+  {
+   "area": "grants (Thomas)",
+   "id": "CIQ_Config_Version_A00 §6",
+   "status": "PASS",
+   "detail": "0 to change, 0 to remove (grants-v5.mjs, dry run)"
+  },
+  {
+   "area": "grants (Thomas)",
+   "id": "CIQ_Scope_Run_A00 §6",
+   "status": "PASS",
+   "detail": "0 to change, 0 to remove (grants-v5.mjs, dry run)"
+  },
+  {
+   "area": "grants (Thomas)",
+   "id": "CIQ_RMES_Safety_A00 §6",
+   "status": "PASS",
+   "detail": "0 to change, 0 to remove (grants-v5.mjs, dry run)"
+  },
+  {
+   "area": "grants (Thomas)",
+   "id": "CIQ_RMES_Regulatory_A00 §6",
+   "status": "PASS",
+   "detail": "0 to change, 0 to remove (grants-v5.mjs, dry run)"
+  },
+  {
+   "area": "grants (Thomas)",
+   "id": "CIQ_Internal_Note_A00 §6",
+   "status": "PASS",
+   "detail": "0 to change, 0 to remove (grants-v5.mjs, dry run)"
+  },
+  {
+   "area": "grants (Thomas)",
+   "id": "CIQ_Audit_Event_A00 §6",
+   "status": "PASS",
+   "detail": "0 to change, 0 to remove (grants-v5.mjs, dry run)"
+  },
+  {
+   "area": "grants (Thomas)",
+   "id": "CIQ_Section_A00 §6",
+   "status": "PASS",
+   "detail": "0 to change, 0 to remove (grants-v5.mjs, dry run)"
+  },
+  {
+   "area": "grants (Thomas)",
+   "id": "CIQ_Change_Request_A00 §6",
+   "status": "PASS",
+   "detail": "0 to change, 0 to remove (grants-v5.mjs, dry run)"
+  }
+ ]
+}

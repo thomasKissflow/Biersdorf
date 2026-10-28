@@ -1,0 +1,259 @@
+{
+ "Root": "CIQ_I_1_Case_to_supplier_request_A00",
+ "CIQ_I_1_Case_to_supplier_request_A00": {
+  "Id": "CIQ_I_1_Case_to_supplier_request_A00",
+  "Description": "Plan v6 I-1: when a CIQ Case enters 'Waiting for supplier: CIQ', create the supplier's CIQP Request in the portal and store its id on the case.",
+  "Name": "CIQ I-1 Case to supplier request",
+  "Kind": "Integration",
+  "FlowType": "Integration",
+  "Integration::Trigger": [
+   "Trigger_I1_case_enters_wait"
+  ],
+  "Integration::Action": [
+   "Action_I1_create_request",
+   "Action_I1_store_request_id"
+  ],
+  "_application_id": "CIQ_Digital_A00"
+ },
+ "PublishedAt": "2026-10-20T09:06:49Z",
+ "PublishedBy": {
+  "_id": "UsEJUfjYLM8Y",
+  "Name": "Thomas",
+  "Kind": "User"
+ },
+ "_meta_version": "1792487209530617",
+ "Trigger_I1_case_enters_wait": {
+  "Id": "Trigger_I1_case_enters_wait",
+  "Kind": "Trigger",
+  "Type": "App",
+  "Name": "When an item enters this step",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQ_I_1_Case_to_supplier_request_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "TriggerId": "ItemEntersToStep",
+   "TriggerName": "When an item enters this step"
+  },
+  "Trigger::FieldMapping": [
+   "FieldMapping_I1T_1lla8",
+   "FieldMapping_I1T_3lla8"
+  ]
+ },
+ "Action_I1_create_request": {
+  "Id": "Action_I1_create_request",
+  "Kind": "Action",
+  "Type": "Create",
+  "Name": "Create and submit a new item",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQ_I_1_Case_to_supplier_request_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "CreateAndSubmitItem",
+   "ActionName": "Create and submit a new item"
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_I1A_5lnoz"
+  ]
+ },
+ "Action_I1_store_request_id": {
+  "Id": "Action_I1_store_request_id",
+  "Kind": "Action",
+  "Type": "Update",
+  "Name": "Update an item",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQ_I_1_Case_to_supplier_request_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "UpdateAnItem",
+   "ActionName": "Update an item"
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_I1A_7lp7j"
+  ]
+ },
+ "FieldMapping_I1T_1lla8": {
+  "Id": "FieldMapping_I1T_1lla8",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Field009",
+  "Label": "Choose a process",
+  "Name": "process_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Trigger": "Trigger_I1_case_enters_wait",
+  "SelectedDropdown": [
+   {
+    "FieldId": "CIQ_Case_A00",
+    "FieldName": "CIQ Case",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_I1T_2lla8"
+  ]
+ },
+ "Property_I1T_2lla8": {
+  "Id": "Property_I1T_2lla8",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_I1T_1lla8",
+  "Type": "Value",
+  "Value": [
+   "CIQ_Case_A00"
+  ],
+  "Name": "process_id"
+ },
+ "FieldMapping_I1T_3lla8": {
+  "Id": "FieldMapping_I1T_3lla8",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Field011",
+  "Label": "Choose workflow step",
+  "Name": "step_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Trigger": "Trigger_I1_case_enters_wait",
+  "SelectedDropdown": [
+   {
+    "FieldId": "Activity_1kltjdn",
+    "FieldName": "Waiting for supplier: CIQ",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_I1T_4lla8"
+  ]
+ },
+ "Property_I1T_4lla8": {
+  "Id": "Property_I1T_4lla8",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_I1T_3lla8",
+  "Type": "Value",
+  "Value": [
+   "Activity_1kltjdn"
+  ],
+  "Name": "step_id"
+ },
+ "FieldMapping_I1A_5lnoz": {
+  "Id": "FieldMapping_I1A_5lnoz",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField001",
+  "Label": "Choose a process",
+  "Name": "process_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Action": "Action_I1_create_request",
+  "SelectedDropdown": [
+   {
+    "FieldId": "CIQP_Request_A00",
+    "FieldName": "CIQP Request - CIQ Supplier Portal",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_I1A_6lnoz"
+  ]
+ },
+ "Property_I1A_6lnoz": {
+  "Id": "Property_I1A_6lnoz",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_I1A_5lnoz",
+  "Type": "Value",
+  "Value": [
+   "CIQP_Request_A00"
+  ],
+  "Name": "process_id"
+ },
+ "FieldMapping_I1A_7lp7j": {
+  "Id": "FieldMapping_I1A_7lp7j",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField002",
+  "Label": "Choose a process",
+  "Name": "process_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Action": "Action_I1_store_request_id",
+  "SelectedDropdown": [
+   {
+    "FieldId": "CIQ_Case_A00",
+    "FieldName": "CIQ Case - CIQ Digital",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_I1A_8lp7j"
+  ]
+ },
+ "Property_I1A_8lp7j": {
+  "Id": "Property_I1A_8lp7j",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_I1A_7lp7j",
+  "Type": "Value",
+  "Value": [
+   "CIQ_Case_A00"
+  ],
+  "Name": "process_id"
+ }
+}

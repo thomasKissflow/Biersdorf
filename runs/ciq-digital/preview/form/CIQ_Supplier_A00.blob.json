@@ -1,0 +1,287 @@
+{
+  "Root": "CIQ_Supplier_A00",
+  "CIQ_Supplier_A00": {
+    "Id": "CIQ_Supplier_A00",
+    "Name": "CIQ Supplier",
+    "Kind": "Model",
+    "FlowType": "Form",
+    "Description": "",
+    "Model::Row": [
+      "Row_1gfoc3e"
+    ],
+    "Model::Field": [
+      "Supplier_Code",
+      "Supplier_Legal_Name",
+      "DUNS_Number",
+      "Supplier_Kind",
+      "Parent_Supplier",
+      "Supplier_Country_Code",
+      "Teamcenter_Supplier_Id",
+      "SAP_Vendor_Id",
+      "Supplier_Active"
+    ]
+  },
+  "Row_1gfoc3e": {
+    "Id": "Row_1gfoc3e",
+    "Kind": "Row",
+    "Model": "CIQ_Supplier_A00",
+    "Row::Column": [
+      "Column_1gfoc3e"
+    ]
+  },
+  "Column_1gfoc3e": {
+    "Id": "Column_1gfoc3e",
+    "Kind": "Column",
+    "Type": "Section",
+    "Name": "Details",
+    "Start": 0,
+    "End": 6,
+    "Row": "Row_1gfoc3e",
+    "Column::Row": [
+      "Row_1gfn3xw",
+      "Row_1gfn3xx",
+      "Row_1gfn3xy",
+      "Row_1gfn3xz",
+      "Row_1gfn3y0"
+    ]
+  },
+  "Row_1gfn3xw": {
+    "Id": "Row_1gfn3xw",
+    "Kind": "Row",
+    "Column": "Column_1gfoc3e",
+    "Row::Column": [
+      "Column_15ssfgd",
+      "Column_o3gu1z"
+    ]
+  },
+  "Column_15ssfgd": {
+    "Id": "Column_15ssfgd",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_1gfn3xw",
+    "Column::Field": [
+      "Supplier_Code"
+    ]
+  },
+  "Column_o3gu1z": {
+    "Id": "Column_o3gu1z",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_1gfn3xw",
+    "Column::Field": [
+      "Supplier_Legal_Name"
+    ]
+  },
+  "Row_1gfn3xx": {
+    "Id": "Row_1gfn3xx",
+    "Kind": "Row",
+    "Column": "Column_1gfoc3e",
+    "Row::Column": [
+      "Column_uhxzw1",
+      "Column_15sygi0"
+    ]
+  },
+  "Column_uhxzw1": {
+    "Id": "Column_uhxzw1",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_1gfn3xx",
+    "Column::Field": [
+      "DUNS_Number"
+    ]
+  },
+  "Column_15sygi0": {
+    "Id": "Column_15sygi0",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_1gfn3xx",
+    "Column::Field": [
+      "Supplier_Kind"
+    ]
+  },
+  "Row_1gfn3xy": {
+    "Id": "Row_1gfn3xy",
+    "Kind": "Row",
+    "Column": "Column_1gfoc3e",
+    "Row::Column": [
+      "Column_1fb35sc",
+      "Column_12g0z00"
+    ]
+  },
+  "Column_1fb35sc": {
+    "Id": "Column_1fb35sc",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_1gfn3xy",
+    "Column::Field": [
+      "Parent_Supplier"
+    ]
+  },
+  "Column_12g0z00": {
+    "Id": "Column_12g0z00",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_1gfn3xy",
+    "Column::Field": [
+      "Supplier_Country_Code"
+    ]
+  },
+  "Row_1gfn3xz": {
+    "Id": "Row_1gfn3xz",
+    "Kind": "Row",
+    "Column": "Column_1gfoc3e",
+    "Row::Column": [
+      "Column_59nb1y",
+      "Column_15s18fg"
+    ]
+  },
+  "Column_59nb1y": {
+    "Id": "Column_59nb1y",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_1gfn3xz",
+    "Column::Field": [
+      "Teamcenter_Supplier_Id"
+    ]
+  },
+  "Column_15s18fg": {
+    "Id": "Column_15s18fg",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_1gfn3xz",
+    "Column::Field": [
+      "SAP_Vendor_Id"
+    ]
+  },
+  "Row_1gfn3y0": {
+    "Id": "Row_1gfn3y0",
+    "Kind": "Row",
+    "Column": "Column_1gfoc3e",
+    "Row::Column": [
+      "Column_1ml68ym"
+    ]
+  },
+  "Column_1ml68ym": {
+    "Id": "Column_1ml68ym",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_1gfn3y0",
+    "Column::Field": [
+      "Supplier_Active"
+    ]
+  },
+  "Supplier_Code": {
+    "Id": "Supplier_Code",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Supplier_Code",
+    "Model": "CIQ_Supplier_A00",
+    "Column": "Column_15ssfgd",
+    "Required": true
+  },
+  "Supplier_Legal_Name": {
+    "Id": "Supplier_Legal_Name",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Supplier_Legal_Name",
+    "Model": "CIQ_Supplier_A00",
+    "Column": "Column_o3gu1z",
+    "Required": true
+  },
+  "DUNS_Number": {
+    "Id": "DUNS_Number",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "DUNS_Number",
+    "Model": "CIQ_Supplier_A00",
+    "Column": "Column_uhxzw1",
+    "Required": true
+  },
+  "Supplier_Kind": {
+    "Id": "Supplier_Kind",
+    "Kind": "Field",
+    "Type": "Select",
+    "Name": "Supplier_Kind",
+    "Model": "CIQ_Supplier_A00",
+    "Column": "Column_15sygi0",
+    "ReferredList": "CIQ_Supplier_Kind_A00"
+  },
+  "QueryDefinition_1fb35sc": {
+    "Id": "QueryDefinition_1fb35sc",
+    "Kind": "QueryDefinition",
+    "Field": "Parent_Supplier",
+    "LHSModel": "CIQ_Supplier_A00",
+    "FlowType": "Form",
+    "LookupField": [
+      {
+        "Id": "Supplier_Code",
+        "Name": "Supplier_Code",
+        "Type": "Text"
+      }
+    ],
+    "HiddenField": []
+  },
+  "Parent_Supplier": {
+    "Id": "Parent_Supplier",
+    "Kind": "Field",
+    "Type": "Reference",
+    "Name": "Parent_Supplier",
+    "Model": "CIQ_Supplier_A00",
+    "Column": "Column_1fb35sc",
+    "Field::QueryDefinition": [
+      "QueryDefinition_1fb35sc"
+    ]
+  },
+  "Supplier_Country_Code": {
+    "Id": "Supplier_Country_Code",
+    "Kind": "Field",
+    "Type": "Select",
+    "Name": "Supplier_Country_Code",
+    "Model": "CIQ_Supplier_A00",
+    "Column": "Column_12g0z00",
+    "ReferredList": "CIQ_Country_Code_A00"
+  },
+  "Teamcenter_Supplier_Id": {
+    "Id": "Teamcenter_Supplier_Id",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Teamcenter_Supplier_Id",
+    "Model": "CIQ_Supplier_A00",
+    "Column": "Column_59nb1y"
+  },
+  "SAP_Vendor_Id": {
+    "Id": "SAP_Vendor_Id",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "SAP_Vendor_Id",
+    "Model": "CIQ_Supplier_A00",
+    "Column": "Column_15s18fg"
+  },
+  "Supplier_Active": {
+    "Id": "Supplier_Active",
+    "Kind": "Field",
+    "Type": "Select",
+    "Name": "Supplier_Active",
+    "Model": "CIQ_Supplier_A00",
+    "Column": "Column_1ml68ym",
+    "ReferredList": "CIQ_Yes_No_A00"
+  }
+}

@@ -1,0 +1,250 @@
+no-pages: custom-UI/backend-only — no native pages, no nav, no AI dashboards (policy, enforced in the compiler)
+reuse: building into the connected app CIQ Digital (CIQ_Digital_A00)
+
+APPLY (LIVE, mode: express, target: dev) — CIQ Digital → dev-beiersdorf.kissflow.eu
+  app will be created directly in dev-beiersdorf.kissflow.eu (no PROD creds set)
+ai-pages disabled — using the template page path
+18:38:46   reuse app CIQ_Digital_A00
+18:38:46   role Admin → reused
+18:38:46   role User → reused
+18:38:47   role CIQ RMM → 200
+18:38:47   role CIQ Regulatory Reviewer → 200
+18:38:48   role CIQ Safety Reviewer → 200
+18:38:48   role CIQ QM Reviewer → 200
+18:38:49   role CIQ Microbiology Reviewer → 200
+18:38:49   role CIQ Sustainability Reviewer → 200
+18:38:50   role CIQ Overall Approver → 200
+18:38:50   role CIQ Business Admin → 200
+18:38:51   role CIQ Reader → 200
+18:38:52   role CIQ Case Admin → 200
+18:38:52   role CIQ Integration Service → 200
+18:39:05   roles: developer UsEJUfjYLM8Y added to 13/13 role(s)
+18:39:06   reuse: 0 flow ids from map (skip create for those; new/recreated artifacts in this IR still get created)
+18:39:06   shell list CIQ_Confirm → CIQ_Confirm_A00
+18:39:07   shell list CIQ_Yes_No → CIQ_Yes_No_A00
+18:39:07   shell list CIQ_Decision → CIQ_Decision_A00
+18:39:07   shell list CIQ_Department → CIQ_Department_A00
+18:39:07   shell list CIQ_OP_Kind → CIQ_OP_Kind_A00
+18:39:07   shell list CIQ_OP_Progress → CIQ_OP_Progress_A00
+18:39:07   shell list CIQ_OP_Outcome → CIQ_OP_Outcome_A00
+18:39:07   shell list CIQ_Round_Outcome → CIQ_Round_Outcome_A00
+18:39:08   shell list CIQ_CR_Outcome → CIQ_CR_Outcome_A00
+18:39:08   shell list CIQ_Impact_Resolution → CIQ_Impact_Resolution_A00
+18:39:08   shell list CIQ_Config_Kind → CIQ_Config_Kind_A00
+18:39:08   shell list CIQ_Config_State → CIQ_Config_State_A00
+18:39:08   shell list CIQ_Review_Dept → CIQ_Review_Dept_A00
+18:39:08   shell list CIQ_RMES_Part → CIQ_RMES_Part_A00
+18:39:08   shell list CIQ_Release_Stage → CIQ_Release_Stage_A00
+18:39:08   shell list CIQ_AI_State → CIQ_AI_State_A00
+18:39:08   shell list CIQ_RMES_Result → CIQ_RMES_Result_A00
+18:39:08   shell list CIQ_Supplier_Kind → CIQ_Supplier_Kind_A00
+18:39:09   shell list CIQ_Contact_Role → CIQ_Contact_Role_A00
+18:39:09   shell list CIQ_Country_Code → CIQ_Country_Code_A00
+18:39:09   shell list CIQ_Event_Category → CIQ_Event_Category_A00
+18:39:09   shell list CIQ_Actor_Side → CIQ_Actor_Side_A00
+18:39:09   shell process CIQ_Case_A00 → CIQ_Case_A00
+18:39:09   shell process CIQ_Open_Point_A00 → CIQ_Open_Point_A00
+18:39:09   shell form CIQ_Supplier_A00 → CIQ_Supplier_A00
+18:39:09   shell form CIQ_Config_Version_A00 → CIQ_Config_Version_A00
+18:39:09   shell form CIQ_Section_A00 → CIQ_Section_A00
+18:39:10   shell form CIQ_Scope_Run_A00 → CIQ_Scope_Run_A00
+18:39:10   shell process CIQ_Change_Request_A00 → CIQ_Change_Request_A00
+18:39:10   shell form CIQ_RMES_Safety_A00 → CIQ_RMES_Safety_A00
+18:39:10   shell form CIQ_RMES_Regulatory_A00 → CIQ_RMES_Regulatory_A00
+18:39:10   shell form CIQ_Internal_Note_A00 → CIQ_Internal_Note_A00
+18:39:10   shell form CIQ_Audit_Event_A00 → CIQ_Audit_Event_A00
+18:39:11   list-items CIQ_Department_A00 → 200 (8)
+18:39:11   list-items CIQ_Yes_No_A00 → 200 (2)
+18:39:11   list-items CIQ_Review_Dept_A00 → 200 (6)
+18:39:11   list-items CIQ_Confirm_A00 → 200 (1)
+18:39:11   list-items CIQ_Decision_A00 → 200 (2)
+18:39:11   list-items CIQ_OP_Kind_A00 → 200 (6)
+18:39:11   list-items CIQ_OP_Outcome_A00 → 200 (2)
+18:39:11   list-items CIQ_OP_Progress_A00 → 200 (2)
+18:39:12   list-items CIQ_Round_Outcome_A00 → 200 (3)
+18:39:12   list-items CIQ_CR_Outcome_A00 → 200 (4)
+18:39:12   list-items CIQ_Impact_Resolution_A00 → 200 (3)
+18:39:12   list-items CIQ_Config_Kind_A00 → 200 (11)
+18:39:12   list-items CIQ_Config_State_A00 → 200 (3)
+18:39:12   list-items CIQ_Release_Stage_A00 → 200 (2)
+18:39:12   list-items CIQ_RMES_Part_A00 → 200 (4)
+18:39:12   list-items CIQ_RMES_Result_A00 → 200 (8)
+18:39:13   list-items CIQ_AI_State_A00 → 200 (3)
+18:39:13   list-items CIQ_Supplier_Kind_A00 → 200 (3)
+18:39:13   list-items CIQ_Contact_Role_A00 → 200 (5)
+18:39:13   list-items CIQ_Country_Code_A00 → 200 (32)
+18:39:13   list-items CIQ_Event_Category_A00 → 200 (17)
+18:39:13   list-items CIQ_Actor_Side_A00 → 200 (3)
+18:39:15   body CIQ_Config_Version_A00 → draft 200, publish 200
+18:39:15   body CIQ_Supplier_A00 → draft 200, publish 200
+18:39:17   body CIQ_Scope_Run_A00 → draft 200, publish 200
+18:39:17   body CIQ_Section_A00 → draft 200, publish 200
+18:39:17   body CIQ_Open_Point_A00 → draft 200, publish 200
+18:39:18   body CIQ_Case_A00 → draft 200, publish 200
+18:39:19   body CIQ_RMES_Safety_A00 → draft 200, publish 200
+18:39:19   body CIQ_RMES_Regulatory_A00 → draft 200, publish 200
+18:39:20   body CIQ_Internal_Note_A00 → draft 200, publish 200
+18:39:21   body CIQ_Audit_Event_A00 → draft 200, publish 200
+18:39:21   body CIQ_Change_Request_A00 → draft 200, publish 200
+18:39:21   reuse: 1 existing page(s) in the app — matched by name
+18:39:22   access CIQ RMM → CIQ_Open_Point_A00 (process) 200
+18:39:22   access CIQ RMM → CIQ_Change_Request_A00 (process) 200
+18:39:22   access CIQ RMM → CIQ_Supplier_A00 (form) 200
+18:39:22   access CIQ RMM → CIQ_Case_A00 (process) 200
+18:39:22   access CIQ RMM → CIQ_Config_Version_A00 (form) 200
+18:39:23     report CIQ Change Request All Items → CIQ RMM View report
+18:39:23     report CIQ Case All Items → CIQ RMM View report
+18:39:23     report CIQ Open Point All Items → CIQ RMM View report
+18:39:24   access CIQ RMM → CIQ_Section_A00 (form) 200
+18:39:24   access CIQ RMM → CIQ_RMES_Safety_A00 (form) 200
+18:39:24   access CIQ RMM → CIQ_Scope_Run_A00 (form) 200
+18:39:24   access CIQ RMM → CIQ_RMES_Regulatory_A00 (form) 200
+18:39:24   access CIQ RMM → CIQ_Internal_Note_A00 (form) 200
+18:39:25   access CIQ RMM → CIQ_Audit_Event_A00 (form) 200
+18:39:25   access CIQ Regulatory Reviewer → CIQ_Open_Point_A00 (process) 200
+18:39:25   access CIQ Regulatory Reviewer → CIQ_Case_A00 (process) 200
+18:39:25   access CIQ Regulatory Reviewer → CIQ_Change_Request_A00 (process) 200
+18:39:25   access CIQ Regulatory Reviewer → CIQ_Supplier_A00 (form) 200
+18:39:26     report CIQ Open Point All Items → CIQ Regulatory Reviewer View report
+18:39:26     report CIQ Change Request All Items → CIQ Regulatory Reviewer View report
+18:39:26     report CIQ Case All Items → CIQ Regulatory Reviewer View report
+18:39:26   access CIQ Regulatory Reviewer → CIQ_Config_Version_A00 (form) 200
+18:39:26   access CIQ Regulatory Reviewer → CIQ_Section_A00 (form) 200
+18:39:26   access CIQ Regulatory Reviewer → CIQ_Scope_Run_A00 (form) 200
+18:39:26   access CIQ Regulatory Reviewer → CIQ_RMES_Safety_A00 (form) 200
+18:39:27   access CIQ Regulatory Reviewer → CIQ_RMES_Regulatory_A00 (form) 200
+18:39:27   access CIQ Regulatory Reviewer → CIQ_Audit_Event_A00 (form) 200
+18:39:27   access CIQ Regulatory Reviewer → CIQ_Internal_Note_A00 (form) 200
+18:39:27   access CIQ Safety Reviewer → CIQ_Open_Point_A00 (process) 200
+18:39:28   access CIQ Safety Reviewer → CIQ_Case_A00 (process) 200
+18:39:28   access CIQ Safety Reviewer → CIQ_Change_Request_A00 (process) 200
+18:39:28     report CIQ Open Point All Items → CIQ Safety Reviewer View report
+18:39:28     report CIQ Case All Items → CIQ Safety Reviewer View report
+18:39:28     report CIQ Change Request All Items → CIQ Safety Reviewer View report
+18:39:28   access CIQ Safety Reviewer → CIQ_Config_Version_A00 (form) 200
+18:39:28   access CIQ Safety Reviewer → CIQ_Supplier_A00 (form) 200
+18:39:29   access CIQ Safety Reviewer → CIQ_RMES_Safety_A00 (form) 200
+18:39:29   access CIQ Safety Reviewer → CIQ_Section_A00 (form) 200
+18:39:29   access CIQ Safety Reviewer → CIQ_Scope_Run_A00 (form) 200
+18:39:29   access CIQ Safety Reviewer → CIQ_Internal_Note_A00 (form) 200
+18:39:29   access CIQ Safety Reviewer → CIQ_RMES_Regulatory_A00 (form) 200
+18:39:30   access CIQ Safety Reviewer → CIQ_Audit_Event_A00 (form) 200
+18:39:30   access CIQ QM Reviewer → CIQ_Case_A00 (process) 200
+18:39:30   access CIQ QM Reviewer → CIQ_Open_Point_A00 (process) 200
+18:39:30     report CIQ Case All Items → CIQ QM Reviewer View report
+18:39:30     report CIQ Open Point All Items → CIQ QM Reviewer View report
+18:39:30   access CIQ QM Reviewer → CIQ_Change_Request_A00 (process) 200
+18:39:30   access CIQ QM Reviewer → CIQ_Supplier_A00 (form) 200
+18:39:31   access CIQ QM Reviewer → CIQ_Config_Version_A00 (form) 200
+18:39:31   access CIQ QM Reviewer → CIQ_Section_A00 (form) 200
+18:39:31   access CIQ QM Reviewer → CIQ_Scope_Run_A00 (form) 200
+18:39:31     report CIQ Change Request All Items → CIQ QM Reviewer View report
+18:39:31   access CIQ QM Reviewer → CIQ_RMES_Safety_A00 (form) 200
+18:39:31   access CIQ QM Reviewer → CIQ_RMES_Regulatory_A00 (form) 200
+18:39:32   access CIQ QM Reviewer → CIQ_Internal_Note_A00 (form) 200
+18:39:32   access CIQ QM Reviewer → CIQ_Audit_Event_A00 (form) 200
+18:39:32   access CIQ Microbiology Reviewer → CIQ_Case_A00 (process) 200
+18:39:32   access CIQ Microbiology Reviewer → CIQ_Open_Point_A00 (process) 200
+18:39:32     report CIQ Case All Items → CIQ Microbiology Reviewer View report
+18:39:32   access CIQ Microbiology Reviewer → CIQ_Change_Request_A00 (process) 200
+18:39:33   access CIQ Microbiology Reviewer → CIQ_Supplier_A00 (form) 200
+18:39:33   access CIQ Microbiology Reviewer → CIQ_Config_Version_A00 (form) 200
+18:39:33     report CIQ Open Point All Items → CIQ Microbiology Reviewer View report
+18:39:33   access CIQ Microbiology Reviewer → CIQ_Section_A00 (form) 200
+18:39:33     report CIQ Change Request All Items → CIQ Microbiology Reviewer View report
+18:39:33   access CIQ Microbiology Reviewer → CIQ_Scope_Run_A00 (form) 200
+18:39:34   access CIQ Microbiology Reviewer → CIQ_RMES_Safety_A00 (form) 200
+18:39:34   access CIQ Microbiology Reviewer → CIQ_RMES_Regulatory_A00 (form) 200
+18:39:34   access CIQ Microbiology Reviewer → CIQ_Internal_Note_A00 (form) 200
+18:39:34   access CIQ Microbiology Reviewer → CIQ_Audit_Event_A00 (form) 200
+18:39:34   access CIQ Sustainability Reviewer → CIQ_Case_A00 (process) 200
+18:39:35   access CIQ Sustainability Reviewer → CIQ_Change_Request_A00 (process) 200
+18:39:35   access CIQ Sustainability Reviewer → CIQ_Open_Point_A00 (process) 200
+18:39:35   access CIQ Sustainability Reviewer → CIQ_Supplier_A00 (form) 200
+18:39:35     report CIQ Case All Items → CIQ Sustainability Reviewer View report
+18:39:35   access CIQ Sustainability Reviewer → CIQ_Config_Version_A00 (form) 200
+18:39:35     report CIQ Change Request All Items → CIQ Sustainability Reviewer View report
+18:39:35     report CIQ Open Point All Items → CIQ Sustainability Reviewer View report
+18:39:36   access CIQ Sustainability Reviewer → CIQ_Section_A00 (form) 200
+18:39:36   access CIQ Sustainability Reviewer → CIQ_Scope_Run_A00 (form) 200
+18:39:36   access CIQ Sustainability Reviewer → CIQ_RMES_Safety_A00 (form) 200
+18:39:36   access CIQ Sustainability Reviewer → CIQ_RMES_Regulatory_A00 (form) 200
+18:39:36   access CIQ Sustainability Reviewer → CIQ_Internal_Note_A00 (form) 200
+18:39:37   access CIQ Sustainability Reviewer → CIQ_Audit_Event_A00 (form) 200
+18:39:37   access CIQ Overall Approver → CIQ_Case_A00 (process) 200
+18:39:37   access CIQ Overall Approver → CIQ_Open_Point_A00 (process) 200
+18:39:37   access CIQ Overall Approver → CIQ_Change_Request_A00 (process) 200
+18:39:37   access CIQ Overall Approver → CIQ_Supplier_A00 (form) 200
+18:39:37     report CIQ Change Request All Items → CIQ Overall Approver View report
+18:39:37     report CIQ Open Point All Items → CIQ Overall Approver View report
+18:39:38   access CIQ Overall Approver → CIQ_Config_Version_A00 (form) 200
+18:39:38     report CIQ Case All Items → CIQ Overall Approver View report
+18:39:38   access CIQ Overall Approver → CIQ_Section_A00 (form) 200
+18:39:38   access CIQ Overall Approver → CIQ_Scope_Run_A00 (form) 200
+18:39:38   access CIQ Overall Approver → CIQ_RMES_Safety_A00 (form) 200
+18:39:38   access CIQ Overall Approver → CIQ_RMES_Regulatory_A00 (form) 200
+18:39:39   access CIQ Overall Approver → CIQ_Internal_Note_A00 (form) 200
+18:39:39   access CIQ Overall Approver → CIQ_Audit_Event_A00 (form) 200
+18:39:39   access CIQ Business Admin → CIQ_Case_A00 (process) 200
+18:39:39   access CIQ Business Admin → CIQ_Open_Point_A00 (process) 200
+18:39:39   access CIQ Business Admin → CIQ_Change_Request_A00 (process) 200
+18:39:40     report CIQ Case All Items → CIQ Business Admin View report
+18:39:40   access CIQ Business Admin → CIQ_Supplier_A00 (form) 200
+18:39:40     report CIQ Open Point All Items → CIQ Business Admin View report
+18:39:40     report CIQ Change Request All Items → CIQ Business Admin View report
+18:39:40   access CIQ Business Admin → CIQ_Config_Version_A00 (form) 200
+18:39:40   access CIQ Business Admin → CIQ_Section_A00 (form) 200
+18:39:40   access CIQ Business Admin → CIQ_Scope_Run_A00 (form) 200
+18:39:40   access CIQ Business Admin → CIQ_RMES_Safety_A00 (form) 200
+18:39:41   access CIQ Business Admin → CIQ_RMES_Regulatory_A00 (form) 200
+18:39:41   access CIQ Business Admin → CIQ_Internal_Note_A00 (form) 200
+18:39:41   access CIQ Business Admin → CIQ_Audit_Event_A00 (form) 200
+18:39:42   access CIQ Reader → CIQ_Case_A00 (process) 200
+18:39:42   access CIQ Reader → CIQ_Open_Point_A00 (process) 200
+18:39:42     report CIQ Case All Items → CIQ Reader View report
+18:39:42   access CIQ Reader → CIQ_Change_Request_A00 (process) 200
+18:39:42   access CIQ Reader → CIQ_Supplier_A00 (form) 200
+18:39:42   access CIQ Reader → CIQ_Config_Version_A00 (form) 200
+18:39:43     report CIQ Open Point All Items → CIQ Reader View report
+18:39:43   access CIQ Reader → CIQ_Section_A00 (form) 200
+18:39:43     report CIQ Change Request All Items → CIQ Reader View report
+18:39:43   access CIQ Reader → CIQ_Scope_Run_A00 (form) 200
+18:39:43   access CIQ Reader → CIQ_RMES_Safety_A00 (form) 200
+18:39:43   access CIQ Reader → CIQ_RMES_Regulatory_A00 (form) 200
+18:39:43   access CIQ Reader → CIQ_Internal_Note_A00 (form) 200
+18:39:44   access CIQ Reader → CIQ_Audit_Event_A00 (form) 200
+18:39:44   access CIQ Case Admin → CIQ_Case_A00 (process) 200
+18:39:44   access CIQ Case Admin → CIQ_Open_Point_A00 (process) 200
+18:39:44   access CIQ Case Admin → CIQ_Change_Request_A00 (process) 200
+18:39:44   access CIQ Case Admin → CIQ_Supplier_A00 (form) 200
+18:39:45   access CIQ Case Admin → CIQ_Config_Version_A00 (form) 200
+18:39:45     report CIQ Case All Items → CIQ Case Admin View report
+18:39:45     report CIQ Open Point All Items → CIQ Case Admin View report
+18:39:45     report CIQ Change Request All Items → CIQ Case Admin View report
+18:39:45   access CIQ Case Admin → CIQ_Section_A00 (form) 200
+18:39:46   access CIQ Case Admin → CIQ_RMES_Regulatory_A00 (form) 200
+18:39:46   access CIQ Case Admin → CIQ_Scope_Run_A00 (form) 200
+18:39:46   access CIQ Case Admin → CIQ_RMES_Safety_A00 (form) 200
+18:39:46   access CIQ Case Admin → CIQ_Internal_Note_A00 (form) 200
+18:39:47   access CIQ Case Admin → CIQ_Audit_Event_A00 (form) 200
+18:39:47   access CIQ Integration Service → CIQ_Open_Point_A00 (process) 200
+18:39:47   access CIQ Integration Service → CIQ_Change_Request_A00 (process) 200
+18:39:47   access CIQ Integration Service → CIQ_Case_A00 (process) 200
+18:39:47   access CIQ Integration Service → CIQ_Section_A00 (form) 200
+18:39:47     report CIQ Open Point All Items → CIQ Integration Service View report
+18:39:47     report CIQ Case All Items → CIQ Integration Service View report
+18:39:47     report CIQ Change Request All Items → CIQ Integration Service View report
+18:39:48   access CIQ Integration Service → CIQ_Audit_Event_A00 (form) 200
+18:39:51   automation CIQ Z1 Case completed – PDF, e-mails, notification event → CIQ_Z1_Case_completed_PDF_e_mails__A00 PARTIAL {"create":200}
+18:39:53   automation CIQ Z2 Case cancelled – neutral e-mail → CIQ_Z2_Case_cancelled_neutral_e_ma_A00 PARTIAL {"create":200}
+
+=== REPORT ===
+app: CIQ_Digital_A00
+roles: Admin(200), User(200), CIQ RMM(200), CIQ Regulatory Reviewer(200), CIQ Safety Reviewer(200), CIQ QM Reviewer(200), CIQ Microbiology Reviewer(200), CIQ Sustainability Reviewer(200), CIQ Overall Approver(200), CIQ Business Admin(200), CIQ Reader(200), CIQ Case Admin(200), CIQ Integration Service(200)
+created shells: 33  published: 11
+verified nested in app: 43
+  CIQ_Z2_Case_cancelled_neutral_e_ma_A00(Live), CIQ_Z1_Case_completed_PDF_e_mails__A00(Live), CIQ_Audit_Event_A00(Live), CIQ_Internal_Note_A00(Live), CIQ_RMES_Regulatory_A00(Live), CIQ_RMES_Safety_A00(Live), CIQ_Scope_Run_A00(Live), CIQ_Section_A00(Live), CIQ_Config_Version_A00(Live), CIQ_Supplier_A00(Live), CIQ_Change_Request_A00(Live), CIQ_Open_Point_A00(Live), CIQ_Case_A00(Live), CIQ_Actor_Side_A00(Live), CIQ_Event_Category_A00(Live), CIQ_Contact_Role_A00(Live), CIQ_Country_Code_A00(Live), CIQ_Supplier_Kind_A00(Live), CIQ_AI_State_A00(Live), CIQ_RMES_Result_A00(Live), CIQ_RMES_Part_A00(Live), CIQ_Release_Stage_A00(Live), CIQ_Review_Dept_A00(Live), CIQ_Config_State_A00(Live), CIQ_Config_Kind_A00(Live), CIQ_Impact_Resolution_A00(Live), CIQ_CR_Outcome_A00(Live), CIQ_Round_Outcome_A00(Live), CIQ_OP_Outcome_A00(Live), CIQ_OP_Progress_A00(Live), CIQ_OP_Kind_A00(Live), CIQ_Department_A00(Live), CIQ_Decision_A00(Live), CIQ_Confirm_A00(Live), CIQ_Yes_No_A00(Live), CIQ_ZZ_Spike_log_point_completed_A00(Live), CIQ_ZZ_Spike_log_register_created_A00(Live), CIQ_ZZ_Spike_Log_A00(Live), CIQ_ZZ_Spike_Case_A00(Live), CIQ_ZZ_Spike_Register_A00(Live), CIQ_ZZ_Spike_Point_A00(Live), CIQ_ZZ_Spike_Yes_No_A00(Live), CIQ_ZZ_Spike_Decision_A00(Live)
+automations: 2 — none are live until switched on in Kissflow
+  ⚠ CIQ Z1 Case completed – PDF, e-mails, notification event: created incomplete — finish it in the builder, then switch it on
+  ⚠ CIQ Z2 Case cancelled – neutral e-mail: created incomplete — finish it in the builder, then switch it on
+exit: 0

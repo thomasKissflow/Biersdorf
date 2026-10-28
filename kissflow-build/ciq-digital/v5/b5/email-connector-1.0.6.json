@@ -1,0 +1,298 @@
+{
+ "Root": "CoOj46v9fVh37",
+ "CoOj46v9fVh37": {
+  "Id": "CoOj46v9fVh37",
+  "Name": "Email",
+  "Kind": "Connector",
+  "Version": "1.0.6",
+  "Organization": {
+   "_id": "ORG5kFknvu8a4",
+   "Name": "SystemConnectors"
+  },
+  "Connector::Authentication": [
+   "Authentication001"
+  ],
+  "Connector::Action": [
+   "SendEmail"
+  ]
+ },
+ "Authentication001": {
+  "Id": "Authentication001",
+  "Kind": "Authentication",
+  "Type": "InternalAuth",
+  "Connector": "CoOj46v9fVh37",
+  "Name": "InternalAuth Authentication"
+ },
+ "SendEmail": {
+  "Id": "SendEmail",
+  "Connector": "CoOj46v9fVh37",
+  "Kind": "Action",
+  "Name": "Send an email",
+  "Type": "Create",
+  "Description": "Send an email using Kissflow's email service.",
+  "InputFields::Field": [
+   "ActionField001",
+   "ActionField002",
+   "ActionField005",
+   "ActionField006",
+   "ActionField007",
+   "ActionField008",
+   "ActionField009",
+   "Field_htDKY9uKu8",
+   "Field_4TLEJCbJSA"
+  ],
+  "Action::Request": [
+   "ActionRequest001"
+  ]
+ },
+ "ActionField001": {
+  "Id": "ActionField001",
+  "IsRequired": true,
+  "HelpText": "Enter multiple email fields or any text-based email addresses as comma separated values here",
+  "IsMultiValue": true,
+  "InputFields": "SendEmail",
+  "Kind": "Field",
+  "Name": "To",
+  "Label": "To",
+  "Type": "String"
+ },
+ "ActionField002": {
+  "Id": "ActionField002",
+  "IsRequired": true,
+  "InputFields": "SendEmail",
+  "Kind": "Field",
+  "Name": "Subject",
+  "Label": "Subject",
+  "Type": "String"
+ },
+ "ActionField005": {
+  "Id": "ActionField005",
+  "HelpText": "Enter multiple email fields or any text-based email addresses as comma separated values here",
+  "IsMultiValue": true,
+  "InputFields": "SendEmail",
+  "Kind": "Field",
+  "Name": "CC",
+  "Label": "Cc",
+  "Type": "String"
+ },
+ "ActionField006": {
+  "Id": "ActionField006",
+  "HelpText": "Enter multiple email fields or any text-based email addresses as comma separated values here",
+  "IsMultiValue": true,
+  "InputFields": "SendEmail",
+  "Kind": "Field",
+  "Name": "Bcc",
+  "Label": "Bcc",
+  "Type": "String"
+ },
+ "ActionField007": {
+  "Id": "ActionField007",
+  "HelpText": "Enter multiple email fields or any text-based email addresses as comma separated values here",
+  "IsMultiValue": true,
+  "InputFields": "SendEmail",
+  "Kind": "Field",
+  "Name": "ReplyTo",
+  "Label": "Reply To",
+  "Type": "String"
+ },
+ "ActionField008": {
+  "Id": "ActionField008",
+  "HelpText": "The email address and the display label that your recipient will see",
+  "InputFields": "SendEmail",
+  "Kind": "Field",
+  "Name": "From",
+  "Label": "From",
+  "Type": "String"
+ },
+ "ActionField009": {
+  "Id": "ActionField009",
+  "HelpText": "Map fields containing attachments or external URLs from your previous steps. The attachment size cannot exceed 10 MB",
+  "InputFields": "SendEmail",
+  "IsMultiValue": true,
+  "IsDropdown": false,
+  "IsPaginated": false,
+  "AttachmentLimit": "10485760",
+  "AttachmentType": "Both",
+  "AutoRefresh": false,
+  "Kind": "Field",
+  "Name": "Attachments",
+  "Label": "Attachments",
+  "Type": "Attachment"
+ },
+ "Field_htDKY9uKu8": {
+  "Id": "Field_htDKY9uKu8",
+  "InputFields": "SendEmail",
+  "IsRequired": true,
+  "IsMultiValue": false,
+  "AutoRefresh": true,
+  "IsDropdown": true,
+  "AllowMultiples": false,
+  "DefaultValue": "RichText",
+  "Kind": "Field",
+  "Name": "BodyType",
+  "Label": "Body type",
+  "Type": "String",
+  "Field::Dropdown": [
+   "Dropdown_8exFxJdNz0"
+  ]
+ },
+ "Dropdown_8exFxJdNz0": {
+  "Id": "Dropdown_8exFxJdNz0",
+  "Field": "Field_htDKY9uKu8",
+  "Kind": "Dropdown",
+  "Type": "Static",
+  "Source": [
+   {
+    "FieldId": "RichText",
+    "FieldName": "Rich text"
+   },
+   {
+    "FieldId": "PlainText",
+    "FieldName": "HTML"
+   }
+  ]
+ },
+ "Field_4TLEJCbJSA": {
+  "Id": "Field_4TLEJCbJSA",
+  "IsDynamicField": true,
+  "InputFields": "SendEmail",
+  "Kind": "Field",
+  "Name": "DynamicField",
+  "Label": "Dynamic Name",
+  "Field::Request": [
+   "Request_aEQFAPmWzG"
+  ]
+ },
+ "Request_aEQFAPmWzG": {
+  "Id": "Request_aEQFAPmWzG",
+  "Field": "Field_4TLEJCbJSA",
+  "Kind": "Request",
+  "Mode": "Code",
+  "Code": "const bodyType = inputData.BodyType;\n\nif (!bodyType) return [];\n\nlet fieldId = 'ActionField011';\nlet fieldType = 'RichText';\n\nif (bodyType === 'PlainText') {\n    fieldId = 'ActionField012';\n    fieldType = 'TextArea';\n}\n\nreturn [{\n    Id: fieldId,\n    Name: 'Body',\n    Label: 'Email body',\n    Kind: 'Field',\n    Type: fieldType,\n    IsRequired: true\n}];"
+ },
+ "ActionRequest001": {
+  "Id": "ActionRequest001",
+  "Action": "SendEmail",
+  "Kind": "Request",
+  "Mode": "Form",
+  "URL": "http://integrationv2-service:80/integration/2/{{context.Account.accountId}}/helper/send/mail",
+  "Method": "POST",
+  "Headers::Property": [
+   "HeadersProperty001"
+  ],
+  "Body::Property": [
+   "RequestBodyProperty001",
+   "RequestBodyProperty002",
+   "RequestBodyProperty003",
+   "RequestBodyProperty004",
+   "RequestBodyProperty005",
+   "RequestBodyProperty006",
+   "RequestBodyProperty007"
+  ],
+  "File::Property": [
+   "RequestFileProperty001"
+  ]
+ },
+ "HeadersProperty001": {
+  "Id": "HeadersProperty001",
+  "Headers": "ActionRequest001",
+  "Kind": "Property",
+  "Name": "Authorization",
+  "Type": "Join",
+  "Property::Property": [
+   "HeadersProperty001001",
+   "HeadersProperty001002"
+  ]
+ },
+ "HeadersProperty001001": {
+  "Id": "HeadersProperty001001",
+  "Property": "HeadersProperty001",
+  "Kind": "Property",
+  "Name": "Authorization",
+  "Type": "Value",
+  "Value": "Bearer "
+ },
+ "HeadersProperty001002": {
+  "Id": "HeadersProperty001002",
+  "Property": "HeadersProperty001",
+  "Kind": "Property",
+  "Name": "Authorization",
+  "Type": "Field",
+  "Field": "authData.access_token"
+ },
+ "RequestBodyProperty001": {
+  "Id": "RequestBodyProperty001",
+  "Body": "ActionRequest001",
+  "Kind": "Property",
+  "Name": "To",
+  "Type": "Field",
+  "Field": "inputData.To"
+ },
+ "RequestBodyProperty002": {
+  "Id": "RequestBodyProperty002",
+  "Body": "ActionRequest001",
+  "Kind": "Property",
+  "Name": "CC",
+  "Type": "Field",
+  "Field": "inputData.CC"
+ },
+ "RequestBodyProperty003": {
+  "Id": "RequestBodyProperty003",
+  "Body": "ActionRequest001",
+  "Kind": "Property",
+  "Name": "Subject",
+  "Type": "Field",
+  "Field": "inputData.Subject"
+ },
+ "RequestBodyProperty004": {
+  "Id": "RequestBodyProperty004",
+  "Body": "ActionRequest001",
+  "Kind": "Property",
+  "Name": "Message",
+  "Type": "Field",
+  "Field": "inputData.Body"
+ },
+ "RequestBodyProperty005": {
+  "Id": "RequestBodyProperty005",
+  "Body": "ActionRequest001",
+  "Kind": "Property",
+  "Name": "BCC",
+  "Type": "Field",
+  "Field": "inputData.Bcc"
+ },
+ "RequestBodyProperty006": {
+  "Id": "RequestBodyProperty006",
+  "Body": "ActionRequest001",
+  "Kind": "Property",
+  "Name": "From",
+  "Type": "Field",
+  "Field": "inputData.From"
+ },
+ "RequestBodyProperty007": {
+  "Id": "RequestBodyProperty007",
+  "Body": "ActionRequest001",
+  "Kind": "Property",
+  "Name": "ReplyTo",
+  "Type": "Field",
+  "Field": "inputData.ReplyTo"
+ },
+ "RequestFileProperty001": {
+  "Id": "RequestFileProperty001",
+  "File": "ActionRequest001",
+  "Kind": "Property",
+  "Name": "Attachments",
+  "Type": "Attachment",
+  "Property::Property": [
+   "Property001"
+  ]
+ },
+ "Property001": {
+  "Id": "Property001",
+  "Property": "RequestFileProperty001",
+  "Kind": "Property",
+  "Name": "Attachments",
+  "Type": "Field",
+  "Field": "inputData.Attachments"
+ },
+ "_last_saved_at": "2026-03-27T09:14:36Z"
+}

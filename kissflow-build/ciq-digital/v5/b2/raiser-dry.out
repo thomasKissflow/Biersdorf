@@ -1,0 +1,241 @@
+{
+ "step": "B2-raiser (V-19 b)",
+ "flow": "CIQ_Open_Point_A00",
+ "at": "2026-10-15T03:11:00.728Z",
+ "apply": false,
+ "liveMetaVersion": "1792033117843291",
+ "livePublishedAt": "2026-10-15T02:58:37Z",
+ "mutation": {
+  "field": {
+   "field": "Raiser Assignee",
+   "id": "Raiser_Assignee",
+   "column": "Column_xrwiqc",
+   "type": "MultiUser",
+   "ref": null,
+   "stepPermissions": 9,
+   "qd": [
+    {
+     "Id": "QueryDefinition_1lodtvu",
+     "Kind": "QueryDefinition",
+     "Field": "Raiser_Assignee",
+     "LHSModel": "User",
+     "FlowType": "User",
+     "LookupField": [],
+     "HiddenField": []
+    }
+   ]
+  },
+  "strippedNonTaskPerms": [
+   "SendBackToInitiator:Permission_xfxarf"
+  ],
+  "levels": {
+   "Raise open point [Activity_18t0lhi]": "Editable",
+   "Open point – Regulatory [Activity_uka3mx]": "ReadOnly",
+   "Open point – Safety [Activity_1kdump3]": "ReadOnly",
+   "Open point – QM [Activity_1go37bt]": "ReadOnly",
+   "Open point – Microbiology [Activity_hha7u2]": "ReadOnly",
+   "Open point – Sustainability [Activity_y4af4g]": "ReadOnly",
+   "Open point – RMM [Activity_xc8fbb]": "ReadOnly",
+   "End [Activity_i73i25]": "ReadOnly"
+  },
+  "resources": [
+   {
+    "activity": "Activity_uka3mx",
+    "step": "Open point – Regulatory",
+    "resource": "Resource_i2izd6",
+    "was": "AppRole:CIQ Regulatory Reviewer:RoEKl84Hca4w",
+    "now": "Field:Raiser Assignee:Raiser_Assignee (Field Raiser_Assignee)"
+   },
+   {
+    "activity": "Activity_1kdump3",
+    "step": "Open point – Safety",
+    "resource": "Resource_1vfqnna",
+    "was": "AppRole:CIQ Safety Reviewer:RoEKl84xAFRW",
+    "now": "Field:Raiser Assignee:Raiser_Assignee (Field Raiser_Assignee)"
+   },
+   {
+    "activity": "Activity_1go37bt",
+    "step": "Open point – QM",
+    "resource": "Resource_1t0uxa0",
+    "was": "AppRole:CIQ QM Reviewer:RoEKl85WB1yE",
+    "now": "Field:Raiser Assignee:Raiser_Assignee (Field Raiser_Assignee)"
+   },
+   {
+    "activity": "Activity_hha7u2",
+    "step": "Open point – Microbiology",
+    "resource": "Resource_9libvk",
+    "was": "AppRole:CIQ Microbiology Reviewer:RoEKl8647K2u",
+    "now": "Field:Raiser Assignee:Raiser_Assignee (Field Raiser_Assignee)"
+   },
+   {
+    "activity": "Activity_y4af4g",
+    "step": "Open point – Sustainability",
+    "resource": "Resource_jkxckg",
+    "was": "AppRole:CIQ Sustainability Reviewer:RoEKl86bQQrO",
+    "now": "Field:Raiser Assignee:Raiser_Assignee (Field Raiser_Assignee)"
+   },
+   {
+    "activity": "Activity_xc8fbb",
+    "step": "Open point – RMM",
+    "resource": "Resource_jtxnpq",
+    "was": "AppRole:CIQ RMM:RoEKl83f9jPF",
+    "now": "Field:Raiser Assignee:Raiser_Assignee (Field Raiser_Assignee)"
+   }
+  ],
+  "levelChangesOnExistingFields": 0
+ },
+ "diffSummary": {
+  "added": 12,
+  "removed": 0,
+  "changed": 16,
+  "addedByKind": {
+   "Row": 1,
+   "Column": 1,
+   "QueryDefinition": 1,
+   "Field": 1,
+   "Permission": 8
+  },
+  "removedByKind": {},
+  "changedByKind": {
+   "Model": 1,
+   "Column": 1,
+   "Activity": 8,
+   "Resource": 6
+  }
+ },
+ "diffPrinted": {
+  "added": [
+   "Row_xrwiqc Row",
+   "Column_xrwiqc Column",
+   "QueryDefinition_1lodtvu QueryDefinition",
+   "Raiser_Assignee Field Raiser Assignee",
+   "Permission_122x7j4 Permission",
+   "Permission_13xd9v3 Permission",
+   "Permission_1nlpkgr Permission",
+   "Permission_1cbj09p Permission",
+   "Permission_asei11 Permission",
+   "Permission_w0vy85 Permission",
+   "Permission_1yquodv Permission",
+   "Permission_1ezbn15 Permission"
+  ],
+  "removed": [],
+  "changed": [
+   "CIQ_Open_Point_A00 Model CIQ Open Point: Model::Field 58→59 (+Raiser_Assignee)",
+   "Column_waac5d Column Details: Column::Row 38→39 (+Row_xrwiqc)",
+   "Activity_18t0lhi Activity Raise open point: Activity::Permission 59→60 (+Permission_122x7j4)",
+   "Resource_i2izd6 Resource: ValueType AppRole → Field; DisplayValue CIQ Regulatory Reviewer → Raiser Assignee; Value RoEKl84Hca4w → Raiser_Assignee; Field undefined → Raiser_Assignee",
+   "Activity_uka3mx Activity Open point – Regulatory: Activity::Permission 59→60 (+Permission_13xd9v3)",
+   "Resource_1vfqnna Resource: ValueType AppRole → Field; DisplayValue CIQ Safety Reviewer → Raiser Assignee; Value RoEKl84xAFRW → Raiser_Assignee; Field undefined → Raiser_Assignee",
+   "Activity_1kdump3 Activity Open point – Safety: Activity::Permission 59→60 (+Permission_1nlpkgr)",
+   "Resource_1t0uxa0 Resource: ValueType AppRole → Field; DisplayValue CIQ QM Reviewer → Raiser Assignee; Value RoEKl85WB1yE → Raiser_Assignee; Field undefined → Raiser_Assignee",
+   "Activity_1go37bt Activity Open point – QM: Activity::Permission 59→60 (+Permission_1cbj09p)",
+   "Resource_9libvk Resource: ValueType AppRole → Field; DisplayValue CIQ Microbiology Reviewer → Raiser Assignee; Value RoEKl8647K2u → Raiser_Assignee; Field undefined → Raiser_Assignee",
+   "Activity_hha7u2 Activity Open point – Microbiology: Activity::Permission 59→60 (+Permission_asei11)",
+   "Resource_jkxckg Resource: ValueType AppRole → Field; DisplayValue CIQ Sustainability Reviewer → Raiser Assignee; Value RoEKl86bQQrO → Raiser_Assignee; Field undefined → Raiser_Assignee",
+   "Activity_y4af4g Activity Open point – Sustainability: Activity::Permission 59→60 (+Permission_w0vy85)",
+   "Resource_jtxnpq Resource: ValueType AppRole → Field; DisplayValue CIQ RMM → Raiser Assignee; Value RoEKl83f9jPF → Raiser_Assignee; Field undefined → Raiser_Assignee",
+   "Activity_xc8fbb Activity Open point – RMM: Activity::Permission 59→60 (+Permission_1yquodv)",
+   "Activity_i73i25 Activity End: Activity::Permission 59→60 (+Permission_1ezbn15)"
+  ]
+ },
+ "preflight": {
+  "errors": [],
+  "warnings": [
+   "NO_ID",
+   "ORPHAN_ENTITY"
+  ],
+  "warningsLive": [
+   "NO_ID",
+   "ORPHAN_ENTITY"
+  ]
+ },
+ "dryCheck": {
+  "field": {
+   "present": true,
+   "type": "MultiUser",
+   "inModel": true,
+   "column": "Column_xrwiqc",
+   "qd": [
+    "User/User"
+   ]
+  },
+  "fieldOk": true,
+  "levels": {
+   "Activity_18t0lhi": "Editable",
+   "Activity_uka3mx": "ReadOnly",
+   "Activity_1kdump3": "ReadOnly",
+   "Activity_1go37bt": "ReadOnly",
+   "Activity_hha7u2": "ReadOnly",
+   "Activity_y4af4g": "ReadOnly",
+   "Activity_xc8fbb": "ReadOnly",
+   "Activity_i73i25": "ReadOnly"
+  },
+  "levelsOk": true,
+  "noPermsOnNonTask": true,
+  "steps": [
+   {
+    "id": "Activity_uka3mx",
+    "name": "Open point – Regulatory",
+    "owner": "Field:Raiser_Assignee/Raiser_Assignee",
+    "cond": "OP_Dept = \"REG\"",
+    "ok": true
+   },
+   {
+    "id": "Activity_1kdump3",
+    "name": "Open point – Safety",
+    "owner": "Field:Raiser_Assignee/Raiser_Assignee",
+    "cond": "OP_Dept = \"SAF\"",
+    "ok": true
+   },
+   {
+    "id": "Activity_1go37bt",
+    "name": "Open point – QM",
+    "owner": "Field:Raiser_Assignee/Raiser_Assignee",
+    "cond": "OP_Dept = \"QM\"",
+    "ok": true
+   },
+   {
+    "id": "Activity_hha7u2",
+    "name": "Open point – Microbiology",
+    "owner": "Field:Raiser_Assignee/Raiser_Assignee",
+    "cond": "OP_Dept = \"MIC\"",
+    "ok": true
+   },
+   {
+    "id": "Activity_y4af4g",
+    "name": "Open point – Sustainability",
+    "owner": "Field:Raiser_Assignee/Raiser_Assignee",
+    "cond": "OP_Dept = \"SUS\"",
+    "ok": true
+   },
+   {
+    "id": "Activity_xc8fbb",
+    "name": "Open point – RMM",
+    "owner": "Field:Raiser_Assignee/Raiser_Assignee",
+    "cond": "OP_Dept = \"RMM\"",
+    "ok": true
+   }
+  ],
+  "existingLevelsUnchanged": true,
+  "order": [
+   "Raise open point [Activity_18t0lhi]  perms=60",
+   "Open point – Regulatory [Activity_uka3mx] Field:Raiser Assignee if OP_Dept = \"REG\" perms=60",
+   "Open point – Safety [Activity_1kdump3] Field:Raiser Assignee if OP_Dept = \"SAF\" perms=60",
+   "Open point – QM [Activity_1go37bt] Field:Raiser Assignee if OP_Dept = \"QM\" perms=60",
+   "Open point – Microbiology [Activity_hha7u2] Field:Raiser Assignee if OP_Dept = \"MIC\" perms=60",
+   "Open point – Sustainability [Activity_y4af4g] Field:Raiser Assignee if OP_Dept = \"SUS\" perms=60",
+   "Open point – RMM [Activity_xc8fbb] Field:Raiser Assignee if OP_Dept = \"RMM\" perms=60",
+   "End [Activity_i73i25]  perms=60"
+  ],
+  "pass": true
+ },
+ "inFlight": {
+  "status": 200,
+  "count": 8,
+  "tally": {
+   "Completed": 8
+  },
+  "notEnded": []
+ },
+ "calls": 2
+}

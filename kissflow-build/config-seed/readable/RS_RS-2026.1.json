@@ -1,0 +1,523 @@
+{
+  "Config_Key": "RS:RS-2026.1",
+  "Config_Kind": "Rule set",
+  "Version_Label": "RS-2026.1",
+  "Payload_JSON": {
+    "version": "RS-2026.1",
+    "rules": [
+      {
+        "id": "R-00",
+        "question": "ALWAYS",
+        "condition": {
+          "kind": "always"
+        },
+        "activates": [
+          "GEN",
+          "K1",
+          "K5.2",
+          "K6.1",
+          "A10"
+        ],
+        "outcome": "mandatory",
+        "evidence": [
+          "SDS",
+          "CoA",
+          "Specification",
+          "Statements"
+        ],
+        "departments": [
+          "QM",
+          "MIC",
+          "REG"
+        ],
+        "basis": "document",
+        "note": "Stated as 'always' in the requirements document."
+      },
+      {
+        "id": "R-01",
+        "question": "ALWAYS",
+        "condition": {
+          "kind": "always"
+        },
+        "activates": [
+          "K2.1",
+          "K2.2",
+          "K2.3",
+          "K3",
+          "K4.1",
+          "K4.2",
+          "K5.3",
+          "K6.5",
+          "K6.6",
+          "K6.7",
+          "K6.9",
+          "K6.10",
+          "K6.11",
+          "K6.12",
+          "K6.16",
+          "K7",
+          "K8"
+        ],
+        "outcome": "mandatory",
+        "departments": [
+          "REG",
+          "SAF",
+          "QM",
+          "RMM"
+        ],
+        "basis": "not-stated",
+        "note": "Not stated in the requirements document; every case gets these chapters."
+      },
+      {
+        "id": "R-02",
+        "question": "ALWAYS",
+        "condition": {
+          "kind": "always"
+        },
+        "activates": [
+          "K6.8",
+          "K8.1"
+        ],
+        "outcome": "optional",
+        "departments": [
+          "REG",
+          "LEG"
+        ],
+        "basis": "open",
+        "note": "Optional for every case: Halal and kosher status (K6.8), and K8.1 as the follow-up of K8."
+      },
+      {
+        "id": "R-10",
+        "question": "SF01",
+        "condition": {
+          "kind": "includes-any",
+          "question": "SF01",
+          "values": [
+            "vegetable"
+          ]
+        },
+        "activates": [
+          "A1",
+          "A2",
+          "A9"
+        ],
+        "outcome": "mandatory",
+        "evidence": [
+          "Pesticide and mycotoxin analysis",
+          "Sustainability certificates"
+        ],
+        "departments": [
+          "REG",
+          "RMM",
+          "SAF"
+        ],
+        "basis": "document",
+        "note": "A3, A11 and A12 open through their own questions (SF-06, SF-11)."
+      },
+      {
+        "id": "R-12",
+        "question": "SF01",
+        "condition": {
+          "kind": "includes-any",
+          "question": "SF01",
+          "values": [
+            "animal"
+          ]
+        },
+        "activates": [],
+        "outcome": "mandatory",
+        "evidence": [
+          "BSE/TSE certificate",
+          "Conformity with Annex II entry 419"
+        ],
+        "departments": [
+          "REG",
+          "QM"
+        ],
+        "basis": "document"
+      },
+      {
+        "id": "R-13",
+        "question": "SF01",
+        "condition": {
+          "kind": "includes-any",
+          "question": "SF01",
+          "values": [
+            "mineral"
+          ]
+        },
+        "activates": [
+          "A1"
+        ],
+        "outcome": "mandatory",
+        "evidence": [
+          "Origin and specification of the mineral source"
+        ],
+        "departments": [
+          "REG",
+          "SAF"
+        ],
+        "basis": "document",
+        "note": "Colorants (A7) open through SF-05."
+      },
+      {
+        "id": "R-14",
+        "question": "SF01",
+        "condition": {
+          "kind": "includes-any",
+          "question": "SF01",
+          "values": [
+            "petrochemical"
+          ]
+        },
+        "activates": [
+          "A1",
+          "A4",
+          "A9"
+        ],
+        "outcome": "mandatory",
+        "evidence": [
+          "MOAH value",
+          "PAH analysis against BDF limits"
+        ],
+        "departments": [
+          "REG",
+          "SAF"
+        ],
+        "basis": "document"
+      },
+      {
+        "id": "R-15",
+        "question": "SF01",
+        "condition": {
+          "kind": "includes-any",
+          "question": "SF01",
+          "values": [
+            "polymer"
+          ]
+        },
+        "activates": [
+          "A1",
+          "A6",
+          "K4.3"
+        ],
+        "outcome": "mandatory",
+        "evidence": [
+          "Residual monomer content",
+          "SPM scope statement"
+        ],
+        "departments": [
+          "SAF",
+          "REG"
+        ],
+        "basis": "document"
+      },
+      {
+        "id": "R-16",
+        "question": "SF01",
+        "condition": {
+          "kind": "includes-any",
+          "question": "SF01",
+          "values": [
+            "waste",
+            "ccu",
+            "chemrec"
+          ]
+        },
+        "activates": [],
+        "outcome": "mandatory",
+        "departments": [
+          "RMM"
+        ],
+        "basis": "agreed",
+        "note": "No rules for these origins: the supplier gets the standard sections, and the case is flagged in RMM's review.",
+        "flagsCase": true
+      },
+      {
+        "id": "R-30",
+        "question": "SF03",
+        "condition": {
+          "kind": "is",
+          "question": "SF03",
+          "value": true
+        },
+        "activates": [
+          "K4.3",
+          "A6"
+        ],
+        "outcome": "mandatory",
+        "departments": [
+          "SAF",
+          "REG"
+        ],
+        "basis": "document"
+      },
+      {
+        "id": "R-40",
+        "question": "SF04",
+        "condition": {
+          "kind": "is",
+          "question": "SF04",
+          "value": true
+        },
+        "activates": [
+          "A5"
+        ],
+        "outcome": "mandatory",
+        "departments": [
+          "REG"
+        ],
+        "basis": "document"
+      },
+      {
+        "id": "R-50",
+        "question": "SF05",
+        "condition": {
+          "kind": "includes-any",
+          "question": "SF05",
+          "values": [
+            "colorant"
+          ]
+        },
+        "activates": [
+          "A7"
+        ],
+        "outcome": "mandatory",
+        "departments": [
+          "REG"
+        ],
+        "basis": "document"
+      },
+      {
+        "id": "R-51",
+        "question": "SF05",
+        "condition": {
+          "kind": "includes-any",
+          "question": "SF05",
+          "values": [
+            "preservative"
+          ]
+        },
+        "activates": [
+          "A8"
+        ],
+        "outcome": "mandatory",
+        "departments": [
+          "REG",
+          "SAF"
+        ],
+        "basis": "document"
+      },
+      {
+        "id": "R-60",
+        "question": "SF06",
+        "condition": {
+          "kind": "is",
+          "question": "SF06",
+          "value": true
+        },
+        "activates": [
+          "A3"
+        ],
+        "outcome": "mandatory",
+        "departments": [
+          "QM",
+          "MIC"
+        ],
+        "basis": "document"
+      },
+      {
+        "id": "R-70",
+        "question": "SF07",
+        "condition": {
+          "kind": "is",
+          "question": "SF07",
+          "value": true
+        },
+        "activates": [
+          "A4",
+          "A9"
+        ],
+        "outcome": "mandatory",
+        "departments": [
+          "SAF"
+        ],
+        "basis": "document",
+        "note": "Catches mineral oils entered with origin 'Mineral'."
+      },
+      {
+        "id": "R-90",
+        "question": "SF09",
+        "condition": {
+          "kind": "is",
+          "question": "SF09",
+          "value": true
+        },
+        "activates": [
+          "K6.17"
+        ],
+        "outcome": "mandatory",
+        "departments": [
+          "SUS",
+          "REG"
+        ],
+        "basis": "document"
+      },
+      {
+        "id": "R-100",
+        "question": "SF10",
+        "condition": {
+          "kind": "is",
+          "question": "SF10",
+          "value": true
+        },
+        "activates": [
+          "K6.16.1"
+        ],
+        "outcome": "mandatory",
+        "departments": [
+          "REG"
+        ],
+        "basis": "document"
+      },
+      {
+        "id": "R-110",
+        "question": "SF11",
+        "condition": {
+          "kind": "includes-any",
+          "question": "SF11",
+          "values": [
+            "UK"
+          ]
+        },
+        "activates": [
+          "K6.2",
+          "A11"
+        ],
+        "outcome": "mandatory",
+        "departments": [
+          "REG"
+        ],
+        "basis": "agreed",
+        "note": "Split of the SF-11 rule per market."
+      },
+      {
+        "id": "R-112",
+        "question": "SF11",
+        "condition": {
+          "kind": "includes-any",
+          "question": "SF11",
+          "values": [
+            "CN"
+          ]
+        },
+        "activates": [
+          "K6.13"
+        ],
+        "outcome": "mandatory",
+        "departments": [
+          "REG"
+        ],
+        "basis": "agreed"
+      },
+      {
+        "id": "R-113",
+        "question": "SF11",
+        "condition": {
+          "kind": "includes-any",
+          "question": "SF11",
+          "values": [
+            "US"
+          ]
+        },
+        "activates": [
+          "K6.14"
+        ],
+        "outcome": "mandatory",
+        "departments": [
+          "REG",
+          "SAF"
+        ],
+        "basis": "agreed"
+      },
+      {
+        "id": "R-114",
+        "question": "SF11",
+        "condition": {
+          "kind": "includes-any",
+          "question": "SF11",
+          "values": [
+            "CA"
+          ]
+        },
+        "activates": [
+          "K6.15"
+        ],
+        "outcome": "mandatory",
+        "departments": [
+          "REG"
+        ],
+        "basis": "agreed"
+      },
+      {
+        "id": "R-115",
+        "question": "SF11",
+        "condition": {
+          "kind": "any-except",
+          "question": "SF11",
+          "values": [
+            "EU"
+          ]
+        },
+        "activates": [
+          "K6.4",
+          "A13"
+        ],
+        "outcome": "mandatory",
+        "departments": [
+          "REG"
+        ],
+        "basis": "agreed"
+      },
+      {
+        "id": "R-120",
+        "question": "SF12",
+        "condition": {
+          "kind": "is",
+          "question": "SF12",
+          "value": false
+        },
+        "activates": [
+          "K5.1"
+        ],
+        "outcome": "na",
+        "departments": [
+          "MIC"
+        ],
+        "basis": "document",
+        "note": "Waiver needs a written justification; K5.2 stays mandatory."
+      },
+      {
+        "id": "R-121",
+        "question": "SF12",
+        "condition": {
+          "kind": "yes-or-unanswered",
+          "question": "SF12"
+        },
+        "activates": [
+          "K5.1"
+        ],
+        "outcome": "mandatory",
+        "departments": [
+          "MIC"
+        ],
+        "basis": "document"
+      }
+    ]
+  },
+  "Content_Hash": "cc2ece98b0b0c5f428f2125a849338b8b78af0d349285ab1fd72a6626070e91c",
+  "Config_State": "Published",
+  "Published_At": "2026-09-21T10:00:00.000Z",
+  "Change_Note": "First digital CIQ 2026 template: 8 chapters and 12 annexes (Turkey REACH K6.3 / Annex 12 not yet included), with rule set RS-2026.1 from requirements document v2.0 §5.3–5.4.",
+  "Evaluator_Version": "prototype-domain@vendor"
+}

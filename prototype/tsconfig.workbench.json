@@ -1,0 +1,6 @@
+{
+  "//": "CIQ Workbench type-check (WORKBENCH-DESIGN.md §10.1). Extends the prototype config; checks src/workbench only. kfsdk.d.ts is listed by path because WB-3 forbids copying it. The explicit exclude replaces the base's src/workbench exclude.",
+  "extends": "./tsconfig.json",
+  "include": ["src/workbench", "src/portal/kf/kfsdk.d.ts"],
+  "exclude": ["node_modules", "dist", "dist-portal", "dist-workbench"]
+}

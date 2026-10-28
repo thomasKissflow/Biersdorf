@@ -1,0 +1,94 @@
+{
+  "spike": "K-02/K-04 field assignee",
+  "results": [
+    {
+      "step": "create shell",
+      "status": 200,
+      "body": {
+        "_id": "ZZ_Spike_Assignee_A00",
+        "Type": "Process",
+        "Name": "ZZ Spike Assignee",
+        "Status": "Draft"
+      }
+    },
+    {
+      "label": "A baseline AppRole + UserList field",
+      "userFieldType": "UserList",
+      "resourceKind": "AppRole",
+      "preflightErrors": [],
+      "draft": 200,
+      "publish": 500,
+      "publishBody": {
+        "_id": "e95259a0-9fd3-4282-b560-7ecaebcd3fc1",
+        "type": "MetadataError",
+        "error_code": "Metadata",
+        "status": "error",
+        "en_message": "An unexpected error has occurred. Please contact our support team.",
+        "message": "An unexpected error has occurred. Please contact our support team.",
+        "request_id": "ProcessMetadata.publish-78382e5b-4260-4bf5-b14c-8e2b70202470"
+      },
+      "readBackResource": [
+        {
+          "Id": "Resource_evobig",
+          "Kind": "Resource",
+          "ValueType": "AppRole",
+          "DisplayValue": "Admin",
+          "Value": "RoEK3_yhR4wx",
+          "Activity": "Activity_pml6es"
+        }
+      ],
+      "readBackFieldType": "UserList"
+    },
+    {
+      "label": "B Field resource + UserList field",
+      "userFieldType": "UserList",
+      "resourceKind": "Field",
+      "preflightErrors": [],
+      "draft": 200,
+      "publish": 500,
+      "publishBody": {
+        "_id": "e1dd5704-bdf8-4cef-b518-69cc175c80ac",
+        "type": "MetadataError",
+        "error_code": "Metadata",
+        "status": "error",
+        "en_message": "An unexpected error has occurred. Please contact our support team.",
+        "message": "An unexpected error has occurred. Please contact our support team.",
+        "request_id": "ProcessMetadata.publish-b322eb96-b47f-4fa8-a442-8a65ef0e9694"
+      },
+      "readBackResource": [
+        {
+          "Id": "Resource_evobig",
+          "Kind": "Resource",
+          "ValueType": "Field",
+          "DisplayValue": "Probe Assignees",
+          "Value": "Probe_Assignees",
+          "Activity": "Activity_pml6es"
+        }
+      ],
+      "readBackFieldType": "UserList"
+    },
+    {
+      "label": "C Field resource + User field",
+      "userFieldType": "User",
+      "resourceKind": "Field",
+      "preflightErrors": [],
+      "draft": 200,
+      "publish": 200,
+      "readBackResource": [
+        {
+          "Id": "Resource_evobig",
+          "Kind": "Resource",
+          "ValueType": "Field",
+          "DisplayValue": "Probe Assignees",
+          "Value": "Probe_Assignees",
+          "Activity": "Activity_pml6es"
+        }
+      ],
+      "readBackFieldType": "User"
+    }
+  ],
+  "flowId": "ZZ_Spike_Assignee_A00",
+  "starterKinds": {
+    "Model": 1
+  }
+}

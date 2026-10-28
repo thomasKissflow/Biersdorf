@@ -1,0 +1,616 @@
+=== opEdited Wed Oct 21 23:58:27 IST 2026
+## opEdited · CIQ_op_edited_Open_point_question__A00 · APPLY (live, dev sandbox) · run G3USQ
+
+P  preflight: dev sandbox, no pause, the lock, Live and ON, the live draft passes the hardening check offline, the webhook URLs
+   account AcDOSunMEpSA · host dev-beiersdorf.kissflow.eu (dev sandbox) ok
+     GET    /flow/2/AcDOSunMEpSA/integration/?_application_id=CIQ_Digital_A00&page_number=1&page_size=100  → 200
+   CIQ_op_edited_Open_point_question__A00: Status Live, IsActive true
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_edited_Open_point_question__A00/draft  → 200
+   live draft saved: backups/CIQ_op_edited_Open_point_question__A00.preflight.2026-10-21T18-28-41-256Z.json  (reprint the check offline: node kissflow-build/ciq-digital/integrations/build.mjs opEdited harden <that file>)
+   hardened shape ok (7 planned changes; scripts/op-edited.js → scripts/harden/op-edited.js)
+     POST   /form/2/AcDOSunMEpSA/CIQ_Config_Version_A00/list?page_number=1&page_size=100&_application_id=CIQ_Digital_A00  {}  → 200
+   webhooks read from SET:current (not printed), each a dev-sandbox webhook of AcDOSunMEpSA: op.edited
+
+F  fixture (fictional, ZZT-N21-A3; each item in the ledger apply-harden-ledger.jsonl before any further call)
+   opRound ended with exit 0 on P1 PkEPVmf5pIKU (2026-10-21T18:25:03.000Z)
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPVlrp7HwN?_application_id=CIQ_Digital_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+   pair reused: C1 PkEPVlrp7HwN (ZZT-N21-A3-FO2DM-C1) ⇄ R1 PkEPVmEPu63E
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPVmf5pIKU?_application_id=CIQ_Digital_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/PkEPVrlbLg1o?_application_id=CIQ_Supplier_Portal_A00  → 200
+     POST   /process/2/AcDOSunMEpSA/CIQ_Open_Point_A00?_application_id=CIQ_Digital_A00  {"OP_Key":"ZZT-N21-A3-G3USQ-OP2","Round_No":1,"Query_Key":"ZZT-N21-A3-G3USQ-OP2-R1","Case_Code":"ZZT-N21-A3-FO2DM-C1","Cycle_No":1,"Supplier_Code":"ZZT-SUP-A3",  → 200
+     POST   /process/2/AcDOSunMEpSA/CIQ_Open_Point_A00/PkEPVyfDQ2DP/PkEPVyfEbWeY/submit?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPVyfDQ2DP?_application_id=CIQ_Digital_A00  → 200
+   P2 PkEPVyfDQ2DP (ZZT-N21-A3-G3USQ-OP2) InProgress → R1q PkEPVpT6e4Cd, which doesn't name it back
+     PUT    /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPVmf5pIKU?_application_id=CIQ_Digital_A00  {"Question_Text":"ZZT ZZT-N21-A3-FO2DM-OP1 question, EDITED before the op.edited capture (fictional)."}  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPVmf5pIKU?_application_id=CIQ_Digital_A00  → 200
+   P1's Question_Text edited (admin PUT), read back
+
+1  switch OFF (a capture on an ON integration runs it for real)
+     PUT    /flow/2/AcDOSunMEpSA/integration/CIQ_op_edited_Open_point_question__A00/deactivate?_application_id=CIQ_Digital_A00  {}  → 200
+   IsActive false: hand-offs to op.edited are lost until step 6
+
+2  rebuild the draft (build.mjs harden-apply: re-read the live draft, back it up, refuse a manual change, PUT, read back)
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_edited_Open_point_question__A00/draft  → 200
+   backup backups/CIQ_op_edited_Open_point_question__A00.before-harden.2026-10-21T18-30-03-709Z.json (the unhardened draft, its 20 Oct tested flags)
+   order    Action_opEdited_read_app_item → Action_opEdited_pick → Action_OE_update_query
+         →  Action_opEdited_read_app_item → Action_opEdited_read_target → Action_opEdited_pick → Action_OE_update_query
+   + step   Action_opEdited_read_target · "Search an item" (Kissflow Process 3.7.6, connection CnEKHrHqXRKB) · process CIQP_Query_A00 · lookupValue = context.Trigger_opEdited_webhook.opItemId
+   + input  Action_opEdited_pick.queries = context.Action_opEdited_read_target.Data
+   ~ code   Action_opEdited_pick.js_code 1066 → 1896 chars (scripts/op-edited.js → scripts/harden/op-edited.js)
+   ~ untest Output/IsTested cleared on Action_opEdited_read_app_item, Action_opEdited_pick, Action_OE_update_query; trigger Trigger_opEdited_webhook untouched (IsTested true)
+   + ids    Action_opEdited_read_target, FieldMapping_g5x347, Property_g5x348, FieldMapping_g5x349, Property_g5x34a, FieldMapping_g5x34b, Property_g5x34c
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_edited_Open_point_question__A00/draft  <draft, 64 entries>  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_edited_Open_point_question__A00/draft  → 200
+   read-back hardened · trigger tested true
+
+3  capture the trigger sample while OFF (the trigger Test answers at once; the webhook POST ~6 s later becomes its sample)
+     POST   /integration/2/AcDOSunMEpSA/CIQ_op_edited_Open_point_question__A00/trigger/Trigger_opEdited_webhook/test?_application_id=CIQ_Digital_A00  {}  → 200
+     POST   <webhook op.edited: URL from SET:current, not printed>  {"opItemId":"PkEPVmf5pIKU","idempotencyKey":"ZZT-N21-A3-opEdited-capture-G3USQ"}  → 200
+   the listen answer is not the sample ("NOT captured" is expected there); step 4's first Test shows whether it landed
+
+4  per-step Tests on the ZZT data (each step really runs), each passed Output stored with IsTested true
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_edited_Open_point_question__A00/draft  → 200
+     POST   /integration/2/AcDOSunMEpSA/CIQ_op_edited_Open_point_question__A00/action/Action_opEdited_read_app_item/test?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_edited_Open_point_question__A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_edited_Open_point_question__A00/draft  <draft, 64 entries>  → 200
+   PASS Action_opEdited_read_app_item
+     POST   /integration/2/AcDOSunMEpSA/CIQ_op_edited_Open_point_question__A00/action/Action_opEdited_read_target/test?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_edited_Open_point_question__A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_edited_Open_point_question__A00/draft  <draft, 64 entries>  → 200
+   PASS Action_opEdited_read_target
+     POST   /integration/2/AcDOSunMEpSA/CIQ_op_edited_Open_point_question__A00/action/Action_opEdited_pick/test?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_edited_Open_point_question__A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_edited_Open_point_question__A00/draft  <draft, 64 entries>  → 200
+   PASS Action_opEdited_pick
+     POST   /integration/2/AcDOSunMEpSA/CIQ_op_edited_Open_point_question__A00/action/Action_OE_update_query/test?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_edited_Open_point_question__A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_edited_Open_point_question__A00/draft  <draft, 64 entries>  → 200
+   PASS Action_OE_update_query
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_edited_Open_point_question__A00/draft  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/PkEPVrlbLg1o?_application_id=CIQ_Supplier_Portal_A00  → 200
+   the Test wrote the edited question to R2q
+
+5  the new sample's ids into the draft trigger's stored Output (same shape), IsTested true (finish-integ.mjs)
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_edited_Open_point_question__A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_edited_Open_point_question__A00/draft  <draft, 64 entries>  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_edited_Open_point_question__A00/draft  → 200
+   trigger Output opItemId = PkEPVmf5pIKU, IsTested true; every action tested; the hardening check passes on this draft
+
+6  publish, switch ON, read back (Status Live, IsActive true)
+     POST   /metadata/2/AcDOSunMEpSA/integration/CIQ_op_edited_Open_point_question__A00/publish  {}  → 200
+     PUT    /flow/2/AcDOSunMEpSA/integration/CIQ_op_edited_Open_point_question__A00/activate?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /flow/2/AcDOSunMEpSA/integration/?_application_id=CIQ_Digital_A00&page_number=1&page_size=100  → 200
+   read-back Status Live, IsActive true (the hardened version is live)
+
+G  live guard checks (real webhook POSTs, ZZT data only). Run history isn't readable over REST: a refusal is verified by its target's read-back (unchanged after 45 s), and the message below is the one Run history must show (confirm in Manage → Integrations → Run history)
+     PUT    /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPVmf5pIKU?_application_id=CIQ_Digital_A00  {"Question_Text":"ZZT ZZT-N21-A3-FO2DM-OP1 question, EDITED again for the live op.edited (fictional)."}  → 200
+   ok   edit P1's Question_Text again (admin PUT)
+     POST   <webhook op.edited: URL from SET:current, not printed>  {"opItemId":"PkEPVmf5pIKU","idempotencyKey":"ZZT-N21-A3-opEdited-mvig9wri-13"}  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/PkEPVrlbLg1o?_application_id=CIQ_Supplier_Portal_A00  → 200
+   ok   op.edited on P1 → R2q carries the new question: applied (shown after 7 s)
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/PkEPVpT6e4Cd?_application_id=CIQ_Supplier_Portal_A00  → 200
+     POST   <webhook op.edited: URL from SET:current, not printed>  {"opItemId":"PkEPVyfDQ2DP","idempotencyKey":"ZZT-N21-A3-opEdited-mvigac3g-14"}  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/PkEPVpT6e4Cd?_application_id=CIQ_Supplier_Portal_A00  → 200
+   ok   op.edited on P2 (forged link to R1q): refused, target(s) unchanged after 45 s
+        Run history must show: "CIQP Query PkEPVpT6e4Cd does not name open point ZZT-N21-A3-G3USQ-OP2 (PkEPVyfDQ2DP) back"
+   ok   the 45-s refusal window is long enough: the slowest accepted hand-off here showed after 7 s (at most 23 s)
+
+   clean-up: after opClosed (group op); its open items stay in the ledger until then
+
+== opEdited: DONE (exit 0) · done
+   open ZZT items in the ledger: C1=PkEPVlrp7HwN (case), R1=PkEPVmEPu63E (case), P1=PkEPVmf5pIKU (op), P3=PkEPVn0HZexc (op), R1q=PkEPVpT6e4Cd (op), R2q=PkEPVrlbLg1o (op), P2=PkEPVyfDQ2DP (op)
+   calls 45 (webhook POSTs 3) · 355 s
+   run record: apply-harden-runs/opEdited.2026-10-21T18-34-22-137Z.json
+=== opEdited exit 0 Thu Oct 22 00:04:22 IST 2026
+=== opClosed Thu Oct 22 00:04:22 IST 2026
+## opClosed · CIQ_op_closed_Open_point_closed_A00 · APPLY (live, dev sandbox) · run GBGJB
+
+P  preflight: dev sandbox, no pause, the lock, Live and ON, the live draft passes the hardening check offline, the webhook URLs
+   account AcDOSunMEpSA · host dev-beiersdorf.kissflow.eu (dev sandbox) ok
+     GET    /flow/2/AcDOSunMEpSA/integration/?_application_id=CIQ_Digital_A00&page_number=1&page_size=100  → 200
+   CIQ_op_closed_Open_point_closed_A00: Status Live, IsActive true
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_closed_Open_point_closed_A00/draft  → 200
+   live draft saved: backups/CIQ_op_closed_Open_point_closed_A00.preflight.2026-10-21T18-34-35-358Z.json  (reprint the check offline: node kissflow-build/ciq-digital/integrations/build.mjs opClosed harden <that file>)
+   hardened shape ok (7 planned changes; scripts/op-closed.js → scripts/harden/op-closed.js)
+     POST   /form/2/AcDOSunMEpSA/CIQ_Config_Version_A00/list?page_number=1&page_size=100&_application_id=CIQ_Digital_A00  {}  → 200
+   webhooks read from SET:current (not printed), each a dev-sandbox webhook of AcDOSunMEpSA: op.closed, op.round
+
+F  fixture (fictional, ZZT-N21-A3; each item in the ledger apply-harden-ledger.jsonl before any further call)
+   opEdited ended with exit 0 on P1 PkEPVmf5pIKU (2026-10-21T18:34:22.136Z)
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPVlrp7HwN?_application_id=CIQ_Digital_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+   pair reused: C1 PkEPVlrp7HwN (ZZT-N21-A3-FO2DM-C1) ⇄ R1 PkEPVmEPu63E
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPVmf5pIKU?_application_id=CIQ_Digital_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/PkEPVrlbLg1o?_application_id=CIQ_Supplier_Portal_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPVyfDQ2DP?_application_id=CIQ_Digital_A00  → 200
+   P2 reused: PkEPVyfDQ2DP (ZZT-N21-A3-G3USQ-OP2) → R1q, not named back
+     PUT    /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPVmf5pIKU?_application_id=CIQ_Digital_A00  {"OP_Outcome":"Withdrawn","Outcome_Reason":"ZZT test close (fictional)","Closed_At":"2026-10-21T18:35:15Z","Closed_By":{"_id":"UsEJUfjYLM8Y"}}  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPVmf5pIKU?_application_id=CIQ_Digital_A00  → 200
+   P1 OP_Outcome "Withdrawn" (admin PUT, zzt-op.mjs outcome), read back
+     POST   /process/2/AcDOSunMEpSA/CIQ_Open_Point_A00?_application_id=CIQ_Digital_A00  {"OP_Key":"ZZT-N21-A3-GBGJB-OP4","Round_No":1,"Query_Key":"ZZT-N21-A3-GBGJB-OP4-R1","Case_Code":"ZZT-N21-A3-FO2DM-C1","Cycle_No":1,"Supplier_Code":"ZZT-SUP-A3",  → 200
+     POST   /process/2/AcDOSunMEpSA/CIQ_Open_Point_A00/PkEPW4uqYUg4/PkEPW4ursMWL/submit?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPW4uqYUg4?_application_id=CIQ_Digital_A00  → 200
+     POST   <webhook op.round: URL from SET:current, not printed>  {"opItemId":"PkEPW4uqYUg4","idempotencyKey":"ZZT-N21-A3-opClosed-mvigdat9-7"}  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPW4uqYUg4?_application_id=CIQ_Digital_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPW4uqYUg4?_application_id=CIQ_Digital_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/PkEPW5GmJ3BA?_application_id=CIQ_Supplier_Portal_A00  → 200
+   P4 PkEPW4uqYUg4 (ZZT-N21-A3-GBGJB-OP4) ⇄ R4q PkEPW5GmJ3BA (op.round, live), InProgress
+     PUT    /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPW4uqYUg4?_application_id=CIQ_Digital_A00  {"OP_Outcome":"Withdrawn","Outcome_Reason":"ZZT close for the live op.closed (fictional)","Closed_At":"2026-10-21T18:36:14Z","Closed_By":{"_id":"UsEJUfjYLM8Y"}}  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPW4uqYUg4?_application_id=CIQ_Digital_A00  → 200
+   P4 OP_Outcome "Withdrawn" (admin PUT), read back
+
+1  switch OFF (a capture on an ON integration runs it for real)
+     PUT    /flow/2/AcDOSunMEpSA/integration/CIQ_op_closed_Open_point_closed_A00/deactivate?_application_id=CIQ_Digital_A00  {}  → 200
+   IsActive false: hand-offs to op.closed are lost until step 6
+
+2  rebuild the draft (build.mjs harden-apply: re-read the live draft, back it up, refuse a manual change, PUT, read back)
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_closed_Open_point_closed_A00/draft  → 200
+   backup backups/CIQ_op_closed_Open_point_closed_A00.before-harden.2026-10-21T18-36-41-829Z.json (the unhardened draft, its 20 Oct tested flags)
+   order    Action_opClosed_read_app_item → Action_opClosed_pick → Action_OC_complete_query
+         →  Action_opClosed_read_app_item → Action_opClosed_read_target → Action_opClosed_pick → Action_OC_complete_query
+   + step   Action_opClosed_read_target · "Search an item" (Kissflow Process 3.7.6, connection CnEKHrHqXRKB) · process CIQP_Query_A00 · lookupValue = context.Trigger_opClosed_webhook.opItemId
+   + input  Action_opClosed_pick.queries = context.Action_opClosed_read_target.Data
+   ~ code   Action_opClosed_pick.js_code 827 → 1468 chars (scripts/op-closed.js → scripts/harden/op-closed.js)
+   ~ untest Output/IsTested cleared on Action_opClosed_read_app_item, Action_opClosed_pick, Action_OC_complete_query; trigger Trigger_opClosed_webhook untouched (IsTested true)
+   + ids    Action_opClosed_read_target, FieldMapping_geg9z8, Property_geg9z9, FieldMapping_geg9za, Property_geg9zb, FieldMapping_geg9zc, Property_geg9zd
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_closed_Open_point_closed_A00/draft  <draft, 31 entries>  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_closed_Open_point_closed_A00/draft  → 200
+   read-back hardened · trigger tested true
+
+3  capture the trigger sample while OFF (the trigger Test answers at once; the webhook POST ~6 s later becomes its sample)
+     POST   /integration/2/AcDOSunMEpSA/CIQ_op_closed_Open_point_closed_A00/trigger/Trigger_opClosed_webhook/test?_application_id=CIQ_Digital_A00  {}  → 200
+     POST   <webhook op.closed: URL from SET:current, not printed>  {"opItemId":"PkEPVmf5pIKU","idempotencyKey":"ZZT-N21-A3-opClosed-capture-GBGJB"}  → 200
+   the listen answer is not the sample ("NOT captured" is expected there); step 4's first Test shows whether it landed
+
+4  per-step Tests on the ZZT data (each step really runs), each passed Output stored with IsTested true
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_closed_Open_point_closed_A00/draft  → 200
+     POST   /integration/2/AcDOSunMEpSA/CIQ_op_closed_Open_point_closed_A00/action/Action_opClosed_read_app_item/test?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_closed_Open_point_closed_A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_closed_Open_point_closed_A00/draft  <draft, 31 entries>  → 200
+   PASS Action_opClosed_read_app_item
+     POST   /integration/2/AcDOSunMEpSA/CIQ_op_closed_Open_point_closed_A00/action/Action_opClosed_read_target/test?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_closed_Open_point_closed_A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_closed_Open_point_closed_A00/draft  <draft, 31 entries>  → 200
+   PASS Action_opClosed_read_target
+     POST   /integration/2/AcDOSunMEpSA/CIQ_op_closed_Open_point_closed_A00/action/Action_opClosed_pick/test?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_closed_Open_point_closed_A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_closed_Open_point_closed_A00/draft  <draft, 31 entries>  → 200
+   PASS Action_opClosed_pick
+     POST   /integration/2/AcDOSunMEpSA/CIQ_op_closed_Open_point_closed_A00/action/Action_OC_complete_query/test?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_closed_Open_point_closed_A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_closed_Open_point_closed_A00/draft  <draft, 31 entries>  → 200
+   PASS Action_OC_complete_query
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_closed_Open_point_closed_A00/draft  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/PkEPVrlbLg1o?_application_id=CIQ_Supplier_Portal_A00  → 200
+   the Test completed R2q (Skip and complete) on the hardened draft
+
+5  the new sample's ids into the draft trigger's stored Output (same shape), IsTested true (finish-integ.mjs)
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_closed_Open_point_closed_A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_closed_Open_point_closed_A00/draft  <draft, 31 entries>  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_op_closed_Open_point_closed_A00/draft  → 200
+   trigger Output opItemId = PkEPVmf5pIKU, IsTested true; every action tested; the hardening check passes on this draft
+
+6  publish, switch ON, read back (Status Live, IsActive true)
+     POST   /metadata/2/AcDOSunMEpSA/integration/CIQ_op_closed_Open_point_closed_A00/publish  {}  → 200
+     PUT    /flow/2/AcDOSunMEpSA/integration/CIQ_op_closed_Open_point_closed_A00/activate?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /flow/2/AcDOSunMEpSA/integration/?_application_id=CIQ_Digital_A00&page_number=1&page_size=100  → 200
+   read-back Status Live, IsActive true (the hardened version is live)
+
+G  live guard checks (real webhook POSTs, ZZT data only). Run history isn't readable over REST: a refusal is verified by its target's read-back (unchanged after 45 s), and the message below is the one Run history must show (confirm in Manage → Integrations → Run history)
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/PkEPVrlbLg1o?_application_id=CIQ_Supplier_Portal_A00  → 200
+   ok   R2q still Completed (step 4's Test on the draft)
+     POST   <webhook op.closed: URL from SET:current, not printed>  {"opItemId":"PkEPW4uqYUg4","idempotencyKey":"ZZT-N21-A3-opClosed-mvigi7dr-14"}  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/PkEPW5GmJ3BA?_application_id=CIQ_Supplier_Portal_A00  → 200
+   ok   op.closed on P4 → R4q Completed (the live, hardened version): applied (shown after 7 s)
+     PUT    /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPVyfDQ2DP?_application_id=CIQ_Digital_A00  {"OP_Outcome":"Withdrawn","Outcome_Reason":"ZZT forged close (fictional)","Closed_At":"2026-10-21T18:39:50Z","Closed_By":{"_id":"UsEJUfjYLM8Y"}}  → 200
+   ok   give P2 an OP_Outcome (admin PUT; without one "is still open" refuses first)
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/PkEPVpT6e4Cd?_application_id=CIQ_Supplier_Portal_A00  → 200
+     POST   <webhook op.closed: URL from SET:current, not printed>  {"opItemId":"PkEPVyfDQ2DP","idempotencyKey":"ZZT-N21-A3-opClosed-mvigirsw-15"}  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/PkEPVpT6e4Cd?_application_id=CIQ_Supplier_Portal_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/PkEPVpT6e4Cd?_application_id=CIQ_Supplier_Portal_A00  → 200
+   ok   op.closed on P2 (forged link to R1q): refused, target(s) unchanged after 45 s; R1q still InProgress
+        Run history must show: "CIQP Query PkEPVpT6e4Cd does not name open point ZZT-N21-A3-G3USQ-OP2 (PkEPVyfDQ2DP) back"
+   ok   the 45-s refusal window is long enough: the slowest accepted hand-off here showed after 7 s (at most 23 s)
+
+7  clean-up of group op (lost creates found by code, late items swept, then: ZZT-N21-A3 marker checked, withdraw if in progress, delete, read back 404)
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/item?q=PkEPVmf5pIKU&page_number=1&page_size=100&_application_id=CIQ_Supplier_Portal_A00  → 200
+   sweep P1 PkEPVmf5pIKU: nothing the ledger doesn't hold
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/item?q=PkEPVn0HZexc&page_number=1&page_size=100&_application_id=CIQ_Supplier_Portal_A00  → 200
+   sweep P3 PkEPVn0HZexc: nothing the ledger doesn't hold
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/item?q=PkEPVyfDQ2DP&page_number=1&page_size=100&_application_id=CIQ_Supplier_Portal_A00  → 200
+   sweep P2 PkEPVyfDQ2DP: nothing the ledger doesn't hold
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/item?q=PkEPW4uqYUg4&page_number=1&page_size=100&_application_id=CIQ_Supplier_Portal_A00  → 200
+   sweep P4 PkEPW4uqYUg4: nothing the ledger doesn't hold
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/PkEPVpT6e4Cd?_application_id=CIQ_Supplier_Portal_A00  → 200
+     POST   /process/2/AcDOSunMEpSA/CIQP_Query_A00/PkEPVpT6e4Cd/withdraw?_application_id=CIQ_Supplier_Portal_A00  {"Comment":"ZZT-N21-A3 clean-up (fictional test data)"}  → 200
+     DELETE /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/PkEPVpT6e4Cd?_application_id=CIQ_Supplier_Portal_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/PkEPVpT6e4Cd?_application_id=CIQ_Supplier_Portal_A00  → 404
+   R1q PkEPVpT6e4Cd: deleted (GET 404)
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/PkEPVrlbLg1o?_application_id=CIQ_Supplier_Portal_A00  → 200
+     DELETE /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/PkEPVrlbLg1o?_application_id=CIQ_Supplier_Portal_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/PkEPVrlbLg1o?_application_id=CIQ_Supplier_Portal_A00  → 404
+   R2q PkEPVrlbLg1o: deleted (GET 404)
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/PkEPW5GmJ3BA?_application_id=CIQ_Supplier_Portal_A00  → 200
+     DELETE /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/PkEPW5GmJ3BA?_application_id=CIQ_Supplier_Portal_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Query_A00/PkEPW5GmJ3BA?_application_id=CIQ_Supplier_Portal_A00  → 404
+   R4q PkEPW5GmJ3BA: deleted (GET 404)
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPVmf5pIKU?_application_id=CIQ_Digital_A00  → 200
+     POST   /process/2/AcDOSunMEpSA/CIQ_Open_Point_A00/PkEPVmf5pIKU/withdraw?_application_id=CIQ_Digital_A00  {"Comment":"ZZT-N21-A3 clean-up (fictional test data)"}  → 200
+     DELETE /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPVmf5pIKU?_application_id=CIQ_Digital_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPVmf5pIKU?_application_id=CIQ_Digital_A00  → 404
+   P1 PkEPVmf5pIKU: deleted (GET 404)
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPVn0HZexc?_application_id=CIQ_Digital_A00  → 200
+     DELETE /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPVn0HZexc?_application_id=CIQ_Digital_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPVn0HZexc?_application_id=CIQ_Digital_A00  → 404
+   P3 PkEPVn0HZexc: deleted (GET 404)
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPVyfDQ2DP?_application_id=CIQ_Digital_A00  → 200
+     POST   /process/2/AcDOSunMEpSA/CIQ_Open_Point_A00/PkEPVyfDQ2DP/withdraw?_application_id=CIQ_Digital_A00  {"Comment":"ZZT-N21-A3 clean-up (fictional test data)"}  → 200
+     DELETE /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPVyfDQ2DP?_application_id=CIQ_Digital_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPVyfDQ2DP?_application_id=CIQ_Digital_A00  → 404
+   P2 PkEPVyfDQ2DP: deleted (GET 404)
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPW4uqYUg4?_application_id=CIQ_Digital_A00  → 200
+     POST   /process/2/AcDOSunMEpSA/CIQ_Open_Point_A00/PkEPW4uqYUg4/withdraw?_application_id=CIQ_Digital_A00  {"Comment":"ZZT-N21-A3 clean-up (fictional test data)"}  → 200
+     DELETE /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPW4uqYUg4?_application_id=CIQ_Digital_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Open_Point_A00/PkEPW4uqYUg4?_application_id=CIQ_Digital_A00  → 404
+   P4 PkEPW4uqYUg4: deleted (GET 404)
+
+== opClosed: DONE (exit 0) · done
+   open ZZT items in the ledger: C1=PkEPVlrp7HwN (case), R1=PkEPVmEPu63E (case)
+   calls 83 (webhook POSTs 4) · 591 s
+   run record: apply-harden-runs/opClosed.2026-10-21T18-44-13-653Z.json
+=== opClosed exit 0 Thu Oct 22 00:14:13 IST 2026
+=== history Thu Oct 22 00:14:13 IST 2026
+## history · CIQ_history_updated_Questions_hist_A00 · APPLY (live, dev sandbox) · run GO4Z9
+
+P  preflight: dev sandbox, no pause, the lock, Live and ON, the live draft passes the hardening check offline, the webhook URLs
+   account AcDOSunMEpSA · host dev-beiersdorf.kissflow.eu (dev sandbox) ok
+     GET    /flow/2/AcDOSunMEpSA/integration/?_application_id=CIQ_Digital_A00&page_number=1&page_size=100  → 200
+   CIQ_history_updated_Questions_hist_A00: Status Live, IsActive true
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_history_updated_Questions_hist_A00/draft  → 200
+   live draft saved: backups/CIQ_history_updated_Questions_hist_A00.preflight.2026-10-21T18-44-27-083Z.json  (reprint the check offline: node kissflow-build/ciq-digital/integrations/build.mjs history harden <that file>)
+   hardened shape ok (7 planned changes; scripts/case-history.js → scripts/harden/case-history.js)
+     POST   /form/2/AcDOSunMEpSA/CIQ_Config_Version_A00/list?page_number=1&page_size=100&_application_id=CIQ_Digital_A00  {}  → 200
+   webhooks read from SET:current (not printed), each a dev-sandbox webhook of AcDOSunMEpSA: history.updated
+
+F  fixture (fictional, ZZT-N21-A3; each item in the ledger apply-harden-ledger.jsonl before any further call)
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPVlrp7HwN?_application_id=CIQ_Digital_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+   pair reused: C1 PkEPVlrp7HwN (ZZT-N21-A3-FO2DM-C1) ⇄ R1 PkEPVmEPu63E
+     POST   /process/2/AcDOSunMEpSA/CIQ_Case_A00?_application_id=CIQ_Digital_A00  {"Case_Code":"ZZT-N21-A3-GO4Z9-C2","Cycle_No":1,"Case_Title":"ZZT-N21-A3-GO4Z9-C2 FORGED link for the reverse-link check (fictional)","Case_Test":"Yes","Priorit  → 200
+     POST   /process/2/AcDOSunMEpSA/CIQ_Case_A00/PkEPWEIOpHz2/PkEPWEIQV7ld/submit?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPWEIOpHz2?_application_id=CIQ_Digital_A00  → 200
+   C2 PkEPWEIOpHz2 (ZZT-N21-A3-GO4Z9-C2) → R1 PkEPVmEPu63E, submitted, R1 doesn't name it back
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPVlrp7HwN?_application_id=CIQ_Digital_A00  → 200
+
+1  switch OFF (a capture on an ON integration runs it for real)
+     PUT    /flow/2/AcDOSunMEpSA/integration/CIQ_history_updated_Questions_hist_A00/deactivate?_application_id=CIQ_Digital_A00  {}  → 200
+   IsActive false: hand-offs to history.updated are lost until step 6
+
+2  rebuild the draft (build.mjs harden-apply: re-read the live draft, back it up, refuse a manual change, PUT, read back)
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_history_updated_Questions_hist_A00/draft  → 200
+   backup backups/CIQ_history_updated_Questions_hist_A00.before-harden.2026-10-21T18-45-33-507Z.json (the unhardened draft, its 20 Oct tested flags)
+   order    Action_history_read_app_item → Action_history_pick → Action_HU_update_request
+         →  Action_history_read_app_item → Action_history_read_target → Action_history_pick → Action_HU_update_request
+   + step   Action_history_read_target · "Search an item" (Kissflow Process 3.7.6, connection CnEKHrHqXRKB) · process CIQP_Request_A00 · lookupValue = context.Trigger_history_webhook.caseItemId
+   + input  Action_history_pick.requests = context.Action_history_read_target.Data
+   ~ code   Action_history_pick.js_code 1044 → 1657 chars (scripts/case-history.js → scripts/harden/case-history.js)
+   ~ untest Output/IsTested cleared on Action_history_read_app_item, Action_history_pick, Action_HU_update_request; trigger Trigger_history_webhook untouched (IsTested true)
+   + ids    Action_history_read_target, FieldMapping_gpuiu7, Property_gpuiu8, FieldMapping_gpuiu9, Property_gpuiua, FieldMapping_gpuiub, Property_gpuiuc
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_history_updated_Questions_hist_A00/draft  <draft, 89 entries>  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_history_updated_Questions_hist_A00/draft  → 200
+   read-back hardened · trigger tested true
+
+3  capture the trigger sample while OFF (the trigger Test answers at once; the webhook POST ~6 s later becomes its sample)
+     POST   /integration/2/AcDOSunMEpSA/CIQ_history_updated_Questions_hist_A00/trigger/Trigger_history_webhook/test?_application_id=CIQ_Digital_A00  {}  → 200
+     POST   <webhook history.updated: URL from SET:current, not printed>  {"caseItemId":"PkEPVlrp7HwN","questionsHistoryJson":"[]","idempotencyKey":"ZZT-N21-A3-history-capture-GO4Z9"}  → 200
+   the listen answer is not the sample ("NOT captured" is expected there); step 4's first Test shows whether it landed
+
+4  per-step Tests on the ZZT data (each step really runs), each passed Output stored with IsTested true
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_history_updated_Questions_hist_A00/draft  → 200
+     POST   /integration/2/AcDOSunMEpSA/CIQ_history_updated_Questions_hist_A00/action/Action_history_read_app_item/test?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_history_updated_Questions_hist_A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_history_updated_Questions_hist_A00/draft  <draft, 89 entries>  → 200
+   PASS Action_history_read_app_item
+     POST   /integration/2/AcDOSunMEpSA/CIQ_history_updated_Questions_hist_A00/action/Action_history_read_target/test?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_history_updated_Questions_hist_A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_history_updated_Questions_hist_A00/draft  <draft, 89 entries>  → 200
+   PASS Action_history_read_target
+     POST   /integration/2/AcDOSunMEpSA/CIQ_history_updated_Questions_hist_A00/action/Action_history_pick/test?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_history_updated_Questions_hist_A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_history_updated_Questions_hist_A00/draft  <draft, 89 entries>  → 200
+   PASS Action_history_pick
+     POST   /integration/2/AcDOSunMEpSA/CIQ_history_updated_Questions_hist_A00/action/Action_HU_update_request/test?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_history_updated_Questions_hist_A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_history_updated_Questions_hist_A00/draft  <draft, 89 entries>  → 200
+   PASS Action_HU_update_request
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_history_updated_Questions_hist_A00/draft  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+   the Test wrote Questions_History_JSON "[]" to R1
+
+5  the new sample's ids into the draft trigger's stored Output (same shape), IsTested true (finish-integ.mjs)
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_history_updated_Questions_hist_A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_history_updated_Questions_hist_A00/draft  <draft, 89 entries>  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_history_updated_Questions_hist_A00/draft  → 200
+   trigger Output caseItemId = PkEPVlrp7HwN, IsTested true; every action tested; the hardening check passes on this draft
+
+6  publish, switch ON, read back (Status Live, IsActive true)
+     POST   /metadata/2/AcDOSunMEpSA/integration/CIQ_history_updated_Questions_hist_A00/publish  {}  → 200
+     PUT    /flow/2/AcDOSunMEpSA/integration/CIQ_history_updated_Questions_hist_A00/activate?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /flow/2/AcDOSunMEpSA/integration/?_application_id=CIQ_Digital_A00&page_number=1&page_size=100  → 200
+   read-back Status Live, IsActive true (the hardened version is live)
+
+G  live guard checks (real webhook POSTs, ZZT data only). Run history isn't readable over REST: a refusal is verified by its target's read-back (unchanged after 45 s), and the message below is the one Run history must show (confirm in Manage → Integrations → Run history)
+     POST   <webhook history.updated: URL from SET:current, not printed>  {"caseItemId":"PkEPVlrp7HwN","questionsHistoryJson":"[{\"opKey\":\"ZZT-N21-A3-GO4Z9-OP1\",\"round\":1,\"question\":\"ZZT question (fictional)\",\"answer\":\"ZZT answer (fictional)\",\"outcome\":\"Acce  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+   ok   history.updated on C1 → R1's Questions_History_JSON: applied (shown after 7 s)
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+     POST   <webhook history.updated: URL from SET:current, not printed>  {"caseItemId":"PkEPWEIOpHz2","questionsHistoryJson":"[{\"opKey\":\"ZZT-FORGED\",\"round\":9}]","idempotencyKey":"ZZT-N21-A3-history-mvigu493-14"}  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+   ok   history.updated on C2 (forged link to R1): refused, target(s) unchanged after 45 s
+        Run history must show: "CIQP Request PkEPVmEPu63E does not name case ZZT-N21-A3-GO4Z9-C2 (PkEPWEIOpHz2) back"
+   ok   the 45-s refusal window is long enough: the slowest accepted hand-off here showed after 7 s (at most 23 s)
+
+   clean-up: after cancelled (group case); its open items stay in the ledger until then
+
+== history: DONE (exit 0) · done
+   open ZZT items in the ledger: C1=PkEPVlrp7HwN (case), R1=PkEPVmEPu63E (case), C2=PkEPWEIOpHz2 (case)
+   calls 42 (webhook POSTs 3) · 332 s
+   run record: apply-harden-runs/history.2026-10-21T18-49-45-802Z.json
+=== history exit 0 Thu Oct 22 00:19:45 IST 2026
+=== release Thu Oct 22 00:19:45 IST 2026
+## release · CIQ_release_requested_Final_releas_A00 · APPLY (live, dev sandbox) · run GV99I
+
+P  preflight: dev sandbox, no pause, the lock, Live and ON, the live draft passes the hardening check offline, the webhook URLs
+   account AcDOSunMEpSA · host dev-beiersdorf.kissflow.eu (dev sandbox) ok
+     GET    /flow/2/AcDOSunMEpSA/integration/?_application_id=CIQ_Digital_A00&page_number=1&page_size=100  → 200
+   CIQ_release_requested_Final_releas_A00: Status Live, IsActive true
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_release_requested_Final_releas_A00/draft  → 200
+   live draft saved: backups/CIQ_release_requested_Final_releas_A00.preflight.2026-10-21T18-49-59-101Z.json  (reprint the check offline: node kissflow-build/ciq-digital/integrations/build.mjs release harden <that file>)
+     GET    /integration/2/AcDOSunMEpSA/CIQ_release_requested_Final_releas_A00/action/Action_RR_update_request/fields  → 200
+   hardened shape ok (9 planned changes; scripts/case-release.js → scripts/harden/case-release.js; the cleared fields' schema read live)
+     POST   /form/2/AcDOSunMEpSA/CIQ_Config_Version_A00/list?page_number=1&page_size=100&_application_id=CIQ_Digital_A00  {}  → 200
+   webhooks read from SET:current (not printed), each a dev-sandbox webhook of AcDOSunMEpSA: release.requested
+
+F  fixture (fictional, ZZT-N21-A3; each item in the ledger apply-harden-ledger.jsonl before any further call)
+   history ended with exit 0 on C1 PkEPVlrp7HwN (2026-10-21T18:49:45.800Z)
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPVlrp7HwN?_application_id=CIQ_Digital_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+   pair reused: C1 PkEPVlrp7HwN (ZZT-N21-A3-FO2DM-C1) ⇄ R1 PkEPVmEPu63E
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPWEIOpHz2?_application_id=CIQ_Digital_A00  → 200
+   C2 reused: PkEPWEIOpHz2 (ZZT-N21-A3-GO4Z9-C2) → R1, not named back
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPVlrp7HwN?_application_id=CIQ_Digital_A00  → 200
+     PUT    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  {"Release_At":"2026-10-21T18:50:46Z","Release_By_Name":"ZZT Earlier Releaser (fictional)","Release_By_Email":"zzt.release.a3@example.com","Release_By_Role":"ZZT  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+   R1 holds ZZT values in Release_At, Release_By_Name, Release_By_Email, Release_By_Role (admin PUT), read back
+
+1  switch OFF (a capture on an ON integration runs it for real)
+     PUT    /flow/2/AcDOSunMEpSA/integration/CIQ_release_requested_Final_releas_A00/deactivate?_application_id=CIQ_Digital_A00  {}  → 200
+   IsActive false: hand-offs to release.requested are lost until step 6
+
+2  rebuild the draft (build.mjs harden-apply: re-read the live draft, back it up, refuse a manual change, PUT, read back)
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_release_requested_Final_releas_A00/draft  → 200
+   backup backups/CIQ_release_requested_Final_releas_A00.before-harden.2026-10-21T18-51-12-996Z.json (the unhardened draft, its 20 Oct tested flags)
+   order    Action_release_read_app_item → Action_release_pick → Action_RR_stamp_case → Action_RR_update_request
+         →  Action_release_read_app_item → Action_release_read_target → Action_release_pick → Action_RR_stamp_case → Action_RR_update_request
+   + step   Action_release_read_target · "Search an item" (Kissflow Process 3.7.6, connection CnEKHrHqXRKB) · process CIQP_Request_A00 · lookupValue = context.Trigger_release_webhook.caseItemId
+   + input  Action_release_pick.requests = context.Action_release_read_target.Data
+   ~ code   Action_release_pick.js_code 1732 → 3090 chars (scripts/case-release.js → scripts/harden/case-release.js)
+   + map    Action_RR_update_request.Release_By_Email = context.Action_release_pick.Release_By_Email (null: cleared) · FieldId Release_By_Email, String, "Release By Email" (live schema)
+   + map    Action_RR_update_request.Release_By_Role = context.Action_release_pick.Release_By_Role (null: cleared) · FieldId Release_By_Role, String, "Release By Role" (live schema)
+   ~ untest Output/IsTested cleared on Action_release_read_app_item, Action_release_pick, Action_RR_stamp_case, Action_RR_update_request; trigger Trigger_release_webhook untouched (IsTested true)
+   + ids    Action_release_read_target, FieldMapping_gx4h3b, Property_gx4h3c, FieldMapping_gx4h3d, Property_gx4h3e, FieldMapping_gx4h3f, Property_gx4h3g, FieldMapping_gx4h3h, Property_gx4h3i, FieldMapping_gx4h3j, Property_gx4h3k
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_release_requested_Final_releas_A00/draft  <draft, 268 entries>  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_release_requested_Final_releas_A00/draft  → 200
+   read-back hardened · trigger tested true
+
+3  capture the trigger sample while OFF (the trigger Test answers at once; the webhook POST ~6 s later becomes its sample)
+     POST   /integration/2/AcDOSunMEpSA/CIQ_release_requested_Final_releas_A00/trigger/Trigger_release_webhook/test?_application_id=CIQ_Digital_A00  {}  → 200
+     POST   <webhook release.requested: URL from SET:current, not printed>  {"caseItemId":"PkEPVlrp7HwN","idempotencyKey":"ZZT-N21-A3-release-capture-GV99I"}  → 200
+   the listen answer is not the sample ("NOT captured" is expected there); step 4's first Test shows whether it landed
+
+4  per-step Tests on the ZZT data (each step really runs), each passed Output stored with IsTested true
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_release_requested_Final_releas_A00/draft  → 200
+     POST   /integration/2/AcDOSunMEpSA/CIQ_release_requested_Final_releas_A00/action/Action_release_read_app_item/test?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_release_requested_Final_releas_A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_release_requested_Final_releas_A00/draft  <draft, 268 entries>  → 200
+   PASS Action_release_read_app_item
+     POST   /integration/2/AcDOSunMEpSA/CIQ_release_requested_Final_releas_A00/action/Action_release_read_target/test?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_release_requested_Final_releas_A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_release_requested_Final_releas_A00/draft  <draft, 268 entries>  → 200
+   PASS Action_release_read_target
+     POST   /integration/2/AcDOSunMEpSA/CIQ_release_requested_Final_releas_A00/action/Action_release_pick/test?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_release_requested_Final_releas_A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_release_requested_Final_releas_A00/draft  <draft, 268 entries>  → 200
+   PASS Action_release_pick
+     POST   /integration/2/AcDOSunMEpSA/CIQ_release_requested_Final_releas_A00/action/Action_RR_stamp_case/test?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_release_requested_Final_releas_A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_release_requested_Final_releas_A00/draft  <draft, 268 entries>  → 200
+   PASS Action_RR_stamp_case
+     POST   /integration/2/AcDOSunMEpSA/CIQ_release_requested_Final_releas_A00/action/Action_RR_update_request/test?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_release_requested_Final_releas_A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_release_requested_Final_releas_A00/draft  <draft, 268 entries>  → 200
+   PASS Action_RR_update_request
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_release_requested_Final_releas_A00/draft  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPVlrp7HwN?_application_id=CIQ_Digital_A00  → 200
+   the Test cleared all four release fields on R1 (first proof that a null mapping clears the Email field) and stamped C1
+
+5  the new sample's ids into the draft trigger's stored Output (same shape), IsTested true (finish-integ.mjs)
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_release_requested_Final_releas_A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_release_requested_Final_releas_A00/draft  <draft, 268 entries>  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_release_requested_Final_releas_A00/draft  → 200
+   trigger Output caseItemId = PkEPVlrp7HwN, IsTested true; every action tested; the hardening check passes on this draft
+
+6  publish, switch ON, read back (Status Live, IsActive true)
+     POST   /metadata/2/AcDOSunMEpSA/integration/CIQ_release_requested_Final_releas_A00/publish  {}  → 200
+     PUT    /flow/2/AcDOSunMEpSA/integration/CIQ_release_requested_Final_releas_A00/activate?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /flow/2/AcDOSunMEpSA/integration/?_application_id=CIQ_Digital_A00&page_number=1&page_size=100  → 200
+   read-back Status Live, IsActive true (the hardened version is live)
+
+G  live guard checks (real webhook POSTs, ZZT data only). Run history isn't readable over REST: a refusal is verified by its target's read-back (unchanged after 45 s), and the message below is the one Run history must show (confirm in Manage → Integrations → Run history)
+     PUT    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  {"Release_At":"2026-10-21T18:54:54Z","Release_By_Name":"ZZT Earlier Releaser (fictional)","Release_By_Email":"zzt.release.a3@example.com","Release_By_Role":"ZZT  → 200
+   ok   seed R1's four release fields again (admin PUT)
+     POST   <webhook release.requested: URL from SET:current, not printed>  {"caseItemId":"PkEPVlrp7HwN","idempotencyKey":"ZZT-N21-A3-release-mvih20hz-21"}  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+   ok   release.requested on C1 → R1's four release fields empty, Release_Flag Requested: applied (shown after 13 s)
+     PUT    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  {"Release_At":"2026-10-21T18:55:21Z","Release_By_Name":"ZZT Earlier Releaser (fictional)","Release_By_Email":"zzt.release.a3@example.com","Release_By_Role":"ZZT  → 200
+   ok   seed R1's four release fields for the C2 check (admin PUT)
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPWEIOpHz2?_application_id=CIQ_Digital_A00  → 200
+     POST   <webhook release.requested: URL from SET:current, not printed>  {"caseItemId":"PkEPWEIOpHz2","idempotencyKey":"ZZT-N21-A3-release-mvih2vbn-22"}  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPWEIOpHz2?_application_id=CIQ_Digital_A00  → 200
+   ok   release.requested on C2 (forged link to R1): refused, target(s) unchanged after 45 s
+        Run history must show: "CIQP Request PkEPVmEPu63E does not name case ZZT-N21-A3-GO4Z9-C2 (PkEPWEIOpHz2) back"
+     PUT    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPVlrp7HwN?_application_id=CIQ_Digital_A00  {"Case_Phase":"Cancelled"}  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPVlrp7HwN?_application_id=CIQ_Digital_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPVlrp7HwN?_application_id=CIQ_Digital_A00  → 200
+     POST   <webhook release.requested: URL from SET:current, not printed>  {"caseItemId":"PkEPVlrp7HwN","idempotencyKey":"ZZT-N21-A3-release-mvih4pql-23"}  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPVlrp7HwN?_application_id=CIQ_Digital_A00  → 200
+   ok   release.requested on C1 with its Case_Phase "Cancelled" (the case-side backstop): refused, target(s) unchanged after 45 s
+        Run history must show: "Case ZZT-N21-A3-FO2DM-C1 is cancelled: no final release"
+     PUT    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPVlrp7HwN?_application_id=CIQ_Digital_A00  {"Case_Phase":"Supplier filling in the CIQ"}  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPVlrp7HwN?_application_id=CIQ_Digital_A00  → 200
+   ok   C1's Case_Phase put back to "Supplier filling in the CIQ" (admin PUT, read back)
+   ok   the 45-s refusal window is long enough: the slowest accepted hand-off here showed after 13 s (at most 23 s)
+
+   clean-up: after cancelled (group case); its open items stay in the ledger until then
+
+== release: DONE (exit 0) · done
+   open ZZT items in the ledger: C1=PkEPVlrp7HwN (case), R1=PkEPVmEPu63E (case), C2=PkEPWEIOpHz2 (case)
+   calls 61 (webhook POSTs 4) · 514 s
+   run record: apply-harden-runs/release.2026-10-21T18-58-19-624Z.json
+=== release exit 0 Thu Oct 22 00:28:19 IST 2026
+=== cancelled Thu Oct 22 00:28:19 IST 2026
+## cancelled · CIQ_case_cancelled_Case_cancelled_A00 · APPLY (live, dev sandbox) · run H69QA
+
+P  preflight: dev sandbox, no pause, the lock, Live and ON, the live draft passes the hardening check offline, the webhook URLs
+   account AcDOSunMEpSA · host dev-beiersdorf.kissflow.eu (dev sandbox) ok
+     GET    /flow/2/AcDOSunMEpSA/integration/?_application_id=CIQ_Digital_A00&page_number=1&page_size=100  → 200
+   CIQ_case_cancelled_Case_cancelled_A00: Status Live, IsActive true
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_case_cancelled_Case_cancelled_A00/draft  → 200
+   live draft saved: backups/CIQ_case_cancelled_Case_cancelled_A00.preflight.2026-10-21T18-58-32-930Z.json  (reprint the check offline: node kissflow-build/ciq-digital/integrations/build.mjs cancelled harden <that file>)
+   hardened shape ok (7 planned changes; scripts/case-cancelled.js → scripts/harden/case-cancelled.js)
+     POST   /form/2/AcDOSunMEpSA/CIQ_Config_Version_A00/list?page_number=1&page_size=100&_application_id=CIQ_Digital_A00  {}  → 200
+   webhooks read from SET:current (not printed), each a dev-sandbox webhook of AcDOSunMEpSA: case.cancelled, release.requested
+
+F  fixture (fictional, ZZT-N21-A3; each item in the ledger apply-harden-ledger.jsonl before any further call)
+   release ended with exit 0 on C1 PkEPVlrp7HwN (2026-10-21T18:58:19.622Z)
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPVlrp7HwN?_application_id=CIQ_Digital_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+   pair reused: C1 PkEPVlrp7HwN (ZZT-N21-A3-FO2DM-C1) ⇄ R1 PkEPVmEPu63E
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPWEIOpHz2?_application_id=CIQ_Digital_A00  → 200
+   C2 reused: PkEPWEIOpHz2 (ZZT-N21-A3-GO4Z9-C2) → R1, not named back
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPVlrp7HwN?_application_id=CIQ_Digital_A00  → 200
+   R1's label before the Test: "Awaiting your final release", locked Yes (put back before the C2 check, so a wrong write would show)
+
+1  switch OFF (a capture on an ON integration runs it for real)
+     PUT    /flow/2/AcDOSunMEpSA/integration/CIQ_case_cancelled_Case_cancelled_A00/deactivate?_application_id=CIQ_Digital_A00  {}  → 200
+   IsActive false: hand-offs to case.cancelled are lost until step 6
+
+2  rebuild the draft (build.mjs harden-apply: re-read the live draft, back it up, refuse a manual change, PUT, read back)
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_case_cancelled_Case_cancelled_A00/draft  → 200
+   backup backups/CIQ_case_cancelled_Case_cancelled_A00.before-harden.2026-10-21T18-59-26-168Z.json (the unhardened draft, its 20 Oct tested flags)
+   order    Action_cancelled_read_app_item → Action_cancelled_pick → Action_CC_update_request
+         →  Action_cancelled_read_app_item → Action_cancelled_read_target → Action_cancelled_pick → Action_CC_update_request
+   + step   Action_cancelled_read_target · "Search an item" (Kissflow Process 3.7.6, connection CnEKHrHqXRKB) · process CIQP_Request_A00 · lookupValue = context.Trigger_cancelled_webhook.caseItemId
+   + input  Action_cancelled_pick.requests = context.Action_cancelled_read_target.Data
+   ~ code   Action_cancelled_pick.js_code 1000 → 1613 chars (scripts/case-cancelled.js → scripts/harden/case-cancelled.js)
+   ~ untest Output/IsTested cleared on Action_cancelled_read_app_item, Action_cancelled_pick, Action_CC_update_request; trigger Trigger_cancelled_webhook untouched (IsTested true)
+   + ids    Action_cancelled_read_target, FieldMapping_h7p0e7, Property_h7p0e8, FieldMapping_h7p0e9, Property_h7p0ea, FieldMapping_h7p0hb, Property_h7p0hc
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_case_cancelled_Case_cancelled_A00/draft  <draft, 92 entries>  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_case_cancelled_Case_cancelled_A00/draft  → 200
+   read-back hardened · trigger tested true
+
+3  capture the trigger sample while OFF (the trigger Test answers at once; the webhook POST ~6 s later becomes its sample)
+     POST   /integration/2/AcDOSunMEpSA/CIQ_case_cancelled_Case_cancelled_A00/trigger/Trigger_cancelled_webhook/test?_application_id=CIQ_Digital_A00  {}  → 200
+     POST   <webhook case.cancelled: URL from SET:current, not printed>  {"caseItemId":"PkEPVlrp7HwN","phaseLabel":"Cancelled","locked":"Yes","idempotencyKey":"ZZT-N21-A3-cancelled-capture-H69QA"}  → 200
+   the listen answer is not the sample ("NOT captured" is expected there); step 4's first Test shows whether it landed
+
+4  per-step Tests on the ZZT data (each step really runs), each passed Output stored with IsTested true
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_case_cancelled_Case_cancelled_A00/draft  → 200
+     POST   /integration/2/AcDOSunMEpSA/CIQ_case_cancelled_Case_cancelled_A00/action/Action_cancelled_read_app_item/test?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_case_cancelled_Case_cancelled_A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_case_cancelled_Case_cancelled_A00/draft  <draft, 92 entries>  → 200
+   PASS Action_cancelled_read_app_item
+     POST   /integration/2/AcDOSunMEpSA/CIQ_case_cancelled_Case_cancelled_A00/action/Action_cancelled_read_target/test?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_case_cancelled_Case_cancelled_A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_case_cancelled_Case_cancelled_A00/draft  <draft, 92 entries>  → 200
+   PASS Action_cancelled_read_target
+     POST   /integration/2/AcDOSunMEpSA/CIQ_case_cancelled_Case_cancelled_A00/action/Action_cancelled_pick/test?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_case_cancelled_Case_cancelled_A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_case_cancelled_Case_cancelled_A00/draft  <draft, 92 entries>  → 200
+   PASS Action_cancelled_pick
+     POST   /integration/2/AcDOSunMEpSA/CIQ_case_cancelled_Case_cancelled_A00/action/Action_CC_update_request/test?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_case_cancelled_Case_cancelled_A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_case_cancelled_Case_cancelled_A00/draft  <draft, 92 entries>  → 200
+   PASS Action_CC_update_request
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_case_cancelled_Case_cancelled_A00/draft  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+   the Test labelled R1 "Cancelled" and locked it
+
+5  the new sample's ids into the draft trigger's stored Output (same shape), IsTested true (finish-integ.mjs)
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_case_cancelled_Case_cancelled_A00/draft  → 200
+     PUT    /metadata/2/AcDOSunMEpSA/integration/CIQ_case_cancelled_Case_cancelled_A00/draft  <draft, 92 entries>  → 200
+     GET    /metadata/2/AcDOSunMEpSA/integration/CIQ_case_cancelled_Case_cancelled_A00/draft  → 200
+   trigger Output caseItemId = PkEPVlrp7HwN, IsTested true; every action tested; the hardening check passes on this draft
+
+6  publish, switch ON, read back (Status Live, IsActive true)
+     POST   /metadata/2/AcDOSunMEpSA/integration/CIQ_case_cancelled_Case_cancelled_A00/publish  {}  → 200
+     PUT    /flow/2/AcDOSunMEpSA/integration/CIQ_case_cancelled_Case_cancelled_A00/activate?_application_id=CIQ_Digital_A00  {}  → 200
+     GET    /flow/2/AcDOSunMEpSA/integration/?_application_id=CIQ_Digital_A00&page_number=1&page_size=100  → 200
+   read-back Status Live, IsActive true (the hardened version is live)
+
+G  live guard checks (real webhook POSTs, ZZT data only). Run history isn't readable over REST: a refusal is verified by its target's read-back (unchanged after 45 s), and the message below is the one Run history must show (confirm in Manage → Integrations → Run history)
+     PUT    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  {"Case_Phase_Label":"Awaiting your final release","Request_Locked":"Yes"}  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+   ok   put R1's label back to "Awaiting your final release" / Yes (admin PUT)
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+     POST   <webhook case.cancelled: URL from SET:current, not printed>  {"caseItemId":"PkEPWEIOpHz2","phaseLabel":"Cancelled","locked":"Yes","idempotencyKey":"ZZT-N21-A3-cancelled-mvihbzxg-13"}  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+   ok   case.cancelled on C2 (forged link to R1): refused, target(s) unchanged after 45 s
+        Run history must show: "CIQP Request PkEPVmEPu63E does not name case ZZT-N21-A3-GO4Z9-C2 (PkEPWEIOpHz2) back"
+     POST   <webhook case.cancelled: URL from SET:current, not printed>  {"caseItemId":"PkEPVlrp7HwN","phaseLabel":"Cancelled","locked":"Yes","idempotencyKey":"ZZT-N21-A3-cancelled-mvihd4ic-14"}  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+   ok   case.cancelled on C1 → R1 "Cancelled", locked: applied (shown after 7 s)
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPVlrp7HwN?_application_id=CIQ_Digital_A00  → 200
+     POST   <webhook release.requested: URL from SET:current, not printed>  {"caseItemId":"PkEPVlrp7HwN","idempotencyKey":"ZZT-N21-A3-cancelled-mvihdp25-15"}  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPVlrp7HwN?_application_id=CIQ_Digital_A00  → 200
+   ok   release.requested on the cancelled pair (release's cancel guard): refused, target(s) unchanged after 45 s
+        Run history must show: "CIQP Request PkEPVmEPu63E: the case was cancelled"
+   ok   the 45-s refusal window is long enough: the slowest accepted hand-off here showed after 7 s (at most 23 s)
+
+7  clean-up of group case (lost creates found by code, late items swept, then: ZZT-N21-A3 marker checked, withdraw if in progress, delete, read back 404)
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/item?q=PkEPVlrp7HwN&page_number=1&page_size=100&_application_id=CIQ_Supplier_Portal_A00  → 200
+   sweep C1 PkEPVlrp7HwN: nothing the ledger doesn't hold
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/item?q=PkEPWEIOpHz2&page_number=1&page_size=100&_application_id=CIQ_Supplier_Portal_A00  → 200
+   sweep C2 PkEPWEIOpHz2: nothing the ledger doesn't hold
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+     POST   /process/2/AcDOSunMEpSA/CIQP_Request_A00/PkEPVmEPu63E/withdraw?_application_id=CIQ_Supplier_Portal_A00  {"Comment":"ZZT-N21-A3 clean-up (fictional test data)"}  → 200
+     DELETE /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQP_Request_A00/PkEPVmEPu63E?_application_id=CIQ_Supplier_Portal_A00  → 404
+   R1 PkEPVmEPu63E: deleted (GET 404)
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPVlrp7HwN?_application_id=CIQ_Digital_A00  → 200
+     POST   /process/2/AcDOSunMEpSA/CIQ_Case_A00/PkEPVlrp7HwN/withdraw?_application_id=CIQ_Digital_A00  {"Comment":"ZZT-N21-A3 clean-up (fictional test data)"}  → 200
+     DELETE /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPVlrp7HwN?_application_id=CIQ_Digital_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPVlrp7HwN?_application_id=CIQ_Digital_A00  → 404
+   C1 PkEPVlrp7HwN: deleted (GET 404)
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPWEIOpHz2?_application_id=CIQ_Digital_A00  → 200
+     POST   /process/2/AcDOSunMEpSA/CIQ_Case_A00/PkEPWEIOpHz2/withdraw?_application_id=CIQ_Digital_A00  {"Comment":"ZZT-N21-A3 clean-up (fictional test data)"}  → 200
+     DELETE /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPWEIOpHz2?_application_id=CIQ_Digital_A00  → 200
+     GET    /process/2/AcDOSunMEpSA/admin/CIQ_Case_A00/PkEPWEIOpHz2?_application_id=CIQ_Digital_A00  → 404
+   C2 PkEPWEIOpHz2: deleted (GET 404)
+
+== cancelled: DONE (exit 0) · done
+   calls 61 (webhook POSTs 4) · 497 s
+   run record: apply-harden-runs/cancelled.2026-10-21T19-06-37-139Z.json
+=== cancelled exit 0 Thu Oct 22 00:36:37 IST 2026

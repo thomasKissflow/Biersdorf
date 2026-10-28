@@ -1,0 +1,705 @@
+--- a/prototype/src/portal/kf/portal.ts
++++ b/prototype/src/portal/kf/portal.ts
+@@ -1,5 +1,7 @@
+ // Ids of the live CIQ Supplier Portal (v5, as built 14 Oct 2026: kissflow-build/ciq-supplier-portal/NIGHT-2026-10-14.md,
+-// portal-spec.mjs). The ONLY place the UI knows Kissflow ids. Role ids are matched first, names as a fallback (master.md §6.7).
++// portal-spec.mjs). The ONLY place the UI knows Kissflow ids and hosts (ACCOUNT_HOST). Role ids are matched first, names as a
++// fallback (master.md §6.7).
++import { envOf, type AppEnv } from "@/shell/env";
+ import type { Kf } from "./sdk";
+ 
+ export const PORTAL_ID = "CIQ_Supplier_Portal_A00";
+@@ -65,18 +67,18 @@
+  * - `releaseGiven`: after the submit of "give the final release" ({portalRequestItemId}): I-7, the release onto the
+  *   case, which completes.
+  * Thomas, 21 Oct: production differs from the Development sandbox in BOTH its account id and its domain; the webhook
+- * tokens are the same. So the URLs are built at runtime, never written for production:
++ * tokens are the same. So the URLs are built at runtime:
+  * - the TOKENS come from DEV_WEBHOOKS (the sandbox's URLs, kept only for them): each is the last segment of the path
+  *   /integration/2/<account>/webhook/<token> (hookToken); a URL without exactly that shape gives no token, and its
+  *   hand-off sends nothing;
+  * - the ACCOUNT is the page's own (the SDK handshake);
+- * - the HOST is the Kissflow page the UI runs in (parentHost: location.ancestorOrigins[0], else the origin of
+- *   document.referrer, accepted only when it is https on a Kissflow domain).
+- * webhooksFor builds "https://<host>/integration/2/<account>/webhook/<token>" when the host is known, the RELATIVE path
+- * "/integration/2/<account>/webhook/<token>" when it is not (the SDK's kf.api sends a relative path to the account's own
+- * domain: client.ts postWebhook), and nothing when the account is unknown. On the dev account inside the sandbox each
+- * URL is exactly the stored one. No production host or account is written here. postWebhook sends nothing that is
+- * not exactly such a URL or path (hookToken, isHookPath), on either route.
++ * - the HOST is the account's own (ACCOUNT_HOST, by envOf: the sandbox's account → the host Kissflow minted the stored
++ *   URLs on; any other account → production's), never the page the UI runs in (fallback of 22 Oct): a supplier opens
++ *   the portal on the portal's own domain, which need not take webhooks, and a no-cors POST refused there is lost
++ *   without a word (its answer can't be read).
++ * webhooksFor builds "https://<host>/integration/2/<account>/webhook/<token>", and nothing when the account is unknown;
++ * it builds no relative path. On the dev account each URL is exactly the stored one, wherever the page is framed.
++ * postWebhook sends nothing that is not exactly such a URL (hookToken, isHookPath), on either route.
+  */
+ export interface Webhooks {
+   requestChanged: string;
+@@ -97,7 +99,7 @@
+ const HOOK_PATH = /^\/integration\/2\/[A-Za-z0-9_-]+\/webhook\/([A-Za-z0-9_-]+)$/;
+ /** An account id as the handshake carries it (it becomes a path segment). */
+ const ACCOUNT_ID = /^[A-Za-z0-9_-]+$/;
+-/** Kissflow's own domains, as a pattern: a host written as text is what the zip guards refuse (DENY_HOSTS). */
++/** Kissflow's own domains, as a pattern: the only hosts written as text are the stored URLs' and ACCOUNT_HOST's. */
+ const KISSFLOW_HOST = /\.kissflow\.(eu|com)$/i;
+ 
+ /** Whether a path is exactly a hook path /integration/2/<account>/webhook/<token>: nothing before or after it, no
+@@ -134,6 +136,18 @@
+   }
+ }
+ 
++/** Each environment's own Kissflow host (envOf: the sandbox's account is "dev", any other account "prod"): the host its
++ *  hand-offs go to (webhooksFor), whatever page the UI runs in, and the one the admin console's "Roles & grants" opens
++ *  (admin/AdminShell.tsx MANAGE_URL). dev: the host Kissflow minted the four stored sandbox URLs on (DEV_WEBHOOKS);
++ *  prod: production's own, the host the Manage link already opened. The one place the bundle names a host for an
++ *  environment; scripts/zip-portal.mjs fails a build with a hook URL on any other host. The call is marked pure: the
++ *  app UI imports this module for its ids, and its bundle must drop this map and the stored URLs (no host may be in
++ *  it: scripts/zip-applive.mjs DENY_HOSTS). */
++export const ACCOUNT_HOST: Record<AppEnv, string> = {
++  dev: /* @__PURE__ */ kissflowHostOf(DEV_WEBHOOKS.requestChanged) ?? "",
++  prod: "beiersdorf.kissflow.eu",
++};
++
+ /** What parentHost reads of a window. */
+ export interface ParentWindow {
+   location?: { ancestorOrigins?: ArrayLike<string> };
+@@ -142,8 +156,8 @@
+ 
+ /** The host of the Kissflow page this UI runs in (its parent): location.ancestorOrigins[0] where the browser has it,
+  *  else the origin of document.referrer; accepted only when it is https on a Kissflow domain (kissflowHostOf).
+- *  undefined (unknown: the hand-offs then go as relative paths through the SDK) for anything else, and outside a
+- *  browser. */
++ *  undefined for anything else, and outside a browser. For display only (Diagnostics): the hand-offs never go there
++ *  (ACCOUNT_HOST). */
+ export function parentHost(w: ParentWindow | undefined = typeof window === "undefined" ? undefined : window): string | undefined {
+   try {
+     const ancestor = w?.location?.ancestorOrigins?.[0];
+@@ -154,17 +168,25 @@
+   }
+ }
+ 
+-/** The hand-off webhooks of the account the page runs in (Thomas, 21 Oct): each sandbox token on this account's path,
+- *  on the Kissflow host around the page when it is known ("https://<host>/integration/2/<account>/webhook/<token>"),
+- *  else as the relative path ("/integration/2/<account>/webhook/<token>", which the SDK sends to the account's own
+- *  domain); none when the account is unknown (or not an id). A host that is not a Kissflow host, exactly as
+- *  parentHost gives it, counts as unknown. */
+-export function webhooksFor(accountId: string | undefined, host?: string): Webhooks {
+-  if (!accountId || !ACCOUNT_ID.test(accountId)) return NO_WEBHOOKS;
+-  const origin = host && kissflowHostOf(`https://${host}`) === host ? `https://${host}` : "";
++/** The host an account's hand-offs go to: its environment's own (ACCOUNT_HOST, by envOf), whatever page the UI runs
++ *  in. undefined (nothing is sent) without an account, for one that is not an id, or when that entry is not exactly a
++ *  Kissflow host. Shown in Diagnostics (a host only, never a token). */
++export function handoffHost(accountId: string | undefined): string | undefined {
++  if (!accountId || !ACCOUNT_ID.test(accountId)) return undefined;
++  const host = ACCOUNT_HOST[envOf(accountId)];
++  return kissflowHostOf(`https://${host}`) === host ? host : undefined;
++}
++
++/** The hand-off webhooks of the account the page runs in (Thomas, 21 Oct; fallback of 22 Oct): each sandbox token on
++ *  this account's path, on this account's own host (handoffHost), as
++ *  "https://<host>/integration/2/<account>/webhook/<token>"; none when the account is unknown (or not an id). The page
++ *  around the UI plays no part. */
++export function webhooksFor(accountId: string | undefined): Webhooks {
++  const host = handoffHost(accountId);
++  if (!host || !accountId) return NO_WEBHOOKS;
+   const url = (k: keyof Webhooks) => {
+     const token = hookToken(DEV_WEBHOOKS[k]);
+-    return token ? `${origin}/integration/2/${accountId}/webhook/${token}` : "";
++    return token ? `https://${host}/integration/2/${accountId}/webhook/${token}` : "";
+   };
+   return { requestChanged: url("requestChanged"), completenessConfirmed: url("completenessConfirmed"), queryAnswered: url("queryAnswered"), releaseGiven: url("releaseGiven") };
+ }
+--- a/prototype/src/portal/kf/portal.test.ts
++++ b/prototype/src/portal/kf/portal.test.ts
+@@ -1,9 +1,10 @@
+ // The portal role a user acts in, from their Kissflow roles: the handshake's AppRoles, or getRoles' currentRoles after a
+ // Development-sandbox role switch (mode.tsx). The hand-off URLs, built at runtime from the sandbox's tokens, the page's
+-// account and the Kissflow host around the page (Thomas, 21 Oct). No token or hook URL is printed: hosts only.
++// account and that account's own host (ACCOUNT_HOST; Thomas, 21 Oct; fallback of 22 Oct): the Kissflow page around the
++// UI is for display only. No token or hook URL is printed: hosts only.
+ import { describe, expect, it } from "vitest";
+ import { DEV_ACCOUNT } from "@/shell/env";
+-import { DEV_WEBHOOKS, NO_WEBHOOKS, ROLES, heldPortalRoles, hookToken, isHookPath, kissflowHostOf, parentHost, portalRoleOf, webhooksFor, type Webhooks } from "./portal";
++import { ACCOUNT_HOST, DEV_WEBHOOKS, NO_WEBHOOKS, ROLES, handoffHost, heldPortalRoles, hookToken, isHookPath, kissflowHostOf, parentHost, portalRoleOf, webhooksFor, type Webhooks } from "./portal";
+ import type { Kf } from "./sdk";
+ 
+ const kfWith = (roles: { _id: string; Name: string }[]) => ({ user: { _id: "UsX", Name: "X", AppRoles: roles } }) as unknown as Kf;
+@@ -107,7 +108,7 @@
+   });
+ });
+ 
+-describe("parentHost: the Kissflow page around the UI", () => {
++describe("parentHost: the Kissflow page around the UI (display only: Diagnostics)", () => {
+   const ancestor = (...o: string[]) => ({ location: { ancestorOrigins: o } });
+   const referrer = (r: string) => ({ location: {}, document: { referrer: r } });
+ 
+@@ -151,39 +152,44 @@
+   });
+ });
+ 
+-describe("webhooksFor (Thomas, 21 Oct): the sandbox's tokens on the page's account, on its Kissflow host or as relative paths", () => {
++describe("webhooksFor (Thomas, 21 Oct; fallback of 22 Oct): the sandbox's tokens on the page's account, on that account's own host", () => {
+   const devHost = new URL(DEV_WEBHOOKS.requestChanged).hostname;
+-  const built = (origin: string, account: string): Webhooks => Object.fromEntries(KEYS.map((k) => [k, `${origin}/integration/2/${account}/webhook/${hookToken(DEV_WEBHOOKS[k])}`])) as unknown as Webhooks;
++  const built = (host: string, account: string): Webhooks => Object.fromEntries(KEYS.map((k) => [k, `https://${host}/integration/2/${account}/webhook/${hookToken(DEV_WEBHOOKS[k])}`])) as unknown as Webhooks;
+ 
+-  it("on the dev account with the dev host is exactly the stored sandbox URLs", () => {
++  it("ACCOUNT_HOST: dev is the one host of the four stored sandbox URLs (on the sandbox's account); prod is production's own", () => {
+     expect(devHost).toMatch(/^dev-beiersdorf\.kissflow\.eu$/);
+     expect(KEYS.every((k) => new URL(DEV_WEBHOOKS[k]).hostname === devHost)).toBe(true);
+-    expect(same(webhooksFor(DEV_ACCOUNT, devHost), DEV_WEBHOOKS)).toBe(true);
++    expect(KEYS.every((k) => new URL(DEV_WEBHOOKS[k]).pathname.startsWith(`/integration/2/${DEV_ACCOUNT}/webhook/`))).toBe(true);
++    expect(ACCOUNT_HOST.dev).toBe(devHost);
++    expect(ACCOUNT_HOST.prod).toMatch(/^beiersdorf\.kissflow\.eu$/);
++    expect(kissflowHostOf(`https://${ACCOUNT_HOST.prod}`)).toBe(ACCOUNT_HOST.prod);
+   });
+ 
+-  it("on another account with another Kissflow host: that host, that account, the same tokens", () => {
+-    const prod = webhooksFor("AcProd1", kfHost("acme-prod", "com"));
+-    expect(hostsOf(prod)).toEqual(KEYS.map(() => kfHost("acme-prod", "com")));
+-    expect(same(prod, built(`https://${kfHost("acme-prod", "com")}`, "AcProd1"))).toBe(true);
+-    expect(KEYS.some((k) => prod[k].includes(DEV_ACCOUNT) || prod[k].includes(devHost))).toBe(false);
++  it("on the dev account is exactly the stored sandbox URLs", () => {
++    expect(same(webhooksFor(DEV_ACCOUNT), DEV_WEBHOOKS)).toBe(true);
++    expect(hostsOf(webhooksFor(DEV_ACCOUNT))).toEqual(KEYS.map(() => devHost));
++    expect(handoffHost(DEV_ACCOUNT)).toBe(devHost);
+   });
+ 
+-  it("with an unknown host: the relative path on the page's account", () => {
+-    for (const host of [undefined, ""]) {
+-      const rel = webhooksFor("AcProd1", host);
+-      expect(hostsOf(rel)).toEqual(KEYS.map(() => "(relative)"));
+-      expect(same(rel, built("", "AcProd1"))).toBe(true);
++  it("on any other account: production's host, that account, the same tokens; never the sandbox's host or account", () => {
++    for (const acc of ["AcProd1", "AcHARNESS", "Ac_x-1"]) {
++      const prod = webhooksFor(acc);
++      expect(hostsOf(prod), acc).toEqual(KEYS.map(() => ACCOUNT_HOST.prod));
++      expect(same(prod, built(ACCOUNT_HOST.prod, acc)), acc).toBe(true);
++      expect(KEYS.some((k) => prod[k].includes(DEV_ACCOUNT) || new URL(prod[k]).hostname === devHost), acc).toBe(false);
++      expect(handoffHost(acc)).toBe(ACCOUNT_HOST.prod);
+     }
+-    // the dev account outside the sandbox's page: the stored URLs' own paths
+-    expect(KEYS.every((k) => webhooksFor(DEV_ACCOUNT)[k] === new URL(DEV_WEBHOOKS[k]).pathname)).toBe(true);
+   });
+ 
+-  it("takes a host that is not a Kissflow host, exactly as parentHost gives it, as unknown (a relative path)", () => {
+-    for (const host of ["acme.example", "127.0.0.1:5310", `${kfHost("acme")}:8443`, `user@${kfHost("acme")}`, `${kfHost("acme")}/x`, kfHost("ACME"), `evil.example#${kfHost("acme")}`])
+-      expect(hostsOf(webhooksFor("AcProd1", host)), host).toEqual(KEYS.map(() => "(relative)"));
++  it("builds no relative path: every URL is https on the account's own host (the page around the UI is no input)", () => {
++    for (const acc of [DEV_ACCOUNT, "AcProd1"]) for (const k of KEYS) expect(webhooksFor(acc)[k].startsWith(`https://${handoffHost(acc)}/integration/2/${acc}/webhook/`), `${acc} ${k}`).toBe(true);
++    expect(webhooksFor.length).toBe(1);
+   });
+ 
+   it("sends nothing without an account, or with one that is not an id", () => {
+-    for (const acc of [undefined, "", "Ac/../x", "Ac X", "Ac?x=1"]) expect(webhooksFor(acc, kfHost("acme"))).toEqual(NO_WEBHOOKS);
++    for (const acc of [undefined, "", "Ac/../x", "Ac X", "Ac?x=1", "Ac#x", `Ac.kissflow.${"eu"}`]) {
++      expect(webhooksFor(acc)).toEqual(NO_WEBHOOKS);
++      expect(handoffHost(acc)).toBeUndefined();
++    }
+   });
+ });
+--- a/prototype/src/portal/data/client.ts
++++ b/prototype/src/portal/data/client.ts
+@@ -32,7 +32,8 @@
+ export interface PortalClient {
+   accountId: string;
+   /** The host of the Kissflow page this UI runs in (portal.ts parentHost), read once from the window when the client is
+-   *  made; undefined when it is not a Kissflow host (the hand-offs then go as relative paths: portal.ts webhooksFor). */
++   *  made; undefined when it is not a Kissflow host. For display only (Diagnostics): the hand-offs go to the account's
++   *  own host whatever the page (portal.ts webhooksFor, ACCOUNT_HOST). */
+   parentHost: string | undefined;
+   /** Items I started. The "took part in" list (getParticipatedItems) fails platform-wide (plan v5 P4) and is never
+    *  called: a supplier keeps seeing its request because it holds the "keep the CIQ up to date" step. */
+@@ -48,11 +49,11 @@
+   discard(flow: FlowKey, id: string): Promise<void>;
+   /** Stores a file in Kissflow; resolves with its metadata (for an Attachment value). */
+   uploadFile(file: File): Promise<KfFileMeta>;
+-  /** POSTs a JSON payload to a Kissflow webhook integration (plan v6 §4.1). A relative url (the page does not know its
+-   *  Kissflow host) goes through the SDK's api route only, which sends it to the account's own domain. An absolute one
+-   *  goes by the browser's fetch (no-cors, text/plain, fire-and-forget), and through the SDK's api route, with the
+-   *  url's relative path, only when that fetch throws (a CSP refused it). Only exactly a hook path
+-   *  /integration/2/<account>/webhook/<token>, or an https url with exactly that path, is sent: anything else fails
++  /** POSTs a JSON payload to a Kissflow webhook integration (plan v6 §4.1). An absolute url (all portal.ts webhooksFor
++   *  builds: on the account's own host) goes by the browser's fetch (no-cors, text/plain, fire-and-forget), and through
++   *  the SDK's api route, with the url's relative path, only when that fetch throws (a CSP refused it). A relative url
++   *  (webhooksFor builds none since the fallback of 22 Oct) goes through the SDK's api route only. Only exactly a hook
++   *  path /integration/2/<account>/webhook/<token>, or an https url with exactly that path, is sent: anything else fails
+    *  before either route is used (portal.ts isHookPath, hookToken). */
+   postWebhook(url: string, payload: unknown): Promise<void>;
+   /** Opens Kissflow's own preview of stored files (Attachment values), on the file at `index`. */
+@@ -78,7 +79,7 @@
+   const retries = opts.retries ?? 3;
+   const callTimeoutMs = opts.callTimeoutMs ?? 30000;
+   const acc = kf.account._id;
+-  const host = parentHost(opts.window); // once: the page around the UI does not change
++  const host = parentHost(opts.window); // once: the page around the UI does not change (shown in Diagnostics only)
+ 
+   /** An SDK command waits forever if the host never answers; this turns that into an error the screen can show. */
+   function bounded<T>(p: Promise<T>): Promise<T> {
+@@ -174,8 +175,8 @@
+     },
+     async postWebhook(url, payload) {
+       const body = JSON.stringify(payload);
+-      /** The SDK's api route, which sends a relative path to the account's own domain (Thomas, 21 Oct: production's
+-       *  domain is not written in the bundle). It answers a refusal as a body, not a rejection (as itemOrThrow knows). */
++      /** The SDK's api route: Kissflow's own page around the UI sends the relative path (the fallback when the fetch
++       *  throws). It answers a refusal as a body, not a rejection (as itemOrThrow knows). */
+       const viaApi = async (path: string) => {
+         if (typeof kf.api !== "function") throw new PortalError("This page has no Kissflow API route (not available).");
+         const answer = await call(() => kf.api(path, { method: "POST", headers: { "Content-Type": "application/json" }, body }));
+@@ -185,7 +186,7 @@
+       // exactly /integration/2/<account>/webhook/<token> (portal.ts isHookPath: no "//" or "/\" naming another host, no
+       // tab or newline the URL parser would drop, no other path), and an absolute url counts only with exactly that path
+       // on https (portal.ts hookToken). Anything else fails before either route is used.
+-      // A relative url (portal.ts webhooksFor, when the page does not know its Kissflow host): the SDK only.
++      // A relative url (portal.ts webhooksFor builds none since 22 Oct; the route keeps its own checks): the SDK only.
+       if (url.startsWith("/")) {
+         if (!isHookPath(url)) throw new PortalError("This is not a Kissflow webhook path.");
+         return viaApi(url);
+--- a/prototype/src/portal/data/client.test.ts
++++ b/prototype/src/portal/data/client.test.ts
+@@ -1,4 +1,6 @@
+ import { describe, expect, it, vi } from "vitest";
++import { DEV_ACCOUNT } from "@/shell/env";
++import { ACCOUNT_HOST, DEV_WEBHOOKS, webhooksFor } from "../kf/portal";
+ import type { Kf, KfProcess } from "../kf/sdk";
+ import { PortalError, createClient } from "./client";
+ 
+@@ -322,7 +324,7 @@
+   });
+ });
+ 
+-describe("the parent host on the client (Thomas, 21 Oct: the hand-offs go to the Kissflow page around the UI)", () => {
++describe("the parent host on the client (display only since the fallback of 22 Oct: the hand-offs go to the account's own host)", () => {
+   it("is read once from the window when the client is made: a Kissflow https parent, else unknown", () => {
+     const { kf } = fakeKf({});
+     const at = (ancestorOrigins: string[], referrer = "") => createClient(kf, { window: { location: { ancestorOrigins }, document: { referrer } } }).parentHost;
+@@ -335,5 +337,23 @@
+     const c = createClient(kf, { window: win });
+     win.location.ancestorOrigins = ["https://elsewhere.example"];
+     expect(c.parentHost).toBe(kfHost("acme"));
++  });
++
++  it("does not decide where a hand-off goes: from the portal's own domain, a page off Kissflow or the sandbox's page, the POST goes to the account's host", async () => {
++    const portalDomain = kfHost("ciq-supplier-portal-acme");
++    for (const [parent, shown] of [[`https://${portalDomain}`, portalDomain], ["https://supplier.example", undefined], ["http://127.0.0.1:5320", undefined], [`https://${ACCOUNT_HOST.dev}`, ACCOUNT_HOST.dev]] as const)
++      for (const account of [DEV_ACCOUNT, "AcProd1"]) {
++        const { kf, api } = fakeKf({}, { account: { _id: account } } as Partial<Kf>);
++        const fetch = vi.fn(async (_url: string, _init: RequestInit) => ({ type: "opaque" }));
++        const c = createClient(kf, { sleep: noSleep, fetch, window: { location: { ancestorOrigins: [parent] } } });
++        const where = `${account} in ${parent}`;
++        expect(c.parentHost, where).toBe(shown);
++        await c.postWebhook(webhooksFor(c.accountId).requestChanged, { portalRequestItemId: "Pk1" });
++        expect(fetch, where).toHaveBeenCalledTimes(1);
++        const sent = fetch.mock.calls[0]![0];
++        expect(new URL(sent).hostname, where).toBe(account === DEV_ACCOUNT ? ACCOUNT_HOST.dev : ACCOUNT_HOST.prod);
++        expect(account === DEV_ACCOUNT ? sent === DEV_WEBHOOKS.requestChanged : new URL(sent).pathname.startsWith(`/integration/2/${account}/webhook/`), where).toBe(true);
++        expect(api, where).not.toHaveBeenCalled();
++      }
+   });
+ });
+--- a/prototype/src/portal/data/liveActions.ts
++++ b/prototype/src/portal/data/liveActions.ts
+@@ -58,8 +58,8 @@
+   wait?: (ms: number) => Promise<void>;
+   /** What this page did that the service hasn't written back yet (kept by the store across reloads). */
+   local?: LocalNotes;
+-  /** The hand-off webhooks (plan v6 §4.1); default: the account's, on the Kissflow host around the page when it is
+-   *  known, else as relative paths (portal.ts webhooksFor). An empty URL sends nothing. */
++  /** The hand-off webhooks (plan v6 §4.1); default: the account's, on the account's own host whatever page the UI
++   *  runs in (portal.ts webhooksFor, ACCOUNT_HOST). An empty URL sends nothing. */
+   webhooks?: Partial<Webhooks>;
+   /** Shorthand for `webhooks.requestChanged`. */
+   requestChangedUrl?: string;
+@@ -71,7 +71,7 @@
+   const now = opts.now ?? (() => new Date().toISOString());
+   const wait = opts.wait ?? ((ms: number) => new Promise<void>((r) => setTimeout(r, ms)));
+   const local = opts.local ?? emptyNotes();
+-  const hooks: Webhooks = { ...webhooksFor(client.accountId, client.parentHost), ...opts.webhooks, ...(opts.requestChangedUrl !== undefined ? { requestChanged: opts.requestChangedUrl } : {}) };
++  const hooks: Webhooks = { ...webhooksFor(client.accountId), ...opts.webhooks, ...(opts.requestChangedUrl !== undefined ? { requestChanged: opts.requestChangedUrl } : {}) };
+   /** One hand-off (plan v6 §4.1): only the id of the item this screen acted on, plus an idempotency key; the integration
+    *  reads the rest from Kissflow. Sent after the action succeeded and never blocks it; a failure is only reported. */
+   const handoff = (kind: keyof Webhooks, payload: Record<string, string>, problem: (why: string) => string) => {
+--- a/prototype/src/portal/data/liveActions.test.ts
++++ b/prototype/src/portal/data/liveActions.test.ts
+@@ -4,7 +4,7 @@
+ // released CIQ", or back to "keep" when Release_Flag is "Reopened"), and an update replaces an Attachment value.
+ import { describe, expect, it, vi } from "vitest";
+ import { DEV_ACCOUNT } from "@/shell/env";
+-import { DEV_WEBHOOKS, NO_WEBHOOKS, webhooksFor, STEPS, UPLOADS_TABLE, type FlowKey, type StepKey, type Webhooks } from "../kf/portal";
++import { ACCOUNT_HOST, DEV_WEBHOOKS, NO_WEBHOOKS, webhooksFor, STEPS, UPLOADS_TABLE, type FlowKey, type StepKey, type Webhooks } from "../kf/portal";
+ import type { KfData } from "../kf/sdk";
+ import type { PortalClient } from "./client";
+ import { PORTAL_USERS, fixtureSet, loadedFor } from "./fixtures";
+@@ -527,33 +527,34 @@
+     expect(problems).toEqual(["Your report is saved, but it has not reached Beiersdorf yet (offline). Please let your Beiersdorf contact know."]);
+   });
+ 
+-  it("by default each hand-off goes to the page's own account (Thomas, 21 Oct): on the Kissflow host around the page when the client knows it, else as the relative path; an unknown account sends nothing", async () => {
++  it("by default each hand-off goes to the page's own account, on that account's own host whatever page the UI runs in (fallback of 22 Oct); an unknown account sends nothing", async () => {
+     const KEYS = Object.keys(NO_WEBHOOKS) as (keyof Webhooks)[];
+     const tokenOf = (u: string) => u.slice(u.lastIndexOf("/webhook/") + "/webhook/".length);
+-    // the sandbox's own page: exactly its stored URLs (compared without printing: a hook URL carries its token)
+-    const dev = webhooksFor(DEV_ACCOUNT, new URL(DEV_WEBHOOKS.requestChanged).hostname);
++    // the sandbox's account: exactly its stored URLs (compared without printing: a hook URL carries its token)
++    const dev = webhooksFor(DEV_ACCOUNT);
+     for (const u of Object.values(dev)) expect(/^https:\/\/dev-beiersdorf\.kissflow\.eu\/integration\/2\/AcDOSunMEpSA\/webhook\/[A-Za-z0-9_-]{30,}$/.test(u)).toBe(true);
+     expect(KEYS.every((k) => dev[k] === DEV_WEBHOOKS[k])).toBe(true);
+     expect(new Set(Object.values(dev)).size).toBe(4);
+-    // any other account, host unknown: its own path, the same tokens
+-    const rel = webhooksFor("AcTEST");
+-    expect(KEYS.every((k) => rel[k] === `/integration/2/AcTEST/webhook/${tokenOf(DEV_WEBHOOKS[k])}`)).toBe(true);
++    // any other account: production's host, its own path, the same tokens
++    const prod = webhooksFor("AcTEST");
++    expect(KEYS.every((k) => prod[k] === `https://${ACCOUNT_HOST.prod}/integration/2/AcTEST/webhook/${tokenOf(DEV_WEBHOOKS[k])}`)).toBe(true);
+     expect(webhooksFor(undefined)).toEqual(NO_WEBHOOKS);
+     expect(webhooksFor("")).toEqual(NO_WEBHOOKS);
+-    // the fake client's account is AcTEST and it knows no parent host: the relative path of AcTEST's I-2
+-    const a = wired();
+-    await liveActions(a.p.client, dataFor(a.p), elena, { now: () => NOW, wait: async () => {} }).confirmCompleteness("ZZT-0002");
+-    await flush();
+-    expect(a.sent.length).toBe(1);
+-    expect(a.sent[0]!.url === webhooksFor("AcTEST").completenessConfirmed && a.sent[0]!.url.startsWith("/integration/2/AcTEST/webhook/")).toBe(true);
+-    // a client that knows its Kissflow parent: that host, the page's account
+-    const b = wired();
+-    const parent = `acme-prod.kissflow.${"com"}`;
+-    b.p.client.parentHost = parent;
+-    await liveActions(b.p.client, dataFor(b.p), elena, { now: () => NOW, wait: async () => {} }).confirmCompleteness("ZZT-0002");
+-    await flush();
+-    expect(b.sent.map((x) => new URL(x.url).hostname)).toEqual([parent]);
+-    expect(b.sent[0]!.url === `https://${parent}/integration/2/AcTEST/webhook/${tokenOf(DEV_WEBHOOKS.completenessConfirmed)}`).toBe(true);
++    // the page around the UI plays no part: none known (a page off Kissflow, which parentHost gives as undefined), the
++    // portal's own domain (a Kissflow host that need not take webhooks), or the sandbox's own page
++    const portalDomain = `ciq-supplier-portal-acme.kissflow.${"eu"}`;
++    for (const parent of [undefined, portalDomain, ACCOUNT_HOST.dev])
++      for (const account of ["AcTEST", DEV_ACCOUNT]) {
++        const w = wired();
++        (w.p.client as { accountId: string }).accountId = account;
++        w.p.client.parentHost = parent;
++        await liveActions(w.p.client, dataFor(w.p), elena, { now: () => NOW, wait: async () => {} }).confirmCompleteness("ZZT-0002");
++        await flush();
++        const where = `${account} in ${parent ?? "no Kissflow page"}`;
++        expect(w.sent.length, where).toBe(1);
++        expect(new URL(w.sent[0]!.url).hostname, where).toBe(account === DEV_ACCOUNT ? ACCOUNT_HOST.dev : ACCOUNT_HOST.prod);
++        expect(w.sent[0]!.url === (account === DEV_ACCOUNT ? DEV_WEBHOOKS.completenessConfirmed : `https://${ACCOUNT_HOST.prod}/integration/2/AcTEST/webhook/${tokenOf(DEV_WEBHOOKS.completenessConfirmed)}`), where).toBe(true);
++      }
+   });
+ });
+ 
+--- a/prototype/src/portal/pages/Diagnostics.tsx
++++ b/prototype/src/portal/pages/Diagnostics.tsx
+@@ -7,7 +7,7 @@
+ import { useEffect, useState } from "react";
+ import { Badge, Card, CardHeader, KeyValue, Mono, PageHeader, Table, Td, Tr } from "@/components/ui";
+ import { envelopeOf, errorText, rowsOf, type Kf, type KfData } from "../kf/sdk";
+-import { FLOWS, PORTAL_ID, STEPS, portalRoleOf, type FlowKey, type StepKey } from "../kf/portal";
++import { FLOWS, PORTAL_ID, STEPS, handoffHost, portalRoleOf, type FlowKey, type StepKey } from "../kf/portal";
+ import { useOptionalPortalMode } from "../mode";
+ import { BUILD } from "../build";
+ import { createClient } from "../data/client";
+@@ -102,6 +102,8 @@
+   }, [kf, role]);
+ 
+   const appId = kf.app?._id;
++  // hosts only: a hook URL carries its token
++  const hookHost = handoffHost(kf.account?._id);
+   const cell = (p: Probe) => <span className={p.ok ? "text-ink-2" : "text-bad"}>{p.text}</span>;
+   return (
+     <div className="mx-auto max-w-6xl space-y-6 p-6">
+@@ -115,6 +117,8 @@
+               { k: "Portal role (acting)", v: <Badge tone={role === "none" ? "bad" : "brand"}>{role}</Badge> },
+               { k: "AppRoles", v: <Mono>{JSON.stringify(mode ? mode.roles.map((r) => r.name || r.id) : (kf.user?.AppRoles ?? []).map((r) => r.Name))}</Mono> },
+               { k: "Account", v: <Mono>{kf.account?._id ?? "?"}</Mono> },
++              { k: "Kissflow page around this UI", v: client.parentHost ? <Mono>{client.parentHost}</Mono> : "not a Kissflow page, or not known" },
++              { k: "Hand-offs (webhooks) go to", v: hookHost ? <Mono>{hookHost}</Mono> : <span className="text-bad">nowhere (no account id, or no Kissflow host for it)</span> },
+               { k: "Container", v: appId ? <span className={appId === PORTAL_ID ? "" : "text-bad"}><Mono>{appId}</Mono>{appId === PORTAL_ID ? "" : ` (expected ${PORTAL_ID})`}</span> : "not reported" },
+               { k: "kf.api (list portal processes)", v: cell(apiList) },
+               { k: "kf.app.getRoles (dev only)", v: cell(devRoles) },
+--- a/prototype/src/portal/admin/AdminShell.tsx
++++ b/prototype/src/portal/admin/AdminShell.tsx
+@@ -10,16 +10,17 @@
+ import { usePortalMode } from "../mode";
+ import { headerOffsetStyle } from "@/shell/DevTopBar";
+ import { PortalTopBar } from "../PortalTopBar";
++import { ACCOUNT_HOST } from "../kf/portal";
+ import { FLOW_LABEL, PROCESS_KEYS } from "./common";
+ 
+ const FLOW_ICON: Partial<Record<(typeof PROCESS_KEYS)[number], LucideIcon>> = { request: Inbox, query: MessagesSquare, finalRelease: Stamp };
+ 
+ /** Thomas, 16 Oct: "Roles & grants" opens Kissflow's own portal management page (users, roles, permissions). The
+  *  browser's Back returns to the portal. Dev sandbox account (src/shell/env.ts DEV_ACCOUNT) → its page; any other
+- *  account → production's page. */
++ *  account → production's page. Each on its environment's own host (kf/portal.ts ACCOUNT_HOST). */
+ const MANAGE_URL = {
+-  dev: "https://dev-beiersdorf.kissflow.eu/view/application/CIQ_Supplier_Portal_A00/manage",
+-  prod: "https://beiersdorf.kissflow.eu/view/portal/administration/CIQ_Supplier_Portal_A00/manage",
++  dev: `https://${ACCOUNT_HOST.dev}/view/application/CIQ_Supplier_Portal_A00/manage`,
++  prod: `https://${ACCOUNT_HOST.prod}/view/portal/administration/CIQ_Supplier_Portal_A00/manage`,
+ };
+ const ROLES = "/admin/roles";
+ 
+--- a/prototype/scripts/zip-portal.mjs
++++ b/prototype/scripts/zip-portal.mjs
+@@ -4,6 +4,8 @@
+ // - Moves the inlined module script (about 2 MB) from <head> to the end of <body>, so the browser paints the static
+ //   branded loader while it is still downloading and parsing the bundle. Module scripts run after parsing either way.
+ // - Stamps the content hash into the zip name so "which build is running?" is answerable.
++// - Fails when a hand-off URL in the bundle names a host other than the two of src/portal/kf/portal.ts ACCOUNT_HOST
++//   (fallback of 22 Oct: the hand-offs go to the account's own host, never to the page the UI runs in).
+ import { readFileSync, writeFileSync, mkdirSync, rmSync, statSync } from "node:fs";
+ import { createHash } from "node:crypto";
+ import { execFileSync } from "node:child_process";
+@@ -21,6 +23,24 @@
+ const block = open[0].replace(/\scrossorigin(="[^"]*")?/g, "") + html.slice(open.index + open[0].length, end + "</script>".length);
+ html = html.slice(0, open.index) + html.slice(end + "</script>".length, bodyEnd) + block + "\n" + html.slice(bodyEnd);
+ if (html.indexOf('id="root"') > html.indexOf('<script type="module"')) throw new Error("the loader must come before the bundle");
++// The hand-off hosts, read from the source as scripts/harness-portal.mjs reads DEV_WEBHOOKS: dev, the one host of the
++// four stored sandbox URLs (ACCOUNT_HOST.dev is taken from them); prod, the host ACCOUNT_HOST writes. Hosts only are
++// printed: a hook URL carries its token.
++const portalTs = readFileSync(path.join(root, "src/portal/kf/portal.ts"), "utf8");
++const stored = portalTs.match(/export const DEV_WEBHOOKS: Webhooks = \{([\s\S]*?)\n\};/)?.[1] ?? "";
++const devHosts = new Set([...stored.matchAll(/^\s*\w+: "https:\/\/([a-z0-9.-]+)\/integration\/2\//gm)].map((m) => m[1]));
++const map = portalTs.match(/export const ACCOUNT_HOST: Record<AppEnv, string> = \{([\s\S]*?)\n\};/)?.[1] ?? "";
++const prodHost = map.match(/^\s*prod: "([a-z0-9.-]+)",?$/m)?.[1];
++if (devHosts.size !== 1 || !/^\s*dev: (\/\* @__PURE__ \*\/ )?kissflowHostOf\(DEV_WEBHOOKS\.requestChanged\) \?\? "",?$/m.test(map) || !prodHost) throw new Error("cannot read the two hand-off hosts from src/portal/kf/portal.ts ACCOUNT_HOST");
++const HOOK_HOSTS = new Set([...devHosts, prodHost]);
++// Every "/integration/2/" in the bundle is a hook URL on one of them: written out (the stored URLs), or webhooksFor's
++// one template, whose host comes from ACCOUNT_HOST (its unit tests pin it). Anything else fails: another host, http, no
++// host (a relative path, or a host taken from the page), or a second runtime-host template.
++const hookHosts = [...html.matchAll(/\/integration\/2\//g)].map((m) => html.slice(Math.max(0, m.index - 120), m.index).match(/https:\/\/([a-z0-9.-]+|\$\{[\w$]+\})$/i)?.[1] ?? "(no host)");
++const runtimeHosts = hookHosts.filter((h) => h.startsWith("${"));
++const strayHosts = hookHosts.filter((h) => !h.startsWith("${") && !HOOK_HOSTS.has(h));
++if (strayHosts.length || runtimeHosts.length !== 1 || hookHosts.length !== runtimeHosts.length + 4)
++  throw new Error(`hand-off URLs on other hosts in the bundle: ${JSON.stringify({ allowed: [...HOOK_HOSTS], stray: strayHosts, runtime: runtimeHosts.length, total: hookHosts.length })}`);
+ const hash = createHash("sha256").update(html).digest("hex").slice(0, 10);
+ const stage = path.join(root, "dist-portal", "zip");
+ rmSync(stage, { recursive: true, force: true });
+@@ -33,4 +53,4 @@
+ const kb = (statSync(zip).size / 1024).toFixed(0);
+ if (statSync(zip).size > 5 * 1024 * 1024) throw new Error(`zip is ${kb} KB, over the 5 MB custom UI limit`);
+ writeFileSync(path.join(root, "dist-portal", "latest.txt"), path.basename(zip) + "\n");
+-console.log(`portal zip: ${path.relative(root, zip)} (${kb} KB, html sha256 ${hash})`);
++console.log(`portal zip: ${path.relative(root, zip)} (${kb} KB, html sha256 ${hash}; hand-off hosts ${[...HOOK_HOSTS].join(", ")})`);
+--- a/prototype/scripts/harness-portal.mjs
++++ b/prototype/scripts/harness-portal.mjs
+@@ -71,15 +71,16 @@
+ //    DEV_ACCOUNT): only there GET_ROLES answers and SWITCH_ROLE moves the user into another role for real (they leave
+ //    every current role; recorded in window.__kfSwitches), as scripts/harness-applive.mjs; ?also=supplier adds a
+ //    second held role
+-//  - hand-offs (portal.ts webhooksFor, Thomas 21 Oct: the sandbox's tokens on the page's own account, on the Kissflow
+-//    host around the page, else as a relative path): this host page is not on a Kissflow host, so the UI sends each
+-//    as the relative path /integration/2/<account>/webhook/<token> through kf.api, which records it (window.__kfHooks
+-//    and the harness) and answers like the webhook; kf.api refuses a webhook URL that is not relative, or names
+-//    another account. A scenario can load this page from an emulated Kissflow host instead (t.host's `parent`): the
+-//    UI then POSTs to that host itself, which the browser context records and answers; it answers no other request.
++//  - hand-offs (portal.ts webhooksFor; Thomas 21 Oct, fallback of 22 Oct: the sandbox's tokens on the page's own
++//    account, on that account's own host, ACCOUNT_HOST, whatever page the UI runs in): the UI POSTs each by the
++//    browser's fetch to its environment's host (dev: the sandbox's; prod: production's), which the browser context
++//    records and answers; it answers no other request. kf.api still records a webhook POST (the client's fallback when
++//    the fetch throws, never here) and refuses one that is not a relative path, or names another account. A scenario
++//    can load this page from an emulated host instead (t.host's `parent`: the sandbox's own page, a production Kissflow
++//    page, the portal's own domain, a page off Kissflow); the hand-offs must still go to the account's host.
+ //    A request to the two local servers (this page's origin, the UI's) that is not a GET is recorded as a hand-off to
+-//    127.0.0.1, a host no page is given, and refused (405); the hand-offs are compared with the stored sandbox URLs by
+-//    sha256 only (STORED_SHA)
++//    127.0.0.1, a host no hand-off may use, and refused (405); the hand-offs are compared with the stored sandbox URLs
++//    by sha256 only (STORED_SHA)
+ // window.__kfDb (the items), window.__kfSet(id, patch) and window.__kfMove(id, step) let a scenario play Beiersdorf's
+ // side (the sync service or the app's integrations).
+ function hostPage(uiOrigin) {
+@@ -160,8 +161,8 @@
+     return [...sup, { _id: ROLE_IDS.admin._id, Name: "Admin", ...adm }];
+   }
+   if (/\\/flow\\/2\\/[^/]+\\/process\\//.test(url)) return { Data: Object.keys(db).map((k) => ({ _id: k })) };
+-  // a hand-off through the SDK (portal client.ts postWebhook): only a relative path, which Kissflow sends to the
+-  // account's own domain, on this account's integrations; recorded, then answered like the webhook does
++  // a hand-off through the SDK (portal client.ts postWebhook, its fallback when the fetch throws): only a relative
++  // path, on this account's integrations; recorded, then answered like the webhook does
+   m = url.match(/\\/integration\\/2\\/([^/?#]+)\\/webhook\\/[^/?#]+/);
+   if (m && method === "POST") {
+     const h = { url, account: m[1], type: (args.headers || {})["Content-Type"], body: args.body, callsAt: window.__kfCalls.length };
+@@ -330,7 +331,9 @@
+ const hostServer = await listen(localServer(() => hostPage(UI_ORIGIN)));
+ const HOST_ORIGIN = `http://127.0.0.1:${hostServer.address().port}`;
+ 
+-const browser = await chromium.launch();
++// Nothing the browser asks for may leave this machine: each context answers every request (scenario), and no host name
++// resolves, so a request it did not answer fails here instead of reaching a Kissflow host.
++const browser = await chromium.launch({ args: ["--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1"] });
+ const results = [];
+ let loads = 0;
+ 
+@@ -338,14 +341,20 @@
+ const ACCOUNT_OF = { dev: "AcDOSunMEpSA", prod: "AcHARNESS" };
+ /** Where a recorded hand-off went, without its token: the page's environment and account, the route and the host. */
+ const hookWhere = (h) => (h ? `${h.env}/${h.account || "?"} → ${h.route === "api" ? `kf.api (${h.url.startsWith("/") ? "relative" : "absolute"})` : h.host}${h.method && h.method !== "POST" ? ` (${h.method})` : ""}${h.given ? ` [page on ${h.given}]` : ""}${h.refused ? ` refused: ${h.refused}` : ""}` : "none");
+-/** A hand-off that went where no page sent it (scenario's last check): from a page without an account, to another
+- *  account, refused, through kf.api with anything but a relative hook path, or by the browser to a host the page was not
+- *  given (127.0.0.1, the local servers, is never given). */
+-const astrayHook = (h) => h.env === "none" || h.account !== ACCOUNT_OF[h.env] || !!h.refused || (h.route === "api" ? !h.url.startsWith("/integration/2/") : !h.given || h.host !== h.given);
+-// Emulated Kissflow hosts a host page can be loaded from (t.host's `parent`). Built from parts: a Kissflow host written
+-// as text is what the zip guards refuse. Nothing is sent to either: the browser context answers both.
++// Emulated hosts a host page can be loaded from (t.host's `parent`), and the hosts the hand-offs go to. Built from
++// parts: a Kissflow host written as text is what the zip guards refuse. Nothing is sent to any: the browser context
++// answers them all.
+ const DEV_HOST = `dev-beiersdorf.kissflow.${"eu"}`; // the Development sandbox's own
+-const PROD_PARENT = `ciq-prod-harness.kissflow.${"com"}`; // a fictional production host
++const PROD_HOST = `beiersdorf.kissflow.${"eu"}`; // production's own (portal.ts ACCOUNT_HOST.prod)
++const PROD_PARENT = `ciq-prod-harness.kissflow.${"com"}`; // a fictional production page
++const PORTAL_PARENT = `ciq-portal-harness.kissflow.${"eu"}`; // a fictional portal domain: a Kissflow host, not the account's
++const OFF_PARENT = "supplier-portal.harness.test"; // a fictional page off Kissflow
++/** The host each environment's hand-offs must go to (portal.ts ACCOUNT_HOST, by envOf), whatever page the UI runs in. */
++const ACCOUNT_HOST = { dev: DEV_HOST, prod: PROD_HOST };
++/** A hand-off that went where no page may send it (scenario's last check): from a page without an account, to another
++ *  account, refused, through kf.api with anything but a relative hook path, or by the browser to any host but its
++ *  account's own (ACCOUNT_HOST, whatever page it runs in; 127.0.0.1, the local servers, is never one). */
++const astrayHook = (h) => h.env === "none" || h.account !== ACCOUNT_OF[h.env] || !!h.refused || (h.route === "api" ? !h.url.startsWith("/integration/2/") : h.host !== ACCOUNT_HOST[h.env]);
+ // The UI as such a page frames it: from another emulated https origin (Chromium does not let a public https page frame
+ // 127.0.0.1), answered by the browser context like the parent.
+ const UI_ROUTED = "https://ciq-portal-ui.harness.test";
+@@ -444,12 +453,12 @@
+     await t.shot("failure").catch(() => {});
+   }
+   checks.push({ label: "no page errors", pass: errors.length === 0, ...(errors.length ? { detail: errors.slice(0, 5) } : {}) });
+-  // each hand-off goes to the page's own account (portal.ts webhooksFor, Thomas 21 Oct) and to no host the page was not
+-  // given: a POST of the browser's only to the Kissflow host the page was loaded from, kf.api only with a relative path
+-  // (Kissflow sends it to the account's own domain), and nothing to the local servers (127.0.0.1); a page without an
+-  // account sends none. Only hosts and accounts are reported: a hook URL carries its token
++  // each hand-off goes to the page's own account, on that account's own host (portal.ts webhooksFor, ACCOUNT_HOST;
++  // fallback of 22 Oct) whatever page the UI runs in, kf.api only with a relative path (the client's fallback), and
++  // nothing to the local servers (127.0.0.1); a page without an account sends none. Only hosts and accounts are
++  // reported: a hook URL carries its token
+   const astray = hooks.filter(astrayHook);
+-  checks.push({ label: "every hand-off goes to the page's own account, and to no host the page was not given (kf.api: relative paths only)", pass: astray.length === 0, ...(astray.length ? { detail: astray.map(hookWhere) } : {}) });
++  checks.push({ label: "every hand-off goes to the page's own account, on that account's own host (kf.api: relative paths only)", pass: astray.length === 0, ...(astray.length ? { detail: astray.map(hookWhere) } : {}) });
+   await context.close();
+   onLocalRequest = null;
+   const pass = checks.every((c) => c.pass);
+@@ -622,14 +631,15 @@
+   "handoffs-dev": () =>
+     scenario("handoffs-dev", async (t) => {
+       // plan v6 §4.1 (built and switched on 20 Oct): in the Development sandbox each supplier action that Beiersdorf's
+-      // app must learn of POSTs its hand-off after the action succeeded, with only the item's id + a key. This host page
+-      // is not on a Kissflow host, so each goes through kf.api as the relative path on the sandbox's account (portal.ts
+-      // webhooksFor, Thomas 21 Oct). Only routes, accounts and hosts are reported: a hook URL carries its token
+-      const PATH = /^\/integration\/2\/AcDOSunMEpSA\/webhook\/[A-Za-z0-9_-]{30,}$/;
++      // app must learn of POSTs its hand-off after the action succeeded, with only the item's id + a key. Fallback of
++      // 22 Oct (portal.ts webhooksFor, ACCOUNT_HOST): each goes by the browser's fetch to the sandbox's own host, exactly
++      // the stored URL of its kind, whatever page the UI runs in (this host page on 127.0.0.1; then the sandbox's own
++      // page, an emulated portal domain and a page off Kissflow). Only routes, accounts and hosts are reported: a hook
++      // URL carries its token
+       const HOOK = /^https:\/\/dev-beiersdorf\.kissflow\.eu\/integration\/2\/AcDOSunMEpSA\/webhook\/[A-Za-z0-9_-]{30,}$/;
+       const last = () => t.hooks()[t.hooks().length - 1];
+       const bodyOf = (h) => { try { return JSON.parse(h?.body ?? "null"); } catch { return null; } };
+-      const okPost = (h) => !!h && h.route === "api" && h.account === "AcDOSunMEpSA" && PATH.test(h.url) && /^application\/json/.test(h.type ?? "") && Object.keys(bodyOf(h) ?? {}).length === 2;
++      const okPost = (h) => !!h && h.route === "fetch" && h.host === DEV_HOST && h.account === "AcDOSunMEpSA" && HOOK.test(h.url) && /^text\/plain/.test(h.type ?? "") && Object.keys(bodyOf(h) ?? {}).length === 2;
+       /** The item's submit is in the host's log before the POST arrived. */
+       const afterSubmit = async (h, id) => (await t.calls((c) => c.command === "PROCESS_SUBMIT_ITEM" && c.instanceId === id)).some((c) => h && c.seq < h.callsAt);
+       // a save → request.changed
+@@ -639,7 +649,7 @@
+       await t.settle(800);
+       await t.page.waitForTimeout(500);
+       const rc = last();
+-      t.check("a save posts request.changed with only the request id, through kf.api as the sandbox account's relative path", okPost(rc) && bodyOf(rc)?.portalRequestItemId === "PkReq3" && /^HO-requestChanged-/.test(bodyOf(rc)?.idempotencyKey), [hookWhere(rc), rc?.type, rc?.body]);
++      t.check("a save posts request.changed with only the request id, by the browser's fetch (text/plain) to the sandbox's own host", okPost(rc) && bodyOf(rc)?.portalRequestItemId === "PkReq3" && /^HO-requestChanged-/.test(bodyOf(rc)?.idempotencyKey), [hookWhere(rc), rc?.type, rc?.body]);
+       // an answer → I-4
+       await t.tid("answer-OP-0003-01").first().click();
+       await t.tid("answer-text").fill("Twelve months from the production date.");
+@@ -674,26 +684,31 @@
+       t.check("the final release posts release.given (I-7) with only the request id, after the submit of the release step", okPost(i7) && bodyOf(i7)?.portalRequestItemId === "PkReq4" && /^HO-releaseGiven-/.test(bodyOf(i7)?.idempotencyKey) && (await afterSubmit(i7, "PkReq4")), [hookWhere(i7), i7?.body, i7?.callsAt]);
+       const kinds = new Set(t.hooks().map((h) => h.url));
+       t.check("exactly four POSTs, one to each of four integrations, each with only an id and a key", t.hooks().length === 4 && kinds.size === 4 && t.hooks().every(okPost), t.hooks().map((h) => bodyOf(h)?.idempotencyKey?.split("-")[1]));
+-      // per kind (from its idempotency key): the path, on the sandbox's host, is exactly the stored URL of THAT kind
+-      // (compared by sha256: no token is printed), so a wrong token, or two kinds' tokens swapped, fails here
++      // per kind (from its idempotency key): the URL is exactly the stored sandbox URL of THAT kind (compared by
++      // sha256: no token is printed), so a wrong token, or two kinds' tokens swapped, fails here
+       const kindOf = (h) => bodyOf(h)?.idempotencyKey?.split("-")[1];
+-      t.check("each hand-off's path, on the sandbox's host, is exactly the stored sandbox URL of its own kind (sha256)", HOOK_KINDS.every((k) => t.hooks().filter((h) => kindOf(h) === k).length === 1) && t.hooks().every((h) => STORED_SHA[kindOf(h)] === sha(`https://${DEV_HOST}${h.url}`)), t.hooks().map((h) => `${kindOf(h)}: ${STORED_SHA[kindOf(h)] === sha(`https://${DEV_HOST}${h.url}`) ? "same" : "differs"}`));
+-      // inside the sandbox's own page (an emulated parent on its host) the same save POSTs the stored sandbox URL itself
+-      await t.host({ role: "supplier", env: "dev" }, "/portal/case/ZZT-0003", { parent: DEV_HOST });
+-      await t.seeTid("questions-for-you");
+-      await answerText(t, "FLD-GEN-004", "Plant 7, Hamburg (fictional)");
+-      await t.settle(800);
+-      await t.page.waitForTimeout(500);
+-      const own = last();
+-      t.check("inside the sandbox's page a save POSTs (the browser's, text/plain) exactly the stored sandbox URL of request.changed (sha256): its host + the same path", !!own && own !== rc && own.route === "fetch" && HOOK.test(own.url) && sha(own.url) === STORED_SHA.requestChanged && own.url === `https://${DEV_HOST}${rc?.url}` && /^text\/plain/.test(own.type ?? "") && bodyOf(own)?.portalRequestItemId === "PkReq3", hookWhere(own));
++      t.check("each hand-off is exactly the stored sandbox URL of its own kind (sha256)", HOOK_KINDS.every((k) => t.hooks().filter((h) => kindOf(h) === k).length === 1) && t.hooks().every((h) => STORED_SHA[kindOf(h)] === sha(h.url)), t.hooks().map((h) => `${kindOf(h)}: ${STORED_SHA[kindOf(h)] === sha(h.url) ? "same" : "differs"}`));
++      // the same save framed by the sandbox's own page, the portal's own domain and a page off Kissflow (emulated
++      // parents): the same stored URL each time, on the sandbox's host, never the page's
++      for (const [parent, what] of [[DEV_HOST, "the sandbox's own page"], [PORTAL_PARENT, "the portal's own domain"], [OFF_PARENT, "a page off Kissflow"]]) {
++        await t.host({ role: "supplier", env: "dev" }, "/portal/case/ZZT-0003", { parent });
++        await t.seeTid("questions-for-you");
++        await answerText(t, "FLD-GEN-004", "Plant 7, Hamburg (fictional)");
++        await t.settle(800);
++        await t.page.waitForTimeout(500);
++        const own = last();
++        t.check(`framed by ${what} a save POSTs (the browser's, text/plain) exactly the stored sandbox URL of request.changed (sha256), on the sandbox's host`, !!own && own !== rc && own.given === parent && okPost(own) && sha(own.url) === STORED_SHA.requestChanged && own.url === rc?.url && bodyOf(own)?.portalRequestItemId === "PkReq3", hookWhere(own));
++      }
++      t.check("one POST per action and save", t.hooks().length === 7, t.hooks().map(hookWhere));
+     }),
+   "handoffs-prod": () =>
+     scenario("handoffs-prod", async (t) => {
+       // Thomas, 21 Oct: production differs from the sandbox in its account AND its domain, and the webhook tokens are
+-      // the same, so the UI builds each hand-off at runtime (portal.ts webhooksFor): the page's own account, on the
+-      // Kissflow host around the page, else as the relative path through kf.api. The same save in the sandbox and in
+-      // production (this host page: no Kissflow host), then in production inside an emulated Kissflow page. Only routes,
+-      // accounts and hosts are reported: a hook URL carries its token
++      // the same; fallback of 22 Oct (portal.ts webhooksFor, ACCOUNT_HOST): each hand-off goes to the page's own
++      // account on that account's own host, whatever page the UI runs in. The same save in the sandbox and in
++      // production (this host page: 127.0.0.1), then in production framed by an emulated production Kissflow page, the
++      // portal's own domain and a page off Kissflow. Only routes, accounts and hosts are reported: a hook URL carries
++      // its token
+       const bodyOf = (h) => { try { return JSON.parse(h?.body ?? "null"); } catch { return null; } };
+       const tokenOf = (h) => (h ? h.url.slice(h.url.lastIndexOf("/webhook/") + "/webhook/".length) : "");
+       const save = async (params, value, parent) => {
+@@ -706,15 +721,17 @@
+       };
+       const dev = await save({ env: "dev" }, "Plant 7, Hamburg (fictional)");
+       const prod = await save({}, "Plant 8, Hamburg (fictional)");
+-      const inPage = await save({}, "Plant 9, Hamburg (fictional)", PROD_PARENT);
+-      t.check("in the sandbox a save posts request.changed through kf.api, as the relative path on the sandbox's account", !!dev && dev.route === "api" && dev.account === "AcDOSunMEpSA" && dev.url === `/integration/2/AcDOSunMEpSA/webhook/${tokenOf(dev)}` && tokenOf(dev).length >= 30 && bodyOf(dev)?.portalRequestItemId === "PkReq3", hookWhere(dev));
+-      t.check("in production the same save posts through kf.api on production's account, with the same token", !!prod && prod !== dev && prod.route === "api" && prod.account === "AcHARNESS" && prod.url === `/integration/2/AcHARNESS/webhook/${tokenOf(dev)}`, hookWhere(prod));
++      const PARENTS = [PROD_PARENT, PORTAL_PARENT, OFF_PARENT];
++      const framed = [];
++      for (const parent of PARENTS) framed.push(await save({}, "Plant 9, Hamburg (fictional)", parent));
++      t.check("in the sandbox a save posts request.changed by the browser's fetch to the sandbox's host: exactly the stored URL (sha256)", !!dev && dev.route === "fetch" && dev.host === DEV_HOST && dev.account === "AcDOSunMEpSA" && sha(dev.url) === STORED_SHA.requestChanged && bodyOf(dev)?.portalRequestItemId === "PkReq3", hookWhere(dev));
++      t.check("in production the same save posts to production's own host, on production's account, with the same token", !!prod && prod !== dev && prod.route === "fetch" && prod.host === PROD_HOST && prod.account === "AcHARNESS" && prod.url === `https://${PROD_HOST}/integration/2/AcHARNESS/webhook/${tokenOf(dev)}` && /^text\/plain/.test(prod.type ?? ""), hookWhere(prod));
+       // the token both send is the stored one of request.changed (compared by sha256: no token is printed)
+-      t.check("that token is the stored sandbox URL's of request.changed (sha256)", !!dev && sha(`https://${DEV_HOST}${dev.url}`) === STORED_SHA.requestChanged && sha(`https://${DEV_HOST}/integration/2/AcDOSunMEpSA/webhook/${tokenOf(prod)}`) === STORED_SHA.requestChanged, [dev, prod].map(hookWhere));
+-      t.check("in production inside a Kissflow page the save POSTs (the browser's, text/plain) to that page's host: its account, the same token", !!inPage && inPage.route === "fetch" && inPage.host === PROD_PARENT && inPage.given === PROD_PARENT && inPage.url === `https://${PROD_PARENT}${prod?.url}` && /^text\/plain/.test(inPage.type ?? ""), hookWhere(inPage));
+-      t.check("production's POSTs carry only the request id and a key", [prod, inPage].every((h) => bodyOf(h)?.portalRequestItemId === "PkReq3" && /^HO-requestChanged-/.test(bodyOf(h)?.idempotencyKey) && Object.keys(bodyOf(h) ?? {}).length === 2), [prod, inPage].map((h) => h?.body));
+-      t.check("nothing reaches the sandbox's host or account from production", t.hooks().filter((h) => h.env === "prod").every((h) => h.account === "AcHARNESS" && h.host !== DEV_HOST), t.hooks().map(hookWhere));
+-      t.check("one POST per save", t.hooks().length === 3, t.hooks().map(hookWhere));
++      t.check("that token is the stored sandbox URL's of request.changed (sha256)", tokenOf(prod).length >= 30 && sha(`https://${DEV_HOST}/integration/2/AcDOSunMEpSA/webhook/${tokenOf(prod)}`) === STORED_SHA.requestChanged, [dev, prod].map(hookWhere));
++      t.check("in production framed by a Kissflow page, the portal's own domain or a page off Kissflow, the save POSTs the same URL to production's host, never to that page", framed.length === 3 && framed.every((h, i) => !!h && h !== prod && h.route === "fetch" && h.given === PARENTS[i] && h.host === PROD_HOST && h.host !== h.given && h.url === prod?.url && /^text\/plain/.test(h.type ?? "")), framed.map(hookWhere));
++      t.check("production's POSTs carry only the request id and a key", [prod, ...framed].every((h) => bodyOf(h)?.portalRequestItemId === "PkReq3" && /^HO-requestChanged-/.test(bodyOf(h)?.idempotencyKey) && Object.keys(bodyOf(h) ?? {}).length === 2), [prod, ...framed].map((h) => h?.body));
++      t.check("nothing reaches the sandbox's host or account from production", t.hooks().filter((h) => h.env === "prod").every((h) => h.account === "AcHARNESS" && h.host !== DEV_HOST && !h.url.includes("AcDOSunMEpSA")), t.hooks().map(hookWhere));
++      t.check("one POST per save", t.hooks().length === 5, t.hooks().map(hookWhere));
+     }),
+   "harness-local-posts": () =>
+     scenario("harness-local-posts", async (t) => {
+@@ -1043,6 +1060,10 @@
+       await t.host({ role: "admin" }, "/admin/diagnostics");
+       await t.seeTid("s1-tests", "the S-1 write tests are offered to the builder");
+       await t.see("Supplier task lists");
++      // fallback of 22 Oct: the page around the UI and the hand-offs' host, as hosts only (a hook URL carries its token)
++      const session = async () => (await t.frame().evaluate(() => document.body.innerText)).replace(/\s+/g, " ");
++      const prodText = await session();
++      t.check("Diagnostics shows the page around the UI (none on Kissflow here) and the hand-offs' host (production's own), and no hook URL", prodText.includes("Kissflow page around this UI not a Kissflow page, or not known") && prodText.includes(`Hand-offs (webhooks) go to ${PROD_HOST}`) && !prodText.includes("/integration/2/"), prodText.match(/Kissflow page around this UI.{0,120}/)?.[0]);
+       for (const n of [1, 2, 3]) {
+         await t.tid(`s1-run-${n}`).click();
+         await t.ui.locator(`[data-testid="s1-result-${n}"][data-state="pass"], [data-testid="s1-result-${n}"][data-state="fail"]`).first().waitFor({ timeout: 10000 }).catch(() => {});
+@@ -1061,6 +1082,12 @@
+       t.check("test 4 moved its request to 'keep the CIQ up to date'", (await t.item("PkS1Fill"))._current_step === "Supplier: keep the CIQ up to date");
+       t.check("test 5 completed its query", (await t.item("PkS1Q"))._status === "Completed");
+       await t.shot("s1");
++      // in the sandbox, framed by the portal's own domain: that page is shown, the hand-offs still go to the sandbox's host
++      await t.host({ role: "admin", env: "dev" }, "/admin/diagnostics", { parent: PORTAL_PARENT });
++      await t.see("Hand-offs (webhooks) go to");
++      const devText = await session();
++      t.check("in the sandbox framed by the portal's domain, Diagnostics shows that page and the sandbox's host for the hand-offs", devText.includes(`Kissflow page around this UI ${PORTAL_PARENT}`) && devText.includes(`Hand-offs (webhooks) go to ${DEV_HOST}`) && !devText.includes("/integration/2/"), devText.match(/Kissflow page around this UI.{0,120}/)?.[0]);
++      await t.shot("hosts");
+     }),
+   admin: () =>
+     scenario("admin", async (t) => {

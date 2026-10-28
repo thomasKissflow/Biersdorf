@@ -1,0 +1,118 @@
+{
+ "phase": "skeleton",
+ "apply": true,
+ "at": "2026-10-14T18:46:17.944Z",
+ "before": [
+  "CIQ_Mail_send_outbox_mail_A00:Integration",
+  "undefined:User"
+ ],
+ "emailLogoFound": true,
+ "blobKinds": [
+  "CIQ_Mail_send_outbox_mail_A00:Integration",
+  "undefined:User",
+  "Trigger_CIQ_Mail_A00:Trigger",
+  "Action_CIQ_Mail_Send_A00:Action",
+  "Action_CIQ_Mail_Sent_A00:Action"
+ ],
+ "put": {
+  "status": 200
+ },
+ "readBack": [
+  "CIQ_Mail_send_outbox_mail_A00:Integration",
+  "undefined:User",
+  "Trigger_CIQ_Mail_A00:Trigger:ItemCreated",
+  "Action_CIQ_Mail_Send_A00:Action:SendEmail",
+  "Action_CIQ_Mail_Sent_A00:Action:UpdateAnItem"
+ ],
+ "schema_Trigger_CIQ_Mail_A00": {
+  "status": 200,
+  "fields": [
+   {
+    "Id": "ActionField007",
+    "Name": "form_id",
+    "Label": "Choose a dataform",
+    "Type": "String",
+    "Req": true,
+    "DD": true
+   }
+  ]
+ },
+ "schema_Action_CIQ_Mail_Send_A00": {
+  "status": 200,
+  "fields": [
+   {
+    "Id": "ActionField001",
+    "Name": "To",
+    "Label": "To",
+    "Type": "String",
+    "Req": true
+   },
+   {
+    "Id": "ActionField002",
+    "Name": "Subject",
+    "Label": "Subject",
+    "Type": "String",
+    "Req": true
+   },
+   {
+    "Id": "ActionField005",
+    "Name": "CC",
+    "Label": "Cc",
+    "Type": "String"
+   },
+   {
+    "Id": "ActionField006",
+    "Name": "Bcc",
+    "Label": "Bcc",
+    "Type": "String"
+   },
+   {
+    "Id": "ActionField007",
+    "Name": "ReplyTo",
+    "Label": "Reply To",
+    "Type": "String"
+   },
+   {
+    "Id": "ActionField008",
+    "Name": "From",
+    "Label": "From",
+    "Type": "String"
+   },
+   {
+    "Id": "ActionField009",
+    "Name": "Attachments",
+    "Label": "Attachments",
+    "Type": "Attachment",
+    "DD": false
+   },
+   {
+    "Id": "Field_htDKY9uKu8",
+    "Name": "BodyType",
+    "Label": "Body type",
+    "Type": "String",
+    "Req": true,
+    "DD": true
+   }
+  ]
+ },
+ "schema_Action_CIQ_Mail_Sent_A00": {
+  "status": 200,
+  "fields": [
+   {
+    "Id": "ActionField004",
+    "Name": "form_id",
+    "Label": "Choose a dataform",
+    "Type": "String",
+    "Req": true,
+    "DD": true
+   },
+   {
+    "Id": "ActionField005",
+    "Name": "instance_id",
+    "Label": "Dataform item ID",
+    "Type": "String",
+    "Req": true
+   }
+  ]
+ }
+}

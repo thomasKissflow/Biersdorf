@@ -1,0 +1,364 @@
+[
+ {
+  "_id": "CIQP_Notice_A00",
+  "_created_at": "2026-10-07T04:25:32Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-15T16:34:10Z",
+  "Name": "ZZZ (Not in Use) CIQP Notice",
+  "Description": "A message from Beiersdorf to the supplier, e.g. a change-request outcome, a scope change or a case closure. The supplier acknowledges it.",
+  "Type": "Process",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Supplier_Portal_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEK3_yhR4wx",
+    "Name": "Admin",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "InitiateItems",
+     "View"
+    ]
+   }
+  ],
+  "LastPublishedAt": "2026-10-15T16:34:09Z",
+  "AllowedFlows": []
+ },
+ {
+  "_id": "CIQP_Final_Release_A00",
+  "_created_at": "2026-10-07T04:25:29Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-16T14:28:51Z",
+  "Name": "CIQP Final Release",
+  "Description": "The supplier's single final release of the questionnaire (PS-11). After it, nothing can be changed. Created from the app case.",
+  "Type": "Process",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Supplier_Portal_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEK4XPKXCvH",
+    "Name": "Supplier",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEK3_yhR4wx",
+    "Name": "Admin",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "InitiateItems",
+     "View"
+    ]
+   }
+  ],
+  "LastPublishedAt": "2026-10-07T04:25:31Z",
+  "AllowedFlows": []
+ },
+ {
+  "_id": "CIQP_Completeness_Confirmation_A00",
+  "_created_at": "2026-10-07T04:25:26Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-15T16:34:20Z",
+  "Name": "ZZZ (Not in Use) CIQP Completeness Confirmation",
+  "Description": "The supplier confirms that the questionnaire is complete (PS-05). This is not the final release: data stays editable. Created from the app case.",
+  "Type": "Process",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Supplier_Portal_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEK3_yhR4wx",
+    "Name": "Admin",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "InitiateItems",
+     "View"
+    ]
+   }
+  ],
+  "LastPublishedAt": "2026-10-15T16:34:19Z",
+  "AllowedFlows": []
+ },
+ {
+  "_id": "CIQP_Request_A00",
+  "_created_at": "2026-10-06T21:10:42Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-16T14:28:51Z",
+  "Name": "CIQP Request",
+  "Description": "Supplier-facing lifecycle of one CIQ case cycle: basic data, scope check, questionnaire, review wait, final release.",
+  "Type": "Process",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Supplier_Portal_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEK4XPKXCvH",
+    "Name": "Supplier",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEK3_yhR4wx",
+    "Name": "Admin",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "InitiateItems",
+     "View"
+    ]
+   }
+  ],
+  "LastPublishedAt": "2026-10-16T09:41:48Z",
+  "AllowedFlows": [
+   {
+    "Name": "CIQ Digital",
+    "Type": "Application",
+    "_id": "CIQ_Digital_A00",
+    "AllowAllFields": true,
+    "AllowedFields": [],
+    "Permission": [
+     "Lookup"
+    ]
+   }
+  ]
+ },
+ {
+  "_id": "CIQP_Change_Request_A00",
+  "_created_at": "2026-10-06T21:10:38Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-15T16:33:59Z",
+  "Name": "ZZZ (Not in Use) CIQP Change Request",
+  "Description": "Supplier-initiated change request: triaged by RMM, assessed by the owning department. After the final release every request is refused and logged.",
+  "Type": "Process",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Supplier_Portal_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEK3_yhR4wx",
+    "Name": "Admin",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "InitiateItems",
+     "View"
+    ]
+   }
+  ],
+  "LastPublishedAt": "2026-10-15T16:33:58Z",
+  "AllowedFlows": [
+   {
+    "Name": "CIQ Digital",
+    "Type": "Application",
+    "_id": "CIQ_Digital_A00",
+    "AllowAllFields": true,
+    "AllowedFields": [],
+    "Permission": [
+     "Lookup"
+    ]
+   }
+  ]
+ },
+ {
+  "_id": "CIQP_Query_A00",
+  "_created_at": "2026-10-06T21:10:33Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-16T14:28:51Z",
+  "Name": "CIQP Query",
+  "Description": "Supplier side of one Beiersdorf open point: question, reference, supplier due date, response and thread.",
+  "Type": "Process",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Supplier_Portal_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEK4XPKXCvH",
+    "Name": "Supplier",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": []
+   },
+   {
+    "_id": "RoEK3_yhR4wx",
+    "Name": "Admin",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "InitiateItems",
+     "View"
+    ]
+   }
+  ],
+  "LastPublishedAt": "2026-10-15T19:30:28Z",
+  "AllowedFlows": [
+   {
+    "Name": "CIQ Digital",
+    "Type": "Application",
+    "_id": "CIQ_Digital_A00",
+    "AllowAllFields": true,
+    "AllowedFields": [],
+    "Permission": [
+     "Lookup"
+    ]
+   }
+  ]
+ },
+ {
+  "_id": "CIQP_Section_A00",
+  "_created_at": "2026-10-06T21:10:18Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-15T16:34:29Z",
+  "Name": "ZZZ (Not in Use) CIQP Section",
+  "Description": "One released CIQ section of one case cycle: copied definition, the supplier's answers and uploads. Editable until the final release.",
+  "Type": "Process",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Supplier_Portal_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEK3_yhR4wx",
+    "Name": "Admin",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "InitiateItems",
+     "View"
+    ]
+   }
+  ],
+  "LastPublishedAt": "2026-10-15T16:34:28Z",
+  "AllowedFlows": [
+   {
+    "Name": "CIQ Digital",
+    "Type": "Application",
+    "_id": "CIQ_Digital_A00",
+    "AllowAllFields": true,
+    "AllowedFields": [],
+    "Permission": [
+     "Lookup"
+    ]
+   }
+  ]
+ },
+ {
+  "_id": "CIQP_Help_Article_A00",
+  "_created_at": "2026-10-06T21:10:03Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-16T14:28:54Z",
+  "Name": "CIQP Help Article",
+  "Description": "Supplier-agnostic FAQ and quick-start guide (CIA #34). Every portal user may read every row by design.",
+  "Type": "Form",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Supplier_Portal_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEK4XPKXCvH",
+    "Name": "Supplier",
+    "Kind": "AppRole",
+    "Role": "Viewer",
+    "Permission": []
+   },
+   {
+    "_id": "RoEK3_yhR4wx",
+    "Name": "Admin",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "Delete"
+    ]
+   }
+  ],
+  "LastPublishedAt": "2026-10-16T07:32:10Z",
+  "AllowedFlows": [
+   {
+    "Name": "CIQ Digital",
+    "Type": "Application",
+    "_id": "CIQ_Digital_A00",
+    "AllowAllFields": true,
+    "AllowedFields": [],
+    "Permission": [
+     "Lookup"
+    ]
+   }
+  ]
+ },
+ {
+  "_id": "ZZ_Spike_Assignee_A00",
+  "_created_at": "2026-10-06T21:02:35Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-14T18:55:07Z",
+  "Name": "ZZ Spike Assignee",
+  "Description": "Throwaway probe: field-driven step assignee. Safe to delete.",
+  "Type": "Process",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Supplier_Portal_A00",
+  "SharedWith": [
+   {
+    "_id": "RoEK3_yhR4wx",
+    "Name": "Admin",
+    "Kind": "AppRole",
+    "Role": "Member",
+    "Permission": [
+     "InitiateItems"
+    ]
+   }
+  ],
+  "LastPublishedAt": "2026-10-14T17:54:30Z",
+  "AllowedFlows": [
+   {
+    "Name": "CIQ Digital",
+    "Type": "Application",
+    "_id": "CIQ_Digital_A00",
+    "AllowAllFields": true,
+    "AllowedFields": [],
+    "Permission": [
+     "Lookup"
+    ]
+   }
+  ]
+ }
+]

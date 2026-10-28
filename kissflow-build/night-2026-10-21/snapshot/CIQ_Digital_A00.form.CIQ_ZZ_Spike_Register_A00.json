@@ -1,0 +1,265 @@
+{
+ "type": "form",
+ "name": "CIQ ZZ Spike Register",
+ "status": "Live",
+ "list": {
+  "_id": "CIQ_ZZ_Spike_Register_A00",
+  "_created_at": "2026-10-07T10:31:08Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-09T06:39:22Z",
+  "Name": "CIQ ZZ Spike Register",
+  "Description": "",
+  "Type": "Form",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Digital_A00",
+  "LastPublishedAt": "2026-10-07T12:00:13Z"
+ },
+ "draftStatus": 200,
+ "draft": {
+  "Root": "CIQ_ZZ_Spike_Register_A00",
+  "CIQ_ZZ_Spike_Register_A00": {
+   "Id": "CIQ_ZZ_Spike_Register_A00",
+   "Name": "CIQ ZZ Spike Register",
+   "Kind": "Model",
+   "FlowType": "Form",
+   "Description": "",
+   "_application_id": "CIQ_Digital_A00",
+   "Model::Row": [
+    "Row_1k90wih",
+    "Row_15dgf79"
+   ],
+   "Model::Field": [
+    "Register_Key",
+    "Register_Case",
+    "Open_Lines"
+   ],
+   "Model::Model": [
+    "Spike_Lines"
+   ]
+  },
+  "Row_1k90wih": {
+   "Id": "Row_1k90wih",
+   "Kind": "Row",
+   "Model": "CIQ_ZZ_Spike_Register_A00",
+   "Row::Column": [
+    "Column_1k90wih"
+   ]
+  },
+  "Column_1k90wih": {
+   "Id": "Column_1k90wih",
+   "Kind": "Column",
+   "Type": "Section",
+   "Name": "Details",
+   "Start": 0,
+   "End": 6,
+   "Row": "Row_1k90wih",
+   "Column::Row": [
+    "Row_1k8zocz",
+    "Row_1k8zod0"
+   ]
+  },
+  "Row_1k8zocz": {
+   "Id": "Row_1k8zocz",
+   "Kind": "Row",
+   "Column": "Column_1k90wih",
+   "Row::Column": [
+    "Column_y7k8uz",
+    "Column_1rgp1hq"
+   ]
+  },
+  "Column_y7k8uz": {
+   "Id": "Column_y7k8uz",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_1k8zocz",
+   "Column::Field": [
+    "Register_Key"
+   ]
+  },
+  "Column_1rgp1hq": {
+   "Id": "Column_1rgp1hq",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 3,
+   "End": 6,
+   "Row": "Row_1k8zocz",
+   "Column::Field": [
+    "Register_Case"
+   ]
+  },
+  "Row_1k8zod0": {
+   "Id": "Row_1k8zod0",
+   "Kind": "Row",
+   "Column": "Column_1k90wih",
+   "Row::Column": [
+    "Column_xond6i"
+   ]
+  },
+  "Column_xond6i": {
+   "Id": "Column_xond6i",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_1k8zod0",
+   "Column::Field": [
+    "Open_Lines"
+   ]
+  },
+  "Register_Key": {
+   "Id": "Register_Key",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Register_Key",
+   "Model": "CIQ_ZZ_Spike_Register_A00",
+   "Column": "Column_y7k8uz",
+   "Required": true
+  },
+  "QueryDefinition_1rgp1hq": {
+   "Id": "QueryDefinition_1rgp1hq",
+   "Kind": "QueryDefinition",
+   "Field": "Register_Case",
+   "LHSModel": "CIQ_ZZ_Spike_Case_A00",
+   "FlowType": "Process",
+   "LookupField": [
+    {
+     "Id": "Flag_A",
+     "Name": "Flag_A",
+     "Type": "Text"
+    }
+   ],
+   "HiddenField": []
+  },
+  "Register_Case": {
+   "Id": "Register_Case",
+   "Kind": "Field",
+   "Type": "Reference",
+   "Name": "Register_Case",
+   "Model": "CIQ_ZZ_Spike_Register_A00",
+   "Column": "Column_1rgp1hq",
+   "Field::QueryDefinition": [
+    "QueryDefinition_1rgp1hq"
+   ]
+  },
+  "Open_Lines": {
+   "Id": "Open_Lines",
+   "Kind": "Field",
+   "Type": "Number",
+   "Name": "Open_Lines",
+   "Model": "CIQ_ZZ_Spike_Register_A00",
+   "Column": "Column_xond6i",
+   "Field::QueryDefinition": [
+    "AggregateDefinition_xond6i"
+   ],
+   "Widget": "Aggregation",
+   "ReadOnly": true
+  },
+  "AggregateDefinition_xond6i": {
+   "Id": "AggregateDefinition_xond6i",
+   "Kind": "QueryDefinition",
+   "Field": "Open_Lines",
+   "LHSModel": "CIQ_ZZ_Spike_Register_A00",
+   "FlowType": "Form",
+   "LookupField": [],
+   "AggregateType": "Sum",
+   "LHSRootModel": "CIQ_ZZ_Spike_Register_A00",
+   "AggregateField": "Line_Open"
+  },
+  "Row_15dgf79": {
+   "Id": "Row_15dgf79",
+   "Kind": "Row",
+   "Model": "CIQ_ZZ_Spike_Register_A00",
+   "Row::Column": [
+    "Column_15dgf79"
+   ]
+  },
+  "Column_15dgf79": {
+   "Id": "Column_15dgf79",
+   "Kind": "Column",
+   "Type": "Model",
+   "Name": "Spike Lines",
+   "Start": 0,
+   "End": 6,
+   "AllowImport": false,
+   "Row": "Row_15dgf79",
+   "Column::Model": [
+    "Spike_Lines"
+   ]
+  },
+  "Spike_Lines": {
+   "Id": "Spike_Lines",
+   "Kind": "Model",
+   "Name": "Spike Lines",
+   "Model": "CIQ_ZZ_Spike_Register_A00",
+   "Column": "Column_15dgf79",
+   "Model::Row": [
+    "Row_76ytm5"
+   ],
+   "Model::Field": [
+    "Line_Text",
+    "Line_Open"
+   ]
+  },
+  "Row_76ytm5": {
+   "Id": "Row_76ytm5",
+   "Kind": "Row",
+   "Model": "Spike_Lines",
+   "Row::Column": [
+    "Column_rjlxd",
+    "Column_rg01a"
+   ]
+  },
+  "Line_Text": {
+   "Id": "Line_Text",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Line_Text",
+   "Model": "Spike_Lines",
+   "Column": "Column_rjlxd"
+  },
+  "Line_Open": {
+   "Id": "Line_Open",
+   "Kind": "Field",
+   "Type": "Number",
+   "Name": "Line_Open",
+   "Model": "Spike_Lines",
+   "Column": "Column_rg01a"
+  },
+  "Column_rjlxd": {
+   "Id": "Column_rjlxd",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 0,
+   "Row": "Row_76ytm5",
+   "Column::Field": [
+    "Line_Text"
+   ]
+  },
+  "Column_rg01a": {
+   "Id": "Column_rg01a",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 0,
+   "Row": "Row_76ytm5",
+   "Column::Field": [
+    "Line_Open"
+   ]
+  },
+  "PublishedAt": "2026-10-07T12:00:12Z",
+  "PublishedBy": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_meta_version": "1791374413041889"
+ }
+}

@@ -1,0 +1,169 @@
+{
+  "spike": "K-04 runtime",
+  "steps": [
+    {
+      "step": "create item",
+      "status": 200,
+      "body": {
+        "_id": "PkEK4RuOVj5v",
+        "ModelId": "ZZ_Spike_Assignee_A00",
+        "_activity_instance_id": "PkEK4RuOttFJ",
+        "_meta_version": "1791320560492056"
+      }
+    },
+    {
+      "step": "admin read after create",
+      "status": 200,
+      "_id": "PkEK4RuOVj5v",
+      "_created_by": {
+        "_id": "UsEJUfjYLM8Y",
+        "Name": "Thomas",
+        "Kind": "User"
+      },
+      "_modified_by": {
+        "_id": "UsEJUfjYLM8Y",
+        "Name": "Thomas",
+        "Kind": "User"
+      },
+      "_created_at": "2026-10-06T21:03:44Z",
+      "_modified_at": "2026-10-06T21:03:44Z",
+      "_flow_name": "ZZ Spike Assignee",
+      "_application_id": "CIQ_Supplier_Portal_A00",
+      "_flow_type": "Process",
+      "_doc_version": "223854014836376864",
+      "_current_step": "Start",
+      "_current_assigned_to": [
+        {
+          "_id": "UsEJUfjYLM8Y",
+          "Name": "Thomas",
+          "Kind": "User"
+        }
+      ],
+      "_status": "Draft",
+      "_stage": 0,
+      "_root_process_instance": "PkEK4RuOph3F",
+      "_counter": 1,
+      "_progress": 0,
+      "Probe_Title": "probe-runtime-1",
+      "Probe_Assignees": {
+        "_id": "UsEJUfjYLM8Y",
+        "Name": "Thomas",
+        "Kind": "User"
+      },
+      "_current_context": [
+        {
+          "_context_assigned_to": [
+            {
+              "_id": "UsEJUfjYLM8Y",
+              "Name": "Thomas",
+              "Kind": "User"
+            }
+          ],
+          "_context_assigned_at": "2026-10-06T21:03:44Z",
+          "_status": "Draft"
+        }
+      ],
+      "_meta_version": "1791320560492056"
+    },
+    {
+      "step": "submit start",
+      "status": 403,
+      "body": {
+        "type": "ValidationExceptions",
+        "error_code": "KISSFLOW_ERROR_050302",
+        "en_message": "You don't have permission to submit this item anymore.",
+        "message": "You don't have permission to submit this item anymore.",
+        "_id": "448ad291-6a09-4c64-94ec-235c6706305e",
+        "args": {
+          "item_name": "ZZ Spike Assignee from Thomas",
+          "process_name": "ZZ Spike Assignee"
+        },
+        "status": "error",
+        "request_id": "process.submit-item-ea46f730-ce44-49e3-b428-4d0548f8e09c"
+      }
+    },
+    {
+      "step": "admin read after submit",
+      "status": 200,
+      "_id": "PkEK4RuOVj5v",
+      "_created_by": {
+        "_id": "UsEJUfjYLM8Y",
+        "Name": "Thomas",
+        "Kind": "User"
+      },
+      "_modified_by": {
+        "_id": "UsEJUfjYLM8Y",
+        "Name": "Thomas",
+        "Kind": "User"
+      },
+      "_created_at": "2026-10-06T21:03:44Z",
+      "_modified_at": "2026-10-06T21:03:44Z",
+      "_flow_name": "ZZ Spike Assignee",
+      "_application_id": "CIQ_Supplier_Portal_A00",
+      "_flow_type": "Process",
+      "_doc_version": "223854014836376864",
+      "_current_step": "Start",
+      "_current_assigned_to": [
+        {
+          "_id": "UsEJUfjYLM8Y",
+          "Name": "Thomas",
+          "Kind": "User"
+        }
+      ],
+      "_status": "Draft",
+      "_stage": 0,
+      "_root_process_instance": "PkEK4RuOph3F",
+      "_counter": 1,
+      "_progress": 0,
+      "Probe_Title": "probe-runtime-1",
+      "Probe_Assignees": {
+        "_id": "UsEJUfjYLM8Y",
+        "Name": "Thomas",
+        "Kind": "User"
+      },
+      "_current_context": [
+        {
+          "_context_assigned_to": [
+            {
+              "_id": "UsEJUfjYLM8Y",
+              "Name": "Thomas",
+              "Kind": "User"
+            }
+          ],
+          "_context_assigned_at": "2026-10-06T21:03:44Z",
+          "_status": "Draft"
+        }
+      ],
+      "_meta_version": "1791320560492056"
+    },
+    {
+      "step": "myitems",
+      "status": 200,
+      "count": 1,
+      "mine": [
+        {
+          "_id": "PkEK4RuOVj5v",
+          "_current_assigned_to": [
+            {
+              "_id": "UsEJUfjYLM8Y",
+              "Name": "Thomas",
+              "Kind": "User"
+            }
+          ],
+          "_current_step": "Start",
+          "_modified_at": "2026-10-06T21:03:44Z",
+          "_status": "Draft",
+          "_progress": 0,
+          "_activity_id": "Activity_z5b98q",
+          "_activity_instance_id": "PkEK4RuOttFJ"
+        }
+      ]
+    },
+    {
+      "step": "mytasks",
+      "status": 404,
+      "sample": "{\"Status\":\"not_found\",\"Id\":\"mytasks\",\"ErrorJson\":{\"type\":\"IdNotFoundError\",\"error_code\":\"KISSFLOW_ERROR_05718\",\"en_message\":\"The item ID could not be found, or the request has expired.\",\"message\":\"The item ID could not be found, or the request has expired.\",\"_id\":\"5ba4f28e-7ea8-45f0-aa88-6e1ad9b26add\",\"args\":{},\"status\":\"error\",\"request_id\":\"ProcessPolling.get-item-create-status-a1ead86b-9f2c-4e31-9431-c8db93988deb\"}}"
+    }
+  ],
+  "item": "PkEK4RuOVj5v"
+}

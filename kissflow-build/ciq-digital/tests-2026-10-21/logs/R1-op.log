@@ -1,0 +1,54 @@
+
+ RUN  v2.1.9 /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/prototype
+
+stdout | live/op.live.ts > S-OP: open points, every department in turn across runs (SPEC §4) > raise, edit, the supplier's answer, accept / return / close, the threads
+S-OP R1 (live): 8/17 pass; 370 Kissflow calls, 19 min (budget 80 min)
+    20  S1 supplier: the run's supplier with the self contact
+     9  S2 case: createCase, I-1 creates its CIQP Request
+    55  S3 completeness: the supplier fills in and confirms (portal), I-2
+    67  S4 reviews: ensureReviews starts the scope's review tracks
+    53  P1 QM 1 raise: op.round makes the CIQP Query
+     2  P1 QM 2 edit: op.edited updates the query
+    33  P1 QM 3 supplier answer, round 1 (portal writer, I-4)
+    33  P2 QM 1 raise: op.round makes the CIQP Query
+     2  P2 QM 4 close while the query is open: op.closed
+    57  P3 QM 1 raise: op.round makes the CIQP Query
+    15  P3 QM 3 supplier answer, round 1 (portal writer, I-4)
+    24  R1 showcase: late portal items adopted, the ledger names each item's stage
+results: /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/kissflow-build/ciq-digital/tests-2026-10-21/results/R1/S-OP.json
+
+ ❯ live/op.live.ts (1 test | 1 failed) 1159660ms
+   × S-OP: open points, every department in turn across runs (SPEC §4) > raise, edit, the supplier's answer, accept / return / close, the threads 1159660ms
+     → expected [ …(4) ] to deeply equal []
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  live/op.live.ts > S-OP: open points, every department in turn across runs (SPEC §4) > raise, edit, the supplier's answer, accept / return / close, the threads
+AssertionError: expected [ …(4) ] to deeply equal []
+
+- Expected
++ Received
+
+- Array []
++ Array [
++   "P1 QM 2 edit: op.edited updates the query: fail (failed: editOpenPoint: the writer reports ok)",
++   "P1 QM 3 supplier answer, round 1 (portal writer, I-4): fail (KISSFLOW_ERROR_050313 You don't have permission to update the following fields: {\"CIQP_Query_A00\": [\"Supplier_Responsible_Email\", \"Response_Text\", \"Response_Kind\"]}.)",
++   "P2 QM 4 close while the query is open: op.closed: fail (failed: closeOpenPoint: the writer reports ok)",
++   "P3 QM 3 supplier answer, round 1 (portal writer, I-4): fail (KISSFLOW_ERROR_050313 You don't have permission to update the following fields: {\"CIQP_Query_A00\": [\"Supplier_Responsible_Email\", \"Response_Text\", \"Response_Kind\"]}.)",
++ ]
+
+ ❯ live/op.live.ts:499:21
+    497|     }
+    498|     const notPass = rec.steps.filter((x) => (w.live ? x.status === "fa…
+    499|     expect(notPass).toEqual([]);
+       |                     ^
+    500|   }, TIMEOUT_MS);
+    501| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  04:52:00
+   Duration  1160.98s (transform 580ms, setup 0ms, collect 1.07s, tests 1159.66s, environment 0ms, prepare 38ms)
+

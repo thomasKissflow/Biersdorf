@@ -1,0 +1,170 @@
+{
+ "step": "B1-case-steps",
+ "flow": "CIQ_Case_A00",
+ "what": "rename S1/S7 (ids kept), owners → CIQ Integration Service, S7 condition removed, remove 6 steps incl. the 6-lane Part 2 block",
+ "at": "2026-10-14T18:07:00.896Z",
+ "apply": true,
+ "liveMetaVersion": "1791484757297603",
+ "livePublishedAt": "2026-10-08T18:39:17Z",
+ "mutation": {
+  "removed": {
+   "Activity": 12,
+   "Permission": 1375,
+   "Resource": 11,
+   "ProcessDef": 6,
+   "Expression": 9,
+   "Node": 27
+  },
+  "condition": {
+   "was": [
+    "Overall_Decision != \"Rejected\""
+   ],
+   "removed": {
+    "Expression": 1,
+    "Node": 3
+   }
+  },
+  "renamed": [
+   "Activity_1kltjdn: Waiting for supplier: basic data → Waiting for supplier: CIQ",
+   "Activity_gwgj5o: Waiting for supplier: final release PS-11 → Beiersdorf review and final release"
+  ],
+  "owners": [
+   "Activity_1kltjdn Resource_1vld5mx: AppRole:CIQ RMM:RoEKl83f9jPF → AppRole:CIQ Integration Service:RoEKl89I5nGx",
+   "Activity_gwgj5o Resource_98ykec: AppRole:CIQ RMM:RoEKl83f9jPF → AppRole:CIQ Integration Service:RoEKl89I5nGx"
+  ]
+ },
+ "diffSummary": {
+  "added": 0,
+  "removed": 1444,
+  "changed": 5,
+  "addedByKind": {},
+  "removedByKind": {
+   "Permission": 1375,
+   "Resource": 11,
+   "Activity": 12,
+   "ProcessDef": 6,
+   "Expression": 10,
+   "Node": 30
+  },
+  "changedByKind": {
+   "ProcessDef": 1,
+   "Resource": 2,
+   "Activity": 2
+  }
+ },
+ "changedNonPermission": [
+  {
+   "entity": "ProcessDef_1in4z19 ProcessDef",
+   "props": {
+    "ProcessDef::Activity": {
+     "was": "[10]",
+     "now": "[4]"
+    }
+   }
+  },
+  {
+   "entity": "Resource_1vld5mx Resource",
+   "props": {
+    "DisplayValue": {
+     "was": "CIQ RMM",
+     "now": "CIQ Integration Service"
+    },
+    "Value": {
+     "was": "RoEKl83f9jPF",
+     "now": "RoEKl89I5nGx"
+    }
+   }
+  },
+  {
+   "entity": "Activity_1kltjdn Activity Waiting for supplier: CIQ",
+   "props": {
+    "Name": {
+     "was": "Waiting for supplier: basic data",
+     "now": "Waiting for supplier: CIQ"
+    }
+   }
+  },
+  {
+   "entity": "Resource_98ykec Resource",
+   "props": {
+    "DisplayValue": {
+     "was": "CIQ RMM",
+     "now": "CIQ Integration Service"
+    },
+    "Value": {
+     "was": "RoEKl83f9jPF",
+     "now": "RoEKl89I5nGx"
+    }
+   }
+  },
+  {
+   "entity": "Activity_gwgj5o Activity Beiersdorf review and final release",
+   "props": {
+    "Name": {
+     "was": "Waiting for supplier: final release PS-11",
+     "now": "Beiersdorf review and final release"
+    },
+    "Activity::Expression": {
+     "was": "[1]"
+    }
+   }
+  }
+ ],
+ "preflight": {
+  "errors": [],
+  "warnings": [
+   "NO_ID",
+   "ORPHAN_ENTITY"
+  ]
+ },
+ "dryCheck": {
+  "order": [
+   "Create case [Activity_p1i6xz] ",
+   "Waiting for supplier: CIQ [Activity_1kltjdn] AppRole:CIQ Integration Service",
+   "Beiersdorf review and final release [Activity_gwgj5o] AppRole:CIQ Integration Service",
+   "End [Activity_ycf01a] "
+  ],
+  "removedGone": true,
+  "ids": {
+   "s1": "Waiting for supplier: CIQ",
+   "s7": "Beiersdorf review and final release",
+   "s7Condition": null
+  }
+ },
+ "write": {
+  "ok": true,
+  "putDraft": 200,
+  "publish": 200,
+  "publishedAt": "2026-10-14T18:07:05Z"
+ },
+ "readBack": {
+  "metaVersion": "1792001226001837",
+  "publishedAt": "2026-10-14T18:07:05Z",
+  "diffVsSent": {
+   "added": [],
+   "removed": [],
+   "changed": [],
+   "changedCount": 0
+  },
+  "check": {
+   "order": [
+    "Create case [Activity_p1i6xz] ",
+    "Waiting for supplier: CIQ [Activity_1kltjdn] AppRole:CIQ Integration Service",
+    "Beiersdorf review and final release [Activity_gwgj5o] AppRole:CIQ Integration Service",
+    "End [Activity_ycf01a] "
+   ],
+   "removedGone": true,
+   "ids": {
+    "s1": "Waiting for supplier: CIQ",
+    "s7": "Beiersdorf review and final release",
+    "s7Condition": null
+   }
+  }
+ },
+ "publishedFields": {
+  "status": 200,
+  "count": 125,
+  "newIdsPublished": 0,
+  "missingFromPublished": []
+ }
+}

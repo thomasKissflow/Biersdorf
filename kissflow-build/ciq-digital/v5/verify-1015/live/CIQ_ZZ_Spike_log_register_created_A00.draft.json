@@ -1,0 +1,478 @@
+{
+ "status": 200,
+ "body": {
+  "Root": "CIQ_ZZ_Spike_log_register_created_A00",
+  "CIQ_ZZ_Spike_log_register_created_A00": {
+   "Id": "CIQ_ZZ_Spike_log_register_created_A00",
+   "Description": "",
+   "Name": "CIQ ZZ Spike log – register created",
+   "Kind": "Integration",
+   "FlowType": "Integration",
+   "Integration::Trigger": [
+    "Trigger__created_A00"
+   ],
+   "Integration::Action": [
+    "Action__created_A00"
+   ],
+   "_application_id": "CIQ_Digital_A00"
+  },
+  "PublishedAt": "2026-10-14T06:52:24Z",
+  "PublishedBy": {
+   "_id": "flobot",
+   "Name": "Flobot",
+   "Kind": "User"
+  },
+  "_meta_version": "1791960745095862",
+  "Trigger__created_A00": {
+   "Id": "Trigger__created_A00",
+   "Kind": "Trigger",
+   "Type": "App",
+   "Name": "When an item is added to a dataform",
+   "IsInternalAuth": false,
+   "Connection": {
+    "_id": "CnEKHrH5GzkY",
+    "Name": "CIQ ZZ Spike Kissflow Dataform connection"
+   },
+   "Integration": "CIQ_ZZ_Spike_log_register_created_A00",
+   "Connector": {
+    "_id": "Co4mIEiAdtSb",
+    "Name": "Kissflow Dataform",
+    "Version": "1.5.4",
+    "Logo": {
+     "small": {
+      "key": "Account001/Connectors/Co4mIEiAdtSb/1.5.4/Logo/photos/24x24.png"
+     },
+     "medium": {
+      "key": "Account001/Connectors/Co4mIEiAdtSb/1.5.4/Logo/photos/128x128.png"
+     },
+     "original": {
+      "key": "Account001/Connectors/Co4mIEiAdtSb/1.5.4/Logo/Kissflow_Data_form.png"
+     }
+    },
+    "Status": "Published",
+    "WebsiteURL": "https://kissflow.com",
+    "TriggerId": "ItemCreated",
+    "TriggerName": "When an item is added to a dataform"
+   },
+   "Trigger::FieldMapping": [
+    "FieldMapping_Trigger_1"
+   ],
+   "Output": {
+    "_id": "SampleInstance001",
+    "Name": "Text data",
+    "_created_by": {
+     "_id": "UsEJUfjYLM8Y",
+     "Name": "Thomas",
+     "Kind": "User"
+    },
+    "_modified_by": {
+     "_id": "UsEJUfjYLM8Y",
+     "Name": "Thomas",
+     "Kind": "User"
+    },
+    "_created_at": "2026-10-07T11:40:04-08:00 America/Los_Angeles",
+    "_modified_at": "2026-10-07T11:40:04-08:00 America/Los_Angeles",
+    "_is_deleted": true,
+    "_deleted_at": "2026-10-07T11:40:04-08:00 America/Los_Angeles",
+    "_deleted_by": {
+     "_id": "UsEJUfjYLM8Y",
+     "Name": "Thomas",
+     "Kind": "User"
+    },
+    "_flow_name": "Text data",
+    "_application_id": "Text data",
+    "_flow_type": "Text data",
+    "_doc_version": "Text data",
+    "_visited": true,
+    "_is_draft": true,
+    "_is_public_form": true,
+    "_expire_at": "2026-10-07T11:40:04-08:00 America/Los_Angeles",
+    "Register_Key": "Text data",
+    "Register_Case": {
+     "_id": "Text data",
+     "Flag_A": "No",
+     "Name": "Text data"
+    },
+    "Open_Lines": 4694,
+    "Table::Spike_Lines": [
+     {
+      "_id": "Text data",
+      "Name": "Text data",
+      "_created_by": {
+       "_id": "UsEJUfjYLM8Y",
+       "Name": "Thomas",
+       "Kind": "User"
+      },
+      "_modified_by": {
+       "_id": "UsEJUfjYLM8Y",
+       "Name": "Thomas",
+       "Kind": "User"
+      },
+      "_created_at": "2026-10-07T11:40:04-08:00 America/Los_Angeles",
+      "_modified_at": "2026-10-07T11:40:04-08:00 America/Los_Angeles",
+      "_is_deleted": false,
+      "_deleted_at": "2026-10-07T11:40:04-08:00 America/Los_Angeles",
+      "_deleted_by": {
+       "_id": "UsEJUfjYLM8Y",
+       "Name": "Thomas",
+       "Kind": "User"
+      },
+      "_flow_name": "Text data",
+      "_application_id": "Text data",
+      "_flow_type": "Text data",
+      "_doc_version": "Text data",
+      "Line_Text": "Text data",
+      "Line_Open": 1780
+     }
+    ]
+   },
+   "IsTested": true,
+   "Trigger::Reference": [
+    "Reference_EMlqJREPdd"
+   ]
+  },
+  "Action__created_A00": {
+   "Id": "Action__created_A00",
+   "Kind": "Action",
+   "Type": "Create",
+   "Name": "Create and submit an item",
+   "IsInternalAuth": false,
+   "Connection": {
+    "_id": "CnEKHrH5GzkY",
+    "Name": "CIQ ZZ Spike Kissflow Dataform connection"
+   },
+   "Integration": "CIQ_ZZ_Spike_log_register_created_A00",
+   "Connector": {
+    "_id": "Co4mIEiAdtSb",
+    "Name": "Kissflow Dataform",
+    "Version": "1.5.4",
+    "Logo": {
+     "small": {
+      "key": "Account001/Connectors/Co4mIEiAdtSb/1.5.4/Logo/photos/24x24.png"
+     },
+     "medium": {
+      "key": "Account001/Connectors/Co4mIEiAdtSb/1.5.4/Logo/photos/128x128.png"
+     },
+     "original": {
+      "key": "Account001/Connectors/Co4mIEiAdtSb/1.5.4/Logo/Kissflow_Data_form.png"
+     }
+    },
+    "Status": "Published",
+    "WebsiteURL": "https://kissflow.com",
+    "ActionId": "CreateAndSubmitItem",
+    "ActionName": "Create and submit an item"
+   },
+   "Action::FieldMapping": [
+    "FieldMapping_Action_3",
+    "FieldMapping_m1",
+    "FieldMapping_m3",
+    "FieldMapping_m5",
+    "FieldMapping_m7",
+    "FieldMapping_m9",
+    "FieldMapping_ma"
+   ],
+   "Output": {
+    "_id": "PkEKIRzYG2ID",
+    "Name": "CIQ ZZ Spike Log from Thomas",
+    "_created_by": {
+     "_id": "UsEJUfjYLM8Y",
+     "Name": "Thomas",
+     "Kind": "User"
+    },
+    "_modified_by": {
+     "_id": "UsEJUfjYLM8Y",
+     "Name": "Thomas",
+     "Kind": "User"
+    },
+    "_created_at": "2026-10-07T11:40:20Z",
+    "_modified_at": "2026-10-07T11:40:20Z",
+    "_flow_name": "CIQ ZZ Spike Log",
+    "_application_id": "CIQ_Digital_A00",
+    "_flow_type": "Form",
+    "Log_Key": "Text data",
+    "Log_Source": "Register",
+    "Log_Event": "created",
+    "Log_Item_Id": "SampleInstance001"
+   },
+   "IsTested": true,
+   "Action::Reference": [
+    "Reference_EMlqJREPde"
+   ]
+  },
+  "FieldMapping_Trigger_1": {
+   "Id": "FieldMapping_Trigger_1",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "ActionField007",
+   "Label": "Choose a dataform",
+   "Name": "form_id",
+   "IsRequired": true,
+   "IsDropdown": true,
+   "AutoRefresh": true,
+   "Trigger": "Trigger__created_A00",
+   "SelectedDropdown": [
+    {
+     "FieldId": "CIQ_ZZ_Spike_Register_A00",
+     "FieldName": "CIQ ZZ Spike Register"
+    }
+   ],
+   "FieldMapping::Property": [
+    "Property_Trigger_2"
+   ]
+  },
+  "Property_Trigger_2": {
+   "Id": "Property_Trigger_2",
+   "Kind": "Property",
+   "FieldMapping": "FieldMapping_Trigger_1",
+   "Type": "Value",
+   "Value": [
+    "CIQ_ZZ_Spike_Register_A00"
+   ],
+   "Name": "form_id"
+  },
+  "FieldMapping_Action_3": {
+   "Id": "FieldMapping_Action_3",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "ActionField002",
+   "Label": "Choose a dataform",
+   "Name": "form_id",
+   "IsRequired": true,
+   "IsDropdown": true,
+   "AutoRefresh": true,
+   "Action": "Action__created_A00",
+   "SelectedDropdown": [
+    {
+     "FieldId": "CIQ_ZZ_Spike_Log_A00",
+     "FieldName": "CIQ ZZ Spike Log"
+    }
+   ],
+   "FieldMapping::Property": [
+    "Property_Action_4"
+   ]
+  },
+  "Property_Action_4": {
+   "Id": "Property_Action_4",
+   "Kind": "Property",
+   "FieldMapping": "FieldMapping_Action_3",
+   "Type": "Value",
+   "Value": [
+    "CIQ_ZZ_Spike_Log_A00"
+   ],
+   "Name": "form_id"
+  },
+  "FieldMapping_m1": {
+   "Id": "FieldMapping_m1",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "Log_Key",
+   "Label": "Log_Key",
+   "Name": "Log_Key",
+   "IsRequired": false,
+   "Action": "Action__created_A00",
+   "FieldMapping::Property": [
+    "Property_m2"
+   ],
+   "FieldMapping::Reference": [
+    "Reference_EMlqJgvyh_"
+   ]
+  },
+  "Property_m2": {
+   "Id": "Property_m2",
+   "Kind": "Property",
+   "FieldMapping": "FieldMapping_m1",
+   "Type": "Field",
+   "Field": "context.Trigger__created_A00.Register_Key",
+   "Name": "Log_Key",
+   "Property::Reference": [
+    "Reference_EMlqJgvyhf"
+   ]
+  },
+  "FieldMapping_m3": {
+   "Id": "FieldMapping_m3",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "Log_Source",
+   "Label": "Log_Source",
+   "Name": "Log_Source",
+   "IsRequired": false,
+   "Action": "Action__created_A00",
+   "FieldMapping::Property": [
+    "Property_m4"
+   ],
+   "FieldMapping::Reference": [
+    "Reference_EMlqJgvyha"
+   ]
+  },
+  "Property_m4": {
+   "Id": "Property_m4",
+   "Kind": "Property",
+   "FieldMapping": "FieldMapping_m3",
+   "Type": "Value",
+   "Value": [
+    "Register"
+   ],
+   "Name": "Log_Source"
+  },
+  "FieldMapping_m5": {
+   "Id": "FieldMapping_m5",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "Log_Event",
+   "Label": "Log_Event",
+   "Name": "Log_Event",
+   "IsRequired": false,
+   "Action": "Action__created_A00",
+   "FieldMapping::Property": [
+    "Property_m6"
+   ],
+   "FieldMapping::Reference": [
+    "Reference_EMlqJgvyhb"
+   ]
+  },
+  "Property_m6": {
+   "Id": "Property_m6",
+   "Kind": "Property",
+   "FieldMapping": "FieldMapping_m5",
+   "Type": "Value",
+   "Value": [
+    "created"
+   ],
+   "Name": "Log_Event"
+  },
+  "FieldMapping_m7": {
+   "Id": "FieldMapping_m7",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "Log_Item_Id",
+   "Label": "Log_Item_Id",
+   "Name": "Log_Item_Id",
+   "IsRequired": false,
+   "Action": "Action__created_A00",
+   "FieldMapping::Property": [
+    "Property_m8"
+   ],
+   "FieldMapping::Reference": [
+    "Reference_EMlqJgvyhc"
+   ]
+  },
+  "Property_m8": {
+   "Id": "Property_m8",
+   "Kind": "Property",
+   "FieldMapping": "FieldMapping_m7",
+   "Type": "Field",
+   "Field": "context.Trigger__created_A00._id",
+   "Name": "Log_Item_Id"
+  },
+  "FieldMapping_m9": {
+   "Id": "FieldMapping_m9",
+   "Kind": "FieldMapping",
+   "Type": "Datetime",
+   "FieldId": "Log_At",
+   "Label": "Log_At",
+   "Name": "Log_At",
+   "IsRequired": false,
+   "Action": "Action__created_A00",
+   "FieldMapping::Reference": [
+    "Reference_EMlqJgvyhd"
+   ]
+  },
+  "FieldMapping_ma": {
+   "Id": "FieldMapping_ma",
+   "Kind": "FieldMapping",
+   "Type": "String",
+   "FieldId": "Log_Payload",
+   "Label": "Log_Payload",
+   "Name": "Log_Payload",
+   "IsRequired": false,
+   "Action": "Action__created_A00",
+   "FieldMapping::Reference": [
+    "Reference_EMlqJgvyhe"
+   ]
+  },
+  "Reference_EMlqJREPdd": {
+   "Id": "Reference_EMlqJREPdd",
+   "Kind": "Reference",
+   "ReferencedFieldId": "ActionField007",
+   "ReferenceType": "Field",
+   "Trigger": "Trigger__created_A00"
+  },
+  "Reference_EMlqJREPde": {
+   "Id": "Reference_EMlqJREPde",
+   "Kind": "Reference",
+   "ReferencedFieldId": "ActionField002",
+   "ReferenceType": "Field",
+   "Action": "Action__created_A00"
+  },
+  "Reference_EMlqJgvyh_": {
+   "Id": "Reference_EMlqJgvyh_",
+   "Kind": "Reference",
+   "Type": "Schema",
+   "ReferenceType": "Field",
+   "StepId": "Action__created_A00",
+   "SourceProperty": "Property_Action_4",
+   "FieldId": "Log_Key",
+   "FieldMapping": "FieldMapping_m1"
+  },
+  "Reference_EMlqJgvyha": {
+   "Id": "Reference_EMlqJgvyha",
+   "Kind": "Reference",
+   "Type": "Schema",
+   "ReferenceType": "Field",
+   "StepId": "Action__created_A00",
+   "SourceProperty": "Property_Action_4",
+   "FieldId": "Log_Source",
+   "FieldMapping": "FieldMapping_m3"
+  },
+  "Reference_EMlqJgvyhb": {
+   "Id": "Reference_EMlqJgvyhb",
+   "Kind": "Reference",
+   "Type": "Schema",
+   "ReferenceType": "Field",
+   "StepId": "Action__created_A00",
+   "SourceProperty": "Property_Action_4",
+   "FieldId": "Log_Event",
+   "FieldMapping": "FieldMapping_m5"
+  },
+  "Reference_EMlqJgvyhc": {
+   "Id": "Reference_EMlqJgvyhc",
+   "Kind": "Reference",
+   "Type": "Schema",
+   "ReferenceType": "Field",
+   "StepId": "Action__created_A00",
+   "SourceProperty": "Property_Action_4",
+   "FieldId": "Log_Item_Id",
+   "FieldMapping": "FieldMapping_m7"
+  },
+  "Reference_EMlqJgvyhd": {
+   "Id": "Reference_EMlqJgvyhd",
+   "Kind": "Reference",
+   "Type": "Schema",
+   "ReferenceType": "Field",
+   "StepId": "Action__created_A00",
+   "SourceProperty": "Property_Action_4",
+   "FieldId": "Log_At",
+   "FieldMapping": "FieldMapping_m9"
+  },
+  "Reference_EMlqJgvyhe": {
+   "Id": "Reference_EMlqJgvyhe",
+   "Kind": "Reference",
+   "Type": "Schema",
+   "ReferenceType": "Field",
+   "StepId": "Action__created_A00",
+   "SourceProperty": "Property_Action_4",
+   "FieldId": "Log_Payload",
+   "FieldMapping": "FieldMapping_ma"
+  },
+  "Reference_EMlqJgvyhf": {
+   "Id": "Reference_EMlqJgvyhf",
+   "Kind": "Reference",
+   "Type": "Value",
+   "ReferenceType": "Field",
+   "StepId": "Action__created_A00",
+   "SourceProperty": "Property_Trigger_2",
+   "FieldId": "Register_Key",
+   "Property": "Property_m2"
+  }
+ }
+}

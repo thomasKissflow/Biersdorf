@@ -1,0 +1,4225 @@
+{
+  "app": {
+    "name": "CIQ Digital",
+    "id": "CIQ_Digital_A00",
+    "description": "Internal CIQ Digital app (CIQ_Digital_A00). Run zz-spike adds only a throwaway test harness: four \"CIQ ZZ Spike\" flows, two lists and two roles, with no pages, nav or automations."
+  },
+  "architecture": {
+    "app_name": "CIQ Digital",
+    "app_id": "CIQ_Digital_A00",
+    "description": "Internal CIQ Digital app (CIQ_Digital_A00). Run zz-spike adds only a throwaway test harness: four \"CIQ ZZ Spike\" flows, two lists and two roles, with no pages, nav or automations.",
+    "source": {
+      "domain_revision": 2,
+      "brd": "runs/current/brd.md",
+      "open_questions": "runs/current/open-questions.md OQ-01..OQ-10; defaults accepted (none adds a flow, list, role, step or field)",
+      "run": "zz-spike",
+      "decisions": "runs/current/decisions.md D1-D3 (Stage 2, kf-architect)",
+      "precedence": "brd.md is the only requirement source (domain.source.precedence)"
+    },
+    "mechanism_selection": {
+      "case_board_flows": 0,
+      "note": "No Case/Board flows. \"CIQ ZZ Spike Case\" is a Process despite its name (brd L10). Both Processes need role-assigned steps, step conditions and per-step field permissions. The process mechanism supports all three; the case mechanism supports none (ir-graph capabilities: workflow.mechanisms.case roleRestrictedTransitions, conditionalTransitions and perStatusFieldPermissions are false)."
+    },
+    "roles": [
+      {
+        "id": "admin",
+        "name": "Admin",
+        "kind": "default",
+        "personas": [],
+        "members": "unchanged",
+        "grants": "none in this run",
+        "rationale": "Platform default, reused and not created (brief). Serves no harness journey; listed only so it is reused, never recreated."
+      },
+      {
+        "id": "user",
+        "name": "User",
+        "kind": "default",
+        "personas": [],
+        "members": "unchanged",
+        "grants": "none in this run",
+        "rationale": "Platform default, reused and not created (brief). Serves no harness journey."
+      },
+      {
+        "id": "ciq_zz_spike_role_a",
+        "name": "CIQ ZZ Spike Role A",
+        "kind": "custom",
+        "personas": [
+          "p_tester_a"
+        ],
+        "members": "none; Thomas adds the people (brd L56)",
+        "rationale": "Owns the Case Start, \"Spike prepare\", branches A/C/E (OQ-01), \"Spike hold check\" and \"Spike gated step\"; owns the Point Start and \"Spike waiting\". Editable on all four flows (brd L13-L22, L31-L32, L57)."
+      },
+      {
+        "id": "ciq_zz_spike_role_b",
+        "name": "CIQ ZZ Spike Role B",
+        "kind": "custom",
+        "personas": [
+          "p_tester_b"
+        ],
+        "members": "none; Thomas adds the people (brd L56)",
+        "rationale": "Owns branches B/D/F (OQ-01) and \"Spike not-equal step\" on the Case, and \"Spike review\" on the Point. Editable on all four flows (brd L16, L23, L33, L57)."
+      }
+    ],
+    "flows": [
+      {
+        "id": "CIQ_ZZ_Spike_Case_A00",
+        "name": "CIQ ZZ Spike Case",
+        "type": "Process",
+        "from_entity": "e_spike_case",
+        "description": "Test case: Start, prepare, a 6-branch parallel block with flag conditions and lane-scoped fields, a formula-conditioned hold check, a Mandatory formula gate and a not-equal condition step.",
+        "child_tables": [
+          {
+            "id": "Spike_Case_Notes",
+            "name": "Spike Case Notes",
+            "embedded": true,
+            "columns": [
+              "Note_Text",
+              "Note_By"
+            ],
+            "editable_at": [
+              "Spike prepare"
+            ],
+            "evidence": "brd L26"
+          }
+        ],
+        "serves_journeys": [
+          "j01_run_spike_case",
+          "j03_maintain_spike_register"
+        ],
+        "rationale": "Work handed between Role A and Role B through named, conditional and parallel steps is a Process. It is typed now because a Form cannot gain a workflow later (LESSONS 1; brd L10-L24).",
+        "requiredCapabilities": {
+          "roleRestrictedTransitions": true,
+          "conditionalTransitions": true,
+          "perStatusFieldPermissions": true
+        },
+        "mechanism": "process",
+        "build_stage": "generate (complete, as the BRD states); then the read-back gate G1 for the Open_Count closure"
+      },
+      {
+        "id": "CIQ_ZZ_Spike_Point_A00",
+        "name": "CIQ ZZ Spike Point",
+        "type": "Process",
+        "from_entity": "e_spike_point",
+        "description": "Test point: a Select-conditioned waiting step, a step-scoped editable field and a step-scoped child table.",
+        "child_tables": [
+          {
+            "id": "Spike_Rounds",
+            "name": "Spike Rounds",
+            "embedded": true,
+            "columns": [
+              "Round_No",
+              "Question",
+              "Response",
+              "Outcome"
+            ],
+            "editable_at": [
+              "Spike review"
+            ],
+            "evidence": "brd L43"
+          }
+        ],
+        "serves_journeys": [
+          "j02_run_spike_point"
+        ],
+        "rationale": "Routed from Role A (raise, wait) to Role B (review), with a conditional step: a Process (brd L28-L34).",
+        "requiredCapabilities": {
+          "roleRestrictedTransitions": true,
+          "conditionalTransitions": true,
+          "perStatusFieldPermissions": true
+        },
+        "mechanism": "process",
+        "build_stage": "generate"
+      },
+      {
+        "id": "CIQ_ZZ_Spike_Register_A00",
+        "name": "CIQ ZZ Spike Register",
+        "type": "Form",
+        "from_entity": "e_spike_register",
+        "description": "Register of open lines against a spike case. Its header Open_Lines feeds the case's Open_Count.",
+        "child_tables": [
+          {
+            "id": "Spike_Lines",
+            "name": "Spike Lines",
+            "embedded": true,
+            "columns": [
+              "Line_Text",
+              "Line_Open"
+            ],
+            "editable_at": "n/a (Form; no steps)",
+            "evidence": "brd L48"
+          }
+        ],
+        "serves_journeys": [
+          "j03_maintain_spike_register",
+          "j01_run_spike_case"
+        ],
+        "rationale": "Data of record with no routing or approval: a Form (brd L45-L49).",
+        "build_stage": "generate"
+      },
+      {
+        "id": "CIQ_ZZ_Spike_Log_A00",
+        "name": "CIQ ZZ Spike Log",
+        "type": "Form",
+        "from_entity": "e_spike_log",
+        "description": "Target form for the separately created integration tests.",
+        "child_tables": [],
+        "serves_journeys": [
+          "j04_inspect_spike_log"
+        ],
+        "rationale": "Plain target of integration writes, with no routing: a Form (brd L51-L53, L61).",
+        "build_stage": "generate"
+      }
+    ],
+    "lists": [
+      {
+        "id": "CIQ_ZZ_Spike_Yes_No",
+        "name": "CIQ ZZ Spike Yes No",
+        "items": [
+          "Yes",
+          "No"
+        ],
+        "item_source": "domain.value_sets (brd L17)",
+        "used_by": [
+          "CIQ ZZ Spike Case Flag_A-Flag_F (brd L17)",
+          "CIQ ZZ Spike Point To_Supplier (OQ-04 default)",
+          "CIQ ZZ Spike Case Lane_A_Confirm-Lane_F_Confirm, if kf-data-architect keeps the OQ-07 default"
+        ],
+        "populate": "create and populate in the same apply"
+      },
+      {
+        "id": "CIQ_ZZ_Spike_Decision",
+        "name": "CIQ ZZ Spike Decision",
+        "items": [
+          "Approved",
+          "Rejected"
+        ],
+        "item_source": "domain.value_sets (brd L23)",
+        "used_by": [
+          "CIQ ZZ Spike Case Spike_Decision (brd L23)"
+        ],
+        "populate": "create and populate in the same apply"
+      }
+    ],
+    "id_reservations": {
+      "note": "Flow ids are the Kissflow name-derived ids we expect (name with underscores + _A00); the platform assigns the real ids, which are read back after generate. List ids deliberately carry NO _A00 suffix: the compiler builds a list's display name from its id, and an _A00 id compiles as \"... A00\" (kissflow-build/ciq-digital/BUILD-LOG.md checklist item 2, tested offline). Role ids are stable IR slugs; live role _ids are read back.",
+      "app_id": "CIQ_Digital_A00",
+      "role_ids": {
+        "Admin": "admin",
+        "User": "user",
+        "CIQ ZZ Spike Role A": "ciq_zz_spike_role_a",
+        "CIQ ZZ Spike Role B": "ciq_zz_spike_role_b"
+      },
+      "flow_ids": {
+        "CIQ ZZ Spike Case": "CIQ_ZZ_Spike_Case_A00",
+        "CIQ ZZ Spike Point": "CIQ_ZZ_Spike_Point_A00",
+        "CIQ ZZ Spike Register": "CIQ_ZZ_Spike_Register_A00",
+        "CIQ ZZ Spike Log": "CIQ_ZZ_Spike_Log_A00"
+      },
+      "list_ids": {
+        "CIQ ZZ Spike Yes No": "CIQ_ZZ_Spike_Yes_No",
+        "CIQ ZZ Spike Decision": "CIQ_ZZ_Spike_Decision"
+      },
+      "child_table_ids": {
+        "Spike Case Notes": {
+          "parent": "CIQ_ZZ_Spike_Case_A00",
+          "id": "Spike_Case_Notes"
+        },
+        "Spike Rounds": {
+          "parent": "CIQ_ZZ_Spike_Point_A00",
+          "id": "Spike_Rounds"
+        },
+        "Spike Lines": {
+          "parent": "CIQ_ZZ_Spike_Register_A00",
+          "id": "Spike_Lines"
+        }
+      },
+      "field_prefix_by_flow": {
+        "CIQ_ZZ_Spike_Case_A00": {
+          "prefix": null,
+          "rule": "Use the BRD field names verbatim (domain.entities[e_spike_case].key_attributes). Add no fields and apply no prefix. Never author Name."
+        },
+        "CIQ_ZZ_Spike_Point_A00": {
+          "prefix": null,
+          "rule": "BRD names verbatim; add no fields. The header Round_No and the Spike Rounds column Round_No are both kept (brd L37, L43); the engine namespaces colliding child-field ids (LESSONS 4). Report any clash; never rename silently."
+        },
+        "CIQ_ZZ_Spike_Register_A00": {
+          "prefix": null,
+          "rule": "BRD names verbatim (Register_Key, Register_Case, Open_Lines, Spike Lines columns); add no fields."
+        },
+        "CIQ_ZZ_Spike_Log_A00": {
+          "prefix": null,
+          "rule": "BRD names verbatim (Log_Key, Log_Source, Log_Event, Log_Item_Id, Log_At, Log_Payload); add no fields."
+        }
+      },
+      "step_prefix_by_flow": {
+        "CIQ_ZZ_Spike_Case_A00": {
+          "prefix": "SPKC_",
+          "frozen_by": "brd L12-L24 and domain.process_contract; step names use the en-dash U+2013",
+          "steps": [
+            {
+              "id": "SPKC_S0",
+              "name": "Create spike case",
+              "kind": "Start",
+              "actor": "CIQ ZZ Spike Role A",
+              "condition": null
+            },
+            {
+              "id": "SPKC_S1",
+              "name": "Spike prepare",
+              "kind": "UserTask",
+              "actor": "CIQ ZZ Spike Role A",
+              "condition": null
+            },
+            {
+              "id": "SPKC_PAR",
+              "name": null,
+              "kind": "Parallel",
+              "actor": null,
+              "condition": null,
+              "note": "Container only; the BRD names no block step. kf-workflow-designer gives it a name only if the engine requires one, and reports it. One-level fork with an all-join before \"Spike hold check\" (capabilities replay.parallel).",
+              "branches": [
+                {
+                  "id": "SPKC_BA",
+                  "name": "Spike review – A",
+                  "kind": "UserTask",
+                  "actor": "CIQ ZZ Spike Role A",
+                  "condition": "Flag_A = \"Yes\""
+                },
+                {
+                  "id": "SPKC_BB",
+                  "name": "Spike review – B",
+                  "kind": "UserTask",
+                  "actor": "CIQ ZZ Spike Role B",
+                  "condition": "Flag_B = \"Yes\""
+                },
+                {
+                  "id": "SPKC_BC",
+                  "name": "Spike review – C",
+                  "kind": "UserTask",
+                  "actor": "CIQ ZZ Spike Role A",
+                  "condition": "Flag_C = \"Yes\""
+                },
+                {
+                  "id": "SPKC_BD",
+                  "name": "Spike review – D",
+                  "kind": "UserTask",
+                  "actor": "CIQ ZZ Spike Role B",
+                  "condition": "Flag_D = \"Yes\""
+                },
+                {
+                  "id": "SPKC_BE",
+                  "name": "Spike review – E",
+                  "kind": "UserTask",
+                  "actor": "CIQ ZZ Spike Role A",
+                  "condition": "Flag_E = \"Yes\""
+                },
+                {
+                  "id": "SPKC_BF",
+                  "name": "Spike review – F",
+                  "kind": "UserTask",
+                  "actor": "CIQ ZZ Spike Role B",
+                  "condition": "Flag_F = \"Yes\""
+                }
+              ]
+            },
+            {
+              "id": "SPKC_S3",
+              "name": "Spike hold check",
+              "kind": "UserTask",
+              "actor": "CIQ ZZ Spike Role A",
+              "condition": "Hold_Flag = \"Yes\"",
+              "g1_item": true
+            },
+            {
+              "id": "SPKC_S4",
+              "name": "Spike gated step",
+              "kind": "UserTask",
+              "actor": "CIQ ZZ Spike Role A",
+              "condition": null,
+              "note": "Gate Mandatory here",
+              "g1_item": true
+            },
+            {
+              "id": "SPKC_S5",
+              "name": "Spike not-equal step",
+              "kind": "UserTask",
+              "actor": "CIQ ZZ Spike Role B",
+              "condition": "Spike_Decision != \"Rejected\""
+            },
+            {
+              "id": "SPKC_END",
+              "name": "End",
+              "kind": "End",
+              "actor": null,
+              "condition": null
+            }
+          ]
+        },
+        "CIQ_ZZ_Spike_Point_A00": {
+          "prefix": "SPKP_",
+          "frozen_by": "brd L30-L34 and domain.process_contract",
+          "steps": [
+            {
+              "id": "SPKP_S0",
+              "name": "Raise spike point",
+              "kind": "Start",
+              "actor": "CIQ ZZ Spike Role A",
+              "condition": null
+            },
+            {
+              "id": "SPKP_S1",
+              "name": "Spike waiting",
+              "kind": "UserTask",
+              "actor": "CIQ ZZ Spike Role A",
+              "condition": "To_Supplier = \"Yes\""
+            },
+            {
+              "id": "SPKP_S2",
+              "name": "Spike review",
+              "kind": "UserTask",
+              "actor": "CIQ ZZ Spike Role B",
+              "condition": null
+            },
+            {
+              "id": "SPKP_END",
+              "name": "End",
+              "kind": "End",
+              "actor": null,
+              "condition": null
+            }
+          ]
+        }
+      },
+      "page_prefix_by_role": {},
+      "page_rule": "pages = [] and no nav (brd L60). Generate with --no-pages."
+    },
+    "er_map": [
+      {
+        "id": "ER01",
+        "kind": "reference",
+        "native_reference": true,
+        "from": "CIQ_ZZ_Spike_Register_A00",
+        "from_name": "CIQ ZZ Spike Register",
+        "to": "CIQ_ZZ_Spike_Case_A00",
+        "to_name": "CIQ ZZ Spike Case",
+        "ref_holder": "CIQ_ZZ_Spike_Register_A00",
+        "via_field": "Register_Case",
+        "cardinality": "N:1",
+        "required": false,
+        "rationale": "A register belongs to at most one spike case. This is the only Reference in the harness; not required (OQ-09).",
+        "evidence": "brd L47; BR-08"
+      },
+      {
+        "id": "ER02",
+        "kind": "cross_flow_aggregate",
+        "native_reference": false,
+        "from": "CIQ_ZZ_Spike_Case_A00",
+        "from_name": "CIQ ZZ Spike Case",
+        "to": "CIQ_ZZ_Spike_Register_A00",
+        "to_name": "CIQ ZZ Spike Register",
+        "ref_holder": "CIQ_ZZ_Spike_Case_A00",
+        "via_field": "Open_Count = SUM(Register.Open_Lines) where Register.Register_Case = this case",
+        "cardinality": "1:N (reverse of ER01)",
+        "depends_on": [
+          "ER01",
+          "ER05"
+        ],
+        "rationale": "A back-pointer, not a Reference: it matches on ER01's field and sums ER05's header. Case and Register therefore depend on each other; see build_order seq 9 (G1).",
+        "evidence": "brd L21; BR-08"
+      },
+      {
+        "id": "ER03",
+        "kind": "child_table",
+        "native_reference": false,
+        "from": "CIQ_ZZ_Spike_Case_A00",
+        "from_name": "CIQ ZZ Spike Case",
+        "to": "Spike_Case_Notes",
+        "to_name": "Spike Case Notes",
+        "ref_holder": "CIQ_ZZ_Spike_Case_A00",
+        "cardinality": "1:N (embedded)",
+        "rationale": "Repeating notes on one case; editable only at \"Spike prepare\".",
+        "evidence": "brd L26; BR-11"
+      },
+      {
+        "id": "ER04",
+        "kind": "child_table",
+        "native_reference": false,
+        "from": "CIQ_ZZ_Spike_Point_A00",
+        "from_name": "CIQ ZZ Spike Point",
+        "to": "Spike_Rounds",
+        "to_name": "Spike Rounds",
+        "ref_holder": "CIQ_ZZ_Spike_Point_A00",
+        "cardinality": "1:N (embedded)",
+        "rationale": "Repeating rounds on one point; editable only at \"Spike review\".",
+        "evidence": "brd L43; BR-14"
+      },
+      {
+        "id": "ER05",
+        "kind": "child_table",
+        "native_reference": false,
+        "from": "CIQ_ZZ_Spike_Register_A00",
+        "from_name": "CIQ ZZ Spike Register",
+        "to": "Spike_Lines",
+        "to_name": "Spike Lines",
+        "ref_holder": "CIQ_ZZ_Spike_Register_A00",
+        "cardinality": "1:N (embedded)",
+        "rationale": "Repeating lines on one register. Open_Lines is an embedded-child SUM that resolves inside Register's own body, so it adds no ordering constraint.",
+        "evidence": "brd L48-L49; BR-16"
+      }
+    ],
+    "text_key_links": [
+      {
+        "id": "TK01",
+        "kind": "text_key",
+        "native_reference": false,
+        "from": "CIQ_ZZ_Spike_Log_A00",
+        "from_name": "CIQ ZZ Spike Log",
+        "to": "any spike item an integration acted on",
+        "ref_holder": "CIQ_ZZ_Spike_Log_A00",
+        "via_field": "Log_Item_Id",
+        "cardinality": "N:1 (informal)",
+        "rationale": "Text on purpose: the domain models no relationship. kf-data-architect must NOT turn it into a Reference.",
+        "evidence": "domain e_spike_log.relationships; brd L52"
+      }
+    ],
+    "external_links": [],
+    "journey_flow_map": [
+      {
+        "journey": "j01_run_spike_case",
+        "persona": "p_tester_a",
+        "roles": [
+          "CIQ ZZ Spike Role A",
+          "CIQ ZZ Spike Role B"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_ZZ_Spike_Case_A00",
+            "flow_name": "CIQ ZZ Spike Case",
+            "action": "initiate",
+            "step": "Create spike case",
+            "role": "CIQ ZZ Spike Role A"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Case_A00",
+            "flow_name": "CIQ ZZ Spike Case",
+            "action": "set Flag_A-Flag_F and Spike_Decision (OQ-02, OQ-03); edit Spike Case Notes",
+            "step": "Spike prepare",
+            "role": "CIQ ZZ Spike Role A"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Case_A00",
+            "flow_name": "CIQ ZZ Spike Case",
+            "action": "each flagged branch edits only its own lane; Lane_X_Confirm Mandatory",
+            "step": "Spike review – A … Spike review – F (A/C/E Role A, B/D/F Role B)",
+            "role": "CIQ ZZ Spike Role A / CIQ ZZ Spike Role B"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Register_A00",
+            "flow_name": "CIQ ZZ Spike Register",
+            "action": "optional: create or edit registers pointing at the case to drive Open_Count (journey j03)"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Case_A00",
+            "flow_name": "CIQ ZZ Spike Case",
+            "action": "act only when Hold_Flag = \"Yes\"",
+            "step": "Spike hold check",
+            "role": "CIQ ZZ Spike Role A"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Case_A00",
+            "flow_name": "CIQ ZZ Spike Case",
+            "action": "submit only when Gate = \"OK\"",
+            "step": "Spike gated step",
+            "role": "CIQ ZZ Spike Role A"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Case_A00",
+            "flow_name": "CIQ ZZ Spike Case",
+            "action": "act only when Spike_Decision != \"Rejected\"",
+            "step": "Spike not-equal step",
+            "role": "CIQ ZZ Spike Role B"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Case_A00",
+            "flow_name": "CIQ ZZ Spike Case",
+            "action": "complete",
+            "step": "End"
+          }
+        ],
+        "note": "The hold-check and gated-step success criteria can be tested only once G1 has passed (build_order seq 9)."
+      },
+      {
+        "journey": "j02_run_spike_point",
+        "persona": "p_tester_a",
+        "roles": [
+          "CIQ ZZ Spike Role A",
+          "CIQ ZZ Spike Role B"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_ZZ_Spike_Point_A00",
+            "flow_name": "CIQ ZZ Spike Point",
+            "action": "initiate; set To_Supplier and the scalar fields (OQ-05)",
+            "step": "Raise spike point",
+            "role": "CIQ ZZ Spike Role A"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Point_A00",
+            "flow_name": "CIQ ZZ Spike Point",
+            "action": "act only when To_Supplier = \"Yes\"; edit Response_Text",
+            "step": "Spike waiting",
+            "role": "CIQ ZZ Spike Role A"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Point_A00",
+            "flow_name": "CIQ ZZ Spike Point",
+            "action": "edit Spike Rounds (only here)",
+            "step": "Spike review",
+            "role": "CIQ ZZ Spike Role B"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Point_A00",
+            "flow_name": "CIQ ZZ Spike Point",
+            "action": "complete",
+            "step": "End"
+          }
+        ]
+      },
+      {
+        "journey": "j03_maintain_spike_register",
+        "persona": "p_tester_a",
+        "roles": [
+          "CIQ ZZ Spike Role A",
+          "CIQ ZZ Spike Role B"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_ZZ_Spike_Case_A00",
+            "flow_name": "CIQ ZZ Spike Case",
+            "action": "read: pick the case to point at"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Register_A00",
+            "flow_name": "CIQ ZZ Spike Register",
+            "action": "create or edit: Register_Key (required), Register_Case, Spike Lines rows; Open_Lines recalculates"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Case_A00",
+            "flow_name": "CIQ ZZ Spike Case",
+            "action": "read Open_Count (and Hold_Flag, Gate) recalculated from the registers (after G1)"
+          }
+        ]
+      },
+      {
+        "journey": "j04_inspect_spike_log",
+        "persona": "p_tester_a",
+        "roles": [
+          "CIQ ZZ Spike Role A",
+          "CIQ ZZ Spike Role B"
+        ],
+        "path": [
+          {
+            "flow": "CIQ_ZZ_Spike_Log_A00",
+            "flow_name": "CIQ ZZ Spike Log",
+            "action": "rows created or updated by a test integration (outside this IR)"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Log_A00",
+            "flow_name": "CIQ ZZ Spike Log",
+            "action": "read and edit log rows"
+          }
+        ]
+      }
+    ],
+    "build_order": [
+      {
+        "seq": 1,
+        "layer": "lists",
+        "artifacts": [
+          "CIQ ZZ Spike Yes No",
+          "CIQ ZZ Spike Decision"
+        ],
+        "rationale": "Selects need populated lists. Created and populated in the same apply (list shells in PASS 1, items in PASS 1b). Lists and roles do not depend on each other, so the engine creating roles first changes nothing."
+      },
+      {
+        "seq": 2,
+        "layer": "roles",
+        "artifacts": [
+          "CIQ ZZ Spike Role A",
+          "CIQ ZZ Spike Role B"
+        ],
+        "rationale": "Steps and grants reference them. Reuse Admin and User. Add no members (brd L56)."
+      },
+      {
+        "seq": 3,
+        "layer": "flow shells (engine PASS 1)",
+        "artifacts": [
+          "CIQ ZZ Spike Case",
+          "CIQ ZZ Spike Point",
+          "CIQ ZZ Spike Register",
+          "CIQ ZZ Spike Log"
+        ],
+        "depends_on": [
+          "roles"
+        ],
+        "rationale": "The engine creates every flow shell before any body, so all four ids exist first. Register_Case (to Case) and Open_Count (to Register) therefore never dangle by id."
+      },
+      {
+        "seq": 4,
+        "layer": "case process",
+        "artifacts": [
+          "CIQ ZZ Spike Case (with Spike Case Notes, the 6-branch parallel workflow and per-step permissions)"
+        ],
+        "depends_on": [
+          "lists",
+          "roles"
+        ],
+        "rationale": "Register references it, so it comes first. Authored complete as the BRD states, including the Open_Count closure that G1 checks. A published Process cannot be relied on to accept later edits (LESSONS 1b), so nothing else is left for after publish."
+      },
+      {
+        "seq": 5,
+        "layer": "point process",
+        "artifacts": [
+          "CIQ ZZ Spike Point (with Spike Rounds)"
+        ],
+        "depends_on": [
+          "lists",
+          "roles"
+        ],
+        "rationale": "Independent of the other flows."
+      },
+      {
+        "seq": 6,
+        "layer": "register form",
+        "artifacts": [
+          "CIQ ZZ Spike Register (with Spike Lines and the embedded SUM Open_Lines)"
+        ],
+        "depends_on": [
+          "CIQ ZZ Spike Case"
+        ],
+        "rationale": "References Case (ER01). Open_Lines resolves inside its own body."
+      },
+      {
+        "seq": 7,
+        "layer": "log form",
+        "artifacts": [
+          "CIQ ZZ Spike Log"
+        ],
+        "depends_on": [],
+        "rationale": "Independent. It is the target of the later, separately created integration tests (brd L53, L61)."
+      },
+      {
+        "seq": 8,
+        "layer": "permissions",
+        "artifacts": [
+          "Role A and Role B Editable on all four flows"
+        ],
+        "depends_on": [
+          "all flows",
+          "roles"
+        ],
+        "rationale": "brd L57. Editable on a Process grants InitiateItems (LESSONS 18). Finish with a re-grant pass for 423 locks."
+      },
+      {
+        "seq": 9,
+        "layer": "G1: Open_Count closure on CIQ ZZ Spike Case (after Register exists)",
+        "artifacts": [
+          "Open_Count",
+          "Hold_Flag",
+          "Gate",
+          "condition Hold_Flag = \"Yes\" on Spike hold check",
+          "Gate Mandatory at Spike gated step"
+        ],
+        "depends_on": [
+          "CIQ ZZ Spike Register published",
+          "CIQ ZZ Spike Case"
+        ],
+        "rationale": "Open_Count sums Register.Open_Lines matched on Register.Register_Case, so it works only once Register's body is published. Hold_Flag and Gate read Open_Count, and the condition and Mandatory read those. See deferred_grafts.G1 for how the engine handles this and the read-back procedure."
+      },
+      {
+        "seq": 10,
+        "layer": "pages and nav",
+        "artifacts": [],
+        "rationale": "None (brd L60). Generate with --no-pages: without it a build auto-adds role home pages, flow pages and nav even when pages = [] (runs/ciq-digital D37; engine verb list: build [--no-pages])."
+      }
+    ],
+    "flow_build_sequence": [
+      {
+        "seq": 1,
+        "name": "CIQ ZZ Spike Case",
+        "id": "CIQ_ZZ_Spike_Case_A00",
+        "type": "Process"
+      },
+      {
+        "seq": 2,
+        "name": "CIQ ZZ Spike Point",
+        "id": "CIQ_ZZ_Spike_Point_A00",
+        "type": "Process"
+      },
+      {
+        "seq": 3,
+        "name": "CIQ ZZ Spike Register",
+        "id": "CIQ_ZZ_Spike_Register_A00",
+        "type": "Form"
+      },
+      {
+        "seq": 4,
+        "name": "CIQ ZZ Spike Log",
+        "id": "CIQ_ZZ_Spike_Log_A00",
+        "type": "Form"
+      }
+    ],
+    "deferred_grafts": [
+      {
+        "id": "G1",
+        "target_flow": "CIQ_ZZ_Spike_Case_A00",
+        "after": "generate has finished and CIQ ZZ Spike Register is published",
+        "items": [
+          {
+            "item": "Open_Count",
+            "owner": "kf-data-architect",
+            "kind": "cross-flow SUM aggregate of CIQ ZZ Spike Register.Open_Lines where Register_Case = this case",
+            "evidence": "brd L21; BR-08"
+          },
+          {
+            "item": "Hold_Flag",
+            "owner": "kf-data-architect",
+            "kind": "formula, Text: IF(ISBLANK(Open_Count),\"Yes\",IF(Open_Count=0,\"No\",\"Yes\"))",
+            "evidence": "brd L19-L20; BR-07"
+          },
+          {
+            "item": "Gate",
+            "owner": "kf-data-architect",
+            "kind": "formula: IF(IF(ISBLANK(Open_Count),0,Open_Count)=0,\"OK\",\"\")",
+            "evidence": "brd L22; BR-09"
+          },
+          {
+            "item": "condition Hold_Flag = \"Yes\" on \"Spike hold check\"",
+            "owner": "kf-workflow-designer",
+            "evidence": "brd L19; BR-06"
+          },
+          {
+            "item": "Gate Mandatory at \"Spike gated step\"",
+            "owner": "kf-workflow-designer",
+            "evidence": "brd L22; BR-09"
+          }
+        ],
+        "ir_rule": "The owners author all five in their slices exactly as the BRD states. The IR is the final state, and the K-OFF dry run compiles it. Nothing is held out of the IR.",
+        "engine_handling": [
+          "PASS 1 creates every flow shell (and list) before any body, so all four flow ids exist first. A Reference or aggregate that points at an existing shell is not treated as dangling (master.md §4.11; workspace engine tools/kissflow-app-agents-1.6.0/engine/client.mjs L286-L287 and L492-L516).",
+          "The compiler emits Open_Count inline in the Case body: LHSModel is Register's id, the Criteria is Register_Case EQUAL_TO _id, and the AggregateField is Open_Lines (1.6.0 builders.mjs, aggregate.match). App Builder 1.0.0 internals were not inspected; the K-OFF dry run confirms its compile.",
+          "PASS 2 writes and publishes each flow body with no dependency sort and no deferral of back-pointing aggregates (1.6.0 runs it 4-wide in parallel). The materialized forms[] order is not the build order either: it is alphabetical, and runs/ciq-digital passed verify with CIQ Case listed before the flows it references.",
+          "So the engine does NOT itself place Open_Count after Register. Whether Kissflow accepts Case's publish before Register's fields are published is unproven (K-OFF compile; K-20/K-PC runtime). A refused body publish is reported, that flow stays an unpublished draft, and the apply continues."
+        ],
+        "procedure": [
+          "Read back CIQ ZZ Spike Case (draft and published) and CIQ ZZ Spike Register.",
+          "(a) Case is published with Open_Count wired to Register (Open_Lines, Register_Case) and all four other G1 items present: G1 is done, with no graft.",
+          "(b) Case's publish was refused and it is still an unpublished draft: publish Case again now that Register exists. A draft is not frozen.",
+          "(c) Case is published but a G1 item is missing or unwired: graft only the missing items onto the published Case. Hold_Flag and Gate use kf patch add-field --formula (it adds the per-step permissions). The condition uses kf patch condition, and the Mandatory uses kf patch step-permission. Open_Count needs a bespoke draft graft (kf patch has no aggregate verb) plus one step Permission per Case step. Then read back."
+        ],
+        "risk": "Path (c) edits a published Process. LESSONS 1b says that is refused (PUT draft 403); master.md §196 says well-formed grafts work and to re-verify on the tenant. If the graft is refused, the harness Case lacks the gate and K-20/K-PC cannot run on it: report that to Thomas. Do not rename flows or add flows or fields.",
+        "transfer": "The real app uses the same pattern: Form header counts with a Reference to CIQ Case feed blank-safe holds and gates (app-plan-v4 §7, K-20/K-20F). So the path G1 takes, (a), (b) or (c), tells the real generate whether one pass is enough."
+      }
+    ],
+    "pages": [],
+    "hard_rules": [
+      {
+        "id": "HR01",
+        "owner": "all",
+        "rule": "The harness is exactly: 4 flows (Processes CIQ ZZ Spike Case and CIQ ZZ Spike Point; Forms CIQ ZZ Spike Register and CIQ ZZ Spike Log), 3 embedded child tables (Spike Case Notes, Spike Rounds, Spike Lines), 1 Reference (Register.Register_Case to Case), 2 lists, 2 custom roles plus Admin and User reused. Add nothing. Child tables are embedded models, not account-level flows, so their BRD names need no CIQ ZZ Spike prefix.",
+        "evidence": "brd L4-L6, L10-L61; BR-01, BR-02"
+      },
+      {
+        "id": "HR02",
+        "owner": "kf-workflow-designer",
+        "rule": "Step names, order, owners and conditions exactly as in id_reservations.step_prefix_by_flow, with the en-dash U+2013. First and last steps are unconditioned. The block is one Parallel step with six single-step branches, each conditioned on its own Flag_X = \"Yes\", auto-joining before \"Spike hold check\". Each branch edits only its own lane fields, and Lane_X_Confirm is Mandatory there. Spike Case Notes is editable only at \"Spike prepare\" and Spike Rounds only at \"Spike review\". Response_Text is editable at \"Spike waiting\".",
+        "evidence": "brd L12-L34, L40, L43; BR-03-BR-06, BR-10-BR-14"
+      },
+      {
+        "id": "HR03",
+        "owner": "kf-data-architect",
+        "rule": "Field names verbatim from the BRD; never author Name. Register_Key required; Register_Case is a non-required Reference to CIQ ZZ Spike Case (OQ-09). Open_Lines is an embedded-child SUM of Spike Lines.Line_Open. Open_Count, Hold_Flag and Gate are authored exactly as the BRD states and tagged G1. The two lists use the reserved ids without _A00.",
+        "evidence": "brd L19-L22, L46-L49; BR-07-BR-09, BR-15, BR-16; OQ-07-OQ-10"
+      },
+      {
+        "id": "HR04",
+        "owner": "kf-security-designer",
+        "rule": "Role A and Role B are Editable on all four flows; no grants to Admin or User; no members. Name the trade-off: Editable on a Process grants InitiateItems and a StartEvent carries no actor restriction, so Role B can also create Cases and Points although the BRD names Role A at Start (LESSONS 18).",
+        "evidence": "brd L13, L31, L56-L57; BR-18, BR-19"
+      },
+      {
+        "id": "HR05",
+        "owner": "kf-experience-designer",
+        "rule": "pages = [], no nav, no cards, no custom UI. The generate must pass --no-pages.",
+        "evidence": "brd L60; BR-20"
+      },
+      {
+        "id": "HR06",
+        "owner": "kf-integration-analyst",
+        "rule": "automations = []. The test integrations are created separately, outside the IR. CIQ ZZ Spike Log is a plain target Form; Log_Item_Id stays Text (TK01).",
+        "evidence": "brd L53, L61; BR-17, BR-21"
+      }
+    ],
+    "coverage": {
+      "flows": {
+        "total": 4,
+        "forms": 2,
+        "processes": 2,
+        "cases": 0,
+        "datasets": 0,
+        "child_tables": 3
+      },
+      "lists": 2,
+      "roles": {
+        "total": 4,
+        "custom": 2,
+        "default": 2
+      },
+      "er_edges": {
+        "native_references": 1,
+        "cross_flow_aggregates": 1,
+        "child_tables": 3,
+        "text_key_links": 1,
+        "external_links": 0
+      },
+      "journeys": {
+        "total": 4,
+        "mapped": 4,
+        "with_flow_path": 4
+      },
+      "entities_mapped": {
+        "e_spike_case": "CIQ_ZZ_Spike_Case_A00",
+        "e_spike_point": "CIQ_ZZ_Spike_Point_A00",
+        "e_spike_register": "CIQ_ZZ_Spike_Register_A00",
+        "e_spike_log": "CIQ_ZZ_Spike_Log_A00"
+      },
+      "flows_without_journey_path": [],
+      "custom_roles_without_journey": [],
+      "masters_unreferenced": [],
+      "persona_role_map": [
+        {
+          "persona": "p_tester_a",
+          "role": "CIQ ZZ Spike Role A"
+        },
+        {
+          "persona": "p_tester_b",
+          "role": "CIQ ZZ Spike Role B"
+        }
+      ]
+    }
+  },
+  "automations": {},
+  "coherence": {},
+  "data_model": {
+    "flows": {
+      "CIQ_ZZ_Spike_Case_A00": {
+        "name": "CIQ ZZ Spike Case",
+        "flowType": "Process",
+        "fields": [
+          {
+            "id": "Flag_A",
+            "name": "Flag_A",
+            "type": "Select",
+            "referredList": "CIQ_ZZ_Spike_Yes_No"
+          },
+          {
+            "id": "Flag_B",
+            "name": "Flag_B",
+            "type": "Select",
+            "referredList": "CIQ_ZZ_Spike_Yes_No"
+          },
+          {
+            "id": "Flag_C",
+            "name": "Flag_C",
+            "type": "Select",
+            "referredList": "CIQ_ZZ_Spike_Yes_No"
+          },
+          {
+            "id": "Flag_D",
+            "name": "Flag_D",
+            "type": "Select",
+            "referredList": "CIQ_ZZ_Spike_Yes_No"
+          },
+          {
+            "id": "Flag_E",
+            "name": "Flag_E",
+            "type": "Select",
+            "referredList": "CIQ_ZZ_Spike_Yes_No"
+          },
+          {
+            "id": "Flag_F",
+            "name": "Flag_F",
+            "type": "Select",
+            "referredList": "CIQ_ZZ_Spike_Yes_No"
+          },
+          {
+            "id": "Lane_A_Confirm",
+            "name": "Lane_A_Confirm",
+            "type": "Select",
+            "referredList": "CIQ_ZZ_Spike_Yes_No"
+          },
+          {
+            "id": "Lane_A_By",
+            "name": "Lane_A_By",
+            "type": "Text"
+          },
+          {
+            "id": "Lane_A_At",
+            "name": "Lane_A_At",
+            "type": "DateTime"
+          },
+          {
+            "id": "Lane_A_Note",
+            "name": "Lane_A_Note",
+            "type": "Text"
+          },
+          {
+            "id": "Lane_B_Confirm",
+            "name": "Lane_B_Confirm",
+            "type": "Select",
+            "referredList": "CIQ_ZZ_Spike_Yes_No"
+          },
+          {
+            "id": "Lane_B_By",
+            "name": "Lane_B_By",
+            "type": "Text"
+          },
+          {
+            "id": "Lane_B_At",
+            "name": "Lane_B_At",
+            "type": "DateTime"
+          },
+          {
+            "id": "Lane_B_Note",
+            "name": "Lane_B_Note",
+            "type": "Text"
+          },
+          {
+            "id": "Lane_C_Confirm",
+            "name": "Lane_C_Confirm",
+            "type": "Select",
+            "referredList": "CIQ_ZZ_Spike_Yes_No"
+          },
+          {
+            "id": "Lane_C_By",
+            "name": "Lane_C_By",
+            "type": "Text"
+          },
+          {
+            "id": "Lane_C_At",
+            "name": "Lane_C_At",
+            "type": "DateTime"
+          },
+          {
+            "id": "Lane_C_Note",
+            "name": "Lane_C_Note",
+            "type": "Text"
+          },
+          {
+            "id": "Lane_D_Confirm",
+            "name": "Lane_D_Confirm",
+            "type": "Select",
+            "referredList": "CIQ_ZZ_Spike_Yes_No"
+          },
+          {
+            "id": "Lane_D_By",
+            "name": "Lane_D_By",
+            "type": "Text"
+          },
+          {
+            "id": "Lane_D_At",
+            "name": "Lane_D_At",
+            "type": "DateTime"
+          },
+          {
+            "id": "Lane_D_Note",
+            "name": "Lane_D_Note",
+            "type": "Text"
+          },
+          {
+            "id": "Lane_E_Confirm",
+            "name": "Lane_E_Confirm",
+            "type": "Select",
+            "referredList": "CIQ_ZZ_Spike_Yes_No"
+          },
+          {
+            "id": "Lane_E_By",
+            "name": "Lane_E_By",
+            "type": "Text"
+          },
+          {
+            "id": "Lane_E_At",
+            "name": "Lane_E_At",
+            "type": "DateTime"
+          },
+          {
+            "id": "Lane_E_Note",
+            "name": "Lane_E_Note",
+            "type": "Text"
+          },
+          {
+            "id": "Lane_F_Confirm",
+            "name": "Lane_F_Confirm",
+            "type": "Select",
+            "referredList": "CIQ_ZZ_Spike_Yes_No"
+          },
+          {
+            "id": "Lane_F_By",
+            "name": "Lane_F_By",
+            "type": "Text"
+          },
+          {
+            "id": "Lane_F_At",
+            "name": "Lane_F_At",
+            "type": "DateTime"
+          },
+          {
+            "id": "Lane_F_Note",
+            "name": "Lane_F_Note",
+            "type": "Text"
+          },
+          {
+            "id": "Spike_Decision",
+            "name": "Spike_Decision",
+            "type": "Select",
+            "referredList": "CIQ_ZZ_Spike_Decision"
+          },
+          {
+            "id": "Open_Count",
+            "name": "Open_Count",
+            "type": "Number",
+            "aggregate": {
+              "fn": "SUM",
+              "over": "CIQ_ZZ_Spike_Register_A00",
+              "field": "Open_Lines",
+              "match": {
+                "field": "Register_Case",
+                "equals": "_id"
+              },
+              "flowType": "Form"
+            }
+          },
+          {
+            "id": "Hold_Flag",
+            "name": "Hold_Flag",
+            "type": "Text",
+            "formula": "IF(ISBLANK(Open_Count),\"Yes\",IF(Open_Count=0,\"No\",\"Yes\"))"
+          },
+          {
+            "id": "Gate",
+            "name": "Gate",
+            "type": "Text",
+            "formula": "IF(IF(ISBLANK(Open_Count),0,Open_Count)=0,\"OK\",\"\")"
+          }
+        ],
+        "computed": [],
+        "child_tables": [
+          {
+            "id": "Spike_Case_Notes",
+            "name": "Spike Case Notes",
+            "fields": [
+              {
+                "id": "Note_Text",
+                "name": "Note_Text",
+                "type": "Text"
+              },
+              {
+                "id": "Note_By",
+                "name": "Note_By",
+                "type": "Text"
+              }
+            ]
+          }
+        ]
+      },
+      "CIQ_ZZ_Spike_Point_A00": {
+        "name": "CIQ ZZ Spike Point",
+        "flowType": "Process",
+        "fields": [
+          {
+            "id": "Round_No",
+            "name": "Round_No",
+            "type": "Number"
+          },
+          {
+            "id": "Question_Text",
+            "name": "Question_Text",
+            "type": "Textarea"
+          },
+          {
+            "id": "Awaiting_Response",
+            "name": "Awaiting_Response",
+            "type": "Text"
+          },
+          {
+            "id": "Response_Text",
+            "name": "Response_Text",
+            "type": "Textarea"
+          },
+          {
+            "id": "Due_Date",
+            "name": "Due_Date",
+            "type": "Date"
+          },
+          {
+            "id": "To_Supplier",
+            "name": "To_Supplier",
+            "type": "Select",
+            "referredList": "CIQ_ZZ_Spike_Yes_No"
+          }
+        ],
+        "computed": [],
+        "child_tables": [
+          {
+            "id": "Spike_Rounds",
+            "name": "Spike Rounds",
+            "fields": [
+              {
+                "id": "Spike_Rounds_Round_No",
+                "name": "Round_No",
+                "type": "Number"
+              },
+              {
+                "id": "Question",
+                "name": "Question",
+                "type": "Text"
+              },
+              {
+                "id": "Response",
+                "name": "Response",
+                "type": "Text"
+              },
+              {
+                "id": "Outcome",
+                "name": "Outcome",
+                "type": "Text"
+              }
+            ]
+          }
+        ]
+      },
+      "CIQ_ZZ_Spike_Register_A00": {
+        "name": "CIQ ZZ Spike Register",
+        "flowType": "Form",
+        "fields": [
+          {
+            "id": "Register_Key",
+            "name": "Register_Key",
+            "type": "Text",
+            "required": true
+          },
+          {
+            "id": "Register_Case",
+            "name": "Register_Case",
+            "type": "Reference",
+            "ref": "CIQ_ZZ_Spike_Case_A00"
+          },
+          {
+            "id": "Open_Lines",
+            "name": "Open_Lines",
+            "type": "Number",
+            "aggregate": {
+              "fn": "SUM",
+              "over": "Spike Lines",
+              "field": "Line_Open"
+            }
+          }
+        ],
+        "computed": [],
+        "child_tables": [
+          {
+            "id": "Spike_Lines",
+            "name": "Spike Lines",
+            "fields": [
+              {
+                "id": "Line_Text",
+                "name": "Line_Text",
+                "type": "Text"
+              },
+              {
+                "id": "Line_Open",
+                "name": "Line_Open",
+                "type": "Number"
+              }
+            ]
+          }
+        ]
+      },
+      "CIQ_ZZ_Spike_Log_A00": {
+        "name": "CIQ ZZ Spike Log",
+        "flowType": "Form",
+        "fields": [
+          {
+            "id": "Log_Key",
+            "name": "Log_Key",
+            "type": "Text"
+          },
+          {
+            "id": "Log_Source",
+            "name": "Log_Source",
+            "type": "Text"
+          },
+          {
+            "id": "Log_Event",
+            "name": "Log_Event",
+            "type": "Text"
+          },
+          {
+            "id": "Log_Item_Id",
+            "name": "Log_Item_Id",
+            "type": "Text"
+          },
+          {
+            "id": "Log_At",
+            "name": "Log_At",
+            "type": "DateTime"
+          },
+          {
+            "id": "Log_Payload",
+            "name": "Log_Payload",
+            "type": "Textarea"
+          }
+        ],
+        "computed": [],
+        "child_tables": []
+      },
+      "CIQ_ZZ_Spike_Yes_No": {
+        "name": "CIQ ZZ Spike Yes No",
+        "items": [
+          "Yes",
+          "No"
+        ]
+      },
+      "CIQ_ZZ_Spike_Decision": {
+        "name": "CIQ ZZ Spike Decision",
+        "items": [
+          "Approved",
+          "Rejected"
+        ]
+      }
+    }
+  },
+  "domain": {
+    "summary": "Throwaway test harness \"zz-spike\" for CIQ Digital (CIQ_Digital_A00), approved by Thomas on 2026-10-07. Four flows prove Kissflow behaviours before the real app is generated: Process \"CIQ ZZ Spike Case\" (Start, prepare, a 6-branch PARALLEL block with flag conditions and branch-scoped lane fields, a formula-conditioned hold check, a step with a Mandatory formula gate, and a not-equal condition step); Process \"CIQ ZZ Spike Point\" (Start, a Select-conditioned waiting step, a review step with a step-scoped child table); Form \"CIQ ZZ Spike Register\" (child table with a header SUM, referencing a case, feeding the case's cross-flow SUM Open_Count); Form \"CIQ ZZ Spike Log\" (target for separately created integration tests). Two roles (A, B), both Editable on all four flows, no members. Two lists. No pages, nav, UI or automations in the IR. Extracted exactly as specified; nothing added.",
+    "source": {
+      "brd": "runs/current/brd.md",
+      "run": "zz-spike",
+      "app": "CIQ_Digital_A00",
+      "extracted_on": "2026-10-07",
+      "approval": "Thomas approved the spike flows on 2026-10-07 (brd.md L3)",
+      "precedence": "brd.md is the only requirement source; SPIKES.md is cited only for the purpose of each flow, never for content"
+    },
+    "scope": {
+      "in": "4 flows (2 Processes, 2 Forms), 2 lists, 2 custom roles, grants Role A + Role B Editable on all four flows",
+      "out": [
+        "Pages, nav, any UI (brd.md L60)",
+        "Automations/integrations in the IR; the test integrations are created separately (brd.md L61)",
+        "Role membership; Thomas adds the people (brd.md L56)"
+      ],
+      "evidence": "brd.md L3-6; brd.md L55-61"
+    },
+    "personas": [
+      {
+        "id": "p_tester_a",
+        "name": "Spike tester A",
+        "kind": "internal",
+        "source_role": "CIQ ZZ Spike Role A",
+        "description": "Test user holding CIQ ZZ Spike Role A. Creates and prepares spike cases, owns branches A, C and E, the hold check and the gated step; raises spike points and owns the waiting step.",
+        "goals": [
+          "Drive a spike case and a spike point through every step so the harness proves the Kissflow behaviours",
+          "Maintain register rows and lines that feed the case aggregate",
+          "Inspect log rows written by the integration tests"
+        ],
+        "pain_points": [],
+        "evidence": "brd.md L5; brd.md L13-14; brd.md L16; brd.md L19; brd.md L22; brd.md L31-32; brd.md L56-57"
+      },
+      {
+        "id": "p_tester_b",
+        "name": "Spike tester B",
+        "kind": "internal",
+        "source_role": "CIQ ZZ Spike Role B",
+        "description": "Test user holding CIQ ZZ Spike Role B. Owns parallel branches B, D and F, the not-equal step on a spike case, and the review step on a spike point.",
+        "goals": [
+          "Act on the Role B steps of a spike case and a spike point",
+          "Edit any of the four flows (Editable grant)"
+        ],
+        "pain_points": [],
+        "evidence": "brd.md L16; brd.md L23; brd.md L33; brd.md L56-57"
+      }
+    ],
+    "journeys": [
+      {
+        "id": "j01_run_spike_case",
+        "persona": "p_tester_a",
+        "other_personas": [
+          "p_tester_b"
+        ],
+        "name": "Run a spike case end to end",
+        "trigger": "A tester starts a test of the parallel, formula-condition and gate behaviours",
+        "steps": [
+          "Role A creates the case at \"Create spike case\"",
+          "Role A sets Flag_A–Flag_F and Spike_Decision (default placement, OQ-02/OQ-03) and the \"Spike Case Notes\" rows (stated) at \"Spike prepare\"",
+          "The PARALLEL block runs the branches whose Flag_X = \"Yes\"; each branch owner fills only its own lane fields (Lane_X_Confirm is Mandatory); branches A, C, E belong to Role A and B, D, F to Role B",
+          "After the join, \"Spike hold check\" (Role A) runs only when Hold_Flag = \"Yes\" (Open_Count blank or not 0)",
+          "\"Spike gated step\" (Role A) can only be submitted when Gate = \"OK\", i.e. Open_Count is blank or 0",
+          "\"Spike not-equal step\" (Role B) runs only when Spike_Decision != \"Rejected\"",
+          "End"
+        ],
+        "outcome": "The case reaches End along the path the flags, Hold_Flag, Gate and Spike_Decision dictate",
+        "frequency": "Ad hoc, during spike testing",
+        "success_criteria": [
+          "Unflagged branches are skipped and the join still completes",
+          "A branch cannot edit another lane",
+          "A branch cannot submit without its Lane_X_Confirm",
+          "Hold check runs exactly when Hold_Flag = \"Yes\"",
+          "Gated step refuses submit while Gate is blank",
+          "Not-equal step is skipped when Spike_Decision = \"Rejected\""
+        ],
+        "serves_entities": [
+          "e_spike_case",
+          "e_spike_register"
+        ],
+        "evidence": "brd.md L10-26; kissflow-build/ciq-digital/SPIKES.md L19-21 (purpose only)"
+      },
+      {
+        "id": "j02_run_spike_point",
+        "persona": "p_tester_a",
+        "other_personas": [
+          "p_tester_b"
+        ],
+        "name": "Run a spike point end to end",
+        "trigger": "A tester raises a spike point",
+        "steps": [
+          "Role A raises the point at \"Raise spike point\" and sets To_Supplier and the scalar fields (default placement, OQ-05)",
+          "\"Spike waiting\" (Role A) runs only when To_Supplier = \"Yes\"; Response_Text is Editable there",
+          "\"Spike review\" (Role B); the \"Spike Rounds\" child table is editable only here",
+          "End"
+        ],
+        "outcome": "The point reaches End, with or without the waiting step",
+        "frequency": "Ad hoc, during spike testing",
+        "success_criteria": [
+          "Waiting step is skipped when To_Supplier is not \"Yes\"",
+          "Response_Text editable at \"Spike waiting\"",
+          "Spike Rounds editable only at \"Spike review\""
+        ],
+        "serves_entities": [
+          "e_spike_point"
+        ],
+        "evidence": "brd.md L28-43"
+      },
+      {
+        "id": "j03_maintain_spike_register",
+        "persona": "p_tester_a",
+        "other_personas": [
+          "p_tester_b"
+        ],
+        "name": "Maintain a spike register for a case",
+        "trigger": "A tester needs open lines against a spike case (to drive Open_Count, Hold_Flag and Gate)",
+        "steps": [
+          "Create a register row with Register_Key and Register_Case pointing at a spike case",
+          "Add or edit \"Spike Lines\" rows with Line_Open values",
+          "Open_Lines recalculates as the SUM of Line_Open, and the case Open_Count as the SUM of Open_Lines over its registers"
+        ],
+        "outcome": "The case aggregate reflects the register lines",
+        "frequency": "Ad hoc, during spike testing",
+        "success_criteria": [
+          "Register_Key is required",
+          "Open_Lines = SUM of Spike Lines.Line_Open",
+          "Case Open_Count = SUM of Open_Lines of registers referencing the case"
+        ],
+        "serves_entities": [
+          "e_spike_register",
+          "e_spike_case"
+        ],
+        "evidence": "brd.md L21; brd.md L45-49; brd.md L57"
+      },
+      {
+        "id": "j04_inspect_spike_log",
+        "persona": "p_tester_a",
+        "other_personas": [
+          "p_tester_b"
+        ],
+        "name": "Inspect integration test log rows",
+        "trigger": "A separately created test integration writes to the log",
+        "steps": [
+          "The test integration (outside this IR) creates or updates a \"CIQ ZZ Spike Log\" row",
+          "A tester opens the log rows to check the result"
+        ],
+        "outcome": "Integration test results are visible as log rows",
+        "frequency": "Ad hoc, during spike testing",
+        "success_criteria": [
+          "Log rows are readable and editable by Role A and Role B"
+        ],
+        "serves_entities": [
+          "e_spike_log"
+        ],
+        "evidence": "brd.md L51-53; brd.md L57; brd.md L61"
+      }
+    ],
+    "entities": [
+      {
+        "id": "e_spike_case",
+        "name": "CIQ ZZ Spike Case",
+        "flow_type": "Process",
+        "description": "Test case that exercises a 6-branch parallel block, flag conditions, branch-scoped Editable/Mandatory lane fields, a formula condition, a Mandatory formula gate and a not-equal condition.",
+        "key_attributes": [
+          "Flag_A (Select, list \"CIQ ZZ Spike Yes No\"; condition of branch \"Spike review – A\")",
+          "Flag_B (Select, list \"CIQ ZZ Spike Yes No\"; condition of branch \"Spike review – B\")",
+          "Flag_C (Select, list \"CIQ ZZ Spike Yes No\"; condition of branch \"Spike review – C\")",
+          "Flag_D (Select, list \"CIQ ZZ Spike Yes No\"; condition of branch \"Spike review – D\")",
+          "Flag_E (Select, list \"CIQ ZZ Spike Yes No\"; condition of branch \"Spike review – E\")",
+          "Flag_F (Select, list \"CIQ ZZ Spike Yes No\"; condition of branch \"Spike review – F\")",
+          "Lane_A_Confirm (Mandatory at \"Spike review – A\")",
+          "Lane_A_By",
+          "Lane_A_At",
+          "Lane_A_Note",
+          "Lane_B_Confirm (Mandatory at \"Spike review – B\")",
+          "Lane_B_By",
+          "Lane_B_At",
+          "Lane_B_Note",
+          "Lane_C_Confirm (Mandatory at \"Spike review – C\")",
+          "Lane_C_By",
+          "Lane_C_At",
+          "Lane_C_Note",
+          "Lane_D_Confirm (Mandatory at \"Spike review – D\")",
+          "Lane_D_By",
+          "Lane_D_At",
+          "Lane_D_Note",
+          "Lane_E_Confirm (Mandatory at \"Spike review – E\")",
+          "Lane_E_By",
+          "Lane_E_At",
+          "Lane_E_Note",
+          "Lane_F_Confirm (Mandatory at \"Spike review – F\")",
+          "Lane_F_By",
+          "Lane_F_At",
+          "Lane_F_Note",
+          "Open_Count (cross-flow SUM aggregate of \"CIQ ZZ Spike Register\".Open_Lines over the registers whose Register_Case = this case)",
+          "Hold_Flag (formula, Text) = IF(ISBLANK(Open_Count),\"Yes\",IF(Open_Count=0,\"No\",\"Yes\"))",
+          "Gate (formula) = IF(IF(ISBLANK(Open_Count),0,Open_Count)=0,\"OK\",\"\") ; Mandatory at \"Spike gated step\"",
+          "Spike_Decision (Select, list \"CIQ ZZ Spike Decision\": Approved, Rejected)"
+        ],
+        "child_tables": [
+          {
+            "name": "Spike Case Notes",
+            "columns": [
+              "Note_Text",
+              "Note_By"
+            ],
+            "editable_at": [
+              "Spike prepare"
+            ],
+            "evidence": "brd.md L26"
+          }
+        ],
+        "lifecycle": "Start \"Create spike case\" (Role A) → \"Spike prepare\" (Role A) → PARALLEL [\"Spike review – A\" (A) | \"– B\" (B) | \"– C\" (A) | \"– D\" (B) | \"– E\" (A) | \"– F\" (B)], each if Flag_X = \"Yes\" → join → \"Spike hold check\" (Role A) if Hold_Flag = \"Yes\" → \"Spike gated step\" (Role A; Gate Mandatory) → \"Spike not-equal step\" (Role B) if Spike_Decision != \"Rejected\" → End",
+        "relationships": [
+          "A Spike Case has many Spike Registers (via Register.Register_Case)",
+          "A Spike Case has many Spike Case Notes rows (child table)"
+        ],
+        "serves_journeys": [
+          "j01_run_spike_case",
+          "j03_maintain_spike_register"
+        ],
+        "evidence": "brd.md L10-26"
+      },
+      {
+        "id": "e_spike_point",
+        "name": "CIQ ZZ Spike Point",
+        "flow_type": "Process",
+        "description": "Test point that exercises a Select-conditioned step, a step-scoped Editable field and a step-scoped child table.",
+        "key_attributes": [
+          "Round_No (Number)",
+          "Question_Text (Textarea)",
+          "Awaiting_Response (Text)",
+          "Response_Text (Textarea; Editable at \"Spike waiting\")",
+          "Due_Date (Date)",
+          "To_Supplier (Select; condition of \"Spike waiting\")"
+        ],
+        "child_tables": [
+          {
+            "name": "Spike Rounds",
+            "columns": [
+              "Round_No",
+              "Question",
+              "Response",
+              "Outcome"
+            ],
+            "editable_at": [
+              "Spike review"
+            ],
+            "evidence": "brd.md L43"
+          }
+        ],
+        "lifecycle": "Start \"Raise spike point\" (Role A) → \"Spike waiting\" (Role A) if To_Supplier = \"Yes\" → \"Spike review\" (Role B) → End",
+        "relationships": [
+          "A Spike Point has many Spike Rounds rows (child table)"
+        ],
+        "serves_journeys": [
+          "j02_run_spike_point"
+        ],
+        "evidence": "brd.md L28-43"
+      },
+      {
+        "id": "e_spike_register",
+        "name": "CIQ ZZ Spike Register",
+        "flow_type": "Form",
+        "description": "Register of open lines against a spike case; feeds the case aggregate Open_Count.",
+        "key_attributes": [
+          "Register_Key (Text, required)",
+          "Register_Case (Reference → CIQ ZZ Spike Case)",
+          "Open_Lines (header aggregate = SUM of Spike Lines.Line_Open)"
+        ],
+        "child_tables": [
+          {
+            "name": "Spike Lines",
+            "columns": [
+              "Line_Text",
+              "Line_Open (Number)"
+            ],
+            "evidence": "brd.md L48"
+          }
+        ],
+        "relationships": [
+          "A Spike Register belongs to one Spike Case (Register_Case)",
+          "A Spike Register has many Spike Lines rows (child table)"
+        ],
+        "serves_journeys": [
+          "j03_maintain_spike_register",
+          "j01_run_spike_case"
+        ],
+        "evidence": "brd.md L45-49"
+      },
+      {
+        "id": "e_spike_log",
+        "name": "CIQ ZZ Spike Log",
+        "flow_type": "Form",
+        "description": "Target form for the separately created integration tests.",
+        "key_attributes": [
+          "Log_Key",
+          "Log_Source",
+          "Log_Event",
+          "Log_Item_Id",
+          "Log_At (DateTime)",
+          "Log_Payload (Textarea)"
+        ],
+        "child_tables": [],
+        "relationships": [
+          "No modelled relationship; Log_Item_Id holds the id of the item an integration acted on (as text)"
+        ],
+        "serves_journeys": [
+          "j04_inspect_spike_log"
+        ],
+        "evidence": "brd.md L51-53"
+      }
+    ],
+    "roles": [
+      {
+        "name": "CIQ ZZ Spike Role A",
+        "persona": "p_tester_a",
+        "members": "none; Thomas adds the people",
+        "grants": {
+          "CIQ ZZ Spike Case": "Editable",
+          "CIQ ZZ Spike Point": "Editable",
+          "CIQ ZZ Spike Register": "Editable",
+          "CIQ ZZ Spike Log": "Editable"
+        },
+        "evidence": "brd.md L56-57"
+      },
+      {
+        "name": "CIQ ZZ Spike Role B",
+        "persona": "p_tester_b",
+        "members": "none; Thomas adds the people",
+        "grants": {
+          "CIQ ZZ Spike Case": "Editable",
+          "CIQ ZZ Spike Point": "Editable",
+          "CIQ ZZ Spike Register": "Editable",
+          "CIQ ZZ Spike Log": "Editable"
+        },
+        "evidence": "brd.md L56-57"
+      }
+    ],
+    "value_sets": [
+      {
+        "name": "CIQ ZZ Spike Yes No",
+        "values": [
+          "Yes",
+          "No"
+        ],
+        "used_by": [
+          "CIQ ZZ Spike Case Flag_A–Flag_F"
+        ],
+        "evidence": "brd.md L17"
+      },
+      {
+        "name": "CIQ ZZ Spike Decision",
+        "values": [
+          "Approved",
+          "Rejected"
+        ],
+        "used_by": [
+          "CIQ ZZ Spike Case Spike_Decision"
+        ],
+        "evidence": "brd.md L23"
+      }
+    ],
+    "process_contract": {
+      "note": "Exact step names, owners, conditions and per-step field rules as stated. Step names use the en-dash \"–\" (U+2013).",
+      "processes": [
+        {
+          "flow": "CIQ ZZ Spike Case",
+          "steps": [
+            {
+              "order": 0,
+              "name": "Create spike case",
+              "kind": "Start",
+              "owner": "CIQ ZZ Spike Role A",
+              "condition": null,
+              "evidence": "brd.md L13",
+              "defaulted_editable_fields": {
+                "fields": [],
+                "basis": "default, not stated (OQ-06)"
+              }
+            },
+            {
+              "order": 1,
+              "name": "Spike prepare",
+              "kind": "Step",
+              "owner": "CIQ ZZ Spike Role A",
+              "condition": null,
+              "evidence": "brd.md L14",
+              "editable_child_tables": [
+                "Spike Case Notes"
+              ],
+              "defaulted_editable_fields": {
+                "fields": [
+                  "Flag_A",
+                  "Flag_B",
+                  "Flag_C",
+                  "Flag_D",
+                  "Flag_E",
+                  "Flag_F",
+                  "Spike_Decision"
+                ],
+                "basis": "default, not stated (OQ-02, OQ-03)"
+              }
+            },
+            {
+              "order": 2,
+              "name": null,
+              "kind": "Parallel",
+              "owner": null,
+              "condition": null,
+              "note": "Fork into 6 branches, then join. A branch whose flag is not \"Yes\" is skipped.",
+              "branches": [
+                {
+                  "name": "Spike review – A",
+                  "owner": "CIQ ZZ Spike Role A",
+                  "condition": "Flag_A = \"Yes\"",
+                  "editable_fields": [
+                    "Lane_A_Confirm",
+                    "Lane_A_By",
+                    "Lane_A_At",
+                    "Lane_A_Note"
+                  ],
+                  "mandatory_fields": [
+                    "Lane_A_Confirm"
+                  ],
+                  "ownership_assumption": "alternation starts with Role A (see OQ-01)"
+                },
+                {
+                  "name": "Spike review – B",
+                  "owner": "CIQ ZZ Spike Role B",
+                  "condition": "Flag_B = \"Yes\"",
+                  "editable_fields": [
+                    "Lane_B_Confirm",
+                    "Lane_B_By",
+                    "Lane_B_At",
+                    "Lane_B_Note"
+                  ],
+                  "mandatory_fields": [
+                    "Lane_B_Confirm"
+                  ]
+                },
+                {
+                  "name": "Spike review – C",
+                  "owner": "CIQ ZZ Spike Role A",
+                  "condition": "Flag_C = \"Yes\"",
+                  "editable_fields": [
+                    "Lane_C_Confirm",
+                    "Lane_C_By",
+                    "Lane_C_At",
+                    "Lane_C_Note"
+                  ],
+                  "mandatory_fields": [
+                    "Lane_C_Confirm"
+                  ]
+                },
+                {
+                  "name": "Spike review – D",
+                  "owner": "CIQ ZZ Spike Role B",
+                  "condition": "Flag_D = \"Yes\"",
+                  "editable_fields": [
+                    "Lane_D_Confirm",
+                    "Lane_D_By",
+                    "Lane_D_At",
+                    "Lane_D_Note"
+                  ],
+                  "mandatory_fields": [
+                    "Lane_D_Confirm"
+                  ]
+                },
+                {
+                  "name": "Spike review – E",
+                  "owner": "CIQ ZZ Spike Role A",
+                  "condition": "Flag_E = \"Yes\"",
+                  "editable_fields": [
+                    "Lane_E_Confirm",
+                    "Lane_E_By",
+                    "Lane_E_At",
+                    "Lane_E_Note"
+                  ],
+                  "mandatory_fields": [
+                    "Lane_E_Confirm"
+                  ]
+                },
+                {
+                  "name": "Spike review – F",
+                  "owner": "CIQ ZZ Spike Role B",
+                  "condition": "Flag_F = \"Yes\"",
+                  "editable_fields": [
+                    "Lane_F_Confirm",
+                    "Lane_F_By",
+                    "Lane_F_At",
+                    "Lane_F_Note"
+                  ],
+                  "mandatory_fields": [
+                    "Lane_F_Confirm"
+                  ]
+                }
+              ],
+              "evidence": "brd.md L15-18",
+              "label": "PARALLEL block (container only; the BRD names no block step)"
+            },
+            {
+              "order": 3,
+              "name": "Spike hold check",
+              "kind": "Step",
+              "owner": "CIQ ZZ Spike Role A",
+              "condition": "Hold_Flag = \"Yes\"",
+              "evidence": "brd.md L19-21",
+              "defaulted_editable_fields": {
+                "fields": [],
+                "basis": "default, not stated (OQ-06)"
+              }
+            },
+            {
+              "order": 4,
+              "name": "Spike gated step",
+              "kind": "Step",
+              "owner": "CIQ ZZ Spike Role A",
+              "condition": null,
+              "mandatory_fields": [
+                "Gate"
+              ],
+              "evidence": "brd.md L22",
+              "defaulted_editable_fields": {
+                "fields": [],
+                "basis": "default, not stated (OQ-06); Gate is a formula and only its Mandatory rule is stated"
+              }
+            },
+            {
+              "order": 5,
+              "name": "Spike not-equal step",
+              "kind": "Step",
+              "owner": "CIQ ZZ Spike Role B",
+              "condition": "Spike_Decision != \"Rejected\"",
+              "evidence": "brd.md L23",
+              "defaulted_editable_fields": {
+                "fields": [],
+                "basis": "default, not stated (OQ-06)"
+              }
+            },
+            {
+              "order": 6,
+              "name": "End",
+              "kind": "End",
+              "owner": null,
+              "condition": null,
+              "evidence": "brd.md L24"
+            }
+          ]
+        },
+        {
+          "flow": "CIQ ZZ Spike Point",
+          "steps": [
+            {
+              "order": 0,
+              "name": "Raise spike point",
+              "kind": "Start",
+              "owner": "CIQ ZZ Spike Role A",
+              "condition": null,
+              "evidence": "brd.md L31",
+              "defaulted_editable_fields": {
+                "fields": [
+                  "Round_No",
+                  "Question_Text",
+                  "Awaiting_Response",
+                  "Due_Date",
+                  "To_Supplier"
+                ],
+                "basis": "default, not stated (OQ-05)"
+              }
+            },
+            {
+              "order": 1,
+              "name": "Spike waiting",
+              "kind": "Step",
+              "owner": "CIQ ZZ Spike Role A",
+              "condition": "To_Supplier = \"Yes\"",
+              "editable_fields": [
+                "Response_Text"
+              ],
+              "evidence": "brd.md L32; brd.md L40"
+            },
+            {
+              "order": 2,
+              "name": "Spike review",
+              "kind": "Step",
+              "owner": "CIQ ZZ Spike Role B",
+              "condition": null,
+              "editable_child_tables": [
+                "Spike Rounds"
+              ],
+              "evidence": "brd.md L33; brd.md L43"
+            },
+            {
+              "order": 3,
+              "name": "End",
+              "kind": "End",
+              "owner": null,
+              "condition": null,
+              "evidence": "brd.md L34"
+            }
+          ]
+        }
+      ]
+    },
+    "business_rules": [
+      {
+        "id": "BR-01",
+        "statement": "Every flow, list and role name starts with \"CIQ ZZ Spike\".",
+        "applies_to": [
+          "all flows",
+          "all value sets",
+          "all roles"
+        ],
+        "evidence": "brd.md L4",
+        "category": "naming"
+      },
+      {
+        "id": "BR-02",
+        "statement": "Keep the harness minimal and exactly as specified; it is a throwaway test harness, not a business app.",
+        "applies_to": [
+          "all"
+        ],
+        "evidence": "brd.md L3; brd.md L6",
+        "category": "scope"
+      },
+      {
+        "id": "BR-03",
+        "statement": "After \"Spike prepare\", CIQ ZZ Spike Case runs a PARALLEL block of 6 branches \"Spike review – A\" … \"Spike review – F\", owned alternately by Role A and Role B, and joins before \"Spike hold check\".",
+        "applies_to": [
+          "e_spike_case",
+          "j01_run_spike_case"
+        ],
+        "evidence": "brd.md L15-16; brd.md L19",
+        "category": "workflow"
+      },
+      {
+        "id": "BR-04",
+        "statement": "Each branch \"Spike review – X\" runs only when its own Select flag Flag_X = \"Yes\" (list \"CIQ ZZ Spike Yes No\").",
+        "applies_to": [
+          "e_spike_case",
+          "j01_run_spike_case"
+        ],
+        "evidence": "brd.md L17",
+        "category": "condition"
+      },
+      {
+        "id": "BR-05",
+        "statement": "Each branch edits ONLY its own lane fields Lane_X_Confirm, Lane_X_By, Lane_X_At, Lane_X_Note; Lane_X_Confirm is Mandatory there.",
+        "applies_to": [
+          "e_spike_case",
+          "j01_run_spike_case"
+        ],
+        "evidence": "brd.md L18",
+        "category": "field-permission"
+      },
+      {
+        "id": "BR-06",
+        "statement": "\"Spike hold check\" (Role A) runs after the join only when Hold_Flag = \"Yes\".",
+        "applies_to": [
+          "e_spike_case",
+          "j01_run_spike_case"
+        ],
+        "evidence": "brd.md L19",
+        "category": "condition"
+      },
+      {
+        "id": "BR-07",
+        "statement": "Hold_Flag is a formula Text field: IF(ISBLANK(Open_Count),\"Yes\",IF(Open_Count=0,\"No\",\"Yes\")).",
+        "applies_to": [
+          "e_spike_case"
+        ],
+        "evidence": "brd.md L19-20",
+        "category": "computed"
+      },
+      {
+        "id": "BR-08",
+        "statement": "Open_Count is a cross-flow SUM aggregate of \"CIQ ZZ Spike Register\".Open_Lines over the registers whose Reference Register_Case = this case.",
+        "applies_to": [
+          "e_spike_case",
+          "e_spike_register",
+          "j03_maintain_spike_register"
+        ],
+        "evidence": "brd.md L21",
+        "category": "computed"
+      },
+      {
+        "id": "BR-09",
+        "statement": "Gate is a formula field IF(IF(ISBLANK(Open_Count),0,Open_Count)=0,\"OK\",\"\") and is Mandatory at \"Spike gated step\" (Role A).",
+        "applies_to": [
+          "e_spike_case",
+          "j01_run_spike_case"
+        ],
+        "evidence": "brd.md L22",
+        "category": "validation"
+      },
+      {
+        "id": "BR-10",
+        "statement": "\"Spike not-equal step\" (Role B) runs only when Spike_Decision != \"Rejected\" (Select, list \"CIQ ZZ Spike Decision\": Approved, Rejected).",
+        "applies_to": [
+          "e_spike_case",
+          "j01_run_spike_case"
+        ],
+        "evidence": "brd.md L23",
+        "category": "condition"
+      },
+      {
+        "id": "BR-11",
+        "statement": "Child table \"Spike Case Notes\" (Note_Text, Note_By) is editable only at \"Spike prepare\".",
+        "applies_to": [
+          "e_spike_case",
+          "j01_run_spike_case"
+        ],
+        "evidence": "brd.md L26",
+        "category": "field-permission"
+      },
+      {
+        "id": "BR-12",
+        "statement": "\"Spike waiting\" (Role A) runs only when To_Supplier = \"Yes\" (a Select).",
+        "applies_to": [
+          "e_spike_point",
+          "j02_run_spike_point"
+        ],
+        "evidence": "brd.md L32",
+        "category": "condition"
+      },
+      {
+        "id": "BR-13",
+        "statement": "Response_Text is Editable at \"Spike waiting\".",
+        "applies_to": [
+          "e_spike_point",
+          "j02_run_spike_point"
+        ],
+        "evidence": "brd.md L40",
+        "category": "field-permission"
+      },
+      {
+        "id": "BR-14",
+        "statement": "Child table \"Spike Rounds\" (Round_No, Question, Response, Outcome) is editable only at \"Spike review\".",
+        "applies_to": [
+          "e_spike_point",
+          "j02_run_spike_point"
+        ],
+        "evidence": "brd.md L43",
+        "category": "field-permission"
+      },
+      {
+        "id": "BR-15",
+        "statement": "Register_Key is required on CIQ ZZ Spike Register.",
+        "applies_to": [
+          "e_spike_register",
+          "j03_maintain_spike_register"
+        ],
+        "evidence": "brd.md L46",
+        "category": "validation"
+      },
+      {
+        "id": "BR-16",
+        "statement": "Open_Lines is a header aggregate = SUM of \"Spike Lines\".Line_Open.",
+        "applies_to": [
+          "e_spike_register",
+          "j03_maintain_spike_register"
+        ],
+        "evidence": "brd.md L49",
+        "category": "computed"
+      },
+      {
+        "id": "BR-17",
+        "statement": "CIQ ZZ Spike Log is the target of the integration tests; those integrations are created separately and are not in the IR.",
+        "applies_to": [
+          "e_spike_log",
+          "j04_inspect_spike_log"
+        ],
+        "evidence": "brd.md L53; brd.md L61",
+        "category": "integration-boundary"
+      },
+      {
+        "id": "BR-18",
+        "statement": "Roles CIQ ZZ Spike Role A and CIQ ZZ Spike Role B have no members; Thomas adds the people.",
+        "applies_to": [
+          "all roles"
+        ],
+        "evidence": "brd.md L56",
+        "category": "access"
+      },
+      {
+        "id": "BR-19",
+        "statement": "Role A and Role B are Editable on all four flows.",
+        "applies_to": [
+          "e_spike_case",
+          "e_spike_point",
+          "e_spike_register",
+          "e_spike_log"
+        ],
+        "evidence": "brd.md L57",
+        "category": "access"
+      },
+      {
+        "id": "BR-20",
+        "statement": "No pages, no nav, no UI.",
+        "applies_to": [
+          "all"
+        ],
+        "evidence": "brd.md L60",
+        "category": "scope"
+      },
+      {
+        "id": "BR-21",
+        "statement": "No automations in the IR.",
+        "applies_to": [
+          "all"
+        ],
+        "evidence": "brd.md L61",
+        "category": "scope"
+      }
+    ],
+    "orphans": [],
+    "defaulted_assumptions": "See runs/current/open-questions.md (OQ-01 …); none of the defaults adds a flow, list, role, step or field.",
+    "counts": {
+      "personas": 2,
+      "journeys": 4,
+      "entities": 4,
+      "forms": 2,
+      "processes": 2,
+      "roles": 2,
+      "value_sets": 2,
+      "business_rules": 21
+    }
+  },
+  "experience": {
+    "pages": [],
+    "nav": {
+      "menus": []
+    },
+    "landing": {},
+    "native_ui_policy": "Test harness: no pages, no nav, no cards. Generate with --no-pages (the build otherwise auto-adds a baseline). See runs/zz-spike/decisions.md D3."
+  },
+  "forms": [
+    {
+      "id": "CIQ_ZZ_Spike_Case_A00",
+      "name": "CIQ ZZ Spike Case",
+      "type": "Process",
+      "from_entity": "e_spike_case",
+      "description": "Test case: Start, prepare, a 6-branch parallel block with flag conditions and lane-scoped fields, a formula-conditioned hold check, a Mandatory formula gate and a not-equal condition step.",
+      "child_tables": [
+        {
+          "id": "Spike_Case_Notes",
+          "name": "Spike Case Notes",
+          "fields": [
+            {
+              "id": "Note_Text",
+              "name": "Note_Text",
+              "type": "Text"
+            },
+            {
+              "id": "Note_By",
+              "name": "Note_By",
+              "type": "Text"
+            }
+          ]
+        }
+      ],
+      "serves_journeys": [
+        "j01_run_spike_case",
+        "j03_maintain_spike_register"
+      ],
+      "rationale": "Work handed between Role A and Role B through named, conditional and parallel steps is a Process. It is typed now because a Form cannot gain a workflow later (LESSONS 1; brd L10-L24).",
+      "requiredCapabilities": {
+        "roleRestrictedTransitions": true,
+        "conditionalTransitions": true,
+        "perStatusFieldPermissions": true
+      },
+      "mechanism": "process",
+      "build_stage": "generate (complete, as the BRD states); then the read-back gate G1 for the Open_Count closure",
+      "flowType": "Process",
+      "workflow": {
+        "steps": [
+          {
+            "id": "SPKC_S0",
+            "name": "Create spike case",
+            "type": "task",
+            "kind": "Start",
+            "actor": "CIQ ZZ Spike Role A",
+            "assignee_role": "ciq_zz_spike_role_a",
+            "evidence": "brd L13"
+          },
+          {
+            "id": "SPKC_S1",
+            "name": "Spike prepare",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ ZZ Spike Role A",
+            "assignee_role": "ciq_zz_spike_role_a",
+            "evidence": "brd L14; OQ-02/OQ-03"
+          },
+          {
+            "id": "SPKC_PAR",
+            "name": "Spike review lanes",
+            "kind": "Parallel",
+            "type": "task",
+            "branches": [
+              {
+                "name": "Spike review – A",
+                "steps": [
+                  {
+                    "id": "SPKC_BA",
+                    "name": "Spike review – A",
+                    "type": "task",
+                    "kind": "UserTask",
+                    "actor": "CIQ ZZ Spike Role A",
+                    "assignee_role": "ciq_zz_spike_role_a",
+                    "condition": "Flag_A = \"Yes\"",
+                    "evidence_fields": [
+                      "Lane_A_Confirm"
+                    ],
+                    "evidence": "brd L15-L18; OQ-01"
+                  }
+                ]
+              },
+              {
+                "name": "Spike review – B",
+                "steps": [
+                  {
+                    "id": "SPKC_BB",
+                    "name": "Spike review – B",
+                    "type": "task",
+                    "kind": "UserTask",
+                    "actor": "CIQ ZZ Spike Role B",
+                    "assignee_role": "ciq_zz_spike_role_b",
+                    "condition": "Flag_B = \"Yes\"",
+                    "evidence_fields": [
+                      "Lane_B_Confirm"
+                    ],
+                    "evidence": "brd L15-L18; OQ-01"
+                  }
+                ]
+              },
+              {
+                "name": "Spike review – C",
+                "steps": [
+                  {
+                    "id": "SPKC_BC",
+                    "name": "Spike review – C",
+                    "type": "task",
+                    "kind": "UserTask",
+                    "actor": "CIQ ZZ Spike Role A",
+                    "assignee_role": "ciq_zz_spike_role_a",
+                    "condition": "Flag_C = \"Yes\"",
+                    "evidence_fields": [
+                      "Lane_C_Confirm"
+                    ],
+                    "evidence": "brd L15-L18; OQ-01"
+                  }
+                ]
+              },
+              {
+                "name": "Spike review – D",
+                "steps": [
+                  {
+                    "id": "SPKC_BD",
+                    "name": "Spike review – D",
+                    "type": "task",
+                    "kind": "UserTask",
+                    "actor": "CIQ ZZ Spike Role B",
+                    "assignee_role": "ciq_zz_spike_role_b",
+                    "condition": "Flag_D = \"Yes\"",
+                    "evidence_fields": [
+                      "Lane_D_Confirm"
+                    ],
+                    "evidence": "brd L15-L18; OQ-01"
+                  }
+                ]
+              },
+              {
+                "name": "Spike review – E",
+                "steps": [
+                  {
+                    "id": "SPKC_BE",
+                    "name": "Spike review – E",
+                    "type": "task",
+                    "kind": "UserTask",
+                    "actor": "CIQ ZZ Spike Role A",
+                    "assignee_role": "ciq_zz_spike_role_a",
+                    "condition": "Flag_E = \"Yes\"",
+                    "evidence_fields": [
+                      "Lane_E_Confirm"
+                    ],
+                    "evidence": "brd L15-L18; OQ-01"
+                  }
+                ]
+              },
+              {
+                "name": "Spike review – F",
+                "steps": [
+                  {
+                    "id": "SPKC_BF",
+                    "name": "Spike review – F",
+                    "type": "task",
+                    "kind": "UserTask",
+                    "actor": "CIQ ZZ Spike Role B",
+                    "assignee_role": "ciq_zz_spike_role_b",
+                    "condition": "Flag_F = \"Yes\"",
+                    "evidence_fields": [
+                      "Lane_F_Confirm"
+                    ],
+                    "evidence": "brd L15-L18; OQ-01"
+                  }
+                ]
+              }
+            ],
+            "evidence": "brd L15-L18",
+            "note": "Container. BRD names no block step; the engine requires a name (validate STEP_NO_NAME at r4), so 'Spike review lanes' is a container label only. One-level fork, auto-join before SPKC_S3."
+          },
+          {
+            "id": "SPKC_S3",
+            "name": "Spike hold check",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ ZZ Spike Role A",
+            "assignee_role": "ciq_zz_spike_role_a",
+            "condition": "Hold_Flag = \"Yes\"",
+            "evidence": "brd L19-L21"
+          },
+          {
+            "id": "SPKC_S4",
+            "name": "Spike gated step",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ ZZ Spike Role A",
+            "assignee_role": "ciq_zz_spike_role_a",
+            "evidence": "brd L22 (Gate Mandatory: security handoff)"
+          },
+          {
+            "id": "SPKC_S5",
+            "name": "Spike not-equal step",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ ZZ Spike Role B",
+            "assignee_role": "ciq_zz_spike_role_b",
+            "condition": "Spike_Decision != \"Rejected\"",
+            "evidence": "brd L23"
+          },
+          {
+            "id": "SPKC_END",
+            "name": "End",
+            "type": "automation",
+            "kind": "End",
+            "evidence": "brd L24"
+          }
+        ]
+      },
+      "fields": [
+        {
+          "id": "Flag_A",
+          "name": "Flag_A",
+          "type": "Select",
+          "referredList": "CIQ_ZZ_Spike_Yes_No"
+        },
+        {
+          "id": "Flag_B",
+          "name": "Flag_B",
+          "type": "Select",
+          "referredList": "CIQ_ZZ_Spike_Yes_No"
+        },
+        {
+          "id": "Flag_C",
+          "name": "Flag_C",
+          "type": "Select",
+          "referredList": "CIQ_ZZ_Spike_Yes_No"
+        },
+        {
+          "id": "Flag_D",
+          "name": "Flag_D",
+          "type": "Select",
+          "referredList": "CIQ_ZZ_Spike_Yes_No"
+        },
+        {
+          "id": "Flag_E",
+          "name": "Flag_E",
+          "type": "Select",
+          "referredList": "CIQ_ZZ_Spike_Yes_No"
+        },
+        {
+          "id": "Flag_F",
+          "name": "Flag_F",
+          "type": "Select",
+          "referredList": "CIQ_ZZ_Spike_Yes_No"
+        },
+        {
+          "id": "Lane_A_Confirm",
+          "name": "Lane_A_Confirm",
+          "type": "Select",
+          "referredList": "CIQ_ZZ_Spike_Yes_No"
+        },
+        {
+          "id": "Lane_A_By",
+          "name": "Lane_A_By",
+          "type": "Text"
+        },
+        {
+          "id": "Lane_A_At",
+          "name": "Lane_A_At",
+          "type": "DateTime"
+        },
+        {
+          "id": "Lane_A_Note",
+          "name": "Lane_A_Note",
+          "type": "Text"
+        },
+        {
+          "id": "Lane_B_Confirm",
+          "name": "Lane_B_Confirm",
+          "type": "Select",
+          "referredList": "CIQ_ZZ_Spike_Yes_No"
+        },
+        {
+          "id": "Lane_B_By",
+          "name": "Lane_B_By",
+          "type": "Text"
+        },
+        {
+          "id": "Lane_B_At",
+          "name": "Lane_B_At",
+          "type": "DateTime"
+        },
+        {
+          "id": "Lane_B_Note",
+          "name": "Lane_B_Note",
+          "type": "Text"
+        },
+        {
+          "id": "Lane_C_Confirm",
+          "name": "Lane_C_Confirm",
+          "type": "Select",
+          "referredList": "CIQ_ZZ_Spike_Yes_No"
+        },
+        {
+          "id": "Lane_C_By",
+          "name": "Lane_C_By",
+          "type": "Text"
+        },
+        {
+          "id": "Lane_C_At",
+          "name": "Lane_C_At",
+          "type": "DateTime"
+        },
+        {
+          "id": "Lane_C_Note",
+          "name": "Lane_C_Note",
+          "type": "Text"
+        },
+        {
+          "id": "Lane_D_Confirm",
+          "name": "Lane_D_Confirm",
+          "type": "Select",
+          "referredList": "CIQ_ZZ_Spike_Yes_No"
+        },
+        {
+          "id": "Lane_D_By",
+          "name": "Lane_D_By",
+          "type": "Text"
+        },
+        {
+          "id": "Lane_D_At",
+          "name": "Lane_D_At",
+          "type": "DateTime"
+        },
+        {
+          "id": "Lane_D_Note",
+          "name": "Lane_D_Note",
+          "type": "Text"
+        },
+        {
+          "id": "Lane_E_Confirm",
+          "name": "Lane_E_Confirm",
+          "type": "Select",
+          "referredList": "CIQ_ZZ_Spike_Yes_No"
+        },
+        {
+          "id": "Lane_E_By",
+          "name": "Lane_E_By",
+          "type": "Text"
+        },
+        {
+          "id": "Lane_E_At",
+          "name": "Lane_E_At",
+          "type": "DateTime"
+        },
+        {
+          "id": "Lane_E_Note",
+          "name": "Lane_E_Note",
+          "type": "Text"
+        },
+        {
+          "id": "Lane_F_Confirm",
+          "name": "Lane_F_Confirm",
+          "type": "Select",
+          "referredList": "CIQ_ZZ_Spike_Yes_No"
+        },
+        {
+          "id": "Lane_F_By",
+          "name": "Lane_F_By",
+          "type": "Text"
+        },
+        {
+          "id": "Lane_F_At",
+          "name": "Lane_F_At",
+          "type": "DateTime"
+        },
+        {
+          "id": "Lane_F_Note",
+          "name": "Lane_F_Note",
+          "type": "Text"
+        },
+        {
+          "id": "Spike_Decision",
+          "name": "Spike_Decision",
+          "type": "Select",
+          "referredList": "CIQ_ZZ_Spike_Decision"
+        },
+        {
+          "id": "Open_Count",
+          "name": "Open_Count",
+          "type": "Number",
+          "aggregate": {
+            "fn": "SUM",
+            "over": "CIQ_ZZ_Spike_Register_A00",
+            "field": "Open_Lines",
+            "match": {
+              "field": "Register_Case",
+              "equals": "_id"
+            },
+            "flowType": "Form"
+          }
+        },
+        {
+          "id": "Hold_Flag",
+          "name": "Hold_Flag",
+          "type": "Text",
+          "formula": "IF(ISBLANK(Open_Count),\"Yes\",IF(Open_Count=0,\"No\",\"Yes\"))"
+        },
+        {
+          "id": "Gate",
+          "name": "Gate",
+          "type": "Text",
+          "formula": "IF(IF(ISBLANK(Open_Count),0,Open_Count)=0,\"OK\",\"\")"
+        }
+      ],
+      "computed": []
+    },
+    {
+      "id": "CIQ_ZZ_Spike_Decision",
+      "name": "CIQ ZZ Spike Decision",
+      "items": [
+        "Approved",
+        "Rejected"
+      ],
+      "flowType": "Form"
+    },
+    {
+      "id": "CIQ_ZZ_Spike_Log_A00",
+      "name": "CIQ ZZ Spike Log",
+      "type": "Form",
+      "from_entity": "e_spike_log",
+      "description": "Target form for the separately created integration tests.",
+      "child_tables": [],
+      "serves_journeys": [
+        "j04_inspect_spike_log"
+      ],
+      "rationale": "Plain target of integration writes, with no routing: a Form (brd L51-L53, L61).",
+      "build_stage": "generate",
+      "flowType": "Form",
+      "fields": [
+        {
+          "id": "Log_Key",
+          "name": "Log_Key",
+          "type": "Text"
+        },
+        {
+          "id": "Log_Source",
+          "name": "Log_Source",
+          "type": "Text"
+        },
+        {
+          "id": "Log_Event",
+          "name": "Log_Event",
+          "type": "Text"
+        },
+        {
+          "id": "Log_Item_Id",
+          "name": "Log_Item_Id",
+          "type": "Text"
+        },
+        {
+          "id": "Log_At",
+          "name": "Log_At",
+          "type": "DateTime"
+        },
+        {
+          "id": "Log_Payload",
+          "name": "Log_Payload",
+          "type": "Textarea"
+        }
+      ],
+      "computed": []
+    },
+    {
+      "id": "CIQ_ZZ_Spike_Point_A00",
+      "name": "CIQ ZZ Spike Point",
+      "type": "Process",
+      "from_entity": "e_spike_point",
+      "description": "Test point: a Select-conditioned waiting step, a step-scoped editable field and a step-scoped child table.",
+      "child_tables": [
+        {
+          "id": "Spike_Rounds",
+          "name": "Spike Rounds",
+          "fields": [
+            {
+              "id": "Spike_Rounds_Round_No",
+              "name": "Round_No",
+              "type": "Number"
+            },
+            {
+              "id": "Question",
+              "name": "Question",
+              "type": "Text"
+            },
+            {
+              "id": "Response",
+              "name": "Response",
+              "type": "Text"
+            },
+            {
+              "id": "Outcome",
+              "name": "Outcome",
+              "type": "Text"
+            }
+          ]
+        }
+      ],
+      "serves_journeys": [
+        "j02_run_spike_point"
+      ],
+      "rationale": "Routed from Role A (raise, wait) to Role B (review), with a conditional step: a Process (brd L28-L34).",
+      "requiredCapabilities": {
+        "roleRestrictedTransitions": true,
+        "conditionalTransitions": true,
+        "perStatusFieldPermissions": true
+      },
+      "mechanism": "process",
+      "build_stage": "generate",
+      "flowType": "Process",
+      "workflow": {
+        "steps": [
+          {
+            "id": "SPKP_S0",
+            "name": "Raise spike point",
+            "type": "task",
+            "kind": "Start",
+            "actor": "CIQ ZZ Spike Role A",
+            "assignee_role": "ciq_zz_spike_role_a",
+            "evidence": "brd L31; OQ-05"
+          },
+          {
+            "id": "SPKP_S1",
+            "name": "Spike waiting",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ ZZ Spike Role A",
+            "assignee_role": "ciq_zz_spike_role_a",
+            "condition": "To_Supplier = \"Yes\"",
+            "evidence": "brd L32, L40"
+          },
+          {
+            "id": "SPKP_S2",
+            "name": "Spike review",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ ZZ Spike Role B",
+            "assignee_role": "ciq_zz_spike_role_b",
+            "evidence": "brd L33, L43"
+          },
+          {
+            "id": "SPKP_END",
+            "name": "End",
+            "type": "automation",
+            "kind": "End",
+            "evidence": "brd L34"
+          }
+        ]
+      },
+      "fields": [
+        {
+          "id": "Round_No",
+          "name": "Round_No",
+          "type": "Number"
+        },
+        {
+          "id": "Question_Text",
+          "name": "Question_Text",
+          "type": "Textarea"
+        },
+        {
+          "id": "Awaiting_Response",
+          "name": "Awaiting_Response",
+          "type": "Text"
+        },
+        {
+          "id": "Response_Text",
+          "name": "Response_Text",
+          "type": "Textarea"
+        },
+        {
+          "id": "Due_Date",
+          "name": "Due_Date",
+          "type": "Date"
+        },
+        {
+          "id": "To_Supplier",
+          "name": "To_Supplier",
+          "type": "Select",
+          "referredList": "CIQ_ZZ_Spike_Yes_No"
+        }
+      ],
+      "computed": []
+    },
+    {
+      "id": "CIQ_ZZ_Spike_Register_A00",
+      "name": "CIQ ZZ Spike Register",
+      "type": "Form",
+      "from_entity": "e_spike_register",
+      "description": "Register of open lines against a spike case. Its header Open_Lines feeds the case's Open_Count.",
+      "child_tables": [
+        {
+          "id": "Spike_Lines",
+          "name": "Spike Lines",
+          "fields": [
+            {
+              "id": "Line_Text",
+              "name": "Line_Text",
+              "type": "Text"
+            },
+            {
+              "id": "Line_Open",
+              "name": "Line_Open",
+              "type": "Number"
+            }
+          ]
+        }
+      ],
+      "serves_journeys": [
+        "j03_maintain_spike_register",
+        "j01_run_spike_case"
+      ],
+      "rationale": "Data of record with no routing or approval: a Form (brd L45-L49).",
+      "build_stage": "generate",
+      "flowType": "Form",
+      "fields": [
+        {
+          "id": "Register_Key",
+          "name": "Register_Key",
+          "type": "Text",
+          "required": true
+        },
+        {
+          "id": "Register_Case",
+          "name": "Register_Case",
+          "type": "Reference",
+          "ref": "CIQ_ZZ_Spike_Case_A00"
+        },
+        {
+          "id": "Open_Lines",
+          "name": "Open_Lines",
+          "type": "Number",
+          "aggregate": {
+            "fn": "SUM",
+            "over": "Spike Lines",
+            "field": "Line_Open"
+          }
+        }
+      ],
+      "computed": []
+    },
+    {
+      "id": "CIQ_ZZ_Spike_Yes_No",
+      "name": "CIQ ZZ Spike Yes No",
+      "items": [
+        "Yes",
+        "No"
+      ],
+      "flowType": "Form"
+    }
+  ],
+  "nav": {
+    "menus": []
+  },
+  "pages": [],
+  "roles": [
+    {
+      "id": "admin",
+      "name": "Admin",
+      "kind": "default",
+      "personas": [],
+      "members": "unchanged",
+      "grants": "none in this run",
+      "rationale": "Platform default, reused and not created (brief). Serves no harness journey; listed only so it is reused, never recreated."
+    },
+    {
+      "id": "user",
+      "name": "User",
+      "kind": "default",
+      "personas": [],
+      "members": "unchanged",
+      "grants": "none in this run",
+      "rationale": "Platform default, reused and not created (brief). Serves no harness journey."
+    },
+    {
+      "id": "ciq_zz_spike_role_a",
+      "name": "CIQ ZZ Spike Role A",
+      "kind": "custom",
+      "personas": [
+        "p_tester_a"
+      ],
+      "members": "none; Thomas adds the people (brd L56)",
+      "rationale": "Owns the Case Start, \"Spike prepare\", branches A/C/E (OQ-01), \"Spike hold check\" and \"Spike gated step\"; owns the Point Start and \"Spike waiting\". Editable on all four flows (brd L13-L22, L31-L32, L57)."
+    },
+    {
+      "id": "ciq_zz_spike_role_b",
+      "name": "CIQ ZZ Spike Role B",
+      "kind": "custom",
+      "personas": [
+        "p_tester_b"
+      ],
+      "members": "none; Thomas adds the people (brd L56)",
+      "rationale": "Owns branches B/D/F (OQ-01) and \"Spike not-equal step\" on the Case, and \"Spike review\" on the Point. Editable on all four flows (brd L16, L23, L33, L57)."
+    }
+  ],
+  "security": {
+    "owner": "kf-security-designer",
+    "stage": "author-plan wave 3",
+    "source": "brd L55-L57; workflow.meta.security_handoff (rev 6); decisions D6, D9",
+    "legend": "field_permissions[flow][stepId][fieldId|childTableId] = Editable|ReadOnly|Hidden|Mandatory. Every header field and the child table are keyed explicitly at every task step; child-column ids are not accepted as step keys (D12).",
+    "roles": {
+      "ciq_zz_spike_role_a": {
+        "flows": {
+          "CIQ_ZZ_Spike_Case_A00": {
+            "scope": "all",
+            "role_capability": "Initiate,Act,View",
+            "initiator": true,
+            "steps": {
+              "SPKC_S0": "Act",
+              "SPKC_S1": "Act",
+              "SPKC_BA": "Act",
+              "SPKC_BB": "View",
+              "SPKC_BC": "Act",
+              "SPKC_BD": "View",
+              "SPKC_BE": "Act",
+              "SPKC_BF": "View",
+              "SPKC_S3": "Act",
+              "SPKC_S4": "Act",
+              "SPKC_S5": "View"
+            },
+            "engine_level": "Editable"
+          },
+          "CIQ_ZZ_Spike_Point_A00": {
+            "scope": "all",
+            "role_capability": "Initiate,Act,View",
+            "initiator": true,
+            "steps": {
+              "SPKP_S0": "Act",
+              "SPKP_S1": "Act",
+              "SPKP_S2": "View"
+            },
+            "engine_level": "Editable"
+          },
+          "CIQ_ZZ_Spike_Register_A00": {
+            "scope": "all",
+            "role_capability": "Create,Edit,View",
+            "engine_level": "Editable"
+          },
+          "CIQ_ZZ_Spike_Log_A00": {
+            "scope": "all",
+            "role_capability": "Create,Edit,View",
+            "engine_level": "Editable"
+          }
+        }
+      },
+      "ciq_zz_spike_role_b": {
+        "flows": {
+          "CIQ_ZZ_Spike_Case_A00": {
+            "scope": "all",
+            "role_capability": "Act,View",
+            "initiator": false,
+            "steps": {
+              "SPKC_S0": "View",
+              "SPKC_S1": "View",
+              "SPKC_BA": "View",
+              "SPKC_BB": "Act",
+              "SPKC_BC": "View",
+              "SPKC_BD": "Act",
+              "SPKC_BE": "View",
+              "SPKC_BF": "Act",
+              "SPKC_S3": "View",
+              "SPKC_S4": "View",
+              "SPKC_S5": "Act"
+            },
+            "engine_level": "Editable"
+          },
+          "CIQ_ZZ_Spike_Point_A00": {
+            "scope": "all",
+            "role_capability": "Act,View",
+            "initiator": false,
+            "steps": {
+              "SPKP_S0": "View",
+              "SPKP_S1": "View",
+              "SPKP_S2": "Act"
+            },
+            "engine_level": "Editable"
+          },
+          "CIQ_ZZ_Spike_Register_A00": {
+            "scope": "all",
+            "role_capability": "Create,Edit,View",
+            "engine_level": "Editable"
+          },
+          "CIQ_ZZ_Spike_Log_A00": {
+            "scope": "all",
+            "role_capability": "Create,Edit,View",
+            "engine_level": "Editable"
+          }
+        }
+      }
+    },
+    "field_permissions": {
+      "CIQ_ZZ_Spike_Case_A00": {
+        "SPKC_S0": {
+          "Flag_A": "ReadOnly",
+          "Flag_B": "ReadOnly",
+          "Flag_C": "ReadOnly",
+          "Flag_D": "ReadOnly",
+          "Flag_E": "ReadOnly",
+          "Flag_F": "ReadOnly",
+          "Lane_A_Confirm": "ReadOnly",
+          "Lane_A_By": "ReadOnly",
+          "Lane_A_At": "ReadOnly",
+          "Lane_A_Note": "ReadOnly",
+          "Lane_B_Confirm": "ReadOnly",
+          "Lane_B_By": "ReadOnly",
+          "Lane_B_At": "ReadOnly",
+          "Lane_B_Note": "ReadOnly",
+          "Lane_C_Confirm": "ReadOnly",
+          "Lane_C_By": "ReadOnly",
+          "Lane_C_At": "ReadOnly",
+          "Lane_C_Note": "ReadOnly",
+          "Lane_D_Confirm": "ReadOnly",
+          "Lane_D_By": "ReadOnly",
+          "Lane_D_At": "ReadOnly",
+          "Lane_D_Note": "ReadOnly",
+          "Lane_E_Confirm": "ReadOnly",
+          "Lane_E_By": "ReadOnly",
+          "Lane_E_At": "ReadOnly",
+          "Lane_E_Note": "ReadOnly",
+          "Lane_F_Confirm": "ReadOnly",
+          "Lane_F_By": "ReadOnly",
+          "Lane_F_At": "ReadOnly",
+          "Lane_F_Note": "ReadOnly",
+          "Spike_Decision": "ReadOnly",
+          "Open_Count": "ReadOnly",
+          "Hold_Flag": "ReadOnly",
+          "Gate": "ReadOnly",
+          "Spike_Case_Notes": "ReadOnly"
+        },
+        "SPKC_S1": {
+          "Flag_A": "Editable",
+          "Flag_B": "Editable",
+          "Flag_C": "Editable",
+          "Flag_D": "Editable",
+          "Flag_E": "Editable",
+          "Flag_F": "Editable",
+          "Lane_A_Confirm": "ReadOnly",
+          "Lane_A_By": "ReadOnly",
+          "Lane_A_At": "ReadOnly",
+          "Lane_A_Note": "ReadOnly",
+          "Lane_B_Confirm": "ReadOnly",
+          "Lane_B_By": "ReadOnly",
+          "Lane_B_At": "ReadOnly",
+          "Lane_B_Note": "ReadOnly",
+          "Lane_C_Confirm": "ReadOnly",
+          "Lane_C_By": "ReadOnly",
+          "Lane_C_At": "ReadOnly",
+          "Lane_C_Note": "ReadOnly",
+          "Lane_D_Confirm": "ReadOnly",
+          "Lane_D_By": "ReadOnly",
+          "Lane_D_At": "ReadOnly",
+          "Lane_D_Note": "ReadOnly",
+          "Lane_E_Confirm": "ReadOnly",
+          "Lane_E_By": "ReadOnly",
+          "Lane_E_At": "ReadOnly",
+          "Lane_E_Note": "ReadOnly",
+          "Lane_F_Confirm": "ReadOnly",
+          "Lane_F_By": "ReadOnly",
+          "Lane_F_At": "ReadOnly",
+          "Lane_F_Note": "ReadOnly",
+          "Spike_Decision": "Editable",
+          "Open_Count": "ReadOnly",
+          "Hold_Flag": "ReadOnly",
+          "Gate": "ReadOnly",
+          "Spike_Case_Notes": "Editable"
+        },
+        "SPKC_BA": {
+          "Flag_A": "ReadOnly",
+          "Flag_B": "ReadOnly",
+          "Flag_C": "ReadOnly",
+          "Flag_D": "ReadOnly",
+          "Flag_E": "ReadOnly",
+          "Flag_F": "ReadOnly",
+          "Lane_A_Confirm": "Mandatory",
+          "Lane_A_By": "Editable",
+          "Lane_A_At": "Editable",
+          "Lane_A_Note": "Editable",
+          "Lane_B_Confirm": "ReadOnly",
+          "Lane_B_By": "ReadOnly",
+          "Lane_B_At": "ReadOnly",
+          "Lane_B_Note": "ReadOnly",
+          "Lane_C_Confirm": "ReadOnly",
+          "Lane_C_By": "ReadOnly",
+          "Lane_C_At": "ReadOnly",
+          "Lane_C_Note": "ReadOnly",
+          "Lane_D_Confirm": "ReadOnly",
+          "Lane_D_By": "ReadOnly",
+          "Lane_D_At": "ReadOnly",
+          "Lane_D_Note": "ReadOnly",
+          "Lane_E_Confirm": "ReadOnly",
+          "Lane_E_By": "ReadOnly",
+          "Lane_E_At": "ReadOnly",
+          "Lane_E_Note": "ReadOnly",
+          "Lane_F_Confirm": "ReadOnly",
+          "Lane_F_By": "ReadOnly",
+          "Lane_F_At": "ReadOnly",
+          "Lane_F_Note": "ReadOnly",
+          "Spike_Decision": "ReadOnly",
+          "Open_Count": "ReadOnly",
+          "Hold_Flag": "ReadOnly",
+          "Gate": "ReadOnly",
+          "Spike_Case_Notes": "ReadOnly"
+        },
+        "SPKC_BB": {
+          "Flag_A": "ReadOnly",
+          "Flag_B": "ReadOnly",
+          "Flag_C": "ReadOnly",
+          "Flag_D": "ReadOnly",
+          "Flag_E": "ReadOnly",
+          "Flag_F": "ReadOnly",
+          "Lane_A_Confirm": "ReadOnly",
+          "Lane_A_By": "ReadOnly",
+          "Lane_A_At": "ReadOnly",
+          "Lane_A_Note": "ReadOnly",
+          "Lane_B_Confirm": "Mandatory",
+          "Lane_B_By": "Editable",
+          "Lane_B_At": "Editable",
+          "Lane_B_Note": "Editable",
+          "Lane_C_Confirm": "ReadOnly",
+          "Lane_C_By": "ReadOnly",
+          "Lane_C_At": "ReadOnly",
+          "Lane_C_Note": "ReadOnly",
+          "Lane_D_Confirm": "ReadOnly",
+          "Lane_D_By": "ReadOnly",
+          "Lane_D_At": "ReadOnly",
+          "Lane_D_Note": "ReadOnly",
+          "Lane_E_Confirm": "ReadOnly",
+          "Lane_E_By": "ReadOnly",
+          "Lane_E_At": "ReadOnly",
+          "Lane_E_Note": "ReadOnly",
+          "Lane_F_Confirm": "ReadOnly",
+          "Lane_F_By": "ReadOnly",
+          "Lane_F_At": "ReadOnly",
+          "Lane_F_Note": "ReadOnly",
+          "Spike_Decision": "ReadOnly",
+          "Open_Count": "ReadOnly",
+          "Hold_Flag": "ReadOnly",
+          "Gate": "ReadOnly",
+          "Spike_Case_Notes": "ReadOnly"
+        },
+        "SPKC_BC": {
+          "Flag_A": "ReadOnly",
+          "Flag_B": "ReadOnly",
+          "Flag_C": "ReadOnly",
+          "Flag_D": "ReadOnly",
+          "Flag_E": "ReadOnly",
+          "Flag_F": "ReadOnly",
+          "Lane_A_Confirm": "ReadOnly",
+          "Lane_A_By": "ReadOnly",
+          "Lane_A_At": "ReadOnly",
+          "Lane_A_Note": "ReadOnly",
+          "Lane_B_Confirm": "ReadOnly",
+          "Lane_B_By": "ReadOnly",
+          "Lane_B_At": "ReadOnly",
+          "Lane_B_Note": "ReadOnly",
+          "Lane_C_Confirm": "Mandatory",
+          "Lane_C_By": "Editable",
+          "Lane_C_At": "Editable",
+          "Lane_C_Note": "Editable",
+          "Lane_D_Confirm": "ReadOnly",
+          "Lane_D_By": "ReadOnly",
+          "Lane_D_At": "ReadOnly",
+          "Lane_D_Note": "ReadOnly",
+          "Lane_E_Confirm": "ReadOnly",
+          "Lane_E_By": "ReadOnly",
+          "Lane_E_At": "ReadOnly",
+          "Lane_E_Note": "ReadOnly",
+          "Lane_F_Confirm": "ReadOnly",
+          "Lane_F_By": "ReadOnly",
+          "Lane_F_At": "ReadOnly",
+          "Lane_F_Note": "ReadOnly",
+          "Spike_Decision": "ReadOnly",
+          "Open_Count": "ReadOnly",
+          "Hold_Flag": "ReadOnly",
+          "Gate": "ReadOnly",
+          "Spike_Case_Notes": "ReadOnly"
+        },
+        "SPKC_BD": {
+          "Flag_A": "ReadOnly",
+          "Flag_B": "ReadOnly",
+          "Flag_C": "ReadOnly",
+          "Flag_D": "ReadOnly",
+          "Flag_E": "ReadOnly",
+          "Flag_F": "ReadOnly",
+          "Lane_A_Confirm": "ReadOnly",
+          "Lane_A_By": "ReadOnly",
+          "Lane_A_At": "ReadOnly",
+          "Lane_A_Note": "ReadOnly",
+          "Lane_B_Confirm": "ReadOnly",
+          "Lane_B_By": "ReadOnly",
+          "Lane_B_At": "ReadOnly",
+          "Lane_B_Note": "ReadOnly",
+          "Lane_C_Confirm": "ReadOnly",
+          "Lane_C_By": "ReadOnly",
+          "Lane_C_At": "ReadOnly",
+          "Lane_C_Note": "ReadOnly",
+          "Lane_D_Confirm": "Mandatory",
+          "Lane_D_By": "Editable",
+          "Lane_D_At": "Editable",
+          "Lane_D_Note": "Editable",
+          "Lane_E_Confirm": "ReadOnly",
+          "Lane_E_By": "ReadOnly",
+          "Lane_E_At": "ReadOnly",
+          "Lane_E_Note": "ReadOnly",
+          "Lane_F_Confirm": "ReadOnly",
+          "Lane_F_By": "ReadOnly",
+          "Lane_F_At": "ReadOnly",
+          "Lane_F_Note": "ReadOnly",
+          "Spike_Decision": "ReadOnly",
+          "Open_Count": "ReadOnly",
+          "Hold_Flag": "ReadOnly",
+          "Gate": "ReadOnly",
+          "Spike_Case_Notes": "ReadOnly"
+        },
+        "SPKC_BE": {
+          "Flag_A": "ReadOnly",
+          "Flag_B": "ReadOnly",
+          "Flag_C": "ReadOnly",
+          "Flag_D": "ReadOnly",
+          "Flag_E": "ReadOnly",
+          "Flag_F": "ReadOnly",
+          "Lane_A_Confirm": "ReadOnly",
+          "Lane_A_By": "ReadOnly",
+          "Lane_A_At": "ReadOnly",
+          "Lane_A_Note": "ReadOnly",
+          "Lane_B_Confirm": "ReadOnly",
+          "Lane_B_By": "ReadOnly",
+          "Lane_B_At": "ReadOnly",
+          "Lane_B_Note": "ReadOnly",
+          "Lane_C_Confirm": "ReadOnly",
+          "Lane_C_By": "ReadOnly",
+          "Lane_C_At": "ReadOnly",
+          "Lane_C_Note": "ReadOnly",
+          "Lane_D_Confirm": "ReadOnly",
+          "Lane_D_By": "ReadOnly",
+          "Lane_D_At": "ReadOnly",
+          "Lane_D_Note": "ReadOnly",
+          "Lane_E_Confirm": "Mandatory",
+          "Lane_E_By": "Editable",
+          "Lane_E_At": "Editable",
+          "Lane_E_Note": "Editable",
+          "Lane_F_Confirm": "ReadOnly",
+          "Lane_F_By": "ReadOnly",
+          "Lane_F_At": "ReadOnly",
+          "Lane_F_Note": "ReadOnly",
+          "Spike_Decision": "ReadOnly",
+          "Open_Count": "ReadOnly",
+          "Hold_Flag": "ReadOnly",
+          "Gate": "ReadOnly",
+          "Spike_Case_Notes": "ReadOnly"
+        },
+        "SPKC_BF": {
+          "Flag_A": "ReadOnly",
+          "Flag_B": "ReadOnly",
+          "Flag_C": "ReadOnly",
+          "Flag_D": "ReadOnly",
+          "Flag_E": "ReadOnly",
+          "Flag_F": "ReadOnly",
+          "Lane_A_Confirm": "ReadOnly",
+          "Lane_A_By": "ReadOnly",
+          "Lane_A_At": "ReadOnly",
+          "Lane_A_Note": "ReadOnly",
+          "Lane_B_Confirm": "ReadOnly",
+          "Lane_B_By": "ReadOnly",
+          "Lane_B_At": "ReadOnly",
+          "Lane_B_Note": "ReadOnly",
+          "Lane_C_Confirm": "ReadOnly",
+          "Lane_C_By": "ReadOnly",
+          "Lane_C_At": "ReadOnly",
+          "Lane_C_Note": "ReadOnly",
+          "Lane_D_Confirm": "ReadOnly",
+          "Lane_D_By": "ReadOnly",
+          "Lane_D_At": "ReadOnly",
+          "Lane_D_Note": "ReadOnly",
+          "Lane_E_Confirm": "ReadOnly",
+          "Lane_E_By": "ReadOnly",
+          "Lane_E_At": "ReadOnly",
+          "Lane_E_Note": "ReadOnly",
+          "Lane_F_Confirm": "Mandatory",
+          "Lane_F_By": "Editable",
+          "Lane_F_At": "Editable",
+          "Lane_F_Note": "Editable",
+          "Spike_Decision": "ReadOnly",
+          "Open_Count": "ReadOnly",
+          "Hold_Flag": "ReadOnly",
+          "Gate": "ReadOnly",
+          "Spike_Case_Notes": "ReadOnly"
+        },
+        "SPKC_S3": {
+          "Flag_A": "ReadOnly",
+          "Flag_B": "ReadOnly",
+          "Flag_C": "ReadOnly",
+          "Flag_D": "ReadOnly",
+          "Flag_E": "ReadOnly",
+          "Flag_F": "ReadOnly",
+          "Lane_A_Confirm": "ReadOnly",
+          "Lane_A_By": "ReadOnly",
+          "Lane_A_At": "ReadOnly",
+          "Lane_A_Note": "ReadOnly",
+          "Lane_B_Confirm": "ReadOnly",
+          "Lane_B_By": "ReadOnly",
+          "Lane_B_At": "ReadOnly",
+          "Lane_B_Note": "ReadOnly",
+          "Lane_C_Confirm": "ReadOnly",
+          "Lane_C_By": "ReadOnly",
+          "Lane_C_At": "ReadOnly",
+          "Lane_C_Note": "ReadOnly",
+          "Lane_D_Confirm": "ReadOnly",
+          "Lane_D_By": "ReadOnly",
+          "Lane_D_At": "ReadOnly",
+          "Lane_D_Note": "ReadOnly",
+          "Lane_E_Confirm": "ReadOnly",
+          "Lane_E_By": "ReadOnly",
+          "Lane_E_At": "ReadOnly",
+          "Lane_E_Note": "ReadOnly",
+          "Lane_F_Confirm": "ReadOnly",
+          "Lane_F_By": "ReadOnly",
+          "Lane_F_At": "ReadOnly",
+          "Lane_F_Note": "ReadOnly",
+          "Spike_Decision": "ReadOnly",
+          "Open_Count": "ReadOnly",
+          "Hold_Flag": "ReadOnly",
+          "Gate": "ReadOnly",
+          "Spike_Case_Notes": "ReadOnly"
+        },
+        "SPKC_S4": {
+          "Flag_A": "ReadOnly",
+          "Flag_B": "ReadOnly",
+          "Flag_C": "ReadOnly",
+          "Flag_D": "ReadOnly",
+          "Flag_E": "ReadOnly",
+          "Flag_F": "ReadOnly",
+          "Lane_A_Confirm": "ReadOnly",
+          "Lane_A_By": "ReadOnly",
+          "Lane_A_At": "ReadOnly",
+          "Lane_A_Note": "ReadOnly",
+          "Lane_B_Confirm": "ReadOnly",
+          "Lane_B_By": "ReadOnly",
+          "Lane_B_At": "ReadOnly",
+          "Lane_B_Note": "ReadOnly",
+          "Lane_C_Confirm": "ReadOnly",
+          "Lane_C_By": "ReadOnly",
+          "Lane_C_At": "ReadOnly",
+          "Lane_C_Note": "ReadOnly",
+          "Lane_D_Confirm": "ReadOnly",
+          "Lane_D_By": "ReadOnly",
+          "Lane_D_At": "ReadOnly",
+          "Lane_D_Note": "ReadOnly",
+          "Lane_E_Confirm": "ReadOnly",
+          "Lane_E_By": "ReadOnly",
+          "Lane_E_At": "ReadOnly",
+          "Lane_E_Note": "ReadOnly",
+          "Lane_F_Confirm": "ReadOnly",
+          "Lane_F_By": "ReadOnly",
+          "Lane_F_At": "ReadOnly",
+          "Lane_F_Note": "ReadOnly",
+          "Spike_Decision": "ReadOnly",
+          "Open_Count": "ReadOnly",
+          "Hold_Flag": "ReadOnly",
+          "Gate": "Mandatory",
+          "Spike_Case_Notes": "ReadOnly"
+        },
+        "SPKC_S5": {
+          "Flag_A": "ReadOnly",
+          "Flag_B": "ReadOnly",
+          "Flag_C": "ReadOnly",
+          "Flag_D": "ReadOnly",
+          "Flag_E": "ReadOnly",
+          "Flag_F": "ReadOnly",
+          "Lane_A_Confirm": "ReadOnly",
+          "Lane_A_By": "ReadOnly",
+          "Lane_A_At": "ReadOnly",
+          "Lane_A_Note": "ReadOnly",
+          "Lane_B_Confirm": "ReadOnly",
+          "Lane_B_By": "ReadOnly",
+          "Lane_B_At": "ReadOnly",
+          "Lane_B_Note": "ReadOnly",
+          "Lane_C_Confirm": "ReadOnly",
+          "Lane_C_By": "ReadOnly",
+          "Lane_C_At": "ReadOnly",
+          "Lane_C_Note": "ReadOnly",
+          "Lane_D_Confirm": "ReadOnly",
+          "Lane_D_By": "ReadOnly",
+          "Lane_D_At": "ReadOnly",
+          "Lane_D_Note": "ReadOnly",
+          "Lane_E_Confirm": "ReadOnly",
+          "Lane_E_By": "ReadOnly",
+          "Lane_E_At": "ReadOnly",
+          "Lane_E_Note": "ReadOnly",
+          "Lane_F_Confirm": "ReadOnly",
+          "Lane_F_By": "ReadOnly",
+          "Lane_F_At": "ReadOnly",
+          "Lane_F_Note": "ReadOnly",
+          "Spike_Decision": "ReadOnly",
+          "Open_Count": "ReadOnly",
+          "Hold_Flag": "ReadOnly",
+          "Gate": "ReadOnly",
+          "Spike_Case_Notes": "ReadOnly"
+        }
+      },
+      "CIQ_ZZ_Spike_Point_A00": {
+        "SPKP_S0": {
+          "Round_No": "Editable",
+          "Question_Text": "Editable",
+          "Awaiting_Response": "Editable",
+          "Response_Text": "ReadOnly",
+          "Due_Date": "Editable",
+          "To_Supplier": "Editable",
+          "Spike_Rounds": "ReadOnly"
+        },
+        "SPKP_S1": {
+          "Round_No": "ReadOnly",
+          "Question_Text": "ReadOnly",
+          "Awaiting_Response": "ReadOnly",
+          "Response_Text": "Editable",
+          "Due_Date": "ReadOnly",
+          "To_Supplier": "ReadOnly",
+          "Spike_Rounds": "ReadOnly"
+        },
+        "SPKP_S2": {
+          "Round_No": "ReadOnly",
+          "Question_Text": "ReadOnly",
+          "Awaiting_Response": "ReadOnly",
+          "Response_Text": "ReadOnly",
+          "Due_Date": "ReadOnly",
+          "To_Supplier": "ReadOnly",
+          "Spike_Rounds": "Editable"
+        }
+      }
+    },
+    "data_scope": {
+      "rule": "Test harness: both custom roles read all records of all four flows (brd L57). Default roles Admin and User get no grants. Views/dashboards: none (no pages).",
+      "map": {
+        "ciq_zz_spike_role_a": {
+          "CIQ_ZZ_Spike_Case_A00": "all",
+          "CIQ_ZZ_Spike_Point_A00": "all",
+          "CIQ_ZZ_Spike_Register_A00": "all",
+          "CIQ_ZZ_Spike_Log_A00": "all"
+        },
+        "ciq_zz_spike_role_b": {
+          "CIQ_ZZ_Spike_Case_A00": "all",
+          "CIQ_ZZ_Spike_Point_A00": "all",
+          "CIQ_ZZ_Spike_Register_A00": "all",
+          "CIQ_ZZ_Spike_Log_A00": "all"
+        }
+      }
+    },
+    "satisfiability": {
+      "initiators": {
+        "CIQ_ZZ_Spike_Case_A00": [
+          "ciq_zz_spike_role_a"
+        ],
+        "CIQ_ZZ_Spike_Point_A00": [
+          "ciq_zz_spike_role_a"
+        ],
+        "CIQ_ZZ_Spike_Register_A00": [
+          "ciq_zz_spike_role_a",
+          "ciq_zz_spike_role_b"
+        ],
+        "CIQ_ZZ_Spike_Log_A00": [
+          "ciq_zz_spike_role_a",
+          "ciq_zz_spike_role_b"
+        ]
+      },
+      "readers": {
+        "CIQ_ZZ_Spike_Case_A00": [
+          "ciq_zz_spike_role_a",
+          "ciq_zz_spike_role_b"
+        ],
+        "CIQ_ZZ_Spike_Point_A00": [
+          "ciq_zz_spike_role_a",
+          "ciq_zz_spike_role_b"
+        ],
+        "CIQ_ZZ_Spike_Register_A00": [
+          "ciq_zz_spike_role_a",
+          "ciq_zz_spike_role_b"
+        ],
+        "CIQ_ZZ_Spike_Log_A00": [
+          "ciq_zz_spike_role_a",
+          "ciq_zz_spike_role_b"
+        ]
+      },
+      "step_actors": {
+        "CIQ_ZZ_Spike_Case_A00/SPKC_S0": [
+          "ciq_zz_spike_role_a"
+        ],
+        "CIQ_ZZ_Spike_Case_A00/SPKC_S1": [
+          "ciq_zz_spike_role_a"
+        ],
+        "CIQ_ZZ_Spike_Case_A00/SPKC_BA": [
+          "ciq_zz_spike_role_a"
+        ],
+        "CIQ_ZZ_Spike_Case_A00/SPKC_BB": [
+          "ciq_zz_spike_role_b"
+        ],
+        "CIQ_ZZ_Spike_Case_A00/SPKC_BC": [
+          "ciq_zz_spike_role_a"
+        ],
+        "CIQ_ZZ_Spike_Case_A00/SPKC_BD": [
+          "ciq_zz_spike_role_b"
+        ],
+        "CIQ_ZZ_Spike_Case_A00/SPKC_BE": [
+          "ciq_zz_spike_role_a"
+        ],
+        "CIQ_ZZ_Spike_Case_A00/SPKC_BF": [
+          "ciq_zz_spike_role_b"
+        ],
+        "CIQ_ZZ_Spike_Case_A00/SPKC_S3": [
+          "ciq_zz_spike_role_a"
+        ],
+        "CIQ_ZZ_Spike_Case_A00/SPKC_S4": [
+          "ciq_zz_spike_role_a"
+        ],
+        "CIQ_ZZ_Spike_Case_A00/SPKC_S5": [
+          "ciq_zz_spike_role_b"
+        ],
+        "CIQ_ZZ_Spike_Point_A00/SPKP_S0": [
+          "ciq_zz_spike_role_a"
+        ],
+        "CIQ_ZZ_Spike_Point_A00/SPKP_S1": [
+          "ciq_zz_spike_role_a"
+        ],
+        "CIQ_ZZ_Spike_Point_A00/SPKP_S2": [
+          "ciq_zz_spike_role_b"
+        ]
+      },
+      "note": "Derived from executable grants: initiator:true only for Role A on both Processes; first step owner (SPKC_S0, SPKP_S0) is Role A. Each task step has exactly its workflow assignee as Act."
+    },
+    "residual_risks": [
+      "SPKC_PAR (container) and End steps carry no field_permissions keys: they are not user tasks."
+    ]
+  },
+  "workflow": {
+    "processes": {
+      "CIQ_ZZ_Spike_Case_A00": {
+        "flow": "CIQ ZZ Spike Case",
+        "steps": [
+          {
+            "id": "SPKC_S0",
+            "name": "Create spike case",
+            "type": "task",
+            "kind": "Start",
+            "actor": "CIQ ZZ Spike Role A",
+            "assignee_role": "ciq_zz_spike_role_a",
+            "evidence": "brd L13"
+          },
+          {
+            "id": "SPKC_S1",
+            "name": "Spike prepare",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ ZZ Spike Role A",
+            "assignee_role": "ciq_zz_spike_role_a",
+            "evidence": "brd L14; OQ-02/OQ-03"
+          },
+          {
+            "id": "SPKC_PAR",
+            "name": "Spike review lanes",
+            "kind": "Parallel",
+            "type": "task",
+            "branches": [
+              {
+                "name": "Spike review – A",
+                "steps": [
+                  {
+                    "id": "SPKC_BA",
+                    "name": "Spike review – A",
+                    "type": "task",
+                    "kind": "UserTask",
+                    "actor": "CIQ ZZ Spike Role A",
+                    "assignee_role": "ciq_zz_spike_role_a",
+                    "condition": "Flag_A = \"Yes\"",
+                    "evidence_fields": [
+                      "Lane_A_Confirm"
+                    ],
+                    "evidence": "brd L15-L18; OQ-01"
+                  }
+                ]
+              },
+              {
+                "name": "Spike review – B",
+                "steps": [
+                  {
+                    "id": "SPKC_BB",
+                    "name": "Spike review – B",
+                    "type": "task",
+                    "kind": "UserTask",
+                    "actor": "CIQ ZZ Spike Role B",
+                    "assignee_role": "ciq_zz_spike_role_b",
+                    "condition": "Flag_B = \"Yes\"",
+                    "evidence_fields": [
+                      "Lane_B_Confirm"
+                    ],
+                    "evidence": "brd L15-L18; OQ-01"
+                  }
+                ]
+              },
+              {
+                "name": "Spike review – C",
+                "steps": [
+                  {
+                    "id": "SPKC_BC",
+                    "name": "Spike review – C",
+                    "type": "task",
+                    "kind": "UserTask",
+                    "actor": "CIQ ZZ Spike Role A",
+                    "assignee_role": "ciq_zz_spike_role_a",
+                    "condition": "Flag_C = \"Yes\"",
+                    "evidence_fields": [
+                      "Lane_C_Confirm"
+                    ],
+                    "evidence": "brd L15-L18; OQ-01"
+                  }
+                ]
+              },
+              {
+                "name": "Spike review – D",
+                "steps": [
+                  {
+                    "id": "SPKC_BD",
+                    "name": "Spike review – D",
+                    "type": "task",
+                    "kind": "UserTask",
+                    "actor": "CIQ ZZ Spike Role B",
+                    "assignee_role": "ciq_zz_spike_role_b",
+                    "condition": "Flag_D = \"Yes\"",
+                    "evidence_fields": [
+                      "Lane_D_Confirm"
+                    ],
+                    "evidence": "brd L15-L18; OQ-01"
+                  }
+                ]
+              },
+              {
+                "name": "Spike review – E",
+                "steps": [
+                  {
+                    "id": "SPKC_BE",
+                    "name": "Spike review – E",
+                    "type": "task",
+                    "kind": "UserTask",
+                    "actor": "CIQ ZZ Spike Role A",
+                    "assignee_role": "ciq_zz_spike_role_a",
+                    "condition": "Flag_E = \"Yes\"",
+                    "evidence_fields": [
+                      "Lane_E_Confirm"
+                    ],
+                    "evidence": "brd L15-L18; OQ-01"
+                  }
+                ]
+              },
+              {
+                "name": "Spike review – F",
+                "steps": [
+                  {
+                    "id": "SPKC_BF",
+                    "name": "Spike review – F",
+                    "type": "task",
+                    "kind": "UserTask",
+                    "actor": "CIQ ZZ Spike Role B",
+                    "assignee_role": "ciq_zz_spike_role_b",
+                    "condition": "Flag_F = \"Yes\"",
+                    "evidence_fields": [
+                      "Lane_F_Confirm"
+                    ],
+                    "evidence": "brd L15-L18; OQ-01"
+                  }
+                ]
+              }
+            ],
+            "evidence": "brd L15-L18",
+            "note": "Container. BRD names no block step; the engine requires a name (validate STEP_NO_NAME at r4), so 'Spike review lanes' is a container label only. One-level fork, auto-join before SPKC_S3."
+          },
+          {
+            "id": "SPKC_S3",
+            "name": "Spike hold check",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ ZZ Spike Role A",
+            "assignee_role": "ciq_zz_spike_role_a",
+            "condition": "Hold_Flag = \"Yes\"",
+            "evidence": "brd L19-L21"
+          },
+          {
+            "id": "SPKC_S4",
+            "name": "Spike gated step",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ ZZ Spike Role A",
+            "assignee_role": "ciq_zz_spike_role_a",
+            "evidence": "brd L22 (Gate Mandatory: security handoff)"
+          },
+          {
+            "id": "SPKC_S5",
+            "name": "Spike not-equal step",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ ZZ Spike Role B",
+            "assignee_role": "ciq_zz_spike_role_b",
+            "condition": "Spike_Decision != \"Rejected\"",
+            "evidence": "brd L23"
+          },
+          {
+            "id": "SPKC_END",
+            "name": "End",
+            "type": "automation",
+            "kind": "End",
+            "evidence": "brd L24"
+          }
+        ]
+      },
+      "CIQ_ZZ_Spike_Point_A00": {
+        "flow": "CIQ ZZ Spike Point",
+        "steps": [
+          {
+            "id": "SPKP_S0",
+            "name": "Raise spike point",
+            "type": "task",
+            "kind": "Start",
+            "actor": "CIQ ZZ Spike Role A",
+            "assignee_role": "ciq_zz_spike_role_a",
+            "evidence": "brd L31; OQ-05"
+          },
+          {
+            "id": "SPKP_S1",
+            "name": "Spike waiting",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ ZZ Spike Role A",
+            "assignee_role": "ciq_zz_spike_role_a",
+            "condition": "To_Supplier = \"Yes\"",
+            "evidence": "brd L32, L40"
+          },
+          {
+            "id": "SPKP_S2",
+            "name": "Spike review",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ ZZ Spike Role B",
+            "assignee_role": "ciq_zz_spike_role_b",
+            "evidence": "brd L33, L43"
+          },
+          {
+            "id": "SPKP_END",
+            "name": "End",
+            "type": "automation",
+            "kind": "End",
+            "evidence": "brd L34"
+          }
+        ]
+      }
+    },
+    "cases": {},
+    "slas": [],
+    "notifications": [],
+    "journey_scenarios": [
+      {
+        "id": "spike-case-all-flags-approved",
+        "flow": "CIQ_ZZ_Spike_Case_A00",
+        "intent": "All six flags Yes: every branch runs and joins; no register so Open_Count blank -> Hold_Flag Yes (hold check runs), Gate OK; Approved -> not-equal step runs.",
+        "steps": [
+          {
+            "step": "SPKC_S0",
+            "role": "ciq_zz_spike_role_a",
+            "input": {}
+          },
+          {
+            "step": "SPKC_S1",
+            "role": "ciq_zz_spike_role_a",
+            "input": {
+              "Flag_A": "Yes",
+              "Flag_B": "Yes",
+              "Flag_C": "Yes",
+              "Flag_D": "Yes",
+              "Flag_E": "Yes",
+              "Flag_F": "Yes",
+              "Spike_Decision": "Approved",
+              "Spike_Case_Notes": [
+                {
+                  "Note_Text": "Fictional note",
+                  "Note_By": "Tester A"
+                }
+              ]
+            }
+          },
+          {
+            "step": "SPKC_BA",
+            "role": "ciq_zz_spike_role_a",
+            "input": {
+              "Lane_A_Confirm": "Yes",
+              "Lane_A_By": "Tester A",
+              "Lane_A_At": "2026-10-08T09:00:00Z",
+              "Lane_A_Note": "ok"
+            }
+          },
+          {
+            "step": "SPKC_BB",
+            "role": "ciq_zz_spike_role_b",
+            "input": {
+              "Lane_B_Confirm": "Yes",
+              "Lane_B_By": "Tester B",
+              "Lane_B_At": "2026-10-08T09:00:00Z",
+              "Lane_B_Note": "ok"
+            }
+          },
+          {
+            "step": "SPKC_BC",
+            "role": "ciq_zz_spike_role_a",
+            "input": {
+              "Lane_C_Confirm": "Yes",
+              "Lane_C_By": "Tester C",
+              "Lane_C_At": "2026-10-08T09:00:00Z",
+              "Lane_C_Note": "ok"
+            }
+          },
+          {
+            "step": "SPKC_BD",
+            "role": "ciq_zz_spike_role_b",
+            "input": {
+              "Lane_D_Confirm": "Yes",
+              "Lane_D_By": "Tester D",
+              "Lane_D_At": "2026-10-08T09:00:00Z",
+              "Lane_D_Note": "ok"
+            }
+          },
+          {
+            "step": "SPKC_BE",
+            "role": "ciq_zz_spike_role_a",
+            "input": {
+              "Lane_E_Confirm": "Yes",
+              "Lane_E_By": "Tester E",
+              "Lane_E_At": "2026-10-08T09:00:00Z",
+              "Lane_E_Note": "ok"
+            }
+          },
+          {
+            "step": "SPKC_BF",
+            "role": "ciq_zz_spike_role_b",
+            "input": {
+              "Lane_F_Confirm": "Yes",
+              "Lane_F_By": "Tester F",
+              "Lane_F_At": "2026-10-08T09:00:00Z",
+              "Lane_F_Note": "ok"
+            }
+          },
+          {
+            "step": "SPKC_S3",
+            "role": "ciq_zz_spike_role_a",
+            "input": {}
+          },
+          {
+            "step": "SPKC_S4",
+            "role": "ciq_zz_spike_role_a",
+            "input": {}
+          },
+          {
+            "step": "SPKC_S5",
+            "role": "ciq_zz_spike_role_b",
+            "input": {}
+          }
+        ],
+        "expect": {
+          "terminal": true,
+          "record": {
+            "Spike_Decision": "Approved",
+            "Hold_Flag": "Yes",
+            "Gate": "OK"
+          }
+        }
+      },
+      {
+        "id": "spike-case-mixed-flags-rejected",
+        "flow": "CIQ_ZZ_Spike_Case_A00",
+        "intent": "Only Flag_A and Flag_B Yes: C-F skipped, join still completes; Rejected -> not-equal step skipped.",
+        "steps": [
+          {
+            "step": "SPKC_S0",
+            "role": "ciq_zz_spike_role_a",
+            "input": {}
+          },
+          {
+            "step": "SPKC_S1",
+            "role": "ciq_zz_spike_role_a",
+            "input": {
+              "Flag_A": "Yes",
+              "Flag_B": "Yes",
+              "Flag_C": "No",
+              "Flag_D": "No",
+              "Flag_E": "No",
+              "Flag_F": "No",
+              "Spike_Decision": "Rejected"
+            }
+          },
+          {
+            "step": "SPKC_BA",
+            "role": "ciq_zz_spike_role_a",
+            "input": {
+              "Lane_A_Confirm": "Yes",
+              "Lane_A_By": "Tester A",
+              "Lane_A_At": "2026-10-08T09:00:00Z",
+              "Lane_A_Note": "ok"
+            }
+          },
+          {
+            "step": "SPKC_BB",
+            "role": "ciq_zz_spike_role_b",
+            "input": {
+              "Lane_B_Confirm": "Yes",
+              "Lane_B_By": "Tester B",
+              "Lane_B_At": "2026-10-08T09:00:00Z",
+              "Lane_B_Note": "ok"
+            }
+          },
+          {
+            "step": "SPKC_S3",
+            "role": "ciq_zz_spike_role_a",
+            "input": {}
+          },
+          {
+            "step": "SPKC_S4",
+            "role": "ciq_zz_spike_role_a",
+            "input": {}
+          }
+        ],
+        "expect": {
+          "terminal": true,
+          "record": {
+            "Spike_Decision": "Rejected"
+          }
+        }
+      },
+      {
+        "id": "spike-case-branch-role-denied",
+        "flow": "CIQ_ZZ_Spike_Case_A00",
+        "intent": "Role B attempts branch A (Role A's lane).",
+        "steps": [
+          {
+            "step": "SPKC_S0",
+            "role": "ciq_zz_spike_role_a",
+            "input": {}
+          },
+          {
+            "step": "SPKC_S1",
+            "role": "ciq_zz_spike_role_a",
+            "input": {
+              "Flag_A": "Yes",
+              "Flag_B": "Yes",
+              "Flag_C": "Yes",
+              "Flag_D": "Yes",
+              "Flag_E": "Yes",
+              "Flag_F": "Yes",
+              "Spike_Decision": "Approved",
+              "Spike_Case_Notes": [
+                {
+                  "Note_Text": "Fictional note",
+                  "Note_By": "Tester A"
+                }
+              ]
+            }
+          },
+          {
+            "step": "SPKC_BA",
+            "role": "ciq_zz_spike_role_b",
+            "input": {
+              "Lane_A_Confirm": "Yes"
+            }
+          }
+        ],
+        "expect": {
+          "error": "SCENARIO_ROLE_DENIED"
+        }
+      },
+      {
+        "id": "spike-case-lane-confirm-missing",
+        "flow": "CIQ_ZZ_Spike_Case_A00",
+        "intent": "Branch A submitted without Lane_A_Confirm (Mandatory).",
+        "steps": [
+          {
+            "step": "SPKC_S0",
+            "role": "ciq_zz_spike_role_a",
+            "input": {}
+          },
+          {
+            "step": "SPKC_S1",
+            "role": "ciq_zz_spike_role_a",
+            "input": {
+              "Flag_A": "Yes",
+              "Flag_B": "Yes",
+              "Flag_C": "Yes",
+              "Flag_D": "Yes",
+              "Flag_E": "Yes",
+              "Flag_F": "Yes",
+              "Spike_Decision": "Approved",
+              "Spike_Case_Notes": [
+                {
+                  "Note_Text": "Fictional note",
+                  "Note_By": "Tester A"
+                }
+              ]
+            }
+          },
+          {
+            "step": "SPKC_BA",
+            "role": "ciq_zz_spike_role_a",
+            "input": {
+              "Lane_A_By": "Tester A"
+            }
+          }
+        ],
+        "expect": {
+          "error": "SCENARIO_MANDATORY_MISSING"
+        }
+      },
+      {
+        "id": "spike-point-to-supplier",
+        "flow": "CIQ_ZZ_Spike_Point_A00",
+        "intent": "To_Supplier Yes: waiting step runs, then review edits Spike Rounds.",
+        "steps": [
+          {
+            "step": "SPKP_S0",
+            "role": "ciq_zz_spike_role_a",
+            "input": {
+              "Round_No": 1,
+              "Question_Text": "Fictional question",
+              "Awaiting_Response": "Supplier",
+              "Due_Date": "2026-10-20",
+              "To_Supplier": "Yes"
+            }
+          },
+          {
+            "step": "SPKP_S1",
+            "role": "ciq_zz_spike_role_a",
+            "input": {
+              "Response_Text": "Fictional answer"
+            }
+          },
+          {
+            "step": "SPKP_S2",
+            "role": "ciq_zz_spike_role_b",
+            "input": {
+              "Spike_Rounds": [
+                {
+                  "Round_No": 1,
+                  "Question": "Q1",
+                  "Response": "R1",
+                  "Outcome": "Closed"
+                }
+              ]
+            }
+          }
+        ],
+        "expect": {
+          "terminal": true,
+          "record": {
+            "To_Supplier": "Yes",
+            "Response_Text": "Fictional answer"
+          }
+        }
+      },
+      {
+        "id": "spike-point-internal",
+        "flow": "CIQ_ZZ_Spike_Point_A00",
+        "intent": "To_Supplier No: waiting step skipped.",
+        "steps": [
+          {
+            "step": "SPKP_S0",
+            "role": "ciq_zz_spike_role_a",
+            "input": {
+              "Round_No": 1,
+              "Question_Text": "Fictional question",
+              "To_Supplier": "No"
+            }
+          },
+          {
+            "step": "SPKP_S2",
+            "role": "ciq_zz_spike_role_b",
+            "input": {}
+          }
+        ],
+        "expect": {
+          "terminal": true,
+          "record": {
+            "To_Supplier": "No"
+          }
+        }
+      },
+      {
+        "id": "spike-point-review-role-denied",
+        "flow": "CIQ_ZZ_Spike_Point_A00",
+        "intent": "Role A attempts Role B's review.",
+        "steps": [
+          {
+            "step": "SPKP_S0",
+            "role": "ciq_zz_spike_role_a",
+            "input": {
+              "Round_No": 1,
+              "Question_Text": "Fictional question",
+              "To_Supplier": "No"
+            }
+          },
+          {
+            "step": "SPKP_S2",
+            "role": "ciq_zz_spike_role_a",
+            "input": {}
+          }
+        ],
+        "expect": {
+          "error": "SCENARIO_ROLE_DENIED"
+        }
+      }
+    ],
+    "meta": {
+      "owner": "kf-workflow-designer",
+      "stage": "author-plan wave 2",
+      "architecture_revision": 3,
+      "contract": "Step ids/names/owners/conditions byte-exact per architecture.id_reservations.step_prefix_by_flow; en-dash U+2013.",
+      "parallel_container": "SPKC_PAR named 'Spike review lanes' because validate rejects a nameless step (STEP_NO_NAME). Label only; no owner, no condition.",
+      "sla_note": "No durations stated in brd; slas = [] and notifications = [] by design (test harness).",
+      "security_handoff": {
+        "note": "Per-step field permissions are kf-security-designer's (security.field_permissions[flow][stepId][field], the engine convention used in run ciq-digital). Unlisted fields ReadOnly at each step. Initiator: Role A on both Processes (initiator:true); Act per step owner.",
+        "items": [
+          {
+            "flow": "CIQ_ZZ_Spike_Case_A00",
+            "step": "SPKC_S0",
+            "Editable": [],
+            "note": "OQ-06: no editable fields; initiator Role A"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Case_A00",
+            "step": "SPKC_S1",
+            "Editable": [
+              "Flag_A",
+              "Flag_B",
+              "Flag_C",
+              "Flag_D",
+              "Flag_E",
+              "Flag_F",
+              "Spike_Decision",
+              "Spike_Case_Notes"
+            ],
+            "note": "Spike Case Notes (child table + its columns Note_Text, Note_By) Editable ONLY here"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Case_A00",
+            "step": "SPKC_BA",
+            "Editable": [
+              "Lane_A_By",
+              "Lane_A_At",
+              "Lane_A_Note"
+            ],
+            "Mandatory": [
+              "Lane_A_Confirm"
+            ],
+            "note": "Branch-scoped: every other lane ReadOnly"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Case_A00",
+            "step": "SPKC_BB",
+            "Editable": [
+              "Lane_B_By",
+              "Lane_B_At",
+              "Lane_B_Note"
+            ],
+            "Mandatory": [
+              "Lane_B_Confirm"
+            ],
+            "note": "Branch-scoped: every other lane ReadOnly"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Case_A00",
+            "step": "SPKC_BC",
+            "Editable": [
+              "Lane_C_By",
+              "Lane_C_At",
+              "Lane_C_Note"
+            ],
+            "Mandatory": [
+              "Lane_C_Confirm"
+            ],
+            "note": "Branch-scoped: every other lane ReadOnly"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Case_A00",
+            "step": "SPKC_BD",
+            "Editable": [
+              "Lane_D_By",
+              "Lane_D_At",
+              "Lane_D_Note"
+            ],
+            "Mandatory": [
+              "Lane_D_Confirm"
+            ],
+            "note": "Branch-scoped: every other lane ReadOnly"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Case_A00",
+            "step": "SPKC_BE",
+            "Editable": [
+              "Lane_E_By",
+              "Lane_E_At",
+              "Lane_E_Note"
+            ],
+            "Mandatory": [
+              "Lane_E_Confirm"
+            ],
+            "note": "Branch-scoped: every other lane ReadOnly"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Case_A00",
+            "step": "SPKC_BF",
+            "Editable": [
+              "Lane_F_By",
+              "Lane_F_At",
+              "Lane_F_Note"
+            ],
+            "Mandatory": [
+              "Lane_F_Confirm"
+            ],
+            "note": "Branch-scoped: every other lane ReadOnly"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Case_A00",
+            "step": "SPKC_S3",
+            "Editable": [],
+            "note": "OQ-06"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Case_A00",
+            "step": "SPKC_S4",
+            "Editable": [],
+            "Mandatory": [
+              "Gate"
+            ],
+            "note": "Gate is a formula (Text); Mandatory blocks submit while Gate is blank"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Case_A00",
+            "step": "SPKC_S5",
+            "Editable": [],
+            "note": "OQ-06"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Point_A00",
+            "step": "SPKP_S0",
+            "Editable": [
+              "Round_No",
+              "Question_Text",
+              "Awaiting_Response",
+              "Due_Date",
+              "To_Supplier"
+            ],
+            "note": "OQ-05"
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Point_A00",
+            "step": "SPKP_S1",
+            "Editable": [
+              "Response_Text"
+            ]
+          },
+          {
+            "flow": "CIQ_ZZ_Spike_Point_A00",
+            "step": "SPKP_S2",
+            "Editable": [
+              "Spike_Rounds"
+            ],
+            "note": "Spike Rounds (child table + columns) Editable ONLY here"
+          }
+        ]
+      }
+    }
+  },
+  "_graphProjection": {
+    "version": 1,
+    "owners": [
+      "data_model",
+      "workflow",
+      "security",
+      "experience"
+    ]
+  }
+}

@@ -1,0 +1,560 @@
+/* ============================================================================
+ * tokens.css — the token contract for this app. ONE LANGUAGE: Beacon (`@theme inline`, the only
+ * design language this app renders).
+ *
+ * READING THE OLD NOTES. This file used to carry eleven languages — Beacon plus Checkpoint, Iris,
+ * Cadence, Harbour, Hearth, Lantern, Plush, Signal, Sorrel and Trailhead — and Nimbus before that.
+ * Nimbus was retired first, on 2026-08-12; the other ten were retired later the same day, when the
+ * app settled on Beacon alone and the multi-language selection machinery (the catalog, the
+ * `--language` flag, per-language generation) was retired with them. Nothing was archived
+ * in-repo — the ten retired blocks, `engine/proto-kit/languages.json` and `gen-language-blocks.mjs`
+ * are recoverable from git history if a language is ever needed again (app-ui branch, commits
+ * dated 2026-08-12).
+ *
+ * SOURCE MOVED 2026-08-13. Beacon's design source is now Claude Design project "Mobile app style
+ * guide sheet" (2b8a920b-a786-4430-bd63-b0bc0dbe6229) — this file transcribes it PAGE BY PAGE,
+ * starting with `Foundations.dc.html`. It previously transcribed project "AI Plugin Themes"
+ * (4ca89dd3-3bd0-4b08-bce9-17111bea1e46), file `Beacon Design Language.dc.html` v2.1; that
+ * source is superseded, not merged — every token below is Foundations', none of v2.1's.
+ *
+ * SCOPE OF THIS PASS. Foundations names 49 tokens: 17 colours, 11 tone values, 3 interaction
+ * states, one type token, one spacing unit, five radii, six shadow roles, two gradients, one
+ * easing curve. It says nothing about buttons, chips, fields, tabs, KPI figures, avatars,
+ * overlays, a chart ramp, or an elevation ladder past the six shadow roles — the OLD v2.1 block
+ * named all of those, and they are GONE here, not carried forward. They will return as their own
+ * pages are transcribed (`Buttons.dc.html`, `Chips.dc.html`, `Fields.dc.html`, `Cards.dc.html`,
+ * `TabStrip.dc.html`, `Avatar.dc.html`, `Overlay.dc.html`, `DataCharts.dc.html`, …) — until then,
+ * a component reading a removed token gets whatever fallback its own `@utility` rule already
+ * carries (the block below this one is UNCHANGED and every entry in it has always defaulted to a
+ * literal, so most component geometry keeps rendering at its old numbers even with no token
+ * behind it), or, for the few `@theme` entries with no such fallback (the chart ramp,
+ * `*-foreground` pairs), resolves to nothing until its page lands. The three `--font-*` faces
+ * were in that "resolves to nothing" set too, until 2026-08-13 — restored under §Type below,
+ * see that section's own comment for why and the real bug it was silently causing.
+ *
+ * WIRED. Reached via a single `@import "./tokens.css"` at the end of src/shadcn.css — from
+ * there and not from main.jsx, because Tailwind only processes @theme / @utility inside its
+ * own CSS graph; a JS-side import leaves both at-rules unhandled. Last import wins, so this
+ * file is the authority for every token it names.
+ *
+ * This is now the SOLE definition of every canonical token. src/app-theme.css was reduced to
+ * the `--kf-*` alias layer and defines nothing unprefixed; src/design-languages.css is no
+ * longer imported at all. src/kf-ui.css is untouched and keeps reading its aliases, three of
+ * which used to point back here (--kf-card-shadow -> --elev-card, --kf-card-borderw ->
+ * --border-decor, --kf-radius -> --radius) — those three source tokens are gone in this pass,
+ * so the aliases now fall through to kf-ui.css's own defaults until a later page restores them.
+ *
+ * NO MORE BARE-NAME LAYER. The old block held internal HSL triplets under bare names (--primary,
+ * --secondary, …) plus a separate `@theme inline` bridge wrapping each in `hsl()` under a
+ * `--color-*` name Tailwind could read. Foundations already names its own tokens `--color-*` /
+ * `--radius-*` / `--shadow-*` / `--text-*` — the exact namespaces `@theme` expects — so that
+ * indirection has nothing left to do for these tokens: each is declared once, directly, below.
+ * (A `--color-x: var(--color-x)` self-reference is invalid CSS — a custom property cannot
+ * resolve through itself — which is the concrete reason the bare layer couldn't just be renamed
+ * in place.) `@theme inline` is kept, not plain `@theme`, for the same reason as before: a
+ * later override further down the cascade is read at use time rather than frozen at build time.
+ *
+ * PROVENANCE — every token is marked, and this is the point of the file
+ *   [SOURCE]  verbatim (or mechanically derived) from Foundations.dc.html or Cards.dc.html.
+ *   [OURS]    our decision — Foundations does not state it, or states the role but not a number.
+ * If a token is [OURS], nobody should later "correct" it to match a doc that never said it.
+ * ============================================================================ */
+
+:root {
+  /* ── Gradients — not a Tailwind theme namespace (no `--gradient-*` utility category), so these
+     stay plain custom properties, read via `var(--gradient-x)` in inline styles, the same way
+     this app's `--grad-hero` / `--grad-brand` anchor tokens already work.
+     [SOURCE] Foundations §Elevation: "Two gradients are tokens because they appear in more than
+     one component." */
+  --gradient-primary: linear-gradient(180deg, #FF7A22, #F25A00);  /* logo mark, primary fills, switch tracks */
+  --gradient-data: linear-gradient(90deg, #F25A00, #FF9A3C);      /* every bar, rail, gauge */
+
+  /* ── The chart ramp — DataCharts.dc.html, [SOURCE]. Six steps, not eight: "the ramp introduces
+     no colour" — every step reuses a value the palette already names, so a chart and the chips
+     beside it agree by construction. Plain custom properties, not `--color-chart-*`: every
+     primitive on this page fills an SVG stroke/inline style directly (`var(--chart-1)`), never a
+     `bg-chart-1` utility, and the page's own token names are bare `--chart-N`, not
+     `--color-chart-N`. KEEP THESE DEDICATED — never merge with same-valued tokens elsewhere; a
+     chart series and a chip tone happening to share a hex today is coincidence the ramp is built
+     on, not a reason to alias one to the other. */
+  --chart-1: var(--color-primary);      /* #FF6203 — primary series. The one step with a gradient twin, --gradient-data */
+  --chart-2: var(--color-secondary);    /* #0A0A0B — second series */
+  --chart-3: var(--color-info-dot);     /* #1A73E8 — info dot, reused */
+  --chart-4: var(--color-success-dot);  /* #0F9D58 — success dot, reused */
+  --chart-5: var(--color-warning-dot);  /* #E0A106 — warning dot, reused */
+  --chart-6: var(--color-border);       /* #C8CACE — everything else */
+
+  /* [SOURCE] Layout.dc.html: "two pages have to agree on it to the pixel or the content area
+     jumps when you navigate." Not a Tailwind namespace either — read via an arbitrary value
+     (`w-[var(--sidebar-width)]`) or inline style on the shell's own sidebar element. */
+  --sidebar-width: 224px;
+}
+
+/* ============================================================================
+ * The bridge: contract → Tailwind. See "NO MORE BARE-NAME LAYER" above for why these are
+ * literal values rather than `var()` references to a bare `:root` twin.
+ * ========================================================================= */
+@theme inline {
+  /* ── Color — Foundations §Color, 17 tokens (4 straight from the guide's own palette, 13
+     retuned or derived/added — Foundations' own split). Hex → HSL triplet, wrapped in `hsl()`:
+     same colour, expressed the way every consumer in this kit already expects
+     (`hsl(var(--token))` elsewhere, or a bare Tailwind colour utility here). Two need alpha and
+     stay whole `rgba()` values — Foundations' own "Ring" and "Scrim" entries are the palette's
+     only alpha colours, same shape as the old --ring-color twin. */
+  --color-primary: hsl(22.6 100% 50.6%);        /* [SOURCE] #FF6203 — actions, active chevron, focus ring */
+  --color-secondary: hsl(240 4.8% 4.1%);        /* [SOURCE] #0A0A0B — primary text, active tabs, dark button */
+  --color-surface: hsl(0 0% 100%);              /* [SOURCE] #FFFFFF — card/surface fill */
+  --color-gray-1: hsl(240 12.5% 96.9%);         /* [SOURCE, derived] #F6F6F8 — filled rows, hover wash, disabled fill */
+  --color-track: hsl(220 13% 95.5%);            /* [SOURCE, derived] #F2F3F5 — the groove under every rail/bar/gauge */
+  --color-row-hover: hsl(240 11.1% 98.2%);      /* [SOURCE, derived] #FAFAFB */
+  --color-row-selected: hsl(25 100% 97.6%);     /* [SOURCE, derived] #FFF8F3 */
+  --color-ink-soft: hsl(220 6.3% 28%);          /* [SOURCE, derived] #43464C — body ink one step below secondary */
+  --color-text-subtle: hsl(222 5.2% 62.4%);     /* [SOURCE, added] #9A9DA4 — placeholders, units, field hover edge */
+  --color-text-muted: hsl(225 3.5% 44.7%);      /* [SOURCE] #6E7076 — body copy, labels, resting chevron; darkened from #7F8082 (was 3.95:1 on white) to meet WCAG AA 4.5:1 */
+  --color-border: hsl(220 5.8% 79.6%);          /* [SOURCE] #C8CACE — container edges, input outlines */
+  --color-gray-2: hsl(220 9.1% 93.5%);          /* [SOURCE, derived] #EDEEF0 — dividers on white, pressed wash */
+  --color-gray-3: hsl(225 8% 90.2%);            /* [SOURCE, derived] #E4E5E8 — last stop, pressed on a gray surface */
+  --color-canvas: hsl(240 15.8% 96.3%);         /* [SOURCE, added] #F4F4F7 — ground panels sit on, never a panel fill */
+  --color-primary-bg: hsl(23.5 100% 95.5%);     /* [SOURCE, added] #FFF1E8 — selected nav, active tabs, tinted tiles */
+  --color-primary-ink: hsl(22.9 100% 38%);      /* [SOURCE, added] #C24A00 */
+  --color-ring: rgba(255, 98, 3, 0.35);         /* [SOURCE, derived] primary / 35% — the one alpha colour besides scrim */
+  --color-scrim: rgba(10, 10, 11, 0.5);         /* [SOURCE, derived] secondary / 50% — dims the page behind a modal/sheet */
+  --color-danger: hsl(3.7 70.9% 49.8%);         /* [SOURCE, derived] #D93025 — error rows, destructive actions */
+
+  /* ── Tones — Foundations §Tones, 11 tokens. Neutral is deliberately not here — it reuses
+     --color-gray-1 / --color-secondary / --color-text-muted, per Foundations' own map. */
+  --color-success-bg: hsl(150 41.2% 93.3%);   --color-success-ink: hsl(152.3 82.5% 24.7%);   --color-success-dot: hsl(150.8 82.6% 33.7%);
+  --color-warning-bg: hsl(40 88.2% 93.3%);     --color-warning-ink: hsl(39.6 100% 27.1%);     --color-warning-dot: hsl(42.7 94.8% 45.1%);
+  --color-info-bg: hsl(214.3 84% 95.1%);       --color-info-ink: hsl(212.4 77.7% 35.1%);      --color-info-dot: hsl(214.1 81.7% 50.6%);
+  --color-danger-bg: hsl(6 76.9% 94.9%);       --color-danger-ink: hsl(3.9 72.5% 37.1%);      /* dot reuses --color-danger, per Foundations */
+
+  /* ── Interaction states — Foundations §Interaction states, 3 tokens. Every other hover/press
+     state steps to an existing ramp value (gray-1→gray-2→gray-3, white→gray-1, secondary-pressed
+     = pure black) rather than minting its own token — see Foundations' own table; those steps
+     need no entry here, they're already the colours above. */
+  --color-primary-hover: hsl(22.5 100% 45.5%);    /* [SOURCE] #E85700 — primary +8% black */
+  --color-primary-pressed: hsl(22.6 100% 40%);    /* [SOURCE] #CC4D00 — primary +20% black */
+  --color-secondary-hover: hsl(240 5% 15.7%);     /* [SOURCE] #26262A — secondary +12% white */
+
+  /* ── Restored semantic bridge — NOT a Foundations role. Foundations never had "foreground /
+     muted / card / popover / strong / control-* / field-*" as concepts at all (Cards.dc.html,
+     Buttons.dc.html etc. paint straight through --color-primary/-secondary/-surface), so this
+     did not "come back reduced" when @theme inline was rewritten — it was never Foundations'
+     vocabulary. It is shadcn's + this kit's own semantic layer, and ~40 catalog entries plus
+     real starter components (sheet, popover, tooltip, accordion, toaster, stores-map, …) still
+     read it by name — same silent-no-op failure as --shadow-card above.
+     NOT restored at the old literal values: several of these surfaces changed MEANING under
+     Foundations — old `--secondary` was a light fill with dark ink on it; Foundations'
+     --color-secondary is the near-black "dark button" ink ITSELF — so each entry is re-derived
+     from what its Foundations-era base actually is now, aliasing a token above wherever one
+     covers the same role. Only --color-border-accent has no Foundations equivalent at all (no
+     page names a "needs-attention" edge); that one alone is restored at its old literal, marked
+     [LEGACY], until whichever page actually owns the concept says otherwise. */
+  --color-background: var(--color-canvas);              /* [DERIVED] Foundations: "the ground panels sit on" */
+  --color-foreground: var(--color-secondary);            /* [DERIVED] Foundations: "primary text" */
+  --color-card: var(--color-surface);                    /* [DERIVED] exact match */
+  --color-card-foreground: var(--color-secondary);
+  --color-popover: var(--color-surface);                 /* [DERIVED] same surface family as card */
+  --color-popover-foreground: var(--color-secondary);
+
+  /* primary / secondary FILLS already come from Foundations above; only the ink drawn ON them
+     was missing. --color-secondary is near-black now — its ink has to flip to white or every
+     "secondary" label goes invisible; it is NOT the old (inverted-meaning) literal. */
+  /* 2026-08-13: was white — measured 3.001:1 against Foundations' own orange (#FF6203), a razor's
+     edge that a single point of float rounding flips either way (this is the SAME primary/ink pair
+     toDesignLanguage()'s primaryFg guard in language-catalog.mjs already had to correct FOR, for
+     exactly this reason — see that file's own note). Dark ink measures 5.5:1, comfortably clear,
+     and is consistent with that fix rather than fighting it. */
+  --color-primary-foreground: hsl(22.6 30% 12%);         /* [DERIVED] ink on orange primary — the robust choice, not the coincidental one */
+  --color-secondary-foreground: hsl(0 0% 100%);          /* [DERIVED] ink on Foundations' now-DARK secondary — flipped from the old light-fill meaning */
+  --color-accent: var(--color-primary-bg);               /* [DERIVED] Foundations' own tint pair — nearly identical to the old accent values already */
+  --color-accent-foreground: var(--color-primary-ink);
+  --color-destructive-ink: var(--color-danger-ink);      /* [DERIVED] same "text on a tinted danger surface" role */
+
+  /* Muted / neutral fills and dividers */
+  --color-muted: var(--color-gray-1);                    /* [DERIVED] Foundations: "filled rows, hover wash, disabled fill" */
+  --color-muted-foreground: var(--color-text-muted);     /* [DERIVED] Foundations: "body copy, labels" */
+  --color-muted-hover: var(--color-gray-2);              /* [DERIVED] Foundations' own rule: a gray fill steps to the next ramp stop on hover */
+  --color-meta-foreground: var(--color-text-muted);      /* [DERIVED] same de-emphasized-label role as muted-foreground */
+  --color-foreground-subtle: var(--color-text-muted);    /* [DERIVED] matches the already-Foundations-mapped `eyebrow` utility, below */
+  --color-foreground-disabled: var(--color-text-subtle); /* [DERIVED] Foundations' own "deliberately quiet" token */
+  --color-row-divider: var(--color-gray-2);              /* [DERIVED] Foundations literally names this role: "dividers on white" */
+  --color-edge: var(--color-border);                     /* [DERIVED] direct pass-through, unchanged in meaning */
+
+  /* Control (outline-button) rank — Buttons.dc.html hasn't landed, but the COLOUR half of this
+     rank (not its height/padding/radius — those stay gated, see control-shape below) is just
+     "primary, worn as an outline instead of a fill", which Foundations already gives us. */
+  --color-control-fill: var(--color-primary);
+  --color-control-fill-hover: var(--color-primary-hover); /* [SOURCE] Foundations gives this one exactly */
+  --color-control-fill-ink: hsl(22.6 30% 12%);           /* [DERIVED] ink on primary fill, same reasoning and same fix as primary-foreground above */
+  --color-control-edge: var(--color-primary);
+  --color-control-ink: var(--color-primary);
+  --color-control-hover: var(--color-primary-bg);        /* [DERIVED] hover wash — Foundations' tint role */
+
+  /* Field (input) rank — same scoping note as control-* above: colour only. */
+  --color-field: var(--color-surface);
+  --color-field-edge: var(--color-border);               /* [DERIVED] Foundations' border role literally includes "input outlines" */
+  --color-field-focus: var(--color-border);              /* [DERIVED] old contract didn't change the edge on focus either */
+
+  /* Strong (near-black chip — tooltip, inverted surface) rank */
+  --color-strong: var(--color-secondary);                /* [DERIVED] same near-black role */
+  --color-strong-foreground: hsl(0 0% 100%);             /* [DERIVED] ink on near-black fill */
+  --color-strong-hover: var(--color-secondary-hover);    /* [SOURCE] Foundations gives this one exactly */
+
+  /* No Foundations equivalent — restored at the OLD literal, not derived. Foundations names no
+     "needs-attention" edge; deriving one now would be a real design call belonging to whichever
+     page (Cards.dc.html? Callout.dc.html?) actually introduces the concept. */
+  --color-border-accent: hsl(22.3 59.3% 88.4%);          /* [LEGACY, restored] #f3ddd0 */
+
+  /* ── Type — Foundations §Type, 1 token. Every other size/weight lands on Tailwind's own scale
+     (text-xl, text-sm, text-xs) — a role is a size utility + a weight, never a dedicated token,
+     per Foundations' own read of its scale. */
+  --text-2xs: 10px;      /* [SOURCE] */
+
+  /* [SOURCE, restored 2026-08-13] --font-sans / --font-mono. Foundations §Type never mints a
+     formal --type-* token for either (its own subtitle says so: "Tailwind defaults, one token" —
+     --text-2xs is that one token) — but its closing line is not silent on the choice, only on
+     giving it a token: "Production sets DM Sans; Roboto ships on Android." Checked Cards.dc.html
+     too, since it's already this file's [SOURCE] for Cards/StatTile: same DM Sans body font in
+     its own <head>, and 'IBM Plex Mono' used throughout for every mono/data treatment — the
+     eyebrow label, delta pills, timestamps, token-mapping tables. Fallback stacks copied verbatim
+     from Foundations.dc.html's own body style attribute.
+     This was the root cause of a real bug (2026-08-13, Kitchen Manager): the kit bridge
+     (shadcn.css) has always read `var(--kf-font-sans, ...)` / `var(--kf-font-mono, ...)`, but
+     with no page defining these tokens, --kf-font-* stayed unset in every app generated through
+     kit-install.mjs (which deliberately drops the old themes.css import that used to feed them),
+     so the chain fell through to a bare generic keyword (`ui-sans-serif`) that this specific
+     environment doesn't resolve — headings and data figures rendered in the browser's fallback
+     serif instead. Hand-patched per-app at the time (kit-compat.css / themes.js) as a stopgap;
+     this is the real fix, upstream of both. Declaring these directly in tokens.css's own
+     `@theme inline` block — not `--kf-font-*` — means this file is the sole authority for them
+     now, same as every other token here; shadcn.css's `var(--kf-font-sans, …)` indirection has
+     nothing left to do but is left alone (harmless, and other consumers may still read it). */
+  --font-sans: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  /* [DERIVED] No page names a SEPARATE display/heading face — Cards.dc.html's own <h1> "Panels"
+     (38px/500) carries no font-family of its own, inheriting the page's DM Sans body font. Alias,
+     not a second value, so a caller reading font-display gets the same answer as font-sans
+     rather than silently resolving to nothing again. */
+  --font-display: var(--font-sans);
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;         /* [SOURCE] Cards.dc.html, DataCharts.dc.html, throughout */
+
+  /* [SOURCE, restored] DataCharts.dc.html: "Value: font-mono tabular-nums 11px throughout every
+     chart." Not part of Foundations' own 49 (that page never mentions a data-figure size), so it
+     didn't come back when @theme inline was rewritten — but `text-data` is read by name across
+     already-ported files (Cards.jsx's StatTile/PhotoCard, Donut.jsx's legend, Board.jsx's footer
+     pills, ...) and silently no-ops without a real theme entry behind it. Restoring it here, at
+     DataCharts' own sourced value (was 11.5px under the old contract; 11px now — DataCharts is
+     the actual source of truth for this token, not a guess). */
+  --text-data: 11px;
+
+  /* ── Spacing — Foundations §Spacing, 1 token, the base unit every gap/padding utility
+     multiplies. Already Tailwind v4's own default value — declared for provenance, not because
+     the number changed. */
+  --spacing: 4px;        /* [SOURCE] */
+
+  /* ── Radius — Foundations §Radius, 5 tokens. Four independent steps now, not a ladder derived
+     from one base — the old `calc(--radius * .6/.8/1/1.3)` derivation is gone; Foundations
+     names each rung directly. */
+  --radius-sm: 6px;         /* [SOURCE] small marks */
+  --radius-md: 10px;        /* [SOURCE] controls, swatches */
+  --radius-lg: 12px;        /* [SOURCE] tiles, rows */
+  --radius-xl: 16px;        /* [SOURCE] panels */
+  --radius-avatar: 9999px;  /* [SOURCE] resolves to full — a token so a person's tile can become a rounded square in one edit */
+
+  /* [OURS, restored] Not named by Foundations, but `rounded-bar` is read directly by three
+     already-ported files (Cards.jsx's PhotoCard stat rail, Queue.jsx's WipStrip bar,
+     DataCharts.jsx's HBars/StackedBar tracks) expecting a fully-rounded pill, same shape every
+     other track in the kit uses (ProgressBar, Donut's groove, HBars' own track). With no
+     `--radius-bar` theme entry the class compiled to nothing and those bars were rendering
+     square-cornered — restoring it here fixes all three call sites with no per-file edit. */
+  --radius-bar: 9999px;
+
+  /* ── Elevation — Foundations §Elevation names six shadow roles but gives no numeric box-shadow
+     for three of them on that page; `--shadow-flat` / `--shadow-raised` / `--shadow-panel` are
+     [SOURCE] from Cards.dc.html, the first page to actually draw them. `--shadow-contact` is
+     [SOURCE, derived]: Foundations' own text says --shadow-panel IS "a 1px contact shadow plus
+     a wide, very soft lift" — the first segment of Cards' --shadow-panel value below IS that
+     1px contact layer, so --shadow-contact is that segment alone, not a guess.
+     `--shadow-button` / `--shadow-overlay` are [OURS] placeholders — no page has drawn them
+     yet — flagged so nobody mistakes them for sourced. `0 0 #0000`, not `none`, for flat/button:
+     Tailwind composes shadow + ring into ONE box-shadow list, and `none` is only legal as a
+     list's SOLE value — in that slot it silently drops a focus ring riding the same property.
+     Same fix this file's old --elev-card already applied; carried forward on the same logic,
+     since Foundations' own CSS never goes through Tailwind's composed shadow list at all. */
+  --shadow-flat: 0 0 #0000;                                                              /* [SOURCE] panel-in-panel separates via --color-gray-1 fill instead */
+  --shadow-raised: 0 1px 2px rgba(10, 10, 11, .05), 0 18px 36px -22px rgba(10, 10, 11, .45);   /* [SOURCE] clickable panel, floating menu/dialog */
+  --shadow-button: 0 6px 16px -6px rgba(10, 10, 11, .5);                                 /* [SOURCE] Buttons.dc.html — the strong rank's own elevation, "black buttons only" */
+  --shadow-overlay: 0 1px 2px rgba(10, 10, 11, .05), 0 18px 36px -22px rgba(10, 10, 11, .45);  /* [OURS] placeholder = --shadow-raised — Foundations says "deeper again" but gives no number yet; pending Overlay.dc.html */
+  --shadow-contact: 0 1px 2px rgba(10, 10, 11, .05);                                      /* [SOURCE, derived] single 1px layer, no lift — quiet button, board card, top-bar control */
+  --shadow-panel: 0 1px 2px rgba(10, 10, 11, .05), 0 10px 24px -18px rgba(10, 10, 11, .4);     /* [SOURCE] NOW THE DEFAULT for a panel on canvas */
+  --shadow-primary: 0 8px 20px -8px rgba(255, 98, 3, .7), inset 0 1px 0 rgba(255, 255, 255, .28);  /* [SOURCE] Buttons.dc.html — the primary button's own glow, deepens on hover, collapses on press */
+  /* [OURS] — 2026-08-13, on request. Layout.dc.html itself names the sidebar the shell's ONE
+     border exception ("every panel separates by shadow, the sidebar is the one" — see the old
+     --color-gray-2 border-right this superseded, in index.css's .sidebar). This deliberately
+     overrides that documented exception app-wide, sourced instead from a different page in the
+     same Claude Design project: Dashboard Explorations.dc.html, exploration "1b — Dimensional".
+     1b's own shell shadow — `0 1px 2px rgba(10,10,11,.05), 0 32px 64px -44px rgba(10,10,11,.3)` —
+     sits UNDER a horizontal floating card; rotated 90° here (offset in X, not Y) so the lift runs
+     along a real full-height h-screen rail instead. Piloted on Kitchen Manager first, dialed back
+     after "it looks strong, reduce the gray" — both layers' alpha roughly halved and the second
+     layer's reach pulled from 32px to 18px so the wash doesn't bleed across the first content
+     column — before landing here at the same reduced numbers, not the original stronger ones. */
+  --shadow-sidebar: 1px 0 2px rgba(10, 10, 11, .03), 18px 0 40px -32px rgba(10, 10, 11, .16);
+
+  /* `--shadow-card` is not a Foundations role — it is proto-kit's (and six starter components')
+     own name for "a panel resting on canvas", still referenced by ~40 call sites across
+     catalog/*.mjs and starter/src/components. The bare-name bridge that used to back it
+     (--elev-card) is one of this migration's casualties (see file banner) and, unlike the
+     buttons/chips/fields tokens, nothing else names this role — so it is not "gone until its
+     page lands", it has no page coming. [DERIVED, alias] straight onto Foundations' own answer
+     for the same role: "--shadow-panel is now the default for a panel on canvas." One alias
+     here fixes every existing call site instead of rewriting ~40 snippets to `shadow-panel`. */
+  --shadow-card: var(--shadow-panel);
+  /* [OURS] placeholder, same shape as --shadow-overlay above: Foundations gives no hover-lift
+     number for a card, so this stays inert (`0 0 #0000`) rather than inventing one. */
+  --shadow-card-hover: 0 0 #0000;
+
+  /* ── Motion — Foundations §Motion, 1 token. Durations (240ms expand/collapse, 200ms chevron,
+     120ms hover/colour) stay Tailwind utilities per Foundations' own callout; only the curve
+     is a token. */
+  --ease-standard: cubic-bezier(.4, 0, .2, 1);    /* [SOURCE] */
+}
+
+/* The one thing Tailwind gives no namespace for. Border-width utilities are hard-coded in
+   v4 (`border`, `border-2/4/8`) — there is no `--border-width-*` theme namespace — so a
+   token-driven decorative edge has to be minted here.
+
+   border-style is not optional: preflight is off in this project, so the UA default is
+   `none`, and a width with style:none computes to 0 — silently deleting the border on
+   every bordered language. Tailwind's own border utilities emit both; so must this one.
+   (Learned the hard way: the first version of this utility shipped without it and every
+   card measured 0px while the build stayed green.)
+
+   Every fallback below is UNCHANGED by the 2026-08-13 Foundations migration above: this block
+   was always written to degrade to a literal rather than an invalid value when its backing
+   token is absent, which is exactly the state most of these tokens are in now (no bare-name
+   layer defines --control-height / --chip-height / --row-pad-y / etc. any more — see the file
+   banner). Nothing here needs editing until each token's own page (Buttons.dc.html,
+   Chips.dc.html, Fields.dc.html, …) restores it with a real value. */
+@utility border-decor {
+  border-style: var(--tw-border-style, solid);
+  border-width: var(--border-decor, 1px);
+}
+
+/* ── The data-bar's anatomy ──────────────────────────────────────────────────────────────
+ * Four more one-property utilities, for the same reason as border-decor: Tailwind has a
+ * namespace for radius and text-size (so --radius-bar and --text-data above are enough) but
+ * none for height, gap or grid-template-columns, so a token-driven value there can only be an
+ * arbitrary `h-[var(--bar-height)]` or a minted utility. These are the minted version.
+ *
+ * Each sets exactly ONE property. A single `bar-row` utility bundling display + columns +
+ * alignment + gap would be a component class wearing a utility's name — the mistake that
+ * `card-elevation` made when it fused border-width and box-shadow, and which cost a focus
+ * ring. The row still composes them itself: `grid items-center grid-cols-bar gap-bar`. */
+/* The lift half of a clickable card's hover. Beacon and Nimbus resolve it to 0, so the class is
+   inert there rather than conditional in the component — the same shape as shadow-button. */
+@utility hover-rise {
+  transform: translateY(var(--card-hover-rise, 0px));
+}
+
+@utility h-bar {
+  height: var(--bar-height, 10px);
+}
+
+@utility gap-bar {
+  gap: var(--bar-gap, 10px);
+}
+
+/* The label and value columns are MINIMUMS that grow, not fixed tracks — v2.1: "both grow to
+   their content, the track absorbs the difference". That is a flex line, not a grid, so
+   `grid-cols-bar` is gone and these three size the two ends instead. The cap on the label is
+   ours; see --label-col-max. */
+@utility min-w-label {
+  min-width: var(--label-col-min, 74px);
+}
+
+@utility max-w-label {
+  max-width: var(--label-col-max, 7rem);
+}
+
+@utility min-w-value {
+  min-width: var(--value-col-min, 18px);
+}
+
+/* Card padding by content role. All three sit on the 4px base unit, so `p-5`/`p-6`/`p-7` would
+   render identically today — but they are named DECISIONS in the doc, not arithmetic, and a
+   retune moves them independently of the spacing scale. */
+@utility card-pad-metric {
+  padding: var(--card-pad-metric, 20px);
+}
+
+@utility card-pad-list {
+  padding: var(--card-pad-list, 24px);
+}
+
+@utility card-pad-doc {
+  padding: var(--card-pad-doc, 28px);
+}
+
+/* A bar growing to its value is a LAYOUT move, not a colour change, so it reads the move
+   duration rather than the default one the @theme bridge gives every other transition. */
+@utility duration-move {
+  transition-duration: var(--motion-duration-move, 220ms);
+}
+
+/* ── Controls, chips and rows ────────────────────────────────────────────────────────────────
+ * Three more geometry bundles, and the same justification as `on-canvas`: each is ONE decision
+ * a language answers as a unit. A button's height, padding, radius, size and weight move
+ * together — Checkpoint is 36/17/9px/12.5 where Beacon is 42/22/999px/13.5 — and letting a
+ * caller take the height without the radius would mint a shape no language declares.
+ *
+ * Colour is deliberately NOT in here. A rank is a fill, and fills stay ordinary colour
+ * utilities (`bg-primary`, `bg-strong`, `bg-secondary`) so a rank is composed, not enumerated.
+ * That is the line between this and `card-elevation`: geometry bundles, colour composes. */
+@utility control-shape {
+  height: var(--control-height, 42px);
+  padding-inline: var(--control-pad-x, 22px);
+  border-radius: var(--control-radius, 999px);
+  font-size: var(--control-text, 13.5px);
+  font-weight: var(--control-weight, 700);
+}
+
+/* The outline rank's edge. Its own utility because the width is a language decision (1.5px in
+   Beacon and Nimbus, 1px in Checkpoint) and Tailwind has no border-width namespace to put it
+   in — the same reason border-decor exists. */
+/* The strong rank's radius — the one control geometry that does not move with control-shape. */
+@utility rounded-control-strong {
+  border-radius: var(--control-radius-strong, var(--control-radius, 999px));
+}
+
+@utility border-control {
+  border-style: var(--tw-border-style, solid);
+  border-width: var(--control-borderw, 1.5px);
+}
+
+@utility chip-shape {
+  height: var(--chip-height, 28px);
+  padding-inline: var(--chip-pad-x, 12px);
+  border-radius: 999px;
+  font-size: var(--chip-text, 12px);
+  font-weight: var(--chip-weight, 500);
+  gap: var(--chip-gap, 7px);
+}
+
+@utility chip-dot {
+  width: var(--chip-dot, 7px);
+  height: var(--chip-dot, 7px);
+  border-radius: 999px;
+}
+
+/* A table row. `--row-pad-y` is Checkpoint's `density` token — "the one global knob" — so a
+   compact table is a token override, not a prop. */
+@utility row-shape {
+  padding: var(--row-pad-y, 15px) var(--row-pad-x, 20px);
+  gap: var(--row-gap, 16px);
+}
+
+/* ── The ten components' geometry ────────────────────────────────────────────────────────────
+ * Same rule as control-shape and chip-shape: each bundles ONE decision a language answers as a
+ * unit, and colour stays composed from ordinary utilities. Take the height without the radius
+ * and you mint a control shape Fields.dc.html never declared.
+ * [SOURCE, updated] Fields.dc.html: h-11 (44px), was 46px under the old three-language contract
+ * — the fallback below is the one place that old number survived the Foundations rewrite, which
+ * is exactly why Command.jsx / FlowViews.jsx (still reading this utility directly, not through
+ * Fields.jsx's own retuned classes) were rendering 2px taller than every other field in the app.
+ * Bumped here so both pick up the real height with no per-file edit. */
+@utility field-shape {
+  height: var(--field-height, 44px);
+  padding-inline: var(--field-pad-x, 14px);
+  border-radius: var(--field-radius, 10px);
+  font-size: var(--control-text, 13.5px);            /* was --field-text — merged, see Fields note above */
+  border-style: var(--tw-border-style, solid);
+  border-width: var(--border-functional, 1px);       /* was --field-borderw — merged, see Fields note above */
+}
+
+/* A textarea is the field with its height released. No language declares a multi-line field
+   directly, so the min-height stays [OURS]. */
+@utility field-multiline {
+  min-height: var(--field-multiline-min, 138px);
+  height: auto;
+  padding-block: calc(var(--field-height, 44px) / 4);
+}
+
+@utility tab-shape {
+  height: var(--tab-height, 38px);
+  padding-inline: var(--tab-pad-x, 20px);
+  border-radius: var(--control-radius, 999px);   /* was --tab-radius — merged, see Tabs note above */
+  font-size: var(--control-text, 13.5px);        /* was --tab-text — merged, see Tabs note above */
+}
+
+/* The KPI figure. `text-kpi` alone would not carry the tracking or the tabular numerals, and
+   all three declare a figure that is useless without them — "Tabular numerals so columns
+   align" is Checkpoint's own note on the token. */
+@utility text-kpi {
+  font-size: var(--kpi-text, 32px);
+  font-weight: var(--control-weight, 700);   /* was --kpi-weight — merged, see StatTile/KPI note above */
+  letter-spacing: var(--kpi-tracking, -0.02em);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+@utility text-kpi-label {
+  font-size: var(--kpi-label-text, 12.5px);
+}
+
+/* Avatar. The radius is the token that earns its place: Beacon draws a circle, Checkpoint a
+   9px rounded square, and hard-coding either would make one of them wear the other's shape. */
+@utility avatar-shape {
+  width: var(--avatar-size, 30px);
+  height: var(--avatar-size, 30px);
+  border-radius: var(--control-radius, 999px);   /* was --avatar-radius — merged, see Avatar note above */
+  font-size: var(--avatar-text, 11px);
+}
+
+@utility overlay-shape {
+  border-radius: var(--overlay-radius, 18px);
+  padding: var(--overlay-pad, 28px);
+}
+
+/* The plate under on-canvas text — see the token block above for why this is one utility and
+   not six. Every value defaults to inert, so adding `on-canvas` to an element under Beacon or
+   Checkpoint changes nothing at all: no background, no border box, no padding, no width change.
+   Note `border-width: 0` rather than a transparent 1px — a transparent border still occupies
+   2px and would shift every caption in the two languages that do not need this. */
+@utility on-canvas {
+  width: var(--canvas-chip-width, auto);
+  background: var(--canvas-chip-bg, transparent);
+  border-style: solid;
+  border-width: var(--canvas-chip-borderw, 0);
+  border-color: var(--canvas-chip-border, transparent);
+  border-radius: var(--canvas-chip-radius, 0);
+  padding: var(--canvas-chip-pad, 0);
+}
+
+/* The frosted chip — surface only, no geometry. Deliberately NOT folded into `on-canvas`: that
+   utility is the language's rule for text on the ground and sets width, padding and radius, so a
+   caller drawing a chip would get a page-title treatment and vice versa. Every value defaults to
+   inert, so a language that declares no frost renders this as no rule at all. */
+@utility frost {
+  background: var(--frost-bg, transparent);
+  border-style: solid;
+  border-width: var(--frost-borderw, 0);
+  border-color: var(--frost-border, transparent);
+  box-shadow: var(--frost-shadow, none);
+}
+
+/* The eyebrow — a mono uppercase kicker. See the --eyebrow-* note in the old Beacon block for
+   why this is its own utility rather than an extension of text-kpi-label. `color` now reads
+   --color-text-muted directly (was `hsl(var(--muted-foreground))`, the one line in this block
+   with no fallback of its own — --muted-foreground no longer exists, so this would otherwise be
+   the one @utility rule that actually breaks rather than degrades. --color-text-muted is its
+   direct Foundations equivalent: "body copy, labels" either way). font-family still reads
+   --type-mono, currently undefined (see file banner) — inert until a page names a mono face
+   again. */
+@utility eyebrow {
+  font-family: var(--type-mono);
+  font-size: var(--eyebrow-text, 10.5px);
+  letter-spacing: var(--eyebrow-tracking, 0.16em);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}

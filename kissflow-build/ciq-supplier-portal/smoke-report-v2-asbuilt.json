@@ -1,0 +1,318 @@
+{
+  "at": "2026-10-06T22:08:36.435Z",
+  "today": "2026-10-06",
+  "pass": 12,
+  "total": 12,
+  "observations": [
+    {
+      "id": "P1-readonly-at-start (admin key)",
+      "expect": "Baseline: with the ADMIN key, ReadOnly-at-Start values sent at create ARE stored. Non-admin behaviour is MORNING-TESTS MT-4",
+      "pass": true,
+      "evidence": {
+        "Final_Release_Confirm": "Confirmed",
+        "Supplier_Release_Requested": "Yes",
+        "createStatus": 200
+      },
+      "observation": true
+    },
+    {
+      "id": "P2-answers-readonly-at-start (admin key)",
+      "expect": "Baseline: with the ADMIN key, Answers_JSON sent at create IS stored although ReadOnly at Start. Non-admin behaviour is MT-4",
+      "pass": true,
+      "evidence": {
+        "Answers_JSON": "{\"should\":\"not be stored\"}"
+      },
+      "observation": true
+    },
+    {
+      "id": "P4-initiate (admin key)",
+      "expect": "Baseline: the ADMIN key, also a member of CIQP BDF Case Admin (flow Admin on P4), CAN submit a change request. Whether a pure internal user can is MT-3",
+      "pass": true,
+      "evidence": {
+        "submit": 200,
+        "step": "Beiersdorf: triage"
+      },
+      "observation": true
+    },
+    {
+      "id": "P4-dept-readonly-at-start (admin key)",
+      "expect": "Baseline: with the ADMIN key, Dept_Code sent at create IS stored. Triage always overwrites it (MT-4 checks non-admin)",
+      "pass": true,
+      "evidence": {
+        "Dept_Code": "SAF"
+      },
+      "observation": true
+    }
+  ],
+  "results": [
+    {
+      "id": "P1-routing",
+      "expect": "Start submit lands at 'Supplier: basic data and configuration', assigned to the user in Assigned_Contacts (not a role)",
+      "pass": true,
+      "evidence": {
+        "submit": 200,
+        "step": "Supplier: basic data and configuration",
+        "assigned": [
+          {
+            "_id": "UsEJUfjYLM8Y",
+            "Name": "Thomas",
+            "Kind": "User"
+          }
+        ]
+      },
+      "observation": false
+    },
+    {
+      "id": "P1-readonly-at-start (admin key)",
+      "expect": "Baseline: with the ADMIN key, ReadOnly-at-Start values sent at create ARE stored. Non-admin behaviour is MORNING-TESTS MT-4",
+      "pass": true,
+      "evidence": {
+        "Final_Release_Confirm": "Confirmed",
+        "Supplier_Release_Requested": "Yes",
+        "createStatus": 200
+      },
+      "observation": true
+    },
+    {
+      "id": "P1-fields-stored",
+      "expect": "Header fields round-trip (key, cycle, due date, contacts JSON, BDF contact e-mail)",
+      "pass": true,
+      "evidence": {
+        "Request_Key": "ZZ-TEST-0001|1",
+        "Cycle_No": 1,
+        "Supplier_Due_Date": "2026-10-20",
+        "BDF_Contact_Email": "rmm.test@example.com"
+      },
+      "observation": false
+    },
+    {
+      "id": "P1-no-contacts",
+      "expect": "Without Assigned_Contacts the Start submit is refused (required field / no assignee for the supplier step)",
+      "pass": true,
+      "evidence": {
+        "submit": 400,
+        "err": "Validation failed for the following fields: {'Assigned_Contacts': ['Value is required']}.",
+        "step": "Issue request"
+      },
+      "observation": false
+    },
+    {
+      "id": "P1-no-case-link",
+      "expect": "Without App_Case_Item_Id (the I-1/I-3 locator) the Start submit is refused",
+      "pass": true,
+      "evidence": {
+        "submit": 400,
+        "err": "Validation failed for the following fields: {'App_Case_Item_Id': ['Value is required']}.",
+        "step": "Issue request"
+      },
+      "observation": false
+    },
+    {
+      "id": "P2-routing",
+      "expect": "Start submit lands at 'Supplier: fill in section', assigned to the user in Assigned_Contacts",
+      "pass": true,
+      "evidence": {
+        "submit": 200,
+        "step": "Supplier: fill in section",
+        "assigned": [
+          {
+            "_id": "UsEJUfjYLM8Y",
+            "Name": "Thomas",
+            "Kind": "User"
+          }
+        ]
+      },
+      "observation": false
+    },
+    {
+      "id": "P2-K16-size",
+      "expect": "A 160 KB Definition_JSON round-trips byte-identical",
+      "pass": true,
+      "evidence": {
+        "sent": 163635,
+        "got": 163635
+      },
+      "observation": false
+    },
+    {
+      "id": "P2-answers-readonly-at-start (admin key)",
+      "expect": "Baseline: with the ADMIN key, Answers_JSON sent at create IS stored although ReadOnly at Start. Non-admin behaviour is MT-4",
+      "pass": true,
+      "evidence": {
+        "Answers_JSON": "{\"should\":\"not be stored\"}"
+      },
+      "observation": true
+    },
+    {
+      "id": "P3-respond",
+      "expect": "Response_Required = Yes → lands at 'Supplier: respond', assigned to the contact (field)",
+      "pass": true,
+      "evidence": {
+        "submit": 200,
+        "step": "Supplier: respond",
+        "assigned": [
+          {
+            "_id": "UsEJUfjYLM8Y",
+            "Name": "Thomas",
+            "Kind": "User"
+          }
+        ]
+      },
+      "observation": false
+    },
+    {
+      "id": "P3-skip-to-dept",
+      "expect": "Response_Required = No, Dept_Code = SAF → skips 'Supplier: respond' and lands at 'Beiersdorf review - Safety', assigned to role CIQP BDF Safety",
+      "pass": true,
+      "evidence": {
+        "submit": 200,
+        "step": "Beiersdorf review - Safety",
+        "assigned": [
+          {
+            "_id": "RoEK4XRVL8z4",
+            "Name": "CIQP BDF Safety",
+            "Kind": "AppRole"
+          }
+        ]
+      },
+      "observation": false
+    },
+    {
+      "id": "P3-skip-to-mic",
+      "expect": "Response_Required = No, Dept_Code = MIC → 'Beiersdorf review - Microbiology', role CIQP BDF Microbiology",
+      "pass": true,
+      "evidence": {
+        "submit": 200,
+        "step": "Beiersdorf review - Microbiology",
+        "assigned": [
+          {
+            "_id": "RoEK4XSVQPcY",
+            "Name": "CIQP BDF Microbiology",
+            "Kind": "AppRole"
+          }
+        ]
+      },
+      "observation": false
+    },
+    {
+      "id": "P3-bad-select-value",
+      "expect": "A wrong-case Response_Required ('yes') is dropped by the Select and the required check refuses the submit (no silent skip to End)",
+      "pass": true,
+      "evidence": {
+        "submit": 400,
+        "err": "Validation failed for the following fields: {'Response_Required': ['Value is required']}.",
+        "step": "Raise query"
+      },
+      "observation": false
+    },
+    {
+      "id": "P3-bad-dept-code",
+      "expect": "An unknown Dept_Code ('XYZ') is dropped by the Select and the required check refuses the submit (before the fix the item ended silently)",
+      "pass": true,
+      "evidence": {
+        "submit": 400,
+        "err": "Validation failed for the following fields: {'Dept_Code': ['Value is required']}.",
+        "step": "Raise query"
+      },
+      "observation": false
+    },
+    {
+      "id": "P4-initiate (admin key)",
+      "expect": "Baseline: the ADMIN key, also a member of CIQP BDF Case Admin (flow Admin on P4), CAN submit a change request. Whether a pure internal user can is MT-3",
+      "pass": true,
+      "evidence": {
+        "submit": 200,
+        "step": "Beiersdorf: triage"
+      },
+      "observation": true
+    },
+    {
+      "id": "P4-dept-readonly-at-start (admin key)",
+      "expect": "Baseline: with the ADMIN key, Dept_Code sent at create IS stored. Triage always overwrites it (MT-4 checks non-admin)",
+      "pass": true,
+      "evidence": {
+        "Dept_Code": "SAF"
+      },
+      "observation": true
+    },
+    {
+      "id": "P5-create-and-list",
+      "expect": "A help article can be created (draft → submit) and is returned by the form list",
+      "pass": true,
+      "evidence": {
+        "draft": 200,
+        "submit": 200,
+        "listed": 6
+      },
+      "observation": false
+    }
+  ],
+  "cleanup": [
+    {
+      "proc": "CIQP_Request_A00",
+      "item": "PkEK5TgC0OtX",
+      "deleted": 200,
+      "after": 404
+    },
+    {
+      "proc": "CIQP_Request_A00",
+      "item": "PkEK5Tivzl7A",
+      "deleted": 200,
+      "after": 404
+    },
+    {
+      "proc": "CIQP_Request_A00",
+      "item": "PkEK5TkbPSQ2",
+      "deleted": 200,
+      "after": 404
+    },
+    {
+      "proc": "CIQP_Section_A00",
+      "item": "PkEK5To8CFTc",
+      "deleted": 200,
+      "after": 404
+    },
+    {
+      "proc": "CIQP_Query_A00",
+      "item": "PkEK5TprrOHF",
+      "deleted": 200,
+      "after": 404
+    },
+    {
+      "proc": "CIQP_Query_A00",
+      "item": "PkEK5TrVZywv",
+      "deleted": 200,
+      "after": 404
+    },
+    {
+      "proc": "CIQP_Query_A00",
+      "item": "PkEK5Tt8axf5",
+      "deleted": 200,
+      "after": 404
+    },
+    {
+      "proc": "CIQP_Query_A00",
+      "item": "PkEK5TumYOoc",
+      "deleted": 200,
+      "after": 404
+    },
+    {
+      "proc": "CIQP_Query_A00",
+      "item": "PkEK5TwHIhNe",
+      "deleted": 200,
+      "after": 404
+    },
+    {
+      "proc": "CIQP_Change_Request_A00",
+      "item": "PkEK5TxmV0fr",
+      "deleted": 200,
+      "after": 404
+    },
+    {
+      "form": "CIQP_Help_Article_A00",
+      "item": "PkEK5TztQWdf",
+      "deleted": 200,
+      "stillListed": false
+    }
+  ]
+}

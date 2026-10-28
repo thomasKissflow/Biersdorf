@@ -1,0 +1,1219 @@
+{
+  "at": "2026-10-08T18:43:35.468Z",
+  "mode": "dry-run (offline simulator, nothing sent)",
+  "runTag": "ZZT-1008-1843",
+  "userFields": "skip",
+  "readback": {
+    "counts": {
+      "PASS": 436,
+      "FAIL": 0,
+      "WARN": 25,
+      "INFO": 20
+    },
+    "blocking": [],
+    "waived": [],
+    "membershipFails": []
+  },
+  "journeys": [
+    {
+      "journey": "d",
+      "title": "FIRST CHECK (D35/F3): a fresh case reads Open_Items_Count blank (not 0) and Hold = Yes; after 0/0 via the admin route Hold = No, S5 and S8 are skipped",
+      "ok": true,
+      "path": [
+        "Create case",
+        "Waiting for supplier: basic data",
+        "Scope check",
+        "Waiting for supplier: completeness PS-05",
+        "Review – Sustainability",
+        "Waiting for supplier: final release PS-11",
+        "(Completed)"
+      ],
+      "expectedPath": [
+        "Create case",
+        "Waiting for supplier: basic data",
+        "Scope check",
+        "Waiting for supplier: completeness PS-05",
+        "Review – Sustainability",
+        "Waiting for supplier: final release PS-11",
+        "(Completed)"
+      ],
+      "checks": [
+        {
+          "id": "read at Start (draft): Open_Items_Count blank and Hold_For_Open_Items = Yes",
+          "ok": true,
+          "severity": "probe",
+          "detail": "Open_Items_Count=undefined Hold=\"Yes\""
+        },
+        {
+          "id": "FIRST CHECK at S1: Open_Items_Count is blank (not 0)",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Open_Items_Count=undefined Open_CR_Count=undefined"
+        },
+        {
+          "id": "FIRST CHECK at S1: Hold_For_Open_Items = Yes",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Hold=\"Yes\""
+        },
+        {
+          "id": "after 0/0: Open_Items_Count reads 0 (a number, not blank)",
+          "ok": true,
+          "severity": "assert",
+          "detail": "0"
+        },
+        {
+          "id": "after 0/0: Hold_For_Open_Items = No, both gates OK",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Hold=No Release=OK Close=OK"
+        },
+        {
+          "id": "Review – Sustainability: SUS_Gate = OK before submit",
+          "ok": true,
+          "severity": "assert",
+          "detail": "SUS_Gate=\"OK\""
+        },
+        {
+          "id": "S7: Hold_For_Open_Items = No with Open_Items_Count 0",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Hold=No"
+        },
+        {
+          "id": "step path = expected",
+          "ok": true,
+          "severity": "assert",
+          "detail": "got Create case → Waiting for supplier: basic data → Scope check → Waiting for supplier: completeness PS-05 → Review – Sustainability → Waiting for supplier: final release PS-11 → (Completed)"
+        },
+        {
+          "id": "case Completed",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Completed"
+        }
+      ],
+      "items": [
+        {
+          "journey": "d",
+          "flow": "CIQ Case",
+          "flowId": "CIQ_Case_A00",
+          "id": "SIMP0001",
+          "label": "ZZT-1008-1843-D",
+          "status": "Completed"
+        }
+      ],
+      "notes": [
+        "Open_Items_Count/Open_CR_Count written at S1 through the admin route although ReadOnly there (deliberate probe; the sync service path, D33)",
+        "User-type fields left blank (fictional data only; Mandatory is not enforced for the key, D33): Owner_RMM, SUS_Completed_By"
+      ]
+    },
+    {
+      "journey": "a",
+      "title": "CIQ Case happy path: REG + SAF + RMM lanes (simultaneous submits), overall approval on (S6 runs), S7 and S8 run, End",
+      "ok": true,
+      "path": [
+        "Create case",
+        "Waiting for supplier: basic data",
+        "Scope check",
+        "Waiting for supplier: completeness PS-05",
+        "Review – RMM | Review – Regulatory | Review – Safety",
+        "Open items check – before release request",
+        "Overall approval",
+        "Waiting for supplier: final release PS-11",
+        "Open items check – before close",
+        "(Completed)"
+      ],
+      "expectedPath": [
+        "Create case",
+        "Waiting for supplier: basic data",
+        "Scope check",
+        "Waiting for supplier: completeness PS-05",
+        "Review – RMM | Review – Regulatory | Review – Safety",
+        "Open items check – before release request",
+        "Overall approval",
+        "Waiting for supplier: final release PS-11",
+        "Open items check – before close",
+        "(Completed)"
+      ],
+      "checks": [
+        {
+          "id": "Review – Regulatory: REG_Gate = OK before submit",
+          "ok": true,
+          "severity": "assert",
+          "detail": "REG_Gate=\"OK\""
+        },
+        {
+          "id": "Review – Safety: SAF_Gate = OK before submit",
+          "ok": true,
+          "severity": "assert",
+          "detail": "SAF_Gate=\"OK\""
+        },
+        {
+          "id": "Review – RMM: RMM_Gate = OK before submit",
+          "ok": true,
+          "severity": "assert",
+          "detail": "RMM_Gate=\"OK\""
+        },
+        {
+          "id": "3 parallel branches submitted at the same moment",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Review – Regulatory: 200; Review – Safety: 200; Review – RMM: 200"
+        },
+        {
+          "id": "S5: after RMM writes 0/0, Hold_For_Open_Items = No and Open_Items_Gate_Release = OK",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Hold=No Gate=OK"
+        },
+        {
+          "id": "S7: Hold_For_Open_Items = Yes with Open_Items_Count 1",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Hold=Yes"
+        },
+        {
+          "id": "S8: Open_Items_Gate_Close = OK after 0/0",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Gate=OK"
+        },
+        {
+          "id": "step path = expected",
+          "ok": true,
+          "severity": "assert",
+          "detail": "got Create case → Waiting for supplier: basic data → Scope check → Waiting for supplier: completeness PS-05 → Review – RMM | Review – Regulatory | Review – Safety → Open items check – before release request → Overall approval → Waiting for supplier: final release PS-11 → Open items check – before close → (Completed)"
+        },
+        {
+          "id": "case Completed with Overall_Decision Approved and Completion_Trigger 'Supplier final release'",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Completed · Approved · Supplier final release"
+        },
+        {
+          "id": "lane gates kept: REG_Gate, SAF_Gate, RMM_Gate = OK at End",
+          "ok": true,
+          "severity": "assert",
+          "detail": "REG=OK SAF=OK RMM=OK"
+        }
+      ],
+      "items": [
+        {
+          "journey": "a",
+          "flow": "CIQ Case",
+          "flowId": "CIQ_Case_A00",
+          "id": "SIMP0008",
+          "label": "ZZT-1008-1843-A",
+          "status": "Completed"
+        }
+      ],
+      "notes": [
+        "User-type fields left blank (fictional data only; Mandatory is not enforced for the key, D33): Owner_RMM, REG_Completed_By, SAF_Completed_By, RMM_Completed_By, Overall_Decided_By"
+      ]
+    },
+    {
+      "journey": "b",
+      "title": "CIQ Case with one department (QM), no overall approval: S6 skipped",
+      "ok": true,
+      "path": [
+        "Create case",
+        "Waiting for supplier: basic data",
+        "Scope check",
+        "Waiting for supplier: completeness PS-05",
+        "Review – QM",
+        "Open items check – before release request",
+        "Waiting for supplier: final release PS-11",
+        "(Completed)"
+      ],
+      "expectedPath": [
+        "Create case",
+        "Waiting for supplier: basic data",
+        "Scope check",
+        "Waiting for supplier: completeness PS-05",
+        "Review – QM",
+        "Open items check – before release request",
+        "Waiting for supplier: final release PS-11",
+        "(Completed)"
+      ],
+      "checks": [
+        {
+          "id": "Review – QM: QM_Gate = OK before submit",
+          "ok": true,
+          "severity": "assert",
+          "detail": "QM_Gate=\"OK\""
+        },
+        {
+          "id": "S5: after RMM writes 0/0, Hold_For_Open_Items = No and Open_Items_Gate_Release = OK",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Hold=No Gate=OK"
+        },
+        {
+          "id": "S7: Hold_For_Open_Items = No with Open_Items_Count 0",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Hold=No"
+        },
+        {
+          "id": "step path = expected",
+          "ok": true,
+          "severity": "assert",
+          "detail": "got Create case → Waiting for supplier: basic data → Scope check → Waiting for supplier: completeness PS-05 → Review – QM → Open items check – before release request → Waiting for supplier: final release PS-11 → (Completed)"
+        },
+        {
+          "id": "case Completed, Overall_Decision blank",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Completed · undefined"
+        }
+      ],
+      "items": [
+        {
+          "journey": "b",
+          "flow": "CIQ Case",
+          "flowId": "CIQ_Case_A00",
+          "id": "SIMP0020",
+          "label": "ZZT-1008-1843-B",
+          "status": "Completed"
+        }
+      ],
+      "notes": [
+        "User-type fields left blank (fictional data only; Mandatory is not enforced for the key, D33): Owner_RMM, QM_Completed_By"
+      ]
+    },
+    {
+      "journey": "c",
+      "title": "CIQ Case with Overall_Decision = Rejected: S7 (and S8) skipped, the case still reaches End",
+      "ok": true,
+      "path": [
+        "Create case",
+        "Waiting for supplier: basic data",
+        "Scope check",
+        "Waiting for supplier: completeness PS-05",
+        "Review – Safety",
+        "Open items check – before release request",
+        "Overall approval",
+        "(Completed)"
+      ],
+      "expectedPath": [
+        "Create case",
+        "Waiting for supplier: basic data",
+        "Scope check",
+        "Waiting for supplier: completeness PS-05",
+        "Review – Safety",
+        "Open items check – before release request",
+        "Overall approval",
+        "(Completed)"
+      ],
+      "checks": [
+        {
+          "id": "Review – Safety: SAF_Gate = OK before submit",
+          "ok": true,
+          "severity": "assert",
+          "detail": "SAF_Gate=\"OK\""
+        },
+        {
+          "id": "S5: after RMM writes 0/0, Hold_For_Open_Items = No and Open_Items_Gate_Release = OK",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Hold=No Gate=OK"
+        },
+        {
+          "id": "step path = expected",
+          "ok": true,
+          "severity": "assert",
+          "detail": "got Create case → Waiting for supplier: basic data → Scope check → Waiting for supplier: completeness PS-05 → Review – Safety → Open items check – before release request → Overall approval → (Completed)"
+        },
+        {
+          "id": "case Completed with Overall_Decision Rejected, SAF_RMES_Decision Rejected, Completion_Trigger 'Overall rejection'",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Completed · Rejected · Rejected · Overall rejection"
+        }
+      ],
+      "items": [
+        {
+          "journey": "c",
+          "flow": "CIQ Case",
+          "flowId": "CIQ_Case_A00",
+          "id": "SIMP0028",
+          "label": "ZZT-1008-1843-C",
+          "status": "Completed"
+        }
+      ],
+      "notes": [
+        "User-type fields left blank (fictional data only; Mandatory is not enforced for the key, D33): Owner_RMM, SAF_Completed_By, Overall_Decided_By"
+      ]
+    },
+    {
+      "journey": "e",
+      "title": "CIQ Open Point: To_Supplier Yes (REG) vs No (SAF, QM, MIC, SUS, RMM); routing to all 6 review steps; Rounds child rows at Start and via the admin route; OP_Outcome Accepted",
+      "ok": true,
+      "path": [
+        "Raise open point",
+        "Waiting for supplier",
+        "Review – Regulatory",
+        "(Completed)",
+        "Raise open point",
+        "Review – Safety",
+        "(Completed)",
+        "Raise open point",
+        "Review – QM",
+        "(Completed)",
+        "Raise open point",
+        "Review – Microbiology",
+        "(Completed)",
+        "Raise open point",
+        "Review – Sustainability",
+        "(Completed)",
+        "Raise open point",
+        "Review – RMM",
+        "(Completed)"
+      ],
+      "expectedPath": [
+        "per point: Raise open point → [Waiting for supplier, REG only] → Review – <D> → (Completed)"
+      ],
+      "checks": [
+        {
+          "id": "REG: read at Start (draft): Start_Gate = OK and Open_Num = 1",
+          "ok": true,
+          "severity": "probe",
+          "detail": "Start_Gate=\"OK\" Open_Num=1"
+        },
+        {
+          "id": "Rounds child row written at Start through the assignee route (Rounds is ReadOnly at Start in the plan)",
+          "ok": true,
+          "severity": "probe",
+          "detail": "status 200  · rows [\"Rounds_5N28qIfBaU\"]"
+        },
+        {
+          "id": "REG: after Start, Start_Gate = OK and Open_Num = 1 (formulas computed server-side)",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Start_Gate=\"OK\" Open_Num=1"
+        },
+        {
+          "id": "REG: Open_Num = 0 once OP_Outcome = Accepted",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Open_Num=0"
+        },
+        {
+          "id": "Rounds child row modified through the admin route at \"Review – Regulatory\"",
+          "ok": true,
+          "severity": "probe",
+          "detail": "status 200  · row {\"_id\":\"Rounds_5N28qIfBaU\",\"Rounds_Round_No\":1,\"Rounds_Question_Text\":\"ZZT: please provide the fictional CoA.\",\"Rounds_Response_Kind\":\"Answer\",\"Rounds_Response_…"
+        },
+        {
+          "id": "REG: step path Raise open point → Waiting for supplier → Review – Regulatory → (Completed)",
+          "ok": true,
+          "severity": "assert",
+          "detail": "got Raise open point → Waiting for supplier → Review – Regulatory → (Completed)"
+        },
+        {
+          "id": "REG: point Completed with OP_Outcome Accepted",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Completed · Accepted"
+        },
+        {
+          "id": "SAF: read at Start (draft): Start_Gate = OK and Open_Num = 1",
+          "ok": true,
+          "severity": "probe",
+          "detail": "Start_Gate=\"OK\" Open_Num=1"
+        },
+        {
+          "id": "SAF: after Start, Start_Gate = OK and Open_Num = 1 (formulas computed server-side)",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Start_Gate=\"OK\" Open_Num=1"
+        },
+        {
+          "id": "SAF: Open_Num = 0 once OP_Outcome = Accepted",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Open_Num=0"
+        },
+        {
+          "id": "SAF: step path Raise open point → Review – Safety → (Completed)",
+          "ok": true,
+          "severity": "assert",
+          "detail": "got Raise open point → Review – Safety → (Completed)"
+        },
+        {
+          "id": "SAF: point Completed with OP_Outcome Accepted",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Completed · Accepted"
+        },
+        {
+          "id": "QM: read at Start (draft): Start_Gate = OK and Open_Num = 1",
+          "ok": true,
+          "severity": "probe",
+          "detail": "Start_Gate=\"OK\" Open_Num=1"
+        },
+        {
+          "id": "QM: after Start, Start_Gate = OK and Open_Num = 1 (formulas computed server-side)",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Start_Gate=\"OK\" Open_Num=1"
+        },
+        {
+          "id": "QM: Open_Num = 0 once OP_Outcome = Accepted",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Open_Num=0"
+        },
+        {
+          "id": "QM: step path Raise open point → Review – QM → (Completed)",
+          "ok": true,
+          "severity": "assert",
+          "detail": "got Raise open point → Review – QM → (Completed)"
+        },
+        {
+          "id": "QM: point Completed with OP_Outcome Accepted",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Completed · Accepted"
+        },
+        {
+          "id": "MIC: read at Start (draft): Start_Gate = OK and Open_Num = 1",
+          "ok": true,
+          "severity": "probe",
+          "detail": "Start_Gate=\"OK\" Open_Num=1"
+        },
+        {
+          "id": "MIC: after Start, Start_Gate = OK and Open_Num = 1 (formulas computed server-side)",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Start_Gate=\"OK\" Open_Num=1"
+        },
+        {
+          "id": "MIC: Open_Num = 0 once OP_Outcome = Accepted",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Open_Num=0"
+        },
+        {
+          "id": "MIC: step path Raise open point → Review – Microbiology → (Completed)",
+          "ok": true,
+          "severity": "assert",
+          "detail": "got Raise open point → Review – Microbiology → (Completed)"
+        },
+        {
+          "id": "MIC: point Completed with OP_Outcome Accepted",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Completed · Accepted"
+        },
+        {
+          "id": "SUS: read at Start (draft): Start_Gate = OK and Open_Num = 1",
+          "ok": true,
+          "severity": "probe",
+          "detail": "Start_Gate=\"OK\" Open_Num=1"
+        },
+        {
+          "id": "SUS: after Start, Start_Gate = OK and Open_Num = 1 (formulas computed server-side)",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Start_Gate=\"OK\" Open_Num=1"
+        },
+        {
+          "id": "SUS: Open_Num = 0 once OP_Outcome = Accepted",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Open_Num=0"
+        },
+        {
+          "id": "SUS: step path Raise open point → Review – Sustainability → (Completed)",
+          "ok": true,
+          "severity": "assert",
+          "detail": "got Raise open point → Review – Sustainability → (Completed)"
+        },
+        {
+          "id": "SUS: point Completed with OP_Outcome Accepted",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Completed · Accepted"
+        },
+        {
+          "id": "RMM: read at Start (draft): Start_Gate = OK and Open_Num = 1",
+          "ok": true,
+          "severity": "probe",
+          "detail": "Start_Gate=\"OK\" Open_Num=1"
+        },
+        {
+          "id": "RMM: after Start, Start_Gate = OK and Open_Num = 1 (formulas computed server-side)",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Start_Gate=\"OK\" Open_Num=1"
+        },
+        {
+          "id": "RMM: Open_Num = 0 once OP_Outcome = Accepted",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Open_Num=0"
+        },
+        {
+          "id": "RMM: step path Raise open point → Review – RMM → (Completed)",
+          "ok": true,
+          "severity": "assert",
+          "detail": "got Raise open point → Review – RMM → (Completed)"
+        },
+        {
+          "id": "RMM: point Completed with OP_Outcome Accepted",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Completed · Accepted"
+        }
+      ],
+      "items": [
+        {
+          "journey": "e",
+          "flow": "CIQ Open Point",
+          "flowId": "CIQ_Open_Point_A00",
+          "id": "SIMP0036",
+          "label": "ZZT-1008-1843-E-REG",
+          "status": "Completed"
+        },
+        {
+          "journey": "e",
+          "flow": "CIQ Open Point",
+          "flowId": "CIQ_Open_Point_A00",
+          "id": "SIMP0040",
+          "label": "ZZT-1008-1843-E-SAF",
+          "status": "Completed"
+        },
+        {
+          "journey": "e",
+          "flow": "CIQ Open Point",
+          "flowId": "CIQ_Open_Point_A00",
+          "id": "SIMP0043",
+          "label": "ZZT-1008-1843-E-QM",
+          "status": "Completed"
+        },
+        {
+          "journey": "e",
+          "flow": "CIQ Open Point",
+          "flowId": "CIQ_Open_Point_A00",
+          "id": "SIMP0046",
+          "label": "ZZT-1008-1843-E-MIC",
+          "status": "Completed"
+        },
+        {
+          "journey": "e",
+          "flow": "CIQ Open Point",
+          "flowId": "CIQ_Open_Point_A00",
+          "id": "SIMP0049",
+          "label": "ZZT-1008-1843-E-SUS",
+          "status": "Completed"
+        },
+        {
+          "journey": "e",
+          "flow": "CIQ Open Point",
+          "flowId": "CIQ_Open_Point_A00",
+          "id": "SIMP0052",
+          "label": "ZZT-1008-1843-E-RMM",
+          "status": "Completed"
+        }
+      ],
+      "notes": [
+        "Table::Rounds written at \"Raise open point\" where the table is ReadOnly (probe)",
+        "User-type fields left blank (fictional data only; Mandatory is not enforced for the key, D33): Responsible_User, Reviewed_By"
+      ]
+    },
+    {
+      "journey": "f",
+      "title": "CIQ Change Request: create at CHRQ_S0, triage, Impact flags fan out to all 5 Assess branches (simultaneous), join, End; plus a refused request (all branches skipped)",
+      "ok": true,
+      "path": [
+        "Receive change request",
+        "Triage",
+        "Assess – Microbiology | Assess – QM | Assess – Regulatory | Assess – Safety | Assess – Sustainability",
+        "(Completed)",
+        "Receive change request",
+        "Triage",
+        "(Completed)"
+      ],
+      "expectedPath": [
+        "CR 1: Receive change request → Triage → [5 Assess branches] → (Completed)",
+        "CR 2: Receive change request → Triage → (Completed)"
+      ],
+      "checks": [
+        {
+          "id": "CR 1: CR_Open_Num = 5 after triage",
+          "ok": true,
+          "severity": "assert",
+          "detail": "CR_Open_Num=5"
+        },
+        {
+          "id": "5 parallel branches submitted at the same moment",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Assess – Regulatory: 200; Assess – Safety: 200; Assess – QM: 200; Assess – Microbiology: 200; Assess – Sustainability: 200"
+        },
+        {
+          "id": "CR 1: step path Receive change request → Triage → Assess – Microbiology | Assess – QM | Assess – Regulatory | Assess – Safety | Assess – Sustainability → (Completed)",
+          "ok": true,
+          "severity": "assert",
+          "detail": "got Receive change request → Triage → Assess – Microbiology | Assess – QM | Assess – Regulatory | Assess – Safety | Assess – Sustainability → (Completed)"
+        },
+        {
+          "id": "CR 1: Completed with CR_Open_Num = 0",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Completed · CR_Open_Num=0"
+        },
+        {
+          "id": "CR 2: CR_Open_Num = 0 after triage",
+          "ok": true,
+          "severity": "assert",
+          "detail": "CR_Open_Num=0"
+        },
+        {
+          "id": "CR 2: step path Receive change request → Triage → (Completed)",
+          "ok": true,
+          "severity": "assert",
+          "detail": "got Receive change request → Triage → (Completed)"
+        },
+        {
+          "id": "CR 2: Completed with CR_Open_Num = 0",
+          "ok": true,
+          "severity": "assert",
+          "detail": "Completed · CR_Open_Num=0"
+        }
+      ],
+      "items": [
+        {
+          "journey": "f",
+          "flow": "CIQ Change Request",
+          "flowId": "CIQ_Change_Request_A00",
+          "id": "SIMP0055",
+          "label": "ZZT-1008-1843-F-1",
+          "status": "Completed"
+        },
+        {
+          "journey": "f",
+          "flow": "CIQ Change Request",
+          "flowId": "CIQ_Change_Request_A00",
+          "id": "SIMP0063",
+          "label": "ZZT-1008-1843-F-2",
+          "status": "Completed"
+        }
+      ],
+      "notes": [
+        "User-type fields left blank (fictional data only; Mandatory is not enforced for the key, D33): REG_Assessed_By, SAF_Assessed_By, QM_Assessed_By, MIC_Assessed_By, SUS_Assessed_By"
+      ]
+    },
+    {
+      "journey": "g",
+      "title": "Every Form: one item each (serially), child-table add/modify where present, read back, formula columns computed",
+      "ok": true,
+      "path": [],
+      "expectedPath": [
+        "(forms have no steps)"
+      ],
+      "checks": [
+        {
+          "id": "CIQ Supplier: header read back after create",
+          "ok": true,
+          "severity": "assert",
+          "detail": "9 fields"
+        },
+        {
+          "id": "CIQ Supplier: 1 Contacts row(s) stored at create",
+          "ok": true,
+          "severity": "assert",
+          "detail": "1 row(s) read"
+        },
+        {
+          "id": "CIQ Supplier: header + child-row modify read back",
+          "ok": true,
+          "severity": "assert",
+          "detail": "status 200 "
+        },
+        {
+          "id": "CIQ Supplier: child row added on the submitted item",
+          "ok": true,
+          "severity": "assert",
+          "detail": "status 200  · rows now Contacts=2"
+        },
+        {
+          "id": "CIQ Config Version: header read back after create",
+          "ok": true,
+          "severity": "assert",
+          "detail": "7 fields"
+        },
+        {
+          "id": "CIQ Config Version: header + child-row modify read back",
+          "ok": true,
+          "severity": "assert",
+          "detail": "status 200 "
+        },
+        {
+          "id": "CIQ Section: header read back after create",
+          "ok": true,
+          "severity": "assert",
+          "detail": "15 fields"
+        },
+        {
+          "id": "CIQ Section: 1 Components row(s) stored at create",
+          "ok": true,
+          "severity": "assert",
+          "detail": "1 row(s) read"
+        },
+        {
+          "id": "CIQ Section: header + child-row modify read back",
+          "ok": true,
+          "severity": "assert",
+          "detail": "status 200 "
+        },
+        {
+          "id": "CIQ Section: child row added on the submitted item",
+          "ok": true,
+          "severity": "assert",
+          "detail": "status 200  · rows now Components=2"
+        },
+        {
+          "id": "CIQ Scope Run: header read back after create",
+          "ok": true,
+          "severity": "assert",
+          "detail": "11 fields"
+        },
+        {
+          "id": "CIQ Scope Run: header + child-row modify read back",
+          "ok": true,
+          "severity": "assert",
+          "detail": "status 200 "
+        },
+        {
+          "id": "CIQ RMES Safety: header read back after create",
+          "ok": true,
+          "severity": "assert",
+          "detail": "8 fields"
+        },
+        {
+          "id": "CIQ RMES Safety: 4 Safety_Criteria row(s) stored at create",
+          "ok": true,
+          "severity": "assert",
+          "detail": "4 row(s) read"
+        },
+        {
+          "id": "CIQ RMES Safety: 1 Safety_Findings row(s) stored at create",
+          "ok": true,
+          "severity": "assert",
+          "detail": "1 row(s) read"
+        },
+        {
+          "id": "CIQ RMES Safety: Criteria_Open_Num computed per row = [0,1,0,1]",
+          "ok": true,
+          "severity": "assert",
+          "detail": "[0,1,0,1]"
+        },
+        {
+          "id": "CIQ RMES Safety: header + child-row modify read back",
+          "ok": true,
+          "severity": "assert",
+          "detail": "status 200 "
+        },
+        {
+          "id": "CIQ RMES Safety: child row added on the submitted item",
+          "ok": true,
+          "severity": "assert",
+          "detail": "status 200  · rows now Safety_Findings=2"
+        },
+        {
+          "id": "CIQ RMES Safety: Criteria_Open_Num recomputed to 0 once the comment is set",
+          "ok": true,
+          "severity": "assert",
+          "detail": "0"
+        },
+        {
+          "id": "CIQ RMES Regulatory: header read back after create",
+          "ok": true,
+          "severity": "assert",
+          "detail": "8 fields"
+        },
+        {
+          "id": "CIQ RMES Regulatory: 4 Regulatory_Criteria row(s) stored at create",
+          "ok": true,
+          "severity": "assert",
+          "detail": "4 row(s) read"
+        },
+        {
+          "id": "CIQ RMES Regulatory: 1 Regulatory_Findings row(s) stored at create",
+          "ok": true,
+          "severity": "assert",
+          "detail": "1 row(s) read"
+        },
+        {
+          "id": "CIQ RMES Regulatory: Criteria_Open_Num computed per row = [0,1,0,1]",
+          "ok": true,
+          "severity": "assert",
+          "detail": "[0,1,0,1]"
+        },
+        {
+          "id": "CIQ RMES Regulatory: header + child-row modify read back",
+          "ok": true,
+          "severity": "assert",
+          "detail": "status 200 "
+        },
+        {
+          "id": "CIQ RMES Regulatory: child row added on the submitted item",
+          "ok": true,
+          "severity": "assert",
+          "detail": "status 200  · rows now Regulatory_Findings=2"
+        },
+        {
+          "id": "CIQ RMES Regulatory: Criteria_Open_Num recomputed to 0 once the comment is set",
+          "ok": true,
+          "severity": "assert",
+          "detail": "0"
+        },
+        {
+          "id": "CIQ Internal Note: header read back after create",
+          "ok": true,
+          "severity": "assert",
+          "detail": "9 fields"
+        },
+        {
+          "id": "CIQ Internal Note: header + child-row modify read back",
+          "ok": true,
+          "severity": "assert",
+          "detail": "status 200 "
+        },
+        {
+          "id": "CIQ Audit Event: header read back after create",
+          "ok": true,
+          "severity": "assert",
+          "detail": "12 fields"
+        }
+      ],
+      "items": [
+        {
+          "journey": "g",
+          "flow": "CIQ Supplier",
+          "flowId": "CIQ_Supplier_A00",
+          "id": "SIMF0066",
+          "label": "ZZT-SUP-1008-1843",
+          "status": "submitted"
+        },
+        {
+          "journey": "g",
+          "flow": "CIQ Config Version",
+          "flowId": "CIQ_Config_Version_A00",
+          "id": "SIMF0067",
+          "label": "ZZT-1008-1843-G-CFG",
+          "status": "submitted"
+        },
+        {
+          "journey": "g",
+          "flow": "CIQ Section",
+          "flowId": "CIQ_Section_A00",
+          "id": "SIMF0068",
+          "label": "ZZT-1008-1843-G-SEC",
+          "status": "submitted"
+        },
+        {
+          "journey": "g",
+          "flow": "CIQ Scope Run",
+          "flowId": "CIQ_Scope_Run_A00",
+          "id": "SIMF0069",
+          "label": "ZZT-1008-1843-G-RUN",
+          "status": "submitted"
+        },
+        {
+          "journey": "g",
+          "flow": "CIQ RMES Safety",
+          "flowId": "CIQ_RMES_Safety_A00",
+          "id": "SIMF0070",
+          "label": "ZZT-1008-1843-G-SAF",
+          "status": "submitted"
+        },
+        {
+          "journey": "g",
+          "flow": "CIQ RMES Regulatory",
+          "flowId": "CIQ_RMES_Regulatory_A00",
+          "id": "SIMF0071",
+          "label": "ZZT-1008-1843-G-REG",
+          "status": "submitted"
+        },
+        {
+          "journey": "g",
+          "flow": "CIQ Internal Note",
+          "flowId": "CIQ_Internal_Note_A00",
+          "id": "SIMF0072",
+          "label": "ZZT-1008-1843-G-NOTE",
+          "status": "submitted"
+        },
+        {
+          "journey": "g",
+          "flow": "CIQ Audit Event",
+          "flowId": "CIQ_Audit_Event_A00",
+          "id": "SIMF0073",
+          "label": "ZZT-1008-1843-G-EVT",
+          "status": "submitted"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "journey": "h",
+      "title": "Reject a case at an RMM step (with Comment) and withdraw another; record statuses",
+      "ok": true,
+      "path": [
+        "Create case",
+        "Waiting for supplier: basic data",
+        "(Rejected)",
+        "Create case",
+        "Waiting for supplier: basic data",
+        "(Withdrawn)"
+      ],
+      "expectedPath": [
+        "Create case → Waiting for supplier: basic data → (Rejected)",
+        "Create case → Waiting for supplier: basic data → (Withdrawn)"
+      ],
+      "checks": [
+        {
+          "id": "reject accepted at \"Waiting for supplier: basic data\" (an RMM step)",
+          "ok": true,
+          "severity": "assert",
+          "detail": "200 "
+        },
+        {
+          "id": "H1: path Create case → Waiting for supplier: basic data → (Rejected)",
+          "ok": true,
+          "severity": "assert",
+          "detail": "got Create case → Waiting for supplier: basic data → (Rejected)"
+        },
+        {
+          "id": "H1: status Rejected and no open task",
+          "ok": true,
+          "severity": "assert",
+          "detail": "status Rejected · open 0"
+        },
+        {
+          "id": "withdraw accepted at \"Waiting for supplier: basic data\" (an RMM step)",
+          "ok": true,
+          "severity": "assert",
+          "detail": "200 "
+        },
+        {
+          "id": "H2: path Create case → Waiting for supplier: basic data → (Withdrawn)",
+          "ok": true,
+          "severity": "assert",
+          "detail": "got Create case → Waiting for supplier: basic data → (Withdrawn)"
+        },
+        {
+          "id": "H2: status Withdrawn and no open task",
+          "ok": true,
+          "severity": "assert",
+          "detail": "status Withdrawn · open 0"
+        }
+      ],
+      "items": [
+        {
+          "journey": "h",
+          "flow": "CIQ Case",
+          "flowId": "CIQ_Case_A00",
+          "id": "SIMP0074",
+          "label": "ZZT-1008-1843-H1",
+          "status": "Rejected"
+        },
+        {
+          "journey": "h",
+          "flow": "CIQ Case",
+          "flowId": "CIQ_Case_A00",
+          "id": "SIMP0077",
+          "label": "ZZT-1008-1843-H2",
+          "status": "Withdrawn"
+        }
+      ],
+      "notes": [
+        "User-type fields left blank (fictional data only; Mandatory is not enforced for the key, D33): Owner_RMM"
+      ]
+    }
+  ],
+  "items": [
+    {
+      "journey": "d",
+      "flow": "CIQ Case",
+      "flowId": "CIQ_Case_A00",
+      "id": "SIMP0001",
+      "label": "ZZT-1008-1843-D",
+      "status": "Completed"
+    },
+    {
+      "journey": "a",
+      "flow": "CIQ Case",
+      "flowId": "CIQ_Case_A00",
+      "id": "SIMP0008",
+      "label": "ZZT-1008-1843-A",
+      "status": "Completed"
+    },
+    {
+      "journey": "b",
+      "flow": "CIQ Case",
+      "flowId": "CIQ_Case_A00",
+      "id": "SIMP0020",
+      "label": "ZZT-1008-1843-B",
+      "status": "Completed"
+    },
+    {
+      "journey": "c",
+      "flow": "CIQ Case",
+      "flowId": "CIQ_Case_A00",
+      "id": "SIMP0028",
+      "label": "ZZT-1008-1843-C",
+      "status": "Completed"
+    },
+    {
+      "journey": "e",
+      "flow": "CIQ Open Point",
+      "flowId": "CIQ_Open_Point_A00",
+      "id": "SIMP0036",
+      "label": "ZZT-1008-1843-E-REG",
+      "status": "Completed"
+    },
+    {
+      "journey": "e",
+      "flow": "CIQ Open Point",
+      "flowId": "CIQ_Open_Point_A00",
+      "id": "SIMP0040",
+      "label": "ZZT-1008-1843-E-SAF",
+      "status": "Completed"
+    },
+    {
+      "journey": "e",
+      "flow": "CIQ Open Point",
+      "flowId": "CIQ_Open_Point_A00",
+      "id": "SIMP0043",
+      "label": "ZZT-1008-1843-E-QM",
+      "status": "Completed"
+    },
+    {
+      "journey": "e",
+      "flow": "CIQ Open Point",
+      "flowId": "CIQ_Open_Point_A00",
+      "id": "SIMP0046",
+      "label": "ZZT-1008-1843-E-MIC",
+      "status": "Completed"
+    },
+    {
+      "journey": "e",
+      "flow": "CIQ Open Point",
+      "flowId": "CIQ_Open_Point_A00",
+      "id": "SIMP0049",
+      "label": "ZZT-1008-1843-E-SUS",
+      "status": "Completed"
+    },
+    {
+      "journey": "e",
+      "flow": "CIQ Open Point",
+      "flowId": "CIQ_Open_Point_A00",
+      "id": "SIMP0052",
+      "label": "ZZT-1008-1843-E-RMM",
+      "status": "Completed"
+    },
+    {
+      "journey": "f",
+      "flow": "CIQ Change Request",
+      "flowId": "CIQ_Change_Request_A00",
+      "id": "SIMP0055",
+      "label": "ZZT-1008-1843-F-1",
+      "status": "Completed"
+    },
+    {
+      "journey": "f",
+      "flow": "CIQ Change Request",
+      "flowId": "CIQ_Change_Request_A00",
+      "id": "SIMP0063",
+      "label": "ZZT-1008-1843-F-2",
+      "status": "Completed"
+    },
+    {
+      "journey": "g",
+      "flow": "CIQ Supplier",
+      "flowId": "CIQ_Supplier_A00",
+      "id": "SIMF0066",
+      "label": "ZZT-SUP-1008-1843",
+      "status": "submitted"
+    },
+    {
+      "journey": "g",
+      "flow": "CIQ Config Version",
+      "flowId": "CIQ_Config_Version_A00",
+      "id": "SIMF0067",
+      "label": "ZZT-1008-1843-G-CFG",
+      "status": "submitted"
+    },
+    {
+      "journey": "g",
+      "flow": "CIQ Section",
+      "flowId": "CIQ_Section_A00",
+      "id": "SIMF0068",
+      "label": "ZZT-1008-1843-G-SEC",
+      "status": "submitted"
+    },
+    {
+      "journey": "g",
+      "flow": "CIQ Scope Run",
+      "flowId": "CIQ_Scope_Run_A00",
+      "id": "SIMF0069",
+      "label": "ZZT-1008-1843-G-RUN",
+      "status": "submitted"
+    },
+    {
+      "journey": "g",
+      "flow": "CIQ RMES Safety",
+      "flowId": "CIQ_RMES_Safety_A00",
+      "id": "SIMF0070",
+      "label": "ZZT-1008-1843-G-SAF",
+      "status": "submitted"
+    },
+    {
+      "journey": "g",
+      "flow": "CIQ RMES Regulatory",
+      "flowId": "CIQ_RMES_Regulatory_A00",
+      "id": "SIMF0071",
+      "label": "ZZT-1008-1843-G-REG",
+      "status": "submitted"
+    },
+    {
+      "journey": "g",
+      "flow": "CIQ Internal Note",
+      "flowId": "CIQ_Internal_Note_A00",
+      "id": "SIMF0072",
+      "label": "ZZT-1008-1843-G-NOTE",
+      "status": "submitted"
+    },
+    {
+      "journey": "g",
+      "flow": "CIQ Audit Event",
+      "flowId": "CIQ_Audit_Event_A00",
+      "id": "SIMF0073",
+      "label": "ZZT-1008-1843-G-EVT",
+      "status": "submitted"
+    },
+    {
+      "journey": "h",
+      "flow": "CIQ Case",
+      "flowId": "CIQ_Case_A00",
+      "id": "SIMP0074",
+      "label": "ZZT-1008-1843-H1",
+      "status": "Rejected"
+    },
+    {
+      "journey": "h",
+      "flow": "CIQ Case",
+      "flowId": "CIQ_Case_A00",
+      "id": "SIMP0077",
+      "label": "ZZT-1008-1843-H2",
+      "status": "Withdrawn"
+    }
+  ],
+  "refused": [],
+  "seconds": 0,
+  "ok": true
+}

@@ -1,0 +1,394 @@
+
+== U1.1 ZZT-NT-U1: case created, started; I-1 creates the request (+ twins guard)
+  ok   U1.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   U1.1 case draft is at 'Create case'
+  ok   U1.1 Start submit accepted
+  ok   U1.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   U1.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   U1.1 case fields unchanged by the submit
+  ok   U1.1 case.started (I-1) → the case links its new request
+  ok   U1.1 case phase 'Supplier filling in the CIQ'
+  ok   U1.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   U1.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   U1.1 request has no Release_Flag yet
+  ok   U1.1 two more case.started posts create no second request (idempotent)
+  ok   U1.1 the case still links its first request
+
+== U1.2 ZZT-NT-U1: the supplier saves three revisions, uploads and removes a file; request.changed
+  ok   U1.2 Rev 1: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   U1.2 Rev 1: the request reads back every answer field exactly
+  ok   U1.2 Rev 1: every JSON field parses and no time has milliseconds
+  ok   U1.2 Rev 1: request.changed → the case has Rev 1
+  ok   U1.2 Rev 1: the case's 15 synced fields equal the request's
+  ok   U1.2 Rev 2: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   U1.2 Rev 2: the request reads back every answer field exactly
+  ok   U1.2 Rev 2: every JSON field parses and no time has milliseconds
+  ok   U1.2 Rev 2: request.changed → the case has Rev 2
+  ok   U1.2 Rev 2: the case's 15 synced fields equal the request's
+  ok   U1.2 Rev 3: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   U1.2 Rev 3: the request reads back every answer field exactly
+  ok   U1.2 Rev 3: every JSON field parses and no time has milliseconds
+  ok   U1.2 Rev 3: request.changed → the case has Rev 3 (posted twice back to back)
+  ok   U1.2 Rev 3: the case's 15 synced fields equal the request's
+  ok   U1.2 upload row ZZT-NT-U1-UP1: the write is accepted
+  ok   U1.2 upload row ZZT-NT-U1-UP2: the write is accepted
+  ok   U1.2 both upload rows are stored with every field
+  ok   U1.2 removing a file marks its row (Upload_Removed_At / _By_Email), keeps the row and adds none
+  ok   U1.2 the other upload row is untouched
+  ok   U1.2 the screen's Documents_JSON (Rev 4) is accepted
+  ok   U1.2 request.changed after the upload/removal → the case's Documents_JSON
+  ok   U1.2 the case's Documents_JSON equals the request's
+  ok   U1.2 not covered: the attachment file itself (Upload_File) needs the browser's upload API
+
+== U1.3 ZZT-NT-U1: completeness confirmed and submitted; I-2
+  ok   U1.3 the supplier's completeness confirmation is accepted at fill-in
+  ok   U1.3 the fill-in submit moves the request to 'keep the CIQ up to date'
+  ok   U1.3 the request reads back the confirmation
+  ok   U1.3 completeness.confirmed (I-2) → the case records the confirmation
+  ok   U1.3 the case's Completeness_* fields equal the request's
+  ok   U1.3 the case's 15 synced fields equal the request's
+  ok   U1.3 the case phase is 'Review'
+  ok   U1.3 I-2's Approve moves the case to 'Beiersdorf review and final release' (needs Thomas in the role Integration service)
+  ok   U1.3 a second completeness.confirmed is refused (the case already has it): the case is unchanged
+
+== U1.3b ZZT-NT-U1: the supplier keeps the CIQ up to date (Rev 5)
+  ok   U1.3b Rev 5 at 'keep the CIQ up to date': the screen's write at 'Supplier: keep the CIQ up to date' is accepted (user route)
+  ok   U1.3b Rev 5: the request reads back every answer field
+  ok   U1.3b Rev 5: request.changed → the case in review has Rev 5
+  ok   U1.3b Rev 5: the case's 15 synced fields equal the request's, and its completeness is kept
+
+== U1.4 ZZT-NT-U1: open point(s) REG + SUS: two rounds, edit, answer, close; history.updated
+  ok   U1.4 REG: the open point draft reads back every Start field
+  ok   U1.4 REG: the raise moves the point to 'Open point – Regulatory', assigned to the raiser
+  ok   U1.4 REG: op.round → the point links its round-1 query
+  ok   U1.4 REG: the query carries every field of the point
+  ok   U1.4 REG: the query is at 'Supplier: respond', assigned to the portal contact
+  ok   U1.4 REG: the raiser's edit: the screen's write at 'Open point – Regulatory' is accepted (user route)
+  ok   U1.4 REG: the raiser's edit is accepted at the point's step
+  ok   U1.4 REG: op.edited → the open query shows the edit
+  ok   U1.4 REG: the query has the edited justification, due date and an Edited_At without milliseconds
+  ok   U1.4 REG: the supplier's answer: the screen's write at 'Supplier: respond' is accepted (user route)
+  ok   U1.4 REG: the supplier's answer is accepted at 'Supplier: respond'
+  ok   U1.4 REG: the respond submit completes the query
+  ok   U1.4 REG: query.answered (I-4) → the point has the answer
+  ok   U1.4 REG: the point has all four answer fields and OP_Progress 'In progress'
+  ok   U1.4 REG: the return (round 2): the screen's write at 'Open point – Regulatory' is accepted (user route)
+  ok   U1.4 REG: the return (round 2) is accepted at the point's step
+  ok   U1.4 REG: op.round → the point links its round-2 query
+  ok   U1.4 REG: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond'
+  ok   U1.4 REG: the answered round-1 query stays completed with its answer
+  ok   U1.4 REG: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   U1.4 REG: op.closed while the point has no outcome is refused (its query stays)
+  ok   U1.4 REG: the close: the screen's write at 'Open point – Regulatory' is accepted (user route)
+  ok   U1.4 REG: closing (outcome + submit) completes the point
+  ok   U1.4 REG: op.closed → the open round-2 query is completed
+skip U1.1 (done)
+skip U1.2 (done)
+skip U1.3 (done)
+skip U1.3b (done)
+
+== U1.4 ZZT-NT-U1: open point(s) REG + SUS: two rounds, edit, answer, close; history.updated
+  ok   U1.4 REG: the open point draft reads back every Start field
+  ok   U1.4 REG: the raise moves the point to 'Open point – Regulatory', assigned to the raiser
+  ok   U1.4 REG: op.round → the point links its round-1 query
+  ok   U1.4 REG: the query carries every field of the point
+  ok   U1.4 REG: the query is at 'Supplier: respond', assigned to the portal contact
+  ok   U1.4 REG: the raiser's edit: the screen's write at 'Open point – Regulatory' is accepted (user route)
+  ok   U1.4 REG: the raiser's edit is accepted at the point's step
+  ok   U1.4 REG: op.edited → the open query shows the edit
+  ok   U1.4 REG: the query has the edited justification, due date and an Edited_At without milliseconds
+  ok   U1.4 REG: the supplier's answer: the screen's write at 'Supplier: respond' is accepted (user route)
+  ok   U1.4 REG: the supplier's answer is accepted at 'Supplier: respond'
+  ok   U1.4 REG: the respond submit completes the query
+  ok   U1.4 REG: query.answered (I-4) → the point has the answer
+  ok   U1.4 REG: the point has all four answer fields and OP_Progress 'In progress'
+  ok   U1.4 REG: the return (round 2): the screen's write at 'Open point – Regulatory' is accepted (user route)
+  ok   U1.4 REG: the return (round 2) is accepted at the point's step
+  ok   U1.4 REG: op.round → the point links its round-2 query
+  ok   U1.4 REG: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond'
+  ok   U1.4 REG: the answered round-1 query stays completed with its answer
+  ok   U1.4 REG: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   U1.4 REG: op.closed while the point has no outcome is refused (its query stays)
+  ok   U1.4 REG: the close: the screen's write at 'Open point – Regulatory' is accepted (user route)
+  ok   U1.4 REG: closing (outcome + submit) completes the point
+  ok   U1.4 REG: op.closed → the open round-2 query is completed
+  ok   U1.4 REG: op.edited on the closed point is refused
+  ok   U1.4 REG: op.round on the closed point is refused (no new query)
+  ok   U1.4 REG: exactly two queries exist for the point
+  ok   U1.4 SUS: the open point draft reads back every Start field
+  ok   U1.4 SUS: the raise moves the point to 'Open point – Sustainability', assigned to the raiser
+  ok   U1.4 SUS: op.round → the point links its round-1 query
+  ok   U1.4 SUS: the query carries every field of the point
+  ok   U1.4 SUS: the query is at 'Supplier: respond', assigned to the portal contact
+  ok   U1.4 SUS: the raiser's edit: the screen's write at 'Open point – Sustainability' is accepted (user route)
+  ok   U1.4 SUS: the raiser's edit is accepted at the point's step
+  ok   U1.4 SUS: op.edited → the open query shows the edit
+  ok   U1.4 SUS: the query has the edited justification, due date and an Edited_At without milliseconds
+  ok   U1.4 SUS: the supplier's answer: the screen's write at 'Supplier: respond' is accepted (user route)
+  ok   U1.4 SUS: the supplier's answer is accepted at 'Supplier: respond'
+  ok   U1.4 SUS: the respond submit completes the query
+  ok   U1.4 SUS: query.answered (I-4) → the point has the answer
+  ok   U1.4 SUS: the point has all four answer fields and OP_Progress 'In progress'
+  ok   U1.4 SUS: the return (round 2): the screen's write at 'Open point – Sustainability' is accepted (user route)
+  ok   U1.4 SUS: the return (round 2) is accepted at the point's step
+  ok   U1.4 SUS: op.round → the point links its round-2 query
+  ok   U1.4 SUS: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond'
+  ok   U1.4 SUS: the answered round-1 query stays completed with its answer
+  ok   U1.4 SUS: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   U1.4 SUS: op.closed while the point has no outcome is refused (its query stays)
+  ok   U1.4 SUS: the close: the screen's write at 'Open point – Sustainability' is accepted (user route)
+  ok   U1.4 SUS: closing (outcome + submit) completes the point
+  ok   U1.4 SUS: op.closed → the open round-2 query is completed
+  ok   U1.4 SUS: op.edited on the closed point is refused
+  ok   U1.4 SUS: op.round on the closed point is refused (no new query)
+  ok   U1.4 SUS: exactly two queries exist for the point
+  ok   U1.4 history.updated → the request's Questions_History_JSON
+  ok   U1.4 the history reads back exactly and parses
+  ok   U1.4 history.updated with text that is not JSON is refused
+  ok   U1.4 history.updated with a JSON object (not a list) is refused
+
+== U1.5 ZZT-NT-U1: release.requested (I-5) and the supplier's move to the release step
+  ok   U1.5 seeded an earlier round's Release_At / Release_By_Name on the request (admin) to prove the clear
+  ok   U1.5 release.requested (I-5) → the request asks for the final release
+  ok   U1.5 the request is locked, labelled, has its release contact and no earlier release
+  ok   U1.5 the case has Release_Requested_At (now, no milliseconds)
+  ok   U1.5 the supplier's move (submit only: Keep_Open_Gate is a formula, P-2) takes the request to 'give the final release', assigned to the release contact
+
+== U1.7 ZZT-NT-U1: the supplier's final release; I-7 completes the case
+  ok   U1.7 the supplier's final release: the screen's write at 'Supplier: give the final release' is accepted (user route)
+  ok   U1.7 the supplier's release (fields + submit) takes the request to 'view the released CIQ'
+  ok   U1.7 the request reads back the release
+  ok   U1.7 release.given (I-7) → the case is completed
+  ok   U1.7 the case has Final_Release_* and phase 'Completed'
+  ok   U1.7 a second release.given is refused (the case is completed)
+
+== U1.8 ZZT-NT-U1: a change report after the release; request.changed on the completed case
+  ok   U1.8 after the release an upload is refused (the Uploads table is ReadOnly at 'view the released CIQ')
+  ok   U1.8 the supplier's change report: the screen's write at 'Supplier: view the released CIQ' is accepted (user route)
+  ok   U1.8 request.changed after the release → the completed case has the change report
+  ok   U1.8 the case's change-report fields equal the request's and the case stays completed
+
+== U2.1 ZZT-NT-U2: case created, started; I-1 creates the request (+ twins guard)
+  ok   U2.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   U2.1 case draft is at 'Create case'
+  ok   U2.1 Start submit accepted
+  ok   U2.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   U2.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   U2.1 case fields unchanged by the submit
+  ok   U2.1 case.started (I-1) → the case links its new request
+  ok   U2.1 case phase 'Supplier filling in the CIQ'
+  ok   U2.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   U2.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   U2.1 request has no Release_Flag yet
+  ok   U2.1 two more case.started posts create no second request (idempotent)
+  ok   U2.1 the case still links its first request
+
+== U2.2 ZZT-NT-U2: the supplier saves three revisions (Rev 2 ~30 KB), uploads and removes a file; request.changed
+  ok   U2.2 Rev 1: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   U2.2 Rev 1: the request reads back every answer field exactly
+  ok   U2.2 Rev 1: every JSON field parses and no time has milliseconds
+  ok   U2.2 Rev 1: request.changed → the case has Rev 1
+  ok   U2.2 Rev 1: the case's 15 synced fields equal the request's
+  ok   U2.2 Rev 2 (~30 KB answers): the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   U2.2 Rev 2: the request reads back every answer field exactly
+  ok   U2.2 Rev 2: every JSON field parses and no time has milliseconds
+  ok   U2.2 Rev 2: request.changed → the case has Rev 2
+  ok   U2.2 Rev 2: the case's 15 synced fields equal the request's
+  ok   U2.2 Rev 3: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   U2.2 Rev 3: the request reads back every answer field exactly
+  ok   U2.2 Rev 3: every JSON field parses and no time has milliseconds
+  ok   U2.2 Rev 3: request.changed → the case has Rev 3 (posted twice back to back)
+  ok   U2.2 Rev 3: the case's 15 synced fields equal the request's
+  ok   U2.2 after Rev 3 the case holds Rev 3, not the ~30 KB Rev 2 (no stale overwrite)
+  ok   U2.2 upload row ZZT-NT-U2-UP1: the write is accepted
+  ok   U2.2 upload row ZZT-NT-U2-UP2: the write is accepted
+  ok   U2.2 both upload rows are stored with every field
+  ok   U2.2 removing a file marks its row (Upload_Removed_At / _By_Email), keeps the row and adds none
+  ok   U2.2 the other upload row is untouched
+  ok   U2.2 the screen's Documents_JSON (Rev 4) is accepted
+  ok   U2.2 request.changed after the upload/removal → the case's Documents_JSON
+  ok   U2.2 the case's Documents_JSON equals the request's
+  ok   U2.2 not covered: the attachment file itself (Upload_File) needs the browser's upload API
+
+== U2.3 ZZT-NT-U2: completeness confirmed and submitted; I-2
+  ok   U2.3 the supplier's completeness confirmation is accepted at fill-in
+  ok   U2.3 the fill-in submit moves the request to 'keep the CIQ up to date'
+  ok   U2.3 the request reads back the confirmation
+  ok   U2.3 completeness.confirmed (I-2) → the case records the confirmation
+  ok   U2.3 the case's Completeness_* fields equal the request's
+  ok   U2.3 the case's 15 synced fields equal the request's
+  ok   U2.3 the case phase is 'Review'
+  ok   U2.3 I-2's Approve moves the case to 'Beiersdorf review and final release' (needs Thomas in the role Integration service)
+  ok   U2.3 a second completeness.confirmed is refused (the case already has it): the case is unchanged
+
+== U2.3b ZZT-NT-U2: the supplier keeps the CIQ up to date (Rev 5)
+  ok   U2.3b Rev 5 at 'keep the CIQ up to date': the screen's write at 'Supplier: keep the CIQ up to date' is accepted (user route)
+  ok   U2.3b Rev 5: the request reads back every answer field
+  ok   U2.3b Rev 5: request.changed → the case in review has Rev 5
+  ok   U2.3b Rev 5: the case's 15 synced fields equal the request's, and its completeness is kept
+
+== U2.4 ZZT-NT-U2: open point(s) SAF + QM: two rounds, edit, answer, close; history.updated
+  ok   U2.4 SAF: the open point draft reads back every Start field
+  ok   U2.4 SAF: the raise moves the point to 'Open point – Safety', assigned to the raiser
+  ok   U2.4 SAF: op.round → the point links its round-1 query
+  ok   U2.4 SAF: the query carries every field of the point
+  ok   U2.4 SAF: the query is at 'Supplier: respond', assigned to the portal contact
+  ok   U2.4 SAF: the raiser's edit: the screen's write at 'Open point – Safety' is accepted (user route)
+  ok   U2.4 SAF: the raiser's edit is accepted at the point's step
+  ok   U2.4 SAF: op.edited → the open query shows the edit
+  ok   U2.4 SAF: the query has the edited justification, due date and an Edited_At without milliseconds
+  ok   U2.4 SAF: the supplier's answer: the screen's write at 'Supplier: respond' is accepted (user route)
+  ok   U2.4 SAF: the supplier's answer is accepted at 'Supplier: respond'
+  ok   U2.4 SAF: the respond submit completes the query
+  ok   U2.4 SAF: query.answered (I-4) → the point has the answer
+  ok   U2.4 SAF: the point has all four answer fields and OP_Progress 'In progress'
+  ok   U2.4 SAF: the return (round 2): the screen's write at 'Open point – Safety' is accepted (user route)
+  ok   U2.4 SAF: the return (round 2) is accepted at the point's step
+  ok   U2.4 SAF: op.round → the point links its round-2 query
+  ok   U2.4 SAF: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond'
+  ok   U2.4 SAF: the answered round-1 query stays completed with its answer
+  ok   U2.4 SAF: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   U2.4 SAF: op.closed while the point has no outcome is refused (its query stays)
+  ok   U2.4 SAF: the close: the screen's write at 'Open point – Safety' is accepted (user route)
+  ok   U2.4 SAF: closing (outcome + submit) completes the point
+  ok   U2.4 SAF: op.closed → the open round-2 query is completed
+  ok   U2.4 SAF: op.edited on the closed point is refused
+  ok   U2.4 SAF: op.round on the closed point is refused (no new query)
+  ok   U2.4 SAF: exactly two queries exist for the point
+  ok   U2.4 QM: the open point draft reads back every Start field
+  ok   U2.4 QM: the raise moves the point to 'Open point – QM', assigned to the raiser
+  ok   U2.4 QM: op.round → the point links its round-1 query
+  ok   U2.4 QM: the query carries every field of the point
+  ok   U2.4 QM: the query is at 'Supplier: respond', assigned to the portal contact
+  ok   U2.4 QM: the raiser's edit: the screen's write at 'Open point – QM' is accepted (user route)
+  ok   U2.4 QM: the raiser's edit is accepted at the point's step
+  ok   U2.4 QM: op.edited → the open query shows the edit
+  ok   U2.4 QM: the query has the edited justification, due date and an Edited_At without milliseconds
+  ok   U2.4 QM: the supplier's answer: the screen's write at 'Supplier: respond' is accepted (user route)
+  ok   U2.4 QM: the supplier's answer is accepted at 'Supplier: respond'
+  ok   U2.4 QM: the respond submit completes the query
+  ok   U2.4 QM: query.answered (I-4) → the point has the answer
+  ok   U2.4 QM: the point has all four answer fields and OP_Progress 'In progress'
+  ok   U2.4 QM: the return (round 2): the screen's write at 'Open point – QM' is accepted (user route)
+  ok   U2.4 QM: the return (round 2) is accepted at the point's step
+  ok   U2.4 QM: op.round → the point links its round-2 query
+  ok   U2.4 QM: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond'
+  ok   U2.4 QM: the answered round-1 query stays completed with its answer
+  ok   U2.4 QM: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   U2.4 QM: op.closed while the point has no outcome is refused (its query stays)
+  ok   U2.4 QM: the close: the screen's write at 'Open point – QM' is accepted (user route)
+  ok   U2.4 QM: closing (outcome + submit) completes the point
+  ok   U2.4 QM: op.closed → the open round-2 query is completed
+  ok   U2.4 QM: op.edited on the closed point is refused
+  ok   U2.4 QM: op.round on the closed point is refused (no new query)
+  ok   U2.4 QM: exactly two queries exist for the point
+  ok   U2.4 history.updated → the request's Questions_History_JSON
+  ok   U2.4 the history reads back exactly and parses
+skip U1.1 (done)
+skip U1.2 (done)
+skip U1.3 (done)
+skip U1.3b (done)
+skip U1.4 (done)
+skip U1.5 (done)
+skip U1.7 (done)
+skip U1.8 (done)
+skip U2.1 (done)
+skip U2.2 (done)
+skip U2.3 (done)
+skip U2.3b (done)
+
+== U2.4 ZZT-NT-U2: open point(s) SAF + QM: two rounds, edit, answer, close; history.updated
+  ok   U2.4 SAF: the open point draft reads back every Start field
+  ok   U2.4 SAF: the raise moves the point to 'Open point – Safety', assigned to the raiser
+  ok   U2.4 SAF: op.round → the point links its round-1 query
+  ok   U2.4 SAF: the query carries every field of the point
+  ok   U2.4 SAF: the query is at 'Supplier: respond', assigned to the portal contact
+  ok   U2.4 SAF: the raiser's edit: the screen's write at 'Open point – Safety' is accepted (user route)
+  ok   U2.4 SAF: the raiser's edit is accepted at the point's step
+  ok   U2.4 SAF: op.edited → the open query shows the edit
+  ok   U2.4 SAF: the query has the edited justification, due date and an Edited_At without milliseconds
+  ok   U2.4 SAF: the supplier's answer: the screen's write at 'Supplier: respond' is accepted (user route)
+  ok   U2.4 SAF: the supplier's answer is accepted at 'Supplier: respond'
+  ok   U2.4 SAF: the respond submit completes the query
+  ok   U2.4 SAF: query.answered (I-4) → the point has the answer
+  ok   U2.4 SAF: the point has all four answer fields and OP_Progress 'In progress'
+  ok   U2.4 SAF: the return (round 2): the screen's write at 'Open point – Safety' is accepted (user route)
+  ok   U2.4 SAF: the return (round 2) is accepted at the point's step
+  ok   U2.4 SAF: op.round → the point links its round-2 query
+  ok   U2.4 SAF: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond'
+  ok   U2.4 SAF: the answered round-1 query stays completed with its answer
+  ok   U2.4 SAF: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   U2.4 SAF: op.closed while the point has no outcome is refused (its query stays)
+  ok   U2.4 SAF: the close: the screen's write at 'Open point – Safety' is accepted (user route)
+  ok   U2.4 SAF: closing (outcome + submit) completes the point
+  ok   U2.4 SAF: op.closed → the open round-2 query is completed
+  ok   U2.4 SAF: op.edited on the closed point is refused
+  ok   U2.4 SAF: op.round on the closed point is refused (no new query)
+  ok   U2.4 SAF: exactly two queries exist for the point
+  ok   U2.4 QM: the open point draft reads back every Start field
+  ok   U2.4 QM: the raise moves the point to 'Open point – QM', assigned to the raiser
+  ok   U2.4 QM: op.round → the point links its round-1 query
+  ok   U2.4 QM: the query carries every field of the point
+  ok   U2.4 QM: the query is at 'Supplier: respond', assigned to the portal contact
+  ok   U2.4 QM: the raiser's edit: the screen's write at 'Open point – QM' is accepted (user route)
+  ok   U2.4 QM: the raiser's edit is accepted at the point's step
+  ok   U2.4 QM: op.edited → the open query shows the edit
+  ok   U2.4 QM: the query has the edited justification, due date and an Edited_At without milliseconds
+  ok   U2.4 QM: the supplier's answer: the screen's write at 'Supplier: respond' is accepted (user route)
+  ok   U2.4 QM: the supplier's answer is accepted at 'Supplier: respond'
+  ok   U2.4 QM: the respond submit completes the query
+  ok   U2.4 QM: query.answered (I-4) → the point has the answer
+  ok   U2.4 QM: the point has all four answer fields and OP_Progress 'In progress'
+  ok   U2.4 QM: the return (round 2): the screen's write at 'Open point – QM' is accepted (user route)
+  ok   U2.4 QM: the return (round 2) is accepted at the point's step
+  ok   U2.4 QM: op.round → the point links its round-2 query
+  ok   U2.4 QM: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond'
+  ok   U2.4 QM: the answered round-1 query stays completed with its answer
+  ok   U2.4 QM: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   U2.4 QM: op.closed while the point has no outcome is refused (its query stays)
+  ok   U2.4 QM: the close: the screen's write at 'Open point – QM' is accepted (user route)
+  ok   U2.4 QM: closing (outcome + submit) completes the point
+  ok   U2.4 QM: op.closed → the open round-2 query is completed
+  ok   U2.4 QM: op.edited on the closed point is refused
+  ok   U2.4 QM: op.round on the closed point is refused (no new query)
+  ok   U2.4 QM: exactly two queries exist for the point
+  ok   U2.4 history.updated → the request's Questions_History_JSON
+  ok   U2.4 the history reads back exactly and parses
+  ok   U2.4 history.updated with text that is not JSON is refused
+  ok   U2.4 history.updated with a JSON object (not a list) is refused
+
+== U2.5 ZZT-NT-U2: release.requested (I-5) and the supplier's move to the release step
+  ok   U2.5 seeded an earlier round's Release_At / Release_By_Name on the request (admin) to prove the clear
+  ok   U2.5 release.requested (I-5) → the request asks for the final release
+  ok   U2.5 the request is locked, labelled, has its release contact and no earlier release
+  ok   U2.5 the case has Release_Requested_At (now, no milliseconds)
+  ok   U2.5 the supplier's move (submit only: Keep_Open_Gate is a formula, P-2) takes the request to 'give the final release', assigned to the release contact
+
+== U2.6 ZZT-NT-U2: review.reopened (I-6), the go-to back, and a second release.requested
+  ok   U2.6 review.reopened (I-6) → the request is flagged Reopened, unlocked, 'With Beiersdorf'
+  ok   U2.6 the request is unlocked and labelled 'With Beiersdorf'
+  ok   U2.6 a second review.reopened is refused (the release is no longer requested)
+  ok   U2.6 the reopen marker at the release step: the screen's write at 'Supplier: give the final release' is accepted (user route)
+  ok   U2.6 submitting 'give the final release' while Reopened takes the go-to back to 'keep the CIQ up to date'
+  ok   U2.6 release.given while Reopened is refused: the case stays open
+  ok   U2.6 round 2: seeded an earlier round's Release_At / Release_By_Name on the request (admin) to prove the clear
+  ok   U2.6 round 2: release.requested (I-5) → the request asks for the final release
+  ok   U2.6 round 2: the request is locked, labelled, has its release contact and no earlier release
+  ok   U2.6 round 2: the case has Release_Requested_At (now, no milliseconds)
+  ok   U2.6 round 2: the supplier's move (submit only: Keep_Open_Gate is a formula, P-2) takes the request to 'give the final release', assigned to the release contact
+
+== U2.7 ZZT-NT-U2: the supplier's final release; I-7 completes the case
+  ok   U2.7 the supplier's final release: the screen's write at 'Supplier: give the final release' is accepted (user route)
+  ok   U2.7 the supplier's release (fields + submit) takes the request to 'view the released CIQ'
+  ok   U2.7 the request reads back the release
+  ok   U2.7 release.given (I-7) → the case is completed
+  ok   U2.7 the case has Final_Release_* and phase 'Completed'
+  ok   U2.7 a second release.given is refused (the case is completed)
+
+== U2.8 ZZT-NT-U2: a change report after the release; request.changed on the completed case
+  ok   U2.8 after the release an upload is refused (the Uploads table is ReadOnly at 'view the released CIQ')
+  ok   U2.8 the supplier's change report: the screen's write at 'Supplier: view the released CIQ' is accepted (user route)
+  ok   U2.8 request.changed after the release → the completed case has the change report
+  ok   U2.8 the case's change-report fields equal the request's and the case stays completed
+
+DONE in 28 min, 112 calls: 69/113 scenarios pass, 1355/1493 checks

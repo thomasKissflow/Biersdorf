@@ -1,0 +1,79 @@
+{
+ "phase": "map",
+ "apply": true,
+ "at": "2026-10-14T18:46:47.987Z",
+ "mapped": {
+  "Action_CIQ_Mail_Send_A00": [
+   "To ← To_Emails",
+   "Subject ← Subject",
+   "Body ← Body_Text"
+  ],
+  "Action_CIQ_Mail_Sent_A00": [
+   "instance_id ← _id",
+   "Sent_Status ← \"Sent\""
+  ]
+ },
+ "put": {
+  "status": 200
+ },
+ "publish": {
+  "status": 200
+ },
+ "readBack": {
+  "publishedAt": "2026-10-14T18:46:50Z",
+  "kinds": {
+   "Integration": 1,
+   "User": 1,
+   "Trigger": 1,
+   "Action": 2,
+   "FieldMapping": 24,
+   "Property": 8
+  },
+  "bound": [
+   "Trigger_CIQ_Mail_A00.form_id=[\"CIQ_Mail_Outbox_A00\"]",
+   "Action_CIQ_Mail_Send_A00.BodyType=[\"RichText\"]",
+   "Action_CIQ_Mail_Sent_A00.form_id=[\"CIQ_Mail_Outbox_A00\"]",
+   "Action_CIQ_Mail_Send_A00.To=context.Trigger_CIQ_Mail_A00.To_Emails",
+   "Action_CIQ_Mail_Send_A00.Subject=context.Trigger_CIQ_Mail_A00.Subject",
+   "Action_CIQ_Mail_Send_A00.Body=context.Trigger_CIQ_Mail_A00.Body_Text",
+   "Action_CIQ_Mail_Sent_A00.instance_id=context.Trigger_CIQ_Mail_A00._id",
+   "Action_CIQ_Mail_Sent_A00.Sent_Status=[\"Sent\"]"
+  ]
+ },
+ "listed": {
+  "Status": "Live",
+  "IsActive": false,
+  "Connectors": [
+   {
+    "_id": "Co4mIEiAdtSb",
+    "Name": "Kissflow Dataform",
+    "Entities": [
+     {
+      "_id": "ItemCreated",
+      "Kind": "Trigger",
+      "Name": "When an item is added to a dataform",
+      "Version": "1.5.4"
+     },
+     {
+      "_id": "UpdateAnItem",
+      "Kind": "Action",
+      "Name": "Update an item",
+      "Version": "1.5.4"
+     }
+    ]
+   },
+   {
+    "_id": "CoOj46v9fVh37",
+    "Name": "Email",
+    "Entities": [
+     {
+      "_id": "SendEmail",
+      "Kind": "Action",
+      "Name": "Send an email",
+      "Version": "1.0.6"
+     }
+    ]
+   }
+  ]
+ }
+}

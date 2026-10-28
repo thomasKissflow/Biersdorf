@@ -1,0 +1,173 @@
+{
+ "type": "form",
+ "name": "CIQP Help Article",
+ "status": "Live",
+ "list": {
+  "_id": "CIQP_Help_Article_A00",
+  "_created_at": "2026-10-06T21:10:03Z",
+  "_created_by": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_modified_at": "2026-10-16T14:28:54Z",
+  "Name": "CIQP Help Article",
+  "Description": "Supplier-agnostic FAQ and quick-start guide (CIA #34). Every portal user may read every row by design.",
+  "Type": "Form",
+  "Icon": null,
+  "Status": "Live",
+  "_application_id": "CIQ_Supplier_Portal_A00",
+  "LastPublishedAt": "2026-10-16T07:32:10Z"
+ },
+ "draftStatus": 200,
+ "draft": {
+  "PublishedAt": "2026-10-16T07:32:10Z",
+  "PublishedBy": {
+   "_id": "UsEJUfjYLM8Y",
+   "Name": "Thomas",
+   "Kind": "User"
+  },
+  "_meta_version": "1792135930638523",
+  "CIQP_Help_Article_A00": {
+   "Id": "CIQP_Help_Article_A00",
+   "Name": "CIQP Help Article",
+   "Kind": "Model",
+   "FlowType": "Form",
+   "Description": "Supplier-agnostic FAQ and quick-start guide (CIA #34). Every portal user may read every row by design.",
+   "_application_id": "CIQ_Supplier_Portal_A00",
+   "Model::Row": [
+    "Row_1jfhwi"
+   ],
+   "Model::Field": [
+    "Article_Title",
+    "Article_Body",
+    "Sort_Order"
+   ],
+   "Model::Appearance": [
+    "Appearance_osmG9DOk2e"
+   ]
+  },
+  "Row_1jfhwi": {
+   "Id": "Row_1jfhwi",
+   "Kind": "Row",
+   "Model": "CIQP_Help_Article_A00",
+   "Row::Column": [
+    "Column_1jfhwi"
+   ]
+  },
+  "Column_1jfhwi": {
+   "Id": "Column_1jfhwi",
+   "Kind": "Column",
+   "Type": "Section",
+   "Name": "Details",
+   "Start": 0,
+   "End": 6,
+   "Row": "Row_1jfhwi",
+   "Column::Row": [
+    "Row_1je9r0",
+    "Row_1je9r1",
+    "Row_1je9r2"
+   ]
+  },
+  "Row_1je9r0": {
+   "Id": "Row_1je9r0",
+   "Kind": "Row",
+   "Column": "Column_1jfhwi",
+   "Row::Column": [
+    "Column_1nmw1lo"
+   ]
+  },
+  "Column_1nmw1lo": {
+   "Id": "Column_1nmw1lo",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_1je9r0",
+   "Column::Field": [
+    "Article_Title"
+   ],
+   "Hint": "Title of the help article, as suppliers see it."
+  },
+  "Row_1je9r1": {
+   "Id": "Row_1je9r1",
+   "Kind": "Row",
+   "Column": "Column_1jfhwi",
+   "Row::Column": [
+    "Column_1s7u2ko"
+   ]
+  },
+  "Column_1s7u2ko": {
+   "Id": "Column_1s7u2ko",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 6,
+   "Row": "Row_1je9r1",
+   "Column::Field": [
+    "Article_Body"
+   ],
+   "Hint": "Text of the help article."
+  },
+  "Row_1je9r2": {
+   "Id": "Row_1je9r2",
+   "Kind": "Row",
+   "Column": "Column_1jfhwi",
+   "Row::Column": [
+    "Column_7lh49m"
+   ]
+  },
+  "Column_7lh49m": {
+   "Id": "Column_7lh49m",
+   "Kind": "Column",
+   "Type": "Field",
+   "Start": 0,
+   "End": 3,
+   "Row": "Row_1je9r2",
+   "Column::Field": [
+    "Sort_Order"
+   ],
+   "Hint": "Position of the article on the Help page (lowest first)."
+  },
+  "Article_Title": {
+   "Id": "Article_Title",
+   "Kind": "Field",
+   "Type": "Text",
+   "Name": "Article Title",
+   "Model": "CIQP_Help_Article_A00",
+   "Column": "Column_1nmw1lo",
+   "Required": true
+  },
+  "Article_Body": {
+   "Id": "Article_Body",
+   "Kind": "Field",
+   "Type": "Textarea",
+   "Name": "Article Body",
+   "Model": "CIQP_Help_Article_A00",
+   "Column": "Column_1s7u2ko",
+   "Required": true
+  },
+  "Sort_Order": {
+   "Id": "Sort_Order",
+   "Kind": "Field",
+   "Type": "Number",
+   "Name": "Sort Order",
+   "Model": "CIQP_Help_Article_A00",
+   "Column": "Column_7lh49m"
+  },
+  "Root": "CIQP_Help_Article_A00",
+  "Appearance_osmG9DOk2e": {
+   "Id": "Appearance_osmG9DOk2e",
+   "Kind": "Appearance",
+   "Model": "CIQP_Help_Article_A00",
+   "Appearance::Style": [
+    "Style_u-RbuYPryB"
+   ]
+  },
+  "Style_u-RbuYPryB": {
+   "Id": "Style_u-RbuYPryB",
+   "Kind": "Style",
+   "Appearance": "Appearance_osmG9DOk2e"
+  }
+ }
+}

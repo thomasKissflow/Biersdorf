@@ -1,0 +1,243 @@
+{
+  "Root": "CIQ_Portal_Link_A00",
+  "CIQ_Portal_Link_A00": {
+    "Id": "CIQ_Portal_Link_A00",
+    "Name": "CIQ Portal Link",
+    "Kind": "Model",
+    "FlowType": "Form",
+    "Description": "",
+    "Model::Row": [
+      "Row_gxv36t"
+    ],
+    "Model::Field": [
+      "Link_Key",
+      "Gate",
+      "Items_JSON",
+      "Job_State",
+      "Lease_Until",
+      "Lease_Holder",
+      "Attempts",
+      "Last_Error"
+    ]
+  },
+  "Row_gxv36t": {
+    "Id": "Row_gxv36t",
+    "Kind": "Row",
+    "Model": "CIQ_Portal_Link_A00",
+    "Row::Column": [
+      "Column_gxv36t"
+    ]
+  },
+  "Column_gxv36t": {
+    "Id": "Column_gxv36t",
+    "Kind": "Column",
+    "Type": "Section",
+    "Name": "Details",
+    "Start": 0,
+    "End": 6,
+    "Row": "Row_gxv36t",
+    "Column::Row": [
+      "Row_gxtv1b",
+      "Row_gxtv1c",
+      "Row_gxtv1d",
+      "Row_gxtv1e",
+      "Row_gxtv1f"
+    ]
+  },
+  "Row_gxtv1b": {
+    "Id": "Row_gxtv1b",
+    "Kind": "Row",
+    "Column": "Column_gxv36t",
+    "Row::Column": [
+      "Column_1pzmukw",
+      "Column_gwx47v"
+    ]
+  },
+  "Column_1pzmukw": {
+    "Id": "Column_1pzmukw",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_gxtv1b",
+    "Column::Field": [
+      "Link_Key"
+    ]
+  },
+  "Column_gwx47v": {
+    "Id": "Column_gwx47v",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_gxtv1b",
+    "Column::Field": [
+      "Gate"
+    ]
+  },
+  "Row_gxtv1c": {
+    "Id": "Row_gxtv1c",
+    "Kind": "Row",
+    "Column": "Column_gxv36t",
+    "Row::Column": [
+      "Column_1mwmgnp"
+    ]
+  },
+  "Column_1mwmgnp": {
+    "Id": "Column_1mwmgnp",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 6,
+    "Row": "Row_gxtv1c",
+    "Column::Field": [
+      "Items_JSON"
+    ]
+  },
+  "Row_gxtv1d": {
+    "Id": "Row_gxtv1d",
+    "Kind": "Row",
+    "Column": "Column_gxv36t",
+    "Row::Column": [
+      "Column_1e5y0j9",
+      "Column_eh7imn"
+    ]
+  },
+  "Column_1e5y0j9": {
+    "Id": "Column_1e5y0j9",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_gxtv1d",
+    "Column::Field": [
+      "Job_State"
+    ]
+  },
+  "Column_eh7imn": {
+    "Id": "Column_eh7imn",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_gxtv1d",
+    "Column::Field": [
+      "Lease_Until"
+    ]
+  },
+  "Row_gxtv1e": {
+    "Id": "Row_gxtv1e",
+    "Kind": "Row",
+    "Column": "Column_gxv36t",
+    "Row::Column": [
+      "Column_176ue0x",
+      "Column_5t73nw"
+    ]
+  },
+  "Column_176ue0x": {
+    "Id": "Column_176ue0x",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 3,
+    "Row": "Row_gxtv1e",
+    "Column::Field": [
+      "Lease_Holder"
+    ]
+  },
+  "Column_5t73nw": {
+    "Id": "Column_5t73nw",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 3,
+    "End": 6,
+    "Row": "Row_gxtv1e",
+    "Column::Field": [
+      "Attempts"
+    ]
+  },
+  "Row_gxtv1f": {
+    "Id": "Row_gxtv1f",
+    "Kind": "Row",
+    "Column": "Column_gxv36t",
+    "Row::Column": [
+      "Column_4s3jh3"
+    ]
+  },
+  "Column_4s3jh3": {
+    "Id": "Column_4s3jh3",
+    "Kind": "Column",
+    "Type": "Field",
+    "Start": 0,
+    "End": 6,
+    "Row": "Row_gxtv1f",
+    "Column::Field": [
+      "Last_Error"
+    ]
+  },
+  "Link_Key": {
+    "Id": "Link_Key",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Link_Key",
+    "Model": "CIQ_Portal_Link_A00",
+    "Column": "Column_1pzmukw"
+  },
+  "Gate": {
+    "Id": "Gate",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Gate",
+    "Model": "CIQ_Portal_Link_A00",
+    "Column": "Column_gwx47v"
+  },
+  "Items_JSON": {
+    "Id": "Items_JSON",
+    "Kind": "Field",
+    "Type": "Textarea",
+    "Name": "Items_JSON",
+    "Model": "CIQ_Portal_Link_A00",
+    "Column": "Column_1mwmgnp"
+  },
+  "Job_State": {
+    "Id": "Job_State",
+    "Kind": "Field",
+    "Type": "Select",
+    "Name": "Job_State",
+    "Model": "CIQ_Portal_Link_A00",
+    "Column": "Column_1e5y0j9",
+    "ReferredList": "CIQ_Job_State_A00"
+  },
+  "Lease_Until": {
+    "Id": "Lease_Until",
+    "Kind": "Field",
+    "Type": "DateTime",
+    "Name": "Lease_Until",
+    "Model": "CIQ_Portal_Link_A00",
+    "Column": "Column_eh7imn"
+  },
+  "Lease_Holder": {
+    "Id": "Lease_Holder",
+    "Kind": "Field",
+    "Type": "Text",
+    "Name": "Lease_Holder",
+    "Model": "CIQ_Portal_Link_A00",
+    "Column": "Column_176ue0x"
+  },
+  "Attempts": {
+    "Id": "Attempts",
+    "Kind": "Field",
+    "Type": "Number",
+    "Name": "Attempts",
+    "Model": "CIQ_Portal_Link_A00",
+    "Column": "Column_5t73nw"
+  },
+  "Last_Error": {
+    "Id": "Last_Error",
+    "Kind": "Field",
+    "Type": "Textarea",
+    "Name": "Last_Error",
+    "Model": "CIQ_Portal_Link_A00",
+    "Column": "Column_4s3jh3"
+  }
+}

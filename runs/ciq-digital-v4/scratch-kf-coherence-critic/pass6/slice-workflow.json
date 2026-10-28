@@ -1,0 +1,4115 @@
+{
+  "branch": "main",
+  "revision": 30,
+  "key": "workflow",
+  "content": {
+    "processes": {
+      "CIQ_Case_A00": {
+        "flow": "CIQ Case",
+        "steps": [
+          {
+            "id": "CASE_S0",
+            "name": "Create case",
+            "type": "task",
+            "kind": "Start",
+            "actor": "CIQ RMM",
+            "assignee_role": "ciq_rmm",
+            "note": "Creator-owned Start; RMM is also the owner of the first task, kept as separate steps because the platform's first step is the StartEvent.",
+            "evidence": "brd.md L157, L184; PART D L792"
+          },
+          {
+            "id": "CASE_S1",
+            "name": "Waiting for supplier: basic data",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ RMM",
+            "assignee_role": "ciq_rmm",
+            "sla": {
+              "applies": true,
+              "kind": "Supplier due date; escalate to the owner",
+              "duration": "set by BDF"
+            },
+            "note": "X1 fires on entry. Y1 records Basic_Data_Received and approves (Q6), or RMM submits by hand. After K-FA the owner becomes the Owner_RMM field (REST).",
+            "evidence": "brd.md L185; A2 L45; L344"
+          },
+          {
+            "id": "CASE_S2",
+            "name": "Scope check",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ RMM",
+            "assignee_role": "ciq_rmm",
+            "sla": {
+              "applies": true,
+              "kind": "Scope-check time",
+              "duration": "set by BDF"
+            },
+            "evidence": "brd.md L186; PART D L794"
+          },
+          {
+            "id": "CASE_S3",
+            "name": "Waiting for supplier: completeness PS-05",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ RMM",
+            "assignee_role": "ciq_rmm",
+            "sla": {
+              "applies": true,
+              "kind": "Supplier due date",
+              "duration": "set by BDF"
+            },
+            "note": "X4 fires on entry. Y4 records the confirmation and RMES_Created_At, then approves.",
+            "evidence": "brd.md L187; A2 L46; L345"
+          },
+          {
+            "id": "CASE_PAR",
+            "name": "Part 2 – Beiersdorf review",
+            "type": "task",
+            "kind": "Parallel",
+            "branches": [
+              {
+                "name": "Review – Regulatory",
+                "steps": [
+                  {
+                    "id": "CASE_B_REG",
+                    "name": "Review – Regulatory",
+                    "type": "task",
+                    "kind": "UserTask",
+                    "actor": "CIQ Regulatory Reviewer",
+                    "assignee_role": "ciq_regulatory_reviewer",
+                    "condition": "Dept_REG_Active = \"Yes\"",
+                    "sla": {
+                      "applies": true,
+                      "kind": "Review time, reminder and escalation (REQ-RMES-019)",
+                      "duration": "set by BDF"
+                    },
+                    "evidence_fields": [
+                      "REG_Review_Confirm"
+                    ],
+                    "outcomes_doc": [
+                      "Approved",
+                      "Rejected"
+                    ],
+                    "outcome_field": "REG_RMES_Decision",
+                    "evidence": "brd.md L188-L189; PART D L796-L798; A2 L49"
+                  }
+                ]
+              },
+              {
+                "name": "Review – Safety",
+                "steps": [
+                  {
+                    "id": "CASE_B_SAF",
+                    "name": "Review – Safety",
+                    "type": "task",
+                    "kind": "UserTask",
+                    "actor": "CIQ Safety Reviewer",
+                    "assignee_role": "ciq_safety_reviewer",
+                    "condition": "Dept_SAF_Active = \"Yes\"",
+                    "sla": {
+                      "applies": true,
+                      "kind": "Review time, reminder and escalation (REQ-RMES-019)",
+                      "duration": "set by BDF"
+                    },
+                    "evidence_fields": [
+                      "SAF_Review_Confirm"
+                    ],
+                    "outcomes_doc": [
+                      "Approved",
+                      "Rejected"
+                    ],
+                    "outcome_field": "SAF_RMES_Decision",
+                    "evidence": "brd.md L188-L189; PART D L796-L798; A2 L49"
+                  }
+                ]
+              },
+              {
+                "name": "Review – QM",
+                "steps": [
+                  {
+                    "id": "CASE_B_QM",
+                    "name": "Review – QM",
+                    "type": "task",
+                    "kind": "UserTask",
+                    "actor": "CIQ QM Reviewer",
+                    "assignee_role": "ciq_qm_reviewer",
+                    "condition": "Dept_QM_Active = \"Yes\"",
+                    "sla": {
+                      "applies": true,
+                      "kind": "Review time, reminder and escalation (REQ-RMES-019)",
+                      "duration": "set by BDF"
+                    },
+                    "evidence_fields": [
+                      "QM_Review_Confirm"
+                    ],
+                    "evidence": "brd.md L188-L189; PART D L796-L798; A2 L49"
+                  }
+                ]
+              },
+              {
+                "name": "Review – Microbiology",
+                "steps": [
+                  {
+                    "id": "CASE_B_MIC",
+                    "name": "Review – Microbiology",
+                    "type": "task",
+                    "kind": "UserTask",
+                    "actor": "CIQ Microbiology Reviewer",
+                    "assignee_role": "ciq_microbiology_reviewer",
+                    "condition": "Dept_MIC_Active = \"Yes\"",
+                    "sla": {
+                      "applies": true,
+                      "kind": "Review time, reminder and escalation (REQ-RMES-019)",
+                      "duration": "set by BDF"
+                    },
+                    "evidence_fields": [
+                      "MIC_Review_Confirm"
+                    ],
+                    "evidence": "brd.md L188-L189; PART D L796-L798; A2 L49"
+                  }
+                ]
+              },
+              {
+                "name": "Review – Sustainability",
+                "steps": [
+                  {
+                    "id": "CASE_B_SUS",
+                    "name": "Review – Sustainability",
+                    "type": "task",
+                    "kind": "UserTask",
+                    "actor": "CIQ Sustainability Reviewer",
+                    "assignee_role": "ciq_sustainability_reviewer",
+                    "condition": "Dept_SUS_Active = \"Yes\"",
+                    "sla": {
+                      "applies": true,
+                      "kind": "Review time, reminder and escalation (REQ-RMES-019)",
+                      "duration": "set by BDF"
+                    },
+                    "evidence_fields": [
+                      "SUS_Review_Confirm"
+                    ],
+                    "evidence": "brd.md L188-L189; PART D L796-L798; A2 L49"
+                  }
+                ]
+              },
+              {
+                "name": "Review – RMM",
+                "steps": [
+                  {
+                    "id": "CASE_B_RMM",
+                    "name": "Review – RMM",
+                    "type": "task",
+                    "kind": "UserTask",
+                    "actor": "CIQ RMM",
+                    "assignee_role": "ciq_rmm",
+                    "condition": "Dept_RMM_Active = \"Yes\"",
+                    "sla": {
+                      "applies": true,
+                      "kind": "Review time, reminder and escalation (REQ-RMES-019)",
+                      "duration": "set by BDF"
+                    },
+                    "evidence_fields": [
+                      "RMM_Review_Confirm"
+                    ],
+                    "evidence": "brd.md L188-L189; PART D L796-L798; A2 L49",
+                    "note": "Off by default: Dept_RMM_Active comes from Settings deptReviewMode (L189; PART D L795)."
+                  }
+                ]
+              }
+            ],
+            "evidence": "brd.md L167-L174, L188; A2 L48",
+            "note": "Container: one-level fork, six one-step arms, each guarded by Dept_<D>_Active; native all-join before CASE_S5. No owner, no condition, no join step."
+          },
+          {
+            "id": "CASE_S5",
+            "name": "Open items check – before release request",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ RMM",
+            "assignee_role": "ciq_rmm",
+            "condition": "Hold_For_Open_Items = \"Yes\"",
+            "sla": {
+              "applies": true,
+              "kind": "Check time",
+              "duration": "set by BDF"
+            },
+            "note": "Blank-safe hold (formula owned by kf-data-architect). The counts are ReadOnly at Scope check and PS-05, so they are blank at the join and this check always runs once; RMM writes fresh counts here (D23, COH-04).",
+            "evidence": "brd.md L190; A2 L32-L34, L50; PART D L799"
+          },
+          {
+            "id": "CASE_S6",
+            "name": "Overall approval",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ Overall Approver",
+            "assignee_role": "ciq_overall_approver",
+            "condition": "Overall_Approval_Required = \"Yes\"",
+            "outcomes_doc": [
+              "Approved",
+              "Rejected"
+            ],
+            "outcome_field": "Overall_Decision",
+            "sla": {
+              "applies": true,
+              "kind": "Approval time",
+              "duration": "set by BDF"
+            },
+            "note": "Off by default. Rejected ends the case without the PS-11 request (CASE_S7 is skipped).",
+            "evidence": "brd.md L191; A3 L63; PART D L800"
+          },
+          {
+            "id": "CASE_S7",
+            "name": "Waiting for supplier: final release PS-11",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ RMM",
+            "assignee_role": "ciq_rmm",
+            "condition": "Overall_Decision != \"Rejected\"",
+            "sla": {
+              "applies": true,
+              "kind": "Supplier due date",
+              "duration": "set by BDF"
+            },
+            "note": "X5 fires on entry (single release request). Blank Overall_Decision runs the step. Y5 approves (automatic completion, REQ-PROC-045), or RMM completes manually with a reason. Y5 does not clear the counts (D27, Q8): the RMM Workbench refreshes Open_Items_Count/Open_CR_Count while the case waits here, and the supplier portal refuses the release while the supplier's own queries or change requests are open (PART C hand-off). Residual risk: an item opened in the seconds before Y5 is caught only by the next Workbench session or sync.",
+            "evidence": "brd.md L192; A2 L47; L346; PART D L801"
+          },
+          {
+            "id": "CASE_S8",
+            "name": "Open items check – before close",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ RMM",
+            "assignee_role": "ciq_rmm",
+            "condition": "Hold_For_Open_Items = \"Yes\"",
+            "sla": {
+              "applies": true,
+              "kind": "Check time",
+              "duration": "set by BDF"
+            },
+            "note": "Normally skipped, so completion stays automatic.",
+            "evidence": "brd.md L193; A2 L52; PART D L802"
+          },
+          {
+            "id": "CASE_END",
+            "name": "End",
+            "type": "automation",
+            "kind": "End",
+            "evidence": "brd.md L194 (Z1 on completion)"
+          }
+        ]
+      },
+      "CIQ_Open_Point_A00": {
+        "flow": "CIQ Open Point",
+        "steps": [
+          {
+            "id": "OPNT_S0",
+            "name": "Raise open point",
+            "type": "task",
+            "kind": "Start",
+            "actor": "CIQ RMM",
+            "assignee_role": "ciq_rmm",
+            "note": "Initiators: CIQ RMM and the five department Reviewer roles (L237); security sets initiator:true on each.",
+            "evidence": "brd.md L236-L240, L244"
+          },
+          {
+            "id": "OPNT_S1",
+            "name": "Waiting for supplier",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ RMM",
+            "assignee_role": "ciq_rmm",
+            "condition": "OP_To_Supplier = \"Yes\"",
+            "sla": {
+              "applies": true,
+              "kind": "Supplier due date",
+              "duration": "set by BDF"
+            },
+            "note": "X3 fires on entry (and after a Return send-back, K-09h; fallback X3b). Y3 approves only while Awaiting_Response = \"Yes\". After K-FA the owner becomes Responsible_User (REST).",
+            "evidence": "brd.md L245; A2 L53; L347"
+          },
+          {
+            "id": "OPNT_R_REG",
+            "name": "Review – Regulatory",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ Regulatory Reviewer",
+            "assignee_role": "ciq_regulatory_reviewer",
+            "condition": "OP_Dept = \"REG\"",
+            "outcomes_doc": [
+              "Accepted",
+              "Withdrawn",
+              "Return (native send-back)"
+            ],
+            "sla": {
+              "applies": true,
+              "kind": "Internal due date",
+              "duration": "set by BDF"
+            },
+            "note": "Exactly one review step runs (OP_Dept). Accepted/Withdrawn are submitted; Return is the native send-back to 'Waiting for supplier' after the Workbench appends round n to Rounds and writes round n+1 (L246). Rounds is Editable only here.",
+            "evidence": "brd.md L239, L246, L251"
+          },
+          {
+            "id": "OPNT_R_SAF",
+            "name": "Review – Safety",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ Safety Reviewer",
+            "assignee_role": "ciq_safety_reviewer",
+            "condition": "OP_Dept = \"SAF\"",
+            "outcomes_doc": [
+              "Accepted",
+              "Withdrawn",
+              "Return (native send-back)"
+            ],
+            "sla": {
+              "applies": true,
+              "kind": "Internal due date",
+              "duration": "set by BDF"
+            },
+            "note": "Exactly one review step runs (OP_Dept). Accepted/Withdrawn are submitted; Return is the native send-back to 'Waiting for supplier' after the Workbench appends round n to Rounds and writes round n+1 (L246). Rounds is Editable only here.",
+            "evidence": "brd.md L239, L246, L251"
+          },
+          {
+            "id": "OPNT_R_QM",
+            "name": "Review – QM",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ QM Reviewer",
+            "assignee_role": "ciq_qm_reviewer",
+            "condition": "OP_Dept = \"QM\"",
+            "outcomes_doc": [
+              "Accepted",
+              "Withdrawn",
+              "Return (native send-back)"
+            ],
+            "sla": {
+              "applies": true,
+              "kind": "Internal due date",
+              "duration": "set by BDF"
+            },
+            "note": "Exactly one review step runs (OP_Dept). Accepted/Withdrawn are submitted; Return is the native send-back to 'Waiting for supplier' after the Workbench appends round n to Rounds and writes round n+1 (L246). Rounds is Editable only here.",
+            "evidence": "brd.md L239, L246, L251"
+          },
+          {
+            "id": "OPNT_R_MIC",
+            "name": "Review – Microbiology",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ Microbiology Reviewer",
+            "assignee_role": "ciq_microbiology_reviewer",
+            "condition": "OP_Dept = \"MIC\"",
+            "outcomes_doc": [
+              "Accepted",
+              "Withdrawn",
+              "Return (native send-back)"
+            ],
+            "sla": {
+              "applies": true,
+              "kind": "Internal due date",
+              "duration": "set by BDF"
+            },
+            "note": "Exactly one review step runs (OP_Dept). Accepted/Withdrawn are submitted; Return is the native send-back to 'Waiting for supplier' after the Workbench appends round n to Rounds and writes round n+1 (L246). Rounds is Editable only here.",
+            "evidence": "brd.md L239, L246, L251"
+          },
+          {
+            "id": "OPNT_R_SUS",
+            "name": "Review – Sustainability",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ Sustainability Reviewer",
+            "assignee_role": "ciq_sustainability_reviewer",
+            "condition": "OP_Dept = \"SUS\"",
+            "outcomes_doc": [
+              "Accepted",
+              "Withdrawn",
+              "Return (native send-back)"
+            ],
+            "sla": {
+              "applies": true,
+              "kind": "Internal due date",
+              "duration": "set by BDF"
+            },
+            "note": "Exactly one review step runs (OP_Dept). Accepted/Withdrawn are submitted; Return is the native send-back to 'Waiting for supplier' after the Workbench appends round n to Rounds and writes round n+1 (L246). Rounds is Editable only here.",
+            "evidence": "brd.md L239, L246, L251"
+          },
+          {
+            "id": "OPNT_R_RMM",
+            "name": "Review – RMM",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ RMM",
+            "assignee_role": "ciq_rmm",
+            "condition": "OP_Dept = \"RMM\"",
+            "outcomes_doc": [
+              "Accepted",
+              "Withdrawn",
+              "Return (native send-back)"
+            ],
+            "sla": {
+              "applies": true,
+              "kind": "Internal due date",
+              "duration": "set by BDF"
+            },
+            "note": "Exactly one review step runs (OP_Dept). Accepted/Withdrawn are submitted; Return is the native send-back to 'Waiting for supplier' after the Workbench appends round n to Rounds and writes round n+1 (L246). Rounds is Editable only here.",
+            "evidence": "brd.md L239, L246, L251"
+          },
+          {
+            "id": "OPNT_END",
+            "name": "End",
+            "type": "automation",
+            "kind": "End",
+            "evidence": "brd.md L247"
+          }
+        ]
+      },
+      "CIQ_Change_Request_A00": {
+        "flow": "CIQ Change Request",
+        "steps": [
+          {
+            "id": "CHRQ_S0",
+            "name": "Receive change request",
+            "type": "task",
+            "kind": "Start",
+            "actor": "CIQ Integration Service",
+            "assignee_role": "ciq_integration_service",
+            "note": "Created and submitted by Y6 as CIQ Integration Service; CIQ RMM creates it by hand as the fallback. Both are initiators.",
+            "evidence": "brd.md L262, L269; PART D L976"
+          },
+          {
+            "id": "CHRQ_S1",
+            "name": "Triage",
+            "type": "task",
+            "kind": "UserTask",
+            "actor": "CIQ RMM",
+            "assignee_role": "ciq_rmm",
+            "outcomes_doc": [
+              "Accepted",
+              "Accepted – scope extended",
+              "Refused – after final release",
+              "Refused – not valid"
+            ],
+            "outcome_field": "CR_Outcome",
+            "sla": {
+              "applies": true,
+              "kind": "Triage time",
+              "duration": "set by BDF"
+            },
+            "note": "Fixes the set of Assess branches before the fork via Impact_<D>. A refused request sets every Impact flag to No.",
+            "evidence": "brd.md L263, L270; A2 L54; PART D L977"
+          },
+          {
+            "id": "CHRQ_PAR",
+            "name": "Assess impact",
+            "type": "task",
+            "kind": "Parallel",
+            "branches": [
+              {
+                "name": "Assess – Regulatory",
+                "steps": [
+                  {
+                    "id": "CHRQ_B_REG",
+                    "name": "Assess – Regulatory",
+                    "type": "task",
+                    "kind": "UserTask",
+                    "actor": "CIQ Regulatory Reviewer",
+                    "assignee_role": "ciq_regulatory_reviewer",
+                    "condition": "Impact_REG = \"Yes\"",
+                    "outcomes_doc": [
+                      "No impact confirmed",
+                      "Re-assessed",
+                      "Finding raised"
+                    ],
+                    "outcome_field": "REG_Assessment",
+                    "sla": {
+                      "applies": true,
+                      "kind": "Assessment time",
+                      "duration": "set by BDF"
+                    },
+                    "evidence": "brd.md L264, L271; A2 L54; PART D L978"
+                  }
+                ]
+              },
+              {
+                "name": "Assess – Safety",
+                "steps": [
+                  {
+                    "id": "CHRQ_B_SAF",
+                    "name": "Assess – Safety",
+                    "type": "task",
+                    "kind": "UserTask",
+                    "actor": "CIQ Safety Reviewer",
+                    "assignee_role": "ciq_safety_reviewer",
+                    "condition": "Impact_SAF = \"Yes\"",
+                    "outcomes_doc": [
+                      "No impact confirmed",
+                      "Re-assessed",
+                      "Finding raised"
+                    ],
+                    "outcome_field": "SAF_Assessment",
+                    "sla": {
+                      "applies": true,
+                      "kind": "Assessment time",
+                      "duration": "set by BDF"
+                    },
+                    "evidence": "brd.md L264, L271; A2 L54; PART D L978"
+                  }
+                ]
+              },
+              {
+                "name": "Assess – QM",
+                "steps": [
+                  {
+                    "id": "CHRQ_B_QM",
+                    "name": "Assess – QM",
+                    "type": "task",
+                    "kind": "UserTask",
+                    "actor": "CIQ QM Reviewer",
+                    "assignee_role": "ciq_qm_reviewer",
+                    "condition": "Impact_QM = \"Yes\"",
+                    "outcomes_doc": [
+                      "No impact confirmed",
+                      "Re-assessed",
+                      "Finding raised"
+                    ],
+                    "outcome_field": "QM_Assessment",
+                    "sla": {
+                      "applies": true,
+                      "kind": "Assessment time",
+                      "duration": "set by BDF"
+                    },
+                    "evidence": "brd.md L264, L271; A2 L54; PART D L978"
+                  }
+                ]
+              },
+              {
+                "name": "Assess – Microbiology",
+                "steps": [
+                  {
+                    "id": "CHRQ_B_MIC",
+                    "name": "Assess – Microbiology",
+                    "type": "task",
+                    "kind": "UserTask",
+                    "actor": "CIQ Microbiology Reviewer",
+                    "assignee_role": "ciq_microbiology_reviewer",
+                    "condition": "Impact_MIC = \"Yes\"",
+                    "outcomes_doc": [
+                      "No impact confirmed",
+                      "Re-assessed",
+                      "Finding raised"
+                    ],
+                    "outcome_field": "MIC_Assessment",
+                    "sla": {
+                      "applies": true,
+                      "kind": "Assessment time",
+                      "duration": "set by BDF"
+                    },
+                    "evidence": "brd.md L264, L271; A2 L54; PART D L978"
+                  }
+                ]
+              },
+              {
+                "name": "Assess – Sustainability",
+                "steps": [
+                  {
+                    "id": "CHRQ_B_SUS",
+                    "name": "Assess – Sustainability",
+                    "type": "task",
+                    "kind": "UserTask",
+                    "actor": "CIQ Sustainability Reviewer",
+                    "assignee_role": "ciq_sustainability_reviewer",
+                    "condition": "Impact_SUS = \"Yes\"",
+                    "outcomes_doc": [
+                      "No impact confirmed",
+                      "Re-assessed",
+                      "Finding raised"
+                    ],
+                    "outcome_field": "SUS_Assessment",
+                    "sla": {
+                      "applies": true,
+                      "kind": "Assessment time",
+                      "duration": "set by BDF"
+                    },
+                    "evidence": "brd.md L264, L271; A2 L54; PART D L978"
+                  }
+                ]
+              }
+            ],
+            "evidence": "brd.md L271; A2 L54",
+            "note": "Container: one-level fork, five one-step arms guarded by Impact_<D>, native all-join before End. All five arms are skipped on a refused request (AR01, K-PAR)."
+          },
+          {
+            "id": "CHRQ_END",
+            "name": "End",
+            "type": "automation",
+            "kind": "End",
+            "evidence": "brd.md L272 (X6 on completion, portal session)"
+          }
+        ]
+      }
+    },
+    "cases": {},
+    "slas": [],
+    "notifications": [],
+    "journey_scenarios": [
+      {
+        "id": "case-all-lanes-overall-approved",
+        "flow": "CIQ_Case_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "All six departments active (RMM lane on); counts blank at the join so the release-request hold runs; overall approval switched on and Approved; PS-11 runs; RMM records a leftover at PS-11 so the close check runs; End.",
+        "steps": [
+          {
+            "step": "CASE_S0",
+            "role": "ciq_rmm",
+            "input": {
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Trade_Name": "Fictional Emollient A",
+              "Main_INCI": "Caprylic/Capric Triglyceride",
+              "BDF_Material_No": "BDF-900001",
+              "Supplier_Code": "SUP-T01",
+              "Supplier_Legal_Name": "Fictional Oleo GmbH",
+              "Owner_RMM": "rmm.tester@example.invalid",
+              "Request_Key": "REQ-T0001-C1",
+              "BDF_Contact_Name": "Rita Tester",
+              "BDF_Contact_Email": "rita.tester@example.invalid",
+              "Supplier_Due_Date": "2026-10-30",
+              "Case_Contacts_JSON": "[{\"id\":\"PU-T01\",\"name\":\"Sam Supplier\"}]",
+              "Portal_Contact_Ids": "PU-T01",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Release_Item_Id": "REL-T-001",
+              "Manifest_Hash": "sha256-fictional-0001",
+              "Release_Manifest_JSON": "{\"release\":\"REL-T-001\"}",
+              "Overall_Approval_Required": "Yes"
+            }
+          },
+          {
+            "step": "CASE_S1",
+            "role": "ciq_rmm",
+            "input": {
+              "Basic_Data_Received": "Yes",
+              "Portal_Request_Item_Id": "PRQ-T0001"
+            }
+          },
+          {
+            "step": "CASE_S2",
+            "role": "ciq_rmm",
+            "input": {
+              "Dept_REG_Active": "Yes",
+              "Dept_SAF_Active": "Yes",
+              "Dept_QM_Active": "Yes",
+              "Dept_MIC_Active": "Yes",
+              "Dept_SUS_Active": "Yes",
+              "Dept_RMM_Active": "Yes",
+              "Initial_Scope_Run_Key": "RUN-T0001-1",
+              "Rule_Set_Version": "RS-1",
+              "RMES_Key": "RMES-T0001-C1",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Completeness_Request_Key": "CMP-T0001",
+              "Completeness_Declaration_Text": "Fictional declaration",
+              "Completeness_Text_Key": "TXT-PS05-1",
+              "Completeness_Due_Date": "2026-11-15",
+              "Final_Release_Request_Key": "FRL-T0001",
+              "Final_Release_Declaration_Text": "Fictional release text",
+              "Final_Release_Text_Key": "TXT-PS11-1",
+              "Supplier_Closing_Text": "Thank you, the questionnaire is closed."
+            }
+          },
+          {
+            "step": "CASE_S3",
+            "role": "ciq_rmm",
+            "input": {
+              "Completeness_Confirm": "Confirmed",
+              "Completeness_By_Name": "Sam Supplier",
+              "Completeness_By_Email": "sam.supplier@example.invalid",
+              "Completeness_By_Role": "Quality",
+              "Completeness_At": "2026-11-10T10:00:00Z",
+              "RMES_Created_At": "2026-11-10T10:00:00Z"
+            }
+          },
+          {
+            "step": "CASE_B_REG",
+            "role": "ciq_regulatory_reviewer",
+            "input": {
+              "REG_Review_Confirm": "Confirmed",
+              "REG_Completed_By": "reg.tester@example.invalid",
+              "REG_Completed_By_Email": "reg.tester@example.invalid",
+              "REG_Completed_At": "2026-11-20T10:00:00Z",
+              "REG_Open_Count": 0,
+              "REG_RMES_Decision": "Approved",
+              "REG_RMES_Gaps": 0
+            }
+          },
+          {
+            "step": "CASE_B_SAF",
+            "role": "ciq_safety_reviewer",
+            "input": {
+              "SAF_Review_Confirm": "Confirmed",
+              "SAF_Completed_By": "saf.tester@example.invalid",
+              "SAF_Completed_By_Email": "saf.tester@example.invalid",
+              "SAF_Completed_At": "2026-11-20T10:00:00Z",
+              "SAF_Open_Count": 0,
+              "SAF_RMES_Decision": "Approved",
+              "SAF_RMES_Gaps": 0
+            }
+          },
+          {
+            "step": "CASE_B_QM",
+            "role": "ciq_qm_reviewer",
+            "input": {
+              "QM_Review_Confirm": "Confirmed",
+              "QM_Completed_By": "qm.tester@example.invalid",
+              "QM_Completed_By_Email": "qm.tester@example.invalid",
+              "QM_Completed_At": "2026-11-20T10:00:00Z",
+              "QM_Open_Count": 0
+            }
+          },
+          {
+            "step": "CASE_B_MIC",
+            "role": "ciq_microbiology_reviewer",
+            "input": {
+              "MIC_Review_Confirm": "Confirmed",
+              "MIC_Completed_By": "mic.tester@example.invalid",
+              "MIC_Completed_By_Email": "mic.tester@example.invalid",
+              "MIC_Completed_At": "2026-11-20T10:00:00Z",
+              "MIC_Open_Count": 0
+            }
+          },
+          {
+            "step": "CASE_B_SUS",
+            "role": "ciq_sustainability_reviewer",
+            "input": {
+              "SUS_Review_Confirm": "Confirmed",
+              "SUS_Completed_By": "sus.tester@example.invalid",
+              "SUS_Completed_By_Email": "sus.tester@example.invalid",
+              "SUS_Completed_At": "2026-11-20T10:00:00Z",
+              "SUS_Open_Count": 0
+            }
+          },
+          {
+            "step": "CASE_B_RMM",
+            "role": "ciq_rmm",
+            "input": {
+              "RMM_Review_Confirm": "Confirmed",
+              "RMM_Completed_By": "rmm.tester@example.invalid",
+              "RMM_Completed_By_Email": "rmm.tester@example.invalid",
+              "RMM_Completed_At": "2026-11-20T10:00:00Z",
+              "RMM_Open_Count": 0
+            }
+          },
+          {
+            "step": "CASE_S5",
+            "role": "ciq_rmm",
+            "input": {
+              "Hold_Note": "Nothing left open",
+              "Open_Items_Count": 0,
+              "Open_CR_Count": 0
+            }
+          },
+          {
+            "step": "CASE_S6",
+            "role": "ciq_overall_approver",
+            "input": {
+              "Overall_Decision": "Approved",
+              "Overall_Decided_By": "oa.tester@example.invalid"
+            }
+          },
+          {
+            "step": "CASE_S7",
+            "role": "ciq_rmm",
+            "input": {
+              "Completion_Trigger": "Supplier final release",
+              "Final_Release_Confirm": "Confirmed",
+              "Final_Release_By_Name": "Sam Supplier",
+              "Final_Release_By_Email": "sam.supplier@example.invalid",
+              "Final_Release_By_Role": "Quality",
+              "Final_Release_At": "2026-12-01T10:00:00Z",
+              "Released_Revs_JSON": "{}",
+              "Evidence_List_Text": "none",
+              "Open_Items_Count": 1,
+              "Open_CR_Count": 0
+            }
+          },
+          {
+            "step": "CASE_S8",
+            "role": "ciq_rmm",
+            "input": {
+              "Hold_Note": "Late contact update resolved",
+              "Open_Items_Count": 0,
+              "Open_CR_Count": 0
+            }
+          }
+        ],
+        "expect": {
+          "terminal": true,
+          "record": {
+            "Overall_Decision": "Approved",
+            "Completion_Trigger": "Supplier final release"
+          }
+        }
+      },
+      {
+        "id": "case-two-lanes-no-holds-overall-off",
+        "flow": "CIQ_Case_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "Only Regulatory and Safety active (QM, MIC, SUS, RMM branches skipped, join still completes); the release-request check runs once (counts blank at the join, D23) and RMM writes 0; the close check is skipped (0 at PS-11); overall approval off so it is skipped; PS-11 runs; End.",
+        "steps": [
+          {
+            "step": "CASE_S0",
+            "role": "ciq_rmm",
+            "input": {
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Trade_Name": "Fictional Emollient A",
+              "Main_INCI": "Caprylic/Capric Triglyceride",
+              "BDF_Material_No": "BDF-900001",
+              "Supplier_Code": "SUP-T01",
+              "Supplier_Legal_Name": "Fictional Oleo GmbH",
+              "Owner_RMM": "rmm.tester@example.invalid",
+              "Request_Key": "REQ-T0001-C1",
+              "BDF_Contact_Name": "Rita Tester",
+              "BDF_Contact_Email": "rita.tester@example.invalid",
+              "Supplier_Due_Date": "2026-10-30",
+              "Case_Contacts_JSON": "[{\"id\":\"PU-T01\",\"name\":\"Sam Supplier\"}]",
+              "Portal_Contact_Ids": "PU-T01",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Release_Item_Id": "REL-T-001",
+              "Manifest_Hash": "sha256-fictional-0001",
+              "Release_Manifest_JSON": "{\"release\":\"REL-T-001\"}",
+              "Overall_Approval_Required": "No"
+            }
+          },
+          {
+            "step": "CASE_S1",
+            "role": "ciq_rmm",
+            "input": {
+              "Basic_Data_Received": "Yes",
+              "Portal_Request_Item_Id": "PRQ-T0001"
+            }
+          },
+          {
+            "step": "CASE_S2",
+            "role": "ciq_rmm",
+            "input": {
+              "Dept_REG_Active": "Yes",
+              "Dept_SAF_Active": "Yes",
+              "Dept_QM_Active": "No",
+              "Dept_MIC_Active": "No",
+              "Dept_SUS_Active": "No",
+              "Dept_RMM_Active": "No",
+              "Initial_Scope_Run_Key": "RUN-T0001-1",
+              "Rule_Set_Version": "RS-1",
+              "RMES_Key": "RMES-T0001-C1",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Completeness_Request_Key": "CMP-T0001",
+              "Completeness_Declaration_Text": "Fictional declaration",
+              "Completeness_Text_Key": "TXT-PS05-1",
+              "Completeness_Due_Date": "2026-11-15",
+              "Final_Release_Request_Key": "FRL-T0001",
+              "Final_Release_Declaration_Text": "Fictional release text",
+              "Final_Release_Text_Key": "TXT-PS11-1",
+              "Supplier_Closing_Text": "Thank you, the questionnaire is closed."
+            }
+          },
+          {
+            "step": "CASE_S3",
+            "role": "ciq_rmm",
+            "input": {
+              "Completeness_Confirm": "Confirmed",
+              "Completeness_By_Name": "Sam Supplier",
+              "Completeness_By_Email": "sam.supplier@example.invalid",
+              "Completeness_By_Role": "Quality",
+              "Completeness_At": "2026-11-10T10:00:00Z",
+              "RMES_Created_At": "2026-11-10T10:00:00Z"
+            }
+          },
+          {
+            "step": "CASE_B_REG",
+            "role": "ciq_regulatory_reviewer",
+            "input": {
+              "REG_Review_Confirm": "Confirmed",
+              "REG_Completed_By": "reg.tester@example.invalid",
+              "REG_Completed_By_Email": "reg.tester@example.invalid",
+              "REG_Completed_At": "2026-11-20T10:00:00Z",
+              "REG_Open_Count": 0,
+              "REG_RMES_Decision": "Approved",
+              "REG_RMES_Gaps": 0
+            }
+          },
+          {
+            "step": "CASE_B_SAF",
+            "role": "ciq_safety_reviewer",
+            "input": {
+              "SAF_Review_Confirm": "Confirmed",
+              "SAF_Completed_By": "saf.tester@example.invalid",
+              "SAF_Completed_By_Email": "saf.tester@example.invalid",
+              "SAF_Completed_At": "2026-11-20T10:00:00Z",
+              "SAF_Open_Count": 0,
+              "SAF_RMES_Decision": "Approved",
+              "SAF_RMES_Gaps": 0
+            }
+          },
+          {
+            "step": "CASE_S5",
+            "role": "ciq_rmm",
+            "input": {
+              "Hold_Note": "Nothing left open",
+              "Open_Items_Count": 0,
+              "Open_CR_Count": 0
+            }
+          },
+          {
+            "step": "CASE_S7",
+            "role": "ciq_rmm",
+            "input": {
+              "Completion_Trigger": "Supplier final release",
+              "Final_Release_Confirm": "Confirmed",
+              "Final_Release_By_Name": "Sam Supplier",
+              "Final_Release_By_Email": "sam.supplier@example.invalid",
+              "Final_Release_By_Role": "Quality",
+              "Final_Release_At": "2026-12-01T10:00:00Z",
+              "Released_Revs_JSON": "{}",
+              "Evidence_List_Text": "none",
+              "Open_Items_Count": 0,
+              "Open_CR_Count": 0
+            }
+          }
+        ],
+        "expect": {
+          "terminal": true,
+          "record": {
+            "Dept_QM_Active": "No",
+            "Completion_Trigger": "Supplier final release"
+          }
+        }
+      },
+      {
+        "id": "case-overall-rejected-skips-ps11",
+        "flow": "CIQ_Case_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "Safety records a Rejected internal RMES decision; overall approval on and Rejected; PS-11 is skipped and the case ends with a neutral closing text (Z1). Counts are blank at the join, so the release-request check runs once and RMM writes 0 (D23).",
+        "steps": [
+          {
+            "step": "CASE_S0",
+            "role": "ciq_rmm",
+            "input": {
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Trade_Name": "Fictional Emollient A",
+              "Main_INCI": "Caprylic/Capric Triglyceride",
+              "BDF_Material_No": "BDF-900001",
+              "Supplier_Code": "SUP-T01",
+              "Supplier_Legal_Name": "Fictional Oleo GmbH",
+              "Owner_RMM": "rmm.tester@example.invalid",
+              "Request_Key": "REQ-T0001-C1",
+              "BDF_Contact_Name": "Rita Tester",
+              "BDF_Contact_Email": "rita.tester@example.invalid",
+              "Supplier_Due_Date": "2026-10-30",
+              "Case_Contacts_JSON": "[{\"id\":\"PU-T01\",\"name\":\"Sam Supplier\"}]",
+              "Portal_Contact_Ids": "PU-T01",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Release_Item_Id": "REL-T-001",
+              "Manifest_Hash": "sha256-fictional-0001",
+              "Release_Manifest_JSON": "{\"release\":\"REL-T-001\"}",
+              "Overall_Approval_Required": "Yes"
+            }
+          },
+          {
+            "step": "CASE_S1",
+            "role": "ciq_rmm",
+            "input": {
+              "Basic_Data_Received": "Yes",
+              "Portal_Request_Item_Id": "PRQ-T0001"
+            }
+          },
+          {
+            "step": "CASE_S2",
+            "role": "ciq_rmm",
+            "input": {
+              "Dept_REG_Active": "No",
+              "Dept_SAF_Active": "Yes",
+              "Dept_QM_Active": "No",
+              "Dept_MIC_Active": "No",
+              "Dept_SUS_Active": "No",
+              "Dept_RMM_Active": "No",
+              "Initial_Scope_Run_Key": "RUN-T0001-1",
+              "Rule_Set_Version": "RS-1",
+              "RMES_Key": "RMES-T0001-C1",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Completeness_Request_Key": "CMP-T0001",
+              "Completeness_Declaration_Text": "Fictional declaration",
+              "Completeness_Text_Key": "TXT-PS05-1",
+              "Completeness_Due_Date": "2026-11-15",
+              "Final_Release_Request_Key": "FRL-T0001",
+              "Final_Release_Declaration_Text": "Fictional release text",
+              "Final_Release_Text_Key": "TXT-PS11-1",
+              "Supplier_Closing_Text": "Thank you, the questionnaire is closed."
+            }
+          },
+          {
+            "step": "CASE_S3",
+            "role": "ciq_rmm",
+            "input": {
+              "Completeness_Confirm": "Confirmed",
+              "Completeness_By_Name": "Sam Supplier",
+              "Completeness_By_Email": "sam.supplier@example.invalid",
+              "Completeness_By_Role": "Quality",
+              "Completeness_At": "2026-11-10T10:00:00Z",
+              "RMES_Created_At": "2026-11-10T10:00:00Z"
+            }
+          },
+          {
+            "step": "CASE_B_SAF",
+            "role": "ciq_safety_reviewer",
+            "input": {
+              "SAF_Review_Confirm": "Confirmed",
+              "SAF_Completed_By": "saf.tester@example.invalid",
+              "SAF_Completed_By_Email": "saf.tester@example.invalid",
+              "SAF_Completed_At": "2026-11-20T10:00:00Z",
+              "SAF_Open_Count": 0,
+              "SAF_RMES_Decision": "Rejected",
+              "SAF_RMES_Gaps": 0,
+              "SAF_RMES_Decision_Reason": "Fictional: limit exceeded"
+            }
+          },
+          {
+            "step": "CASE_S5",
+            "role": "ciq_rmm",
+            "input": {
+              "Hold_Note": "Nothing left open",
+              "Open_Items_Count": 0,
+              "Open_CR_Count": 0
+            }
+          },
+          {
+            "step": "CASE_S6",
+            "role": "ciq_overall_approver",
+            "input": {
+              "Overall_Decision": "Rejected",
+              "Overall_Decided_By": "oa.tester@example.invalid",
+              "Overall_Reason": "Fictional: Safety RMES rejected",
+              "Completion_Trigger": "Overall rejection"
+            }
+          }
+        ],
+        "expect": {
+          "terminal": true,
+          "record": {
+            "Overall_Decision": "Rejected",
+            "SAF_RMES_Decision": "Rejected",
+            "Completion_Trigger": "Overall rejection"
+          }
+        }
+      },
+      {
+        "id": "case-reg-rejected-overall-off",
+        "flow": "CIQ_Case_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "Regulatory, QM, Microbiology and Sustainability active; Regulatory records Rejected (internal RMES decision, not a raw-material approval); overall approval off, so PS-11 still runs (overall decision blank). Counts are blank at the join, so the release-request check runs once and RMM writes 0 (D23).",
+        "steps": [
+          {
+            "step": "CASE_S0",
+            "role": "ciq_rmm",
+            "input": {
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Trade_Name": "Fictional Emollient A",
+              "Main_INCI": "Caprylic/Capric Triglyceride",
+              "BDF_Material_No": "BDF-900001",
+              "Supplier_Code": "SUP-T01",
+              "Supplier_Legal_Name": "Fictional Oleo GmbH",
+              "Owner_RMM": "rmm.tester@example.invalid",
+              "Request_Key": "REQ-T0001-C1",
+              "BDF_Contact_Name": "Rita Tester",
+              "BDF_Contact_Email": "rita.tester@example.invalid",
+              "Supplier_Due_Date": "2026-10-30",
+              "Case_Contacts_JSON": "[{\"id\":\"PU-T01\",\"name\":\"Sam Supplier\"}]",
+              "Portal_Contact_Ids": "PU-T01",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Release_Item_Id": "REL-T-001",
+              "Manifest_Hash": "sha256-fictional-0001",
+              "Release_Manifest_JSON": "{\"release\":\"REL-T-001\"}",
+              "Overall_Approval_Required": "No"
+            }
+          },
+          {
+            "step": "CASE_S1",
+            "role": "ciq_rmm",
+            "input": {
+              "Basic_Data_Received": "Yes",
+              "Portal_Request_Item_Id": "PRQ-T0001"
+            }
+          },
+          {
+            "step": "CASE_S2",
+            "role": "ciq_rmm",
+            "input": {
+              "Dept_REG_Active": "Yes",
+              "Dept_SAF_Active": "No",
+              "Dept_QM_Active": "Yes",
+              "Dept_MIC_Active": "Yes",
+              "Dept_SUS_Active": "Yes",
+              "Dept_RMM_Active": "No",
+              "Initial_Scope_Run_Key": "RUN-T0001-1",
+              "Rule_Set_Version": "RS-1",
+              "RMES_Key": "RMES-T0001-C1",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Completeness_Request_Key": "CMP-T0001",
+              "Completeness_Declaration_Text": "Fictional declaration",
+              "Completeness_Text_Key": "TXT-PS05-1",
+              "Completeness_Due_Date": "2026-11-15",
+              "Final_Release_Request_Key": "FRL-T0001",
+              "Final_Release_Declaration_Text": "Fictional release text",
+              "Final_Release_Text_Key": "TXT-PS11-1",
+              "Supplier_Closing_Text": "Thank you, the questionnaire is closed."
+            }
+          },
+          {
+            "step": "CASE_S3",
+            "role": "ciq_rmm",
+            "input": {
+              "Completeness_Confirm": "Confirmed",
+              "Completeness_By_Name": "Sam Supplier",
+              "Completeness_By_Email": "sam.supplier@example.invalid",
+              "Completeness_By_Role": "Quality",
+              "Completeness_At": "2026-11-10T10:00:00Z",
+              "RMES_Created_At": "2026-11-10T10:00:00Z"
+            }
+          },
+          {
+            "step": "CASE_B_REG",
+            "role": "ciq_regulatory_reviewer",
+            "input": {
+              "REG_Review_Confirm": "Confirmed",
+              "REG_Completed_By": "reg.tester@example.invalid",
+              "REG_Completed_By_Email": "reg.tester@example.invalid",
+              "REG_Completed_At": "2026-11-20T10:00:00Z",
+              "REG_Open_Count": 0,
+              "REG_RMES_Decision": "Rejected",
+              "REG_RMES_Gaps": 0,
+              "REG_RMES_Decision_Reason": "Fictional: limit exceeded"
+            }
+          },
+          {
+            "step": "CASE_B_QM",
+            "role": "ciq_qm_reviewer",
+            "input": {
+              "QM_Review_Confirm": "Confirmed",
+              "QM_Completed_By": "qm.tester@example.invalid",
+              "QM_Completed_By_Email": "qm.tester@example.invalid",
+              "QM_Completed_At": "2026-11-20T10:00:00Z",
+              "QM_Open_Count": 0
+            }
+          },
+          {
+            "step": "CASE_B_MIC",
+            "role": "ciq_microbiology_reviewer",
+            "input": {
+              "MIC_Review_Confirm": "Confirmed",
+              "MIC_Completed_By": "mic.tester@example.invalid",
+              "MIC_Completed_By_Email": "mic.tester@example.invalid",
+              "MIC_Completed_At": "2026-11-20T10:00:00Z",
+              "MIC_Open_Count": 0
+            }
+          },
+          {
+            "step": "CASE_B_SUS",
+            "role": "ciq_sustainability_reviewer",
+            "input": {
+              "SUS_Review_Confirm": "Confirmed",
+              "SUS_Completed_By": "sus.tester@example.invalid",
+              "SUS_Completed_By_Email": "sus.tester@example.invalid",
+              "SUS_Completed_At": "2026-11-20T10:00:00Z",
+              "SUS_Open_Count": 0
+            }
+          },
+          {
+            "step": "CASE_S5",
+            "role": "ciq_rmm",
+            "input": {
+              "Hold_Note": "Nothing left open",
+              "Open_Items_Count": 0,
+              "Open_CR_Count": 0
+            }
+          },
+          {
+            "step": "CASE_S7",
+            "role": "ciq_rmm",
+            "input": {
+              "Completion_Trigger": "Supplier final release",
+              "Final_Release_Confirm": "Confirmed",
+              "Final_Release_By_Name": "Sam Supplier",
+              "Final_Release_By_Email": "sam.supplier@example.invalid",
+              "Final_Release_By_Role": "Quality",
+              "Final_Release_At": "2026-12-01T10:00:00Z",
+              "Released_Revs_JSON": "{}",
+              "Evidence_List_Text": "none",
+              "Open_Items_Count": 0,
+              "Open_CR_Count": 0
+            }
+          }
+        ],
+        "expect": {
+          "terminal": true,
+          "record": {
+            "REG_RMES_Decision": "Rejected"
+          }
+        }
+      },
+      {
+        "id": "case-branch-wrong-role-denied",
+        "flow": "CIQ_Case_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "CIQ Safety Reviewer attempts Review – Regulatory.",
+        "steps": [
+          {
+            "step": "CASE_S0",
+            "role": "ciq_rmm",
+            "input": {
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Trade_Name": "Fictional Emollient A",
+              "Main_INCI": "Caprylic/Capric Triglyceride",
+              "BDF_Material_No": "BDF-900001",
+              "Supplier_Code": "SUP-T01",
+              "Supplier_Legal_Name": "Fictional Oleo GmbH",
+              "Owner_RMM": "rmm.tester@example.invalid",
+              "Request_Key": "REQ-T0001-C1",
+              "BDF_Contact_Name": "Rita Tester",
+              "BDF_Contact_Email": "rita.tester@example.invalid",
+              "Supplier_Due_Date": "2026-10-30",
+              "Case_Contacts_JSON": "[{\"id\":\"PU-T01\",\"name\":\"Sam Supplier\"}]",
+              "Portal_Contact_Ids": "PU-T01",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Release_Item_Id": "REL-T-001",
+              "Manifest_Hash": "sha256-fictional-0001",
+              "Release_Manifest_JSON": "{\"release\":\"REL-T-001\"}",
+              "Overall_Approval_Required": "No"
+            }
+          },
+          {
+            "step": "CASE_S1",
+            "role": "ciq_rmm",
+            "input": {
+              "Basic_Data_Received": "Yes",
+              "Portal_Request_Item_Id": "PRQ-T0001"
+            }
+          },
+          {
+            "step": "CASE_S2",
+            "role": "ciq_rmm",
+            "input": {
+              "Dept_REG_Active": "Yes",
+              "Dept_SAF_Active": "Yes",
+              "Dept_QM_Active": "Yes",
+              "Dept_MIC_Active": "Yes",
+              "Dept_SUS_Active": "Yes",
+              "Dept_RMM_Active": "Yes",
+              "Initial_Scope_Run_Key": "RUN-T0001-1",
+              "Rule_Set_Version": "RS-1",
+              "RMES_Key": "RMES-T0001-C1",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Completeness_Request_Key": "CMP-T0001",
+              "Completeness_Declaration_Text": "Fictional declaration",
+              "Completeness_Text_Key": "TXT-PS05-1",
+              "Completeness_Due_Date": "2026-11-15",
+              "Final_Release_Request_Key": "FRL-T0001",
+              "Final_Release_Declaration_Text": "Fictional release text",
+              "Final_Release_Text_Key": "TXT-PS11-1",
+              "Supplier_Closing_Text": "Thank you, the questionnaire is closed."
+            }
+          },
+          {
+            "step": "CASE_S3",
+            "role": "ciq_rmm",
+            "input": {
+              "Completeness_Confirm": "Confirmed",
+              "Completeness_By_Name": "Sam Supplier",
+              "Completeness_By_Email": "sam.supplier@example.invalid",
+              "Completeness_By_Role": "Quality",
+              "Completeness_At": "2026-11-10T10:00:00Z",
+              "RMES_Created_At": "2026-11-10T10:00:00Z"
+            }
+          },
+          {
+            "step": "CASE_B_REG",
+            "role": "ciq_safety_reviewer",
+            "input": {
+              "REG_Review_Confirm": "Confirmed",
+              "REG_Completed_By": "reg.tester@example.invalid",
+              "REG_Completed_By_Email": "reg.tester@example.invalid",
+              "REG_Completed_At": "2026-11-20T10:00:00Z",
+              "REG_Open_Count": 0,
+              "REG_RMES_Decision": "Approved",
+              "REG_RMES_Gaps": 0
+            }
+          }
+        ],
+        "expect": {
+          "error": "SCENARIO_ROLE_DENIED"
+        }
+      },
+      {
+        "id": "case-overall-approval-by-rmm-denied",
+        "flow": "CIQ_Case_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "CIQ RMM attempts Overall approval (Overall Approver only). Counts are blank at the join, so the release-request check runs once and RMM writes 0 (D23).",
+        "steps": [
+          {
+            "step": "CASE_S0",
+            "role": "ciq_rmm",
+            "input": {
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Trade_Name": "Fictional Emollient A",
+              "Main_INCI": "Caprylic/Capric Triglyceride",
+              "BDF_Material_No": "BDF-900001",
+              "Supplier_Code": "SUP-T01",
+              "Supplier_Legal_Name": "Fictional Oleo GmbH",
+              "Owner_RMM": "rmm.tester@example.invalid",
+              "Request_Key": "REQ-T0001-C1",
+              "BDF_Contact_Name": "Rita Tester",
+              "BDF_Contact_Email": "rita.tester@example.invalid",
+              "Supplier_Due_Date": "2026-10-30",
+              "Case_Contacts_JSON": "[{\"id\":\"PU-T01\",\"name\":\"Sam Supplier\"}]",
+              "Portal_Contact_Ids": "PU-T01",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Release_Item_Id": "REL-T-001",
+              "Manifest_Hash": "sha256-fictional-0001",
+              "Release_Manifest_JSON": "{\"release\":\"REL-T-001\"}",
+              "Overall_Approval_Required": "Yes"
+            }
+          },
+          {
+            "step": "CASE_S1",
+            "role": "ciq_rmm",
+            "input": {
+              "Basic_Data_Received": "Yes",
+              "Portal_Request_Item_Id": "PRQ-T0001"
+            }
+          },
+          {
+            "step": "CASE_S2",
+            "role": "ciq_rmm",
+            "input": {
+              "Dept_REG_Active": "No",
+              "Dept_SAF_Active": "No",
+              "Dept_QM_Active": "Yes",
+              "Dept_MIC_Active": "No",
+              "Dept_SUS_Active": "No",
+              "Dept_RMM_Active": "No",
+              "Initial_Scope_Run_Key": "RUN-T0001-1",
+              "Rule_Set_Version": "RS-1",
+              "RMES_Key": "RMES-T0001-C1",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Completeness_Request_Key": "CMP-T0001",
+              "Completeness_Declaration_Text": "Fictional declaration",
+              "Completeness_Text_Key": "TXT-PS05-1",
+              "Completeness_Due_Date": "2026-11-15",
+              "Final_Release_Request_Key": "FRL-T0001",
+              "Final_Release_Declaration_Text": "Fictional release text",
+              "Final_Release_Text_Key": "TXT-PS11-1",
+              "Supplier_Closing_Text": "Thank you, the questionnaire is closed."
+            }
+          },
+          {
+            "step": "CASE_S3",
+            "role": "ciq_rmm",
+            "input": {
+              "Completeness_Confirm": "Confirmed",
+              "Completeness_By_Name": "Sam Supplier",
+              "Completeness_By_Email": "sam.supplier@example.invalid",
+              "Completeness_By_Role": "Quality",
+              "Completeness_At": "2026-11-10T10:00:00Z",
+              "RMES_Created_At": "2026-11-10T10:00:00Z"
+            }
+          },
+          {
+            "step": "CASE_B_QM",
+            "role": "ciq_qm_reviewer",
+            "input": {
+              "QM_Review_Confirm": "Confirmed",
+              "QM_Completed_By": "qm.tester@example.invalid",
+              "QM_Completed_By_Email": "qm.tester@example.invalid",
+              "QM_Completed_At": "2026-11-20T10:00:00Z",
+              "QM_Open_Count": 0
+            }
+          },
+          {
+            "step": "CASE_S5",
+            "role": "ciq_rmm",
+            "input": {
+              "Hold_Note": "Nothing left open",
+              "Open_Items_Count": 0,
+              "Open_CR_Count": 0
+            }
+          },
+          {
+            "step": "CASE_S6",
+            "role": "ciq_rmm",
+            "input": {
+              "Overall_Decision": "Approved",
+              "Overall_Decided_By": "rmm.tester@example.invalid"
+            }
+          }
+        ],
+        "expect": {
+          "error": "SCENARIO_ROLE_DENIED"
+        }
+      },
+      {
+        "id": "case-create-by-reviewer-denied",
+        "flow": "CIQ_Case_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "CIQ QM Reviewer attempts to create a case (only CIQ RMM initiates).",
+        "steps": [
+          {
+            "step": "CASE_S0",
+            "role": "ciq_qm_reviewer",
+            "input": {
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Trade_Name": "Fictional Emollient A",
+              "Main_INCI": "Caprylic/Capric Triglyceride",
+              "BDF_Material_No": "BDF-900001",
+              "Supplier_Code": "SUP-T01",
+              "Supplier_Legal_Name": "Fictional Oleo GmbH",
+              "Owner_RMM": "rmm.tester@example.invalid",
+              "Request_Key": "REQ-T0001-C1",
+              "BDF_Contact_Name": "Rita Tester",
+              "BDF_Contact_Email": "rita.tester@example.invalid",
+              "Supplier_Due_Date": "2026-10-30",
+              "Case_Contacts_JSON": "[{\"id\":\"PU-T01\",\"name\":\"Sam Supplier\"}]",
+              "Portal_Contact_Ids": "PU-T01",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Release_Item_Id": "REL-T-001",
+              "Manifest_Hash": "sha256-fictional-0001",
+              "Release_Manifest_JSON": "{\"release\":\"REL-T-001\"}",
+              "Overall_Approval_Required": "No"
+            }
+          }
+        ],
+        "expect": {
+          "error": "SCENARIO_ROLE_DENIED"
+        }
+      },
+      {
+        "id": "case-reg-confirm-missing",
+        "flow": "CIQ_Case_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "Review – REG submitted without REG_Review_Confirm (Mandatory sign-off evidence).",
+        "steps": [
+          {
+            "step": "CASE_S0",
+            "role": "ciq_rmm",
+            "input": {
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Trade_Name": "Fictional Emollient A",
+              "Main_INCI": "Caprylic/Capric Triglyceride",
+              "BDF_Material_No": "BDF-900001",
+              "Supplier_Code": "SUP-T01",
+              "Supplier_Legal_Name": "Fictional Oleo GmbH",
+              "Owner_RMM": "rmm.tester@example.invalid",
+              "Request_Key": "REQ-T0001-C1",
+              "BDF_Contact_Name": "Rita Tester",
+              "BDF_Contact_Email": "rita.tester@example.invalid",
+              "Supplier_Due_Date": "2026-10-30",
+              "Case_Contacts_JSON": "[{\"id\":\"PU-T01\",\"name\":\"Sam Supplier\"}]",
+              "Portal_Contact_Ids": "PU-T01",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Release_Item_Id": "REL-T-001",
+              "Manifest_Hash": "sha256-fictional-0001",
+              "Release_Manifest_JSON": "{\"release\":\"REL-T-001\"}",
+              "Overall_Approval_Required": "No"
+            }
+          },
+          {
+            "step": "CASE_S1",
+            "role": "ciq_rmm",
+            "input": {
+              "Basic_Data_Received": "Yes",
+              "Portal_Request_Item_Id": "PRQ-T0001"
+            }
+          },
+          {
+            "step": "CASE_S2",
+            "role": "ciq_rmm",
+            "input": {
+              "Dept_REG_Active": "Yes",
+              "Dept_SAF_Active": "Yes",
+              "Dept_QM_Active": "Yes",
+              "Dept_MIC_Active": "Yes",
+              "Dept_SUS_Active": "Yes",
+              "Dept_RMM_Active": "Yes",
+              "Initial_Scope_Run_Key": "RUN-T0001-1",
+              "Rule_Set_Version": "RS-1",
+              "RMES_Key": "RMES-T0001-C1",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Completeness_Request_Key": "CMP-T0001",
+              "Completeness_Declaration_Text": "Fictional declaration",
+              "Completeness_Text_Key": "TXT-PS05-1",
+              "Completeness_Due_Date": "2026-11-15",
+              "Final_Release_Request_Key": "FRL-T0001",
+              "Final_Release_Declaration_Text": "Fictional release text",
+              "Final_Release_Text_Key": "TXT-PS11-1",
+              "Supplier_Closing_Text": "Thank you, the questionnaire is closed."
+            }
+          },
+          {
+            "step": "CASE_S3",
+            "role": "ciq_rmm",
+            "input": {
+              "Completeness_Confirm": "Confirmed",
+              "Completeness_By_Name": "Sam Supplier",
+              "Completeness_By_Email": "sam.supplier@example.invalid",
+              "Completeness_By_Role": "Quality",
+              "Completeness_At": "2026-11-10T10:00:00Z",
+              "RMES_Created_At": "2026-11-10T10:00:00Z"
+            }
+          },
+          {
+            "step": "CASE_B_REG",
+            "role": "ciq_regulatory_reviewer",
+            "input": {
+              "REG_Completed_By": "reg.tester@example.invalid",
+              "REG_Completed_By_Email": "reg.tester@example.invalid",
+              "REG_Completed_At": "2026-11-20T10:00:00Z",
+              "REG_Open_Count": 0,
+              "REG_RMES_Decision": "Approved",
+              "REG_RMES_Gaps": 0
+            }
+          }
+        ],
+        "expect": {
+          "error": "SCENARIO_MANDATORY_MISSING"
+        }
+      },
+      {
+        "id": "case-saf-confirm-missing",
+        "flow": "CIQ_Case_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "Review – SAF submitted without SAF_Review_Confirm (Mandatory sign-off evidence).",
+        "steps": [
+          {
+            "step": "CASE_S0",
+            "role": "ciq_rmm",
+            "input": {
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Trade_Name": "Fictional Emollient A",
+              "Main_INCI": "Caprylic/Capric Triglyceride",
+              "BDF_Material_No": "BDF-900001",
+              "Supplier_Code": "SUP-T01",
+              "Supplier_Legal_Name": "Fictional Oleo GmbH",
+              "Owner_RMM": "rmm.tester@example.invalid",
+              "Request_Key": "REQ-T0001-C1",
+              "BDF_Contact_Name": "Rita Tester",
+              "BDF_Contact_Email": "rita.tester@example.invalid",
+              "Supplier_Due_Date": "2026-10-30",
+              "Case_Contacts_JSON": "[{\"id\":\"PU-T01\",\"name\":\"Sam Supplier\"}]",
+              "Portal_Contact_Ids": "PU-T01",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Release_Item_Id": "REL-T-001",
+              "Manifest_Hash": "sha256-fictional-0001",
+              "Release_Manifest_JSON": "{\"release\":\"REL-T-001\"}",
+              "Overall_Approval_Required": "No"
+            }
+          },
+          {
+            "step": "CASE_S1",
+            "role": "ciq_rmm",
+            "input": {
+              "Basic_Data_Received": "Yes",
+              "Portal_Request_Item_Id": "PRQ-T0001"
+            }
+          },
+          {
+            "step": "CASE_S2",
+            "role": "ciq_rmm",
+            "input": {
+              "Dept_REG_Active": "Yes",
+              "Dept_SAF_Active": "Yes",
+              "Dept_QM_Active": "Yes",
+              "Dept_MIC_Active": "Yes",
+              "Dept_SUS_Active": "Yes",
+              "Dept_RMM_Active": "Yes",
+              "Initial_Scope_Run_Key": "RUN-T0001-1",
+              "Rule_Set_Version": "RS-1",
+              "RMES_Key": "RMES-T0001-C1",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Completeness_Request_Key": "CMP-T0001",
+              "Completeness_Declaration_Text": "Fictional declaration",
+              "Completeness_Text_Key": "TXT-PS05-1",
+              "Completeness_Due_Date": "2026-11-15",
+              "Final_Release_Request_Key": "FRL-T0001",
+              "Final_Release_Declaration_Text": "Fictional release text",
+              "Final_Release_Text_Key": "TXT-PS11-1",
+              "Supplier_Closing_Text": "Thank you, the questionnaire is closed."
+            }
+          },
+          {
+            "step": "CASE_S3",
+            "role": "ciq_rmm",
+            "input": {
+              "Completeness_Confirm": "Confirmed",
+              "Completeness_By_Name": "Sam Supplier",
+              "Completeness_By_Email": "sam.supplier@example.invalid",
+              "Completeness_By_Role": "Quality",
+              "Completeness_At": "2026-11-10T10:00:00Z",
+              "RMES_Created_At": "2026-11-10T10:00:00Z"
+            }
+          },
+          {
+            "step": "CASE_B_SAF",
+            "role": "ciq_safety_reviewer",
+            "input": {
+              "SAF_Completed_By": "saf.tester@example.invalid",
+              "SAF_Completed_By_Email": "saf.tester@example.invalid",
+              "SAF_Completed_At": "2026-11-20T10:00:00Z",
+              "SAF_Open_Count": 0,
+              "SAF_RMES_Decision": "Approved",
+              "SAF_RMES_Gaps": 0
+            }
+          }
+        ],
+        "expect": {
+          "error": "SCENARIO_MANDATORY_MISSING"
+        }
+      },
+      {
+        "id": "case-qm-confirm-missing",
+        "flow": "CIQ_Case_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "Review – QM submitted without QM_Review_Confirm (Mandatory sign-off evidence).",
+        "steps": [
+          {
+            "step": "CASE_S0",
+            "role": "ciq_rmm",
+            "input": {
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Trade_Name": "Fictional Emollient A",
+              "Main_INCI": "Caprylic/Capric Triglyceride",
+              "BDF_Material_No": "BDF-900001",
+              "Supplier_Code": "SUP-T01",
+              "Supplier_Legal_Name": "Fictional Oleo GmbH",
+              "Owner_RMM": "rmm.tester@example.invalid",
+              "Request_Key": "REQ-T0001-C1",
+              "BDF_Contact_Name": "Rita Tester",
+              "BDF_Contact_Email": "rita.tester@example.invalid",
+              "Supplier_Due_Date": "2026-10-30",
+              "Case_Contacts_JSON": "[{\"id\":\"PU-T01\",\"name\":\"Sam Supplier\"}]",
+              "Portal_Contact_Ids": "PU-T01",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Release_Item_Id": "REL-T-001",
+              "Manifest_Hash": "sha256-fictional-0001",
+              "Release_Manifest_JSON": "{\"release\":\"REL-T-001\"}",
+              "Overall_Approval_Required": "No"
+            }
+          },
+          {
+            "step": "CASE_S1",
+            "role": "ciq_rmm",
+            "input": {
+              "Basic_Data_Received": "Yes",
+              "Portal_Request_Item_Id": "PRQ-T0001"
+            }
+          },
+          {
+            "step": "CASE_S2",
+            "role": "ciq_rmm",
+            "input": {
+              "Dept_REG_Active": "Yes",
+              "Dept_SAF_Active": "Yes",
+              "Dept_QM_Active": "Yes",
+              "Dept_MIC_Active": "Yes",
+              "Dept_SUS_Active": "Yes",
+              "Dept_RMM_Active": "Yes",
+              "Initial_Scope_Run_Key": "RUN-T0001-1",
+              "Rule_Set_Version": "RS-1",
+              "RMES_Key": "RMES-T0001-C1",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Completeness_Request_Key": "CMP-T0001",
+              "Completeness_Declaration_Text": "Fictional declaration",
+              "Completeness_Text_Key": "TXT-PS05-1",
+              "Completeness_Due_Date": "2026-11-15",
+              "Final_Release_Request_Key": "FRL-T0001",
+              "Final_Release_Declaration_Text": "Fictional release text",
+              "Final_Release_Text_Key": "TXT-PS11-1",
+              "Supplier_Closing_Text": "Thank you, the questionnaire is closed."
+            }
+          },
+          {
+            "step": "CASE_S3",
+            "role": "ciq_rmm",
+            "input": {
+              "Completeness_Confirm": "Confirmed",
+              "Completeness_By_Name": "Sam Supplier",
+              "Completeness_By_Email": "sam.supplier@example.invalid",
+              "Completeness_By_Role": "Quality",
+              "Completeness_At": "2026-11-10T10:00:00Z",
+              "RMES_Created_At": "2026-11-10T10:00:00Z"
+            }
+          },
+          {
+            "step": "CASE_B_QM",
+            "role": "ciq_qm_reviewer",
+            "input": {
+              "QM_Completed_By": "qm.tester@example.invalid",
+              "QM_Completed_By_Email": "qm.tester@example.invalid",
+              "QM_Completed_At": "2026-11-20T10:00:00Z",
+              "QM_Open_Count": 0
+            }
+          }
+        ],
+        "expect": {
+          "error": "SCENARIO_MANDATORY_MISSING"
+        }
+      },
+      {
+        "id": "case-mic-confirm-missing",
+        "flow": "CIQ_Case_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "Review – MIC submitted without MIC_Review_Confirm (Mandatory sign-off evidence).",
+        "steps": [
+          {
+            "step": "CASE_S0",
+            "role": "ciq_rmm",
+            "input": {
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Trade_Name": "Fictional Emollient A",
+              "Main_INCI": "Caprylic/Capric Triglyceride",
+              "BDF_Material_No": "BDF-900001",
+              "Supplier_Code": "SUP-T01",
+              "Supplier_Legal_Name": "Fictional Oleo GmbH",
+              "Owner_RMM": "rmm.tester@example.invalid",
+              "Request_Key": "REQ-T0001-C1",
+              "BDF_Contact_Name": "Rita Tester",
+              "BDF_Contact_Email": "rita.tester@example.invalid",
+              "Supplier_Due_Date": "2026-10-30",
+              "Case_Contacts_JSON": "[{\"id\":\"PU-T01\",\"name\":\"Sam Supplier\"}]",
+              "Portal_Contact_Ids": "PU-T01",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Release_Item_Id": "REL-T-001",
+              "Manifest_Hash": "sha256-fictional-0001",
+              "Release_Manifest_JSON": "{\"release\":\"REL-T-001\"}",
+              "Overall_Approval_Required": "No"
+            }
+          },
+          {
+            "step": "CASE_S1",
+            "role": "ciq_rmm",
+            "input": {
+              "Basic_Data_Received": "Yes",
+              "Portal_Request_Item_Id": "PRQ-T0001"
+            }
+          },
+          {
+            "step": "CASE_S2",
+            "role": "ciq_rmm",
+            "input": {
+              "Dept_REG_Active": "Yes",
+              "Dept_SAF_Active": "Yes",
+              "Dept_QM_Active": "Yes",
+              "Dept_MIC_Active": "Yes",
+              "Dept_SUS_Active": "Yes",
+              "Dept_RMM_Active": "Yes",
+              "Initial_Scope_Run_Key": "RUN-T0001-1",
+              "Rule_Set_Version": "RS-1",
+              "RMES_Key": "RMES-T0001-C1",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Completeness_Request_Key": "CMP-T0001",
+              "Completeness_Declaration_Text": "Fictional declaration",
+              "Completeness_Text_Key": "TXT-PS05-1",
+              "Completeness_Due_Date": "2026-11-15",
+              "Final_Release_Request_Key": "FRL-T0001",
+              "Final_Release_Declaration_Text": "Fictional release text",
+              "Final_Release_Text_Key": "TXT-PS11-1",
+              "Supplier_Closing_Text": "Thank you, the questionnaire is closed."
+            }
+          },
+          {
+            "step": "CASE_S3",
+            "role": "ciq_rmm",
+            "input": {
+              "Completeness_Confirm": "Confirmed",
+              "Completeness_By_Name": "Sam Supplier",
+              "Completeness_By_Email": "sam.supplier@example.invalid",
+              "Completeness_By_Role": "Quality",
+              "Completeness_At": "2026-11-10T10:00:00Z",
+              "RMES_Created_At": "2026-11-10T10:00:00Z"
+            }
+          },
+          {
+            "step": "CASE_B_MIC",
+            "role": "ciq_microbiology_reviewer",
+            "input": {
+              "MIC_Completed_By": "mic.tester@example.invalid",
+              "MIC_Completed_By_Email": "mic.tester@example.invalid",
+              "MIC_Completed_At": "2026-11-20T10:00:00Z",
+              "MIC_Open_Count": 0
+            }
+          }
+        ],
+        "expect": {
+          "error": "SCENARIO_MANDATORY_MISSING"
+        }
+      },
+      {
+        "id": "case-sus-confirm-missing",
+        "flow": "CIQ_Case_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "Review – SUS submitted without SUS_Review_Confirm (Mandatory sign-off evidence).",
+        "steps": [
+          {
+            "step": "CASE_S0",
+            "role": "ciq_rmm",
+            "input": {
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Trade_Name": "Fictional Emollient A",
+              "Main_INCI": "Caprylic/Capric Triglyceride",
+              "BDF_Material_No": "BDF-900001",
+              "Supplier_Code": "SUP-T01",
+              "Supplier_Legal_Name": "Fictional Oleo GmbH",
+              "Owner_RMM": "rmm.tester@example.invalid",
+              "Request_Key": "REQ-T0001-C1",
+              "BDF_Contact_Name": "Rita Tester",
+              "BDF_Contact_Email": "rita.tester@example.invalid",
+              "Supplier_Due_Date": "2026-10-30",
+              "Case_Contacts_JSON": "[{\"id\":\"PU-T01\",\"name\":\"Sam Supplier\"}]",
+              "Portal_Contact_Ids": "PU-T01",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Release_Item_Id": "REL-T-001",
+              "Manifest_Hash": "sha256-fictional-0001",
+              "Release_Manifest_JSON": "{\"release\":\"REL-T-001\"}",
+              "Overall_Approval_Required": "No"
+            }
+          },
+          {
+            "step": "CASE_S1",
+            "role": "ciq_rmm",
+            "input": {
+              "Basic_Data_Received": "Yes",
+              "Portal_Request_Item_Id": "PRQ-T0001"
+            }
+          },
+          {
+            "step": "CASE_S2",
+            "role": "ciq_rmm",
+            "input": {
+              "Dept_REG_Active": "Yes",
+              "Dept_SAF_Active": "Yes",
+              "Dept_QM_Active": "Yes",
+              "Dept_MIC_Active": "Yes",
+              "Dept_SUS_Active": "Yes",
+              "Dept_RMM_Active": "Yes",
+              "Initial_Scope_Run_Key": "RUN-T0001-1",
+              "Rule_Set_Version": "RS-1",
+              "RMES_Key": "RMES-T0001-C1",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Completeness_Request_Key": "CMP-T0001",
+              "Completeness_Declaration_Text": "Fictional declaration",
+              "Completeness_Text_Key": "TXT-PS05-1",
+              "Completeness_Due_Date": "2026-11-15",
+              "Final_Release_Request_Key": "FRL-T0001",
+              "Final_Release_Declaration_Text": "Fictional release text",
+              "Final_Release_Text_Key": "TXT-PS11-1",
+              "Supplier_Closing_Text": "Thank you, the questionnaire is closed."
+            }
+          },
+          {
+            "step": "CASE_S3",
+            "role": "ciq_rmm",
+            "input": {
+              "Completeness_Confirm": "Confirmed",
+              "Completeness_By_Name": "Sam Supplier",
+              "Completeness_By_Email": "sam.supplier@example.invalid",
+              "Completeness_By_Role": "Quality",
+              "Completeness_At": "2026-11-10T10:00:00Z",
+              "RMES_Created_At": "2026-11-10T10:00:00Z"
+            }
+          },
+          {
+            "step": "CASE_B_SUS",
+            "role": "ciq_sustainability_reviewer",
+            "input": {
+              "SUS_Completed_By": "sus.tester@example.invalid",
+              "SUS_Completed_By_Email": "sus.tester@example.invalid",
+              "SUS_Completed_At": "2026-11-20T10:00:00Z",
+              "SUS_Open_Count": 0
+            }
+          }
+        ],
+        "expect": {
+          "error": "SCENARIO_MANDATORY_MISSING"
+        }
+      },
+      {
+        "id": "case-rmm-confirm-missing",
+        "flow": "CIQ_Case_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "Review – RMM submitted without RMM_Review_Confirm (Mandatory sign-off evidence).",
+        "steps": [
+          {
+            "step": "CASE_S0",
+            "role": "ciq_rmm",
+            "input": {
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Trade_Name": "Fictional Emollient A",
+              "Main_INCI": "Caprylic/Capric Triglyceride",
+              "BDF_Material_No": "BDF-900001",
+              "Supplier_Code": "SUP-T01",
+              "Supplier_Legal_Name": "Fictional Oleo GmbH",
+              "Owner_RMM": "rmm.tester@example.invalid",
+              "Request_Key": "REQ-T0001-C1",
+              "BDF_Contact_Name": "Rita Tester",
+              "BDF_Contact_Email": "rita.tester@example.invalid",
+              "Supplier_Due_Date": "2026-10-30",
+              "Case_Contacts_JSON": "[{\"id\":\"PU-T01\",\"name\":\"Sam Supplier\"}]",
+              "Portal_Contact_Ids": "PU-T01",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Release_Item_Id": "REL-T-001",
+              "Manifest_Hash": "sha256-fictional-0001",
+              "Release_Manifest_JSON": "{\"release\":\"REL-T-001\"}",
+              "Overall_Approval_Required": "No"
+            }
+          },
+          {
+            "step": "CASE_S1",
+            "role": "ciq_rmm",
+            "input": {
+              "Basic_Data_Received": "Yes",
+              "Portal_Request_Item_Id": "PRQ-T0001"
+            }
+          },
+          {
+            "step": "CASE_S2",
+            "role": "ciq_rmm",
+            "input": {
+              "Dept_REG_Active": "Yes",
+              "Dept_SAF_Active": "Yes",
+              "Dept_QM_Active": "Yes",
+              "Dept_MIC_Active": "Yes",
+              "Dept_SUS_Active": "Yes",
+              "Dept_RMM_Active": "Yes",
+              "Initial_Scope_Run_Key": "RUN-T0001-1",
+              "Rule_Set_Version": "RS-1",
+              "RMES_Key": "RMES-T0001-C1",
+              "Confirm_Contact_Ids": "PU-T01",
+              "Supplier_Contact_Emails": "sam.supplier@example.invalid",
+              "Completeness_Request_Key": "CMP-T0001",
+              "Completeness_Declaration_Text": "Fictional declaration",
+              "Completeness_Text_Key": "TXT-PS05-1",
+              "Completeness_Due_Date": "2026-11-15",
+              "Final_Release_Request_Key": "FRL-T0001",
+              "Final_Release_Declaration_Text": "Fictional release text",
+              "Final_Release_Text_Key": "TXT-PS11-1",
+              "Supplier_Closing_Text": "Thank you, the questionnaire is closed."
+            }
+          },
+          {
+            "step": "CASE_S3",
+            "role": "ciq_rmm",
+            "input": {
+              "Completeness_Confirm": "Confirmed",
+              "Completeness_By_Name": "Sam Supplier",
+              "Completeness_By_Email": "sam.supplier@example.invalid",
+              "Completeness_By_Role": "Quality",
+              "Completeness_At": "2026-11-10T10:00:00Z",
+              "RMES_Created_At": "2026-11-10T10:00:00Z"
+            }
+          },
+          {
+            "step": "CASE_B_RMM",
+            "role": "ciq_rmm",
+            "input": {
+              "RMM_Completed_By": "rmm.tester@example.invalid",
+              "RMM_Completed_By_Email": "rmm.tester@example.invalid",
+              "RMM_Completed_At": "2026-11-20T10:00:00Z",
+              "RMM_Open_Count": 0
+            }
+          }
+        ],
+        "expect": {
+          "error": "SCENARIO_MANDATORY_MISSING"
+        }
+      },
+      {
+        "id": "op-reg-supplier-accepted",
+        "flow": "CIQ_Open_Point_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "Regulatory raises a point (to supplier: Yes); Waiting for supplier runs; only Review – Regulatory runs; Accepted; End.",
+        "steps": [
+          {
+            "step": "OPNT_S0",
+            "role": "ciq_regulatory_reviewer",
+            "input": {
+              "OP_Key": "OP-T0001-REG",
+              "Round_No": 1,
+              "Case_Item_Id": "CASE-ITEM-T0001",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "OP_Kind": "Query",
+              "OP_Dept": "REG",
+              "Raised_By_Dept": "REG",
+              "OP_To_Supplier": "Yes",
+              "Responsible_User": "resp.tester@example.invalid",
+              "Internal_Due_Date": "2026-11-25",
+              "Internal_Justification": "Fictional internal reason",
+              "Question_Text": "Please provide the fictional CoA.",
+              "Ref_Kind": "Section",
+              "Ref_Label": "K2.1 Composition",
+              "Query_Key": "OP-T0001-REG|R1",
+              "Ref_Section_Key": "K2.1",
+              "Kind_Label": "Query",
+              "Supplier_Justification": "Needed for the fictional review",
+              "Supplier_Due_Date": "2026-11-20",
+              "Responsible_Name": "Resp Tester",
+              "Responsible_Dept_Label": "REG",
+              "Portal_Contact_Ids": "PU-T01",
+              "Awaiting_Response": "Yes"
+            }
+          },
+          {
+            "step": "OPNT_S1",
+            "role": "ciq_rmm",
+            "input": {
+              "Response_Kind": "Answer",
+              "Response_Text": "Fictional answer",
+              "Awaiting_Response": "No"
+            }
+          },
+          {
+            "step": "OPNT_R_REG",
+            "role": "ciq_regulatory_reviewer",
+            "input": {
+              "OP_Outcome": "Accepted",
+              "Reviewed_By": "rev.tester@example.invalid",
+              "Reviewed_By_Email": "rev.tester@example.invalid",
+              "Reviewed_At": "2026-11-22T10:00:00Z",
+              "Rounds": [
+                {
+                  "Rounds_Round_No": 1,
+                  "Rounds_Question_Text": "Please provide the fictional CoA.",
+                  "Rounds_Response_Text": "Fictional answer",
+                  "Rounds_Outcome": "Accepted"
+                }
+              ]
+            }
+          }
+        ],
+        "expect": {
+          "terminal": true,
+          "record": {
+            "OP_Dept": "REG",
+            "OP_Outcome": "Accepted"
+          }
+        }
+      },
+      {
+        "id": "op-saf-supplier-accepted",
+        "flow": "CIQ_Open_Point_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "Safety raises a point (to supplier: Yes); Waiting for supplier runs; only Review – Safety runs; Accepted; End.",
+        "steps": [
+          {
+            "step": "OPNT_S0",
+            "role": "ciq_safety_reviewer",
+            "input": {
+              "OP_Key": "OP-T0001-SAF",
+              "Round_No": 1,
+              "Case_Item_Id": "CASE-ITEM-T0001",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "OP_Kind": "Query",
+              "OP_Dept": "SAF",
+              "Raised_By_Dept": "SAF",
+              "OP_To_Supplier": "Yes",
+              "Responsible_User": "resp.tester@example.invalid",
+              "Internal_Due_Date": "2026-11-25",
+              "Internal_Justification": "Fictional internal reason",
+              "Question_Text": "Please provide the fictional CoA.",
+              "Ref_Kind": "Section",
+              "Ref_Label": "K2.1 Composition",
+              "Query_Key": "OP-T0001-SAF|R1",
+              "Ref_Section_Key": "K2.1",
+              "Kind_Label": "Query",
+              "Supplier_Justification": "Needed for the fictional review",
+              "Supplier_Due_Date": "2026-11-20",
+              "Responsible_Name": "Resp Tester",
+              "Responsible_Dept_Label": "SAF",
+              "Portal_Contact_Ids": "PU-T01",
+              "Awaiting_Response": "Yes"
+            }
+          },
+          {
+            "step": "OPNT_S1",
+            "role": "ciq_rmm",
+            "input": {
+              "Response_Kind": "Answer",
+              "Response_Text": "Fictional answer",
+              "Awaiting_Response": "No"
+            }
+          },
+          {
+            "step": "OPNT_R_SAF",
+            "role": "ciq_safety_reviewer",
+            "input": {
+              "OP_Outcome": "Accepted",
+              "Reviewed_By": "rev.tester@example.invalid",
+              "Reviewed_By_Email": "rev.tester@example.invalid",
+              "Reviewed_At": "2026-11-22T10:00:00Z",
+              "Rounds": [
+                {
+                  "Rounds_Round_No": 1,
+                  "Rounds_Question_Text": "Please provide the fictional CoA.",
+                  "Rounds_Response_Text": "Fictional answer",
+                  "Rounds_Outcome": "Accepted"
+                }
+              ]
+            }
+          }
+        ],
+        "expect": {
+          "terminal": true,
+          "record": {
+            "OP_Dept": "SAF",
+            "OP_Outcome": "Accepted"
+          }
+        }
+      },
+      {
+        "id": "op-qm-supplier-accepted",
+        "flow": "CIQ_Open_Point_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "QM raises a point (to supplier: Yes); Waiting for supplier runs; only Review – QM runs; Accepted; End.",
+        "steps": [
+          {
+            "step": "OPNT_S0",
+            "role": "ciq_qm_reviewer",
+            "input": {
+              "OP_Key": "OP-T0001-QM",
+              "Round_No": 1,
+              "Case_Item_Id": "CASE-ITEM-T0001",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "OP_Kind": "Query",
+              "OP_Dept": "QM",
+              "Raised_By_Dept": "QM",
+              "OP_To_Supplier": "Yes",
+              "Responsible_User": "resp.tester@example.invalid",
+              "Internal_Due_Date": "2026-11-25",
+              "Internal_Justification": "Fictional internal reason",
+              "Question_Text": "Please provide the fictional CoA.",
+              "Ref_Kind": "Section",
+              "Ref_Label": "K2.1 Composition",
+              "Query_Key": "OP-T0001-QM|R1",
+              "Ref_Section_Key": "K2.1",
+              "Kind_Label": "Query",
+              "Supplier_Justification": "Needed for the fictional review",
+              "Supplier_Due_Date": "2026-11-20",
+              "Responsible_Name": "Resp Tester",
+              "Responsible_Dept_Label": "QM",
+              "Portal_Contact_Ids": "PU-T01",
+              "Awaiting_Response": "Yes"
+            }
+          },
+          {
+            "step": "OPNT_S1",
+            "role": "ciq_rmm",
+            "input": {
+              "Response_Kind": "Answer",
+              "Response_Text": "Fictional answer",
+              "Awaiting_Response": "No"
+            }
+          },
+          {
+            "step": "OPNT_R_QM",
+            "role": "ciq_qm_reviewer",
+            "input": {
+              "OP_Outcome": "Accepted",
+              "Reviewed_By": "rev.tester@example.invalid",
+              "Reviewed_By_Email": "rev.tester@example.invalid",
+              "Reviewed_At": "2026-11-22T10:00:00Z",
+              "Rounds": [
+                {
+                  "Rounds_Round_No": 1,
+                  "Rounds_Question_Text": "Please provide the fictional CoA.",
+                  "Rounds_Response_Text": "Fictional answer",
+                  "Rounds_Outcome": "Accepted"
+                }
+              ]
+            }
+          }
+        ],
+        "expect": {
+          "terminal": true,
+          "record": {
+            "OP_Dept": "QM",
+            "OP_Outcome": "Accepted"
+          }
+        }
+      },
+      {
+        "id": "op-mic-internal-accepted",
+        "flow": "CIQ_Open_Point_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "Microbiology raises a point (to supplier: No); Waiting for supplier is skipped; only Review – Microbiology runs; Accepted; End.",
+        "steps": [
+          {
+            "step": "OPNT_S0",
+            "role": "ciq_microbiology_reviewer",
+            "input": {
+              "OP_Key": "OP-T0001-MIC",
+              "Round_No": 1,
+              "Case_Item_Id": "CASE-ITEM-T0001",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "OP_Kind": "Department review",
+              "OP_Dept": "MIC",
+              "Raised_By_Dept": "MIC",
+              "OP_To_Supplier": "No",
+              "Responsible_User": "resp.tester@example.invalid",
+              "Internal_Due_Date": "2026-11-25",
+              "Internal_Justification": "Fictional internal reason",
+              "Question_Text": "Please provide the fictional CoA.",
+              "Ref_Kind": "Section",
+              "Ref_Label": "K2.1 Composition"
+            }
+          },
+          {
+            "step": "OPNT_R_MIC",
+            "role": "ciq_microbiology_reviewer",
+            "input": {
+              "OP_Outcome": "Accepted",
+              "Reviewed_By": "rev.tester@example.invalid",
+              "Reviewed_By_Email": "rev.tester@example.invalid",
+              "Reviewed_At": "2026-11-22T10:00:00Z",
+              "Rounds": [
+                {
+                  "Rounds_Round_No": 1,
+                  "Rounds_Question_Text": "Please provide the fictional CoA.",
+                  "Rounds_Response_Text": "Fictional answer",
+                  "Rounds_Outcome": "Accepted"
+                }
+              ]
+            }
+          }
+        ],
+        "expect": {
+          "terminal": true,
+          "record": {
+            "OP_Dept": "MIC",
+            "OP_Outcome": "Accepted"
+          }
+        }
+      },
+      {
+        "id": "op-sus-internal-accepted",
+        "flow": "CIQ_Open_Point_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "Sustainability raises a point (to supplier: No); Waiting for supplier is skipped; only Review – Sustainability runs; Accepted; End.",
+        "steps": [
+          {
+            "step": "OPNT_S0",
+            "role": "ciq_sustainability_reviewer",
+            "input": {
+              "OP_Key": "OP-T0001-SUS",
+              "Round_No": 1,
+              "Case_Item_Id": "CASE-ITEM-T0001",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "OP_Kind": "Department review",
+              "OP_Dept": "SUS",
+              "Raised_By_Dept": "SUS",
+              "OP_To_Supplier": "No",
+              "Responsible_User": "resp.tester@example.invalid",
+              "Internal_Due_Date": "2026-11-25",
+              "Internal_Justification": "Fictional internal reason",
+              "Question_Text": "Please provide the fictional CoA.",
+              "Ref_Kind": "Section",
+              "Ref_Label": "K2.1 Composition"
+            }
+          },
+          {
+            "step": "OPNT_R_SUS",
+            "role": "ciq_sustainability_reviewer",
+            "input": {
+              "OP_Outcome": "Accepted",
+              "Reviewed_By": "rev.tester@example.invalid",
+              "Reviewed_By_Email": "rev.tester@example.invalid",
+              "Reviewed_At": "2026-11-22T10:00:00Z",
+              "Rounds": [
+                {
+                  "Rounds_Round_No": 1,
+                  "Rounds_Question_Text": "Please provide the fictional CoA.",
+                  "Rounds_Response_Text": "Fictional answer",
+                  "Rounds_Outcome": "Accepted"
+                }
+              ]
+            }
+          }
+        ],
+        "expect": {
+          "terminal": true,
+          "record": {
+            "OP_Dept": "SUS",
+            "OP_Outcome": "Accepted"
+          }
+        }
+      },
+      {
+        "id": "op-rmm-internal-accepted",
+        "flow": "CIQ_Open_Point_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "RMM raises a point (to supplier: No); Waiting for supplier is skipped; only Review – RMM runs; Accepted; End.",
+        "steps": [
+          {
+            "step": "OPNT_S0",
+            "role": "ciq_rmm",
+            "input": {
+              "OP_Key": "OP-T0001-RMM",
+              "Round_No": 1,
+              "Case_Item_Id": "CASE-ITEM-T0001",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "OP_Kind": "Department review",
+              "OP_Dept": "RMM",
+              "Raised_By_Dept": "RMM",
+              "OP_To_Supplier": "No",
+              "Responsible_User": "resp.tester@example.invalid",
+              "Internal_Due_Date": "2026-11-25",
+              "Internal_Justification": "Fictional internal reason",
+              "Question_Text": "Please provide the fictional CoA.",
+              "Ref_Kind": "Section",
+              "Ref_Label": "K2.1 Composition"
+            }
+          },
+          {
+            "step": "OPNT_R_RMM",
+            "role": "ciq_rmm",
+            "input": {
+              "OP_Outcome": "Accepted",
+              "Reviewed_By": "rev.tester@example.invalid",
+              "Reviewed_By_Email": "rev.tester@example.invalid",
+              "Reviewed_At": "2026-11-22T10:00:00Z",
+              "Rounds": [
+                {
+                  "Rounds_Round_No": 1,
+                  "Rounds_Question_Text": "Please provide the fictional CoA.",
+                  "Rounds_Response_Text": "Fictional answer",
+                  "Rounds_Outcome": "Accepted"
+                }
+              ]
+            }
+          }
+        ],
+        "expect": {
+          "terminal": true,
+          "record": {
+            "OP_Dept": "RMM",
+            "OP_Outcome": "Accepted"
+          }
+        }
+      },
+      {
+        "id": "op-withdrawn-by-owner",
+        "flow": "CIQ_Open_Point_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "RMM raises a supplier query routed to Microbiology; the owner withdraws it at review.",
+        "steps": [
+          {
+            "step": "OPNT_S0",
+            "role": "ciq_rmm",
+            "input": {
+              "OP_Key": "OP-T0001-MIC",
+              "Round_No": 1,
+              "Case_Item_Id": "CASE-ITEM-T0001",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "OP_Kind": "Query",
+              "OP_Dept": "MIC",
+              "Raised_By_Dept": "MIC",
+              "OP_To_Supplier": "Yes",
+              "Responsible_User": "resp.tester@example.invalid",
+              "Internal_Due_Date": "2026-11-25",
+              "Internal_Justification": "Fictional internal reason",
+              "Question_Text": "Please provide the fictional CoA.",
+              "Ref_Kind": "Section",
+              "Ref_Label": "K2.1 Composition",
+              "Query_Key": "OP-T0001-MIC|R1",
+              "Ref_Section_Key": "K2.1",
+              "Kind_Label": "Query",
+              "Supplier_Justification": "Needed for the fictional review",
+              "Supplier_Due_Date": "2026-11-20",
+              "Responsible_Name": "Resp Tester",
+              "Responsible_Dept_Label": "MIC",
+              "Portal_Contact_Ids": "PU-T01",
+              "Awaiting_Response": "Yes"
+            }
+          },
+          {
+            "step": "OPNT_S1",
+            "role": "ciq_rmm",
+            "input": {
+              "Response_Kind": "Answer",
+              "Response_Text": "Fictional answer",
+              "Awaiting_Response": "No"
+            }
+          },
+          {
+            "step": "OPNT_R_MIC",
+            "role": "ciq_microbiology_reviewer",
+            "input": {
+              "OP_Outcome": "Withdrawn",
+              "Reviewed_By": "rev.tester@example.invalid",
+              "Reviewed_By_Email": "rev.tester@example.invalid",
+              "Reviewed_At": "2026-11-22T10:00:00Z",
+              "Rounds": [
+                {
+                  "Rounds_Round_No": 1,
+                  "Rounds_Question_Text": "Please provide the fictional CoA.",
+                  "Rounds_Response_Text": "Fictional answer",
+                  "Rounds_Outcome": "Withdrawn"
+                }
+              ]
+            }
+          }
+        ],
+        "expect": {
+          "terminal": true,
+          "record": {
+            "OP_Outcome": "Withdrawn"
+          }
+        }
+      },
+      {
+        "id": "op-review-wrong-dept-denied",
+        "flow": "CIQ_Open_Point_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "CIQ QM Reviewer attempts Review – Regulatory on a Regulatory point (REQ-PROC-034).",
+        "steps": [
+          {
+            "step": "OPNT_S0",
+            "role": "ciq_regulatory_reviewer",
+            "input": {
+              "OP_Key": "OP-T0001-REG",
+              "Round_No": 1,
+              "Case_Item_Id": "CASE-ITEM-T0001",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "OP_Kind": "Department review",
+              "OP_Dept": "REG",
+              "Raised_By_Dept": "REG",
+              "OP_To_Supplier": "No",
+              "Responsible_User": "resp.tester@example.invalid",
+              "Internal_Due_Date": "2026-11-25",
+              "Internal_Justification": "Fictional internal reason",
+              "Question_Text": "Please provide the fictional CoA.",
+              "Ref_Kind": "Section",
+              "Ref_Label": "K2.1 Composition"
+            }
+          },
+          {
+            "step": "OPNT_R_REG",
+            "role": "ciq_qm_reviewer",
+            "input": {
+              "OP_Outcome": "Accepted",
+              "Reviewed_By": "rev.tester@example.invalid",
+              "Reviewed_By_Email": "rev.tester@example.invalid",
+              "Reviewed_At": "2026-11-22T10:00:00Z",
+              "Rounds": [
+                {
+                  "Rounds_Round_No": 1,
+                  "Rounds_Question_Text": "Please provide the fictional CoA.",
+                  "Rounds_Response_Text": "Fictional answer",
+                  "Rounds_Outcome": "Accepted"
+                }
+              ]
+            }
+          }
+        ],
+        "expect": {
+          "error": "SCENARIO_ROLE_DENIED"
+        }
+      },
+      {
+        "id": "op-raise-by-overall-approver-denied",
+        "flow": "CIQ_Open_Point_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "CIQ Overall Approver attempts to raise an open point (only RMM and the five department Reviewers raise, L237).",
+        "steps": [
+          {
+            "step": "OPNT_S0",
+            "role": "ciq_overall_approver",
+            "input": {
+              "OP_Key": "OP-T0001-REG",
+              "Round_No": 1,
+              "Case_Item_Id": "CASE-ITEM-T0001",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "OP_Kind": "Department review",
+              "OP_Dept": "REG",
+              "Raised_By_Dept": "REG",
+              "OP_To_Supplier": "No",
+              "Responsible_User": "resp.tester@example.invalid",
+              "Internal_Due_Date": "2026-11-25",
+              "Internal_Justification": "Fictional internal reason",
+              "Question_Text": "Please provide the fictional CoA.",
+              "Ref_Kind": "Section",
+              "Ref_Label": "K2.1 Composition"
+            }
+          }
+        ],
+        "expect": {
+          "error": "SCENARIO_ROLE_DENIED"
+        }
+      },
+      {
+        "id": "cr-all-assess-no-impact-confirmed",
+        "flow": "CIQ_Change_Request_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "Y6 creates the request; RMM triages 'Accepted' with every Impact flag Yes; all five Assess branches run with 'No impact confirmed'; join; End (X6).",
+        "steps": [
+          {
+            "step": "CHRQ_S0",
+            "role": "ciq_integration_service",
+            "input": {
+              "CR_Key": "CR-T0001-1",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "Change_Kind": "Change notice",
+              "Section_Key": "BASIC",
+              "Field_Key": "target_markets",
+              "Current_Value_Text": "DE",
+              "Proposed_Value_JSON": "[\"DE\",\"FR\"]",
+              "Change_Reason": "Fictional market add",
+              "Portal_CR_Item_Id": "PCR-T0001"
+            }
+          },
+          {
+            "step": "CHRQ_S1",
+            "role": "ciq_rmm",
+            "input": {
+              "Case_Item_Id": "CASE-ITEM-T0001",
+              "Contact_Verified": "Yes",
+              "CR_Outcome": "Accepted",
+              "Supplier_Outcome_Text": "Your change has been processed.",
+              "Notice_Key": "NOT-T0001-1",
+              "Notice_Title": "Change request outcome",
+              "Portal_Contact_Ids": "PU-T01",
+              "Impact_REG": "Yes",
+              "Impact_SAF": "Yes",
+              "Impact_QM": "Yes",
+              "Impact_MIC": "Yes",
+              "Impact_SUS": "Yes",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "Notice_Kind": "Change request outcome"
+            }
+          },
+          {
+            "step": "CHRQ_B_REG",
+            "role": "ciq_regulatory_reviewer",
+            "input": {
+              "REG_Assessment": "No impact confirmed",
+              "REG_Assessed_By": "reg.tester@example.invalid",
+              "REG_Assessed_At": "2026-11-12T10:00:00Z"
+            }
+          },
+          {
+            "step": "CHRQ_B_SAF",
+            "role": "ciq_safety_reviewer",
+            "input": {
+              "SAF_Assessment": "No impact confirmed",
+              "SAF_Assessed_By": "saf.tester@example.invalid",
+              "SAF_Assessed_At": "2026-11-12T10:00:00Z"
+            }
+          },
+          {
+            "step": "CHRQ_B_QM",
+            "role": "ciq_qm_reviewer",
+            "input": {
+              "QM_Assessment": "No impact confirmed",
+              "QM_Assessed_By": "qm.tester@example.invalid",
+              "QM_Assessed_At": "2026-11-12T10:00:00Z"
+            }
+          },
+          {
+            "step": "CHRQ_B_MIC",
+            "role": "ciq_microbiology_reviewer",
+            "input": {
+              "MIC_Assessment": "No impact confirmed",
+              "MIC_Assessed_By": "mic.tester@example.invalid",
+              "MIC_Assessed_At": "2026-11-12T10:00:00Z"
+            }
+          },
+          {
+            "step": "CHRQ_B_SUS",
+            "role": "ciq_sustainability_reviewer",
+            "input": {
+              "SUS_Assessment": "No impact confirmed",
+              "SUS_Assessed_By": "sus.tester@example.invalid",
+              "SUS_Assessed_At": "2026-11-12T10:00:00Z"
+            }
+          }
+        ],
+        "expect": {
+          "terminal": true,
+          "record": {
+            "CR_Outcome": "Accepted",
+            "REG_Assessment": "No impact confirmed"
+          }
+        }
+      },
+      {
+        "id": "cr-all-assess-re-assessed",
+        "flow": "CIQ_Change_Request_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "Y6 creates the request; RMM triages 'Accepted – scope extended' with every Impact flag Yes; all five Assess branches run with 'Re-assessed'; join; End (X6).",
+        "steps": [
+          {
+            "step": "CHRQ_S0",
+            "role": "ciq_integration_service",
+            "input": {
+              "CR_Key": "CR-T0001-1",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "Change_Kind": "Change notice",
+              "Section_Key": "BASIC",
+              "Field_Key": "target_markets",
+              "Current_Value_Text": "DE",
+              "Proposed_Value_JSON": "[\"DE\",\"FR\"]",
+              "Change_Reason": "Fictional market add",
+              "Portal_CR_Item_Id": "PCR-T0001"
+            }
+          },
+          {
+            "step": "CHRQ_S1",
+            "role": "ciq_rmm",
+            "input": {
+              "Case_Item_Id": "CASE-ITEM-T0001",
+              "Contact_Verified": "Yes",
+              "CR_Outcome": "Accepted – scope extended",
+              "Supplier_Outcome_Text": "Your change has been processed.",
+              "Notice_Key": "NOT-T0001-1",
+              "Notice_Title": "Change request outcome",
+              "Portal_Contact_Ids": "PU-T01",
+              "Impact_REG": "Yes",
+              "Impact_SAF": "Yes",
+              "Impact_QM": "Yes",
+              "Impact_MIC": "Yes",
+              "Impact_SUS": "Yes",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "Notice_Kind": "Change request outcome"
+            }
+          },
+          {
+            "step": "CHRQ_B_REG",
+            "role": "ciq_regulatory_reviewer",
+            "input": {
+              "REG_Assessment": "Re-assessed",
+              "REG_Assessed_By": "reg.tester@example.invalid",
+              "REG_Assessed_At": "2026-11-12T10:00:00Z"
+            }
+          },
+          {
+            "step": "CHRQ_B_SAF",
+            "role": "ciq_safety_reviewer",
+            "input": {
+              "SAF_Assessment": "Re-assessed",
+              "SAF_Assessed_By": "saf.tester@example.invalid",
+              "SAF_Assessed_At": "2026-11-12T10:00:00Z"
+            }
+          },
+          {
+            "step": "CHRQ_B_QM",
+            "role": "ciq_qm_reviewer",
+            "input": {
+              "QM_Assessment": "Re-assessed",
+              "QM_Assessed_By": "qm.tester@example.invalid",
+              "QM_Assessed_At": "2026-11-12T10:00:00Z"
+            }
+          },
+          {
+            "step": "CHRQ_B_MIC",
+            "role": "ciq_microbiology_reviewer",
+            "input": {
+              "MIC_Assessment": "Re-assessed",
+              "MIC_Assessed_By": "mic.tester@example.invalid",
+              "MIC_Assessed_At": "2026-11-12T10:00:00Z"
+            }
+          },
+          {
+            "step": "CHRQ_B_SUS",
+            "role": "ciq_sustainability_reviewer",
+            "input": {
+              "SUS_Assessment": "Re-assessed",
+              "SUS_Assessed_By": "sus.tester@example.invalid",
+              "SUS_Assessed_At": "2026-11-12T10:00:00Z"
+            }
+          }
+        ],
+        "expect": {
+          "terminal": true,
+          "record": {
+            "CR_Outcome": "Accepted – scope extended",
+            "REG_Assessment": "Re-assessed"
+          }
+        }
+      },
+      {
+        "id": "cr-all-assess-finding-raised",
+        "flow": "CIQ_Change_Request_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "Y6 creates the request; RMM triages 'Accepted' with every Impact flag Yes; all five Assess branches run with 'Finding raised'; join; End (X6).",
+        "steps": [
+          {
+            "step": "CHRQ_S0",
+            "role": "ciq_integration_service",
+            "input": {
+              "CR_Key": "CR-T0001-1",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "Change_Kind": "Change notice",
+              "Section_Key": "BASIC",
+              "Field_Key": "target_markets",
+              "Current_Value_Text": "DE",
+              "Proposed_Value_JSON": "[\"DE\",\"FR\"]",
+              "Change_Reason": "Fictional market add",
+              "Portal_CR_Item_Id": "PCR-T0001"
+            }
+          },
+          {
+            "step": "CHRQ_S1",
+            "role": "ciq_rmm",
+            "input": {
+              "Case_Item_Id": "CASE-ITEM-T0001",
+              "Contact_Verified": "Yes",
+              "CR_Outcome": "Accepted",
+              "Supplier_Outcome_Text": "Your change has been processed.",
+              "Notice_Key": "NOT-T0001-1",
+              "Notice_Title": "Change request outcome",
+              "Portal_Contact_Ids": "PU-T01",
+              "Impact_REG": "Yes",
+              "Impact_SAF": "Yes",
+              "Impact_QM": "Yes",
+              "Impact_MIC": "Yes",
+              "Impact_SUS": "Yes",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "Notice_Kind": "Change request outcome"
+            }
+          },
+          {
+            "step": "CHRQ_B_REG",
+            "role": "ciq_regulatory_reviewer",
+            "input": {
+              "REG_Assessment": "Finding raised",
+              "REG_Assessed_By": "reg.tester@example.invalid",
+              "REG_Assessed_At": "2026-11-12T10:00:00Z"
+            }
+          },
+          {
+            "step": "CHRQ_B_SAF",
+            "role": "ciq_safety_reviewer",
+            "input": {
+              "SAF_Assessment": "Finding raised",
+              "SAF_Assessed_By": "saf.tester@example.invalid",
+              "SAF_Assessed_At": "2026-11-12T10:00:00Z"
+            }
+          },
+          {
+            "step": "CHRQ_B_QM",
+            "role": "ciq_qm_reviewer",
+            "input": {
+              "QM_Assessment": "Finding raised",
+              "QM_Assessed_By": "qm.tester@example.invalid",
+              "QM_Assessed_At": "2026-11-12T10:00:00Z"
+            }
+          },
+          {
+            "step": "CHRQ_B_MIC",
+            "role": "ciq_microbiology_reviewer",
+            "input": {
+              "MIC_Assessment": "Finding raised",
+              "MIC_Assessed_By": "mic.tester@example.invalid",
+              "MIC_Assessed_At": "2026-11-12T10:00:00Z"
+            }
+          },
+          {
+            "step": "CHRQ_B_SUS",
+            "role": "ciq_sustainability_reviewer",
+            "input": {
+              "SUS_Assessment": "Finding raised",
+              "SUS_Assessed_By": "sus.tester@example.invalid",
+              "SUS_Assessed_At": "2026-11-12T10:00:00Z"
+            }
+          }
+        ],
+        "expect": {
+          "terminal": true,
+          "record": {
+            "CR_Outcome": "Accepted",
+            "REG_Assessment": "Finding raised"
+          }
+        }
+      },
+      {
+        "id": "cr-partial-impact-rmm-fallback",
+        "flow": "CIQ_Change_Request_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "RMM creates the request by hand (fallback); triage flags only Safety and QM; the other three branches are skipped; End.",
+        "steps": [
+          {
+            "step": "CHRQ_S0",
+            "role": "ciq_rmm",
+            "input": {
+              "CR_Key": "CR-T0001-1",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "Change_Kind": "Change notice",
+              "Section_Key": "BASIC",
+              "Field_Key": "target_markets",
+              "Current_Value_Text": "DE",
+              "Proposed_Value_JSON": "[\"DE\",\"FR\"]",
+              "Change_Reason": "Fictional market add",
+              "Portal_CR_Item_Id": "PCR-T0001"
+            }
+          },
+          {
+            "step": "CHRQ_S1",
+            "role": "ciq_rmm",
+            "input": {
+              "Case_Item_Id": "CASE-ITEM-T0001",
+              "Contact_Verified": "Yes",
+              "CR_Outcome": "Accepted",
+              "Supplier_Outcome_Text": "Your change has been processed.",
+              "Notice_Key": "NOT-T0001-1",
+              "Notice_Title": "Change request outcome",
+              "Portal_Contact_Ids": "PU-T01",
+              "Impact_REG": "No",
+              "Impact_SAF": "Yes",
+              "Impact_QM": "Yes",
+              "Impact_MIC": "No",
+              "Impact_SUS": "No",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "Notice_Kind": "Change request outcome"
+            }
+          },
+          {
+            "step": "CHRQ_B_SAF",
+            "role": "ciq_safety_reviewer",
+            "input": {
+              "SAF_Assessment": "Re-assessed",
+              "SAF_Assessed_By": "saf.tester@example.invalid",
+              "SAF_Assessed_At": "2026-11-12T10:00:00Z"
+            }
+          },
+          {
+            "step": "CHRQ_B_QM",
+            "role": "ciq_qm_reviewer",
+            "input": {
+              "QM_Assessment": "No impact confirmed",
+              "QM_Assessed_By": "qm.tester@example.invalid",
+              "QM_Assessed_At": "2026-11-12T10:00:00Z"
+            }
+          }
+        ],
+        "expect": {
+          "terminal": true,
+          "record": {
+            "Impact_REG": "No",
+            "SAF_Assessment": "Re-assessed"
+          }
+        }
+      },
+      {
+        "id": "cr-refused-after-final-release",
+        "flow": "CIQ_Change_Request_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "Triage 'Refused – after final release': every Impact flag No, so all five Assess branches are skipped and the all-skipped join must still reach End (AR01 / K-PAR).",
+        "steps": [
+          {
+            "step": "CHRQ_S0",
+            "role": "ciq_integration_service",
+            "input": {
+              "CR_Key": "CR-T0001-1",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "Change_Kind": "Change notice",
+              "Section_Key": "BASIC",
+              "Field_Key": "target_markets",
+              "Current_Value_Text": "DE",
+              "Proposed_Value_JSON": "[\"DE\",\"FR\"]",
+              "Change_Reason": "Fictional market add",
+              "Portal_CR_Item_Id": "PCR-T0001"
+            }
+          },
+          {
+            "step": "CHRQ_S1",
+            "role": "ciq_rmm",
+            "input": {
+              "Case_Item_Id": "CASE-ITEM-T0001",
+              "Contact_Verified": "Yes",
+              "CR_Outcome": "Refused – after final release",
+              "Supplier_Outcome_Text": "Your change has been processed.",
+              "Notice_Key": "NOT-T0001-1",
+              "Notice_Title": "Change request outcome",
+              "Portal_Contact_Ids": "PU-T01",
+              "Impact_REG": "No",
+              "Impact_SAF": "No",
+              "Impact_QM": "No",
+              "Impact_MIC": "No",
+              "Impact_SUS": "No",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "Notice_Kind": "Change request outcome"
+            }
+          }
+        ],
+        "expect": {
+          "terminal": true,
+          "record": {
+            "CR_Outcome": "Refused – after final release"
+          }
+        }
+      },
+      {
+        "id": "cr-refused-not-valid",
+        "flow": "CIQ_Change_Request_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "Triage 'Refused – not valid': every Impact flag No, so all five Assess branches are skipped and the all-skipped join must still reach End (AR01 / K-PAR).",
+        "steps": [
+          {
+            "step": "CHRQ_S0",
+            "role": "ciq_integration_service",
+            "input": {
+              "CR_Key": "CR-T0001-1",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "Change_Kind": "Change notice",
+              "Section_Key": "BASIC",
+              "Field_Key": "target_markets",
+              "Current_Value_Text": "DE",
+              "Proposed_Value_JSON": "[\"DE\",\"FR\"]",
+              "Change_Reason": "Fictional market add",
+              "Portal_CR_Item_Id": "PCR-T0001"
+            }
+          },
+          {
+            "step": "CHRQ_S1",
+            "role": "ciq_rmm",
+            "input": {
+              "Case_Item_Id": "CASE-ITEM-T0001",
+              "Contact_Verified": "Yes",
+              "CR_Outcome": "Refused – not valid",
+              "Supplier_Outcome_Text": "Your change has been processed.",
+              "Notice_Key": "NOT-T0001-1",
+              "Notice_Title": "Change request outcome",
+              "Portal_Contact_Ids": "PU-T01",
+              "Impact_REG": "No",
+              "Impact_SAF": "No",
+              "Impact_QM": "No",
+              "Impact_MIC": "No",
+              "Impact_SUS": "No",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "Notice_Kind": "Change request outcome"
+            }
+          }
+        ],
+        "expect": {
+          "terminal": true,
+          "record": {
+            "CR_Outcome": "Refused – not valid"
+          }
+        }
+      },
+      {
+        "id": "cr-triage-by-reviewer-denied",
+        "flow": "CIQ_Change_Request_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "CIQ Regulatory Reviewer attempts Triage (RMM only).",
+        "steps": [
+          {
+            "step": "CHRQ_S0",
+            "role": "ciq_integration_service",
+            "input": {
+              "CR_Key": "CR-T0001-1",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "Change_Kind": "Change notice",
+              "Section_Key": "BASIC",
+              "Field_Key": "target_markets",
+              "Current_Value_Text": "DE",
+              "Proposed_Value_JSON": "[\"DE\",\"FR\"]",
+              "Change_Reason": "Fictional market add",
+              "Portal_CR_Item_Id": "PCR-T0001"
+            }
+          },
+          {
+            "step": "CHRQ_S1",
+            "role": "ciq_regulatory_reviewer",
+            "input": {
+              "Case_Item_Id": "CASE-ITEM-T0001",
+              "Contact_Verified": "Yes",
+              "CR_Outcome": "Accepted",
+              "Supplier_Outcome_Text": "Your change has been processed.",
+              "Notice_Key": "NOT-T0001-1",
+              "Notice_Title": "Change request outcome",
+              "Portal_Contact_Ids": "PU-T01",
+              "Impact_REG": "Yes",
+              "Impact_SAF": "No",
+              "Impact_QM": "No",
+              "Impact_MIC": "No",
+              "Impact_SUS": "No",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "Notice_Kind": "Change request outcome"
+            }
+          }
+        ],
+        "expect": {
+          "error": "SCENARIO_ROLE_DENIED"
+        }
+      },
+      {
+        "id": "cr-assess-wrong-dept-denied",
+        "flow": "CIQ_Change_Request_A00",
+        "clock": "2026-10-08T09:00:00Z",
+        "intent": "CIQ Sustainability Reviewer attempts Assess – Microbiology.",
+        "steps": [
+          {
+            "step": "CHRQ_S0",
+            "role": "ciq_integration_service",
+            "input": {
+              "CR_Key": "CR-T0001-1",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "Change_Kind": "Change notice",
+              "Section_Key": "BASIC",
+              "Field_Key": "target_markets",
+              "Current_Value_Text": "DE",
+              "Proposed_Value_JSON": "[\"DE\",\"FR\"]",
+              "Change_Reason": "Fictional market add",
+              "Portal_CR_Item_Id": "PCR-T0001"
+            }
+          },
+          {
+            "step": "CHRQ_S1",
+            "role": "ciq_rmm",
+            "input": {
+              "Case_Item_Id": "CASE-ITEM-T0001",
+              "Contact_Verified": "Yes",
+              "CR_Outcome": "Accepted",
+              "Supplier_Outcome_Text": "Your change has been processed.",
+              "Notice_Key": "NOT-T0001-1",
+              "Notice_Title": "Change request outcome",
+              "Portal_Contact_Ids": "PU-T01",
+              "Impact_REG": "No",
+              "Impact_SAF": "No",
+              "Impact_QM": "No",
+              "Impact_MIC": "Yes",
+              "Impact_SUS": "No",
+              "Case_Code": "CIQ-2026-T0001",
+              "Cycle_No": 1,
+              "Supplier_Code": "SUP-T01",
+              "Notice_Kind": "Change request outcome"
+            }
+          },
+          {
+            "step": "CHRQ_B_MIC",
+            "role": "ciq_sustainability_reviewer",
+            "input": {
+              "MIC_Assessment": "Re-assessed",
+              "MIC_Assessed_By": "mic.tester@example.invalid",
+              "MIC_Assessed_At": "2026-11-12T10:00:00Z"
+            }
+          }
+        ],
+        "expect": {
+          "error": "SCENARIO_ROLE_DENIED"
+        }
+      }
+    ],
+    "meta": {
+      "owner": "kf-workflow-designer",
+      "stage": "STAGE 2 wave 2 (parallel with kf-data-architect)",
+      "architecture_revision": 3,
+      "data_model_revision": 20,
+      "contract": "Step ids/names/owners/conditions byte-exact per architecture.id_reservations.step_prefix_by_flow; en-dash U+2013 in every 'X – Y' name.",
+      "parallel_blocks": {
+        "CASE_PAR": "Part 2 – Beiersdorf review: 6 one-step arms, conditions Dept_<D>_Active = \"Yes\", native all-join before CASE_S5",
+        "CHRQ_PAR": "Assess impact: 5 one-step arms, conditions Impact_<D> = \"Yes\", native all-join before End"
+      },
+      "rejection_and_cancellation": "Not modelled as steps: native Reject (with mandatory comment) is the cancellation path (v4 L215); the Return on CIQ Open Point is the native send-back from the review step (v4 L246).",
+      "sla_note": "Every step in sla_steps carries an SLA per v4 (L182-L194, L242-L247, L267-L272). BDF sets the durations, so workflow.slas = [] and the durations are set by hand after generate. Z3/Z4 (SLA breach -> CIQ Audit Event) are kf-integration-analyst's automations.",
+      "sla_steps": [
+        {
+          "flow": "CIQ_Case_A00",
+          "step": "CASE_S1",
+          "basis": "Supplier due date (Supplier_Due_Date); escalate to the owner",
+          "evidence": "L185"
+        },
+        {
+          "flow": "CIQ_Case_A00",
+          "step": "CASE_S2",
+          "basis": "Scope-check time",
+          "evidence": "L186"
+        },
+        {
+          "flow": "CIQ_Case_A00",
+          "step": "CASE_S3",
+          "basis": "Supplier due date (Completeness_Due_Date)",
+          "evidence": "L187"
+        },
+        {
+          "flow": "CIQ_Case_A00",
+          "step": "CASE_B_REG",
+          "basis": "Review time, reminder + escalation (REQ-RMES-019)",
+          "evidence": "L189"
+        },
+        {
+          "flow": "CIQ_Case_A00",
+          "step": "CASE_B_SAF",
+          "basis": "Review time, reminder + escalation (REQ-RMES-019)",
+          "evidence": "L189"
+        },
+        {
+          "flow": "CIQ_Case_A00",
+          "step": "CASE_B_QM",
+          "basis": "Review time, reminder + escalation (REQ-RMES-019)",
+          "evidence": "L189"
+        },
+        {
+          "flow": "CIQ_Case_A00",
+          "step": "CASE_B_MIC",
+          "basis": "Review time, reminder + escalation (REQ-RMES-019)",
+          "evidence": "L189"
+        },
+        {
+          "flow": "CIQ_Case_A00",
+          "step": "CASE_B_SUS",
+          "basis": "Review time, reminder + escalation (REQ-RMES-019)",
+          "evidence": "L189"
+        },
+        {
+          "flow": "CIQ_Case_A00",
+          "step": "CASE_B_RMM",
+          "basis": "Review time, reminder + escalation (REQ-RMES-019)",
+          "evidence": "L189"
+        },
+        {
+          "flow": "CIQ_Case_A00",
+          "step": "CASE_S5",
+          "basis": "Check time",
+          "evidence": "L190"
+        },
+        {
+          "flow": "CIQ_Case_A00",
+          "step": "CASE_S6",
+          "basis": "Approval time",
+          "evidence": "L191"
+        },
+        {
+          "flow": "CIQ_Case_A00",
+          "step": "CASE_S7",
+          "basis": "Supplier due date (Final_Release_Due_Date)",
+          "evidence": "L192"
+        },
+        {
+          "flow": "CIQ_Case_A00",
+          "step": "CASE_S8",
+          "basis": "Check time",
+          "evidence": "L193"
+        },
+        {
+          "flow": "CIQ_Open_Point_A00",
+          "step": "OPNT_S1",
+          "basis": "Supplier due date (Supplier_Due_Date)",
+          "evidence": "L245"
+        },
+        {
+          "flow": "CIQ_Open_Point_A00",
+          "step": "OPNT_R_REG",
+          "basis": "Internal due date (Internal_Due_Date)",
+          "evidence": "L246"
+        },
+        {
+          "flow": "CIQ_Open_Point_A00",
+          "step": "OPNT_R_SAF",
+          "basis": "Internal due date (Internal_Due_Date)",
+          "evidence": "L246"
+        },
+        {
+          "flow": "CIQ_Open_Point_A00",
+          "step": "OPNT_R_QM",
+          "basis": "Internal due date (Internal_Due_Date)",
+          "evidence": "L246"
+        },
+        {
+          "flow": "CIQ_Open_Point_A00",
+          "step": "OPNT_R_MIC",
+          "basis": "Internal due date (Internal_Due_Date)",
+          "evidence": "L246"
+        },
+        {
+          "flow": "CIQ_Open_Point_A00",
+          "step": "OPNT_R_SUS",
+          "basis": "Internal due date (Internal_Due_Date)",
+          "evidence": "L246"
+        },
+        {
+          "flow": "CIQ_Open_Point_A00",
+          "step": "OPNT_R_RMM",
+          "basis": "Internal due date (Internal_Due_Date)",
+          "evidence": "L246"
+        },
+        {
+          "flow": "CIQ_Change_Request_A00",
+          "step": "CHRQ_S1",
+          "basis": "Triage time",
+          "evidence": "L270"
+        },
+        {
+          "flow": "CIQ_Change_Request_A00",
+          "step": "CHRQ_B_REG",
+          "basis": "Assessment time",
+          "evidence": "L271"
+        },
+        {
+          "flow": "CIQ_Change_Request_A00",
+          "step": "CHRQ_B_SAF",
+          "basis": "Assessment time",
+          "evidence": "L271"
+        },
+        {
+          "flow": "CIQ_Change_Request_A00",
+          "step": "CHRQ_B_QM",
+          "basis": "Assessment time",
+          "evidence": "L271"
+        },
+        {
+          "flow": "CIQ_Change_Request_A00",
+          "step": "CHRQ_B_MIC",
+          "basis": "Assessment time",
+          "evidence": "L271"
+        },
+        {
+          "flow": "CIQ_Change_Request_A00",
+          "step": "CHRQ_B_SUS",
+          "basis": "Assessment time",
+          "evidence": "L271"
+        }
+      ],
+      "notifications_note": "No IR notifications: supplier notices are X1/X3/X4/X5/X6 (portal session) and Z1/Z2 (automations); department notification is the native step e-mail at CASE_B_* (switch list).",
+      "after_generate_switches": {
+        "source": "brd.md L411-L418 (v4 §7 'After generate (by hand)'); e-mail switches PART D L793-L801, L918",
+        "CIQ_Case_A00": {
+          "send_back": "OFF on every step",
+          "reject": "ON only at the RMM steps CASE_S1, CASE_S2, CASE_S3, CASE_S5, CASE_S7, CASE_S8 (cancellation); OFF at CASE_B_* and CASE_S6 (Case Admin rejects there through the flow-Admin route, K-13/K-PAR-3)",
+          "step_email": "OFF at CASE_S1, CASE_S3, CASE_S7 (supplier waits; X1/X4/X5 notify); ON at CASE_B_* (the department's notification, REQ-PROC-017)"
+        },
+        "CIQ_Open_Point_A00": {
+          "send_back": "ON only at OPNT_R_* (the Return to 'Waiting for supplier', v4 L246, L414); OFF at OPNT_S1",
+          "reject": "OFF at OPNT_S1 and OPNT_R_* (Case Admin ends stray points through the admin route on cancellation)",
+          "step_email": "OFF at OPNT_S1 (X3 notifies the supplier)"
+        },
+        "CIQ_Change_Request_A00": {
+          "send_back": "OFF on CHRQ_S1 and CHRQ_B_*",
+          "reject": "OFF on CHRQ_S1 and CHRQ_B_*"
+        },
+        "other_after_generate": [
+          "flow Admin for CIQ Case Admin on all three Processes (L416)",
+          "SLA durations on every step in sla_steps (L417)",
+          "field-assigned owners after K-FA: CASE_S1 -> Owner_RMM, OPNT_S1 -> Responsible_User (L185, L245, L418)"
+        ]
+      },
+      "field_reconciliation": "Every condition field, handoff cell and scenario input is checked against the data_model slice at graph revision 20 (kf-data-architect; field contract from revision 12, D22). Rounds columns: Rounds_Round_No, Rounds_Question_Text, Rounds_Response_Text, Rounds_Outcome.",
+      "security_handoff": {
+        "note": "Per-step permission cells for kf-security-designer (security.field_permissions[flow][stepId][field]). Every field not listed is ReadOnly at that step and must be keyed ReadOnly explicitly (an unkeyed child table compiles Editable at the StartEvent, zz-spike D6). Child tables are keyed at TABLE level only (A2 L30): Rounds Editable at OPNT_R_* only, ReadOnly at OPNT_S0/OPNT_S1. No step keys on CASE_PAR/CHRQ_PAR or End.",
+        "initiators": {
+          "CIQ_Case_A00": [
+            "ciq_rmm"
+          ],
+          "CIQ_Open_Point_A00": [
+            "ciq_rmm",
+            "ciq_regulatory_reviewer",
+            "ciq_safety_reviewer",
+            "ciq_qm_reviewer",
+            "ciq_microbiology_reviewer",
+            "ciq_sustainability_reviewer"
+          ],
+          "CIQ_Change_Request_A00": [
+            "ciq_integration_service",
+            "ciq_rmm"
+          ]
+        },
+        "act": "steps[id]: 'Act' for exactly the step's assignee_role; every other role View.",
+        "items": [
+          {
+            "flow": "CIQ_Case_A00",
+            "step": "CASE_S0",
+            "Mandatory": [
+              "Case_Code",
+              "Cycle_No",
+              "Trade_Name",
+              "Main_INCI",
+              "BDF_Material_No",
+              "Supplier_Code",
+              "Supplier_Legal_Name",
+              "Owner_RMM",
+              "Request_Key",
+              "BDF_Contact_Name",
+              "BDF_Contact_Email",
+              "Supplier_Due_Date",
+              "Case_Contacts_JSON",
+              "Portal_Contact_Ids",
+              "Confirm_Contact_Ids",
+              "Supplier_Contact_Emails",
+              "Release_Item_Id",
+              "Manifest_Hash",
+              "Release_Manifest_JSON",
+              "Overall_Approval_Required"
+            ],
+            "Editable": [
+              "Case_Title",
+              "Reactivates_Case_Item",
+              "SAP_Material_No",
+              "IRMA_Ref",
+              "Target_Markets_Text",
+              "Markets_Label",
+              "Template_Label",
+              "Release_Key",
+              "Case_Test"
+            ],
+            "note": "v4 L184, L197-L199 (contact ids/e-mails Mandatory at Start); PART D L807. Lanes, decisions, outcome ReadOnly at Start."
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "step": "CASE_S1",
+            "Mandatory": [
+              "Basic_Data_Received"
+            ],
+            "Editable": [
+              "Portal_Request_Item_Id",
+              "Portal_Contact_Ids",
+              "Case_Contacts_JSON",
+              "Confirm_Contact_Ids",
+              "Supplier_Contact_Emails"
+            ],
+            "note": "PART D L808 (Y1 guard)."
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "step": "CASE_S2",
+            "Mandatory": [
+              "Dept_REG_Active",
+              "Dept_SAF_Active",
+              "Dept_QM_Active",
+              "Dept_MIC_Active",
+              "Dept_SUS_Active",
+              "Dept_RMM_Active",
+              "Initial_Scope_Run_Key",
+              "Rule_Set_Version",
+              "RMES_Key",
+              "Confirm_Contact_Ids",
+              "Supplier_Contact_Emails",
+              "Completeness_Request_Key",
+              "Completeness_Declaration_Text",
+              "Completeness_Text_Key",
+              "Completeness_Due_Date",
+              "Final_Release_Request_Key",
+              "Final_Release_Declaration_Text",
+              "Final_Release_Text_Key",
+              "Supplier_Closing_Text"
+            ],
+            "Editable": [
+              "Target_Markets_Text",
+              "Final_Release_Due_Date",
+              "Portal_Contact_Ids",
+              "Case_Contacts_JSON",
+              "Origin_Types"
+            ],
+            "note": "PART D L809; Origin_Types Editable not Mandatory (v4 makes the K2.1 CIQ Section row the search mirror, L280, L429). Counts: Workbench-written Number fields (A2 L32). D23 (COH-04): Open_Items_Count/Open_CR_Count ReadOnly here, so they are blank at the join and the release-request check always runs once."
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "step": "CASE_S3",
+            "Mandatory": [
+              "Completeness_At",
+              "RMES_Created_At"
+            ],
+            "Editable": [
+              "Completeness_Confirm",
+              "Completeness_By_Name",
+              "Completeness_By_Email",
+              "Completeness_By_Role",
+              "Dept_REG_Active",
+              "Dept_SAF_Active",
+              "Dept_QM_Active",
+              "Dept_MIC_Active",
+              "Dept_SUS_Active",
+              "Dept_RMM_Active",
+              "Portal_Contact_Ids",
+              "Case_Contacts_JSON",
+              "Confirm_Contact_Ids",
+              "Supplier_Contact_Emails",
+              "Final_Release_Request_Key",
+              "Final_Release_Declaration_Text",
+              "Final_Release_Text_Key",
+              "Final_Release_Due_Date",
+              "Origin_Types"
+            ],
+            "note": "PART D L810. Flags stay Editable: scope can still grow in Part 1. D23 (COH-04): Open_Items_Count/Open_CR_Count ReadOnly here, so they are blank at the join and the release-request check always runs once."
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "step": "CASE_B_REG",
+            "Mandatory": [
+              "REG_Review_Confirm",
+              "REG_Completed_By",
+              "REG_Completed_By_Email",
+              "REG_Completed_At",
+              "REG_Gate",
+              "REG_RMES_Decision"
+            ],
+            "Editable": [
+              "REG_On_Behalf_Of",
+              "REG_Open_Count",
+              "REG_RMES_Decision_Reason",
+              "REG_RMES_Gaps"
+            ],
+            "note": "Branch-scoped: only this lane; every other field ReadOnly (v4 L209). <D>_Gate is the blank-safe gate formula over the lane counts (A2 L32-L34, K-20). No child tables on the case."
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "step": "CASE_B_SAF",
+            "Mandatory": [
+              "SAF_Review_Confirm",
+              "SAF_Completed_By",
+              "SAF_Completed_By_Email",
+              "SAF_Completed_At",
+              "SAF_Gate",
+              "SAF_RMES_Decision"
+            ],
+            "Editable": [
+              "SAF_On_Behalf_Of",
+              "SAF_Open_Count",
+              "SAF_RMES_Decision_Reason",
+              "SAF_RMES_Gaps"
+            ],
+            "note": "Branch-scoped: only this lane; every other field ReadOnly (v4 L209). <D>_Gate is the blank-safe gate formula over the lane counts (A2 L32-L34, K-20). No child tables on the case."
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "step": "CASE_B_QM",
+            "Mandatory": [
+              "QM_Review_Confirm",
+              "QM_Completed_By",
+              "QM_Completed_By_Email",
+              "QM_Completed_At",
+              "QM_Gate"
+            ],
+            "Editable": [
+              "QM_On_Behalf_Of",
+              "QM_Open_Count"
+            ],
+            "note": "Branch-scoped: only this lane; every other field ReadOnly (v4 L209). <D>_Gate is the blank-safe gate formula over the lane counts (A2 L32-L34, K-20). No child tables on the case."
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "step": "CASE_B_MIC",
+            "Mandatory": [
+              "MIC_Review_Confirm",
+              "MIC_Completed_By",
+              "MIC_Completed_By_Email",
+              "MIC_Completed_At",
+              "MIC_Gate"
+            ],
+            "Editable": [
+              "MIC_On_Behalf_Of",
+              "MIC_Open_Count"
+            ],
+            "note": "Branch-scoped: only this lane; every other field ReadOnly (v4 L209). <D>_Gate is the blank-safe gate formula over the lane counts (A2 L32-L34, K-20). No child tables on the case."
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "step": "CASE_B_SUS",
+            "Mandatory": [
+              "SUS_Review_Confirm",
+              "SUS_Completed_By",
+              "SUS_Completed_By_Email",
+              "SUS_Completed_At",
+              "SUS_Gate"
+            ],
+            "Editable": [
+              "SUS_On_Behalf_Of",
+              "SUS_Open_Count"
+            ],
+            "note": "Branch-scoped: only this lane; every other field ReadOnly (v4 L209). <D>_Gate is the blank-safe gate formula over the lane counts (A2 L32-L34, K-20). No child tables on the case."
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "step": "CASE_B_RMM",
+            "Mandatory": [
+              "RMM_Review_Confirm",
+              "RMM_Completed_By",
+              "RMM_Completed_By_Email",
+              "RMM_Completed_At",
+              "RMM_Gate"
+            ],
+            "Editable": [
+              "RMM_On_Behalf_Of",
+              "RMM_Open_Count"
+            ],
+            "note": "Branch-scoped: only this lane; every other field ReadOnly (v4 L209). <D>_Gate is the blank-safe gate formula over the lane counts (A2 L32-L34, K-20). No child tables on the case."
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "step": "CASE_S5",
+            "Mandatory": [
+              "Hold_Note",
+              "Open_Items_Gate_Release"
+            ],
+            "Editable": [
+              "Hold_Override_Reason_Release",
+              "Open_Items_Count",
+              "Open_CR_Count",
+              "Confirm_Contact_Ids",
+              "Supplier_Contact_Emails",
+              "Final_Release_Due_Date",
+              "Late_Completions_Text",
+              "Supplier_Closing_Text",
+              "Origin_Types",
+              "Case_Contacts_JSON",
+              "Portal_Contact_Ids",
+              "Target_Markets_Text",
+              "Markets_Label"
+            ],
+            "note": "PART D L812. Override is audited (F8 event). D23: RMM resolves/confirms and writes fresh counts here (COH-04); contacts (COH-05) and Target_Markets_Text (COH-06) Editable. Gate/override are per check (data_model COH-10 split). D27 (COH-06r): Markets_Label Editable with Target_Markets_Text, so an accepted market correction also updates the label."
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "step": "CASE_S6",
+            "Mandatory": [
+              "Overall_Decision",
+              "Overall_Decided_By"
+            ],
+            "Editable": [
+              "Overall_Reason",
+              "Supplier_Closing_Text",
+              "Completion_Trigger"
+            ],
+            "note": "PART D L813."
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "step": "CASE_S7",
+            "Mandatory": [
+              "Completion_Trigger"
+            ],
+            "Editable": [
+              "Final_Release_Confirm",
+              "Final_Release_By_Name",
+              "Final_Release_By_Email",
+              "Final_Release_By_Role",
+              "Final_Release_At",
+              "Released_Revs_JSON",
+              "Evidence_List_Text",
+              "Open_Items_Count",
+              "Open_CR_Count",
+              "Case_Contacts_JSON",
+              "Portal_Contact_Ids",
+              "Confirm_Contact_Ids",
+              "Supplier_Contact_Emails"
+            ],
+            "note": "PART D L814. D23/D27 (R-02, Q8): Open_Items_Count/Open_CR_Count Editable so the RMM Workbench refreshes them while the case waits here; the close check (CASE_S8) then sees fresh counts. Y5 keeps BRM automatic completion (REQ-PROC-045) and does NOT blank the counts. Contacts Editable (COH-05)."
+          },
+          {
+            "flow": "CIQ_Case_A00",
+            "step": "CASE_S8",
+            "Mandatory": [
+              "Hold_Note",
+              "Open_Items_Gate_Close"
+            ],
+            "Editable": [
+              "Hold_Override_Reason_Close",
+              "Open_Items_Count",
+              "Open_CR_Count",
+              "Supplier_Contact_Emails",
+              "Late_Completions_Text",
+              "Supplier_Closing_Text",
+              "Case_Contacts_JSON",
+              "Portal_Contact_Ids",
+              "Confirm_Contact_Ids",
+              "Target_Markets_Text",
+              "Markets_Label"
+            ],
+            "note": "PART D L815. D23: contacts (COH-05) and Target_Markets_Text (COH-06) Editable. Gate/override are per check (data_model COH-10 split). D27 (COH-06r): Markets_Label Editable with Target_Markets_Text, so an accepted market correction also updates the label."
+          },
+          {
+            "flow": "CIQ_Open_Point_A00",
+            "step": "OPNT_S0",
+            "Mandatory": [
+              "OP_Key",
+              "Round_No",
+              "Case_Item_Id",
+              "Case_Code",
+              "Cycle_No",
+              "Supplier_Code",
+              "OP_Kind",
+              "OP_Dept",
+              "Raised_By_Dept",
+              "OP_To_Supplier",
+              "Responsible_User",
+              "Internal_Due_Date",
+              "Internal_Justification",
+              "Question_Text",
+              "Ref_Kind",
+              "Ref_Label",
+              "Start_Gate"
+            ],
+            "Editable": [
+              "Query_Key",
+              "Ref_Section_Key",
+              "Ref_Field_Key",
+              "Ref_Row_Id",
+              "Ref_Doc_Id",
+              "Ref_Doc_File_Name",
+              "Ref_Doc_Uploaded_At",
+              "Ref_Internal_Key",
+              "Kind_Label",
+              "Supplier_Justification",
+              "Responsible_Name",
+              "Responsible_Dept_Label",
+              "Supplier_Due_Date",
+              "New_Section_Item_Key",
+              "Portal_Contact_Ids",
+              "Thread_Text",
+              "Awaiting_Response"
+            ],
+            "ReadOnly_explicit": [
+              "Rounds"
+            ],
+            "note": "v4 L244 (required: kind, owner dept, to-supplier, reference, question, justification, responsible person, due dates); PART D L917. Start_Gate makes the supplier-facing fields required only when OP_To_Supplier = Yes. Point_Case and Prev_Round_Item_Id dropped (v4: one item per point; D6)."
+          },
+          {
+            "flow": "CIQ_Open_Point_A00",
+            "step": "OPNT_S1",
+            "Mandatory": [
+              "Response_Kind"
+            ],
+            "Editable": [
+              "Response_Text",
+              "Response_Doc_Refs_JSON",
+              "Supplier_Responsible_Email",
+              "Portal_Query_Item_Id",
+              "Awaiting_Response",
+              "OP_Outcome",
+              "Outcome_Reason"
+            ],
+            "ReadOnly_explicit": [
+              "Rounds"
+            ],
+            "note": "PART D L918: Response_Kind Mandatory is the Y3 guard; OP_Outcome/Outcome_Reason only for a withdrawal (Workbench allows only Withdrawn here)."
+          },
+          {
+            "flow": "CIQ_Open_Point_A00",
+            "step": "OPNT_R_REG",
+            "Mandatory": [
+              "OP_Outcome",
+              "Reviewed_By",
+              "Reviewed_By_Email",
+              "Reviewed_At"
+            ],
+            "Editable": [
+              "OP_Progress",
+              "Outcome_Reason",
+              "Return_Reason",
+              "Accepted_Doc_File_Name",
+              "Accepted_Doc_Uploaded_At",
+              "Reviewed_Answers_Rev",
+              "On_Behalf_Of",
+              "Rounds",
+              "Round_No",
+              "Query_Key",
+              "Question_Text",
+              "Supplier_Justification",
+              "Supplier_Due_Date",
+              "Internal_Due_Date",
+              "Thread_Text",
+              "Awaiting_Response",
+              "Response_Kind",
+              "Response_Text",
+              "Response_Doc_Refs_JSON",
+              "Late_Decision",
+              "Late_Decision_Reason",
+              "Portal_Contact_Ids"
+            ],
+            "note": "v4 L246, L251; PART D L919. Rounds (child table) Editable here only, table-level key (A2 L30). Current-round fields Editable so the Workbench can write round n+1 and clear the answer before the Return send-back. D27 (COH-12): Portal_Contact_Ids Editable so the Workbench refreshes the supplier contacts before a Return re-fires X3 for round n+1 (v4 L250)."
+          },
+          {
+            "flow": "CIQ_Open_Point_A00",
+            "step": "OPNT_R_SAF",
+            "Mandatory": [
+              "OP_Outcome",
+              "Reviewed_By",
+              "Reviewed_By_Email",
+              "Reviewed_At"
+            ],
+            "Editable": [
+              "OP_Progress",
+              "Outcome_Reason",
+              "Return_Reason",
+              "Accepted_Doc_File_Name",
+              "Accepted_Doc_Uploaded_At",
+              "Reviewed_Answers_Rev",
+              "On_Behalf_Of",
+              "Rounds",
+              "Round_No",
+              "Query_Key",
+              "Question_Text",
+              "Supplier_Justification",
+              "Supplier_Due_Date",
+              "Internal_Due_Date",
+              "Thread_Text",
+              "Awaiting_Response",
+              "Response_Kind",
+              "Response_Text",
+              "Response_Doc_Refs_JSON",
+              "Late_Decision",
+              "Late_Decision_Reason",
+              "Portal_Contact_Ids"
+            ],
+            "note": "v4 L246, L251; PART D L919. Rounds (child table) Editable here only, table-level key (A2 L30). Current-round fields Editable so the Workbench can write round n+1 and clear the answer before the Return send-back. D27 (COH-12): Portal_Contact_Ids Editable so the Workbench refreshes the supplier contacts before a Return re-fires X3 for round n+1 (v4 L250)."
+          },
+          {
+            "flow": "CIQ_Open_Point_A00",
+            "step": "OPNT_R_QM",
+            "Mandatory": [
+              "OP_Outcome",
+              "Reviewed_By",
+              "Reviewed_By_Email",
+              "Reviewed_At"
+            ],
+            "Editable": [
+              "OP_Progress",
+              "Outcome_Reason",
+              "Return_Reason",
+              "Accepted_Doc_File_Name",
+              "Accepted_Doc_Uploaded_At",
+              "Reviewed_Answers_Rev",
+              "On_Behalf_Of",
+              "Rounds",
+              "Round_No",
+              "Query_Key",
+              "Question_Text",
+              "Supplier_Justification",
+              "Supplier_Due_Date",
+              "Internal_Due_Date",
+              "Thread_Text",
+              "Awaiting_Response",
+              "Response_Kind",
+              "Response_Text",
+              "Response_Doc_Refs_JSON",
+              "Portal_Contact_Ids"
+            ],
+            "note": "v4 L246, L251; PART D L919. Rounds (child table) Editable here only, table-level key (A2 L30). Current-round fields Editable so the Workbench can write round n+1 and clear the answer before the Return send-back. D27 (COH-12): Portal_Contact_Ids Editable so the Workbench refreshes the supplier contacts before a Return re-fires X3 for round n+1 (v4 L250)."
+          },
+          {
+            "flow": "CIQ_Open_Point_A00",
+            "step": "OPNT_R_MIC",
+            "Mandatory": [
+              "OP_Outcome",
+              "Reviewed_By",
+              "Reviewed_By_Email",
+              "Reviewed_At"
+            ],
+            "Editable": [
+              "OP_Progress",
+              "Outcome_Reason",
+              "Return_Reason",
+              "Accepted_Doc_File_Name",
+              "Accepted_Doc_Uploaded_At",
+              "Reviewed_Answers_Rev",
+              "On_Behalf_Of",
+              "Rounds",
+              "Round_No",
+              "Query_Key",
+              "Question_Text",
+              "Supplier_Justification",
+              "Supplier_Due_Date",
+              "Internal_Due_Date",
+              "Thread_Text",
+              "Awaiting_Response",
+              "Response_Kind",
+              "Response_Text",
+              "Response_Doc_Refs_JSON",
+              "Portal_Contact_Ids"
+            ],
+            "note": "v4 L246, L251; PART D L919. Rounds (child table) Editable here only, table-level key (A2 L30). Current-round fields Editable so the Workbench can write round n+1 and clear the answer before the Return send-back. D27 (COH-12): Portal_Contact_Ids Editable so the Workbench refreshes the supplier contacts before a Return re-fires X3 for round n+1 (v4 L250)."
+          },
+          {
+            "flow": "CIQ_Open_Point_A00",
+            "step": "OPNT_R_SUS",
+            "Mandatory": [
+              "OP_Outcome",
+              "Reviewed_By",
+              "Reviewed_By_Email",
+              "Reviewed_At"
+            ],
+            "Editable": [
+              "OP_Progress",
+              "Outcome_Reason",
+              "Return_Reason",
+              "Accepted_Doc_File_Name",
+              "Accepted_Doc_Uploaded_At",
+              "Reviewed_Answers_Rev",
+              "On_Behalf_Of",
+              "Rounds",
+              "Round_No",
+              "Query_Key",
+              "Question_Text",
+              "Supplier_Justification",
+              "Supplier_Due_Date",
+              "Internal_Due_Date",
+              "Thread_Text",
+              "Awaiting_Response",
+              "Response_Kind",
+              "Response_Text",
+              "Response_Doc_Refs_JSON",
+              "Portal_Contact_Ids"
+            ],
+            "note": "v4 L246, L251; PART D L919. Rounds (child table) Editable here only, table-level key (A2 L30). Current-round fields Editable so the Workbench can write round n+1 and clear the answer before the Return send-back. D27 (COH-12): Portal_Contact_Ids Editable so the Workbench refreshes the supplier contacts before a Return re-fires X3 for round n+1 (v4 L250)."
+          },
+          {
+            "flow": "CIQ_Open_Point_A00",
+            "step": "OPNT_R_RMM",
+            "Mandatory": [
+              "OP_Outcome",
+              "Reviewed_By",
+              "Reviewed_By_Email",
+              "Reviewed_At"
+            ],
+            "Editable": [
+              "OP_Progress",
+              "Outcome_Reason",
+              "Return_Reason",
+              "Accepted_Doc_File_Name",
+              "Accepted_Doc_Uploaded_At",
+              "Reviewed_Answers_Rev",
+              "On_Behalf_Of",
+              "Rounds",
+              "Round_No",
+              "Query_Key",
+              "Question_Text",
+              "Supplier_Justification",
+              "Supplier_Due_Date",
+              "Internal_Due_Date",
+              "Thread_Text",
+              "Awaiting_Response",
+              "Response_Kind",
+              "Response_Text",
+              "Response_Doc_Refs_JSON",
+              "Portal_Contact_Ids"
+            ],
+            "note": "v4 L246, L251; PART D L919. Rounds (child table) Editable here only, table-level key (A2 L30). Current-round fields Editable so the Workbench can write round n+1 and clear the answer before the Return send-back. D27 (COH-12): Portal_Contact_Ids Editable so the Workbench refreshes the supplier contacts before a Return re-fires X3 for round n+1 (v4 L250)."
+          },
+          {
+            "flow": "CIQ_Change_Request_A00",
+            "step": "CHRQ_S0",
+            "Mandatory": [],
+            "Editable": [
+              "CR_Key",
+              "Case_Code",
+              "Cycle_No",
+              "Supplier_Code",
+              "Change_Kind",
+              "Section_Key",
+              "Field_Key",
+              "Row_Id",
+              "Current_Value_Text",
+              "Proposed_Value_JSON",
+              "Change_Reason",
+              "Portal_CR_Item_Id",
+              "Raised_By_Portal_User"
+            ],
+            "note": "PART D L976: Y6 fields; triage and assessment fields ReadOnly. Nothing Mandatory so a Y6 create is never refused."
+          },
+          {
+            "flow": "CIQ_Change_Request_A00",
+            "step": "CHRQ_S1",
+            "Mandatory": [
+              "Case_Item_Id",
+              "Contact_Verified",
+              "CR_Outcome",
+              "Impact_REG",
+              "Impact_SAF",
+              "Impact_QM",
+              "Impact_MIC",
+              "Impact_SUS",
+              "Notice_Key",
+              "Notice_Kind",
+              "Notice_Title",
+              "Supplier_Outcome_Text",
+              "Case_Code",
+              "Cycle_No",
+              "Supplier_Code",
+              "Portal_Contact_Ids"
+            ],
+            "Editable": [
+              "Triage_Note",
+              "Scope_Run_Key"
+            ],
+            "note": "PART D L977 minus CR_Case (D6: text keys, no Reference). D23 (COH-07): every X6 input the CR holds is Mandatory at Triage so a Y6 copy gap or hand-made CR is repaired before End (CR_Key stays a Start field)."
+          },
+          {
+            "flow": "CIQ_Change_Request_A00",
+            "step": "CHRQ_B_REG",
+            "Mandatory": [
+              "REG_Assessment",
+              "REG_Assessed_By",
+              "REG_Assessed_At"
+            ],
+            "Editable": [
+              "REG_Assess_Note"
+            ],
+            "note": "Branch-scoped: only this department's four fields (v4 L271)."
+          },
+          {
+            "flow": "CIQ_Change_Request_A00",
+            "step": "CHRQ_B_SAF",
+            "Mandatory": [
+              "SAF_Assessment",
+              "SAF_Assessed_By",
+              "SAF_Assessed_At"
+            ],
+            "Editable": [
+              "SAF_Assess_Note"
+            ],
+            "note": "Branch-scoped: only this department's four fields (v4 L271)."
+          },
+          {
+            "flow": "CIQ_Change_Request_A00",
+            "step": "CHRQ_B_QM",
+            "Mandatory": [
+              "QM_Assessment",
+              "QM_Assessed_By",
+              "QM_Assessed_At"
+            ],
+            "Editable": [
+              "QM_Assess_Note"
+            ],
+            "note": "Branch-scoped: only this department's four fields (v4 L271)."
+          },
+          {
+            "flow": "CIQ_Change_Request_A00",
+            "step": "CHRQ_B_MIC",
+            "Mandatory": [
+              "MIC_Assessment",
+              "MIC_Assessed_By",
+              "MIC_Assessed_At"
+            ],
+            "Editable": [
+              "MIC_Assess_Note"
+            ],
+            "note": "Branch-scoped: only this department's four fields (v4 L271)."
+          },
+          {
+            "flow": "CIQ_Change_Request_A00",
+            "step": "CHRQ_B_SUS",
+            "Mandatory": [
+              "SUS_Assessment",
+              "SUS_Assessed_By",
+              "SUS_Assessed_At"
+            ],
+            "Editable": [
+              "SUS_Assess_Note"
+            ],
+            "note": "Branch-scoped: only this department's four fields (v4 L271)."
+          }
+        ]
+      },
+      "coherence_repairs": {
+        "rev10": {
+          "decision": "D23",
+          "applied": [
+            "COH-04 (D15 recommended option)",
+            "R-02",
+            "COH-05",
+            "COH-06",
+            "COH-07"
+          ],
+          "note": "Security re-commits the per-step cells from security_handoff.",
+          "field_reconciliation": "CASE_S5: Open_Items_Gate_Release (Mandatory), Hold_Override_Reason_Release; CASE_S8: Open_Items_Gate_Close (Mandatory), Hold_Override_Reason_Close."
+        },
+        "rev19": {
+          "decision": "D27",
+          "applied": [
+            "COH-12",
+            "COH-06r",
+            "R-02 / Q8 (BRM automatic completion kept; Workbench refresh at CASE_S7; portal release refusal)"
+          ],
+          "note": "Security re-commits the per-step cells from security_handoff: Portal_Contact_Ids Editable at the six OPNT_R_* steps; Markets_Label Editable at CASE_S5 and CASE_S8.",
+          "portal_handoff": "Supplier portal (CIQP Final Release): refuse the release while the supplier's own CIQP Queries or CIQP Change Requests on the case are open. Owner: portal session.",
+          "residual_risk": "An open point or change request opened in the seconds before Y5 approves CASE_S7 is not in the counts; CASE_S8 is skipped and the item is caught only by the next Workbench session or sync."
+        }
+      }
+    }
+  }
+}

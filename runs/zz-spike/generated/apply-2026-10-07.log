@@ -1,0 +1,50 @@
+no-pages: custom-UI/backend-only — no native pages, no nav, no AI dashboards (policy, enforced in the compiler)
+reuse: building into the connected app CIQ Digital (CIQ_Digital_A00)
+
+APPLY (LIVE, mode: express, target: dev) — CIQ Digital → dev-beiersdorf.kissflow.eu
+  app will be created directly in dev-beiersdorf.kissflow.eu (no PROD creds set)
+ai-pages disabled — using the template page path
+10:31:00   reuse app CIQ_Digital_A00
+10:31:01   role Admin → reused
+10:31:01   role User → reused
+10:31:02   role CIQ ZZ Spike Role A → 200
+10:31:02   role CIQ ZZ Spike Role B → 200
+10:31:07   roles: developer UsEJUfjYLM8Y added to 4/4 role(s)
+10:31:07   reuse: 0 flow ids from map (skip create for those; new/recreated artifacts in this IR still get created)
+10:31:08   shell list CIQ_ZZ_Spike_Decision → CIQ_ZZ_Spike_Decision_A00
+10:31:08   shell list CIQ_ZZ_Spike_Yes_No → CIQ_ZZ_Spike_Yes_No_A00
+10:31:08   shell form CIQ_ZZ_Spike_Register_A00 → CIQ_ZZ_Spike_Register_A00
+10:31:08   shell process CIQ_ZZ_Spike_Point_A00 → CIQ_ZZ_Spike_Point_A00
+10:31:08   shell process CIQ_ZZ_Spike_Case_A00 → CIQ_ZZ_Spike_Case_A00
+10:31:08   shell form CIQ_ZZ_Spike_Log_A00 → CIQ_ZZ_Spike_Log_A00
+10:31:09   list-items CIQ_ZZ_Spike_Decision_A00 → 200 (2)
+10:31:09   list-items CIQ_ZZ_Spike_Yes_No_A00 → 200 (2)
+10:31:11   body CIQ_ZZ_Spike_Register_A00 → draft 200, publish 200
+10:31:11   body CIQ_ZZ_Spike_Point_A00 → draft 200, publish 200
+10:31:11   body CIQ_ZZ_Spike_Log_A00 → draft 200, publish 200
+10:31:12   body CIQ_ZZ_Spike_Case_A00 → draft 200, publish 200
+10:31:12   reuse: 1 existing page(s) in the app — matched by name
+10:31:13   access CIQ ZZ Spike Role A → CIQ_ZZ_Spike_Case_A00 (process) 200
+10:31:13   access CIQ ZZ Spike Role A → CIQ_ZZ_Spike_Point_A00 (process) 200
+10:31:13   access CIQ ZZ Spike Role A → CIQ_ZZ_Spike_Log_A00 (form) 200
+10:31:13   access CIQ ZZ Spike Role A → CIQ_ZZ_Spike_Register_A00 (form) 200
+10:31:13   access CIQ ZZ Spike Role B → CIQ_ZZ_Spike_Case_A00 (process) 200
+10:31:14     report CIQ ZZ Spike Point All Items → CIQ ZZ Spike Role A View report
+10:31:14     report CIQ ZZ Spike Case All Items → CIQ ZZ Spike Role B View report
+10:31:14     report CIQ ZZ Spike Case All Items → CIQ ZZ Spike Role A View report
+10:31:15   access CIQ ZZ Spike Role B → CIQ_ZZ_Spike_Point_A00 (process) 200
+10:31:15   access CIQ ZZ Spike Role B → CIQ_ZZ_Spike_Register_A00 (form) 200
+10:31:15   access CIQ ZZ Spike Role B → CIQ_ZZ_Spike_Log_A00 (form) 200
+10:31:15     report CIQ ZZ Spike Point All Items → CIQ ZZ Spike Role B View report
+10:31:18   automation CIQ ZZ Spike log – register created → CIQ_ZZ_Spike_log_register_created_A00 PARTIAL {"create":200}
+10:31:20   automation CIQ ZZ Spike log – point completed → CIQ_ZZ_Spike_log_point_completed_A00 PARTIAL {"create":200}
+
+=== REPORT ===
+app: CIQ_Digital_A00
+roles: Admin(200), User(200), CIQ ZZ Spike Role A(200), CIQ ZZ Spike Role B(200)
+created shells: 6  published: 4
+verified nested in app: 8
+  CIQ_ZZ_Spike_log_point_completed_A00(Live), CIQ_ZZ_Spike_log_register_created_A00(Live), CIQ_ZZ_Spike_Log_A00(Live), CIQ_ZZ_Spike_Case_A00(Live), CIQ_ZZ_Spike_Register_A00(Live), CIQ_ZZ_Spike_Point_A00(Live), CIQ_ZZ_Spike_Yes_No_A00(Live), CIQ_ZZ_Spike_Decision_A00(Live)
+automations: 2 — none are live until switched on in Kissflow
+  ⚠ CIQ ZZ Spike log – register created: created incomplete — finish it in the builder, then switch it on
+  ⚠ CIQ ZZ Spike log – point completed: created incomplete — finish it in the builder, then switch it on

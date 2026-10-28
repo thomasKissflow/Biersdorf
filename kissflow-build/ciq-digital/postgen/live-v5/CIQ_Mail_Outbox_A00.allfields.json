@@ -1,0 +1,317 @@
+{
+ "status": 200,
+ "body": {
+  "CIQ_Mail_Outbox_A00": {
+   "Id": "CIQ_Mail_Outbox_A00",
+   "Name": "CIQ Mail Outbox",
+   "Tables": [],
+   "Fields": [
+    {
+     "Id": "Mail_Key",
+     "Name": "Mail Key",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Mail_Outbox_A00",
+     "Widget": null,
+     "Required": true,
+     "IsInternal": false
+    },
+    {
+     "Id": "Event_Code",
+     "Name": "Event Code",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Mail_Outbox_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Audience",
+     "Name": "Audience",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Mail_Outbox_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "To_Emails",
+     "Name": "To Emails",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Mail_Outbox_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Subject",
+     "Name": "Subject",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Mail_Outbox_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Body_Text",
+     "Name": "Body Text",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Mail_Outbox_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Link_Url",
+     "Name": "Link Url",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Mail_Outbox_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Case_Code",
+     "Name": "Case Code",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Mail_Outbox_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Related_Key",
+     "Name": "Related Key",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Mail_Outbox_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Created_At",
+     "Name": "Created At",
+     "Type": "DateTime",
+     "IsSystemField": false,
+     "Model": "CIQ_Mail_Outbox_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Sent_Status",
+     "Name": "Sent Status",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Mail_Outbox_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Attempt_No",
+     "Name": "Attempt No",
+     "Type": "Number",
+     "IsSystemField": false,
+     "Model": "CIQ_Mail_Outbox_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "Decimalpoint": null
+    }
+   ],
+   "System": [
+    {
+     "Id": "Name",
+     "Name": "Name",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_created_by",
+     "Name": "Created by",
+     "Type": "User",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "SourceFlowId": "UserAbstract",
+     "SourceFlowType": null,
+     "Attributes": [
+      {
+       "Id": "Status",
+       "Name": "Status",
+       "Type": "DropdownList"
+      },
+      {
+       "Id": "FirstName",
+       "Name": "First name",
+       "Type": "Text"
+      },
+      {
+       "Id": "LastName",
+       "Name": "Last name",
+       "Type": "Text"
+      },
+      {
+       "Id": "ProfilePicture",
+       "Name": "Profile picture",
+       "Type": "ProfilePicture"
+      }
+     ]
+    },
+    {
+     "Id": "_modified_by",
+     "Name": "Modified by",
+     "Type": "User",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "SourceFlowId": "UserAbstract",
+     "SourceFlowType": null,
+     "Attributes": [
+      {
+       "Id": "Status",
+       "Name": "Status",
+       "Type": "DropdownList"
+      },
+      {
+       "Id": "FirstName",
+       "Name": "First name",
+       "Type": "Text"
+      },
+      {
+       "Id": "LastName",
+       "Name": "Last name",
+       "Type": "Text"
+      },
+      {
+       "Id": "ProfilePicture",
+       "Name": "Profile picture",
+       "Type": "ProfilePicture"
+      }
+     ]
+    },
+    {
+     "Id": "_created_at",
+     "Name": "Created at",
+     "Type": "DateTime",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_modified_at",
+     "Name": "Modified at",
+     "Type": "DateTime",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_deleted_at",
+     "Name": "Deleted at",
+     "Type": "DateTime",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true
+    },
+    {
+     "Id": "_deleted_by",
+     "Name": "Deleted by",
+     "Type": "User",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true,
+     "SourceFlowId": "UserAbstract",
+     "SourceFlowType": null,
+     "Attributes": [
+      {
+       "Id": "Status",
+       "Name": "Status",
+       "Type": "DropdownList"
+      },
+      {
+       "Id": "FirstName",
+       "Name": "First name",
+       "Type": "Text"
+      },
+      {
+       "Id": "LastName",
+       "Name": "Last name",
+       "Type": "Text"
+      },
+      {
+       "Id": "ProfilePicture",
+       "Name": "Profile picture",
+       "Type": "ProfilePicture"
+      }
+     ]
+    },
+    {
+     "Id": "_flow_name",
+     "Name": "Flow name",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_application_id",
+     "Name": "Application id",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true
+    },
+    {
+     "Id": "_flow_type",
+     "Name": "Flow type",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true
+    },
+    {
+     "Id": "_doc_version",
+     "Name": "DocVersion",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true
+    }
+   ]
+  }
+ }
+}

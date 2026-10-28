@@ -1,0 +1,313 @@
+// The live end-to-end driver's scenario (live-e2e-scenario.mjs) run OFFLINE against the in-memory fake, set up like the
+// dev sandbox: ONE fictional Kissflow user is the key's user, a member of every app role (Integration service included)
+// and the only contact of the dev supplier ZZT-SUP-DEV; CIQ Open Point steps are assigned from Raiser_Assignee. The env
+// is built from the fake's key client exactly as live-e2e.mjs builds it from kf.mjs, so the same routes are exercised:
+// admin PUT for every human save, key submits with the admin GET's instance id, Forms draft + submit.
+// Pacing is checked on a virtual wall clock: every call of the driver AND the service is ≥ 1 s after the previous one.
+
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { createFake, makeClock, defaultSchema } from "../fake.mjs";
+import { seedRows } from "../config.mjs";
+import { memoryState } from "../service.mjs";
+import { FLOW, F, ROLE } from "../ids.mjs";
+import { createEnv, memoryLedger, runAll, runStep, cleanup, status, DEV_SUPPLIER } from "../live-e2e-scenario.mjs";
+import { DUAL, APP_ROLES } from "./helpers.mjs";
+
+const CODE = "ZZT-E2E-0001";
+const OTHER = "ZZT-E2E-0002";
+
+/** CIQ Open Point steps assigned from Raiser_Assignee (V-19 b, live since 15 Oct). */
+function raiserSchema() {
+  const schema = defaultSchema();
+  const op = schema[FLOW.openPoint];
+  op.fields.add("Raiser_Assignee");
+  op.steps = op.steps.map((s) => (s.kind === "user" ? { ...s, assignee: { field: "Raiser_Assignee" } } : s));
+  return schema;
+}
+
+const devUser = () => ({ _id: DUAL.id, Name: DUAL.name, Email: DUAL.email, roles: [...APP_ROLES, ROLE.caseAdmin, ROLE.service, ROLE.supplier] });
+const devSupplier = () => ({
+  fields: { Supplier_Code: DEV_SUPPLIER, Supplier_Legal_Name: "ZZT Dev Supplier (fictional)", DUNS_Number: "999000001", Supplier_Kind: "Manufacturer", Supplier_Country_Code: "DE", Supplier_City: "Teststadt", Supplier_Active: "Yes", Supplier_Test: "Yes" },
+  contacts: [{ Contacts_Key: `${DEV_SUPPLIER}-c1`, Contacts_Full_Name: `${DUAL.name} (dev supplier)`, Contacts_Email: DUAL.email, Contacts_Title: "Dev supplier contact", Contacts_Can_Confirm: "Yes", Contacts_Portal_User_Id: DUAL.id, Contacts_Active: "Yes" }],
+});
+
+function fakeEnv({ adminTables = false, caseCode = CODE, liveAllowed = true, fake: given, clock: givenClock, ledger, serviceUserId = null } = {}) {
+  const clock = givenClock ?? makeClock("2026-10-15T07:00:00.000Z");
+  let fake = given;
+  if (!fake) {
+    fake = createFake({ users: [devUser()], keyUserId: DUAL.id, clock, schema: raiserSchema(), adminTables });
+    for (const rows of Object.values(seedRows())) for (const r of rows) fake.seedForm(FLOW.config, r, {}, DUAL.id);
+    const sup = devSupplier();
+    fake.seedForm(FLOW.supplier, sup.fields, { [F.supplier.contacts.table]: sup.contacts }, DUAL.id);
+    // decoys of other cases: an unsent mail (a normal pass would retry it), a note, an audit row, a Service Request
+    fake.seedForm(FLOW.outbox, { Mail_Key: "invitation:decoy:1", Event_Code: "invitation", Audience: "Supplier", To_Emails: DUAL.email, Subject: "Decoy", Body_Text: "Decoy", Case_Code: "CIQ-2026-0099", Created_At: "2026-10-15T06:00:00Z" }, {}, DUAL.id);
+    fake.seedForm(FLOW.note, { Note_Key: "N-decoy", Case_Code: "CIQ-2026-0099", Note_Text: "Decoy note" }, {}, DUAL.id);
+    fake.seedForm(FLOW.audit, { Event_Key: "decoy#1", Case_Code: OTHER, Event_Category: "Case", Action_Code: "Decoy" }, {}, DUAL.id);
+    fake.seedForm(FLOW.serviceRequest, { Request_Key: "decoy", Request_Code: "zzt.decoy", Case_Code: OTHER, Request_Status: "Done" }, {}, DUAL.id);
+  }
+  const wall = { t: 0 };
+  const times = [];
+  // trap(method, path): after the first matching call went through, Kissflow answers 429 (an interrupted act)
+  const traps = { fn: null, lastPut: "" };
+  const kf = {
+    ...fake.key,
+    call: async (m, p, b, o) => {
+      times.push(wall.t);
+      const r = await fake.key.call(m, p, b, o);
+      if (traps.fn?.(m, p, traps.lastPut)) {
+        traps.fn = null;
+        fake.setOutage("rate");
+      }
+      if (m === "PUT") traps.lastPut = p;
+      return r;
+    },
+  };
+  const files = {
+    upload: (p, f) => (times.push(wall.t), fake.keyFiles.upload(p, f)),
+    download: (p) => (times.push(wall.t), fake.keyFiles.download(p)),
+    fetchSigned: (l) => (times.push(wall.t), fake.keyFiles.fetchSigned(l)),
+  };
+  const lines = [];
+  const env = createEnv({
+    kf,
+    files,
+    caseCode,
+    devUserId: DUAL.id,
+    ledger: ledger ?? memoryLedger(caseCode),
+    serviceState: memoryState(),
+    serviceUserId,
+    liveAllowed,
+    label: "fake",
+    minIntervalMs: 1000,
+    now: () => clock.now(),
+    wallClock: () => wall.t,
+    sleep: async (ms) => {
+      wall.t += ms;
+    },
+    quiet: async () => clock.advance(60_000),
+    beforeAct: async () => clock.advance(5_000),
+    linkBase: { internal: "https://workbench.example.test/#", supplier: "https://portal.example.test/#" },
+    out: (l) => lines.push(l),
+  });
+  return { fake, clock, env, lines, times, wall, trap: (fn) => (traps.fn = fn) };
+}
+
+const rowsOfCase = (fake, code) => Object.keys(fake.schema).flatMap((flow) => fake.rows(flow).filter((r) => r.Case_Code === code).map((r) => `${flow}/${r._id}`));
+const failed = (lines) => lines.filter((l) => /^\s+FAIL\b/.test(l));
+
+test("live-e2e driver on the fake: steps 0–7 pass end to end, paced ≥ 1 s, no e-mail printed; cleanup leaves nothing of the case", async () => {
+  const { fake, env, lines, times } = fakeEnv();
+  const supplierBefore = JSON.stringify(fake.rows(FLOW.supplier));
+  const configBefore = JSON.stringify(fake.rows(FLOW.config));
+  const res = await runAll(env);
+  assert.deepEqual(res.map((r) => `${r.n}:${r.result}`), ["0:PASS", "1:PASS", "2:PASS", "3:PASS", "4:PASS", "5:PASS", "6:PASS", "7:PASS"], `${failed(lines).join("\n")}\n${res.map((r) => r.why ?? "").join(" ")}`);
+  assert.deepEqual(failed(lines), []);
+  // the walk produced the whole case in both containers
+  const L = env.ledger.data;
+  assert.ok(L.caseItemId && fake.item(L.caseItemId)._status === "Completed");
+  assert.ok(Object.keys(L.service.items).some((k) => k.startsWith("query:")) && L.service.items.releaseCurrent);
+  // the optional upload: the attach works, the fake's admin PUT refuses child rows → recorded, the run went on
+  assert.equal(L.optionalUpload.attach, "PASS");
+  assert.equal(L.optionalUpload.row, "FAIL");
+  assert.match(L.optionalUpload.detail, /FieldNotFound|HTTP 400/);
+  assert.ok(lines.some((l) => /OPTIONAL FAIL\s+2\.u2/.test(l)));
+  // pacing: every call (driver + service, JSON and files) at least 1 s after the previous one
+  const gaps = times.slice(1).map((t, i) => t - times[i]);
+  assert.ok(times.length > 300, `${times.length} calls`);
+  assert.ok(Math.min(...gaps) >= 1000, `smallest gap ${Math.min(...gaps)} ms`);
+  // nothing printed or stored carries the dev user's e-mail
+  assert.ok(!lines.join("\n").includes(DUAL.email), "an e-mail address was printed");
+  assert.ok(!JSON.stringify(L).includes(DUAL.email), "the ledger holds an e-mail address");
+  // caseOnly: the decoy mail of another case was never retried, the decoy note never read
+  assert.equal(fake.rows(FLOW.outbox).filter((r) => String(r.Mail_Key).startsWith("invitation:decoy:1")).length, 1);
+  assert.ok(!(env.serviceState.get().notesCursor.seen ?? []).some((id) => fake.rows(FLOW.note).find((n) => n._id === id)?.Note_Key === "N-decoy"));
+  // every mail and audit row of the case is the case's
+  assert.ok(fake.rows(FLOW.outbox).filter((r) => r.Case_Code === CODE).length >= 15);
+
+  // --status lists what exists
+  const st = await status(env);
+  assert.ok(st.caseData);
+  assert.ok(st.items.length >= 10, `${st.items.length} items`);
+  assert.ok(st.items.every((i) => i.code === CODE));
+
+  // a decoy process item of another case slipped into the ledger: cleanup reads it and refuses to delete it
+  const other = await env.port.createProcessAtStart(FLOW.caseProc, { Case_Code: OTHER, Trade_Name: "Decoy" });
+  env.ledger.data.created.push({ kind: "process", flow: FLOW.caseProc, id: other._id, what: "decoy" });
+  const before = rowsOfCase(fake, CODE).length;
+  assert.ok(before > 50, `${before} rows/items of the case`);
+  const c = await cleanup(env);
+  assert.equal(c.result, "PASS", lines.slice(-20).join("\n"));
+  assert.equal(c.left, 0);
+  assert.deepEqual(rowsOfCase(fake, CODE), []);
+  assert.ok(c.skipped.includes(`${FLOW.caseProc}/${other._id}`));
+  assert.ok(fake.item(other._id), "the other case's item survives");
+  assert.equal(rowsOfCase(fake, OTHER).length, 3, "the other case's audit row, request and item survive");
+  assert.equal(JSON.stringify(fake.rows(FLOW.supplier)), supplierBefore, "the dev supplier is untouched");
+  assert.equal(JSON.stringify(fake.rows(FLOW.config)), configBefore, "the configuration rows are untouched");
+  assert.equal(fake.rows(FLOW.outbox).filter((r) => r.Case_Code === "CIQ-2026-0099").length, 1);
+  assert.equal(fake.rows(FLOW.note).length, 1);
+  // after a complete cleanup the same code can be walked again from a fresh ledger
+  const again = await runStep(env, 0);
+  assert.equal(again.result, "PASS", failed(lines).join("\n"));
+  assert.equal(env.ledger.data.created.length, 0);
+  assert.equal(env.ledger.data.steps[0].result, "PASS", "the new ledger records the preflight");
+  assert.equal((await runStep(env, 1)).result, "PASS", failed(lines).join("\n"));
+  assert.equal((await cleanup(env)).left, 0);
+});
+
+test("live-e2e driver: the optional upload's Uploads row PASSES where the admin PUT takes child rows; the service mirrors and copies the file", async () => {
+  const { fake, env, lines } = fakeEnv({ adminTables: true });
+  for (const n of [0, 1, 2]) assert.equal((await runStep(env, n)).result, "PASS", failed(lines).join("\n"));
+  const up = env.ledger.data.optionalUpload;
+  assert.equal(up.attach, "PASS");
+  assert.equal(up.row, "PASS");
+  assert.ok(lines.some((l) => /OPTIONAL PASS\s+2\.u3/.test(l)), lines.filter((l) => /OPTIONAL/.test(l)).join("\n"));
+  assert.ok(lines.some((l) => /OPTIONAL PASS\s+2\.u4/.test(l)));
+  const caseItem = fake.item(env.ledger.data.caseItemId);
+  const copy = caseItem.Supplier_Files.find((a) => a.name === `${CODE}-optional-test-file.pdf`);
+  assert.ok(copy, "the file was copied to CIQ_Case_A00.Supplier_Files");
+  assert.equal(fake.blob(copy.id).subarray(0, 8).toString("latin1"), "%PDF-1.4");
+  const c = await cleanup(env);
+  assert.equal(c.result, "PASS");
+  assert.deepEqual(rowsOfCase(fake, CODE), []);
+});
+
+test("live-e2e driver: guards refuse before any call (no CIQ_SYNC_LIVE, bad case code), steps run in order, an existing case is refused", async () => {
+  const off = fakeEnv({ liveAllowed: false });
+  assert.equal((await runStep(off.env, 0)).result, "REFUSED");
+  assert.equal(off.times.length, 0, "no Kissflow call without CIQ_SYNC_LIVE=1");
+  await assert.rejects(cleanup(off.env), /CIQ_SYNC_LIVE/);
+  const bad = fakeEnv({ caseCode: "CIQ-2026-0001" });
+  assert.equal((await runStep(bad.env, 0)).result, "REFUSED");
+  assert.equal(bad.times.length, 0, "no Kissflow call for a code outside ZZT-E2E-####");
+  await assert.rejects(cleanup(bad.env), /does not match/);
+  const a = fakeEnv();
+  const early = await runStep(a.env, 3);
+  assert.equal(early.result, "REFUSED");
+  assert.match(early.why, /steps 0, 1, 2/);
+  assert.equal((await runStep(a.env, 0)).result, "PASS");
+  assert.equal((await runStep(a.env, 1)).result, "PASS");
+  // a second driver (fresh ledger) on the same account: the case code is taken → preflight fails
+  const b = fakeEnv({ fake: a.fake, clock: a.clock });
+  const r = await runStep(b.env, 0);
+  assert.equal(r.result, "FAIL");
+  assert.ok(b.lines.some((l) => /FAIL\s+0\.fresh/.test(l)), b.lines.join("\n"));
+});
+
+test("live-e2e driver: a Cloudflare challenge stops the run at once (no further call, even on a re-run during the back-off); the re-run later resumes without repeating acts", async () => {
+  const { fake, env, lines, times, wall } = fakeEnv();
+  for (const n of [0, 1]) assert.equal((await runStep(env, n)).result, "PASS");
+  fake.setOutage("challenge", 6);
+  const r = await runStep(env, 2);
+  assert.equal(r.result, "STOPPED", r.why);
+  assert.ok(lines.some((l) => /^STOPPED/.test(l)));
+  const calls = times.length;
+  const r2 = await runStep(env, 2);
+  assert.equal(r2.result, "STOPPED");
+  assert.equal(times.length, calls, "no Kissflow call during the back-off");
+  // a new invocation (fresh process, same ledger) inherits the back-off: refused without a call
+  const next = fakeEnv({ fake, clock: undefined, ledger: env.ledger });
+  assert.equal((await runStep(next.env, 2)).result, "STOPPED");
+  assert.equal(next.times.length, 0, "a re-run during the back-off makes no call");
+  assert.ok(env.ledger.data.backoff.until > 0);
+  // later: Kissflow answers again; the re-run skips the acts already done and completes the step
+  fake.setOutage(null);
+  wall.t += 11 * 60_000;
+  const saves = env.ledger.data.progress["2.config"];
+  const r3 = await runStep(env, 2);
+  assert.equal(r3.result, "PASS", failed(lines).join("\n"));
+  if (saves) assert.ok(lines.some((l) => /skip\s+supplier saves the metadata answers/.test(l)));
+  assert.equal(fake.rows(FLOW.serviceRequest).filter((x) => x.Case_Code === CODE && x.Request_Code === "case.created").length, 1, "case.created was filed once");
+});
+
+test("shared pacing (createPort pace): two ports issuing calls at once still go out ≥ 1 s apart; a 429 on one backs off both", async () => {
+  const { createPort, isDeferral } = await import("../kissflow.mjs");
+  const clock = makeClock("2026-10-15T07:00:00.000Z");
+  const fake = createFake({ users: [devUser()], keyUserId: DUAL.id, clock });
+  const wall = { t: 0 };
+  const times = [];
+  // trap(method, path): after the first matching call went through, Kissflow answers 429 (an interrupted act)
+  const traps = { fn: null, lastPut: "" };
+  const kf = {
+    ...fake.key,
+    call: async (m, p, b, o) => {
+      times.push(wall.t);
+      const r = await fake.key.call(m, p, b, o);
+      if (traps.fn?.(m, p, traps.lastPut)) {
+        traps.fn = null;
+        fake.setOutage("rate");
+      }
+      if (m === "PUT") traps.lastPut = p;
+      return r;
+    },
+  };
+  const pace = { last: 0, backoffUntil: 0, lastReason: null };
+  const opts = { kf, minIntervalMs: 1000, pace, wallClock: () => wall.t, sleep: async (ms) => (wall.t += ms) };
+  const a = createPort(opts);
+  const b = createPort(opts);
+  await Promise.all([a.listForm(FLOW.config), b.listForm(FLOW.config), a.roleMembers(ROLE.RMM), b.roleMembers(ROLE.SAF), a.raw("GET", `/form/2/${fake.acc}/${FLOW.config}/x?_application_id=CIQ_Digital_A00`)]);
+  const gaps = times.slice(1).map((t, i) => t - times[i]);
+  assert.equal(times.length, 5);
+  assert.ok(Math.min(...gaps) >= 1000, `gaps ${gaps.join(",")}`);
+  fake.setOutage("rate");
+  await assert.rejects(a.listForm(FLOW.config), (e) => isDeferral(e) && e.unreadable);
+  const n = times.length;
+  await assert.rejects(b.roleMembers(ROLE.RMM), (e) => e.backoff);
+  assert.equal(times.length, n, "the other port made no call during the back-off");
+});
+
+test("live-e2e driver: an act interrupted between its calls is resumed, never repeated (a filed request is found by its key; a submitted step is not submitted again)", async () => {
+  const { fake, env, lines, wall, trap } = fakeEnv();
+  for (const n of [0, 1, 2, 3]) assert.equal((await runStep(env, n)).result, "PASS", failed(lines).join("\n"));
+  const resume = async () => {
+    fake.setOutage(null);
+    wall.t += 2 * 60_000; // past the 1-min back-off of a JSON 429
+    return runStep(env, 4);
+  };
+  // 1. the op.raise row is submitted, then Kissflow answers 429 before the driver could read it back
+  trap((m, p) => m === "POST" && p.includes(`/${FLOW.serviceRequest}/`) && p.includes("/submit"));
+  assert.equal((await runStep(env, 4)).result, "STOPPED");
+  assert.ok(env.ledger.data.pendingRequest?.code === "op.raise");
+  // 2. on the re-run the supplier's round-1 answer (admin PUT on the query, then its submit) goes through, then 429
+  const itemOf = (p) => p.split("?")[0].split("/")[5];
+  trap((m, p, lastPut) => m === "POST" && p.includes(`/${FLOW.query}/`) && p.includes("/submit") && lastPut.includes(`/admin/${FLOW.query}/${itemOf(p)}`));
+  assert.equal((await resume()).result, "STOPPED");
+  assert.ok(lines.some((l) => /act\s+Safety files op.raise.*resuming/.test(l)), lines.filter((l) => /op.raise/.test(l)).join("\n"));
+  // 3. the next re-run finds the query submitted and goes on
+  const r = await resume();
+  assert.equal(r.result, "PASS", failed(lines).join("\n"));
+  assert.ok(lines.some((l) => /is no longer at "Supplier: respond".*submitted it already/.test(l)));
+  assert.equal(fake.rows(FLOW.serviceRequest).filter((x) => x.Case_Code === CODE && x.Request_Code === "op.raise").length, 1, "op.raise filed once");
+  assert.equal(fake.rows(FLOW.openPoint).filter((x) => x.Case_Code === CODE).length, 1, "one open point");
+  for (const n of [5, 6, 7]) assert.equal((await runStep(env, n)).result, "PASS", failed(lines).join("\n"));
+  assert.equal((await cleanup(env)).left, 0);
+  assert.deepEqual(rowsOfCase(fake, CODE), []);
+});
+
+test("live-e2e driver: an item the service created just before a 429 (no checkpoint yet) is in the driver's ledger and the cleanup deletes it", async () => {
+  const { fake, env, lines, wall, trap } = fakeEnv();
+  for (const n of [0, 1, 2, 3]) assert.equal((await runStep(env, n)).result, "PASS", failed(lines).join("\n"));
+  // the service creates the round-1 query and submits its Start; Kissflow answers 429 before the read-back
+  trap((m, p) => m === "POST" && p.includes(`/${FLOW.query}/`) && p.includes("/submit"));
+  assert.equal((await runStep(env, 4)).result, "STOPPED");
+  const recorded = env.ledger.data.created.filter((c) => c.by === "service" && c.flow === FLOW.query);
+  assert.equal(recorded.length, 1, "the hook recorded the query before the service could checkpoint it");
+  fake.setOutage(null);
+  wall.t += 2 * 60_000;
+  assert.equal((await runStep(env, 4)).result, "PASS", failed(lines).join("\n"));
+  // [service gap, reported] the next pass did not know the first query and created another one for round 1
+  const queries = fake.rows(FLOW.query).filter((q) => q.Case_Code === CODE);
+  assert.ok(queries.length >= 3, `${queries.length} queries`);
+  const c = await cleanup(env);
+  assert.equal(c.left, 0, lines.slice(-12).join("\n"));
+  assert.deepEqual(rowsOfCase(fake, CODE), [], "the orphaned query was found through the driver's ledger and deleted");
+});
+
+test("live-e2e driver: the same walk passes with CIQ_SERVICE_USER_ID set to the dev user (the key's user: distrusted as a person)", async () => {
+  const { env, lines } = fakeEnv({ serviceUserId: DUAL.id });
+  const res = await runAll(env);
+  assert.deepEqual(res.map((r) => r.result), Array(8).fill("PASS"), failed(lines).join("\n"));
+  assert.equal(env.svcPort.serviceUserTrusted, false);
+  assert.equal((await cleanup(env)).left, 0);
+});

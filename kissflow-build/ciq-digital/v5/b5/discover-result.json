@@ -1,0 +1,169 @@
+{
+ "readAt": "2026-10-14T18:43:49.285Z",
+ "calls": [
+  {
+   "path": "/connector/2/{acc}/CoOj46v9fVh37/metadata/1.0.6",
+   "status": 200
+  },
+  {
+   "path": "/connector/2/{acc}/Co4mIEiAdtSb/metadata/1.5.4",
+   "status": 200
+  },
+  {
+   "path": "/integration/2/{acc}/connection",
+   "status": 200
+  },
+  {
+   "path": "/flow/2/{acc}/integration/?_application_id=CIQ_Digital_A00&page_number=1&page_size=50",
+   "status": 200
+  }
+ ],
+ "email": {
+  "status": 200,
+  "kinds": {
+   "Connector": 1,
+   "Authentication": 1,
+   "Action": 1,
+   "Field": 9,
+   "Dropdown": 1,
+   "Request": 2,
+   "Property": 12
+  },
+  "root": {
+   "Id": "CoOj46v9fVh37",
+   "Name": "Email",
+   "Kind": "Connector",
+   "Version": "1.0.6",
+   "Connector::Authentication": [
+    "Authentication001"
+   ],
+   "Connector::Action": [
+    "SendEmail"
+   ]
+  },
+  "auth": [
+   {
+    "Id": "Authentication001",
+    "Kind": "Authentication",
+    "Type": "InternalAuth",
+    "Name": "InternalAuth Authentication"
+   }
+  ],
+  "actions": [
+   {
+    "Id": "SendEmail",
+    "Name": "Send an email",
+    "Type": "Create",
+    "Description": "Send an email using Kissflow's email service.",
+    "fields": []
+   }
+  ]
+ },
+ "dataformUpdate": {
+  "Id": "UpdateAnItem",
+  "Kind": "Action",
+  "Name": "Update an item",
+  "Type": "Create",
+  "keys": [
+   "Id",
+   "Connector",
+   "Kind",
+   "Description",
+   "Name",
+   "Type",
+   "InputFields::Field",
+   "Action::Request",
+   "Action::Reference"
+  ],
+  "fields": [
+   [
+    "InputFields::Field",
+    [
+     {
+      "Id": "ActionField004",
+      "Kind": "Field",
+      "Name": "form_id",
+      "Label": "Choose a dataform",
+      "Type": "String",
+      "Req": true
+     },
+     {
+      "Id": "ActionField005",
+      "Kind": "Field",
+      "Name": "instance_id",
+      "Label": "Dataform item ID",
+      "Type": "String",
+      "Req": true
+     },
+     {
+      "Id": "DynamicField002",
+      "Kind": "Field",
+      "Name": "DynamicField",
+      "Label": "Dynamic Name",
+      "Type": "String"
+     }
+    ]
+   ],
+   [
+    "Action::Request",
+    [
+     {
+      "Id": "ActionRequest002",
+      "Kind": "Request"
+     }
+    ]
+   ],
+   [
+    "Action::Reference",
+    [
+     {
+      "Id": "Reference_Uim7KjqhUS",
+      "Kind": "Reference"
+     }
+    ]
+   ]
+  ]
+ },
+ "connections": [
+  {
+   "_id": "CnEKHrH5GzkY",
+   "Name": "CIQ ZZ Spike Kissflow Dataform connection",
+   "Connector": "Kissflow Dataform",
+   "Version": "1.5.4",
+   "AuthType": "ApiKeyAuth"
+  },
+  {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection",
+   "Connector": "Kissflow Process",
+   "Version": "3.7.6",
+   "AuthType": "ApiKeyAuth"
+  }
+ ],
+ "integrations": [
+  {
+   "_id": "CIQ_Z2_Case_cancelled_neutral_e_ma_A00",
+   "Name": "CIQ Z2 Case cancelled – neutral e-mail",
+   "Status": "Live",
+   "IsActive": false
+  },
+  {
+   "_id": "CIQ_Z1_Case_completed_PDF_e_mails__A00",
+   "Name": "CIQ Z1 Case completed – PDF, e-mails, notification event",
+   "Status": "Live",
+   "IsActive": false
+  },
+  {
+   "_id": "CIQ_ZZ_Spike_log_point_completed_A00",
+   "Name": "CIQ ZZ Spike log – point completed",
+   "Status": "Live",
+   "IsActive": true
+  },
+  {
+   "_id": "CIQ_ZZ_Spike_log_register_created_A00",
+   "Name": "CIQ ZZ Spike log – register created",
+   "Status": "Live",
+   "IsActive": true
+  }
+ ]
+}

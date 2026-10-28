@@ -1,0 +1,991 @@
+{
+ "status": 200,
+ "body": {
+  "CIQ_Case_Data_A00": {
+   "Id": "CIQ_Case_Data_A00",
+   "Name": "CIQ Case Data",
+   "Tables": [
+    "CIQ_Case_Data_A00_Components",
+    "CIQ_Case_Data_A00_Documents",
+    "CIQ_Case_Data_A00_Requested_Documents",
+    "CIQ_Case_Data_A00_Change_Reports"
+   ],
+   "Fields": [
+    {
+     "Id": "Case_Code",
+     "Name": "Case Code",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": true,
+     "IsInternal": false
+    },
+    {
+     "Id": "Cycle_No",
+     "Name": "Cycle No",
+     "Type": "Number",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "Decimalpoint": null
+    },
+    {
+     "Id": "Case_Item_Id",
+     "Name": "Case Item Id",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Portal_Request_Item_Id",
+     "Name": "Portal Request Item Id",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Portal_Release_Item_Id",
+     "Name": "Portal Release Item Id",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Supplier_Code",
+     "Name": "Supplier Code",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Supplier_Name",
+     "Name": "Supplier Name",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Supplier_DUNS",
+     "Name": "Supplier DUNS",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Trade_Name",
+     "Name": "Trade Name",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Main_INCI",
+     "Name": "Main INCI",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "BDF_Material_No",
+     "Name": "BDF Material No",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Owner_RMM_Name",
+     "Name": "Owner RMM Name",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Owner_RMM_Email",
+     "Name": "Owner RMM Email",
+     "Type": "Email",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Case_Phase",
+     "Name": "Case Phase",
+     "Type": "Select",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Phase_History_JSON",
+     "Name": "Phase History JSON",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Priority",
+     "Name": "Priority",
+     "Type": "Select",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Due_Date",
+     "Name": "Due Date",
+     "Type": "Date",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Created_At",
+     "Name": "Created At",
+     "Type": "DateTime",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Completed_At",
+     "Name": "Completed At",
+     "Type": "DateTime",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Cancelled_At",
+     "Name": "Cancelled At",
+     "Type": "DateTime",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Template_Version",
+     "Name": "Template Version",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Rule_Set_Version",
+     "Name": "Rule Set Version",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Target_Markets_Text",
+     "Name": "Target Markets Text",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Origin_Types",
+     "Name": "Origin Types",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Undefined_Origin",
+     "Name": "Undefined Origin",
+     "Type": "Select",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Config_Answers_JSON",
+     "Name": "Config Answers JSON",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Answers_JSON",
+     "Name": "Answers JSON",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Answered_By_JSON",
+     "Name": "Answered By JSON",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Justifications_JSON",
+     "Name": "Justifications JSON",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Scope_JSON",
+     "Name": "Scope JSON",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Fixed_Scope_At",
+     "Name": "Fixed Scope At",
+     "Type": "DateTime",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Answers_Rev",
+     "Name": "Answers Rev",
+     "Type": "Number",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "Decimalpoint": null
+    },
+    {
+     "Id": "Answers_Changed_At",
+     "Name": "Answers Changed At",
+     "Type": "DateTime",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Tracks_JSON",
+     "Name": "Tracks JSON",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Open_Points_JSON",
+     "Name": "Open Points JSON",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Confirmations_JSON",
+     "Name": "Confirmations JSON",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Open_Points_Count",
+     "Name": "Open Points Count",
+     "Type": "Number",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "Decimalpoint": null
+    },
+    {
+     "Id": "Overdue_Points_Count",
+     "Name": "Overdue Points Count",
+     "Type": "Number",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "Decimalpoint": null
+    },
+    {
+     "Id": "Final_Document_JSON",
+     "Name": "Final Document JSON",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Final_Document_Hash",
+     "Name": "Final Document Hash",
+     "Type": "Text",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Final_PDF",
+     "Name": "Final PDF",
+     "Type": "Attachment",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Synced_At",
+     "Name": "Synced At",
+     "Type": "DateTime",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "Sync_Note",
+     "Name": "Sync Note",
+     "Type": "Textarea",
+     "IsSystemField": false,
+     "Model": "CIQ_Case_Data_A00",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    }
+   ],
+   "CIQ_Case_Data_A00_Components": {
+    "Id": "CIQ_Case_Data_A00_Components",
+    "Name": "Components",
+    "Fields": [
+     {
+      "Id": "Comp_Row_Id",
+      "Name": "Row Id",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Components",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Comp_INCI",
+      "Name": "INCI",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Components",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Comp_CAS_No",
+      "Name": "CAS No",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Components",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Comp_EC_No",
+      "Name": "EC No",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Components",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Comp_Function",
+      "Name": "Function",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Components",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Comp_Is_Additive",
+      "Name": "Is Additive",
+      "Type": "Select",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Components",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Comp_Origin",
+      "Name": "Origin",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Components",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Comp_Conc_Min",
+      "Name": "Conc Min",
+      "Type": "Number",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Components",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false,
+      "Decimalpoint": null
+     },
+     {
+      "Id": "Comp_Conc_Max",
+      "Name": "Conc Max",
+      "Type": "Number",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Components",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false,
+      "Decimalpoint": null
+     }
+    ]
+   },
+   "CIQ_Case_Data_A00_Documents": {
+    "Id": "CIQ_Case_Data_A00_Documents",
+    "Name": "Documents",
+    "Fields": [
+     {
+      "Id": "Doc_Key",
+      "Name": "Doc Key",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Documents",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Doc_Section_Key",
+      "Name": "Section Key",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Documents",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Doc_Field_Key",
+      "Name": "Field Key",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Documents",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Doc_Row_Id",
+      "Name": "Row Id",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Documents",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Doc_File_Name",
+      "Name": "File Name",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Documents",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Doc_Kind",
+      "Name": "Doc Kind",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Documents",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Doc_Attachment_Id",
+      "Name": "Attachment Id",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Documents",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Doc_Uploaded_By",
+      "Name": "Uploaded By",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Documents",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Doc_Uploaded_At",
+      "Name": "Uploaded At",
+      "Type": "DateTime",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Documents",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     }
+    ]
+   },
+   "CIQ_Case_Data_A00_Requested_Documents": {
+    "Id": "CIQ_Case_Data_A00_Requested_Documents",
+    "Name": "Requested Documents",
+    "Fields": [
+     {
+      "Id": "Req_Key",
+      "Name": "Req Key",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Requested_Documents",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Req_Doc_Name",
+      "Name": "Document Name",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Requested_Documents",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Req_Section_Key",
+      "Name": "Section Key",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Requested_Documents",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Req_Rule_Ids",
+      "Name": "Rule Ids",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Requested_Documents",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Req_Why_Text",
+      "Name": "Why Text",
+      "Type": "Textarea",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Requested_Documents",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Req_Status",
+      "Name": "Status",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Requested_Documents",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Req_Justification",
+      "Name": "Justification",
+      "Type": "Textarea",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Requested_Documents",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Req_Added_Later",
+      "Name": "Added Later",
+      "Type": "Select",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Requested_Documents",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "Req_Kept",
+      "Name": "Kept",
+      "Type": "Select",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Requested_Documents",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     }
+    ]
+   },
+   "CIQ_Case_Data_A00_Change_Reports": {
+    "Id": "CIQ_Case_Data_A00_Change_Reports",
+    "Name": "Change Reports",
+    "Fields": [
+     {
+      "Id": "CR_Key",
+      "Name": "CR Key",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Change_Reports",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "CR_Text",
+      "Name": "Text",
+      "Type": "Textarea",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Change_Reports",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "CR_By_Name",
+      "Name": "By Name",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Change_Reports",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "CR_By_Email",
+      "Name": "By Email",
+      "Type": "Email",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Change_Reports",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "CR_At",
+      "Name": "At",
+      "Type": "DateTime",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Change_Reports",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     },
+     {
+      "Id": "CR_Follow_Up_Case",
+      "Name": "Follow Up Case",
+      "Type": "Text",
+      "IsSystemField": false,
+      "Model": "CIQ_Case_Data_A00_Change_Reports",
+      "Widget": null,
+      "Required": false,
+      "IsInternal": false
+     }
+    ]
+   },
+   "System": [
+    {
+     "Id": "Name",
+     "Name": "Name",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_created_by",
+     "Name": "Created by",
+     "Type": "User",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "SourceFlowId": "UserAbstract",
+     "SourceFlowType": null,
+     "Attributes": [
+      {
+       "Id": "Status",
+       "Name": "Status",
+       "Type": "DropdownList"
+      },
+      {
+       "Id": "FirstName",
+       "Name": "First name",
+       "Type": "Text"
+      },
+      {
+       "Id": "LastName",
+       "Name": "Last name",
+       "Type": "Text"
+      },
+      {
+       "Id": "ProfilePicture",
+       "Name": "Profile picture",
+       "Type": "ProfilePicture"
+      }
+     ]
+    },
+    {
+     "Id": "_modified_by",
+     "Name": "Modified by",
+     "Type": "User",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false,
+     "SourceFlowId": "UserAbstract",
+     "SourceFlowType": null,
+     "Attributes": [
+      {
+       "Id": "Status",
+       "Name": "Status",
+       "Type": "DropdownList"
+      },
+      {
+       "Id": "FirstName",
+       "Name": "First name",
+       "Type": "Text"
+      },
+      {
+       "Id": "LastName",
+       "Name": "Last name",
+       "Type": "Text"
+      },
+      {
+       "Id": "ProfilePicture",
+       "Name": "Profile picture",
+       "Type": "ProfilePicture"
+      }
+     ]
+    },
+    {
+     "Id": "_created_at",
+     "Name": "Created at",
+     "Type": "DateTime",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_modified_at",
+     "Name": "Modified at",
+     "Type": "DateTime",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_deleted_at",
+     "Name": "Deleted at",
+     "Type": "DateTime",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true
+    },
+    {
+     "Id": "_deleted_by",
+     "Name": "Deleted by",
+     "Type": "User",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true,
+     "SourceFlowId": "UserAbstract",
+     "SourceFlowType": null,
+     "Attributes": [
+      {
+       "Id": "Status",
+       "Name": "Status",
+       "Type": "DropdownList"
+      },
+      {
+       "Id": "FirstName",
+       "Name": "First name",
+       "Type": "Text"
+      },
+      {
+       "Id": "LastName",
+       "Name": "Last name",
+       "Type": "Text"
+      },
+      {
+       "Id": "ProfilePicture",
+       "Name": "Profile picture",
+       "Type": "ProfilePicture"
+      }
+     ]
+    },
+    {
+     "Id": "_flow_name",
+     "Name": "Flow name",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": false
+    },
+    {
+     "Id": "_application_id",
+     "Name": "Application id",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true
+    },
+    {
+     "Id": "_flow_type",
+     "Name": "Flow type",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true
+    },
+    {
+     "Id": "_doc_version",
+     "Name": "DocVersion",
+     "Type": "Text",
+     "IsSystemField": true,
+     "Model": "FormBase",
+     "Widget": null,
+     "Required": false,
+     "IsInternal": true
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,535 @@
+{
+  "branch": "main",
+  "revision": 29,
+  "key": "coherence",
+  "content": {
+    "owner": "kf-coherence-critic",
+    "stage": "coherence gate, pass 5",
+    "graph_revision_reviewed": 28,
+    "previous_pass": {
+      "graph_revision_reviewed": 24,
+      "committed_revision": null,
+      "commit_note": "pass-4 commit refused (409 IR_GRAPH_DEPENDENCY_BLOCKED: automations, experience stale); the graph still held the pass-3 payload committed at rev 19",
+      "verdict": "PASS-WITH-ISSUES",
+      "defects": "COH-12, COH-06r, COH-13 open",
+      "risks": "R-01..R-08"
+    },
+    "source": "graph rev 28: domain (rev 2, unchanged), architecture (rev 22, D28), data_model (rev 25, re-commit, content = rev 20), workflow (rev 24, D27), security (rev 26, D29: 8 handoff cells + RR-5), automations (rev 27, COH-13 on X5/Y5), experience (rev 28, re-commit, unchanged/empty); brd.md PART A/B/C; decisions D23, D25-D29; open-questions Q8, Q9",
+    "deterministic_evidence": {
+      "gate": "0 errors, 3 warnings (AUTO_SELF Z2 expected; NO_PAGES intended per EXP-HR1; ROLE_ACCESS_COLLAPSE QM/MIC/SUS false positive, disjoint step ownership). Identical to pass 4.",
+      "validate": "0 errors, 1 warning (AUTO_SELF)",
+      "verify": "0 errors, 2 warnings (AUTO_SELF, NO_PAGES)",
+      "build_no_pages": "dry-run only, 226 artifacts (artifact list identical to rev 24), 0 errors, 4 warnings (ORPHAN_ENTITY Connector x4, engine); folders form/integration/list/permission/process/role, no page/nav",
+      "compiled_readback": "Compiled diff rev 24 -> rev 28 is exactly 8 Permission entities, ReadOnly -> Editable, nothing else in any blob: CIQ_Case_A00 Markets_Label at 'Open items check – before release request' (CASE_S5) and 'Open items check – before close' (CASE_S8); CIQ_Open_Point_A00 Portal_Contact_Ids at Review – Regulatory/Safety/QM/Microbiology/Sustainability/RMM (OPNT_R_*). Markets_Label stays ReadOnly at every other case step except Create case; Portal_Contact_Ids ReadOnly at 'Waiting for supplier' and End.",
+      "handoff_vs_cells": "workflow.meta.security_handoff vs security.field_permissions: 29 steps, 416 Mandatory/Editable cells, 0 mismatches in either direction (manual RAT-8 check).",
+      "scenario_replay": "30/30 workflow journey scenarios replay at rev 28, results identical to pass 4. 7 probe variants (Portal_Contact_Ids written at each OPNT_R_* step; Markets_Label + Target_Markets_Text at CASE_S5 and CASE_S8) pass 7/7 at rev 28 and fail 0/7 against the rev-24 cells, so the re-commit is load-bearing.",
+      "foundation": "draft at rev 28; same 8 open findings as rev 18/24 (5 FOUNDATION_MAPPING_EXPRESSION waived D21, 1 FOUNDATION_ACTION_UNSUPPORTED notify, 2 FOUNDATION_INITIATOR_CONTRACT_MISMATCH D18)",
+      "slice_freshness": "ir-graph-cli tasks at rev 28 lists only agenttask.coherence (stale) and agenttask.seed (pending); every other task is fresh.",
+      "automations_contract": "X5 (items[4]) and Y5 (items[9]) of cross_container_contract carry release_refusal_rule (COH-13 / D27); doc_only, not compiled.",
+      "artifacts": "runs/ciq-digital-v4/scratch-kf-coherence-critic/pass5-rev28/ (spec.json, gate/validate/verify/build.txt, kf-build-out, sim.json, probe/, probe-rev24/, foundation.json)"
+    },
+    "repair_status": {
+      "COH-01": {
+        "status": "closed",
+        "evidence": "data_model rev 12: Start_Gate blank-checks Query_Key, Portal_Contact_Ids, Awaiting_Response and requires Awaiting_Response = \"Yes\" for to-supplier points; probe: each blank -> \"\", Awaiting_Response No -> \"\", internal -> \"OK\"."
+      },
+      "COH-02": {
+        "status": "closed",
+        "evidence": "CIQ_Section_A00.Portal_Contact_Ids required:true."
+      },
+      "COH-03": {
+        "status": "closed (contract)",
+        "evidence": "automations cross_container_contract X3/X3b condition OP_To_Supplier = \"Yes\" + condition_note; enforcement is the portal session's REST build (K-09h)."
+      },
+      "COH-04": {
+        "status": "closed, decision-pending (Thomas, D23)",
+        "evidence": "Open_Items_Count/Open_CR_Count ReadOnly at CASE_S0-S3 and every branch (compiled read-back), blank at the join -> Hold_For_Open_Items = \"Yes\" -> CASE_S5 runs once in all 4 replayed join paths."
+      },
+      "COH-05": {
+        "status": "closed",
+        "evidence": "Case_Contacts_JSON, Portal_Contact_Ids, Confirm_Contact_Ids, Supplier_Contact_Emails Editable at CASE_S1, S3, S5, S7, S8 (compiled read-back)."
+      },
+      "COH-06": {
+        "status": "closed",
+        "evidence": "residual COH-06r closed at rev 26"
+      },
+      "COH-07": {
+        "status": "closed",
+        "evidence": "CHRQ_S1 Mandatory: Notice_Key, Notice_Kind, Notice_Title, Supplier_Outcome_Text, Case_Code, Cycle_No, Supplier_Code, Portal_Contact_Ids. CR_Key (X6 Related_Key) stays S0-only; CIQP Notice 'Related Key' is optional (brd L570), so no defect."
+      },
+      "COH-08": {
+        "status": "closed, but introduced COH-11",
+        "evidence": "CIQ_OP_Outcome = [Accepted, Withdrawn]; Open_Num 0 only for those. The same list also backs Rounds.Rounds_Outcome."
+      },
+      "COH-09": {
+        "status": "closed",
+        "evidence": "data store D22 + Z1 rest_completion step 1a (D25): if K-15 fails, store the PDF in CIQ Audit Event.Event_File on an Event_Category = 'Final PDF' row."
+      },
+      "COH-10": {
+        "status": "closed",
+        "evidence": "Separate Hold_Override_Reason_Release/_Close and Open_Items_Gate_Release/_Close; probe: release override with counts 2+0 gives Gate_Release OK, Gate_Close \"\" and Hold_For_Open_Items Yes, so S8 runs and needs its own reason."
+      },
+      "R-01": {
+        "status": "open (runtime)",
+        "evidence": "cr-refused-not-valid and cr-refused-after-final-release skip all five CHRQ_PAR arms; K-PAR must prove the join advances."
+      },
+      "R-02": {
+        "status": "decided by conductor (D27, Q8 default), pending Thomas; residual narrowed",
+        "evidence": "Y5 keeps automatic completion (REQ-PROC-045) and does not blank counts (Y5 contract unchanged, consistent). Counts Editable at CASE_S7 (compiled). CASE_S7 note and workflow.meta.coherence_repairs.rev19 record the Workbench refresh and the portal release refusal. Residual: an internal point (Department review, Contact update, Internal review) raised during CASE_S6/S7 with no RMM Workbench session before Y5 is not counted, so CASE_S8 is skipped; the portal refusal only covers the supplier's own CIQP Queries/CRs."
+      },
+      "R-03": {
+        "status": "open (runtime)",
+        "evidence": "Y1/Y3/Y4/Y5 approve unverified (Q6); waiting steps stay RMM-owned."
+      },
+      "R-04": {
+        "status": "closed",
+        "evidence": "post_generate_grants: all 11 resets are Member [\"View\"], never []; K-06 still to prove My Tasks."
+      },
+      "R-05": {
+        "status": "open (REST)",
+        "evidence": "flow Admin for CIQ Case Admin on 3 Processes in post_generate_grants."
+      },
+      "R-06": {
+        "status": "unchanged: 8 classified findings",
+        "evidence": "foundation draft at rev 28 = rev 18/24 set. Needs conductor accept-foundation with the D18/D21 waivers."
+      },
+      "R-07": {
+        "status": "open (runtime)",
+        "evidence": "K-20, K-PC (Overall_Decision != \"Rejected\" on blank), K-OFF/K-PAR."
+      },
+      "COH-11": {
+        "status": "closed",
+        "evidence": "D26/D28: own list CIQ_Round_Outcome [Accepted, Returned, Withdrawn] bound only to Rounds_Outcome; OP_Outcome stays on CIQ_OP_Outcome [Accepted, Withdrawn]; Open_Num unchanged; architecture registry, compiled lists and blob bindings agree; no field or scenario writes a value its list lacks."
+      },
+      "COH-09r": {
+        "status": "closed",
+        "evidence": "automations rev 21 Z1 rest_completion item '1a. K-15 fallback ...' names Event_File and category 'Final PDF'; both exist in data_model and in the compiled list/form."
+      },
+      "COH-12": {
+        "status": "closed",
+        "evidence": "security rev 26 (D29): Portal_Contact_Ids Editable at OPNT_R_REG/_SAF/_QM/_MIC/_SUS/_RMM; compiled Permission entities Editable at all six Review activities; probe replay writes it at each."
+      },
+      "COH-06r": {
+        "status": "closed",
+        "evidence": "security rev 26 (D29): Markets_Label Editable at CASE_S5 and CASE_S8; compiled Editable at both open-items checks; probe replay writes it at both."
+      },
+      "COH-13": {
+        "status": "closed in the IR; portal relay pending Q8",
+        "evidence": "automations rev 27: release_refusal_rule on X5 and Y5. The shared contract docs/kissflow-data-model/kissflow-data-model-plan.md has no pre-release refusal rule yet (its PS-11 freeze text covers only post-release CR refusal), and there is no record that the portal session was told. Correctly held until Thomas confirms Q8, because the alternative (Y5 blanks the counts) removes the need for it."
+      },
+      "DOC-RR5": {
+        "status": "closed",
+        "evidence": "security RR-5 now names Start_Gate, the six <D>_Gate fields, Open_Items_Gate_Release and Open_Items_Gate_Close; all exist in data_model (Open_Items_Gate named only as retired)."
+      },
+      "DOC-D17": {
+        "status": "closed",
+        "evidence": "decisions.md: second D17 renamed D17b (D29)."
+      }
+    },
+    "completeness_matrix": [
+      {
+        "journey": "j01_create_case",
+        "persona": "p_rmm",
+        "data": "ok: material, supplier, 4 contact fields, owner, due dates, pinned release Mandatory at CASE_S0",
+        "workflow_path": "ok: CASE_S0 -> CASE_S1",
+        "permission": "ok: RMM sole initiator; writes CIQ Section (BASIC row, Portal_Contact_Ids now required)",
+        "landing_nav": "n/a: no pages (EXP-HR1); native My Tasks reaches every human step; Workbench later",
+        "dashboard": "n/a (backend only)",
+        "status": "ok",
+        "defects": [],
+        "risks": [],
+        "note": ""
+      },
+      {
+        "journey": "j02_basic_data",
+        "persona": "p_rmm",
+        "data": "ok: Basic_Data_Received M; contacts Editable at CASE_S1",
+        "workflow_path": "ok",
+        "permission": "ok: RMM holds CASE_S1 (manual fallback)",
+        "landing_nav": "n/a: no pages (EXP-HR1); native My Tasks reaches every human step; Workbench later",
+        "dashboard": "n/a (backend only)",
+        "status": "ok",
+        "defects": [],
+        "risks": [
+          "R-03"
+        ],
+        "note": ""
+      },
+      {
+        "journey": "j03_scope_check",
+        "persona": "p_rmm",
+        "data": "ok: Dept_<D>_Active, RMES_Key, PS-05/PS-11 keys and texts M; counts now ReadOnly (D23)",
+        "workflow_path": "ok",
+        "permission": "ok: RMM writes CIQ Scope Run, CIQ Section; initiates CIQ Open Point",
+        "landing_nav": "n/a: no pages (EXP-HR1); native My Tasks reaches every human step; Workbench later",
+        "dashboard": "n/a (backend only)",
+        "status": "ok",
+        "defects": [],
+        "risks": [],
+        "note": ""
+      },
+      {
+        "journey": "j04_completeness",
+        "persona": "p_rmm",
+        "data": "ok: Completeness_* E, Completeness_At/RMES_Created_At M; counts ReadOnly, contacts Editable",
+        "workflow_path": "ok",
+        "permission": "ok",
+        "landing_nav": "n/a: no pages (EXP-HR1); native My Tasks reaches every human step; Workbench later",
+        "dashboard": "n/a (backend only)",
+        "status": "ok",
+        "defects": [],
+        "risks": [
+          "R-03"
+        ],
+        "note": ""
+      },
+      {
+        "journey": "j05_department_review",
+        "persona": "5 reviewers + RMM lane",
+        "data": "ok: own lane fields M, <D>_Open_Count/<D>_RMES_Gaps E, <D>_Gate M at own branch",
+        "workflow_path": "ok: 6 guarded arms, native join (replayed 4 positive paths + 7 negative)",
+        "permission": "ok: branch Act per role; reset keeps [View] (R-04 closed)",
+        "landing_nav": "n/a: no pages (EXP-HR1); native My Tasks reaches every human step; Workbench later",
+        "dashboard": "n/a (backend only)",
+        "status": "ok",
+        "defects": [],
+        "risks": [
+          "R-01",
+          "R-07"
+        ],
+        "note": ""
+      },
+      {
+        "journey": "j06_rmes_sheet",
+        "persona": "p_saf_reviewer, p_reg_reviewer",
+        "data": "ok: F5/F6 header counts, Criteria/Findings tables; SAF/REG_RMES_Decision M on lane",
+        "workflow_path": "ok (Forms)",
+        "permission": "ok: Safety writes F5 only, Regulatory F6 only; child-table grants mirror parent (K-17)",
+        "landing_nav": "n/a: no pages (EXP-HR1); native My Tasks reaches every human step; Workbench later",
+        "dashboard": "n/a (backend only)",
+        "status": "ok",
+        "defects": [],
+        "risks": [],
+        "note": ""
+      },
+      {
+        "journey": "j07_open_point_supplier",
+        "persona": "reviewers, p_rmm",
+        "data": "ok: Rounds_Outcome on its own list CIQ_Round_Outcome (Accepted, Returned, Withdrawn), so a returned round keeps its outcome (COH-11 closed). Start_Gate enforces Query_Key, Portal_Contact_Ids, Awaiting_Response = Yes",
+        "workflow_path": "ok: S0 -> S1 (OP_To_Supplier) -> exactly one OPNT_R_<D>; Return = send-back; X3/X3b guarded",
+        "permission": "ok: Portal_Contact_Ids Editable at all six OPNT_R_* steps (compiled), so a Contact update before Return reaches round n+1's X3 (COH-12 closed)",
+        "landing_nav": "n/a: no pages (EXP-HR1); native My Tasks reaches every human step; Workbench later",
+        "dashboard": "n/a (backend only)",
+        "status": "ok-with-risk",
+        "defects": [],
+        "risks": [
+          "R-03",
+          "R-08"
+        ],
+        "note": ""
+      },
+      {
+        "journey": "j08_internal_points",
+        "persona": "p_rmm, reviewers",
+        "data": "ok: contact updates land at CASE_S1/S3/S5/S7/S8 (COH-05 closed)",
+        "workflow_path": "ok: internal kinds skip OPNT_S1; S5 always runs once",
+        "permission": "ok",
+        "landing_nav": "n/a: no pages (EXP-HR1); native My Tasks reaches every human step; Workbench later",
+        "dashboard": "n/a (backend only)",
+        "status": "ok",
+        "defects": [],
+        "risks": [],
+        "note": ""
+      },
+      {
+        "journey": "j09_open_items_checks",
+        "persona": "p_rmm",
+        "data": "ok: counts E at S5/S7/S8; separate Hold_Override_Reason_Release/_Close and Open_Items_Gate_Release/_Close (COH-10 closed)",
+        "workflow_path": "ok: CASE_S5 always runs once (D23); CASE_S8 runs if counts at PS-11 are non-zero/blank; Y5 keeps automatic completion and the Workbench refreshes counts at CASE_S7 (D27/Q8)",
+        "permission": "ok",
+        "landing_nav": "n/a: no pages (EXP-HR1); native My Tasks reaches every human step; Workbench later",
+        "dashboard": "n/a (backend only)",
+        "status": "ok-with-risk",
+        "defects": [],
+        "risks": [
+          "R-02"
+        ],
+        "note": "D23 and Q8 (D27) pending Thomas's confirmation. The supplier-side release refusal is now in the X5/Y5 contract (COH-13); relay to the portal session waits on Q8."
+      },
+      {
+        "journey": "j10_overall_approval",
+        "persona": "p_overall_approver",
+        "data": "ok: Overall_Decision/Decided_By M at CASE_S6",
+        "workflow_path": "ok: Rejected skips CASE_S7, reaches End (Z1 neutral text); CASE_S5 now precedes S6",
+        "permission": "ok: Act on CASE_S6; reset keeps [View]",
+        "landing_nav": "n/a: no pages (EXP-HR1); native My Tasks reaches every human step; Workbench later",
+        "dashboard": "n/a (backend only)",
+        "status": "ok",
+        "defects": [],
+        "risks": [
+          "R-07"
+        ],
+        "note": ""
+      },
+      {
+        "journey": "j11_final_release",
+        "persona": "p_rmm",
+        "data": "ok: Final_PDF on the case; K-15 fallback documented in Z1 rest_completion 1a (Event_File, 'Final PDF')",
+        "workflow_path": "ok: S7 (Y5 or manual) -> S8 (if held) -> End -> Z1",
+        "permission": "ok: Integration Service writes F8, so it can write Event_File",
+        "landing_nav": "n/a: no pages (EXP-HR1); native My Tasks reaches every human step; Workbench later",
+        "dashboard": "n/a (backend only)",
+        "status": "ok-with-risk",
+        "defects": [],
+        "risks": [
+          "R-02",
+          "R-03"
+        ],
+        "note": "X5/Y5 contract carries the D27 release refusal (rev 27)."
+      },
+      {
+        "journey": "j12_cancel_case",
+        "persona": "p_rmm, p_case_admin",
+        "data": "ok: F8 Cancellation row; Notify_Recipient",
+        "workflow_path": "ok: native Reject at RMM steps; Part 2/S6 via flow Admin",
+        "permission": "risk: Case Admin capability exists only after REST flow Admin",
+        "landing_nav": "n/a: no pages (EXP-HR1); native My Tasks reaches every human step; Workbench later",
+        "dashboard": "n/a (backend only)",
+        "status": "ok-with-risk",
+        "defects": [],
+        "risks": [
+          "R-05",
+          "R-06"
+        ],
+        "note": ""
+      },
+      {
+        "journey": "j13_change_request",
+        "persona": "p_rmm, reviewers",
+        "data": "ok: X6 inputs Mandatory at Triage; Target_Markets_Text and Markets_Label both Editable at CASE_S5/S8 (compiled), so an accepted market correction updates the label (COH-06r closed)",
+        "workflow_path": "risk: refused CR skips all five arms (join untested); replayed 8 CR scenarios",
+        "permission": "ok: Integration Service + RMM initiate; RMM triages; reviewers assess",
+        "landing_nav": "n/a: no pages (EXP-HR1); native My Tasks reaches every human step; Workbench later",
+        "dashboard": "n/a (backend only)",
+        "status": "ok-with-risk",
+        "defects": [],
+        "risks": [
+          "R-01"
+        ],
+        "note": ""
+      },
+      {
+        "journey": "j14_supplier_master",
+        "persona": "p_rmm",
+        "data": "ok: CIQ Supplier + Contacts",
+        "workflow_path": "n/a (Form)",
+        "permission": "ok: RMM writes; Contacts grant mirrors parent (K-17)",
+        "landing_nav": "n/a: no pages (EXP-HR1); native My Tasks reaches every human step; Workbench later",
+        "dashboard": "n/a (backend only)",
+        "status": "ok",
+        "defects": [],
+        "risks": [],
+        "note": ""
+      },
+      {
+        "journey": "j15_configuration",
+        "persona": "p_business_admin",
+        "data": "ok: Config Version incl. Release rows",
+        "workflow_path": "n/a (Form)",
+        "permission": "ok: Business Admin writes F2 and F8; no-Delete via REST (K-17)",
+        "landing_nav": "n/a: no pages (EXP-HR1); native My Tasks reaches every human step; Workbench later",
+        "dashboard": "n/a (backend only)",
+        "status": "ok",
+        "defects": [],
+        "risks": [],
+        "note": ""
+      },
+      {
+        "journey": "j16_internal_chat",
+        "persona": "all internal roles",
+        "data": "ok",
+        "workflow_path": "n/a (Form)",
+        "permission": "ok: every internal role writes F7 (Reader per Q7)",
+        "landing_nav": "n/a: no pages (EXP-HR1); native My Tasks reaches every human step; Workbench later",
+        "dashboard": "n/a (backend only)",
+        "status": "ok",
+        "defects": [],
+        "risks": [],
+        "note": ""
+      },
+      {
+        "journey": "j17_audit_oversight",
+        "persona": "p_reader",
+        "data": "ok: F8 incl. Event_File (ReadOnly for Reader)",
+        "workflow_path": "n/a (Form)",
+        "permission": "ok: Reader views F8; tamper-evident (RR-1, K-17)",
+        "landing_nav": "n/a: no pages (EXP-HR1); native My Tasks reaches every human step; Workbench later",
+        "dashboard": "n/a (backend only)",
+        "status": "ok",
+        "defects": [],
+        "risks": [],
+        "note": ""
+      },
+      {
+        "journey": "j18_find_cases",
+        "persona": "p_rmm, reviewers, p_reader",
+        "data": "ok: Search_* mirrors + Components on F3",
+        "workflow_path": "n/a (Form)",
+        "permission": "ok: all internal roles view F3; RMM + service write",
+        "landing_nav": "n/a: no pages (EXP-HR1); native My Tasks reaches every human step; Workbench later",
+        "dashboard": "n/a (backend only)",
+        "status": "ok",
+        "defects": [],
+        "risks": [],
+        "note": ""
+      },
+      {
+        "journey": "j19_sync_service",
+        "persona": "p_integration_service",
+        "data": "ok: F3 rows carry Portal_Contact_Ids (required); Z1 fallback writes Event_File on a 'Final PDF' F8 row",
+        "workflow_path": "n/a",
+        "permission": "ok: view Case/OP/CR, write F3/F8, initiate CR",
+        "landing_nav": "n/a: no pages (EXP-HR1); native My Tasks reaches every human step; Workbench later",
+        "dashboard": "n/a (backend only)",
+        "status": "ok",
+        "defects": [],
+        "risks": [],
+        "note": ""
+      },
+      {
+        "journey": "j20_reactivate_case",
+        "persona": "p_rmm",
+        "data": "ok: new item, counts blank",
+        "workflow_path": "ok",
+        "permission": "ok",
+        "landing_nav": "n/a: no pages (EXP-HR1); native My Tasks reaches every human step; Workbench later",
+        "dashboard": "n/a (backend only)",
+        "status": "ok",
+        "defects": [],
+        "risks": [],
+        "note": ""
+      }
+    ],
+    "role_purpose": {
+      "dead_end_roles": [],
+      "note": "All 11 custom roles keep a journey plus a grant or step; every task step's assignee has Act on it; every data flow has a writer and readers. Admin/User are platform defaults (A3)."
+    },
+    "orphans": {
+      "flows": [],
+      "fields": [],
+      "roles": [],
+      "statuses": "n/a (no Case/Board flows)",
+      "reports": "n/a (no pages)",
+      "note": "Final_PDF is ReadOnly at every step; its post-End writer is Z1 REST, with the F8 Event_File fallback documented (COH-09r closed). Hold_For_Open_Items is a formula."
+    },
+    "gates_and_counts": {
+      "lane_gates": "ok, unchanged",
+      "open_items_release": "ok: counts blank at the join; S5 runs once; Gate_Release Mandatory with its own override",
+      "open_items_close": "ok at the step; whether S8 runs depends on counts refreshed at PS-11 by the Workbench (Q8/D27, residual R-02)",
+      "start_gate": "ok (COH-01 closed)",
+      "aggregates": "none authored (A2)"
+    },
+    "incoherences": [],
+    "doc_drift": [
+      {
+        "where": "architecture.lists CIQ_Event_Category",
+        "issue": "16 items, no 'Final PDF'; data_model and the compiled list have 17 (noted in D28). Build unaffected.",
+        "owner": "kf-architect",
+        "status": "open, non-blocking"
+      },
+      {
+        "where": "workflow CASE_S7 note; automations X5/Y5 release_refusal_rule; decisions D27",
+        "issue": "residual wording is narrower than R-02: it names only 'an item opened in the seconds before Y5'. Also exposed: an internal point (Department review, Contact update, Internal review; not covered by the portal refusal) raised during CASE_S6/S7 with no RMM Workbench session before Y5. If uncounted, CASE_S8 is skipped and the case completes, so a 'next session' catches it only after completion.",
+        "owner": "kf-workflow-designer + kf-integration-analyst (text only, with the Q8 confirmation)",
+        "status": "open, non-blocking"
+      },
+      {
+        "where": "decisions.md D29",
+        "issue": "status still 'proposed' although revs 25-28 landed and were verified here",
+        "owner": "conductor",
+        "status": "open, bookkeeping"
+      },
+      {
+        "where": "security.residual_risks RR-5; decisions.md duplicate D17",
+        "issue": "fixed at rev 26 / D29",
+        "owner": "closed"
+      },
+      {
+        "where": "workflow.meta.data_model_revision / architecture.lists CIQ_OP_Outcome",
+        "issue": "fixed at rev 22-24 (D27, D28)",
+        "owner": "closed"
+      }
+    ],
+    "risks": [
+      {
+        "id": "R-01",
+        "risk": "All-skipped parallel joins: every refused CR (all Impact_<D> = No) and Part 2 with no active department.",
+        "ref": "D9/AR01",
+        "owner": "kf-workflow-designer; test K-PAR",
+        "status": "open"
+      },
+      {
+        "id": "R-02",
+        "risk": "Close hold after Y5: Y5 approves CASE_S7 and does not blank counts (Q8 chosen by the conductor, D27). The Workbench refreshes counts at CASE_S7 (Editable, compiled); the portal refuses release while the supplier's own queries/CRs are open (now in the X5/Y5 contract, rev 27; not yet in the shared plan or relayed to the portal session). Residual: internal points raised during CASE_S6/S7 without an RMM Workbench session before Y5 skip CASE_S8 and the case completes.",
+        "owner": "Workbench (refresh at CASE_S7); portal session (release refusal, after Q8); decision: Thomas (Q8)",
+        "status": "mitigated, decision-pending"
+      },
+      {
+        "id": "R-03",
+        "risk": "Y1/Y3/Y4/Y5 'Approve an item' unverified (Q6); RMM manual fallback keeps journeys satisfiable.",
+        "owner": "portal session; K-09b/c/g",
+        "status": "open"
+      },
+      {
+        "id": "R-04",
+        "risk": "Reviewer/Overall Approver reset.",
+        "owner": "kf-security-designer",
+        "status": "closed: [\"View\"] everywhere; K-06 to prove My Tasks"
+      },
+      {
+        "id": "R-05",
+        "risk": "CIQ Case Admin has no native capability until flow Admin is granted over REST.",
+        "owner": "kf-security-designer / kf-author",
+        "status": "open"
+      },
+      {
+        "id": "R-06",
+        "risk": "Foundation draft rev 28 has the same 8 open findings: 5 mapping (waived D21), 1 platform notify, 2 initiator mismatch (D18).",
+        "owner": "conductor (accept-foundation with waivers); platform (notify)",
+        "status": "reduced"
+      },
+      {
+        "id": "R-07",
+        "risk": "Runtime unverified: Mandatory formula gates on branches (K-20), != on blank Overall_Decision (K-PC), branch-scoped permissions (K-OFF/K-PAR).",
+        "owner": "acceptance",
+        "status": "open"
+      },
+      {
+        "id": "R-08",
+        "risk": "A Return is a native send-back, which runs no Mandatory check. Round n+1 relies on the Workbench to set Awaiting_Response = \"Yes\" and the new Query_Key at OPNT_R_*. If it doesn't, Y3 never approves, and RMM must submit OPNT_S1 by hand (Awaiting_Response is Editable there).",
+        "owner": "Workbench / acceptance K-09h",
+        "status": "open (new, observation)"
+      }
+    ],
+    "decision_pending_for_thomas": [
+      "D23 / COH-04: confirm 'counts blank at the join, so the release-request check (CASE_S5) always runs once'.",
+      "Q8 / R-02 (D27): confirm 'Y5 keeps automatic completion and does not blank the counts; the Workbench refreshes them at PS-11; the portal refuses release while the supplier's own queries/CRs are open'. If confirmed, the conductor writes the release-refusal rule into the shared data-model plan and tells the portal session (COH-13 relay). Alternative: Y5 blanks the counts so CASE_S8 always runs (manual close check every time).",
+      "D18 + D21: accept the initiator-contract mismatch and the _id-to-Text mapping waiver so the foundation can be accepted (conductor accept-foundation; Thomas if he wants sign-off).",
+      "Approval to run author-generate for CIQ_Digital_A00 (project rule: the app needs its own approval before the first write).",
+      "Q9 (non-blocking): Findings state values (Open/Closed) and the RMES limit comparator (<, <=, =, >=, >); Thomas or BDF.",
+      "D9 / R-01: only if K-PAR fails: change the Assess-impact shape for refused CRs."
+    ],
+    "ratchet": [
+      "RAT-1 ROLE_ACCESS_COLLAPSE: don't flag roles whose workflow assignee_role steps are disjoint.",
+      "RAT-2 never-writable field: warn on a non-formula Process field that is ReadOnly at every step and has no declared post-End writer.",
+      "RAT-3 stale hold: warn when a step condition reads fields whose last writable step is before an intervening parallel block.",
+      "RAT-4 handoff input: a field mapped into a required target field must be Mandatory or gate-checked at the step whose entry fires the handoff.",
+      "RAT-5 shared list: when a list's items change, list every field (header and child-table column) whose referredList is that list; flag one that is documented or scenario-written with a value the list no longer holds (would catch COH-11).",
+      "RAT-6 doc drift: warn when free text in workflow/security/automations names a field id that no longer exists in data_model (would catch RR-5 Open_Items_Gate).",
+      "RAT-7 handoff staleness: a change to workflow.meta.security_handoff should mark the security task stale (at rev 24 tasks flags only data_model while security lags the handoff by 8 cells).",
+      "RAT-8 handoff vs cells: gate should diff workflow.meta.security_handoff Mandatory/Editable lists against security step cells and warn on each mismatch (would catch COH-12/COH-06r while pending). Manual check at rev 28: 29 steps, 416 cells, 0 mismatches."
+    ],
+    "verdict": "PASS-WITH-ISSUES",
+    "verdict_note": "Every in-scope journey (j01-j20) is end-to-end satisfiable at rev 28 with no open incoherence. COH-12, COH-06r and COH-13 (IR side) are closed: the 8 handoff cells compile Editable, the compiled diff from rev 24 is exactly those 8 cells, the handoff and the security cells agree (0/416 mismatches), and the X5/Y5 contract carries the release refusal. gate/validate/verify/build --no-pages are 0 errors; 30/30 scenarios and 7/7 probes replay. Remaining issues are not defects: decisions pending Thomas (D23, Q8 with the COH-13 portal relay, D18/D21 foundation acceptance, generate approval), 8 classified foundation findings awaiting accept-foundation, tracked runtime risks R-01..R-08, and 3 non-blocking doc-drift items."
+  }
+}

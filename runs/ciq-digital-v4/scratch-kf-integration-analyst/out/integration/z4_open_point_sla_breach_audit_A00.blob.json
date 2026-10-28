@@ -1,0 +1,65 @@
+{
+  "Root": "z4_open_point_sla_breach_audit_A00",
+  "z4_open_point_sla_breach_audit_A00": {
+    "_id": "z4_open_point_sla_breach_audit_A00",
+    "Id": "z4_open_point_sla_breach_audit_A00",
+    "Kind": "Integration",
+    "Name": "CIQ Z4 Open Point SLA breached – audit event",
+    "Type": "Integration",
+    "Status": "Draft",
+    "IsActive": true,
+    "_application_id": "CIQ_Digital_A00",
+    "Connectors": [
+      "Connector_rkin6u"
+    ],
+    "Integration::Trigger": [
+      "Trigger_1cmgdp0"
+    ],
+    "Integration::Action": [
+      "Action_1cmgdoh"
+    ]
+  },
+  "Connector_rkin6u": {
+    "_id": "Connector_rkin6u",
+    "Id": "Connector_rkin6u",
+    "Kind": "Connector",
+    "Name": "CIQ Z4 Open Point SLA breached – audit event connector",
+    "Entities": [
+      "Trigger_1cmgdp0",
+      "Action_1cmgdoh"
+    ]
+  },
+  "Trigger_1cmgdp0": {
+    "_id": "Trigger_1cmgdp0",
+    "Id": "Trigger_1cmgdp0",
+    "Kind": "Trigger",
+    "Version": 1,
+    "Name": "CIQ_Open_Point_A00 · updated",
+    "Flow": "CIQ_Open_Point_A00",
+    "On": null,
+    "Event": "updated"
+  },
+  "Action_1cmgdoh": {
+    "_id": "Action_1cmgdoh",
+    "Id": "Action_1cmgdoh",
+    "Kind": "Action",
+    "Version": 1,
+    "Name": "create → CIQ_Audit_Event_A00",
+    "ActionType": "create",
+    "TargetFlow": "CIQ_Audit_Event_A00",
+    "FieldMap": {
+      "Event_Category": "'Notification'",
+      "Action_Code": "'Z4 SLA breached'",
+      "Actor_Side": "'System'",
+      "Case_Code": "Case_Code",
+      "Cycle_No": "Cycle_No",
+      "Case_Item_Id": "Case_Item_Id",
+      "Object_Kind": "'CIQ Open Point'",
+      "Object_Key": "OP_Key",
+      "Object_Item_Id": "_id",
+      "Object_State": "'SLA breached'",
+      "Notify_Channel": "'Kissflow SLA'"
+    },
+    "Condition": null
+  }
+}

@@ -1,0 +1,473 @@
+skip R1.1 (done)
+
+== R1.2 ZZT-NT-R1: the supplier saves three revisions, uploads and removes a file; request.changed
+  FAIL R1.2 at 'Supplier: fill in the CIQ' a supplier write cannot change the ReadOnly App_Case_Item_Id, Release_Flag, Request_Locked, Case_Phase_Label — {"status":200,"leaked":{"App_Case_Item_Id":"ZZT-FORGED-CASE","Release_Flag":"Requested","Request_Locked":"Yes","Case_Phase_Label":"Forged"}}
+  ok   R1.2 restored the leaked values (admin)
+  ok   R1.2 Rev 1: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   R1.2 Rev 1: the request reads back every answer field exactly
+  ok   R1.2 Rev 1: every JSON field parses and no time has milliseconds
+  ok   R1.2 Rev 1: request.changed → the case has Rev 1
+  ok   R1.2 Rev 1: the case's 15 synced fields equal the request's
+  ok   R1.2 Rev 2: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   R1.2 Rev 2: the request reads back every answer field exactly
+  ok   R1.2 Rev 2: every JSON field parses and no time has milliseconds
+  ok   R1.2 Rev 2: request.changed → the case has Rev 2
+  ok   R1.2 Rev 2: the case's 15 synced fields equal the request's
+  ok   R1.2 Rev 3: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   R1.2 Rev 3: the request reads back every answer field exactly
+  ok   R1.2 Rev 3: every JSON field parses and no time has milliseconds
+  ok   R1.2 Rev 3: request.changed → the case has Rev 3 (posted twice back to back)
+  ok   R1.2 Rev 3: the case's 15 synced fields equal the request's
+  ok   R1.2 upload row ZZT-NT-R1-UP1: the write is accepted
+  ok   R1.2 upload row ZZT-NT-R1-UP2: the write is accepted
+  ok   R1.2 both upload rows are stored with every field
+  ok   R1.2 removing a file marks its row (Upload_Removed_At / _By_Email), keeps the row and adds none
+  ok   R1.2 the other upload row is untouched
+  ok   R1.2 the screen's Documents_JSON (Rev 4) is accepted
+  ok   R1.2 request.changed after the upload/removal → the case's Documents_JSON
+  ok   R1.2 the case's Documents_JSON equals the request's
+  ok   R1.2 not covered: the attachment file itself (Upload_File) needs the browser's upload API
+
+== R1.3 ZZT-NT-R1: completeness confirmed and submitted; I-2
+  FAIL R1.3 Kissflow refuses the fill-in submit without the four Mandatory completeness fields — {"status":200,"to":"Supplier: keep the CIQ up to date"}
+  ok   R1.3 the request reads back the confirmation
+  ok   R1.3 completeness.confirmed (I-2) → the case records the confirmation
+  ok   R1.3 the case's Completeness_* fields equal the request's
+  ok   R1.3 the case's 15 synced fields equal the request's
+  ok   R1.3 the case phase is 'Review'
+  FAIL R1.3 I-2's Approve moves the case to 'Beiersdorf review and final release' (needs Thomas in the role Integration service) — {"_status":"InProgress","_current_step":"Waiting for supplier: CIQ","assigned":"RoEKl89I5nGx"}
+  ok   R1.3 a second completeness.confirmed is refused (the case already has it): the case is unchanged
+
+== R1.4 ZZT-NT-R1: open point(s) REG: two rounds, edit, answer, close; history.updated
+  ok   R1.4 REG: the open point draft reads back every Start field
+  ok   R1.4 REG: the raise moves the point to 'Open point – Regulatory', assigned to the raiser
+  ok   R1.4 REG: op.round → the point links its round-1 query
+  ok   R1.4 REG: the query carries every field of the point
+  ok   R1.4 REG: the query is at 'Supplier: respond', assigned to the portal contact
+  FAIL R1.4 REG: the raiser's edit is accepted at the point's step — {"type":"PermissionDeniedToUpdate","error_code":"KISSFLOW_ERROR_050313","en_message":"You don't have permission to update the following fields: {\"CIQ_Open_Point_A00\": [\"Supplier_Justification\", \"Question_Text\", \"Supplier_Due_Date\"]}.","message":"You don't have permission to update the follow
+  FAIL R1.4 REG: op.edited → the open query shows the edit — {"webhook":200,"last":{"_status":"InProgress","_current_step":"Supplier: respond","assigned":"UsEJUfjYLM8Y"}}
+  FAIL R1.4 REG: Kissflow refuses the respond submit without Response_Kind (Mandatory) — {"status":200}
+  FAIL R1.4 REG: the supplier's answer is accepted at 'Supplier: respond' — {"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050202","en_message":"You don't have permission to submit this item anymore.","message":"You don't have permission to submit this item anymore.","_id":"a4500f59-0d8a-4d3a-a4ef-80bd2896eac4","args":{"item_name":"CIQP Query from Thomas","proc
+  FAIL R1.4 REG: the respond submit completes the query — {"status":400,"statusAfter":"Completed","body":{"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050201","en_message":"This item has moved out of your queue.","message":"This item has moved out of your queue.","_id":"166f47e2-c493-46fc-8608-b1d0b9f55924","args":{"item_name":"CIQP Query fro
+  FAIL R1.4 REG: query.answered (I-4) → the point has the answer — {"webhook":200,"last":{"_status":"InProgress","_current_step":"Open point – Regulatory","assigned":"UsEJUfjYLM8Y"}}
+  FAIL R1.4 REG: the return (round 2) is accepted at the point's step — {"type":"PermissionDeniedToUpdate","error_code":"KISSFLOW_ERROR_050313","en_message":"You don't have permission to update the following fields: {\"CIQ_Open_Point_A00\": [\"OP_Progress\", \"Round_No\", \"Query_Key\", \"Question_Text\", \"Return_Reason\"]}.","message":"You don't have permission to upd
+  ok   R1.4 REG: op.round → the point links its round-2 query
+  FAIL R1.4 REG: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond' — {"Round_No":1,"Query_Key":"ZZT-NT-R1-OP-REG-R1","_status":"InProgress","_current_step":"Supplier: respond","assigned":"UsEJUfjYLM8Y"}
+  FAIL R1.4 REG: the answered round-1 query stays completed with its answer — {"_status":"Completed","assigned":""}
+  ok   R1.4 REG: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   R1.4 REG: op.closed while the point has no outcome is refused (its query stays)
+  FAIL R1.4 REG: closing (outcome + submit) completes the point — {"put":400,"submit":200,"statusAfter":"Completed","body":{"type":"PermissionDeniedToUpdate","error_code":"KISSFLOW_ERROR_050313","en_message":"You don't have permission to update the following fields: {\"CIQ_Open_Point_A00\": [\"Closed_By\", \"Outcome_Reason\", \"OP_Outcome\", \"Closed_At\"]}.","mes
+  FAIL R1.4 REG: op.closed → the open round-2 query is completed — {"webhook":200,"last":{"_status":"InProgress","_current_step":"Supplier: respond","assigned":"UsEJUfjYLM8Y"}}
+  FAIL R1.4 REG: op.edited on the closed point is refused — {"webhook":200,"changed":[{"flow":"CIQP_Query_A00","id":"PkEPBsn08Sx3","keys":["_modified_at","Edited_At"]}]}
+  FAIL R1.4 REG: op.round on the closed point is refused (no new query) — {"webhook":200,"changed":[{"flow":"CIQ_Open_Point_A00","id":"PkEPBl0dm6eS","keys":["_modified_at","Portal_Query_Item_Id"]}]}
+  FAIL R1.4 REG: exactly two queries exist for the point — ["PkEPBzRjSHLF","PkEPBsn08Sx3","PkEPBlFFDgPg"]
+  ok   R1.4 history.updated → the request's Questions_History_JSON
+  ok   R1.4 the history reads back exactly and parses
+  ok   R1.4 history.updated with text that is not JSON is refused
+  ok   R1.4 history.updated with a JSON object (not a list) is refused
+
+== R1.5 ZZT-NT-R1: release.requested (I-5) and the supplier's move to the release step
+  ok   R1.5 seeded an earlier round's Release_At / Release_By_Name on the request (admin) to prove the clear
+  ok   R1.5 release.requested (I-5) → the request asks for the final release
+  ok   R1.5 the request is locked, labelled, has its release contact and no earlier release
+  ok   R1.5 the case has Release_Requested_At (now, no milliseconds)
+  FAIL R1.5 Kissflow refuses the 'keep up to date' submit without Keep_Open_Gate (Mandatory) — {"status":200,"to":"Supplier: give the final release"}
+  FAIL R1.5 the supplier's move (gate + submit, plan option a) takes the request to 'give the final release', assigned to the release contact — {"put":400,"submit":200,"to":"Supplier: view the released CIQ","body":{"type":"PermissionDeniedToUpdate","error_code":"KISSFLOW_ERROR_050313","en_message":"You don't have permission to update the following fields: {\"CIQP_Request_A00\": [\"Keep_Open_Gate\"]}.","message":"You don't have permission to
+
+== R1.7 ZZT-NT-R1: the supplier's final release; I-7 completes the case
+  FAIL R1.7 Kissflow refuses the release submit without Release_By_Name / Release_At (Mandatory) — {"status":200}
+  FAIL R1.7 the supplier's release (fields + submit) takes the request to 'view the released CIQ' — {"put":400,"submit":400,"body":{"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050201","en_message":"This item has moved out of your queue.","message":"This item has moved out of your queue.","_id":"ed626a40-51a7-48bd-9041-217dda760504","args":{"item_name":"CIQP Request from Thomas","pro
+  FAIL R1.7 the request reads back the release — {"Release_By_Name":{"want":"ZZT Supplier Nacht (fictional)"},"Release_At":{"want":"2026-10-20T21:41:43Z"}}
+  FAIL R1.7 release.given (I-7) → the case is completed — {"webhook":200,"last":{"_status":"InProgress","_current_step":"Waiting for supplier: CIQ","assigned":"RoEKl89I5nGx"}}
+  ok   R1.7 a second release.given is refused (the case is completed)
+
+== R1.8 ZZT-NT-R1: a change report after the release; request.changed on the completed case
+  ok   R1.8 at 'Supplier: view the released CIQ' a supplier write cannot change the ReadOnly Answers_JSON, Release_At
+  FAIL R1.8 the supplier's change report is accepted at 'view the released CIQ' — {"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050202","en_message":"You don't have permission to submit this item anymore.","message":"You don't have permission to submit this item anymore.","_id":"f242cca6-5a19-4c83-a0fc-d4a1719c60fb","args":{"item_name":"CIQP Request from Thomas","pr
+  FAIL R1.8 request.changed after the release → the completed case has the change report — {"webhook":200,"last":{"_status":"InProgress","_current_step":"Waiting for supplier: CIQ","assigned":"RoEKl89I5nGx"}}
+
+== R2.1 ZZT-NT-R2: case created, started; I-1 creates the request (+ twins guard)
+  ok   R2.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   R2.1 case draft is at 'Create case'
+  ok   R2.1 Start submit accepted
+  ok   R2.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   R2.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   R2.1 case fields unchanged by the submit
+  ok   R2.1 case.started (I-1) → the case links its new request
+  ok   R2.1 case phase 'Supplier filling in the CIQ'
+  ok   R2.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   R2.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   R2.1 request has no Release_Flag yet
+  ok   R2.1 two more case.started posts create no second request (idempotent)
+  ok   R2.1 the case still links its first request
+
+== R2.2 ZZT-NT-R2: the supplier saves three revisions (Rev 2 ~30 KB), uploads and removes a file; request.changed
+  FAIL R2.2 at 'Supplier: fill in the CIQ' a supplier write cannot change the ReadOnly App_Case_Item_Id, Release_Flag, Request_Locked, Case_Phase_Label — {"status":200,"leaked":{"App_Case_Item_Id":"ZZT-FORGED-CASE","Release_Flag":"Requested","Request_Locked":"Yes","Case_Phase_Label":"Forged"}}
+  ok   R2.2 restored the leaked values (admin)
+  ok   R2.2 Rev 1: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   R2.2 Rev 1: the request reads back every answer field exactly
+  ok   R2.2 Rev 1: every JSON field parses and no time has milliseconds
+  ok   R2.2 Rev 1: request.changed → the case has Rev 1
+  ok   R2.2 Rev 1: the case's 15 synced fields equal the request's
+  ok   R2.2 Rev 2 (~30 KB answers): the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   R2.2 Rev 2: the request reads back every answer field exactly
+  ok   R2.2 Rev 2: every JSON field parses and no time has milliseconds
+  ok   R2.2 Rev 2: request.changed → the case has Rev 2
+  ok   R2.2 Rev 2: the case's 15 synced fields equal the request's
+  ok   R2.2 Rev 3: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   R2.2 Rev 3: the request reads back every answer field exactly
+  ok   R2.2 Rev 3: every JSON field parses and no time has milliseconds
+  ok   R2.2 Rev 3: request.changed → the case has Rev 3 (posted twice back to back)
+  ok   R2.2 Rev 3: the case's 15 synced fields equal the request's
+  ok   R2.2 after Rev 3 the case holds Rev 3, not the ~30 KB Rev 2 (no stale overwrite)
+  ok   R2.2 upload row ZZT-NT-R2-UP1: the write is accepted
+  ok   R2.2 upload row ZZT-NT-R2-UP2: the write is accepted
+  ok   R2.2 both upload rows are stored with every field
+  ok   R2.2 removing a file marks its row (Upload_Removed_At / _By_Email), keeps the row and adds none
+  ok   R2.2 the other upload row is untouched
+  ok   R2.2 the screen's Documents_JSON (Rev 4) is accepted
+  ok   R2.2 request.changed after the upload/removal → the case's Documents_JSON
+  ok   R2.2 the case's Documents_JSON equals the request's
+  ok   R2.2 not covered: the attachment file itself (Upload_File) needs the browser's upload API
+
+== R2.3 ZZT-NT-R2: completeness confirmed and submitted; I-2
+  FAIL R2.3 Kissflow refuses the fill-in submit without the four Mandatory completeness fields — {"status":200,"to":"Supplier: keep the CIQ up to date"}
+  ok   R2.3 the request reads back the confirmation
+  ok   R2.3 completeness.confirmed (I-2) → the case records the confirmation
+  ok   R2.3 the case's Completeness_* fields equal the request's
+  ok   R2.3 the case's 15 synced fields equal the request's
+  ok   R2.3 the case phase is 'Review'
+  FAIL R2.3 I-2's Approve moves the case to 'Beiersdorf review and final release' (needs Thomas in the role Integration service) — {"_status":"InProgress","_current_step":"Waiting for supplier: CIQ","assigned":"RoEKl89I5nGx"}
+  ok   R2.3 a second completeness.confirmed is refused (the case already has it): the case is unchanged
+
+== R2.4 ZZT-NT-R2: open point(s) SAF + QM: two rounds, edit, answer, close; history.updated
+  ok   R2.4 SAF: the open point draft reads back every Start field
+  ok   R2.4 SAF: the raise moves the point to 'Open point – Safety', assigned to the raiser
+  ok   R2.4 SAF: op.round → the point links its round-1 query
+  ok   R2.4 SAF: the query carries every field of the point
+  ok   R2.4 SAF: the query is at 'Supplier: respond', assigned to the portal contact
+  FAIL R2.4 SAF: the raiser's edit is accepted at the point's step — {"type":"PermissionDeniedToUpdate","error_code":"KISSFLOW_ERROR_050313","en_message":"You don't have permission to update the following fields: {\"CIQ_Open_Point_A00\": [\"Supplier_Justification\", \"Supplier_Due_Date\", \"Question_Text\"]}.","message":"You don't have permission to update the follow
+  FAIL R2.4 SAF: op.edited → the open query shows the edit — {"webhook":200,"last":{"_status":"InProgress","_current_step":"Supplier: respond","assigned":"UsEJUfjYLM8Y"}}
+  FAIL R2.4 SAF: Kissflow refuses the respond submit without Response_Kind (Mandatory) — {"status":200}
+  FAIL R2.4 SAF: the supplier's answer is accepted at 'Supplier: respond' — {"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050202","en_message":"You don't have permission to submit this item anymore.","message":"You don't have permission to submit this item anymore.","_id":"220d92f1-fe37-4f53-adf0-3e3af22de14c","args":{"item_name":"CIQP Query from Thomas","proc
+  FAIL R2.4 SAF: the respond submit completes the query — {"status":400,"statusAfter":"Completed","body":{"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050201","en_message":"This item has moved out of your queue.","message":"This item has moved out of your queue.","_id":"56caa270-30d0-4d5b-83ba-b4575cf4d49c","args":{"item_name":"CIQP Query fro
+  FAIL R2.4 SAF: query.answered (I-4) → the point has the answer — {"webhook":200,"last":{"_status":"InProgress","_current_step":"Open point – Safety","assigned":"UsEJUfjYLM8Y"}}
+  FAIL R2.4 SAF: the return (round 2) is accepted at the point's step — {"type":"PermissionDeniedToUpdate","error_code":"KISSFLOW_ERROR_050313","en_message":"You don't have permission to update the following fields: {\"CIQ_Open_Point_A00\": [\"OP_Progress\", \"Query_Key\", \"Return_Reason\", \"Round_No\", \"Question_Text\"]}.","message":"You don't have permission to upd
+  ok   R2.4 SAF: op.round → the point links its round-2 query
+  FAIL R2.4 SAF: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond' — {"Round_No":1,"Query_Key":"ZZT-NT-R2-OP-SAF-R1","_status":"InProgress","_current_step":"Supplier: respond","assigned":"UsEJUfjYLM8Y"}
+  FAIL R2.4 SAF: the answered round-1 query stays completed with its answer — {"_status":"Completed","assigned":""}
+  ok   R2.4 SAF: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   R2.4 SAF: op.closed while the point has no outcome is refused (its query stays)
+  FAIL R2.4 SAF: closing (outcome + submit) completes the point — {"put":400,"submit":200,"statusAfter":"Completed","body":{"type":"PermissionDeniedToUpdate","error_code":"KISSFLOW_ERROR_050313","en_message":"You don't have permission to update the following fields: {\"CIQ_Open_Point_A00\": [\"Closed_By\", \"OP_Outcome\", \"Closed_At\", \"Outcome_Reason\"]}.","mes
+  FAIL R2.4 SAF: op.closed → the open round-2 query is completed — {"webhook":200,"last":{"_status":"InProgress","_current_step":"Supplier: respond","assigned":"UsEJUfjYLM8Y"}}
+  FAIL R2.4 SAF: op.edited on the closed point is refused — {"webhook":200,"changed":[{"flow":"CIQP_Query_A00","id":"PkEPCQHWka8A","keys":["_modified_at","Edited_At"]}]}
+  FAIL R2.4 SAF: op.round on the closed point is refused (no new query) — {"webhook":200,"changed":[{"flow":"CIQ_Open_Point_A00","id":"PkEPCIa1VyyI","keys":["_modified_at","Portal_Query_Item_Id"]}]}
+  FAIL R2.4 SAF: exactly two queries exist for the point — ["PkEPCWqkCloM","PkEPCQHWka8A","PkEPCIoTrM7h"]
+  ok   R2.4 QM: the open point draft reads back every Start field
+  ok   R2.4 QM: the raise moves the point to 'Open point – QM', assigned to the raiser
+  ok   R2.4 QM: op.round → the point links its round-1 query
+  ok   R2.4 QM: the query carries every field of the point
+  ok   R2.4 QM: the query is at 'Supplier: respond', assigned to the portal contact
+  FAIL R2.4 QM: the raiser's edit is accepted at the point's step — {"type":"PermissionDeniedToUpdate","error_code":"KISSFLOW_ERROR_050313","en_message":"You don't have permission to update the following fields: {\"CIQ_Open_Point_A00\": [\"Supplier_Justification\", \"Supplier_Due_Date\", \"Question_Text\"]}.","message":"You don't have permission to update the follow
+  FAIL R2.4 QM: op.edited → the open query shows the edit — {"webhook":200,"last":{"_status":"InProgress","_current_step":"Supplier: respond","assigned":"UsEJUfjYLM8Y"}}
+  FAIL R2.4 QM: Kissflow refuses the respond submit without Response_Kind (Mandatory) — {"status":200}
+  FAIL R2.4 QM: the supplier's answer is accepted at 'Supplier: respond' — {"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050202","en_message":"You don't have permission to submit this item anymore.","message":"You don't have permission to submit this item anymore.","_id":"41901b03-0e39-4dfa-98d5-3008bb9b66d3","args":{"item_name":"CIQP Query from Thomas","proc
+  FAIL R2.4 QM: the respond submit completes the query — {"status":400,"statusAfter":"Completed","body":{"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050201","en_message":"This item has moved out of your queue.","message":"This item has moved out of your queue.","_id":"e2e01f94-c1be-4316-a42f-3afddf9ac529","args":{"item_name":"CIQP Query fro
+  FAIL R2.4 QM: query.answered (I-4) → the point has the answer — {"webhook":200,"last":{"_status":"InProgress","_current_step":"Open point – QM","assigned":"UsEJUfjYLM8Y"}}
+  FAIL R2.4 QM: the return (round 2) is accepted at the point's step — {"type":"PermissionDeniedToUpdate","error_code":"KISSFLOW_ERROR_050313","en_message":"You don't have permission to update the following fields: {\"CIQ_Open_Point_A00\": [\"Query_Key\", \"Round_No\", \"Return_Reason\", \"OP_Progress\", \"Question_Text\"]}.","message":"You don't have permission to upd
+  ok   R2.4 QM: op.round → the point links its round-2 query
+  FAIL R2.4 QM: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond' — {"Round_No":1,"Query_Key":"ZZT-NT-R2-OP-QM-R1","_status":"InProgress","_current_step":"Supplier: respond","assigned":"UsEJUfjYLM8Y"}
+  FAIL R2.4 QM: the answered round-1 query stays completed with its answer — {"_status":"Completed","assigned":""}
+  ok   R2.4 QM: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   R2.4 QM: op.closed while the point has no outcome is refused (its query stays)
+  FAIL R2.4 QM: closing (outcome + submit) completes the point — {"put":400,"submit":200,"statusAfter":"Completed","body":{"type":"PermissionDeniedToUpdate","error_code":"KISSFLOW_ERROR_050313","en_message":"You don't have permission to update the following fields: {\"CIQ_Open_Point_A00\": [\"Outcome_Reason\", \"Closed_By\", \"Closed_At\", \"OP_Outcome\"]}.","mes
+  FAIL R2.4 QM: op.closed → the open round-2 query is completed — {"webhook":200,"last":{"_status":"InProgress","_current_step":"Supplier: respond","assigned":"UsEJUfjYLM8Y"}}
+  FAIL R2.4 QM: op.edited on the closed point is refused — {"webhook":200,"changed":[{"flow":"CIQP_Query_A00","id":"PkEPCeUgHhdt","keys":["_modified_at","Edited_At"]}]}
+  FAIL R2.4 QM: op.round on the closed point is refused (no new query) — {"webhook":200,"changed":[{"flow":"CIQ_Open_Point_A00","id":"PkEPCXm5T1qy","keys":["_modified_at","Portal_Query_Item_Id"]}]}
+  FAIL R2.4 QM: exactly two queries exist for the point — ["PkEPCl46luz_","PkEPCeUgHhdt","PkEPCY0jyXAs"]
+  ok   R2.4 history.updated → the request's Questions_History_JSON
+  ok   R2.4 the history reads back exactly and parses
+  ok   R2.4 history.updated with text that is not JSON is refused
+  ok   R2.4 history.updated with a JSON object (not a list) is refused
+
+== R2.5 ZZT-NT-R2: release.requested (I-5) and the supplier's move to the release step
+  ok   R2.5 seeded an earlier round's Release_At / Release_By_Name on the request (admin) to prove the clear
+  ok   R2.5 release.requested (I-5) → the request asks for the final release
+  ok   R2.5 the request is locked, labelled, has its release contact and no earlier release
+  ok   R2.5 the case has Release_Requested_At (now, no milliseconds)
+  FAIL R2.5 Kissflow refuses the 'keep up to date' submit without Keep_Open_Gate (Mandatory) — {"status":200,"to":"Supplier: give the final release"}
+  FAIL R2.5 the supplier's move (gate + submit, plan option a) takes the request to 'give the final release', assigned to the release contact — {"put":400,"submit":200,"to":"Supplier: view the released CIQ","body":{"type":"PermissionDeniedToUpdate","error_code":"KISSFLOW_ERROR_050313","en_message":"You don't have permission to update the following fields: {\"CIQP_Request_A00\": [\"Keep_Open_Gate\"]}.","message":"You don't have permission to
+
+== R2.6 ZZT-NT-R2: review.reopened (I-6), the go-to back, and a second release.requested
+  ok   R2.6 review.reopened (I-6) → the request is flagged Reopened, unlocked, 'With Beiersdorf'
+  ok   R2.6 the request is unlocked and labelled 'With Beiersdorf'
+  ok   R2.6 a second review.reopened is refused (the release is no longer requested)
+  FAIL R2.6 submitting 'give the final release' while Reopened takes the go-to back to 'keep the CIQ up to date' — {"put":400,"submit":200,"body":{"type":"PermissionDeniedToUpdate","error_code":"KISSFLOW_ERROR_050313","en_message":"You don't have permission to update the following fields: {\"CIQP_Request_A00\": [\"Release_By_Name\", \"Release_At\"]}.","message":"You don't have permission to update the following 
+  ok   R2.6 release.given while Reopened is refused: the case stays open
+  ok   R2.6 round 2: seeded an earlier round's Release_At / Release_By_Name on the request (admin) to prove the clear
+  ok   R2.6 round 2: release.requested (I-5) → the request asks for the final release
+  ok   R2.6 round 2: the request is locked, labelled, has its release contact and no earlier release
+  ok   R2.6 round 2: the case has Release_Requested_At (now, no milliseconds)
+  ok   R2.6 round 2: info: Keep_Open_Gate before the screen writes it again
+  FAIL R2.6 round 2: the supplier's move (gate + submit, plan option a) takes the request to 'give the final release', assigned to the release contact — {"put":400,"submit":400,"body":{"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050201","en_message":"This item has moved out of your queue.","message":"This item has moved out of your queue.","_id":"1f1a8e68-6447-4fb9-9ef1-9610665d9b53","args":{"item_name":"CIQP Request from Thomas","pro
+
+== R2.7 ZZT-NT-R2: the supplier's final release; I-7 completes the case
+  FAIL R2.7 Kissflow refuses the release submit without Release_By_Name / Release_At (Mandatory) — {"status":400}
+  FAIL R2.7 the supplier's release (fields + submit) takes the request to 'view the released CIQ' — {"put":400,"submit":400,"body":{"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050201","en_message":"This item has moved out of your queue.","message":"This item has moved out of your queue.","_id":"8c4c0496-12de-40d0-8468-92f1afc4c523","args":{"item_name":"CIQP Request from Thomas","pro
+  FAIL R2.7 the request reads back the release — {"Release_By_Name":{"want":"ZZT Supplier Nacht (fictional)"},"Release_At":{"want":"2026-10-20T22:33:13Z"}}
+  FAIL R2.7 release.given (I-7) → the case is completed — {"webhook":200,"last":{"_status":"InProgress","_current_step":"Waiting for supplier: CIQ","assigned":"RoEKl89I5nGx"}}
+  ok   R2.7 a second release.given is refused (the case is completed)
+
+== R2.8 ZZT-NT-R2: a change report after the release; request.changed on the completed case
+  ok   R2.8 at 'Supplier: view the released CIQ' a supplier write cannot change the ReadOnly Answers_JSON, Release_At
+  FAIL R2.8 the supplier's change report is accepted at 'view the released CIQ' — {"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050202","en_message":"You don't have permission to submit this item anymore.","message":"You don't have permission to submit this item anymore.","_id":"73873d14-fd36-451d-afab-e73a78bed035","args":{"item_name":"CIQP Request from Thomas","pr
+  FAIL R2.8 request.changed after the release → the completed case has the change report — {"webhook":200,"last":{"_status":"InProgress","_current_step":"Waiting for supplier: CIQ","assigned":"RoEKl89I5nGx"}}
+
+== R3.1 ZZT-NT-R3: case created, started; I-1 creates the request (+ twins guard)
+  ok   R3.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   R3.1 case draft is at 'Create case'
+  ok   R3.1 Start submit accepted
+  ok   R3.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   R3.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   R3.1 case fields unchanged by the submit
+  ok   R3.1 case.started (I-1) → the case links its new request
+  ok   R3.1 case phase 'Supplier filling in the CIQ'
+  ok   R3.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   R3.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   R3.1 request has no Release_Flag yet
+  ok   R3.1 two more case.started posts create no second request (idempotent)
+  ok   R3.1 the case still links its first request
+
+== R3.2 ZZT-NT-R3: the supplier saves three revisions, uploads and removes a file; request.changed
+  FAIL R3.2 at 'Supplier: fill in the CIQ' a supplier write cannot change the ReadOnly App_Case_Item_Id, Release_Flag, Request_Locked, Case_Phase_Label — {"status":200,"leaked":{"App_Case_Item_Id":"ZZT-FORGED-CASE","Release_Flag":"Requested","Request_Locked":"Yes","Case_Phase_Label":"Forged"}}
+  ok   R3.2 restored the leaked values (admin)
+  ok   R3.2 Rev 1: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   R3.2 Rev 1: the request reads back every answer field exactly
+  ok   R3.2 Rev 1: every JSON field parses and no time has milliseconds
+  ok   R3.2 Rev 1: request.changed → the case has Rev 1
+  ok   R3.2 Rev 1: the case's 15 synced fields equal the request's
+  ok   R3.2 Rev 2: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   R3.2 Rev 2: the request reads back every answer field exactly
+  ok   R3.2 Rev 2: every JSON field parses and no time has milliseconds
+  ok   R3.2 Rev 2: request.changed → the case has Rev 2
+  ok   R3.2 Rev 2: the case's 15 synced fields equal the request's
+  ok   R3.2 Rev 3: the supplier's write at 'Supplier: fill in the CIQ' is accepted
+  ok   R3.2 Rev 3: the request reads back every answer field exactly
+  ok   R3.2 Rev 3: every JSON field parses and no time has milliseconds
+  ok   R3.2 Rev 3: request.changed → the case has Rev 3 (posted twice back to back)
+  ok   R3.2 Rev 3: the case's 15 synced fields equal the request's
+  ok   R3.2 upload row ZZT-NT-R3-UP1: the write is accepted
+  ok   R3.2 upload row ZZT-NT-R3-UP2: the write is accepted
+  ok   R3.2 both upload rows are stored with every field
+  ok   R3.2 removing a file marks its row (Upload_Removed_At / _By_Email), keeps the row and adds none
+  ok   R3.2 the other upload row is untouched
+  ok   R3.2 the screen's Documents_JSON (Rev 4) is accepted
+  ok   R3.2 request.changed after the upload/removal → the case's Documents_JSON
+  ok   R3.2 the case's Documents_JSON equals the request's
+  ok   R3.2 not covered: the attachment file itself (Upload_File) needs the browser's upload API
+
+== R3.3 ZZT-NT-R3: completeness confirmed and submitted; I-2
+  FAIL R3.3 Kissflow refuses the fill-in submit without the four Mandatory completeness fields — {"status":200,"to":"Supplier: keep the CIQ up to date"}
+  ok   R3.3 the request reads back the confirmation
+  ok   R3.3 completeness.confirmed (I-2) → the case records the confirmation
+  ok   R3.3 the case's Completeness_* fields equal the request's
+  ok   R3.3 the case's 15 synced fields equal the request's
+  ok   R3.3 the case phase is 'Review'
+  FAIL R3.3 I-2's Approve moves the case to 'Beiersdorf review and final release' (needs Thomas in the role Integration service) — {"_status":"InProgress","_current_step":"Waiting for supplier: CIQ","assigned":"RoEKl89I5nGx"}
+  ok   R3.3 a second completeness.confirmed is refused (the case already has it): the case is unchanged
+
+== R3.4 ZZT-NT-R3: open point(s) MIC + SUS: two rounds, edit, answer, close; history.updated
+  ok   R3.4 MIC: the open point draft reads back every Start field
+  ok   R3.4 MIC: the raise moves the point to 'Open point – Microbiology', assigned to the raiser
+  ok   R3.4 MIC: op.round → the point links its round-1 query
+  ok   R3.4 MIC: the query carries every field of the point
+  ok   R3.4 MIC: the query is at 'Supplier: respond', assigned to the portal contact
+  FAIL R3.4 MIC: the raiser's edit is accepted at the point's step — {"type":"PermissionDeniedToUpdate","error_code":"KISSFLOW_ERROR_050313","en_message":"You don't have permission to update the following fields: {\"CIQ_Open_Point_A00\": [\"Question_Text\", \"Supplier_Due_Date\", \"Supplier_Justification\"]}.","message":"You don't have permission to update the follow
+  FAIL R3.4 MIC: op.edited → the open query shows the edit — {"webhook":200,"last":{"_status":"InProgress","_current_step":"Supplier: respond","assigned":"UsEJUfjYLM8Y"}}
+  FAIL R3.4 MIC: Kissflow refuses the respond submit without Response_Kind (Mandatory) — {"status":200}
+  FAIL R3.4 MIC: the supplier's answer is accepted at 'Supplier: respond' — {"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050202","en_message":"You don't have permission to submit this item anymore.","message":"You don't have permission to submit this item anymore.","_id":"ef0da7ea-5f97-4acb-a2e9-4aeb7cdec84d","args":{"item_name":"CIQP Query from Thomas","proc
+  FAIL R3.4 MIC: the respond submit completes the query — {"status":400,"statusAfter":"Completed","body":{"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050201","en_message":"This item has moved out of your queue.","message":"This item has moved out of your queue.","_id":"34585abc-2120-4032-9d65-d6e1905622d6","args":{"item_name":"CIQP Query fro
+  FAIL R3.4 MIC: query.answered (I-4) → the point has the answer — {"webhook":200,"last":{"_status":"InProgress","_current_step":"Open point – Microbiology","assigned":"UsEJUfjYLM8Y"}}
+  FAIL R3.4 MIC: the return (round 2) is accepted at the point's step — {"type":"PermissionDeniedToUpdate","error_code":"KISSFLOW_ERROR_050313","en_message":"You don't have permission to update the following fields: {\"CIQ_Open_Point_A00\": [\"Query_Key\", \"Round_No\", \"Return_Reason\", \"OP_Progress\", \"Question_Text\"]}.","message":"You don't have permission to upd
+  ok   R3.4 MIC: op.round → the point links its round-2 query
+  FAIL R3.4 MIC: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond' — {"Round_No":1,"Query_Key":"ZZT-NT-R3-OP-MIC-R1","_status":"InProgress","_current_step":"Supplier: respond","assigned":"UsEJUfjYLM8Y"}
+  FAIL R3.4 MIC: the answered round-1 query stays completed with its answer — {"_status":"Completed","assigned":""}
+  ok   R3.4 MIC: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   R3.4 MIC: op.closed while the point has no outcome is refused (its query stays)
+  FAIL R3.4 MIC: closing (outcome + submit) completes the point — {"put":400,"submit":200,"statusAfter":"Completed","body":{"type":"PermissionDeniedToUpdate","error_code":"KISSFLOW_ERROR_050313","en_message":"You don't have permission to update the following fields: {\"CIQ_Open_Point_A00\": [\"Closed_By\", \"OP_Outcome\", \"Closed_At\", \"Outcome_Reason\"]}.","mes
+  FAIL R3.4 MIC: op.closed → the open round-2 query is completed — {"webhook":200,"last":{"_status":"InProgress","_current_step":"Supplier: respond","assigned":"UsEJUfjYLM8Y"}}
+  FAIL R3.4 MIC: op.edited on the closed point is refused — {"webhook":200,"changed":[{"flow":"CIQP_Query_A00","id":"PkEPDF4tcv2E","keys":["_modified_at","Edited_At"]}]}
+  FAIL R3.4 MIC: op.round on the closed point is refused (no new query) — {"webhook":200,"changed":[{"flow":"CIQ_Open_Point_A00","id":"PkEPD7Mzfw68","keys":["_modified_at","Portal_Query_Item_Id"]}]}
+  FAIL R3.4 MIC: exactly two queries exist for the point — ["PkEPDLfVVIiI","PkEPDF4tcv2E","PkEPD7aNW_cC"]
+  ok   R3.4 SUS: the open point draft reads back every Start field
+  ok   R3.4 SUS: the raise moves the point to 'Open point – Sustainability', assigned to the raiser
+  ok   R3.4 SUS: op.round → the point links its round-1 query
+  ok   R3.4 SUS: the query carries every field of the point
+  ok   R3.4 SUS: the query is at 'Supplier: respond', assigned to the portal contact
+  FAIL R3.4 SUS: the raiser's edit is accepted at the point's step — {"type":"PermissionDeniedToUpdate","error_code":"KISSFLOW_ERROR_050313","en_message":"You don't have permission to update the following fields: {\"CIQ_Open_Point_A00\": [\"Question_Text\", \"Supplier_Due_Date\", \"Supplier_Justification\"]}.","message":"You don't have permission to update the follow
+  FAIL R3.4 SUS: op.edited → the open query shows the edit — {"webhook":200,"last":{"_status":"InProgress","_current_step":"Supplier: respond","assigned":"UsEJUfjYLM8Y"}}
+  FAIL R3.4 SUS: Kissflow refuses the respond submit without Response_Kind (Mandatory) — {"status":200}
+  FAIL R3.4 SUS: the supplier's answer is accepted at 'Supplier: respond' — {"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050202","en_message":"You don't have permission to submit this item anymore.","message":"You don't have permission to submit this item anymore.","_id":"ebe0a51a-aeb3-4d1e-b8c6-4f190ebdb5b4","args":{"item_name":"CIQP Query from Thomas","proc
+  FAIL R3.4 SUS: the respond submit completes the query — {"status":400,"statusAfter":"Completed","body":{"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050201","en_message":"This item has moved out of your queue.","message":"This item has moved out of your queue.","_id":"71509084-154a-4d17-a098-c9978f3489ff","args":{"item_name":"CIQP Query fro
+  FAIL R3.4 SUS: query.answered (I-4) → the point has the answer — {"webhook":200,"last":{"_status":"InProgress","_current_step":"Open point – Sustainability","assigned":"UsEJUfjYLM8Y"}}
+  FAIL R3.4 SUS: the return (round 2) is accepted at the point's step — {"type":"PermissionDeniedToUpdate","error_code":"KISSFLOW_ERROR_050313","en_message":"You don't have permission to update the following fields: {\"CIQ_Open_Point_A00\": [\"Round_No\", \"Return_Reason\", \"Question_Text\", \"Query_Key\", \"OP_Progress\"]}.","message":"You don't have permission to upd
+  ok   R3.4 SUS: op.round → the point links its round-2 query
+  FAIL R3.4 SUS: the round-2 query has Round_No 2, its key and question, at 'Supplier: respond' — {"Round_No":1,"Query_Key":"ZZT-NT-R3-OP-SUS-R1","_status":"InProgress","_current_step":"Supplier: respond","assigned":"UsEJUfjYLM8Y"}
+  FAIL R3.4 SUS: the answered round-1 query stays completed with its answer — {"_status":"Completed","assigned":""}
+  ok   R3.4 SUS: a replay of the round-1 query.answered is refused (the point waits on round 2)
+  ok   R3.4 SUS: op.closed while the point has no outcome is refused (its query stays)
+  FAIL R3.4 SUS: closing (outcome + submit) completes the point — {"put":400,"submit":200,"statusAfter":"Completed","body":{"type":"PermissionDeniedToUpdate","error_code":"KISSFLOW_ERROR_050313","en_message":"You don't have permission to update the following fields: {\"CIQ_Open_Point_A00\": [\"OP_Outcome\", \"Outcome_Reason\", \"Closed_By\", \"Closed_At\"]}.","mes
+  FAIL R3.4 SUS: op.closed → the open round-2 query is completed — {"webhook":200,"last":{"_status":"InProgress","_current_step":"Supplier: respond","assigned":"UsEJUfjYLM8Y"}}
+  FAIL R3.4 SUS: op.edited on the closed point is refused — {"webhook":200,"changed":[{"flow":"CIQP_Query_A00","id":"PkEPDUJU_pBK","keys":["_modified_at","Edited_At"]}]}
+  FAIL R3.4 SUS: op.round on the closed point is refused (no new query) — {"webhook":200,"changed":[{"flow":"CIQ_Open_Point_A00","id":"PkEPDMbEGc8L","keys":["_modified_at","Portal_Query_Item_Id"]}]}
+  FAIL R3.4 SUS: exactly two queries exist for the point — ["PkEPD_ueMnzl","PkEPDUJU_pBK","PkEPDMq9gjsC"]
+  ok   R3.4 history.updated → the request's Questions_History_JSON
+  ok   R3.4 the history reads back exactly and parses
+  ok   R3.4 history.updated with text that is not JSON is refused
+  ok   R3.4 history.updated with a JSON object (not a list) is refused
+
+== R3.5 ZZT-NT-R3: release.requested (I-5) and the supplier's move to the release step
+  ok   R3.5 seeded an earlier round's Release_At / Release_By_Name on the request (admin) to prove the clear
+  ok   R3.5 release.requested (I-5) → the request asks for the final release
+  ok   R3.5 the request is locked, labelled, has its release contact and no earlier release
+  ok   R3.5 the case has Release_Requested_At (now, no milliseconds)
+  FAIL R3.5 Kissflow refuses the 'keep up to date' submit without Keep_Open_Gate (Mandatory) — {"status":200,"to":"Supplier: give the final release"}
+  FAIL R3.5 the supplier's move (gate + submit, plan option a) takes the request to 'give the final release', assigned to the release contact — {"put":400,"submit":200,"to":"Supplier: view the released CIQ","body":{"type":"PermissionDeniedToUpdate","error_code":"KISSFLOW_ERROR_050313","en_message":"You don't have permission to update the following fields: {\"CIQP_Request_A00\": [\"Keep_Open_Gate\"]}.","message":"You don't have permission to
+
+== R3.6 ZZT-NT-R3: review.reopened (I-6), the go-to back, and a second release.requested
+  ok   R3.6 review.reopened (I-6) → the request is flagged Reopened, unlocked, 'With Beiersdorf'
+  ok   R3.6 the request is unlocked and labelled 'With Beiersdorf'
+  ok   R3.6 a second review.reopened is refused (the release is no longer requested)
+  FAIL R3.6 submitting 'give the final release' while Reopened takes the go-to back to 'keep the CIQ up to date' — {"put":400,"submit":200,"body":{"type":"PermissionDeniedToUpdate","error_code":"KISSFLOW_ERROR_050313","en_message":"You don't have permission to update the following fields: {\"CIQP_Request_A00\": [\"Release_By_Name\", \"Release_At\"]}.","message":"You don't have permission to update the following 
+  ok   R3.6 release.given while Reopened is refused: the case stays open
+  ok   R3.6 round 2: seeded an earlier round's Release_At / Release_By_Name on the request (admin) to prove the clear
+  ok   R3.6 round 2: release.requested (I-5) → the request asks for the final release
+  ok   R3.6 round 2: the request is locked, labelled, has its release contact and no earlier release
+  ok   R3.6 round 2: the case has Release_Requested_At (now, no milliseconds)
+  ok   R3.6 round 2: info: Keep_Open_Gate before the screen writes it again
+  FAIL R3.6 round 2: the supplier's move (gate + submit, plan option a) takes the request to 'give the final release', assigned to the release contact — {"put":400,"submit":400,"body":{"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050201","en_message":"This item has moved out of your queue.","message":"This item has moved out of your queue.","_id":"a456d667-0b20-4af4-a8c1-c73a4c282831","args":{"item_name":"CIQP Request from Thomas","pro
+
+== R3.7 ZZT-NT-R3: the supplier's final release; I-7 completes the case
+  FAIL R3.7 Kissflow refuses the release submit without Release_By_Name / Release_At (Mandatory) — {"status":400}
+  FAIL R3.7 the supplier's release (fields + submit) takes the request to 'view the released CIQ' — {"put":400,"submit":400,"body":{"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050201","en_message":"This item has moved out of your queue.","message":"This item has moved out of your queue.","_id":"59e76c21-376a-491a-895c-c0ff027d65aa","args":{"item_name":"CIQP Request from Thomas","pro
+  FAIL R3.7 the request reads back the release — {"Release_By_Name":{"want":"ZZT Supplier Nacht (fictional)"},"Release_At":{"want":"2026-10-20T23:24:44Z"}}
+  FAIL R3.7 release.given (I-7) → the case is completed — {"webhook":200,"last":{"_status":"InProgress","_current_step":"Waiting for supplier: CIQ","assigned":"RoEKl89I5nGx"}}
+  ok   R3.7 a second release.given is refused (the case is completed)
+
+== R3.8 ZZT-NT-R3: a change report after the release; request.changed on the completed case
+  ok   R3.8 at 'Supplier: view the released CIQ' a supplier write cannot change the ReadOnly Answers_JSON, Release_At
+  FAIL R3.8 the supplier's change report is accepted at 'view the released CIQ' — {"type":"ValidationExceptions","error_code":"KISSFLOW_ERROR_050202","en_message":"You don't have permission to submit this item anymore.","message":"You don't have permission to submit this item anymore.","_id":"b49a56da-6ed4-4fb1-899f-01852d6a8d2c","args":{"item_name":"CIQP Request from Thomas","pr
+  FAIL R3.8 request.changed after the release → the completed case has the change report — {"webhook":200,"last":{"_status":"InProgress","_current_step":"Waiting for supplier: CIQ","assigned":"RoEKl89I5nGx"}}
+
+== X1.1 ZZT-NT-X1: case started + I-1 (to be cancelled while filling in)
+  ok   X1.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   X1.1 case draft is at 'Create case'
+  ok   X1.1 Start submit accepted
+  ok   X1.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   X1.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   X1.1 case fields unchanged by the submit
+  ok   X1.1 case.started (I-1) → the case links its new request
+  ok   X1.1 case phase 'Supplier filling in the CIQ'
+  ok   X1.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   X1.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   X1.1 request has no Release_Flag yet
+
+== X1.2 ZZT-NT-X1: case.cancelled guards, the cancel, and every supplier hand-off refused afterwards
+  ok   X1.2 case.cancelled with phaseLabel 'Completed' is refused
+  ok   X1.2 case.cancelled with locked 'No' is refused
+  ok   X1.2 case.cancelled → the request is labelled Cancelled and locked
+  ok   X1.2 seeded the cancelled request with answers, a confirmation and a release (admin) so each guard is really exercised
+  ok   X1.2 request.changed on a cancelled request is refused: the case is unchanged
+  ok   X1.2 completeness.confirmed on a cancelled request is refused
+  ok   X1.2 release.given on a cancelled request is refused: the case stays open
+  ok   X1.2 review.reopened on a cancelled request is refused
+
+== X2.1 ZZT-NT-X2: case started + I-1 (to be cancelled in review)
+  ok   X2.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   X2.1 case draft is at 'Create case'
+  ok   X2.1 Start submit accepted
+  ok   X2.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   X2.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   X2.1 case fields unchanged by the submit
+  ok   X2.1 case.started (I-1) → the case links its new request
+  ok   X2.1 case phase 'Supplier filling in the CIQ'
+  ok   X2.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   X2.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   X2.1 request has no Release_Flag yet
+  FAIL X2.1 Kissflow refuses the fill-in submit without the four Mandatory completeness fields — {"status":200,"to":"Supplier: keep the CIQ up to date"}
+  ok   X2.1 the request reads back the confirmation
+  ok   X2.1 completeness.confirmed (I-2) → the case records the confirmation
+  ok   X2.1 the case's Completeness_* fields equal the request's
+  ok   X2.1 the case's 15 synced fields equal the request's
+  ok   X2.1 the case phase is 'Review'
+  FAIL X2.1 I-2's Approve moves the case to 'Beiersdorf review and final release' (needs Thomas in the role Integration service) — {"_status":"InProgress","_current_step":"Waiting for supplier: CIQ","assigned":"RoEKl89I5nGx"}
+  ok   X2.1 a second completeness.confirmed is refused (the case already has it): the case is unchanged
+
+== X2.2 ZZT-NT-X2: case.cancelled guards, the cancel, and every supplier hand-off refused afterwards
+  ok   X2.2 case.cancelled with phaseLabel 'Completed' is refused
+  ok   X2.2 case.cancelled with locked 'No' is refused
+  ok   X2.2 case.cancelled → the request is labelled Cancelled and locked
+  ok   X2.2 seeded the cancelled request with answers, a confirmation and a release (admin) so each guard is really exercised
+  ok   X2.2 request.changed on a cancelled request is refused: the case is unchanged
+  ok   X2.2 release.given on a cancelled request is refused: the case stays open
+  ok   X2.2 review.reopened on a cancelled request is refused
+
+== F1.1 ZZT-NT-F1: a case in review whose release Beiersdorf never asked for
+  ok   F1.1 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   F1.1 case draft is at 'Create case'
+  ok   F1.1 Start submit accepted
+  ok   F1.1 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   F1.1 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   F1.1 case fields unchanged by the submit
+  ok   F1.1 case.started (I-1) → the case links its new request
+  ok   F1.1 case phase 'Supplier filling in the CIQ'
+  ok   F1.1 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   F1.1 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   F1.1 request has no Release_Flag yet
+  FAIL F1.1 Kissflow refuses the fill-in submit without the four Mandatory completeness fields — {"status":200,"to":"Supplier: keep the CIQ up to date"}
+  ok   F1.1 the request reads back the confirmation
+  ok   F1.1 completeness.confirmed (I-2) → the case records the confirmation
+  ok   F1.1 the case's Completeness_* fields equal the request's
+  ok   F1.1 the case's 15 synced fields equal the request's
+  ok   F1.1 the case phase is 'Review'
+  FAIL F1.1 I-2's Approve moves the case to 'Beiersdorf review and final release' (needs Thomas in the role Integration service) — {"_status":"InProgress","_current_step":"Waiting for supplier: CIQ","assigned":"RoEKl89I5nGx"}
+  ok   F1.1 a second completeness.confirmed is refused (the case already has it): the case is unchanged
+
+== F1.2 ZZT-NT-F1: forged release, forged case link, unknown ids, I-1 on a draft and without contacts
+  ok   F1.2 seeded a forged release on the request (admin): flag, name and time, but no Release_Requested_At on the case
+  ok   F1.2 release.given without Beiersdorf's request is refused: the case stays open and unchanged
+  ok   F1.2 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   F1.2 case draft is at 'Create case'
+  ok   F1.2 Start submit accepted
+  ok   F1.2 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   F1.2 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   F1.2 case fields unchanged by the submit
+  ok   F1.2 case.started (I-1) → the case links its new request
+  ok   F1.2 case phase 'Supplier filling in the CIQ'
+  ok   F1.2 request carries the case's 16 header fields, its link, key, label, lock and both contact lists
+  ok   F1.2 request at 'Supplier: fill in the CIQ', in progress, assigned to the portal contact
+  ok   F1.2 request has no Release_Flag yet
+  ok   F1.2 re-pointed the forged request at another case (admin)
+  ok   F1.2 request.changed from a request the other case does not link is refused: that case is unchanged
+  ok   F1.2 restored the request's own case link and cleared the forged release (admin)
+  ok   F1.2 request.changed with an unknown id changes nothing
+  ok   F1.2 release.given with an unknown id changes nothing
+  ok   F1.2 case.started with an unknown id changes nothing
+  ok   F1.2 release.requested with an unknown id changes nothing
+  ok   F1.2 history.updated with an unknown id changes nothing
+  ok   F1.2 op.round with an unknown id changes nothing
+  ok   F1.2 query.answered with an unknown id changes nothing
+  ok   F1.2 case.cancelled with an unknown id changes nothing
+  ok   F1.2 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   F1.2 case draft is at 'Create case'
+  ok   F1.2 case.started for a draft case (never submitted) creates no request
+  ok   F1.2 case draft reads back every Start field (21 Mandatory + 16 Editable)
+  ok   F1.2 case draft is at 'Create case'
+  ok   F1.2 Start submit accepted
+  ok   F1.2 case moved to 'Waiting for supplier: CIQ', in progress
+  ok   F1.2 info: who holds 'Waiting for supplier: CIQ' (role Integration service)
+  ok   F1.2 case fields unchanged by the submit
+  ok   F1.2 case.started for a case with no portal contact creates no request
+
+== G1.1 ZZT-NT-G1-STARTED: case created, started; I-1 creates the request (+ twins guard)
+pass 1 stopped at G1.1 Wed Oct 21 05:33:43 IST 2026

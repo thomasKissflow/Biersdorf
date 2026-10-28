@@ -1,0 +1,57 @@
+{
+ "at": "2026-10-19T20:49:54.757Z",
+ "mode": "apply",
+ "editWithDelete": false,
+ "flows": [
+  {
+   "flow": "Review",
+   "id": "CIQ_Review_A00",
+   "type": "process",
+   "liveMembers": [
+    "CIQ RMM:AppRole:Member[View]",
+    "CIQ Regulatory Reviewer:AppRole:Member[View]",
+    "CIQ Safety Reviewer:AppRole:Member[View]",
+    "CIQ QM Reviewer:AppRole:Member[View]",
+    "CIQ Microbiology Reviewer:AppRole:Member[View]",
+    "CIQ Sustainability Reviewer:AppRole:Member[View]",
+    "Customs & Trade Compliance:AppRole:Member[View]",
+    "Legal / IP:AppRole:Member[View]",
+    "CIQ Business Admin:AppRole:Member[View]",
+    "CIQ Reader:AppRole:Member[View]",
+    "Business owner (reports):AppRole:Member[View]",
+    "CIQ Case Admin:AppRole:Admin",
+    "CIQ Integration Service:AppRole:Member[InitiateItems]"
+   ],
+   "batch": [
+    "CIQ RMM → Member[InitiateItems,View]",
+    "CIQ Regulatory Reviewer → Member[View]",
+    "CIQ Safety Reviewer → Member[View]",
+    "CIQ QM Reviewer → Member[View]",
+    "CIQ Microbiology Reviewer → Member[View]",
+    "CIQ Sustainability Reviewer → Member[View]",
+    "Customs & Trade Compliance → Member[View]",
+    "Legal / IP → Member[View]",
+    "CIQ Business Admin → Member[View]",
+    "CIQ Reader → Member[View]",
+    "Business owner (reports) → Member[View]",
+    "CIQ Case Admin → Admin",
+    "CIQ Integration Service → Member[InitiateItems]"
+   ],
+   "changes": [
+    "CIQ RMM: Member[\"View\"] → Member[\"InitiateItems\",\"View\"]"
+   ],
+   "removals": [],
+   "untouched": [],
+   "batchStatus": 200,
+   "readBackDiffs": []
+  }
+ ],
+ "calls": 3,
+ "summary": {
+  "flows": 1,
+  "skipped": [],
+  "changes": 1,
+  "removals": 0,
+  "readBackDiffs": 0
+ }
+}

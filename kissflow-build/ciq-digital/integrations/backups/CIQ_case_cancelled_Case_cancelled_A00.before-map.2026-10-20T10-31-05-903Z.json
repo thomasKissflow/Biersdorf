@@ -1,0 +1,368 @@
+{
+ "Root": "CIQ_case_cancelled_Case_cancelled_A00",
+ "CIQ_case_cancelled_Case_cancelled_A00": {
+  "Id": "CIQ_case_cancelled_Case_cancelled_A00",
+  "Description": "Plan v6 §4.1 case.cancelled: the app posts {caseItemId, phaseLabel, locked}; the case's request gets the label and lock (known values only).",
+  "Name": "CIQ case.cancelled Case cancelled",
+  "Kind": "Integration",
+  "FlowType": "Integration",
+  "Integration::Trigger": [
+   "Trigger_cancelled_webhook"
+  ],
+  "Integration::Action": [
+   "Action_cancelled_read_app_item",
+   "Action_cancelled_pick",
+   "Action_CC_update_request"
+  ],
+  "_application_id": "CIQ_Digital_A00"
+ },
+ "PublishedAt": "2026-10-20T10:30:12Z",
+ "PublishedBy": {
+  "_id": "UsEJUfjYLM8Y",
+  "Name": "Thomas",
+  "Kind": "User"
+ },
+ "_meta_version": "1792492213009893",
+ "Trigger_cancelled_webhook": {
+  "Id": "Trigger_cancelled_webhook",
+  "Kind": "Trigger",
+  "Type": "Create",
+  "Name": "Catch a webhook (POST)",
+  "IsInternalAuth": true,
+  "Connection": {},
+  "Integration": "CIQ_case_cancelled_Case_cancelled_A00",
+  "Connector": {
+   "_id": "Coowt2xE4WH9S",
+   "Name": "Webhooks by Kissflow",
+   "Version": "1.0.0",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/Coowt2xE4WH9S/1.0.0/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/Coowt2xE4WH9S/1.0.0/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/Coowt2xE4WH9S/1.0.0/Logo/Webhook.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "TriggerId": "WebhookTrigger",
+   "TriggerName": "Catch a webhook (POST)"
+  }
+ },
+ "Action_cancelled_read_app_item": {
+  "Id": "Action_cancelled_read_app_item",
+  "Kind": "Action",
+  "Type": "Search",
+  "Name": "Search an item",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQ_case_cancelled_Case_cancelled_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "Action_Kh4Jb2AoG",
+   "ActionName": "Search an item "
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_jkwd81",
+   "FieldMapping_jkwd93"
+  ]
+ },
+ "Action_cancelled_pick": {
+  "Id": "Action_cancelled_pick",
+  "Kind": "Action",
+  "Type": "Create",
+  "Name": "Run JavaScript",
+  "IsInternalAuth": true,
+  "Connection": {},
+  "Integration": "CIQ_case_cancelled_Case_cancelled_A00",
+  "Connector": {
+   "_id": "Co4m9q4JUbkV",
+   "Name": "Run script",
+   "Version": "1.0.0",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/Co4m9q4JUbkV/1.0.0/Logo/Runscript.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "RunJSCode",
+   "ActionName": "Run JavaScript"
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_jkxxp7",
+   "FieldMapping_jkxxpg"
+  ]
+ },
+ "Action_CC_update_request": {
+  "Id": "Action_CC_update_request",
+  "Kind": "Action",
+  "Type": "Update",
+  "Name": "Update an item",
+  "IsInternalAuth": false,
+  "Connection": {
+   "_id": "CnEKHrHqXRKB",
+   "Name": "CIQ ZZ Spike Kissflow Process connection"
+  },
+  "Integration": "CIQ_case_cancelled_Case_cancelled_A00",
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "Version": "3.7.6",
+   "Logo": {
+    "small": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/24x24.png"
+    },
+    "medium": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/photos/128x128.png"
+    },
+    "original": {
+     "key": "Account001/Connectors/ComaBsL8ZTSMM/3.7.6/Logo/Kissflow_Process.png"
+    }
+   },
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "ActionId": "UpdateAnItem",
+   "ActionName": "Update an item"
+  },
+  "Action::FieldMapping": [
+   "FieldMapping_jkxxp5"
+  ]
+ },
+ "FieldMapping_jkwd81": {
+  "Id": "FieldMapping_jkwd81",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Field_FfgdBFhZt",
+  "Label": "Choose a process",
+  "Name": "process_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Action": "Action_cancelled_read_app_item",
+  "SelectedDropdown": [
+   {
+    "FieldId": "CIQ_Case_A00",
+    "FieldName": "CIQ Case - CIQ Digital",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_jkwd82"
+  ]
+ },
+ "Property_jkwd82": {
+  "Id": "Property_jkwd82",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jkwd81",
+  "Type": "Value",
+  "Value": [
+   "CIQ_Case_A00"
+  ],
+  "Name": "process_id"
+ },
+ "FieldMapping_jkwd93": {
+  "Id": "FieldMapping_jkwd93",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Field_1D8EgGqhG",
+  "Label": "Search term",
+  "Name": "lookupValue",
+  "IsRequired": true,
+  "Action": "Action_cancelled_read_app_item",
+  "FieldMapping::Property": [
+   "Property_jkwd94"
+  ]
+ },
+ "Property_jkwd94": {
+  "Id": "Property_jkwd94",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jkwd93",
+  "Type": "Field",
+  "Field": "context.Trigger_cancelled_webhook.caseItemId",
+  "Name": "lookupValue"
+ },
+ "FieldMapping_jkxxp5": {
+  "Id": "FieldMapping_jkxxp5",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField002",
+  "Label": "Choose a process",
+  "Name": "process_id",
+  "IsRequired": true,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "Action": "Action_CC_update_request",
+  "SelectedDropdown": [
+   {
+    "FieldId": "CIQP_Request_A00",
+    "FieldName": "CIQP Request - CIQ Supplier Portal",
+    "IsSubArray": false
+   }
+  ],
+  "FieldMapping::Property": [
+   "Property_jkxxp6"
+  ]
+ },
+ "Property_jkxxp6": {
+  "Id": "Property_jkxxp6",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jkxxp5",
+  "Type": "Value",
+  "Value": [
+   "CIQP_Request_A00"
+  ],
+  "Name": "process_id"
+ },
+ "FieldMapping_jkxxp7": {
+  "Id": "FieldMapping_jkxxp7",
+  "Kind": "FieldMapping",
+  "Type": "Object",
+  "FieldId": "InputFields",
+  "Label": "Input data",
+  "Name": "input_fields",
+  "IsDropdown": false,
+  "IsPaginated": false,
+  "HelpText": "Specify the input data that should be provided to your code",
+  "AutoRefresh": false,
+  "Action": "Action_cancelled_pick",
+  "FieldMapping::FieldMapping": [
+   "FieldMapping_jkxxp8",
+   "FieldMapping_jkxxpa",
+   "FieldMapping_jkxxpc",
+   "FieldMapping_jkxxpe"
+  ]
+ },
+ "FieldMapping_jkxxp8": {
+  "Id": "FieldMapping_jkxxp8",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "IsVisible": true,
+  "FieldMapping": "FieldMapping_jkxxp7",
+  "Name": "caseItemId",
+  "Label": "caseItemId",
+  "FieldMapping::Property": [
+   "Property_jkxxp9"
+  ]
+ },
+ "Property_jkxxp9": {
+  "Id": "Property_jkxxp9",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jkxxp8",
+  "Type": "Field",
+  "Field": "context.Trigger_cancelled_webhook.caseItemId",
+  "Name": "caseItemId"
+ },
+ "FieldMapping_jkxxpa": {
+  "Id": "FieldMapping_jkxxpa",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "IsVisible": true,
+  "FieldMapping": "FieldMapping_jkxxp7",
+  "Name": "rows",
+  "Label": "rows",
+  "FieldMapping::Property": [
+   "Property_jkxxpb"
+  ]
+ },
+ "Property_jkxxpb": {
+  "Id": "Property_jkxxpb",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jkxxpa",
+  "Type": "Field",
+  "Field": "context.Action_cancelled_read_app_item.Data",
+  "Name": "rows"
+ },
+ "FieldMapping_jkxxpc": {
+  "Id": "FieldMapping_jkxxpc",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "IsVisible": true,
+  "FieldMapping": "FieldMapping_jkxxp7",
+  "Name": "phaseLabel",
+  "Label": "phaseLabel",
+  "FieldMapping::Property": [
+   "Property_jkxxpd"
+  ]
+ },
+ "Property_jkxxpd": {
+  "Id": "Property_jkxxpd",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jkxxpc",
+  "Type": "Field",
+  "Field": "context.Trigger_cancelled_webhook.phaseLabel",
+  "Name": "phaseLabel"
+ },
+ "FieldMapping_jkxxpe": {
+  "Id": "FieldMapping_jkxxpe",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "IsVisible": true,
+  "FieldMapping": "FieldMapping_jkxxp7",
+  "Name": "locked",
+  "Label": "locked",
+  "FieldMapping::Property": [
+   "Property_jkxxpf"
+  ]
+ },
+ "Property_jkxxpf": {
+  "Id": "Property_jkxxpf",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_jkxxpe",
+  "Type": "Field",
+  "Field": "context.Trigger_cancelled_webhook.locked",
+  "Name": "locked"
+ },
+ "FieldMapping_jkxxpg": {
+  "Id": "FieldMapping_jkxxpg",
+  "Kind": "FieldMapping",
+  "Type": "Code",
+  "FieldId": "JSCode",
+  "Label": "JavaScript code",
+  "Name": "js_code",
+  "IsRequired": true,
+  "IsDropdown": false,
+  "IsPaginated": false,
+  "AutoRefresh": false,
+  "CodeLanguage": "javascript",
+  "Action": "Action_cancelled_pick",
+  "FieldMapping::Property": [
+   "Property_jkxxph"
+  ]
+ },
+ "Property_jkxxph": {
+  "Id": "Property_jkxxph",
+  "Kind": "Property",
+  "Type": "Code",
+  "Name": "js_code",
+  "Code": "// case.cancelled · the case the RMM's screen named; its supplier request (Portal_Request_Item_Id, written only by the\n// case.started integration) gets the phase label and the lock. Only the known values are accepted.\nconst id = String(inputData.caseItemId || \"\").trim();\nlet rows = inputData.rows;\nif (typeof rows === \"string\") { try { rows = JSON.parse(rows); } catch (e) { rows = []; } }\nconst row = (Array.isArray(rows) ? rows : []).find((r) => r && r._id === id);\nif (!id || !row) throw new Error(`CIQ Case ${id || \"(no id)\"} was not found`);\nif (!row.Portal_Request_Item_Id) throw new Error(`Case ${row.Case_Code} has no supplier request`);\nconst label = String(inputData.phaseLabel || \"\");\nconst locked = String(inputData.locked || \"\");\nif (label !== \"Cancelled\") throw new Error(`phaseLabel \"${label}\" is not accepted`);\nif (locked !== \"Yes\") throw new Error(`locked \"${locked}\" is not accepted`);\nreturn { _id: row.Portal_Request_Item_Id, Case_Phase_Label: label, Request_Locked: locked };\n",
+  "FieldMapping": "FieldMapping_jkxxpg"
+ }
+}

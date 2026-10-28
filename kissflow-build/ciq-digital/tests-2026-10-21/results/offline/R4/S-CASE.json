@@ -1,0 +1,2800 @@
+{
+ "suite": "S-CASE",
+ "run": "R4",
+ "startedAt": "2026-10-21T19:27:44.479Z",
+ "savedAt": "2026-10-21T19:27:44.629Z",
+ "counts": {
+  "pass": 18,
+  "fail": 0,
+  "blocked": 1,
+  "not-run": 1
+ },
+ "steps": [
+  {
+   "name": "0 integrations ON",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "integration lists (both apps)",
+      "value": [
+       "case.started: Live ON",
+       "review.reopened: Live ON",
+       "op.round: Live ON",
+       "op.edited: Live ON",
+       "op.closed: Live ON",
+       "release.requested: Live ON",
+       "history.updated: Live ON",
+       "case.cancelled: Live ON",
+       "requestChanged: Live ON",
+       "completenessConfirmed: Live ON",
+       "queryAnswered: Live ON",
+       "releaseGiven: Live ON"
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "all 12 integrations Live and ON",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "every built hand-off has its webhook URL (by code)",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "calls": 2
+    }
+   },
+   "ms": 0,
+   "at": "2026-10-21T19:27:44.480Z"
+  },
+  {
+   "name": "1 supplier master",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Supplier (form GET)",
+      "value": {
+       "Supplier_Code": "ZZT-N21-R4-SC1-SUP",
+       "Supplier_Legal_Name": "ZZT-N21-R4 Supplier",
+       "DUNS_Number": "924000001",
+       "Supplier_Kind": "Manufacturer",
+       "Supplier_Country_Code": "AT",
+       "Supplier_City": "ZZT-N21-R4 Linz",
+       "Supplier_Active": "Yes",
+       "contacts": [
+        {
+         "Contacts_Key": "u-ZZT-N21-R4-SC1-SUP-1",
+         "Contacts_Full_Name": "Katrin Vogel",
+         "Contacts_Email": "zzt-n21-r4-sc1.self@example.test",
+         "Contacts_Title": "Technical Director",
+         "Contacts_Can_Confirm": "Yes",
+         "Contacts_Active": "Yes",
+         "Contacts_Portal_User_Id": "UsRmmKatrin"
+        },
+        {
+         "Contacts_Key": "u-ZZT-N21-R4-SC1-SUP-2",
+         "Contacts_Full_Name": "Katrin Moser",
+         "Contacts_Email": "katrin.moser.sc1@zzt-n21-r4.example",
+         "Contacts_Title": "Quality Assurance Officer",
+         "Contacts_Can_Confirm": "No",
+         "Contacts_Active": "Yes",
+         "Contacts_Portal_User_Id": null
+        }
+       ]
+      }
+     },
+     {
+      "what": "CIQ Supplier (list row keys)",
+      "value": [
+       "_id",
+       "_created_by",
+       "_created_at",
+       "_modified_by",
+       "_modified_at",
+       "Supplier_Code",
+       "Supplier_Legal_Name",
+       "DUNS_Number",
+       "Supplier_Kind",
+       "Supplier_Country_Code",
+       "Supplier_City",
+       "Supplier_Active"
+      ]
+     },
+     {
+      "what": "mapped supplier (RMM)",
+      "value": {
+       "id": "ZZT-N21-R4-SC1-SUP",
+       "name": "ZZT-N21-R4 Supplier",
+       "duns": "924000001",
+       "country": "AT",
+       "city": "ZZT-N21-R4 Linz",
+       "type": "manufacturer",
+       "active": true,
+       "contacts": 2
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "every header field as written (supplierFields)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "two contact rows, no duplicate",
+      "ok": true,
+      "detail": 2
+     },
+     {
+      "label": "contact row u-ZZT-N21-R4-SC1-SUP-1 as written (contactRow)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "contact row u-ZZT-N21-R4-SC1-SUP-2 as written (contactRow)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the self contact's portal user is the key's user",
+      "ok": true,
+      "detail": "UsRmmKatrin"
+     },
+     {
+      "label": "the placeholder has no portal user",
+      "ok": true
+     },
+     {
+      "label": "the list row is there and has no child table",
+      "ok": true
+     },
+     {
+      "label": "its audit row: supplier.changed",
+      "ok": true,
+      "detail": {
+       "Action_Code": "supplier.changed",
+       "Object_Item_Id": "FmSup2"
+      }
+     },
+     {
+      "label": "the supplier reads back as written (country as its live code)",
+      "ok": true,
+      "detail": {
+       "got": {
+        "id": "ZZT-N21-R4-SC1-SUP",
+        "name": "ZZT-N21-R4 Supplier",
+        "duns": "924000001",
+        "country": "AT",
+        "city": "ZZT-N21-R4 Linz",
+        "type": "manufacturer",
+        "active": true,
+        "contacts": 2
+       },
+       "want": {
+        "id": "ZZT-N21-R4-SC1-SUP",
+        "name": "ZZT-N21-R4 Supplier",
+        "duns": "924000001",
+        "country": "AT",
+        "city": "ZZT-N21-R4 Linz",
+        "type": "manufacturer",
+        "active": true,
+        "contacts": 2
+       }
+      }
+     },
+     {
+      "label": "contact zzt-n21-r4-sc1.self@example.test reads back as written",
+      "ok": true,
+      "detail": {
+       "got": {
+        "name": "Katrin Vogel",
+        "email": "zzt-n21-r4-sc1.self@example.test",
+        "title": "Technical Director",
+        "mayConfirm": true,
+        "active": true,
+        "supplierId": "ZZT-N21-R4-SC1-SUP"
+       },
+       "want": {
+        "name": "Katrin Vogel",
+        "email": "zzt-n21-r4-sc1.self@example.test",
+        "title": "Technical Director",
+        "mayConfirm": true,
+        "active": true,
+        "supplierId": "ZZT-N21-R4-SC1-SUP"
+       }
+      }
+     },
+     {
+      "label": "contact katrin.moser.sc1@zzt-n21-r4.example reads back as written",
+      "ok": true,
+      "detail": {
+       "got": {
+        "name": "Katrin Moser",
+        "email": "katrin.moser.sc1@zzt-n21-r4.example",
+        "title": "Quality Assurance Officer",
+        "mayConfirm": false,
+        "active": true,
+        "supplierId": "ZZT-N21-R4-SC1-SUP"
+       },
+       "want": {
+        "name": "Katrin Moser",
+        "email": "katrin.moser.sc1@zzt-n21-r4.example",
+        "title": "Quality Assurance Officer",
+        "mayConfirm": false,
+        "active": true,
+        "supplierId": "ZZT-N21-R4-SC1-SUP"
+       }
+      }
+     },
+     {
+      "label": "the self contact maps to self:<the key's user>",
+      "ok": true,
+      "detail": "self:UsRmmKatrin"
+     },
+     {
+      "label": "the placeholder keeps the domain's id",
+      "ok": true,
+      "detail": "u-ZZT-N21-R4-SC1-SUP-2"
+     }
+    ],
+    "notes": {
+     "approximated": "the domain named the supplier \"s1\"; the suite renamed it to \"ZZT-N21-R4-SC1-SUP\" before the app's writer encoded it (the run tag on every supplier code, SPEC §1)",
+     "CIQ Supplier": "FmSup2",
+     "not the app's writer": "Contacts_Portal_User_Id of the self contact written by a form update (by the row's _id): no app writer writes it",
+     "calls": 22
+    }
+   },
+   "ms": 10,
+   "at": "2026-10-21T19:27:44.481Z"
+  },
+  {
+   "name": "2 draft",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "ZZT-N21-R4-SC1-D01 (the draft as loaded)",
+      "value": {
+       "_status": "Draft",
+       "_current_step": "Create case",
+       "Case_Code": "ZZT-N21-R4-SC1-D01",
+       "Trade_Name": "ZZT-N21-R4 Recycled Polyamide Powder",
+       "Supplier_Code": "ZZT-N21-R4-SC1-SUP",
+       "Main_INCI": "Nylon-12",
+       "BDF_Material_No": null,
+       "Owner_RMM": {
+        "_id": "UsRmmKatrin",
+        "Name": "Katrin Vogel"
+       },
+       "Portal_Contact_Ids": "UsRmmKatrin",
+       "Release_Key": "RS-2026.1 + v1",
+       "draft": {
+        "flow": "case",
+        "itemId": "PkCase5",
+        "act": "Act6",
+        "activityId": "Activity_p1i6xz",
+        "label": "New case ZZT-N21-R4-SC1-D01 · ZZT-N21-R4 Recycled Polyamide Powder"
+       }
+      }
+     },
+     {
+      "what": "ZZT-N21-R4-SC1-D02 (the draft as loaded)",
+      "value": {
+       "_status": "Draft",
+       "_current_step": "Create case",
+       "Case_Code": "ZZT-N21-R4-SC1-D02",
+       "Trade_Name": "ZZT-N21-R4 Recycled Polyamide Powder",
+       "Supplier_Code": "ZZT-N21-R4-SC1-SUP",
+       "Main_INCI": "Nylon-12",
+       "BDF_Material_No": null,
+       "Owner_RMM": {
+        "_id": "UsRmmKatrin",
+        "Name": "Katrin Vogel"
+       },
+       "Portal_Contact_Ids": "UsRmmKatrin",
+       "Release_Key": "RS-2026.1 + v1",
+       "draft": {
+        "flow": "case",
+        "itemId": "PkCase7",
+        "act": "Act8",
+        "activityId": "Activity_p1i6xz",
+        "label": "New case ZZT-N21-R4-SC1-D02 · ZZT-N21-R4 Recycled Polyamide Powder"
+       }
+      }
+     },
+     {
+      "what": "ZZT-N21-R4-SC1-D01 after the discard (admin GET)",
+      "value": "KISSFLOW_ERROR_01015 Document not found (PkCase5)"
+     }
+    ],
+    "checks": [
+     {
+      "label": "ZZT-N21-R4-SC1-D01: the writer stopped at the gate and left a draft",
+      "ok": true,
+      "detail": "Case ZZT-N21-R4-SC1-D01 was saved as a draft in Kissflow but not sent: Kissflow misses BDF_Material_No. Open Diagnostics to send or discard it."
+     },
+     {
+      "label": "ZZT-N21-R4-SC1-D02: the writer stopped at the gate and left a draft",
+      "ok": true,
+      "detail": "Case ZZT-N21-R4-SC1-D02 was saved as a draft in Kissflow but not sent: Kissflow misses BDF_Material_No. Open Diagnostics to send or discard it."
+     },
+     {
+      "label": "ZZT-N21-R4-SC1-D01: a Start draft (Diagnostics lists it)",
+      "ok": true
+     },
+     {
+      "label": "ZZT-N21-R4-SC1-D01: its fields are there, BDF_Material_No is not",
+      "ok": true
+     },
+     {
+      "label": "ZZT-N21-R4-SC1-D01: not part of any case, but blocks a twin (ownDraftKeys)",
+      "ok": true
+     },
+     {
+      "label": "ZZT-N21-R4-SC1-D02: a Start draft (Diagnostics lists it)",
+      "ok": true
+     },
+     {
+      "label": "ZZT-N21-R4-SC1-D02: its fields are there, BDF_Material_No is not",
+      "ok": true
+     },
+     {
+      "label": "ZZT-N21-R4-SC1-D02: not part of any case, but blocks a twin (ownDraftKeys)",
+      "ok": true
+     },
+     {
+      "label": "ZZT-N21-R4-SC1-D01: discarded, the GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 Document not found (PkCase5)"
+     }
+    ],
+    "notes": {
+     "approximated": "the domain never leaves a Mandatory Start field blank; the suite blanks the material number in its result, so BDF_Material_No is missing for the app's own gate (assertMandatory)",
+     "calls": 18
+    }
+   },
+   "ms": 7,
+   "at": "2026-10-21T19:27:44.492Z"
+  },
+  {
+   "name": "3 started (I-1)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Case (admin GET)",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Waiting for supplier: CIQ",
+       "Case_Code": "ZZT-N21-R4-SC1-C01",
+       "Case_Phase": "Supplier filling in the CIQ",
+       "Portal_Request_Item_Id": "PkReq1",
+       "Portal_Contact_Ids": "UsRmmKatrin",
+       "Confirm_Contact_Ids": "UsRmmKatrin",
+       "Portal_Assignees_JSON": "[{\"_id\":\"UsRmmKatrin\"}]",
+       "Release_Assignees_JSON": "[{\"_id\":\"UsRmmKatrin\"}]",
+       "Case_Contacts_JSON": "[{\"id\":\"UsRmmKatrin\",\"name\":\"Katrin Vogel\",\"email\":\"zzt-n21-r4-sc1.self@example.test\",\"title\":\"Technical Director\",\"mayConfirm\":true},{\"name\":\"Katrin Moser\",\"email\":\"katrin.moser.sc1@zzt-n21-r4.example\",\"title\":\"Quality Assurance Officer\",\"mayConfirm\":false}]",
+       "Owner_RMM": {
+        "_id": "UsRmmKatrin",
+        "Name": "Katrin Vogel"
+       }
+      }
+     },
+     {
+      "what": "CIQP Request (admin GET)",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Supplier: fill in the CIQ",
+       "Request_Key": "ZZT-N21-R4-SC1-C01|1",
+       "App_Case_Item_Id": "PkCase9",
+       "Case_Code": "ZZT-N21-R4-SC1-C01",
+       "Case_Phase_Label": "Filling in",
+       "Request_Locked": "No",
+       "Assigned_Contacts": [
+        {
+         "_id": "UsRmmKatrin"
+        }
+       ],
+       "Release_Contacts": [
+        {
+         "_id": "UsRmmKatrin"
+        }
+       ],
+       "Config_Bundle_Hash": "50be73f8a30e30d5bd9508c1ea45497c41f0d5d1a015493ac0d7338ee80f9edd"
+      }
+     },
+     {
+      "what": "case.created (audit row)",
+      "value": {
+       "Action_Code": "case.created",
+       "Object_State": "Supplier filling in the CIQ",
+       "Ref_Flow_Id": "CIQ_Case_A00",
+       "Ref_Item_Id": "PkCase9",
+       "Ref_Activity_Instance_Id": "Act10",
+       "Notify_Channel": "webhook",
+       "handoffs": [
+        {
+         "code": "case.started",
+         "status": "sent",
+         "detail": "handed over",
+         "key": "HO-case.started-mvii83g8-opgnak"
+        }
+       ]
+      }
+     },
+     {
+      "what": "mapped case (RMM)",
+      "value": {
+       "id": "ZZT-N21-R4-SC1-C01",
+       "materialName": "ZZT-N21-R4 Recycled Polyamide Powder",
+       "inci": "Nylon-12",
+       "materialNo": "ZZT-N21-R4-SC1-RM-01",
+       "supplierId": "ZZT-N21-R4-SC1-SUP",
+       "manufacturer": "ZZT-N21-R4 Supplier",
+       "ownerId": "UsRmmKatrin",
+       "priority": "high",
+       "templateVersion": "CIQ-2026 v1",
+       "ruleSetVersion": "RS-2026.1",
+       "supplierContactIds": [
+        "self:UsRmmKatrin",
+        "u-ZZT-N21-R4-SC1-SUP-2"
+       ],
+       "markets": [
+        "EU",
+        "UK"
+       ],
+       "due": "2026-11-20",
+       "bdfAnswers": {
+        "FLD-GEN-001": "ZZT-N21-R4 Recycled Polyamide Powder",
+        "FLD-GEN-002": "ZZT-N21-R4 Supplier",
+        "FLD-GEN-003": "924000001",
+        "FLD-GEN-008": "zzt-n21-r4-sc1.self@example.test",
+        "FLD-GEN-009": "katrin.moser.sc1@zzt-n21-r4.example"
+       },
+       "phase": "supplier-input"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "case.started was handed over",
+      "ok": true,
+      "detail": [
+       {
+        "code": "case.started",
+        "status": "sent",
+        "detail": "handed over",
+        "key": "HO-case.started-mvii83g8-opgnak"
+       }
+      ]
+     },
+     {
+      "label": "the case is at \"Waiting for supplier: CIQ\"",
+      "ok": true,
+      "detail": [
+       "Waiting for supplier: CIQ",
+       "InProgress"
+      ]
+     },
+     {
+      "label": "the request names its case (App_Case_Item_Id)",
+      "ok": true,
+      "detail": "PkCase9"
+     },
+     {
+      "label": "Request_Key is <case>|<cycle>",
+      "ok": true,
+      "detail": "ZZT-N21-R4-SC1-C01|1"
+     },
+     {
+      "label": "Supplier_Display_Name is the supplier's legal name",
+      "ok": true,
+      "detail": "ZZT-N21-R4 Supplier"
+     },
+     {
+      "label": "I-1 copied the 16 header, bundle and contact fields (16 hold something)",
+      "ok": true
+     },
+     {
+      "label": "phase label Filling in, not locked",
+      "ok": true,
+      "detail": [
+       "Filling in",
+       "No"
+      ]
+     },
+     {
+      "label": "Assigned_Contacts = the case's Portal_Assignees_JSON",
+      "ok": true,
+      "detail": {
+       "request": [
+        "UsRmmKatrin"
+       ],
+       "case": [
+        "UsRmmKatrin"
+       ]
+      }
+     },
+     {
+      "label": "Release_Contacts = the case's Release_Assignees_JSON",
+      "ok": true,
+      "detail": {
+       "request": [
+        "UsRmmKatrin"
+       ],
+       "case": [
+        "UsRmmKatrin"
+       ]
+      }
+     },
+     {
+      "label": "the bundle matches its hash (the portal's own check)",
+      "ok": true
+     },
+     {
+      "label": "the request's contacts: the self contact by its portal user, the placeholder without one",
+      "ok": true,
+      "detail": [
+       {
+        "id": "UsRmmKatrin",
+        "name": "Katrin Vogel",
+        "email": "zzt-n21-r4-sc1.self@example.test",
+        "role": "Technical Director",
+        "mayConfirm": true
+       },
+       {
+        "name": "Katrin Moser",
+        "email": "katrin.moser.sc1@zzt-n21-r4.example",
+        "role": "Quality Assurance Officer",
+        "mayConfirm": false
+       }
+      ]
+     },
+     {
+      "label": "the request is assigned to the self contact only",
+      "ok": true,
+      "detail": [
+       "UsRmmKatrin"
+      ]
+     },
+     {
+      "label": "its release contact is the self contact only",
+      "ok": true,
+      "detail": [
+       "UsRmmKatrin"
+      ]
+     },
+     {
+      "label": "no pseudo id in the case's or the request's user fields",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "case.created row with its snapshot, naming the case and its Start step",
+      "ok": true
+     },
+     {
+      "label": "its hand-offs: case.started sent",
+      "ok": true,
+      "detail": [
+       {
+        "code": "case.started",
+        "status": "sent",
+        "detail": "handed over",
+        "key": "HO-case.started-mvii83g8-opgnak"
+       }
+      ]
+     },
+     {
+      "label": "no pseudo id in the audit row",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the case reads back as the domain wrote it (caseKeys)",
+      "ok": true,
+      "detail": {
+       "got": {
+        "id": "ZZT-N21-R4-SC1-C01",
+        "materialName": "ZZT-N21-R4 Recycled Polyamide Powder",
+        "inci": "Nylon-12",
+        "materialNo": "ZZT-N21-R4-SC1-RM-01",
+        "supplierId": "ZZT-N21-R4-SC1-SUP",
+        "manufacturer": "ZZT-N21-R4 Supplier",
+        "ownerId": "UsRmmKatrin",
+        "priority": "high",
+        "templateVersion": "CIQ-2026 v1",
+        "ruleSetVersion": "RS-2026.1",
+        "supplierContactIds": [
+         "self:UsRmmKatrin",
+         "u-ZZT-N21-R4-SC1-SUP-2"
+        ],
+        "markets": [
+         "EU",
+         "UK"
+        ],
+        "due": "2026-11-20",
+        "bdfAnswers": {
+         "FLD-GEN-001": "ZZT-N21-R4 Recycled Polyamide Powder",
+         "FLD-GEN-002": "ZZT-N21-R4 Supplier",
+         "FLD-GEN-003": "924000001",
+         "FLD-GEN-008": "zzt-n21-r4-sc1.self@example.test",
+         "FLD-GEN-009": "katrin.moser.sc1@zzt-n21-r4.example"
+        }
+       },
+       "want": {
+        "id": "ZZT-N21-R4-SC1-C01",
+        "materialName": "ZZT-N21-R4 Recycled Polyamide Powder",
+        "inci": "Nylon-12",
+        "materialNo": "ZZT-N21-R4-SC1-RM-01",
+        "supplierId": "ZZT-N21-R4-SC1-SUP",
+        "manufacturer": "ZZT-N21-R4 Supplier",
+        "ownerId": "UsRmmKatrin",
+        "priority": "high",
+        "templateVersion": "CIQ-2026 v1",
+        "ruleSetVersion": "RS-2026.1",
+        "supplierContactIds": [
+         "self:UsRmmKatrin",
+         "u-ZZT-N21-R4-SC1-SUP-2"
+        ],
+        "markets": [
+         "EU",
+         "UK"
+        ],
+        "due": "2026-11-20",
+        "bdfAnswers": {
+         "FLD-GEN-001": "ZZT-N21-R4 Recycled Polyamide Powder",
+         "FLD-GEN-002": "ZZT-N21-R4 Supplier",
+         "FLD-GEN-003": "924000001",
+         "FLD-GEN-008": "zzt-n21-r4-sc1.self@example.test",
+         "FLD-GEN-009": "katrin.moser.sc1@zzt-n21-r4.example"
+        }
+       }
+      }
+     },
+     {
+      "label": "phase supplier-input; the index knows the item and its request",
+      "ok": true
+     },
+     {
+      "label": "no hand-off of the step failed after its save (case.started)",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "I-1 poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "calls": 21
+    }
+   },
+   "ms": 12,
+   "at": "2026-10-21T19:27:44.500Z"
+  },
+  {
+   "name": "4a answers saved (request.changed)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQP Request after the save (the writer's read-back)",
+      "value": {
+       "Answers_Rev": 1,
+       "Answers_Changed_At": "2026-10-21T19:27:44Z",
+       "Answers_Changed_By_Email": "katrin.vogel@beiersdorf.example",
+       "Scope_JSON": "[{\"sectionId\":\"GEN\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.3\",\"applicability\":\"mandatory\",\"reason\":\"Polymer is Yes\"},{\"sectionId\":\"K5.1\",\"applicability\":\"mandatory\",\"reason\":\"Microbiological test required is Yes or not answered\"},{\"sectionId\":\"K5.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K5.3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.2\",\"applicability\":\"mandatory\",\"reason\":\"Target markets include United Kingdom\"},{\"sectionId\":\"K6.4\",\"applicability\":\"mandatory\",\"reason\":\"Any target market outside the EU\"},{\"sectionId\":\"K6.5\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.6\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.7\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.8\",\"applicability\":\"optional\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.9\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.10\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.11\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.12\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.13\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.14\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.15\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.16\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.16.1\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.17\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K7\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K8\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K8.1\",\"applicability\":\"optional\",\"reason\":\"Every case\"},{\"sectionId\":\"A1\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A2\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A3\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A4\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A5\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A6\",\"applicability\":\"mandatory\",\"reason\":\"Polymer is Yes\"},{\"sectionId\":\"A7\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A8\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A9\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A10\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"A11\",\"applicability\":\"mandatory\",\"reason\":\"Target markets include United Kingdom\"},{\"sectionId\":\"A13\",\"applicability\":\"mandatory\",\"reason\":\"Any target market outside the EU\"}]"
+      }
+     },
+     {
+      "what": "CIQ Case: the 15 supplier-data fields",
+      "value": {
+       "Config_Answers_JSON": "{\"SF02\":false,\"SF03\":true,\"SF04\":false,\"SF05\":[],\"SF06\":false,\"SF07\":false,\"SF08\":false,\"SF09\":false,\"SF10\":false,\"SF12\":true,\"SF01\":[\"waste\"]}",
+       "Answers_JSON": "{\"FLD-GEN-004\":\"ZZT-N21-R4 Described in the supplier's statement.\",\"FLD-GEN-005\":\"ZZT-N21-R4 Described in the supplier's statement.\",\"FLD-2.1-102\":0.5,\"FLD-A14-101\":1,\"FLD-A14-102\":1,\"FLD-A14-103\":1,\"FLD-2.3-15\":\"ZZT-N21-R4 Test value\",\"FLD-2.2-002\":\"ZZT-N21-R4 Described in the supplier's statement.\"}",
+       "Answered_By_JSON": "{\"SF02\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"SF03\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"SF04\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"SF05\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"SF06\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"SF07\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"SF08\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"SF09\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"SF10\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"SF12\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"SF01\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-GEN-004\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-GEN-005\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-2.1-102\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-A14-101\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-A14-102\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-A14-103\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-2.3-15\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-2.2-002\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-K1-001\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-K1-002\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-K1-003\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-K1-004\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-2.2-001\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-5.1-001\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"K2.1:components\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"}}",
+       "Justifications_JSON": "{\"FLD-K1-001\":\"ZZT-N21-R4 Not available for this material; statement on request.\",\"FLD-K1-002\":\"ZZT-N21-R4 Not available for this material; statement on request.\",\"FLD-K1-003\":\"ZZT-N21-R4 Not available for this material; statement on request.\",\"FLD-K1-004\":\"ZZT-N21-R4 Not available for this material; statement on request.\",\"FLD-2.2-001\":\"ZZT-N21-R4 Not available for this material; statement on request.\",\"FLD-5.1-001\":\"ZZT-N21-R4 Not available for this material; statement on request.\"}",
+       "Components_JSON": "[{\"id\":\"c1\",\"inci\":\"Nylon-12\",\"fn\":\"emollient\",\"additive\":false,\"origin\":\"waste\",\"concMin\":99,\"concMax\":100,\"cas\":\"8001-25-0\"}]",
+       "Scope_JSON": "[{\"sectionId\":\"GEN\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.3\",\"applicability\":\"mandatory\",\"reason\":\"Polymer is Yes\"},{\"sectionId\":\"K5.1\",\"applicability\":\"mandatory\",\"reason\":\"Microbiological test required is Yes or not answered\"},{\"sectionId\":\"K5.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K5.3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.2\",\"applicability\":\"mandatory\",\"reason\":\"Target markets include United Kingdom\"},{\"sectionId\":\"K6.4\",\"applicability\":\"mandatory\",\"reason\":\"Any target market outside the EU\"},{\"sectionId\":\"K6.5\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.6\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.7\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.8\",\"applicability\":\"optional\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.9\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.10\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.11\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.12\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.13\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.14\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.15\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.16\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.16.1\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.17\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K7\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K8\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K8.1\",\"applicability\":\"optional\",\"reason\":\"Every case\"},{\"sectionId\":\"A1\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A2\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A3\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A4\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A5\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A6\",\"applicability\":\"mandatory\",\"reason\":\"Polymer is Yes\"},{\"sectionId\":\"A7\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A8\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A9\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A10\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"A11\",\"applicability\":\"mandatory\",\"reason\":\"Target markets include United Kingdom\"},{\"sectionId\":\"A13\",\"applicability\":\"mandatory\",\"reason\":\"Any target market outside the EU\"}]",
+       "Requested_Docs_JSON": "[]",
+       "Documents_JSON": null,
+       "Answers_Rev": 1,
+       "Answers_Changed_At": "2026-10-21T19:27:44Z",
+       "Answers_Changed_By_Email": "katrin.vogel@beiersdorf.example",
+       "Change_Report_Text": null,
+       "Change_Report_Rev": null,
+       "Change_Report_By_Email": null,
+       "Change_Report_At": null
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the request is the self contact's task at \"Supplier: fill in the CIQ\"",
+      "ok": true,
+      "detail": "fill"
+     },
+     {
+      "label": "everything missing can be answered (no requested document: the suite uploads no files)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "every answer of the patch is on the request",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the portal shows nothing missing any more",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the case holds the request's 15 supplier-data fields (9 hold something; blank on both: Requested_Docs_JSON, Documents_JSON, Change_Report_Text, Change_Report_Rev, Change_Report_By_Email, Change_Report_At)",
+      "ok": true,
+      "detail": {}
+     },
+     {
+      "label": "every field the save left filled on the request is filled on the case",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "no hand-off of the step failed after its save (portal)",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "fill-in": {
+      "config": [
+       "SF02",
+       "SF03",
+       "SF04",
+       "SF05",
+       "SF06",
+       "SF07",
+       "SF08",
+       "SF09",
+       "SF10",
+       "SF12",
+       "SF01"
+      ],
+      "set": [
+       "FLD-GEN-004",
+       "FLD-GEN-005",
+       "FLD-2.1-102",
+       "FLD-A14-101",
+       "FLD-A14-102",
+       "FLD-A14-103",
+       "FLD-2.3-15",
+       "FLD-2.2-002"
+      ],
+      "just": [
+       "FLD-K1-001",
+       "FLD-K1-002",
+       "FLD-K1-003",
+       "FLD-K1-004",
+       "FLD-2.2-001",
+       "FLD-5.1-001"
+      ],
+      "components": 1
+     },
+     "request.changed poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "calls": 8
+    }
+   },
+   "ms": 12,
+   "at": "2026-10-21T19:27:44.513Z"
+  },
+  {
+   "name": "4b completeness confirmed (I-2 fields)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQP Request",
+      "value": {
+       "_current_step": "Supplier: keep the CIQ up to date",
+       "Completeness_Confirm": "Confirmed",
+       "Completeness_By_Name": "Katrin Vogel",
+       "Completeness_By_Email": "katrin.vogel@beiersdorf.example",
+       "Completeness_By_Role": "Technical Director",
+       "Completeness_At": "2026-10-21T19:27:44Z"
+      }
+     },
+     {
+      "what": "CIQ Case (admin GET)",
+      "value": {
+       "_current_step": "Beiersdorf review and final release",
+       "Case_Phase": "Review",
+       "Completeness_Confirm": "Confirmed",
+       "Completeness_By_Name": "Katrin Vogel",
+       "Completeness_At": "2026-10-21T19:27:44Z",
+       "Answers_Rev": 1
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the request moved to \"Supplier: keep the CIQ up to date\"",
+      "ok": true,
+      "detail": "Supplier: keep the CIQ up to date"
+     },
+     {
+      "label": "its completeness names the self contact",
+      "ok": true
+     },
+     {
+      "label": "I-2 copied Completeness_* and the 15 fields (14 of 20 hold something)",
+      "ok": true,
+      "detail": {}
+     },
+     {
+      "label": "Case_Phase is Review",
+      "ok": true,
+      "detail": "Review"
+     },
+     {
+      "label": "no hand-off of the step failed after its save (portal)",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "I-2 poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "calls": 8
+    }
+   },
+   "ms": 4,
+   "at": "2026-10-21T19:27:44.526Z"
+  },
+  {
+   "name": "4c I-2 Approve",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Case step",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Beiersdorf review and final release"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "at \"Beiersdorf review and final release\"",
+      "ok": true
+     }
+    ],
+    "notes": {
+     "app roles of the key's user (read at boot)": [
+      "Business administrator"
+     ],
+     "offline": "the fake I-2's Approve moved the case, but the held roles stay as read at 02:30 (Business administrator), so this is the one-read branch, not the live poll",
+     "calls": 1
+    }
+   },
+   "ms": 0,
+   "at": "2026-10-21T19:27:44.531Z"
+  },
+  {
+   "name": "5 reviews (ensureReviews)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "mapped reviews (RMM)",
+      "value": [
+       {
+        "dept": "RMM",
+        "status": "in-review",
+        "assigneeId": "UsRmmKatrin",
+        "startedAt": "2026-10-23T16:00:13Z"
+       },
+       {
+        "dept": "REG",
+        "status": "in-review",
+        "assigneeId": "role:REG",
+        "startedAt": "2026-10-23T16:00:16Z"
+       },
+       {
+        "dept": "SAF",
+        "status": "in-review",
+        "assigneeId": "role:SAF",
+        "startedAt": "2026-10-23T16:00:19Z"
+       },
+       {
+        "dept": "QM",
+        "status": "in-review",
+        "assigneeId": "role:QM",
+        "startedAt": "2026-10-23T16:00:22Z"
+       },
+       {
+        "dept": "MIC",
+        "status": "in-review",
+        "assigneeId": "role:MIC",
+        "startedAt": "2026-10-23T16:00:25Z"
+       }
+      ]
+     },
+     {
+      "what": "CIQ Review RMM",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Review – RMM",
+       "Review_Key": "ZZT-N21-R4-SC1-C01-RMM-1",
+       "Case_Code": "ZZT-N21-R4-SC1-C01",
+       "Case_Item_Id": "PkCase9",
+       "Cycle_No": 1,
+       "Supplier_Code": "ZZT-N21-R4-SC1-SUP",
+       "Trade_Name": "ZZT-N21-R4 Recycled Polyamide Powder",
+       "Review_Dept": "RMM",
+       "Round_No": 1,
+       "Activation_Kind": "Completeness",
+       "Track_Status": "In review",
+       "Assignee_User": {
+        "_id": "UsRmmKatrin",
+        "Name": "Katrin Vogel"
+       },
+       "Open_Count": 0,
+       "RMES_Gaps": 0
+      }
+     },
+     {
+      "what": "CIQ Review REG",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Review – Regulatory",
+       "Review_Key": "ZZT-N21-R4-SC1-C01-REG-1",
+       "Case_Code": "ZZT-N21-R4-SC1-C01",
+       "Case_Item_Id": "PkCase9",
+       "Cycle_No": 1,
+       "Supplier_Code": "ZZT-N21-R4-SC1-SUP",
+       "Trade_Name": "ZZT-N21-R4 Recycled Polyamide Powder",
+       "Review_Dept": "REG",
+       "Round_No": 1,
+       "Activation_Kind": "Completeness",
+       "Track_Status": "In review",
+       "Assignee_User": null,
+       "Open_Count": 0,
+       "RMES_Gaps": 0
+      }
+     },
+     {
+      "what": "CIQ Review SAF",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Review – Safety",
+       "Review_Key": "ZZT-N21-R4-SC1-C01-SAF-1",
+       "Case_Code": "ZZT-N21-R4-SC1-C01",
+       "Case_Item_Id": "PkCase9",
+       "Cycle_No": 1,
+       "Supplier_Code": "ZZT-N21-R4-SC1-SUP",
+       "Trade_Name": "ZZT-N21-R4 Recycled Polyamide Powder",
+       "Review_Dept": "SAF",
+       "Round_No": 1,
+       "Activation_Kind": "Completeness",
+       "Track_Status": "In review",
+       "Assignee_User": null,
+       "Open_Count": 0,
+       "RMES_Gaps": 0
+      }
+     },
+     {
+      "what": "CIQ Review QM",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Review – QM",
+       "Review_Key": "ZZT-N21-R4-SC1-C01-QM-1",
+       "Case_Code": "ZZT-N21-R4-SC1-C01",
+       "Case_Item_Id": "PkCase9",
+       "Cycle_No": 1,
+       "Supplier_Code": "ZZT-N21-R4-SC1-SUP",
+       "Trade_Name": "ZZT-N21-R4 Recycled Polyamide Powder",
+       "Review_Dept": "QM",
+       "Round_No": 1,
+       "Activation_Kind": "Completeness",
+       "Track_Status": "In review",
+       "Assignee_User": null,
+       "Open_Count": 0,
+       "RMES_Gaps": 0
+      }
+     },
+     {
+      "what": "CIQ Review MIC",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Review – Microbiology",
+       "Review_Key": "ZZT-N21-R4-SC1-C01-MIC-1",
+       "Case_Code": "ZZT-N21-R4-SC1-C01",
+       "Case_Item_Id": "PkCase9",
+       "Cycle_No": 1,
+       "Supplier_Code": "ZZT-N21-R4-SC1-SUP",
+       "Trade_Name": "ZZT-N21-R4 Recycled Polyamide Powder",
+       "Review_Dept": "MIC",
+       "Round_No": 1,
+       "Activation_Kind": "Completeness",
+       "Track_Status": "In review",
+       "Assignee_User": null,
+       "Open_Count": 0,
+       "RMES_Gaps": 0
+      }
+     },
+     {
+      "what": "CIQ Scope Run (form GET)",
+      "value": {
+       "Run_Key": "ZZT-N21-R4-SC1-C01-SR-1",
+       "Case_Code": "ZZT-N21-R4-SC1-C01",
+       "Case_Item_Id": "PkCase9",
+       "Scope_Trigger": "Completeness",
+       "Lead_Departments": "REG, SAF, QM, MIC",
+       "Rule_Set_Version": "RS-2026.1",
+       "Input_Hash": "8df38732de7d3f69bb23019a397afb936dd5dd24820455909c3a7abdebf9cdb2"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the scope activates the run's departments (case/data.ts: RMM, REG, SAF, QM, MIC)",
+      "ok": true,
+      "detail": {
+       "scope": [
+        "RMM",
+        "REG",
+        "SAF",
+        "QM",
+        "MIC"
+       ],
+       "run": [
+        "RMM",
+        "REG",
+        "SAF",
+        "QM",
+        "MIC"
+       ]
+      }
+     },
+     {
+      "label": "ensureReviews started the reviews",
+      "ok": true,
+      "detail": "Started in Kissflow: ZZT-N21-R4-SC1-C01 reviews for RMM, Regulatory, Safety, QM, Microbiology."
+     },
+     {
+      "label": "no warning (scope run recorded, history lines written)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "one review per department the scope activates, and RMM's",
+      "ok": true,
+      "detail": {
+       "got": [
+        "RMM",
+        "REG",
+        "SAF",
+        "QM",
+        "MIC"
+       ],
+       "want": [
+        "RMM",
+        "REG",
+        "SAF",
+        "QM",
+        "MIC"
+       ]
+      }
+     },
+     {
+      "label": "each in review, started; RMM's assigned to the case owner",
+      "ok": true
+     },
+     {
+      "label": "RMM: at \"Review – RMM\"",
+      "ok": true,
+      "detail": "Review – RMM"
+     },
+     {
+      "label": "RMM: its fields name the case",
+      "ok": true
+     },
+     {
+      "label": "RMM: Assignee_User is the case owner",
+      "ok": true,
+      "detail": [
+       "UsRmmKatrin"
+      ]
+     },
+     {
+      "label": "RMM: its review.started row",
+      "ok": true
+     },
+     {
+      "label": "REG: at \"Review – Regulatory\"",
+      "ok": true,
+      "detail": "Review – Regulatory"
+     },
+     {
+      "label": "REG: its fields name the case",
+      "ok": true
+     },
+     {
+      "label": "REG: its review.started row",
+      "ok": true
+     },
+     {
+      "label": "SAF: at \"Review – Safety\"",
+      "ok": true,
+      "detail": "Review – Safety"
+     },
+     {
+      "label": "SAF: its fields name the case",
+      "ok": true
+     },
+     {
+      "label": "SAF: its review.started row",
+      "ok": true
+     },
+     {
+      "label": "QM: at \"Review – QM\"",
+      "ok": true,
+      "detail": "Review – QM"
+     },
+     {
+      "label": "QM: its fields name the case",
+      "ok": true
+     },
+     {
+      "label": "QM: its review.started row",
+      "ok": true
+     },
+     {
+      "label": "MIC: at \"Review – Microbiology\"",
+      "ok": true,
+      "detail": "Review – Microbiology"
+     },
+     {
+      "label": "MIC: its fields name the case",
+      "ok": true
+     },
+     {
+      "label": "MIC: its review.started row",
+      "ok": true
+     },
+     {
+      "label": "the Scope Run row names the case and its lead departments",
+      "ok": true
+     }
+    ],
+    "notes": {
+     "ensureReviews": {
+      "message": "Started in Kissflow: ZZT-N21-R4-SC1-C01 reviews for RMM, Regulatory, Safety, QM, Microbiology.",
+      "warnings": []
+     },
+     "calls": 63
+    }
+   },
+   "ms": 8,
+   "at": "2026-10-21T19:27:44.532Z"
+  },
+  {
+   "name": "8 release requested",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Case",
+      "value": {
+       "_current_step": "Beiersdorf review and final release",
+       "Release_Requested_At": "2026-10-21T19:27:44Z",
+       "Release_Assignees_JSON": "[{\"_id\":\"UsRmmKatrin\"}]"
+      }
+     },
+     {
+      "what": "CIQP Request",
+      "value": {
+       "_current_step": "Supplier: keep the CIQ up to date",
+       "Release_Flag": "Requested",
+       "Request_Locked": "Yes",
+       "Case_Phase_Label": "Awaiting your final release",
+       "Release_Contacts": [
+        {
+         "_id": "UsRmmKatrin"
+        }
+       ]
+      }
+     },
+     {
+      "what": "release.requested (audit row)",
+      "value": {
+       "Action_Code": "release.requested",
+       "Object_State": "Awaiting final release",
+       "Notify_Recipient": "[{\"code\":\"release.requested\",\"status\":\"sent\",\"detail\":\"handed over\",\"key\":\"REL-PkCase9-R1\"}]"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "release.requested sent with the case's release key",
+      "ok": true,
+      "detail": [
+       {
+        "code": "release.requested",
+        "status": "sent",
+        "detail": "handed over",
+        "key": "REL-PkCase9-R1"
+       }
+      ]
+     },
+     {
+      "label": "the case has Release_Requested_At",
+      "ok": true,
+      "detail": {
+       "polls": 1,
+       "ms": 6000
+      }
+     },
+     {
+      "label": "the request: Release_Flag Requested, locked, awaiting the final release",
+      "ok": true,
+      "detail": {
+       "Release_Flag": "Requested",
+       "Request_Locked": "Yes",
+       "Case_Phase_Label": "Awaiting your final release"
+      }
+     },
+     {
+      "label": "Release_Contacts = the case's release contacts",
+      "ok": true,
+      "detail": [
+       "UsRmmKatrin"
+      ]
+     },
+     {
+      "label": "Release_Contacts = the self contact only",
+      "ok": true,
+      "detail": [
+       "UsRmmKatrin"
+      ]
+     },
+     {
+      "label": "its release.requested row",
+      "ok": true
+     },
+     {
+      "label": "the case reads as awaiting the final release",
+      "ok": true,
+      "detail": "final-release"
+     },
+     {
+      "label": "no hand-off of the step failed after its save (release.requested)",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "approximated": "ensureRelease sends only when every review reads Completed live; completion is blocked (050201: the reviewer roles have no members; this case takes no step 7), so the reviews' status is given as Completed in the index it decides from. The hand-off, its key and the audit row are its own.",
+     "ensureRelease": {
+      "message": "Sent in Kissflow: ZZT-N21-R4-SC1-C01 final-release request.",
+      "handoffs": [
+       {
+        "code": "release.requested",
+        "status": "sent",
+        "detail": "handed over",
+        "key": "REL-PkCase9-R1"
+       }
+      ]
+     },
+     "calls": 40
+    }
+   },
+   "ms": 5,
+   "at": "2026-10-21T19:27:44.542Z"
+  },
+  {
+   "name": "9 final release (I-7)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "the portal's release gates (caseOfRequest on the request)",
+      "value": {
+       "phase": "final-release",
+       "blockers": [],
+       "mayConfirm": true
+      }
+     },
+     {
+      "what": "CIQP Request",
+      "value": {
+       "_current_step": "Supplier: keep the CIQ up to date",
+       "Release_Flag": "Requested",
+       "Release_By_Name": "Katrin Vogel",
+       "Release_At": "2026-10-21T19:27:44Z"
+      }
+     },
+     {
+      "what": "CIQ Case",
+      "value": {
+       "_status": "Completed",
+       "_current_step": "End",
+       "Final_Release_Confirm": "Confirmed",
+       "Final_Release_By_Name": "Katrin Vogel",
+       "Final_Release_At": "2026-10-21T19:27:44Z",
+       "Case_Phase": "Completed"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the self contact may confirm (B-11)",
+      "ok": true,
+      "detail": {
+       "id": "UsRmmKatrin",
+       "name": "Katrin Vogel",
+       "email": "zzt-n21-r4-sc1.self@example.test",
+       "role": "Technical Director",
+       "mayConfirm": true
+      }
+     },
+     {
+      "label": "no release blocker (B-33)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the request holds the release",
+      "ok": true
+     },
+     {
+      "label": "the case reached End",
+      "ok": true,
+      "detail": [
+       "Completed",
+       "End"
+      ]
+     },
+     {
+      "label": "Final_Release_* from the request",
+      "ok": true
+     },
+     {
+      "label": "the case reads as completed",
+      "ok": true,
+      "detail": "completed"
+     },
+     {
+      "label": "no hand-off of the step failed after its save (portal)",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "approximated": "the request is at \"Supplier: keep the CIQ up to date\", not at \"Supplier: give the final release\": admin PUT of Release_By_Name and Release_At (what the portal's finalRelease writes there), then the releaseGiven webhook (I-7)",
+     "I-7 poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "calls": 25
+    }
+   },
+   "ms": 6,
+   "at": "2026-10-21T19:27:44.549Z"
+  },
+  {
+   "name": "3 started (I-1) (in-review case)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Case (admin GET)",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Waiting for supplier: CIQ",
+       "Case_Code": "ZZT-N21-R4-SC1-C03",
+       "Case_Phase": "Supplier filling in the CIQ",
+       "Portal_Request_Item_Id": "PkReq4",
+       "Portal_Contact_Ids": "UsRmmKatrin",
+       "Confirm_Contact_Ids": "UsRmmKatrin",
+       "Portal_Assignees_JSON": "[{\"_id\":\"UsRmmKatrin\"}]",
+       "Release_Assignees_JSON": "[{\"_id\":\"UsRmmKatrin\"}]",
+       "Case_Contacts_JSON": "[{\"id\":\"UsRmmKatrin\",\"name\":\"Katrin Vogel\",\"email\":\"zzt-n21-r4-sc1.self@example.test\",\"title\":\"Technical Director\",\"mayConfirm\":true},{\"name\":\"Katrin Moser\",\"email\":\"katrin.moser.sc1@zzt-n21-r4.example\",\"title\":\"Quality Assurance Officer\",\"mayConfirm\":false}]",
+       "Owner_RMM": {
+        "_id": "UsRmmKatrin",
+        "Name": "Katrin Vogel"
+       }
+      }
+     },
+     {
+      "what": "CIQP Request (admin GET)",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Supplier: fill in the CIQ",
+       "Request_Key": "ZZT-N21-R4-SC1-C03|1",
+       "App_Case_Item_Id": "PkCase44",
+       "Case_Code": "ZZT-N21-R4-SC1-C03",
+       "Case_Phase_Label": "Filling in",
+       "Request_Locked": "No",
+       "Assigned_Contacts": [
+        {
+         "_id": "UsRmmKatrin"
+        }
+       ],
+       "Release_Contacts": [
+        {
+         "_id": "UsRmmKatrin"
+        }
+       ],
+       "Config_Bundle_Hash": "50be73f8a30e30d5bd9508c1ea45497c41f0d5d1a015493ac0d7338ee80f9edd"
+      }
+     },
+     {
+      "what": "case.created (audit row)",
+      "value": {
+       "Action_Code": "case.created",
+       "Object_State": "Supplier filling in the CIQ",
+       "Ref_Flow_Id": "CIQ_Case_A00",
+       "Ref_Item_Id": "PkCase44",
+       "Ref_Activity_Instance_Id": "Act45",
+       "Notify_Channel": "webhook",
+       "handoffs": [
+        {
+         "code": "case.started",
+         "status": "sent",
+         "detail": "handed over",
+         "key": "HO-case.started-mvii83hq-6arxhl"
+        }
+       ]
+      }
+     },
+     {
+      "what": "mapped case (RMM)",
+      "value": {
+       "id": "ZZT-N21-R4-SC1-C03",
+       "materialName": "ZZT-N21-R4 Recycled Polyamide Powder",
+       "inci": "Nylon-12",
+       "materialNo": "ZZT-N21-R4-SC1-RM-03",
+       "supplierId": "ZZT-N21-R4-SC1-SUP",
+       "manufacturer": "ZZT-N21-R4 Supplier",
+       "ownerId": "UsRmmKatrin",
+       "priority": "high",
+       "templateVersion": "CIQ-2026 v1",
+       "ruleSetVersion": "RS-2026.1",
+       "supplierContactIds": [
+        "self:UsRmmKatrin",
+        "u-ZZT-N21-R4-SC1-SUP-2"
+       ],
+       "markets": [
+        "EU",
+        "UK"
+       ],
+       "due": "2026-11-20",
+       "bdfAnswers": {
+        "FLD-GEN-001": "ZZT-N21-R4 Recycled Polyamide Powder",
+        "FLD-GEN-002": "ZZT-N21-R4 Supplier",
+        "FLD-GEN-003": "924000001",
+        "FLD-GEN-008": "zzt-n21-r4-sc1.self@example.test",
+        "FLD-GEN-009": "katrin.moser.sc1@zzt-n21-r4.example"
+       },
+       "phase": "supplier-input"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "case.started was handed over",
+      "ok": true,
+      "detail": [
+       {
+        "code": "case.started",
+        "status": "sent",
+        "detail": "handed over",
+        "key": "HO-case.started-mvii83hq-6arxhl"
+       }
+      ]
+     },
+     {
+      "label": "the case is at \"Waiting for supplier: CIQ\"",
+      "ok": true,
+      "detail": [
+       "Waiting for supplier: CIQ",
+       "InProgress"
+      ]
+     },
+     {
+      "label": "the request names its case (App_Case_Item_Id)",
+      "ok": true,
+      "detail": "PkCase44"
+     },
+     {
+      "label": "Request_Key is <case>|<cycle>",
+      "ok": true,
+      "detail": "ZZT-N21-R4-SC1-C03|1"
+     },
+     {
+      "label": "Supplier_Display_Name is the supplier's legal name",
+      "ok": true,
+      "detail": "ZZT-N21-R4 Supplier"
+     },
+     {
+      "label": "I-1 copied the 16 header, bundle and contact fields (16 hold something)",
+      "ok": true
+     },
+     {
+      "label": "phase label Filling in, not locked",
+      "ok": true,
+      "detail": [
+       "Filling in",
+       "No"
+      ]
+     },
+     {
+      "label": "Assigned_Contacts = the case's Portal_Assignees_JSON",
+      "ok": true,
+      "detail": {
+       "request": [
+        "UsRmmKatrin"
+       ],
+       "case": [
+        "UsRmmKatrin"
+       ]
+      }
+     },
+     {
+      "label": "Release_Contacts = the case's Release_Assignees_JSON",
+      "ok": true,
+      "detail": {
+       "request": [
+        "UsRmmKatrin"
+       ],
+       "case": [
+        "UsRmmKatrin"
+       ]
+      }
+     },
+     {
+      "label": "the bundle matches its hash (the portal's own check)",
+      "ok": true
+     },
+     {
+      "label": "the request's contacts: the self contact by its portal user, the placeholder without one",
+      "ok": true,
+      "detail": [
+       {
+        "id": "UsRmmKatrin",
+        "name": "Katrin Vogel",
+        "email": "zzt-n21-r4-sc1.self@example.test",
+        "role": "Technical Director",
+        "mayConfirm": true
+       },
+       {
+        "name": "Katrin Moser",
+        "email": "katrin.moser.sc1@zzt-n21-r4.example",
+        "role": "Quality Assurance Officer",
+        "mayConfirm": false
+       }
+      ]
+     },
+     {
+      "label": "the request is assigned to the self contact only",
+      "ok": true,
+      "detail": [
+       "UsRmmKatrin"
+      ]
+     },
+     {
+      "label": "its release contact is the self contact only",
+      "ok": true,
+      "detail": [
+       "UsRmmKatrin"
+      ]
+     },
+     {
+      "label": "no pseudo id in the case's or the request's user fields",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "case.created row with its snapshot, naming the case and its Start step",
+      "ok": true
+     },
+     {
+      "label": "its hand-offs: case.started sent",
+      "ok": true,
+      "detail": [
+       {
+        "code": "case.started",
+        "status": "sent",
+        "detail": "handed over",
+        "key": "HO-case.started-mvii83hq-6arxhl"
+       }
+      ]
+     },
+     {
+      "label": "no pseudo id in the audit row",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the case reads back as the domain wrote it (caseKeys)",
+      "ok": true,
+      "detail": {
+       "got": {
+        "id": "ZZT-N21-R4-SC1-C03",
+        "materialName": "ZZT-N21-R4 Recycled Polyamide Powder",
+        "inci": "Nylon-12",
+        "materialNo": "ZZT-N21-R4-SC1-RM-03",
+        "supplierId": "ZZT-N21-R4-SC1-SUP",
+        "manufacturer": "ZZT-N21-R4 Supplier",
+        "ownerId": "UsRmmKatrin",
+        "priority": "high",
+        "templateVersion": "CIQ-2026 v1",
+        "ruleSetVersion": "RS-2026.1",
+        "supplierContactIds": [
+         "self:UsRmmKatrin",
+         "u-ZZT-N21-R4-SC1-SUP-2"
+        ],
+        "markets": [
+         "EU",
+         "UK"
+        ],
+        "due": "2026-11-20",
+        "bdfAnswers": {
+         "FLD-GEN-001": "ZZT-N21-R4 Recycled Polyamide Powder",
+         "FLD-GEN-002": "ZZT-N21-R4 Supplier",
+         "FLD-GEN-003": "924000001",
+         "FLD-GEN-008": "zzt-n21-r4-sc1.self@example.test",
+         "FLD-GEN-009": "katrin.moser.sc1@zzt-n21-r4.example"
+        }
+       },
+       "want": {
+        "id": "ZZT-N21-R4-SC1-C03",
+        "materialName": "ZZT-N21-R4 Recycled Polyamide Powder",
+        "inci": "Nylon-12",
+        "materialNo": "ZZT-N21-R4-SC1-RM-03",
+        "supplierId": "ZZT-N21-R4-SC1-SUP",
+        "manufacturer": "ZZT-N21-R4 Supplier",
+        "ownerId": "UsRmmKatrin",
+        "priority": "high",
+        "templateVersion": "CIQ-2026 v1",
+        "ruleSetVersion": "RS-2026.1",
+        "supplierContactIds": [
+         "self:UsRmmKatrin",
+         "u-ZZT-N21-R4-SC1-SUP-2"
+        ],
+        "markets": [
+         "EU",
+         "UK"
+        ],
+        "due": "2026-11-20",
+        "bdfAnswers": {
+         "FLD-GEN-001": "ZZT-N21-R4 Recycled Polyamide Powder",
+         "FLD-GEN-002": "ZZT-N21-R4 Supplier",
+         "FLD-GEN-003": "924000001",
+         "FLD-GEN-008": "zzt-n21-r4-sc1.self@example.test",
+         "FLD-GEN-009": "katrin.moser.sc1@zzt-n21-r4.example"
+        }
+       }
+      }
+     },
+     {
+      "label": "phase supplier-input; the index knows the item and its request",
+      "ok": true
+     },
+     {
+      "label": "no hand-off of the step failed after its save (case.started)",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "I-1 poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "calls": 27
+    }
+   },
+   "ms": 6,
+   "at": "2026-10-21T19:27:44.556Z"
+  },
+  {
+   "name": "4a answers saved (request.changed) (in-review case)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQP Request after the save (the writer's read-back)",
+      "value": {
+       "Answers_Rev": 1,
+       "Answers_Changed_At": "2026-10-21T19:27:44Z",
+       "Answers_Changed_By_Email": "katrin.vogel@beiersdorf.example",
+       "Scope_JSON": "[{\"sectionId\":\"GEN\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.3\",\"applicability\":\"mandatory\",\"reason\":\"Polymer is Yes\"},{\"sectionId\":\"K5.1\",\"applicability\":\"mandatory\",\"reason\":\"Microbiological test required is Yes or not answered\"},{\"sectionId\":\"K5.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K5.3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.2\",\"applicability\":\"mandatory\",\"reason\":\"Target markets include United Kingdom\"},{\"sectionId\":\"K6.4\",\"applicability\":\"mandatory\",\"reason\":\"Any target market outside the EU\"},{\"sectionId\":\"K6.5\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.6\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.7\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.8\",\"applicability\":\"optional\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.9\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.10\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.11\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.12\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.13\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.14\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.15\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.16\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.16.1\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.17\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K7\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K8\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K8.1\",\"applicability\":\"optional\",\"reason\":\"Every case\"},{\"sectionId\":\"A1\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A2\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A3\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A4\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A5\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A6\",\"applicability\":\"mandatory\",\"reason\":\"Polymer is Yes\"},{\"sectionId\":\"A7\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A8\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A9\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A10\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"A11\",\"applicability\":\"mandatory\",\"reason\":\"Target markets include United Kingdom\"},{\"sectionId\":\"A13\",\"applicability\":\"mandatory\",\"reason\":\"Any target market outside the EU\"}]"
+      }
+     },
+     {
+      "what": "CIQ Case: the 15 supplier-data fields",
+      "value": {
+       "Config_Answers_JSON": "{\"SF02\":false,\"SF03\":true,\"SF04\":false,\"SF05\":[],\"SF06\":false,\"SF07\":false,\"SF08\":false,\"SF09\":false,\"SF10\":false,\"SF12\":true,\"SF01\":[\"waste\"]}",
+       "Answers_JSON": "{\"FLD-GEN-004\":\"ZZT-N21-R4 Described in the supplier's statement.\",\"FLD-GEN-005\":\"ZZT-N21-R4 Described in the supplier's statement.\",\"FLD-2.1-102\":0.5,\"FLD-A14-101\":1,\"FLD-A14-102\":1,\"FLD-A14-103\":1,\"FLD-2.3-15\":\"ZZT-N21-R4 Test value\",\"FLD-2.2-002\":\"ZZT-N21-R4 Described in the supplier's statement.\"}",
+       "Answered_By_JSON": "{\"SF02\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"SF03\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"SF04\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"SF05\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"SF06\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"SF07\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"SF08\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"SF09\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"SF10\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"SF12\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"SF01\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-GEN-004\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-GEN-005\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-2.1-102\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-A14-101\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-A14-102\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-A14-103\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-2.3-15\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-2.2-002\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-K1-001\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-K1-002\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-K1-003\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-K1-004\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-2.2-001\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"FLD-5.1-001\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"},\"K2.1:components\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-21T19:27:44Z\",\"by\":\"UsRmmKatrin\"}}",
+       "Justifications_JSON": "{\"FLD-K1-001\":\"ZZT-N21-R4 Not available for this material; statement on request.\",\"FLD-K1-002\":\"ZZT-N21-R4 Not available for this material; statement on request.\",\"FLD-K1-003\":\"ZZT-N21-R4 Not available for this material; statement on request.\",\"FLD-K1-004\":\"ZZT-N21-R4 Not available for this material; statement on request.\",\"FLD-2.2-001\":\"ZZT-N21-R4 Not available for this material; statement on request.\",\"FLD-5.1-001\":\"ZZT-N21-R4 Not available for this material; statement on request.\"}",
+       "Components_JSON": "[{\"id\":\"c1\",\"inci\":\"Nylon-12\",\"fn\":\"emollient\",\"additive\":false,\"origin\":\"waste\",\"concMin\":99,\"concMax\":100,\"cas\":\"8001-25-0\"}]",
+       "Scope_JSON": "[{\"sectionId\":\"GEN\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.3\",\"applicability\":\"mandatory\",\"reason\":\"Polymer is Yes\"},{\"sectionId\":\"K5.1\",\"applicability\":\"mandatory\",\"reason\":\"Microbiological test required is Yes or not answered\"},{\"sectionId\":\"K5.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K5.3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.2\",\"applicability\":\"mandatory\",\"reason\":\"Target markets include United Kingdom\"},{\"sectionId\":\"K6.4\",\"applicability\":\"mandatory\",\"reason\":\"Any target market outside the EU\"},{\"sectionId\":\"K6.5\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.6\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.7\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.8\",\"applicability\":\"optional\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.9\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.10\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.11\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.12\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.13\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.14\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.15\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.16\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.16.1\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.17\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K7\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K8\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K8.1\",\"applicability\":\"optional\",\"reason\":\"Every case\"},{\"sectionId\":\"A1\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A2\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A3\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A4\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A5\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A6\",\"applicability\":\"mandatory\",\"reason\":\"Polymer is Yes\"},{\"sectionId\":\"A7\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A8\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A9\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A10\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"A11\",\"applicability\":\"mandatory\",\"reason\":\"Target markets include United Kingdom\"},{\"sectionId\":\"A13\",\"applicability\":\"mandatory\",\"reason\":\"Any target market outside the EU\"}]",
+       "Requested_Docs_JSON": "[]",
+       "Documents_JSON": null,
+       "Answers_Rev": 1,
+       "Answers_Changed_At": "2026-10-21T19:27:44Z",
+       "Answers_Changed_By_Email": "katrin.vogel@beiersdorf.example",
+       "Change_Report_Text": null,
+       "Change_Report_Rev": null,
+       "Change_Report_By_Email": null,
+       "Change_Report_At": null
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the request is the self contact's task at \"Supplier: fill in the CIQ\"",
+      "ok": true,
+      "detail": "fill"
+     },
+     {
+      "label": "everything missing can be answered (no requested document: the suite uploads no files)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "every answer of the patch is on the request",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the portal shows nothing missing any more",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the case holds the request's 15 supplier-data fields (9 hold something; blank on both: Requested_Docs_JSON, Documents_JSON, Change_Report_Text, Change_Report_Rev, Change_Report_By_Email, Change_Report_At)",
+      "ok": true,
+      "detail": {}
+     },
+     {
+      "label": "every field the save left filled on the request is filled on the case",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "no hand-off of the step failed after its save (portal)",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "fill-in": {
+      "config": [
+       "SF02",
+       "SF03",
+       "SF04",
+       "SF05",
+       "SF06",
+       "SF07",
+       "SF08",
+       "SF09",
+       "SF10",
+       "SF12",
+       "SF01"
+      ],
+      "set": [
+       "FLD-GEN-004",
+       "FLD-GEN-005",
+       "FLD-2.1-102",
+       "FLD-A14-101",
+       "FLD-A14-102",
+       "FLD-A14-103",
+       "FLD-2.3-15",
+       "FLD-2.2-002"
+      ],
+      "just": [
+       "FLD-K1-001",
+       "FLD-K1-002",
+       "FLD-K1-003",
+       "FLD-K1-004",
+       "FLD-2.2-001",
+       "FLD-5.1-001"
+      ],
+      "components": 1
+     },
+     "request.changed poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "calls": 11
+    }
+   },
+   "ms": 7,
+   "at": "2026-10-21T19:27:44.564Z"
+  },
+  {
+   "name": "4b completeness confirmed (I-2 fields) (in-review case)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQP Request",
+      "value": {
+       "_current_step": "Supplier: keep the CIQ up to date",
+       "Completeness_Confirm": "Confirmed",
+       "Completeness_By_Name": "Katrin Vogel",
+       "Completeness_By_Email": "katrin.vogel@beiersdorf.example",
+       "Completeness_By_Role": "Technical Director",
+       "Completeness_At": "2026-10-21T19:27:44Z"
+      }
+     },
+     {
+      "what": "CIQ Case (admin GET)",
+      "value": {
+       "_current_step": "Beiersdorf review and final release",
+       "Case_Phase": "Review",
+       "Completeness_Confirm": "Confirmed",
+       "Completeness_By_Name": "Katrin Vogel",
+       "Completeness_At": "2026-10-21T19:27:44Z",
+       "Answers_Rev": 1
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the request moved to \"Supplier: keep the CIQ up to date\"",
+      "ok": true,
+      "detail": "Supplier: keep the CIQ up to date"
+     },
+     {
+      "label": "its completeness names the self contact",
+      "ok": true
+     },
+     {
+      "label": "I-2 copied Completeness_* and the 15 fields (14 of 20 hold something)",
+      "ok": true,
+      "detail": {}
+     },
+     {
+      "label": "Case_Phase is Review",
+      "ok": true,
+      "detail": "Review"
+     },
+     {
+      "label": "no hand-off of the step failed after its save (portal)",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "I-2 poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "calls": 8
+    }
+   },
+   "ms": 2,
+   "at": "2026-10-21T19:27:44.573Z"
+  },
+  {
+   "name": "4c I-2 Approve (in-review case)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Case step",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Beiersdorf review and final release"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "at \"Beiersdorf review and final release\"",
+      "ok": true
+     }
+    ],
+    "notes": {
+     "app roles of the key's user (read at boot)": [
+      "Business administrator"
+     ],
+     "offline": "the fake I-2's Approve moved the case, but the held roles stay as read at 02:30 (Business administrator), so this is the one-read branch, not the live poll",
+     "calls": 1
+    }
+   },
+   "ms": 0,
+   "at": "2026-10-21T19:27:44.577Z"
+  },
+  {
+   "name": "5 reviews (ensureReviews) (in-review case)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "mapped reviews (RMM)",
+      "value": [
+       {
+        "dept": "RMM",
+        "status": "in-review",
+        "assigneeId": "UsRmmKatrin",
+        "startedAt": "2026-10-23T16:00:40Z"
+       },
+       {
+        "dept": "REG",
+        "status": "in-review",
+        "assigneeId": "role:REG",
+        "startedAt": "2026-10-23T16:00:43Z"
+       },
+       {
+        "dept": "SAF",
+        "status": "in-review",
+        "assigneeId": "role:SAF",
+        "startedAt": "2026-10-23T16:00:46Z"
+       },
+       {
+        "dept": "QM",
+        "status": "in-review",
+        "assigneeId": "role:QM",
+        "startedAt": "2026-10-23T16:00:49Z"
+       },
+       {
+        "dept": "MIC",
+        "status": "in-review",
+        "assigneeId": "role:MIC",
+        "startedAt": "2026-10-23T16:00:52Z"
+       }
+      ]
+     },
+     {
+      "what": "CIQ Review RMM",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Review – RMM",
+       "Review_Key": "ZZT-N21-R4-SC1-C03-RMM-1",
+       "Case_Code": "ZZT-N21-R4-SC1-C03",
+       "Case_Item_Id": "PkCase44",
+       "Cycle_No": 1,
+       "Supplier_Code": "ZZT-N21-R4-SC1-SUP",
+       "Trade_Name": "ZZT-N21-R4 Recycled Polyamide Powder",
+       "Review_Dept": "RMM",
+       "Round_No": 1,
+       "Activation_Kind": "Completeness",
+       "Track_Status": "In review",
+       "Assignee_User": {
+        "_id": "UsRmmKatrin",
+        "Name": "Katrin Vogel"
+       },
+       "Open_Count": 0,
+       "RMES_Gaps": 0
+      }
+     },
+     {
+      "what": "CIQ Review REG",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Review – Regulatory",
+       "Review_Key": "ZZT-N21-R4-SC1-C03-REG-1",
+       "Case_Code": "ZZT-N21-R4-SC1-C03",
+       "Case_Item_Id": "PkCase44",
+       "Cycle_No": 1,
+       "Supplier_Code": "ZZT-N21-R4-SC1-SUP",
+       "Trade_Name": "ZZT-N21-R4 Recycled Polyamide Powder",
+       "Review_Dept": "REG",
+       "Round_No": 1,
+       "Activation_Kind": "Completeness",
+       "Track_Status": "In review",
+       "Assignee_User": null,
+       "Open_Count": 0,
+       "RMES_Gaps": 0
+      }
+     },
+     {
+      "what": "CIQ Review SAF",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Review – Safety",
+       "Review_Key": "ZZT-N21-R4-SC1-C03-SAF-1",
+       "Case_Code": "ZZT-N21-R4-SC1-C03",
+       "Case_Item_Id": "PkCase44",
+       "Cycle_No": 1,
+       "Supplier_Code": "ZZT-N21-R4-SC1-SUP",
+       "Trade_Name": "ZZT-N21-R4 Recycled Polyamide Powder",
+       "Review_Dept": "SAF",
+       "Round_No": 1,
+       "Activation_Kind": "Completeness",
+       "Track_Status": "In review",
+       "Assignee_User": null,
+       "Open_Count": 0,
+       "RMES_Gaps": 0
+      }
+     },
+     {
+      "what": "CIQ Review QM",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Review – QM",
+       "Review_Key": "ZZT-N21-R4-SC1-C03-QM-1",
+       "Case_Code": "ZZT-N21-R4-SC1-C03",
+       "Case_Item_Id": "PkCase44",
+       "Cycle_No": 1,
+       "Supplier_Code": "ZZT-N21-R4-SC1-SUP",
+       "Trade_Name": "ZZT-N21-R4 Recycled Polyamide Powder",
+       "Review_Dept": "QM",
+       "Round_No": 1,
+       "Activation_Kind": "Completeness",
+       "Track_Status": "In review",
+       "Assignee_User": null,
+       "Open_Count": 0,
+       "RMES_Gaps": 0
+      }
+     },
+     {
+      "what": "CIQ Review MIC",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Review – Microbiology",
+       "Review_Key": "ZZT-N21-R4-SC1-C03-MIC-1",
+       "Case_Code": "ZZT-N21-R4-SC1-C03",
+       "Case_Item_Id": "PkCase44",
+       "Cycle_No": 1,
+       "Supplier_Code": "ZZT-N21-R4-SC1-SUP",
+       "Trade_Name": "ZZT-N21-R4 Recycled Polyamide Powder",
+       "Review_Dept": "MIC",
+       "Round_No": 1,
+       "Activation_Kind": "Completeness",
+       "Track_Status": "In review",
+       "Assignee_User": null,
+       "Open_Count": 0,
+       "RMES_Gaps": 0
+      }
+     },
+     {
+      "what": "CIQ Scope Run (form GET)",
+      "value": {
+       "Run_Key": "ZZT-N21-R4-SC1-C03-SR-1",
+       "Case_Code": "ZZT-N21-R4-SC1-C03",
+       "Case_Item_Id": "PkCase44",
+       "Scope_Trigger": "Completeness",
+       "Lead_Departments": "REG, SAF, QM, MIC",
+       "Rule_Set_Version": "RS-2026.1",
+       "Input_Hash": "8df38732de7d3f69bb23019a397afb936dd5dd24820455909c3a7abdebf9cdb2"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the scope activates the run's departments (case/data.ts: RMM, REG, SAF, QM, MIC)",
+      "ok": true,
+      "detail": {
+       "scope": [
+        "RMM",
+        "REG",
+        "SAF",
+        "QM",
+        "MIC"
+       ],
+       "run": [
+        "RMM",
+        "REG",
+        "SAF",
+        "QM",
+        "MIC"
+       ]
+      }
+     },
+     {
+      "label": "ensureReviews started the reviews",
+      "ok": true,
+      "detail": "Started in Kissflow: ZZT-N21-R4-SC1-C03 reviews for RMM, Regulatory, Safety, QM, Microbiology."
+     },
+     {
+      "label": "no warning (scope run recorded, history lines written)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "one review per department the scope activates, and RMM's",
+      "ok": true,
+      "detail": {
+       "got": [
+        "RMM",
+        "REG",
+        "SAF",
+        "QM",
+        "MIC"
+       ],
+       "want": [
+        "RMM",
+        "REG",
+        "SAF",
+        "QM",
+        "MIC"
+       ]
+      }
+     },
+     {
+      "label": "each in review, started; RMM's assigned to the case owner",
+      "ok": true
+     },
+     {
+      "label": "RMM: at \"Review – RMM\"",
+      "ok": true,
+      "detail": "Review – RMM"
+     },
+     {
+      "label": "RMM: its fields name the case",
+      "ok": true
+     },
+     {
+      "label": "RMM: Assignee_User is the case owner",
+      "ok": true,
+      "detail": [
+       "UsRmmKatrin"
+      ]
+     },
+     {
+      "label": "RMM: its review.started row",
+      "ok": true
+     },
+     {
+      "label": "REG: at \"Review – Regulatory\"",
+      "ok": true,
+      "detail": "Review – Regulatory"
+     },
+     {
+      "label": "REG: its fields name the case",
+      "ok": true
+     },
+     {
+      "label": "REG: its review.started row",
+      "ok": true
+     },
+     {
+      "label": "SAF: at \"Review – Safety\"",
+      "ok": true,
+      "detail": "Review – Safety"
+     },
+     {
+      "label": "SAF: its fields name the case",
+      "ok": true
+     },
+     {
+      "label": "SAF: its review.started row",
+      "ok": true
+     },
+     {
+      "label": "QM: at \"Review – QM\"",
+      "ok": true,
+      "detail": "Review – QM"
+     },
+     {
+      "label": "QM: its fields name the case",
+      "ok": true
+     },
+     {
+      "label": "QM: its review.started row",
+      "ok": true
+     },
+     {
+      "label": "MIC: at \"Review – Microbiology\"",
+      "ok": true,
+      "detail": "Review – Microbiology"
+     },
+     {
+      "label": "MIC: its fields name the case",
+      "ok": true
+     },
+     {
+      "label": "MIC: its review.started row",
+      "ok": true
+     },
+     {
+      "label": "the Scope Run row names the case and its lead departments",
+      "ok": true
+     }
+    ],
+    "notes": {
+     "ensureReviews": {
+      "message": "Started in Kissflow: ZZT-N21-R4-SC1-C03 reviews for RMM, Regulatory, Safety, QM, Microbiology.",
+      "warnings": []
+     },
+     "calls": 75
+    }
+   },
+   "ms": 6,
+   "at": "2026-10-21T19:27:44.579Z"
+  },
+  {
+   "name": "6a RMES Safety (in-review case)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ RMES SAF (form GET)",
+      "value": {
+       "RMES_Key": "ZZT-N21-R4-SC1-C03-RMES-SAF",
+       "Case_Item_Id": "PkCase44",
+       "Case_Code": "ZZT-N21-R4-SC1-C03",
+       "Open_Criteria_Count": 3,
+       "Open_Blocking_Findings_Count": 1,
+       "RMES_Voided": "No",
+       "criteria": [
+        {
+         "Criteria_Code": "S-A1",
+         "Criteria_Result": "Available",
+         "Criteria_Comment": "ZZT-N21-R4 Particle size distribution within the limits.",
+         "Criteria_Recorded_At": "2026-10-21T19:27:44Z"
+        },
+        {
+         "Criteria_Code": "S-B1",
+         "Criteria_Result": null,
+         "Criteria_Comment": null,
+         "Criteria_Recorded_At": null
+        },
+        {
+         "Criteria_Code": "S-C1",
+         "Criteria_Result": null,
+         "Criteria_Comment": null,
+         "Criteria_Recorded_At": null
+        },
+        {
+         "Criteria_Code": "S-D1",
+         "Criteria_Result": null,
+         "Criteria_Comment": null,
+         "Criteria_Recorded_At": null
+        }
+       ],
+       "findings": [
+        {
+         "Findings_Key": "-C03-F1",
+         "Findings_Criterion_Code": "S-B1",
+         "Findings_Text": "ZZT-N21-R4 Statement on the EU microplastics restriction missing.",
+         "Findings_Blocking": "Yes",
+         "Findings_State": "open"
+        }
+       ]
+      }
+     },
+     {
+      "what": "mapped RMES SAF",
+      "value": {
+       "criterion": {
+        "id": "S-A1",
+        "dept": "SAF",
+        "part": "A",
+        "title": "Byproducts and contaminants within BDF limits",
+        "result": "available",
+        "comment": "ZZT-N21-R4 Particle size distribution within the limits.",
+        "by": "UsRmmKatrin",
+        "at": "2026-10-21T19:27:44.000Z",
+        "source": {
+         "sectionId": "K2.2",
+         "fieldId": "FLD-A14-101",
+         "label": "K2.2 heavy metals"
+        }
+       },
+       "finding": {
+        "id": "-C03-F1",
+        "dept": "SAF",
+        "criterionId": "S-B1",
+        "text": "ZZT-N21-R4 Statement on the EU microplastics restriction missing.",
+        "blocking": true,
+        "status": "open"
+       }
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "ensureRmes created the record",
+      "ok": true,
+      "detail": "Started in Kissflow: ZZT-N21-R4-SC1-C03 Safety RMES record (4 criteria)."
+     },
+     {
+      "label": "the header names the case",
+      "ok": true
+     },
+     {
+      "label": "one row per planned criterion (4), no duplicate",
+      "ok": true,
+      "detail": 4
+     },
+     {
+      "label": "S-A1: the result as recorded",
+      "ok": true,
+      "detail": {
+       "Criteria_Result": "Available",
+       "Criteria_Comment": "ZZT-N21-R4 Particle size distribution within the limits.",
+       "Criteria_Recorded_By": {
+        "_id": "UsRmmKatrin",
+        "Name": "Katrin Vogel"
+       }
+      }
+     },
+     {
+      "label": "-C03-F1: one finding row as added",
+      "ok": true
+     },
+     {
+      "label": "the open counts follow",
+      "ok": true,
+      "detail": {
+       "Open_Criteria_Count": 3,
+       "Open_Blocking_Findings_Count": 1
+      }
+     },
+     {
+      "label": "the criterion reads back as recorded",
+      "ok": true,
+      "detail": {
+       "got": {
+        "id": "S-A1",
+        "dept": "SAF",
+        "part": "A",
+        "title": "Byproducts and contaminants within BDF limits",
+        "result": "available",
+        "comment": "ZZT-N21-R4 Particle size distribution within the limits.",
+        "by": "UsRmmKatrin",
+        "at": "2026-10-21T19:27:44.000Z",
+        "source": {
+         "sectionId": "K2.2",
+         "fieldId": "FLD-A14-101",
+         "label": "K2.2 heavy metals"
+        }
+       },
+       "want": {
+        "id": "S-A1",
+        "dept": "SAF",
+        "part": "A",
+        "title": "Byproducts and contaminants within BDF limits",
+        "result": "available",
+        "comment": "ZZT-N21-R4 Particle size distribution within the limits.",
+        "by": "UsRmmKatrin",
+        "at": "2026-10-21T19:27:44.000Z",
+        "source": {
+         "sectionId": "K2.2",
+         "fieldId": "FLD-A14-101",
+         "label": "K2.2 heavy metals"
+        }
+       }
+      }
+     },
+     {
+      "label": "the finding reads back as added",
+      "ok": true,
+      "detail": {
+       "got": {
+        "id": "-C03-F1",
+        "dept": "SAF",
+        "criterionId": "S-B1",
+        "text": "ZZT-N21-R4 Statement on the EU microplastics restriction missing.",
+        "blocking": true,
+        "status": "open"
+       },
+       "want": {
+        "id": "-C03-F1",
+        "dept": "SAF",
+        "criterionId": "S-B1",
+        "text": "ZZT-N21-R4 Statement on the EU microplastics restriction missing.",
+        "blocking": true,
+        "status": "open"
+       }
+      }
+     },
+     {
+      "label": "three rmes.saved rows (record, result, finding)",
+      "ok": true,
+      "detail": [
+       "RMES record",
+       "RMES criterion",
+       "RMES finding"
+      ]
+     }
+    ],
+    "notes": {
+     "ensureRmes as loaded": "nothing: the review task is not held",
+     "approximated": "\"Review – Safety\" is held by Product Safety reviewer, which has no members (SPEC §2); ensureRmes ran with the review's live activity instance (Act62) as held. The RMES write itself needs no task.",
+     "ensureRmes": "Started in Kissflow: ZZT-N21-R4-SC1-C03 Safety RMES record (4 criteria).",
+     "calls": 78
+    }
+   },
+   "ms": 11,
+   "at": "2026-10-21T19:27:44.587Z"
+  },
+  {
+   "name": "6b RMES Regulatory (in-review case)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ RMES REG (form GET)",
+      "value": {
+       "RMES_Key": "ZZT-N21-R4-SC1-C03-RMES-REG",
+       "Case_Item_Id": "PkCase44",
+       "Case_Code": "ZZT-N21-R4-SC1-C03",
+       "Open_Criteria_Count": 4,
+       "Open_Blocking_Findings_Count": 0,
+       "RMES_Voided": "No",
+       "criteria": [
+        {
+         "Criteria_Code": "R-A1",
+         "Criteria_Result": "Listed",
+         "Criteria_Comment": null,
+         "Criteria_Recorded_At": "2026-10-21T19:27:44Z"
+        },
+        {
+         "Criteria_Code": "R-A2",
+         "Criteria_Result": null,
+         "Criteria_Comment": null,
+         "Criteria_Recorded_At": null
+        },
+        {
+         "Criteria_Code": "R-B1",
+         "Criteria_Result": null,
+         "Criteria_Comment": null,
+         "Criteria_Recorded_At": null
+        },
+        {
+         "Criteria_Code": "R-B2",
+         "Criteria_Result": null,
+         "Criteria_Comment": null,
+         "Criteria_Recorded_At": null
+        },
+        {
+         "Criteria_Code": "R-D1",
+         "Criteria_Result": null,
+         "Criteria_Comment": null,
+         "Criteria_Recorded_At": null
+        }
+       ],
+       "findings": [
+        {
+         "Findings_Key": "-C03-F1",
+         "Findings_Criterion_Code": "R-A2",
+         "Findings_Text": "ZZT-N21-R4 UK REACH registration number to be confirmed.",
+         "Findings_Blocking": "No",
+         "Findings_State": "open"
+        }
+       ]
+      }
+     },
+     {
+      "what": "mapped RMES REG",
+      "value": {
+       "criterion": {
+        "id": "R-A1",
+        "dept": "REG",
+        "part": "A",
+        "title": "INCI and CAS of every component are consistent",
+        "result": "listed",
+        "by": "UsRmmKatrin",
+        "at": "2026-10-21T19:27:44.000Z",
+        "source": {
+         "sectionId": "K2.1",
+         "label": "K2.1 composition table"
+        }
+       },
+       "finding": {
+        "id": "-C03-F1",
+        "dept": "REG",
+        "criterionId": "R-A2",
+        "text": "ZZT-N21-R4 UK REACH registration number to be confirmed.",
+        "blocking": false,
+        "status": "open"
+       }
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "ensureRmes created the record",
+      "ok": true,
+      "detail": "Started in Kissflow: ZZT-N21-R4-SC1-C03 Regulatory RMES record (5 criteria)."
+     },
+     {
+      "label": "the header names the case",
+      "ok": true
+     },
+     {
+      "label": "one row per planned criterion (5), no duplicate",
+      "ok": true,
+      "detail": 5
+     },
+     {
+      "label": "R-A1: the result as recorded",
+      "ok": true,
+      "detail": {
+       "Criteria_Result": "Listed",
+       "Criteria_Comment": null,
+       "Criteria_Recorded_By": {
+        "_id": "UsRmmKatrin",
+        "Name": "Katrin Vogel"
+       }
+      }
+     },
+     {
+      "label": "-C03-F1: one finding row as added",
+      "ok": true
+     },
+     {
+      "label": "the open counts follow",
+      "ok": true,
+      "detail": {
+       "Open_Criteria_Count": 4,
+       "Open_Blocking_Findings_Count": 0
+      }
+     },
+     {
+      "label": "the criterion reads back as recorded",
+      "ok": true,
+      "detail": {
+       "got": {
+        "id": "R-A1",
+        "dept": "REG",
+        "part": "A",
+        "title": "INCI and CAS of every component are consistent",
+        "result": "listed",
+        "by": "UsRmmKatrin",
+        "at": "2026-10-21T19:27:44.000Z",
+        "source": {
+         "sectionId": "K2.1",
+         "label": "K2.1 composition table"
+        }
+       },
+       "want": {
+        "id": "R-A1",
+        "dept": "REG",
+        "part": "A",
+        "title": "INCI and CAS of every component are consistent",
+        "result": "listed",
+        "by": "UsRmmKatrin",
+        "at": "2026-10-21T19:27:44.000Z",
+        "source": {
+         "sectionId": "K2.1",
+         "label": "K2.1 composition table"
+        }
+       }
+      }
+     },
+     {
+      "label": "the finding reads back as added",
+      "ok": true,
+      "detail": {
+       "got": {
+        "id": "-C03-F1",
+        "dept": "REG",
+        "criterionId": "R-A2",
+        "text": "ZZT-N21-R4 UK REACH registration number to be confirmed.",
+        "blocking": false,
+        "status": "open"
+       },
+       "want": {
+        "id": "-C03-F1",
+        "dept": "REG",
+        "criterionId": "R-A2",
+        "text": "ZZT-N21-R4 UK REACH registration number to be confirmed.",
+        "blocking": false,
+        "status": "open"
+       }
+      }
+     },
+     {
+      "label": "three rmes.saved rows (record, result, finding)",
+      "ok": true,
+      "detail": [
+       "RMES record",
+       "RMES criterion",
+       "RMES finding"
+      ]
+     }
+    ],
+    "notes": {
+     "ensureRmes as loaded": "nothing: the review task is not held",
+     "approximated": "\"Review – Regulatory\" is held by Regulatory Affairs reviewer, which has no members (SPEC §2); ensureRmes ran with the review's live activity instance (Act57) as held. The RMES write itself needs no task.",
+     "ensureRmes": "Started in Kissflow: ZZT-N21-R4-SC1-C03 Regulatory RMES record (5 criteria).",
+     "calls": 78
+    }
+   },
+   "ms": 8,
+   "at": "2026-10-21T19:27:44.600Z"
+  },
+  {
+   "name": "7 review completion (in-review case)",
+   "status": "blocked",
+   "reason": "050201: \"Review – RMM\" is held by Raw Material Manager (RMM), which has no members; the app refused first (The RMM review of this case is not one of your open tasks in Kissflow (it may have moved on). Reload to see its current state.). Kissflow: KISSFLOW_ERROR_050201 This item has moved out of your queue.",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Review RMM: Review_Gate",
+      "value": {
+       "Open_Count": 0,
+       "RMES_Gaps": 0,
+       "Review_Gate": "OK"
+      }
+     },
+     {
+      "what": "CIQ Review REG: Review_Gate",
+      "value": {
+       "Open_Count": 0,
+       "RMES_Gaps": 6,
+       "Review_Gate": ""
+      }
+     },
+     {
+      "what": "CIQ Review SAF: Review_Gate",
+      "value": {
+       "Open_Count": 0,
+       "RMES_Gaps": 5,
+       "Review_Gate": ""
+      }
+     },
+     {
+      "what": "CIQ Review QM: Review_Gate",
+      "value": {
+       "Open_Count": 0,
+       "RMES_Gaps": 0,
+       "Review_Gate": "OK"
+      }
+     },
+     {
+      "what": "CIQ Review MIC: Review_Gate",
+      "value": {
+       "Open_Count": 0,
+       "RMES_Gaps": 0,
+       "Review_Gate": "OK"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "RMM: Review_Gate \"OK\" for 0 + 0",
+      "ok": true,
+      "detail": "OK"
+     },
+     {
+      "label": "REG: Review_Gate \"\" for 0 + 6",
+      "ok": true,
+      "detail": ""
+     },
+     {
+      "label": "SAF: Review_Gate \"\" for 0 + 5",
+      "ok": true,
+      "detail": ""
+     },
+     {
+      "label": "QM: Review_Gate \"OK\" for 0 + 0",
+      "ok": true,
+      "detail": "OK"
+     },
+     {
+      "label": "MIC: Review_Gate \"OK\" for 0 + 0",
+      "ok": true,
+      "detail": "OK"
+     }
+    ],
+    "notes": {
+     "completeReview (the app)": "The RMM review of this case is not one of your open tasks in Kissflow (it may have moved on). Reload to see its current state.",
+     "Kissflow (the review's task read)": "KISSFLOW_ERROR_050201 This item has moved out of your queue.",
+     "approximated": "the counts written by admin PUT (P-RO), as each department's completion would write them (countsOf on that department's view)",
+     "calls": 35
+    }
+   },
+   "ms": 2,
+   "at": "2026-10-21T19:27:44.611Z"
+  },
+  {
+   "name": "10 cancelled case",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQP Request",
+      "value": {
+       "_current_step": "Supplier: fill in the CIQ",
+       "Case_Phase_Label": "Cancelled",
+       "Request_Locked": "Yes"
+      }
+     },
+     {
+      "what": "CIQ Case",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Waiting for supplier: CIQ",
+       "Case_Phase": "Supplier filling in the CIQ"
+      }
+     },
+     {
+      "what": "case.cancelled (audit row)",
+      "value": {
+       "Action_Code": "case.cancelled",
+       "Object_State": "Cancelled",
+       "Event_Reason": "ZZT-N21-R4 Supplier site closed for requalification."
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "case.cancelled was handed over",
+      "ok": true,
+      "detail": [
+       {
+        "code": "case.cancelled",
+        "status": "sent",
+        "detail": "handed over",
+        "key": "HO-case.cancelled-mvii83jh-ibyt64"
+       }
+      ]
+     },
+     {
+      "label": "the request's phase label is Cancelled, locked",
+      "ok": true,
+      "detail": {
+       "polls": 1,
+       "label": "Cancelled"
+      }
+     },
+     {
+      "label": "as the app does it: the item stays at \"Waiting for supplier: CIQ\", the history cancels it",
+      "ok": true,
+      "detail": [
+       "InProgress",
+       "Waiting for supplier: CIQ"
+      ]
+     },
+     {
+      "label": "the case reads as cancelled, with its reason",
+      "ok": true,
+      "detail": "cancelled"
+     },
+     {
+      "label": "no hand-off of the step failed after its save (case.started, case.cancelled)",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "calls": 62
+    }
+   },
+   "ms": 7,
+   "at": "2026-10-21T19:27:44.616Z"
+  },
+  {
+   "name": "11 cleanup",
+   "status": "not-run",
+   "reason": "R4 is the showcase: its 44 items stay at the stages the ledger names",
+   "evidence": {
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-21T19:27:44.626Z"
+  }
+ ]
+}

@@ -1,0 +1,433 @@
+<title>CIQ Data Model</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a single reading column. Diagram first, then the two areas' modules as tables, then configuration. */
+:root {
+  --bg: oklch(0.975 0.004 255); --surface: oklch(1 0 0); --surface-2: oklch(0.965 0.006 255);
+  --line: oklch(0.905 0.01 255); --line-strong: oklch(0.84 0.015 255);
+  --ink: oklch(0.24 0.04 262); --ink-2: oklch(0.43 0.03 262); --ink-3: oklch(0.56 0.02 262);
+  --brand: oklch(0.38 0.19 262); --brand-soft: oklch(0.95 0.03 262);
+  --portal: oklch(0.5 0.12 175); --portal-soft: oklch(0.95 0.035 175);
+  --sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: oklch(0.18 0.02 262); --surface: oklch(0.22 0.025 262); --surface-2: oklch(0.25 0.025 262);
+  --line: oklch(0.32 0.03 262); --line-strong: oklch(0.4 0.03 262);
+  --ink: oklch(0.95 0.01 262); --ink-2: oklch(0.8 0.02 262); --ink-3: oklch(0.68 0.02 262);
+  --brand: oklch(0.74 0.14 262); --brand-soft: oklch(0.3 0.07 262);
+  --portal: oklch(0.78 0.11 175); --portal-soft: oklch(0.3 0.05 175);
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: oklch(0.18 0.02 262); --surface: oklch(0.22 0.025 262); --surface-2: oklch(0.25 0.025 262);
+  --line: oklch(0.32 0.03 262); --line-strong: oklch(0.4 0.03 262);
+  --ink: oklch(0.95 0.01 262); --ink-2: oklch(0.8 0.02 262); --ink-3: oklch(0.68 0.02 262);
+  --brand: oklch(0.74 0.14 262); --brand-soft: oklch(0.3 0.07 262);
+  --portal: oklch(0.78 0.11 175); --portal-soft: oklch(0.3 0.05 175);
+  color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.6 var(--sans); }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; padding-block: 32px 72px; display: grid; gap: 44px; }
+header { display: grid; gap: 12px; }
+.eyebrow { font: 600 12px/1 var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--brand); }
+h1 { font: 700 clamp(28px, 4vw, 40px)/1.15 var(--sans); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+h2 { font: 600 22px/1.3 var(--sans); margin: 0; text-wrap: balance; }
+h3 { font: 600 16px/1.35 var(--sans); margin: 0; }
+p { margin: 0; }
+.lead { font-size: 17px; color: var(--ink-2); max-width: 70ch; }
+section { display: grid; gap: 16px; }
+.intro { color: var(--ink-2); max-width: 74ch; }
+nav { display: flex; flex-wrap: wrap; gap: 8px; }
+nav a { font-size: 13px; color: var(--ink-2); text-decoration: none; border: 1px solid var(--line); background: var(--surface); padding: 5px 11px; border-radius: 999px; }
+nav a:hover, nav a:focus-visible { border-color: var(--brand); color: var(--brand); outline: none; }
+.areas { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+.area { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.area .tag { font: 600 11.5px/1 var(--sans); letter-spacing: .06em; text-transform: uppercase; }
+.area.portal .tag { color: var(--portal); }
+.area.app .tag { color: var(--brand); }
+.area ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; color: var(--ink-2); }
+.blocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
+.block { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; background: var(--surface); display: grid; gap: 4px; min-width: 0; }
+.block b { font-weight: 600; }
+.block span { color: var(--ink-2); font-size: 14px; }
+.diagram { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; overflow-x: auto; }
+svg.dm { display: block; width: 100%; min-width: 900px; height: auto; font-family: var(--sans); }
+.dm .pan-p { fill: var(--portal-soft); stroke: var(--portal); stroke-width: 1; }
+.dm .pan-a { fill: var(--brand-soft); stroke: var(--brand); stroke-width: 1; opacity: .9; }
+.dm .pt { font-size: 12px; font-weight: 600; letter-spacing: .07em; }
+.dm .pt-p { fill: var(--portal); }
+.dm .pt-a { fill: var(--brand); }
+.dm .np { fill: var(--surface); stroke: var(--portal); stroke-width: 2; }
+.dm .na { fill: var(--surface); stroke: var(--brand); stroke-width: 2; }
+.dm .nf { fill: var(--surface); stroke: var(--line-strong); stroke-width: 1.2; stroke-dasharray: 5 3; }
+.dm .ns { fill: var(--surface); stroke: var(--portal); stroke-width: 1.4; stroke-dasharray: 2 3; }
+.dm .ni { fill: var(--surface); stroke: var(--ink-3); stroke-width: 1.5; }
+.dm .ne { fill: var(--surface-2); stroke: var(--line); stroke-width: 1; }
+.dm .nm { fill: var(--ink); font-size: 14.5px; font-weight: 600; }
+.dm .nm.sm { font-size: 13px; }
+.dm .sb { fill: var(--ink-2); font-size: 11.5px; }
+.dm .sb.b { fill: var(--ink); font-weight: 500; }
+.dm .lb { fill: var(--ink-3); font-size: 11px; }
+.dm .ln { fill: none; stroke: var(--ink-3); stroke-width: 1.4; }
+.dm .tw { fill: none; stroke: var(--ink); stroke-width: 2.2; }
+.dm .mk { fill: var(--ink-3); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 13.5px; color: var(--ink-2); }
+.legend .lg { display: inline-flex; align-items: center; gap: 8px; }
+.legend b { color: var(--ink); }
+.sw { display: inline-block; width: 22px; height: 14px; border-radius: 4px; background: var(--surface); }
+.sw-p { border: 2px solid var(--portal); }
+.sw-a { border: 2px solid var(--brand); }
+.sw-f { border: 1.5px dashed var(--line-strong); }
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+th { text-align: left; font: 600 12px/1.3 var(--sans); letter-spacing: .04em; text-transform: uppercase; color: var(--ink-3); background: var(--surface-2); padding: 10px 14px; border-bottom: 1px solid var(--line); }
+td { vertical-align: top; padding: 13px 14px; border-top: 1px solid var(--line); }
+tr:first-child td { border-top: 0; }
+td.mod { width: 22%; }
+td.mod b { display: block; font-weight: 600; }
+td.type { width: 12%; white-space: nowrap; }
+.pill { display: inline-block; font: 600 11.5px/1 var(--sans); padding: 5px 8px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); color: var(--ink-2); }
+.pill.proc { background: var(--brand-soft); border-color: transparent; color: var(--brand); }
+.pill.pproc { background: var(--portal-soft); border-color: transparent; color: var(--portal); }
+td ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 3px; }
+td p + p { margin-top: 6px; }
+.subhead { font: 600 13px/1.3 var(--sans); letter-spacing: .05em; text-transform: uppercase; margin-top: 4px; }
+.subhead.portal { color: var(--portal); }
+.subhead.app { color: var(--brand); }
+ol.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; counter-reset: s; }
+ol.steps li { counter-increment: s; display: grid; grid-template-columns: 32px 1fr; gap: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 13px 16px; }
+ol.steps li::before { content: counter(s); font: 600 13px/28px var(--mono); width: 28px; height: 28px; text-align: center; border-radius: 50%; background: var(--brand-soft); color: var(--brand); }
+ol.steps .where { display: block; font-size: 13px; color: var(--ink-3); margin-top: 2px; }
+.config { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+.cfg { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.cfg p, .cfg li { color: var(--ink-2); font-size: 14.5px; }
+.cfg ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+footer { border-top: 1px solid var(--line); padding-top: 16px; color: var(--ink-3); font-size: 13px; }
+@media (max-width: 720px) {
+  .wrap { padding-inline: 16px; }
+  .tablewrap { overflow: visible; border: 0; background: transparent; }
+  table, tbody, tr, td { display: block; width: 100% !important; }
+  thead { display: none; }
+  tr { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 12px; }
+  td { border-top: 1px solid var(--line); }
+  td[data-label]::before { content: attr(data-label); display: block; font: 600 11px/1.3 var(--sans); letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 4px; }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">CIQ on Kissflow</span>
+    <h1>How the CIQ is modelled in Kissflow</h1>
+    <p class="lead">The CIQ runs in two connected areas of Kissflow: a supplier portal for external suppliers, and the CIQ Digital app for Beiersdorf. This page shows the modules in each area, what each one does, and how they connect.</p>
+    <nav aria-label="Sections">
+      <a href="#areas">Two areas</a>
+      <a href="#blocks">Kissflow building blocks</a>
+      <a href="#model">Data model</a>
+      <a href="#modules">What each module does</a>
+      <a href="#journey">One case, end to end</a>
+      <a href="#config">How it's configured</a>
+    </nav>
+  </header>
+
+  <section id="areas">
+    <h2>Two areas, one case</h2>
+    <div class="areas">
+      <div class="area portal">
+        <span class="tag">Supplier portal</span>
+        <h3>For external suppliers only</h3>
+        <ul>
+          <li>One role: <b>Supplier</b>.</li>
+          <li>Holds only the supplier's own tasks: fill in the CIQ, answer questions, give the final release.</li>
+          <li>A supplier sees only their own cases.</li>
+        </ul>
+      </div>
+      <div class="area app">
+        <span class="tag">CIQ Digital app</span>
+        <h3>For Beiersdorf users only</h3>
+        <ul>
+          <li>11 roles: the RMM, five department reviewers, Customs &amp; Trade Compliance, Legal / IP, Business administrator, Auditor and Business owner (reports).</li>
+          <li>Every Beiersdorf decision is a step here: reviews, questions to the supplier, the case itself.</li>
+          <li>Holds the supplier master, the questionnaire and rules versions, notes and the audit trail.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="intro">Every portal item has a twin in the app, with the same case number. That keeps the supplier's side and Beiersdorf's side of one case together.</p>
+  </section>
+
+  <section id="blocks">
+    <h2>The Kissflow building blocks we use</h2>
+    <div class="blocks">
+      <div class="block"><b>Process</b><span>A record that moves through steps. Each step has an assignee and can have a deadline.</span></div>
+      <div class="block"><b>Form</b><span>A data record with no steps, such as the supplier master or a note.</span></div>
+      <div class="block"><b>Child table</b><span>Rows inside one record, such as a supplier's contacts or a request's uploaded files.</span></div>
+      <div class="block"><b>List</b><span>The values of a dropdown, such as case phases or departments.</span></div>
+      <div class="block"><b>Role</b><span>A group of people. Permissions and step assignments are given to roles.</span></div>
+      <div class="block"><b>Integration</b><span>An automation: when something happens, do something, such as send an e-mail.</span></div>
+      <div class="block"><b>Report</b><span>A saved view of a process or form, with columns, filters and charts, shared with roles.</span></div>
+      <div class="block"><b>Sharing</b><span>Settings that let the app and the portal read each other's data.</span></div>
+    </div>
+  </section>
+
+  <section id="model">
+    <h2>Data model</h2>
+    <p class="intro">The modules and how they connect. Fields are left out.</p>
+    <div class="diagram">
+<svg class="dm" viewBox="0 0 1100 624" role="img" aria-labelledby="dmt dmd">
+  <title id="dmt">CIQ data model</title>
+  <desc id="dmd">Supplier portal on the left with CIQP Request, its Uploads child table and its final release step, CIQP Query and CIQP Help Article. CIQ Digital app on the right with CIQ Case at the centre, CIQ Review and CIQ Open Point below it, six forms linked to the case, and the e-mail integration. CIQ Case is the twin of CIQP Request, and CIQ Open Point is the twin of CIQP Query.</desc>
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk"/></marker>
+  </defs>
+  <rect class="pan-p" x="16" y="16" width="330" height="596" rx="14"/>
+  <text class="pt pt-p" x="36" y="44">SUPPLIER PORTAL · role: Supplier</text>
+  <rect class="pan-a" x="380" y="16" width="704" height="596" rx="14"/>
+  <text class="pt pt-a" x="400" y="44">CIQ DIGITAL APP · 11 Beiersdorf roles</text>
+
+  <!-- links -->
+  <path class="ln" d="M181,134 V150"/>
+  <path class="tw" d="M328,102 H416" marker-start="url(#ar)" marker-end="url(#ar)"/>
+  <text class="lb" x="372" y="94" text-anchor="middle">twin</text>
+  <text class="lb" x="372" y="118" text-anchor="middle">same case no.</text>
+  <path class="tw" d="M328,362 H416" marker-start="url(#ar)" marker-end="url(#ar)"/>
+  <text class="lb" x="372" y="354" text-anchor="middle">twin</text>
+  <text class="lb" x="372" y="378" text-anchor="middle">each round</text>
+  <path class="ln" d="M420,126 H398 V246 H330" marker-end="url(#ar)"/>
+  <path class="ln" d="M550,134 V186" marker-end="url(#ar)"/>
+  <text class="lb" x="558" y="166">one per department</text>
+  <path class="ln" d="M550,254 V326" marker-end="url(#ar)"/>
+  <text class="lb" x="558" y="294">raises</text>
+  <path class="ln" d="M800,89 C740,89 740,80 684,80" marker-end="url(#ar)"/>
+  <text class="lb" x="794" y="104" text-anchor="end">supplier</text>
+  <path class="ln" d="M800,153 C740,153 740,92 684,92" marker-end="url(#ar)"/>
+  <text class="lb" x="794" y="168" text-anchor="end">version</text>
+  <path class="ln" d="M680,104 C740,104 740,217 796,217" marker-end="url(#ar)"/>
+  <text class="lb" x="794" y="232" text-anchor="end">reference</text>
+  <path class="ln" d="M680,114 C740,114 740,281 796,281" marker-end="url(#ar)"/>
+  <text class="lb" x="794" y="296" text-anchor="end">scope</text>
+  <path class="ln" d="M800,345 C740,345 740,122 684,122" marker-end="url(#ar)"/>
+  <text class="lb" x="794" y="360" text-anchor="end">notes</text>
+  <path class="ln" d="M680,130 C740,130 740,409 796,409" marker-end="url(#ar)"/>
+  <text class="lb" x="794" y="424" text-anchor="end">history</text>
+  <path class="ln" d="M680,548 H736" marker-end="url(#ar)"/>
+
+  <!-- portal nodes -->
+  <rect class="np" x="40" y="70" width="282" height="64" rx="12"/>
+  <text class="nm" x="181" y="98" text-anchor="middle">CIQP Request</text>
+  <text class="sb" x="181" y="118" text-anchor="middle">Process · the supplier's CIQ, one per case</text>
+  <rect class="nf" x="70" y="150" width="222" height="44" rx="6"/>
+  <text class="nm sm" x="181" y="168" text-anchor="middle">Uploads</text>
+  <text class="sb" x="181" y="184" text-anchor="middle">child table · one row per file</text>
+  <rect class="ns" x="40" y="214" width="282" height="64" rx="12"/>
+  <text class="nm" x="181" y="237" text-anchor="middle">Final release (a step in CIQP Request)</text>
+  <text class="sb" x="181" y="255" text-anchor="middle">reached once every review is complete;</text>
+  <text class="sb" x="181" y="270" text-anchor="middle">all answers are locked at this step</text>
+  <rect class="np" x="40" y="330" width="282" height="64" rx="12"/>
+  <text class="nm" x="181" y="358" text-anchor="middle">CIQP Query</text>
+  <text class="sb" x="181" y="378" text-anchor="middle">Process · one per question round</text>
+  <rect class="nf" x="40" y="520" width="282" height="56" rx="6"/>
+  <text class="nm" x="181" y="544" text-anchor="middle">CIQP Help Article</text>
+  <text class="sb" x="181" y="563" text-anchor="middle">Form · help pages, read-only for suppliers</text>
+
+  <!-- app core -->
+  <rect class="na" x="420" y="70" width="260" height="64" rx="12"/>
+  <text class="nm" x="550" y="98" text-anchor="middle">CIQ Case</text>
+  <text class="sb" x="550" y="118" text-anchor="middle">Process · one per case, started by the RMM</text>
+  <rect class="na" x="420" y="190" width="260" height="64" rx="12"/>
+  <text class="nm" x="550" y="218" text-anchor="middle">CIQ Review</text>
+  <text class="sb" x="550" y="238" text-anchor="middle">Process · one per department review</text>
+  <rect class="na" x="420" y="330" width="260" height="64" rx="12"/>
+  <text class="nm" x="550" y="358" text-anchor="middle">CIQ Open Point</text>
+  <text class="sb" x="550" y="378" text-anchor="middle">Process · one per question, to the raiser</text>
+  <rect class="ni" x="420" y="520" width="260" height="56" rx="28"/>
+  <text class="nm" x="550" y="544" text-anchor="middle">E-mail integration</text>
+  <text class="sb" x="550" y="563" text-anchor="middle">Integration · webhook, on portal and app events</text>
+  <rect class="ne" x="740" y="526" width="200" height="44" rx="8"/>
+  <text class="sb" x="840" y="544" text-anchor="middle">E-mails to suppliers</text>
+  <text class="sb" x="840" y="560" text-anchor="middle">and Beiersdorf users</text>
+
+  <!-- app forms -->
+  <rect class="nf" x="800" y="64" width="264" height="50" rx="6"/>
+  <text class="nm" x="932" y="85" text-anchor="middle">CIQ Supplier</text>
+  <text class="sb" x="932" y="102" text-anchor="middle">Form · suppliers and contacts</text>
+  <rect class="nf" x="800" y="128" width="264" height="50" rx="6"/>
+  <text class="nm" x="932" y="149" text-anchor="middle">CIQ Config Version</text>
+  <text class="sb" x="932" y="166" text-anchor="middle">Form · questionnaire and rules versions</text>
+  <rect class="nf" x="800" y="192" width="264" height="50" rx="6"/>
+  <text class="nm" x="932" y="213" text-anchor="middle">CIQ RMES Safety · Regulatory</text>
+  <text class="sb" x="932" y="230" text-anchor="middle">Forms · criteria, results, findings</text>
+  <rect class="nf" x="800" y="256" width="264" height="50" rx="6"/>
+  <text class="nm" x="932" y="277" text-anchor="middle">CIQ Scope Run</text>
+  <text class="sb" x="932" y="294" text-anchor="middle">Form · scope snapshots</text>
+  <rect class="nf" x="800" y="320" width="264" height="50" rx="6"/>
+  <text class="nm" x="932" y="341" text-anchor="middle">CIQ Internal Note</text>
+  <text class="sb" x="932" y="358" text-anchor="middle">Form · internal notes, never to suppliers</text>
+  <rect class="nf" x="800" y="384" width="264" height="50" rx="6"/>
+  <text class="nm" x="932" y="405" text-anchor="middle">CIQ Audit Event</text>
+  <text class="sb" x="932" y="422" text-anchor="middle">Form · case history and audit trail</text>
+</svg>
+    </div>
+    <div class="legend">
+      <span class="lg"><i class="sw sw-p"></i>Portal process (has steps)</span>
+      <span class="lg"><i class="sw sw-a"></i>App process (has steps)</span>
+      <span class="lg"><i class="sw sw-f"></i>Form (data, no steps)</span>
+      <span class="lg"><b>⟷</b>&nbsp;Twin items across portal and app</span>
+      <span class="lg"><b>→</b>&nbsp;Direction of the link</span>
+    </div>
+  </section>
+
+  <section id="modules">
+    <h2>What each module does</h2>
+
+    <h3 class="subhead portal">Supplier portal</h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Module</th><th>Type</th><th>What it does</th><th>Connected to</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="mod" data-label="Module"><b>CIQP Request</b></td>
+          <td class="type" data-label="Type"><span class="pill pproc">Process</span></td>
+          <td data-label="What it does"><p><b>The supplier's CIQ, one per case.</b> The supplier fills in the whole questionnaire in one task. They upload files and confirm completeness. Afterwards the request stays with them, so they can follow the case to the end.</p><p>Steps: Issue request → Supplier: fill in the CIQ → Supplier: keep the CIQ up to date → Supplier: give the final release → End. The first two supplier steps go to the supplier contacts named on the case. The release step goes only to the contacts allowed to confirm.</p><p><b>Final release step:</b> it's reached once every department review is complete, and every answer is read-only there, so Kissflow itself locks the questionnaire. If Beiersdorf reopens a review at that point, a go-to step sends the request back to "keep the CIQ up to date".</p><p><b>Deadlines:</b> "fill in the CIQ" is due on the supplier due date, with a reminder 7 days before and an overdue reminder the day after. The release is due within 3 days.</p><p>It holds the answers, which sections apply, the requested documents, and a child table of uploaded files.</p></td>
+          <td data-label="Connected to">Its twin, <b>CIQ Case</b>, with the same case number.</td>
+        </tr>
+        <tr>
+          <td class="mod" data-label="Module"><b>CIQP Query</b></td>
+          <td class="type" data-label="Type"><span class="pill pproc">Process</span></td>
+          <td data-label="What it does">One item per round of a question from Beiersdorf. The supplier answers with text or a document, or says they cannot provide it. The answer is due on the question's due date, with a reminder 2 days before and an overdue reminder the day after.</td>
+          <td data-label="Connected to">Its twin, <b>CIQ Open Point</b>. Each round is a new query.</td>
+        </tr>
+        <tr>
+          <td class="mod" data-label="Module"><b>CIQP Help Article</b></td>
+          <td class="type" data-label="Type"><span class="pill">Form</span></td>
+          <td data-label="What it does">The help pages suppliers see in the portal. Suppliers can only read them.</td>
+          <td data-label="Connected to">Stands alone.</td>
+        </tr>
+      </tbody>
+    </table></div>
+
+    <h3 class="subhead app">CIQ Digital app</h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Module</th><th>Type</th><th>What it does</th><th>Connected to</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="mod" data-label="Module"><b>CIQ Case</b></td>
+          <td class="type" data-label="Type"><span class="pill proc">Process</span></td>
+          <td data-label="What it does"><p><b>The backbone: one item per case, started by the RMM.</b> It holds the material, the supplier and contacts, the due date and the pinned questionnaire version. It also holds the case phase: Supplier filling in the CIQ · Review · Awaiting final release · Completed · Cancelled.</p><p>Steps: Create case → Waiting for supplier: CIQ → Beiersdorf review and final release → End.</p></td>
+          <td data-label="Connected to">Every other module, through its case number.</td>
+        </tr>
+        <tr>
+          <td class="mod" data-label="Module"><b>CIQ Review</b></td>
+          <td class="type" data-label="Type"><span class="pill proc">Process</span></td>
+          <td data-label="What it does"><p>One item per department review: Regulatory Affairs, Product Safety, Quality Management, Microbiology, Sustainability and the RMM. Each department has its own step, assigned to its role.</p><p>Because every review is its own item, a review can start late, be reopened or be reassigned without touching the others.</p></td>
+          <td data-label="Connected to"><b>CIQ Case</b>. Raises <b>CIQ Open Points</b>.</td>
+        </tr>
+        <tr>
+          <td class="mod" data-label="Module"><b>CIQ Open Point</b></td>
+          <td class="type" data-label="Type"><span class="pill proc">Process</span></td>
+          <td data-label="What it does">One item per question or document request from a department. It's assigned to the person who raised it, so only they can accept, return, edit or close it. The full thread is kept for the final document.</td>
+          <td data-label="Connected to"><b>CIQ Case</b>, and its twin <b>CIQP Query</b> in the portal.</td>
+        </tr>
+        <tr>
+          <td class="mod" data-label="Module"><b>CIQ Supplier</b></td>
+          <td class="type" data-label="Type"><span class="pill">Form</span></td>
+          <td data-label="What it does">The supplier master: legal name, DUNS, country, and a child table of contacts with each contact's e-mail and whether they may confirm. The Business administrator maintains it.</td>
+          <td data-label="Connected to">Copied onto each <b>CIQ Case</b> when it's created.</td>
+        </tr>
+        <tr>
+          <td class="mod" data-label="Module"><b>CIQ Config Version</b></td>
+          <td class="type" data-label="Type"><span class="pill">Form</span></td>
+          <td data-label="What it does">The questionnaire and the rules as versioned data, one row per version. A case keeps the version it started with, so a later change never alters running cases.</td>
+          <td data-label="Connected to"><b>CIQ Case</b>, which pins its version.</td>
+        </tr>
+        <tr>
+          <td class="mod" data-label="Module"><b>CIQ Scope Run</b></td>
+          <td class="type" data-label="Type"><span class="pill">Form</span></td>
+          <td data-label="What it does">A snapshot of which sections apply, taken at completeness and whenever the scope changes later.</td>
+          <td data-label="Connected to"><b>CIQ Case</b>.</td>
+        </tr>
+        <tr>
+          <td class="mod" data-label="Module"><b>CIQ RMES Safety · CIQ RMES Regulatory</b></td>
+          <td class="type" data-label="Type"><span class="pill">Form</span></td>
+          <td data-label="What it does">The department's assessment criteria, results and findings. Only the own department sees them. The department's decision goes on its review.</td>
+          <td data-label="Connected to"><b>CIQ Case</b>, through a Kissflow reference field.</td>
+        </tr>
+        <tr>
+          <td class="mod" data-label="Module"><b>CIQ Internal Note</b></td>
+          <td class="type" data-label="Type"><span class="pill">Form</span></td>
+          <td data-label="What it does">Internal notes and @mentions on a case or a section. Suppliers never see them.</td>
+          <td data-label="Connected to"><b>CIQ Case</b>.</td>
+        </tr>
+        <tr>
+          <td class="mod" data-label="Module"><b>CIQ Audit Event</b></td>
+          <td class="type" data-label="Type"><span class="pill">Form</span></td>
+          <td data-label="What it does">The case history and the audit trail: who did what, and when.</td>
+          <td data-label="Connected to"><b>CIQ Case</b>.</td>
+        </tr>
+        <tr>
+          <td class="mod" data-label="Module"><b>E-mail integration</b></td>
+          <td class="type" data-label="Type"><span class="pill">Integration</span></td>
+          <td data-label="What it does">A Kissflow integration that sends e-mails through a webhook when something happens in the portal or the app, for example when a question is raised or answered. No e-mail data is stored.</td>
+          <td data-label="Connected to">Events in the portal and the app. Sends to suppliers and Beiersdorf users.</td>
+        </tr>
+        <tr>
+          <td class="mod" data-label="Module"><b>Lists</b></td>
+          <td class="type" data-label="Type"><span class="pill">List</span></td>
+          <td data-label="What it does">Dropdown values: case phase, review status, priority, departments, open point kind and outcome, and more.</td>
+          <td data-label="Connected to">Used by the fields above.</td>
+        </tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="journey">
+    <h2>One case, end to end</h2>
+    <ol class="steps">
+      <li><div>The RMM creates the case. They pick the supplier and its contacts, and the case pins the current questionnaire version.<span class="where">CIQ Case · CIQ Supplier · CIQ Config Version</span></div></li>
+      <li><div>The supplier gets the CIQ in the portal. They fill it in, with sections opening as they answer, upload documents and confirm completeness.<span class="where">CIQP Request</span></div></li>
+      <li><div>The departments review in parallel, each on its own review. Safety and Regulatory record their RMES assessment.<span class="where">CIQ Review · CIQ RMES Safety · CIQ RMES Regulatory</span></div></li>
+      <li><div>Questions go to the supplier and the answers come back, round by round.<span class="where">CIQ Open Point ⇔ CIQP Query</span></div></li>
+      <li><div>When every review is complete, the request moves to its final release step. The questionnaire locks, and the supplier gives the final release.<span class="where">CIQP Request · final release step</span></div></li>
+      <li><div>The case completes, with its full history on record.<span class="where">CIQ Case · CIQ Audit Event</span></div></li>
+    </ol>
+  </section>
+
+  <section id="config">
+    <h2>How it's configured in Kissflow</h2>
+    <p class="intro">What you'll see in the Kissflow builder during the demo.</p>
+    <div class="config">
+      <div class="cfg">
+        <h3>Roles, and people added by e-mail</h3>
+        <ul>
+          <li><b>Portal:</b> one role, Supplier. Supplier contacts are invited to the portal by e-mail and given that role.</li>
+          <li><b>App, 11 roles:</b> Raw Material Manager (RMM); the Regulatory Affairs, Product Safety, Quality Management, Microbiology and Sustainability reviewers; Customs &amp; Trade Compliance; Legal / IP; Business administrator; Auditor; Business owner (reports).</li>
+          <li>People are added to a role by their e-mail address.</li>
+        </ul>
+      </div>
+      <div class="cfg">
+        <h3>Who may do what</h3>
+        <ul>
+          <li>For each process and form, a role can start items, only view them, or administer the flow. On forms, a role can edit or only read.</li>
+          <li>Examples: suppliers only read the help articles, and each RMES form is open only to its own department.</li>
+        </ul>
+      </div>
+      <div class="cfg">
+        <h3>Inside each step</h3>
+        <ul>
+          <li>Each field is editable, read-only or hidden, per step. For example, the supplier edits their answers but can't change the material or the due date Beiersdorf set.</li>
+          <li>A step goes to a role (a department's review) or to people named in a field (the case's supplier contacts, or whoever raised an open point).</li>
+          <li>Each step can have a deadline with reminders. For example, "fill in the CIQ" is due on the supplier due date, with a reminder 7 days before and an overdue reminder the day after.</li>
+        </ul>
+      </div>
+      <div class="cfg">
+        <h3>Reports</h3>
+        <ul>
+          <li>Every process comes with an "All items" report.</li>
+          <li>You can add your own reports, with your columns, filters and charts, and share each one with the roles that need it, such as the Business owner (reports).</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>Demo data is fictional. Prepared by Kissflow for the CIQ MVP.</footer>
+</div>

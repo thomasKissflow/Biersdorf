@@ -1,0 +1,49 @@
+{
+  "branch": "main",
+  "revision": 28,
+  "key": "experience",
+  "content": {
+    "owner": "kf-experience-designer",
+    "stage": "STAGE 2 wave 4",
+    "source": "brd.md L7 (no native pages, no nav, --no-pages); PART A A2 L55-L58 (never add pages: a page auto-grant turns readers into editors); security.hard_rules SEC-HR1; roles[].journeys",
+    "pages": [],
+    "nav": {
+      "menus": []
+    },
+    "landing": {},
+    "build_requirement": "Generate and build ONLY with --no-pages. No native page, card, menu or landing may be created in CIQ_Digital_A00 by this run.",
+    "hard_rules": [
+      {
+        "id": "EXP-HR1",
+        "rule": "pages = [], nav.menus = [], landing = {}. Backend only; the Workbench custom UI is built later.",
+        "evidence": "brd.md L7"
+      },
+      {
+        "id": "EXP-HR2",
+        "rule": "Every generate/build of this spec uses --no-pages. A native page/card auto-grants its target roles as editors and would break every View-only cell (SEC-HR1).",
+        "evidence": "A2 L57; SEC-HR1"
+      },
+      {
+        "id": "EXP-HR3",
+        "rule": "No page, card, menu or report tile may ever reference CIQ RMES Safety or CIQ RMES Regulatory for a role that only reads it (every role except ciq_safety_reviewer on CIQ RMES Safety and ciq_regulatory_reviewer on CIQ RMES Regulatory). Applies to any later native or Workbench surface that uses native page bindings.",
+        "evidence": "REQ-CFG-004 (v4 L282-L283, L331); SEC-HR1"
+      }
+    ],
+    "intended_workbench_landings": {
+      "_note": "DOCUMENTATION ONLY. Not compiled, not built. Input for the later Workbench custom UI.",
+      "ciq_rmm": "My CIQ work: CIQ Case tasks (create, Waiting for supplier, Scope check, Completeness PS-05, open-items checks, Review – RMM, final release), CIQ Open Point Waiting for supplier / Review – RMM, CIQ Change Request Triage; plus supplier master (CIQ Supplier) and case search.",
+      "ciq_regulatory_reviewer": "Regulatory review queue: CIQ Case Review – Regulatory, CIQ Open Point Review – Regulatory, CIQ Change Request Assess – Regulatory; own RMES sheet (CIQ RMES Regulatory, editor).",
+      "ciq_safety_reviewer": "Safety review queue: CIQ Case Review – Safety, CIQ Open Point Review – Safety, CIQ Change Request Assess – Safety; own RMES sheet (CIQ RMES Safety, editor).",
+      "ciq_qm_reviewer": "QM review queue: CIQ Case Review – QM, CIQ Open Point Review – QM, CIQ Change Request Assess – QM. No RMES surface.",
+      "ciq_microbiology_reviewer": "Microbiology review queue: CIQ Case Review – Microbiology, CIQ Open Point Review – Microbiology, CIQ Change Request Assess – Microbiology. No RMES surface.",
+      "ciq_sustainability_reviewer": "Sustainability review queue: CIQ Case Review – Sustainability, CIQ Open Point Review – Sustainability, CIQ Change Request Assess – Sustainability. No RMES surface.",
+      "ciq_overall_approver": "Overall approval queue: CIQ Case Overall approval tasks. No RMES surface.",
+      "ciq_business_admin": "Configuration: CIQ Config Version (publish, release bundles). No RMES surface.",
+      "ciq_reader": "Read-only case search and audit trail: CIQ Case, CIQ Audit Event. Read-only; no create action, no RMES surface.",
+      "ciq_case_admin": "Case administration (cancel, reactivate) within the CIQ RMM landing; members also hold CIQ RMM (SEC-HR2). No RMES surface.",
+      "ciq_integration_service": "None: service account, no UI.",
+      "admin": "None: platform default.",
+      "user": "None: platform default."
+    }
+  }
+}

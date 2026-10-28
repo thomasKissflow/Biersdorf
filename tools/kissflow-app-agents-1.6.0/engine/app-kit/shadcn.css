@@ -1,0 +1,254 @@
+/* Tailwind v4 entry — CSS-first config (no tailwind.config.js, no postcss.config.js).
+   Loaded by @tailwindcss/vite (see vite.config.js). */
+
+/* CRITICAL: preflight is OFF. v4 dropped `corePlugins`, so opting out is done by
+   importing the layers individually and simply never importing
+   `tailwindcss/preflight.css`. Without this, Tailwind's global reset flattens the
+   hand-crafted kf design system (kf-ui.css / index.css). */
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+
+/* v3 `darkMode: "class"`. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* v3 `content: [...]`. Automatic detection is off (`source(none)` above) so the
+   scan stays inside this app and never walks the monorepo or node_modules. */
+@source "./**/*.{js,jsx}";
+@source "../index.html";
+
+/* enter/exit animations (data-[state=open]:animate-in, fade-in-0, zoom-in-95, …).
+   Replaces the v3-only `tailwindcss-animate` plugin. */
+@import "tw-animate-css";
+
+/* v3 `theme.extend`. `inline` matters: it keeps the utility resolving
+   hsl(var(--token)) at the point of use, so a `.dark` (or themed) override of the
+   raw token flows through instead of being frozen at :root. The tokens stay raw
+   HSL triplets because kf-ui.css reads them that way (`--kf-ink: hsl(var(--foreground))`). */
+@theme inline {
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  /* ── App design-language bridge ─────────────────────────────────────────────
+     Maps the theme's own tokens (src/app-theme.css) onto Tailwind's scales, so a
+     `shadow-sm`, `font-display`, `text-lg` or `bg-chart-3` written in a component
+     re-themes with zero markup changes.
+
+     THIS MUST LIVE HERE, not in index.css. Tailwind only resolves `@theme` inside
+     the stylesheet that imports Tailwind — index.css:533 has an identical-looking
+     block that has never once executed, because index.css is a separate stylesheet
+     that main.jsx imports from JS. It parses, ships, and is silently inert.
+
+     EVERY ENTRY CARRIES A FALLBACK. An undefined token would not degrade, it would
+     delete the whole utility family — a bare `var(--kf-text-sm)` kills `text-sm`
+     for every component the moment a theme omits it. `--spacing` is deliberately
+     NOT bridged: Tailwind derives every p-/m-/gap-/w-/h- utility from it, so one
+     missing token there takes out the entire layout system. Beacon's spacing unit
+     is 4px, which is already Tailwind's default. */
+  --color-brand-accent: hsl(var(--brand-accent, var(--primary)));
+  --color-success: hsl(var(--success, 149.4 62.7% 29.4%));
+  --color-warning: hsl(var(--warning, 42.7 89.8% 46.3%));
+  --color-warning-foreground: hsl(var(--warning-foreground, 42.7 80.5% 16.1%));
+  --color-info: hsl(var(--info, 216.7 52.7% 48%));
+  --color-destructive-ink: hsl(var(--destructive-ink, var(--destructive)));
+  --color-border-accent: hsl(var(--border-accent, var(--border)));
+  --color-meta-foreground: hsl(var(--meta-foreground, var(--muted-foreground)));
+  --color-sidebar: hsl(var(--sidebar, var(--card)));
+  --color-sidebar-border: hsl(var(--sidebar-border, var(--border)));
+
+  /* Data-viz series. Literal colours — never wrapped in hsl(). */
+  --color-chart-1: var(--chart-1, #6366f1);
+  --color-chart-2: var(--chart-2, #8b5cf6);
+  --color-chart-3: var(--chart-3, #d946ef);
+  --color-chart-4: var(--chart-4, #0ea5e9);
+  --color-chart-5: var(--chart-5, #10b981);
+  --color-chart-6: var(--chart-6, #f59e0b);
+  --color-chart-7: var(--chart-7, #f43f5e);
+  --color-chart-8: var(--chart-8, #7b8ab0);
+  /* NO-HYPHEN aliases (chart1..8) — proto-kit's tokens.css and its recipes name the ramp without the
+     hyphen (bg-chart6 in the HBars recipe), so the /parity proto pane needs these to render the proto
+     contract faithfully. tokens.css and shadcn.css had drifted on this spelling; the app renders both
+     spellings to the same value. (2026-08-17, #22) */
+  --color-chart1: var(--chart-1); --color-chart2: var(--chart-2); --color-chart3: var(--chart-3);
+  --color-chart4: var(--chart-4); --color-chart5: var(--chart-5); --color-chart6: var(--chart-6);
+  --color-chart7: var(--chart-7); --color-chart8: var(--chart-8);
+
+  --font-sans: var(--kf-font-sans, ui-sans-serif, system-ui, sans-serif);
+  --font-display: var(--kf-font-display, var(--kf-font-sans, ui-sans-serif));
+  --font-mono: var(--kf-font-mono, ui-monospace, monospace);
+
+  --text-xs: var(--kf-text-xs, 0.75rem);
+  --text-sm: var(--kf-text-sm, 0.875rem);
+  --text-base: var(--kf-text-base, 1rem);
+  --text-lg: var(--kf-text-lg, 1.125rem);
+  --text-xl: var(--kf-text-xl, 1.25rem);
+  --text-2xl: var(--kf-text-2xl, 1.5rem);
+
+  --font-weight-normal: var(--kf-font-weight-normal, 400);
+  --font-weight-medium: var(--kf-font-weight-medium, 500);
+  --font-weight-semibold: var(--kf-font-weight-semibold, 600);
+  --font-weight-bold: var(--kf-font-weight-bold, 700);
+
+  --tracking-tighter: var(--kf-tracking-tighter, -0.05em);
+  --tracking-tight: var(--kf-tracking-tight, -0.025em);
+  --tracking-normal: var(--kf-tracking-normal, 0em);
+  --tracking-wide: var(--kf-tracking-wide, 0.025em);
+  --tracking-wider: var(--kf-tracking-wider, 0.05em);
+  --tracking-widest: var(--kf-tracking-widest, 0.1em);
+
+  --leading-tight: var(--kf-leading-tight, 1.25);
+  --leading-snug: var(--kf-leading-snug, 1.375);
+  --leading-normal: var(--kf-leading-normal, 1.5);
+  --leading-relaxed: var(--kf-leading-relaxed, 1.625);
+  --leading-loose: var(--kf-leading-loose, 2);
+
+  --shadow-2xs: var(--kf-shadow-2xs, 0 1px 1px rgb(0 0 0 / 0.03));
+  --shadow-xs: var(--kf-shadow-xs, 0 1px 2px rgb(0 0 0 / 0.05));
+  --shadow-sm: var(--kf-shadow-sm, 0 1px 3px rgb(0 0 0 / 0.06));
+  --shadow-md: var(--kf-shadow-md, 0 4px 12px -4px rgb(0 0 0 / 0.1));
+  --shadow-lg: var(--kf-shadow-lg, 0 10px 26px -8px rgb(0 0 0 / 0.14));
+  --shadow-xl: var(--kf-shadow-xl, 0 18px 42px -14px rgb(0 0 0 / 0.18));
+  --shadow-2xl: var(--kf-shadow-2xl, 0 32px 70px -24px rgb(0 0 0 / 0.26));
+
+  /* Reads the CANONICAL (unprefixed) motion tokens. The `--kf-motion-*` twins still exist in
+     app-theme.css but only as legacy aliases — nothing new should reference them. */
+  --default-transition-duration: var(--motion-duration, 150ms);
+  --default-transition-timing-function: var(--motion-ease, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+@theme {
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from { height: 0; }
+    to { height: var(--radix-accordion-content-height); }
+  }
+  @keyframes accordion-up {
+    from { height: var(--radix-accordion-content-height); }
+    to { height: 0; }
+  }
+}
+
+/* Card surface utilities used to live here — `card-elevation` (border-width + box-shadow)
+ * and `card-pad`. Both are gone, superseded by src/tokens.css:
+ *   card-elevation -> `border-decor` (width only) + `shadow-card` (a real @theme tier)
+ *   card-pad       -> ordinary spacing utilities; card padding is not a themed token
+ * The split matters: card-elevation set `box-shadow` directly, which swallowed focus rings —
+ * a `ring-2` on a card could never render. `shadow-card` composes through Tailwind's
+ * --tw-shadow slots instead. See the note at the top of tokens.css. */
+
+/* Theme tokens tuned to the kf design system so the existing look is unchanged:
+   --foreground == kf ink (#0f172a), --muted-foreground == kf muted (#64748b),
+   --border == kf line (#eef0f4), --primary == kf indigo (#6366f1). The kf widgets
+   read these via a bridge (see kf-ui.css), so a theme change here flows to both
+   shadcn and kf.
+
+   DELIBERATELY UNLAYERED — do not wrap this in `@layer base`.
+   src/index.css declares --border, --muted and --primary too, as plain HEX for its own
+   legacy `var(--border)` consumers, from an UNLAYERED :root. Unlayered always outranks
+   layered, so inside `@layer base` these lose every colliding name and Tailwind ends up
+   computing hsl(#e5e7eb) — invalid, so `bg-primary`/`bg-muted`/`border-border` silently
+   fall back to transparent/currentColor, and index.css's own hsl(var(--border)) borders
+   and the `a { color: hsl(var(--primary)) }` link colour die with them.
+   Tailwind v3 flattened `@layer base` into plain CSS (its output had no native @layer at
+   all), so source order decided it and this file — imported after index.css — won. v4
+   emits a REAL cascade layer, which is what flipped it. Staying unlayered reproduces the
+   v3 cascade exactly. Same reason the .dark block below is unlayered. */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222 47% 11%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+
+  --primary: 239 84% 67%;
+  --primary-foreground: 210 40% 98%;
+
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222 47% 11%;
+
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215 16% 47%;
+
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222 47% 11%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 220 22% 95%;
+  --input: 220 22% 95%;
+  --ring: 239 84% 67%;
+
+  --radius: 0.6rem;
+}
+
+/* Unlayered so it always outranks the layered :root when <html class="dark"> is set. */
+.dark {
+    --background: 222 47% 7%;
+    --foreground: 210 40% 96%;
+
+    --card: 222 40% 11%;
+    --card-foreground: 210 40% 96%;
+
+    --popover: 222 40% 11%;
+    --popover-foreground: 210 40% 96%;
+
+    --primary: 239 84% 67%;
+    --primary-foreground: 222 47% 11%;
+
+    --secondary: 217 30% 18%;
+    --secondary-foreground: 210 40% 96%;
+
+    --muted: 217 30% 18%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 217 30% 18%;
+    --accent-foreground: 210 40% 96%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 96%;
+
+    --border: 217 30% 20%;
+    --input: 217 30% 20%;
+    --ring: 239 84% 67%;
+}
+
+/* The new stack's token contract. Imported HERE and not from main.jsx because Tailwind only
+   processes @theme / @utility inside its own CSS graph — a JS-side import would leave both
+   at-rules unhandled. Last import wins, so tokens.css is the authority for anything it names.
+   kf-ui.css is untouched and keeps reading the --kf-* aliases in app-theme.css. */
+@import "./tokens.css";

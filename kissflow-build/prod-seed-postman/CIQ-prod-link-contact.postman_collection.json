@@ -1,0 +1,251 @@
+{
+ "info": {
+  "name": "CIQ prod: link a supplier contact to its portal user",
+  "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+  "description": "New case needs at least one chosen, active contact whose CIQ Supplier Contacts row holds Contacts_Portal_User_Id (the contact's Kissflow user id). Fill host, account_id, the access key, supplier_code and contact_email, then run 1 to 5 in order. Repeat per contact. Kissflow-internal."
+ },
+ "variable": [
+  {
+   "key": "host",
+   "value": "beiersdorf.kissflow.eu"
+  },
+  {
+   "key": "account_id",
+   "value": ""
+  },
+  {
+   "key": "access_key_id",
+   "value": ""
+  },
+  {
+   "key": "access_key_secret",
+   "value": ""
+  },
+  {
+   "key": "supplier_code",
+   "value": ""
+  },
+  {
+   "key": "contact_email",
+   "value": ""
+  },
+  {
+   "key": "user_id",
+   "value": ""
+  },
+  {
+   "key": "supplier_id",
+   "value": ""
+  },
+  {
+   "key": "contact_row_id",
+   "value": ""
+  }
+ ],
+ "item": [
+  {
+   "name": "1 find the user by e-mail",
+   "request": {
+    "method": "GET",
+    "header": [
+     {
+      "key": "X-Access-Key-Id",
+      "value": "{{access_key_id}}"
+     },
+     {
+      "key": "X-Access-Key-Secret",
+      "value": "{{access_key_secret}}"
+     },
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     }
+    ],
+    "url": "https://{{host}}/user/2/{{account_id}}?page_number=1&page_size=500"
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "type": "text/javascript",
+      "exec": [
+       "const same = (a, b) => String(a || \"\").trim().toLowerCase() === String(b || \"\").trim().toLowerCase();",
+       "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+       "const body = pm.response.json();",
+       "const users = Array.isArray(body) ? body : (body.Data || body.items || []);",
+       "const u = users.find((x) => same(x.Email, pm.collectionVariables.get(\"contact_email\")));",
+       "pm.test(\"a Kissflow user has this e-mail (\" + users.length + \" users listed)\", () => pm.expect(u, \"no user with this e-mail: invite it to the portal first, or it is past the first 500 users\").to.be.ok);",
+       "if (u) { pm.collectionVariables.set(\"user_id\", u._id); console.log(\"user\", u._id, u.Name); }"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "2 find the supplier by code",
+   "request": {
+    "method": "POST",
+    "header": [
+     {
+      "key": "X-Access-Key-Id",
+      "value": "{{access_key_id}}"
+     },
+     {
+      "key": "X-Access-Key-Secret",
+      "value": "{{access_key_secret}}"
+     },
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     }
+    ],
+    "url": "https://{{host}}/form/2/{{account_id}}/CIQ_Supplier_A00/list?_application_id=CIQ_Digital_A00&page_number=1&page_size=200&q={{supplier_code}}",
+    "body": {
+     "mode": "raw",
+     "raw": "{}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "type": "text/javascript",
+      "exec": [
+       "const same = (a, b) => String(a || \"\").trim().toLowerCase() === String(b || \"\").trim().toLowerCase();",
+       "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+       "const body = pm.response.json();",
+       "const rows = Array.isArray(body) ? body : (body.Data || []);",
+       "const s = rows.filter((r) => same(r.Supplier_Code, pm.collectionVariables.get(\"supplier_code\")));",
+       "pm.test(\"exactly one supplier has this code\", () => pm.expect(s.length, \"suppliers with this code: \" + s.length).to.eql(1));",
+       "if (s.length === 1) pm.collectionVariables.set(\"supplier_id\", s[0]._id);"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "3 read the supplier and find the contact row",
+   "request": {
+    "method": "GET",
+    "header": [
+     {
+      "key": "X-Access-Key-Id",
+      "value": "{{access_key_id}}"
+     },
+     {
+      "key": "X-Access-Key-Secret",
+      "value": "{{access_key_secret}}"
+     },
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     }
+    ],
+    "url": "https://{{host}}/form/2/{{account_id}}/CIQ_Supplier_A00/{{supplier_id}}?_application_id=CIQ_Digital_A00"
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "type": "text/javascript",
+      "exec": [
+       "const same = (a, b) => String(a || \"\").trim().toLowerCase() === String(b || \"\").trim().toLowerCase();",
+       "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+       "const it = pm.response.json();",
+       "const rows = it[\"Table::Contacts\"] || it.Contacts || [];",
+       "const c = rows.filter((r) => same(r.Contacts_Email, pm.collectionVariables.get(\"contact_email\")));",
+       "pm.test(\"exactly one contact row has this e-mail (\" + rows.length + \" contacts)\", () => pm.expect(c.length).to.eql(1));",
+       "if (c.length === 1) {",
+       "  pm.collectionVariables.set(\"contact_row_id\", c[0]._id);",
+       "  console.log(\"contact row\", c[0]._id, \"portal user now:\", c[0].Contacts_Portal_User_Id || \"(none)\", \"active:\", c[0].Contacts_Active);",
+       "  pm.test(\"the contact is active\", () => pm.expect(String(c[0].Contacts_Active || \"\")).to.not.match(/^no$/i));",
+       "}"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "4 link the contact to the user",
+   "request": {
+    "method": "POST",
+    "header": [
+     {
+      "key": "X-Access-Key-Id",
+      "value": "{{access_key_id}}"
+     },
+     {
+      "key": "X-Access-Key-Secret",
+      "value": "{{access_key_secret}}"
+     },
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     }
+    ],
+    "url": "https://{{host}}/form/2/{{account_id}}/CIQ_Supplier_A00/{{supplier_id}}?_application_id=CIQ_Digital_A00",
+    "body": {
+     "mode": "raw",
+     "raw": "{\"Table::Contacts\": [{\"_id\": \"{{contact_row_id}}\", \"Contacts_Portal_User_Id\": \"{{user_id}}\"}]}",
+     "options": {
+      "raw": {
+       "language": "json"
+      }
+     }
+    }
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "type": "text/javascript",
+      "exec": [
+       "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "5 read back",
+   "request": {
+    "method": "GET",
+    "header": [
+     {
+      "key": "X-Access-Key-Id",
+      "value": "{{access_key_id}}"
+     },
+     {
+      "key": "X-Access-Key-Secret",
+      "value": "{{access_key_secret}}"
+     },
+     {
+      "key": "Content-Type",
+      "value": "application/json"
+     }
+    ],
+    "url": "https://{{host}}/form/2/{{account_id}}/CIQ_Supplier_A00/{{supplier_id}}?_application_id=CIQ_Digital_A00"
+   },
+   "event": [
+    {
+     "listen": "test",
+     "script": {
+      "type": "text/javascript",
+      "exec": [
+       "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+       "const it = pm.response.json();",
+       "const rows = it[\"Table::Contacts\"] || it.Contacts || [];",
+       "const c = rows.find((r) => r._id === pm.collectionVariables.get(\"contact_row_id\"));",
+       "pm.test(\"the contact row now holds the user id\", () => pm.expect(c && c.Contacts_Portal_User_Id).to.eql(pm.collectionVariables.get(\"user_id\")));"
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

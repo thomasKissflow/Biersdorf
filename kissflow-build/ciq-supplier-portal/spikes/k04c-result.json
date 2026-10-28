@@ -1,0 +1,66 @@
+{
+  "spike": "K-04 runtime (granted)",
+  "steps": [
+    {
+      "step": "admin read",
+      "status": 200,
+      "v": {
+        "_current_step": "Start",
+        "_current_assigned_to": [
+          {
+            "_id": "UsEJUfjYLM8Y",
+            "Name": "Thomas",
+            "Kind": "User"
+          }
+        ],
+        "_status": "Draft",
+        "_progress": 0,
+        "Probe_Title": "probe-runtime-1",
+        "Probe_Assignees": {
+          "_id": "UsEJUfjYLM8Y",
+          "Name": "Thomas",
+          "Kind": "User"
+        }
+      }
+    },
+    {
+      "step": "submit start",
+      "status": 404,
+      "v": {
+        "type": "FieldNotFound",
+        "error_code": "KISSFLOW_ERROR_01005",
+        "en_message": "Configuration for None is not present in container ZZ Spike Assignee.",
+        "message": "Configuration for {object_id} is not present in container {container_id}.",
+        "_id": "0246ad86-554f-41e5-aa34-ded29ef252aa",
+        "args": {
+          "object_id": null,
+          "container_id": "ZZ Spike Assignee"
+        },
+        "status": "error",
+        "request_id": "process.submit-item-9676267a-dfd4-42c8-aca7-db686d57c1c9"
+      }
+    },
+    {
+      "step": "admin read after submit",
+      "status": 200,
+      "v": {
+        "_current_step": "Start",
+        "_current_assigned_to": [
+          {
+            "_id": "UsEJUfjYLM8Y",
+            "Name": "Thomas",
+            "Kind": "User"
+          }
+        ],
+        "_status": "Draft",
+        "_progress": 0,
+        "Probe_Title": "probe-runtime-1",
+        "Probe_Assignees": {
+          "_id": "UsEJUfjYLM8Y",
+          "Name": "Thomas",
+          "Kind": "User"
+        }
+      }
+    }
+  ]
+}

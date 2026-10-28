@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CIQ portal UI probe</title>
+<style>
+  :root { --bg:#f6f8fc; --fg:#0f1b33; --muted:#5b6782; --brand:#0032a1; --ok:#127a3c; --bad:#b4232c; --card:#fff; --line:#dfe5f1; }
+  body { margin:0; font:14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; background:var(--bg); color:var(--fg); }
+  main { max-width:860px; margin:32px auto; padding:0 16px; }
+  h1 { font-size:20px; margin:0 0 4px; color:var(--brand); }
+  p.sub { margin:0 0 20px; color:var(--muted); }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; margin-bottom:12px; }
+  table { width:100%; border-collapse:collapse; }
+  td { padding:6px 8px; border-top:1px solid var(--line); vertical-align:top; }
+  td:first-child { width:38%; color:var(--muted); }
+  .ok { color:var(--ok); font-weight:600; } .bad { color:var(--bad); font-weight:600; }
+  code { font-size:12px; word-break:break-all; }
+</style>
+</head>
+<body>
+<main>
+  <h1>CIQ Supplier Portal: custom UI probe (spike K-08)</h1>
+  <p class="sub">Temporary diagnostic page. It shows what the portal gives a custom UI. Build <code id="build"></code></p>
+  <div class="card"><table id="out"><tbody></tbody></table></div>
+</main>
+<script>
+(function () {
+  var BUILD = "probe-2026-10-07a";
+  document.getElementById("build").textContent = BUILD;
+  var tbody = document.querySelector("#out tbody");
+  function row(k, v, cls) { var tr = document.createElement("tr"); var a = document.createElement("td"); a.textContent = k; var b = document.createElement("td"); b.textContent = v; if (cls) b.className = cls; tr.appendChild(a); tr.appendChild(b); tbody.appendChild(tr); }
+  function safe(fn) { try { return fn(); } catch (e) { return "error: " + (e && e.message || e); } }
+  var started = Date.now();
+  function isLive() { return !!(window.kf && window.kf.app && typeof window.kf.api === "function"); }
+  function wait() {
+    if (isLive()) return run();
+    if (Date.now() - started > 15000) { row("window.kf", "not installed after 15 s", "bad"); return; }
+    setTimeout(wait, 250);
+  }
+  async function run() {
+    var kf = window.kf;
+    row("window.kf", "present after " + (Date.now() - started) + " ms", "ok");
+    row("kf.user.Name", safe(function () { return kf.user && kf.user.Name; }));
+    row("kf.user.Email", safe(function () { return kf.user && kf.user.Email; }));
+    row("kf.user.AppRoles", safe(function () { return JSON.stringify((kf.user && kf.user.AppRoles || []).map(function (r) { return { _id: r._id, Name: r.Name }; })); }));
+    row("kf.user.Role", safe(function () { return JSON.stringify(kf.user && kf.user.Role); }));
+    row("kf.account._id", safe(function () { return kf.account && kf.account._id; }));
+    row("kf.app present", safe(function () { return String(!!kf.app); }));
+    row("kf.client.uploadFile", safe(function () { return typeof (kf.client && kf.client.uploadFile); }));
+    var acc = kf.account && kf.account._id;
+    try {
+      var r = await kf.api("/flow/2/" + acc + "/process/?_application_id=CIQ_Supplier_Portal_A00&page_number=1&page_size=50", { method: "GET" });
+      var rows = Array.isArray(r) ? r : (r && r.Data) || [];
+      row("kf.api list portal processes", rows.length + " flows: " + rows.map(function (f) { return f.Name; }).join(", "), rows.length ? "ok" : "bad");
+    } catch (e) { row("kf.api list portal processes", "error: " + (e && e.message || JSON.stringify(e)), "bad"); }
+    for (var id of ["CIQP_Request_A00", "CIQP_Section_A00", "CIQP_Query_A00"]) {
+      try {
+        var p = kf.app.getProcess(id);
+        var my = await p.getMyItems({ status: "all" });
+        var list = Array.isArray(my) ? my : (my && (my.Data || my.data)) || [];
+        row("getProcess(" + id + ").getMyItems", list.length + " item(s)", "ok");
+      } catch (e) { row("getProcess(" + id + ").getMyItems", "error: " + (e && e.message || JSON.stringify(e)), "bad"); }
+    }
+    try {
+      var tasks = await kf.app.getProcess("CIQP_Request_A00").getMyTasksItems({});
+      var tl = Array.isArray(tasks) ? tasks : (tasks && (tasks.Data || tasks.data)) || [];
+      row("CIQP_Request getMyTasksItems", tl.length + " task(s)", "ok");
+    } catch (e) { row("CIQP_Request getMyTasksItems", "error: " + (e && e.message || JSON.stringify(e)), "bad"); }
+    try {
+      var roles = await kf.app.getRoles();
+      row("kf.app.getRoles (dev-only)", JSON.stringify(roles).slice(0, 300));
+    } catch (e) { row("kf.app.getRoles (dev-only)", "not available: " + (e && e.message || e)); }
+  }
+  wait();
+})();
+</script>
+</body>
+</html>
