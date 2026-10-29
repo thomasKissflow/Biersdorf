@@ -27,7 +27,7 @@ describe("audit rows", () => {
     const dir = dirFor();
     const entries = caseEntries(readAuditRows(rowsOf("AppZZT-0003"), dir), dir);
     const actions = entries.map((e) => e.action);
-    for (const a of ["Created case", "Raised query", "Returned answer to supplier", "Accepted answer", "Recorded RMES result", "Added finding", "Added internal note", "Completed QM review", "Activated review"]) expect(actions).toContain(a);
+    for (const a of ["Created case", "Raised query", "Returned answer to supplier", "Accepted answer", "Added internal note", "Completed QM review", "Activated review"]) expect(actions).toContain(a);
     // the domain's own wording survives (not the code's label)
     expect(entries.find((e) => e.action === "Raised query")!.detail).toMatch(/^OP-0003-01 on K1/);
     // supplier-side entries are not app rows (caseMap synthesizes what the app shows of them)
@@ -40,6 +40,12 @@ describe("audit rows", () => {
     const [e] = caseEntries(readAuditRows([row], dir), dir);
     expect(e).toEqual({ id: "", at: row.Event_At, by: KF_USERS["u-rmm"]!._id, action: ACTION_LABEL["op.accepted"], detail: str(row, "New_Value_Text") });
     expect(parseSnapshot({ _id: "x", Snapshot_JSON: "[1,2]" })).toBeUndefined();
+  });
+  it("rmes.saved without a snapshot names the RMES record, never a criteria result (retired 28 Oct)", () => {
+    const dir = dirFor();
+    const row = { ...rowsOf("AppZZT-0003").find((r) => r.Action_Code === "op.accepted")!, Action_Code: "rmes.saved", Snapshot_JSON: "" } as RawItem;
+    expect(caseEntries(readAuditRows([row], dir), dir)[0]!.action).toBe("Saved RMES record");
+    expect(Object.values(ACTION_LABEL).filter((x) => /RMES result|criteri|finding/i.test(x))).toEqual([]);
   });
 
   it("the latest snapshot per object: header, tracks, points, notes", () => {

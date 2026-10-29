@@ -17,7 +17,7 @@ One file per row in `rows/` (exactly what is sent), and the same row with its JS
 | `OWN:current` | Section ownership | Published | The lead and co-departments per section |
 | `REM:current` | Reminders | Published | The reminder settings (rem-1 … rem-6) |
 | `SET:current` | Settings | Published | Origins without rules, default reviewers, basis labels |
-| `RMES:current` | RMES criteria | Published | The RMES assessment criteria (placeholders until Beiersdorf shares its own) |
+| `RMES:current` | RMES criteria | Published | **Obsolete since 28 Oct 2026:** the placeholder RMES assessment criteria. BDF's e-mail of 28 Oct scoped the RMES to 8 fields filled automatically from the CIQ, without criteria; the row stays, unused. Don't re-export the rows for it: `export.mjs` rebuilds the retired sync service's domain bundle, and since the domain's criteria are deleted it would write this row with no criteria and a new hash |
 | `LIM:current` | Limit set | Published | The heavy-metal and MOAH limits (placeholders until Beiersdorf shares its own) |
 | `REG:current` | Regression set | Published | The 8 reference materials for "Test rules" |
 

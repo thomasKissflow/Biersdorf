@@ -1,14 +1,28 @@
 
  RUN  v2.1.9 /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/prototype
 
-stdout | live/integrity.live.ts > S-INTEGRITY > live R2: one phase, read only
-S-INTEGRITY R2 start: {"pass":8,"fail":0,"blocked":0,"not-run":2} → /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/kissflow-build/ciq-digital/tests-2026-10-21/results/R2/integrity-start.json
+ ❯ live/integrity.live.ts (1 test | 1 failed) 409739ms
+   × S-INTEGRITY > live R2: one phase, read only 409738ms
+     → Stopped on GET /form/2/AcDOSunMEpSA/CIQ_Audit_Event_A00/PkEPEenB3PeK: 429 Too Many Requests. No retry; nothing calls Kissflow for 20 minutes.
 
- ✓ live/integrity.live.ts (1 test) 94747ms
-   ✓ S-INTEGRITY > live R2: one phase, read only 94746ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
 
- Test Files  1 passed (1)
-      Tests  1 passed (1)
-   Start at  05:38:14
-   Duration  95.89s (transform 550ms, setup 0ms, collect 994ms, tests 94.75s, environment 0ms, prepare 35ms)
+ FAIL  live/integrity.live.ts > S-INTEGRITY > live R2: one phase, read only
+StopError: Stopped on GET /form/2/AcDOSunMEpSA/CIQ_Audit_Event_A00/PkEPEenB3PeK: 429 Too Many Requests. No retry; nothing calls Kissflow for 20 minutes.
+ ❯ Object.check live/lib/queue.ts:278:22
+    276|     check(status, body, label) {
+    277|       const why = challengeOf(status, body);
+    278|       if (why) throw new StopError(`Stopped on ${label}: ${why}. No re…
+       |                      ^
+    279|     },
+    280|     stopped: () => stop,
+ ❯ live/lib/liveClient.ts:433:15
+ ❯ live/lib/queue.ts:262:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  02:08:55
+   Duration  411.26s (transform 733ms, setup 0ms, collect 1.27s, tests 409.74s, environment 0ms, prepare 60ms)
 

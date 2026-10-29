@@ -2,7 +2,7 @@
 // user's alias, Select texts, compact), the read-back comparison and writeVerified's re-apply, the Mandatory gate,
 // staleCheck, the webhook settings and the hand-off states, and the audit row's fields and snapshot.
 import { describe, expect, it } from "vitest";
-import type { OpenPoint, User } from "@/domain/types";
+import type { CiqCase, OpenPoint, User } from "@/domain/types";
 import type { RawItem } from "@/portal/data/raw";
 import { DEV_ACCOUNT } from "../env";
 import { LIST, MANDATORY, STEPS } from "../ids";
@@ -12,7 +12,7 @@ import { parseThread } from "../map/trackMap";
 import { fixtureActing, fixtureIdentity } from "../testing/rawFixtures";
 import type { AppClient, AuditInput, LiveIndex, WriteCtx } from "../types";
 import { EVENT_CATEGORY, auditRowData, eventKey } from "./audit";
-import { compact, contactRow, countryCode, criterionRow, findingRow, kfDate, kfDateTimeOf, supplierFields, threadJson, toKfIds, userRef } from "./encode";
+import { compact, contactRow, countryCode, countsOf, kfDate, kfDateTimeOf, supplierFields, threadJson, toKfIds, userRef } from "./encode";
 import { HANDED_OVER, HANDOFF_CODES, PENDING_NO_TARGET, PENDING_NO_URL, handoff, hookToken, hookUrl, webhooksOf } from "./handoff";
 import { QUEUE_TEXT, STALE_TEXT, StaleError, VerifyError, assertMandatory, missingOf, rowsMissing, sameValue, staleCheck, writeVerified } from "./verify";
 
@@ -65,11 +65,20 @@ describe("encode", () => {
     expect(back.edits).toHaveLength(1);
   });
 
-  it("encodes RMES rows with the live option texts and no formula field", () => {
-    const row = criterionRow({ id: "S-A1", part: "A", dept: "SAF", title: "T", source: { sectionId: "K2.2", fieldId: "FLD-A14-101", version: 1, label: "K2.2" }, result: "not-listed", comment: "c", by: "UsSafMira", at: "2026-10-24T09:00:00.500Z", limit: { substance: "Cd", value: 1, unit: "mg/kg", limit: 0.1, limitSetVersion: "L1", pass: false } }, who("rmm"));
-    expect(row).toMatchObject({ Criteria_Code: "S-A1", Criteria_Part: "A", Criteria_Applicable: LIST.yes, Criteria_Result: LIST.rmesResult["not-listed"], Criteria_Recorded_By: { _id: "UsSafMira" }, Criteria_Recorded_At: "2026-10-24T09:00:00Z", Criteria_Limit_Pass: LIST.no, Criteria_Reported_Value: 1 });
-    expect(row).not.toHaveProperty("Criteria_Open_Num");
-    expect(findingRow({ id: "0003-F2", criterionId: "S-B1", dept: "SAF", text: "x", blocking: true, status: "open" })).toEqual({ Findings_Key: "0003-F2", Findings_Criterion_Code: "S-B1", Findings_Text: "x", Findings_Blocking: LIST.yes, Findings_State: "open" });
+  it("counts the review gate's inputs: RMES_Gaps is only Safety's or Regulatory's missing decision (legacy criteria and findings never count)", () => {
+    const legacy = {
+      createdAt: "2026-10-21T08:00:00.000Z",
+      reviewVersion: 1,
+      criteria: [{ id: "S-B1", part: "B" as const, dept: "SAF" as const, title: "T", source: { sectionId: "K4.1", version: 1, label: "K4.1" } }],
+      findings: [{ id: "0003-F1", criterionId: "S-B1", dept: "SAF" as const, text: "x", blocking: true, status: "open" as const }],
+    };
+    const op = { dept: "SAF", status: "open" } as OpenPoint;
+    const c = (decision?: "approved" | "rejected") => ({ openPoints: [op, { ...op, status: "closed" }], rmes: legacy, reviews: [{ dept: "SAF", status: "in-review", assigneeId: "u", ...(decision ? { decision } : {}) }, { dept: "QM", status: "in-review", assigneeId: "u" }] }) as unknown as CiqCase;
+    expect(countsOf(c(), "SAF")).toEqual({ Open_Count: 1, RMES_Gaps: 1 });
+    expect(countsOf(c("approved"), "SAF")).toEqual({ Open_Count: 1, RMES_Gaps: 0 });
+    expect(countsOf(c("rejected"), "SAF")).toEqual({ Open_Count: 1, RMES_Gaps: 0 });
+    expect(countsOf({ ...c(), rmes: undefined }, "SAF")).toEqual({ Open_Count: 1, RMES_Gaps: 1 });
+    expect(countsOf(c(), "QM")).toEqual({ Open_Count: 0, RMES_Gaps: 0 });
   });
 
   it("encodes the supplier master with the live country list and Yes/No texts", () => {

@@ -1,135 +1,183 @@
-// RMES tab (Safety and Regulatory only): criteria grouped by Part A–D, the other RMES department
-// read only (REQ-CFG-004), findings and the final department decision.
-import { ChevronDown, ChevronRight, Lock } from "lucide-react";
-import { useState } from "react";
+// RMES tab (Safety and Regulatory only): the Raw Material Evaluation Sheet as BDF scoped it for the MVP (e-mail of
+// 28 Oct, "exactly the scope … no more"): ONE read-only sheet of 8 fields, the same for both departments, derived live
+// from the case by rmesSheet() (domain/rmesSheet.ts; nothing stored). The header (trade name, supplier, manufacturer)
+// and the composition, each with its CIQ source reference (REQ-PROC-022); a source opens its section in the
+// Questionnaire tab. Nothing here is editable: the Safety / Regulatory decision is on the Questionnaire tab
+// (DecisionCard). A case the role could not read (live: the shell's case banner) shows one notice instead of the fields.
+import { ArrowUpRight, Lock, TriangleAlert } from "lucide-react";
+import { useAppExtras } from "@/app-live/extras";
 import { useLiveFeatures } from "@/components/liveFeatures";
-import { Badge, Card, DemoNote, EmptyState, Mono, ProgressBar } from "@/components/ui";
-import { DEPT_SHORT } from "@/domain/catalog";
-import { fmtDate } from "@/domain/selectors";
-import type { CiqCase, Finding, ReviewTrack, RmesCriterion } from "@/domain/types";
-import { useStore } from "@/store/store";
-import { CriterionRow, RecordedResult, SourceLink } from "./CriterionRow";
-import { DecisionCard, FindingsCard } from "./RmesSide";
-import { RESULT_LABEL, RESULT_TONE } from "./shared";
+import { Card, CardHeader, Mono, cx } from "@/components/ui";
+import { RMES_RECORD_NO_TIME, type RmesSheet, type RmesSource, type RmesValue, rmesSheet } from "@/domain/rmesSheet";
+import { fmtDateTime } from "@/domain/selectors";
+import type { AppState, CiqCase } from "@/domain/types";
+import { Notice, rmesRecordPending, secCode } from "./shared";
 
-const PARTS: RmesCriterion["part"][] = ["A", "B", "C", "D"];
+type Readable = Extract<RmesSheet, { readable: true }>;
 
-function OtherDept({ c, dept }: { c: CiqCase; dept: "SAF" | "REG" }) {
-  const { state } = useStore();
-  const [open, setOpen] = useState(false);
-  const list = c.rmes?.criteria.filter((x) => x.dept === dept) ?? [];
-  const done = list.filter((x) => x.result).length;
-  const track = c.reviews.find((r) => r.dept === dept);
-  if (!list.length) return null;
+/** "GEN · FLD-GEN-004 Manufacturer (name and address)": where the value comes from; opens its section when it can. */
+function SourceRef({ c, source, onJump }: { c: CiqCase; source: RmesSource; onJump?: (sectionId: string) => void }) {
+  const code = secCode(source.sectionId, c.templateVersion);
+  const text = (
+    <>
+      <span>{code}</span>
+      <span aria-hidden>·</span>
+      <Mono className="text-[11.5px]">{source.fieldId}</Mono>
+      {/* the arrow stays with the label's last word when the line wraps */}
+      <span className="min-w-0">
+        {source.label}
+        {onJump && <ArrowUpRight size={12} className="ml-0.5 inline-block align-[-2px]" />}
+      </span>
+    </>
+  );
+  if (!onJump) return <span className="inline-flex flex-wrap items-center gap-x-1 text-[11.5px] text-ink-3">{text}</span>;
   return (
-    <Card>
-      <button onClick={() => setOpen((v) => !v)} className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left" aria-expanded={open}>
-        <span>
-          <span className="flex items-center gap-2 text-[14px] font-semibold text-ink">
-            <Lock size={13} className="text-ink-3" /> {DEPT_SHORT[dept]} criteria — read only
-          </span>
-          <span className="mt-0.5 block text-xs text-ink-3">
-            {done} of {list.length} with a result{track?.decision ? ` · decision: ${track.decision === "approved" ? "Approved" : "Rejected"}` : ""} · visible to you, recorded only by {DEPT_SHORT[dept]}
-          </span>
-        </span>
-        {open ? <ChevronDown size={16} className="text-ink-3" /> : <ChevronRight size={16} className="text-ink-3" />}
-      </button>
-      {open && (
-        <div className="divide-y divide-line border-t border-line">
-          {list.map((cr) => (
-            <div key={cr.id} className="px-4 py-3">
-              <div className="flex flex-wrap items-start justify-between gap-2">
-                <p className="text-[13.5px] text-ink">
-                  <Mono className="mr-2 text-ink-3">{cr.id}</Mono>
-                  {cr.title}
-                </p>
-                {cr.result ? (
-                  <Badge tone={RESULT_TONE[cr.result]} dot>
-                    {RESULT_LABEL[cr.result]}
-                  </Badge>
-                ) : (
-                  <Badge tone="warn">No result</Badge>
-                )}
-              </div>
-              <SourceLink c={c} cr={cr} />
-              {cr.result && <RecordedResult state={state} cr={cr} />}
-            </div>
-          ))}
+    <button
+      type="button"
+      onClick={() => onJump(source.sectionId)}
+      className="inline-flex flex-wrap items-center gap-x-1 rounded text-left text-[11.5px] text-ink-3 hover:text-brand"
+      title={`Open ${code} in the questionnaire`}
+      data-testid={`rmes-source-${source.fieldId}`}
+    >
+      {text}
+    </button>
+  );
+}
+
+/** A value as the CIQ holds it: the answer, the supplier's "Cannot provide: …", or "Not answered yet". */
+function ValueText({ v, className }: { v: RmesValue; className?: string }) {
+  return <span className={cx("break-words whitespace-pre-line", v.state === "answered" ? "text-ink" : v.state === "cannot-provide" ? "text-ink-2" : "text-ink-3", className)}>{v.text}</span>;
+}
+
+function HeaderBlock({ c, sheet, onJump }: { c: CiqCase; sheet: Readable; onJump: (sectionId: string) => void }) {
+  return (
+    <dl className="divide-y divide-line">
+      {sheet.header.map((h) => (
+        <div key={h.key} className="grid gap-x-4 gap-y-1 px-4 py-3 sm:grid-cols-[200px_minmax(0,1fr)]" data-testid={`rmes-header-${h.key}`}>
+          <dt className="pt-0.5 text-[12.5px] text-ink-3">{h.label}</dt>
+          <dd className="min-w-0">
+            <ValueText v={h} className="block text-[14px]" />
+            <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11.5px] text-ink-3">
+              <SourceRef c={c} source={h.source} onJump={onJump} />
+              {(h.at || h.note) && <span>{[h.at && `as of ${fmtDateTime(h.at)}`, h.note].filter(Boolean).join(" · ")}</span>}
+            </p>
+          </dd>
         </div>
+      ))}
+    </dl>
+  );
+}
+
+function Composition({ c, sheet, onJump }: { c: CiqCase; sheet: Readable; onJump: (sectionId: string) => void }) {
+  const shared = new Set(sheet.sharedOrigins);
+  const k21 = sheet.columns.find((x) => x.key === "inci")!.sources[0];
+  return (
+    <Card data-testid="rmes-composition">
+      <CardHeader
+        title="Composition"
+        subtitle="One row per component, in the order of the supplier's K2.1 table, with the origin information of each component."
+        action={
+          <button type="button" onClick={() => onJump(k21.sectionId)} className="inline-flex items-center gap-1 text-[12.5px] font-medium text-brand hover:underline" data-testid="rmes-open-composition">
+            Open {secCode(k21.sectionId, c.templateVersion)} <ArrowUpRight size={13} />
+          </button>
+        }
+      />
+      {sheet.rows.length === 0 ? (
+        <p className="px-4 py-6 text-center text-[13px] text-ink-3">The supplier has not entered any component yet.</p>
+      ) : (
+        <div className="relative overflow-x-auto scrollbar-thin">
+          <table className="w-full border-collapse text-left text-[13px]">
+            <thead>
+              <tr className="border-b border-line align-bottom text-ink-3">
+                <th className="py-2 pr-2 pl-4 font-medium">#</th>
+                {sheet.columns.map((col) => (
+                  <th key={col.key} className={cx("px-2 py-2 font-medium last:pr-4", col.key === "conc" && "text-right")} title={col.sources.map((x) => `${x.fieldId} ${x.label}`).join(", ")}>
+                    <span className="block whitespace-nowrap">{col.label}</span>
+                    <span className="block text-[11px] font-normal whitespace-nowrap">{col.key === "freeText" ? "per origin type (K2.3)" : <Mono className="text-[11px]">{col.sources[0]?.fieldId}</Mono>}</span>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {sheet.rows.map((r, i) => (
+                <tr key={r.rowId} className="border-b border-line align-top last:border-0" data-testid={`rmes-row-${r.rowId}`}>
+                  <td className="py-2.5 pr-2 pl-4 text-ink-3">{i + 1}</td>
+                  <td className="px-2 py-2.5 font-medium break-words text-ink">{r.inci}</td>
+                  <td className="px-2 py-2.5 text-right whitespace-nowrap text-ink">{r.conc}</td>
+                  <td className="px-2 py-2.5">
+                    <Mono className="text-ink">{r.cas}</Mono>
+                  </td>
+                  <td className="px-2 py-2.5">
+                    <Mono className="text-ink">{r.ec}</Mono>
+                  </td>
+                  <td className="px-2 py-2.5 text-ink-2">{r.originLabel}</td>
+                  <td className="min-w-[220px] py-2.5 pr-4 pl-2">
+                    <div className="space-y-1.5">
+                      {r.freeText.map((t) => (
+                        <div key={t.source.fieldId}>
+                          <ValueText v={t} />
+                          {shared.has(r.origin) && (
+                            <sup className="ml-0.5 text-ink-3" aria-hidden>
+                              *
+                            </sup>
+                          )}
+                          <div>
+                            <SourceRef c={c} source={t.source} onJump={onJump} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {sheet.rows.length > 0 && (
+        <p className="border-t border-line px-4 py-2 text-[11.5px] text-ink-3" data-testid="rmes-footnote">
+          {sheet.sharedOrigins.length > 0 && "* "}
+          {sheet.footnote}
+        </p>
       )}
     </Card>
   );
 }
 
-export function RmesTab({ c, dept, track, canAct, onJump, onAddFinding, onAskFinding }: { c: CiqCase; dept: "SAF" | "REG"; track: ReviewTrack; canAct: boolean; onJump: (sectionId: string) => void; onAddFinding: (criterionId?: string) => void; onAskFinding: (f: Finding) => void }) {
+export function RmesTab({ c, state, onJump }: { c: CiqCase; state: AppState; onJump: (sectionId: string) => void }) {
   const { instantRmes } = useLiveFeatures();
-  if (!c.rmes) {
-    return (
-      <Card>
-        {/* live, the record is created on the department's own next load (FE-CLEANUP A14) */}
-        <EmptyState title="No RMES record for this case">
-          {instantRmes ? "The internal RMES record is created when Safety or Regulatory gets a review task on the case." : "The internal RMES record is created the next time a Safety or Regulatory reviewer with a review task on the case opens CIQ Digital."}
-        </EmptyState>
-      </Card>
-    );
-  }
-  const mine = c.rmes.criteria.filter((x) => x.dept === dept);
-  const done = mine.filter((x) => x.result).length;
-  const other = dept === "SAF" ? "REG" : "SAF";
-
+  // live: the shell's banner reason when Kissflow did not let the role read the case in full (its answers and
+  // components are missing, so the 8 fields would read as blank or wrong)
+  const unreadable = useAppExtras()?.caseBanner(c.id);
+  const sheet = rmesSheet(state, c, { readable: !unreadable });
   return (
-    <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]" data-testid="rmes-tab">
-      <div className="min-w-0 space-y-5">
-        <Card className="px-4 py-3.5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="text-[14px] font-semibold text-ink">RMES — {DEPT_SHORT[dept]} evaluation</p>
-              <p className="mt-0.5 text-xs text-ink-3">
-                Record created {fmtDate(c.rmes.createdAt)} for {c.id} · internal, never visible to the supplier
-              </p>
-            </div>
-            <div className="w-full sm:w-56">
-              <div className="mb-1 flex justify-between text-xs text-ink-2">
-                <span>Criteria with a result</span>
-                <span className="font-medium text-ink">
-                  {done} of {mine.length}
-                </span>
-              </div>
-              <ProgressBar value={done} max={mine.length} tone={done === mine.length ? "ok" : "brand"} />
-            </div>
+    <div className="space-y-5" data-testid="rmes-tab">
+      <Card>
+        <CardHeader
+          title="Raw Material Evaluation Sheet"
+          subtitle={
+            <span className="inline-flex items-start gap-1.5" data-testid="rmes-record">
+              <Lock size={12} className="mt-[3px] shrink-0" />
+              {sheet.record}
+            </span>
+          }
+          action={
+            <span className="block max-w-[320px] text-xs text-ink-3 sm:text-right" data-testid="rmes-record-at">
+              {!c.rmes ? rmesRecordPending(instantRmes) : sheet.recordAt ? `Record created ${fmtDateTime(sheet.recordAt)}` : RMES_RECORD_NO_TIME}
+            </span>
+          }
+        />
+        {sheet.readable ? (
+          <HeaderBlock c={c} sheet={sheet} onJump={onJump} />
+        ) : (
+          <div className="p-4">
+            <Notice tone="warn" icon={<TriangleAlert size={15} />} testId="rmes-unreadable">
+              {sheet.notice}
+            </Notice>
           </div>
-          <div className="mt-2.5">
-            <DemoNote>illustrative criteria until BDF shares its RMES template</DemoNote>
-          </div>
-        </Card>
-
-        {PARTS.map((part) => {
-          const list = mine.filter((x) => x.part === part);
-          if (!list.length) return null;
-          return (
-            <section key={part}>
-              <div className="mb-2 flex items-baseline justify-between px-1">
-                <h3 className="text-[13px] font-semibold tracking-wide text-ink-2 uppercase">Part {part}</h3>
-                <span className="text-xs text-ink-3">
-                  {list.filter((x) => x.result).length} of {list.length} recorded
-                </span>
-              </div>
-              <Card className="divide-y divide-line">
-                {list.map((cr) => (
-                  <CriterionRow key={cr.id} c={c} cr={cr} canEdit={canAct} onJump={onJump} onAddFinding={onAddFinding} />
-                ))}
-              </Card>
-            </section>
-          );
-        })}
-
-        <OtherDept c={c} dept={other} />
-      </div>
-
-      <div className="space-y-5">
-        <DecisionCard c={c} dept={dept} track={track} canAct={canAct} />
-        <FindingsCard c={c} dept={dept} canAct={canAct} onAdd={() => onAddFinding()} onAsk={onAskFinding} />
-      </div>
+        )}
+      </Card>
+      {sheet.readable && <Composition c={c} sheet={sheet} onJump={onJump} />}
     </div>
   );
 }

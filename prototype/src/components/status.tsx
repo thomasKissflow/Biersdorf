@@ -56,7 +56,9 @@ export function ApplicabilityBadge({ a, manual }: { a: Applicability; manual?: b
   );
 }
 
-const KIND: Record<OpenPointKind, string> = { query: "Query", "document-request": "Document request", "additional-part": "Additional section", finding: "Finding" };
+// "finding": a question raised from a retired RMES finding (legacy data only); on screen it is a query, as in the
+// completion bar (features/review/lib.ts KIND_TEXT)
+const KIND: Record<OpenPointKind, string> = { query: "Query", "document-request": "Document request", "additional-part": "Additional section", finding: "Query" };
 export const kindLabel = (k: OpenPointKind) => KIND[k];
 
 export function DeptBadge({ dept }: { dept: Dept }) {

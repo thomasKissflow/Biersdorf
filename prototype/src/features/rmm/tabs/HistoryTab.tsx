@@ -34,8 +34,13 @@ function answers(state: AppState, c: CiqCase): { k: string; v: ReactNode }[] {
   const count = (a: string) => c.scope.filter((s) => s.applicability === a).length;
   const comp = c.confirmations.filter((x) => x.type === "completeness").at(-1);
   const fin = c.confirmations.find((x) => x.type === "final-release");
-  const assessed = c.rmes?.criteria.filter((x) => x.result) ?? [];
-  const assessors = [...new Set(assessed.map((x) => x.by).filter(Boolean) as string[])].map((id) => userName(state, id));
+  // the Safety / Regulatory decisions, each with who recorded it last and when (the RMES sheet itself is derived from
+  // the case and holds no assessment: BDF's RMES scope, 28 Oct)
+  const deciders = c.reviews.filter((r) => r.dept === "SAF" || r.dept === "REG");
+  const decisionText = (r: (typeof deciders)[number]) => {
+    const ev = [...c.audit].reverse().find((a) => a.action === `Final ${DEPT_SHORT[r.dept]} decision`);
+    return `${DEPT_SHORT[r.dept]} ${r.decision === "approved" ? "Approved" : "Rejected"}${ev ? ` by ${userName(state, ev.by)} (${fmtDateTime(ev.at)})` : ""}`;
+  };
   const completions = c.confirmations.filter((x) => x.type === "dept-completion");
   const end = [...c.phaseHistory].reverse().find((p) => p.phase === "completed" || p.phase === "cancelled");
   const ops = c.openPoints;
@@ -65,20 +70,22 @@ function answers(state: AppState, c: CiqCase): { k: string; v: ReactNode }[] {
       v: c.reviews.length ? (
         <>
           {c.reviews.length} review task{c.reviews.length === 1 ? "" : "s"} ({listJoin(c.reviews.map((r) => DEPT_SHORT[r.dept]))}); {completions.length ? <>completed by {listJoin(completions.map((x) => `${x.name} (${x.dept ? DEPT_SHORT[x.dept] : "review"}, ${fmtDateTime(x.at)})`))}</> : "none completed yet"}.
-          {c.reviews.some((r) => r.decision) && <> Internal decisions: {listJoin(c.reviews.filter((r) => r.decision).map((r) => `${DEPT_SHORT[r.dept]} ${r.decision === "approved" ? "Approved" : "Rejected"}`))}.</>}
         </>
       ) : (
         "No review started yet."
       ),
     },
     {
-      k: "RMES",
-      v: c.rmes ? (
+      k: "Decisions",
+      v: deciders.some((r) => r.decision) ? (
         <>
-          {assessed.length} of {c.rmes.criteria.length} criteria assessed{assessors.length ? <> by {listJoin(assessors)}</> : null}; {c.rmes.findings.length} finding{c.rmes.findings.length === 1 ? "" : "s"}. Internal, never shown to the supplier.
+          {listJoin(deciders.filter((r) => r.decision).map(decisionText))}
+          {deciders.some((r) => !r.decision) && <>; {listJoin(deciders.filter((r) => !r.decision).map((r) => DEPT_SHORT[r.dept]))} not recorded yet</>}. Internal, never shown to the supplier.
         </>
+      ) : deciders.length ? (
+        "No Safety or Regulatory decision recorded yet."
       ) : (
-        "No RMES record: it is created when Safety or Regulatory review the case."
+        "No Safety or Regulatory review on this case, so no decision."
       ),
     },
     {

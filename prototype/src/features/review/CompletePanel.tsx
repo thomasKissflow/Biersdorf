@@ -50,10 +50,9 @@ function useBarFootprint(el: HTMLDivElement | null) {
   }, [el]);
 }
 
-/** Safety / Regulatory: the internal decision, recorded in the RMES tab. */
-function DecisionLine({ track, dept, canAct, onRmesTab, onOpenRmes }: { track: ReviewTrack; dept: "SAF" | "REG"; canAct: boolean; onRmesTab: boolean; onOpenRmes: () => void }) {
-  // On the RMES tab the decision card is on screen already: the link scrolls to it instead of naming the tab.
-  const go = onRmesTab ? () => document.querySelector('[data-testid="decision-card"]')?.scrollIntoView({ behavior: "smooth", block: "center" }) : onOpenRmes;
+/** Safety / Regulatory: the internal decision, recorded on the decision card of the Questionnaire tab (outside the
+ *  RMES since 28 Oct); the link goes there and scrolls to it. */
+function DecisionLine({ track, dept, canAct, onShowDecision }: { track: ReviewTrack; dept: "SAF" | "REG"; canAct: boolean; onShowDecision: () => void }) {
   return (
     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line px-4 py-2 text-[12.5px]" data-testid="complete-decision">
       <span className="text-ink-3">{DEPT_SHORT[dept]} decision:</span>
@@ -64,8 +63,8 @@ function DecisionLine({ track, dept, canAct, onRmesTab, onOpenRmes }: { track: R
       )}
       {track.decision === "rejected" && track.decisionReason && <span className="min-w-0 text-ink-2">· {track.decisionReason}</span>}
       {canAct && (
-        <button type="button" onClick={go} className="font-medium text-brand underline-offset-2 hover:underline" data-testid="decision-open-rmes">
-          {onRmesTab ? "Go to the decision" : track.decision ? "Change in the RMES tab" : "Record it in the RMES tab"}
+        <button type="button" onClick={onShowDecision} className="font-medium text-brand underline-offset-2 hover:underline" data-testid="decision-go">
+          {track.decision ? "Change the decision" : "Record the decision"}
         </button>
       )}
       <span className="hidden text-[11.5px] text-ink-3 sm:inline">Internal: the supplier never sees it.</span>
@@ -174,7 +173,7 @@ function BlockerList({ items, onPick }: { items: BlockerItem[]; onPick: (b: Bloc
   );
 }
 
-export function CompletePanel({ c, dept, track, onRmesTab = false, onShowPoint, onOpenRmes }: { c: CiqCase; dept: ReviewDept; track: ReviewTrack; onRmesTab?: boolean; onShowPoint: (opId: string) => void; onOpenRmes: () => void }) {
+export function CompletePanel({ c, dept, track, onShowPoint, onShowDecision }: { c: CiqCase; dept: ReviewDept; track: ReviewTrack; onShowPoint: (opId: string) => void; onShowDecision: () => void }) {
   const { state, me, completeReview, reopenReview } = useStore();
   const { deptReopen } = useLiveFeatures();
   const [expanded, setExpanded] = useState(false);
@@ -257,12 +256,12 @@ export function CompletePanel({ c, dept, track, onRmesTab = false, onShowPoint, 
   const mayComplete = can(state, me.id, "review.complete", c, { dept });
   const pick = (b: BlockerItem) => {
     if (b.target?.kind === "point") onShowPoint(b.target.opId);
-    else if (b.target?.kind === "rmes") onOpenRmes();
+    else if (b.target?.kind === "decision") onShowDecision();
   };
   return (
     <div ref={setBar} className="sticky bottom-4 z-20 mt-6 rounded-xl border border-line bg-surface shadow-pop" data-testid="complete-bar">
       {expanded && !ready && items.length > 0 && <BlockerList items={items} onPick={pick} />}
-      {isRmesDept(dept) && c.rmes && <DecisionLine track={track} dept={dept} canAct={inReview && mayComplete} onRmesTab={onRmesTab} onOpenRmes={onOpenRmes} />}
+      {isRmesDept(dept) && <DecisionLine track={track} dept={dept} canAct={inReview && mayComplete} onShowDecision={onShowDecision} />}
       {rejected.length > 0 && choosing && <RejectionChoice c={c} depts={rejected} ready={ready} onDone={() => setChoosing(false)} />}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3">
         {ready ? <CircleCheck size={18} className="shrink-0 text-ok" /> : <TriangleAlert size={18} className="shrink-0 text-warn" />}

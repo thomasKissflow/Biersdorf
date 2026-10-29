@@ -15,6 +15,7 @@ import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { createReadStream, existsSync, mkdirSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { LEAK_TERMS } from "./leak-scan.mjs";
 
 const require = createRequire(import.meta.url);
 const PW = "/Users/thomas/Documents/Kissflow Projects/POC/Promotion Management/app/node_modules/playwright-core";
@@ -115,7 +116,12 @@ const EMPTY_VIEW = {
 
 const MAT = { name: "Solvasoft 300", inci: "Ethylhexyl Palmitate", no: "RM-410001" };
 const pdf = (name) => ({ name, mimeType: "application/pdf", buffer: Buffer.from(`%PDF-1.4 harness ${name}`) });
-const ORIGIN_LABEL = { vegetable: "Vegetable (bio mass)", animal: "Animal", mineral: "Mineral", petrochemical: "Petrochemical / fossil", polymer: "Polymer", waste: "Waste / side stream" };
+const ORIGIN_LABEL = { vegetable: "Vegetable (bio mass)", animal: "Animal", mineral: "Mineral", petrochemical: "Petrochemical / fossil", polymer: "Polymer", waste: "Waste / side stream", ccu: "Carbon capture (CCU)", chemrec: "Chemical recycling of post-consumer plastic" };
+/** domain/rmesSheet.ts ORIGIN_TEXT_FIELDS (the harness drives the built bundle, so it keeps its own copy): the free-text
+ *  field(s) the RMES sheet shows for each Source of origin. */
+const ORIGIN_TEXT = { vegetable: ["FLD-2.1-101", "FLD-2.3-10"], animal: ["FLD-2.1-101", "FLD-2.3-10"], petrochemical: ["FLD-2.3-11"], mineral: ["FLD-2.3-12"], ccu: ["FLD-2.3-13"], polymer: ["FLD-2.3-14"], waste: ["FLD-2.3-15"], chemrec: ["FLD-2.3-16"] };
+/** What the retired criteria RMES showed and the fields BDF left out (not yellow): never on the RMES sheet. */
+const NOT_ON_SHEET = /criteri|finding|\bPart [A-D]\b|AI suggestion|BDF limit|limit check|Process ID|RMT ID|IRMA|Declaration|Recorded RMES result|Approved|Rejected/i;
 
 /** Thomas, 15 Oct (permissions.ts RELEASE_LOCKED_TEXT): the questionnaire is locked while the final release is requested. */
 const RELEASE_LOCKED = "Your questionnaire is locked because Beiersdorf has requested your final release. If something must change, contact Beiersdorf; they can reopen the review.";
@@ -549,22 +555,60 @@ async function decide(t, caseId, opId, decision, reason = "") {
   }
 }
 
-/** Safety or Regulatory: a result on every own RMES criterion, then the decision. */
-async function recordRmes(t, caseId, dept, { decision = "approved", reason = "", result = "Available", comment } = {}) {
-  await t.go(`/review/${caseId}?tab=rmes`);
-  await t.seeMust("rmes-tab", `${dept} RMES tab`);
-  const c = await t.kase(caseId);
-  for (const cr of c.rmes.criteria.filter((x) => x.dept === dept && !x.result)) {
-    await t.tid(`criterion-result-${cr.id}`).getByRole("combobox").click();
-    await t.page.getByRole("option", { name: result, exact: true }).click();
-    if (comment) await t.fill(`criterion-comment-${cr.id}`, `${comment} (${cr.id})`);
-    await t.click(`criterion-save-${cr.id}`);
-  }
+/** Safety or Regulatory: the decision on the Questionnaire tab's decision card. Since BDF's RMES scope of 28 Oct the
+ *  RMES takes no input (a read-only sheet of 8 fields) and the decision is the review's, outside it. */
+async function recordDecision(t, caseId, dept, { decision = "approved", reason = "" } = {}) {
+  await t.go(`/review/${caseId}`);
+  await t.seeMust("decision-card", `${dept}: the decision card on the Questionnaire tab`);
   await t.tid("decision-choice").getByRole("button", { name: decision === "approved" ? "Approved" : "Rejected", exact: true }).click();
   if (reason) await t.fill("decision-reason", reason);
   await t.click("decision-record");
   const after = await t.kase(caseId);
   t.must(`${dept} decision recorded (${decision})`, track(after, dept)?.decision === decision);
+}
+
+/** The RMES sheet's text without its record time (to compare two readings). */
+async function rmesSheetText(t, caseId) {
+  await t.go(`/review/${caseId}?tab=rmes`);
+  await t.seeMust("rmes-tab", "the RMES tab");
+  return (await t.text("rmes-tab")).replace(/Record created [^\n]*/, "").replace(/\s+/g, " ").trim();
+}
+
+/** Safety / Regulatory: the RMES tab shows the case's 8 fields as the case holds them now, each with its CIQ source,
+ *  and nothing else: no input, no decision, nothing of the criteria RMES, no Process / RMT / IRMA ID, no Declaration. */
+async function checkRmesSheet(t, caseId, who) {
+  await t.go(`/review/${caseId}?tab=rmes`);
+  await t.seeMust("rmes-tab", `${who}: the RMES tab`);
+  const s = await t.state();
+  const c = s.cases.find((x) => x.id === caseId);
+  const text = (v) => (Array.isArray(v) ? v.join(", ") : v === undefined || v === null || v === "" ? "" : String(v)).trim();
+  const shown = (id, fallback = "") => text(c.answers[id]) || (c.justifications?.[id] ? `Cannot provide: ${c.justifications[id].trim()}` : "") || fallback || "Not answered yet";
+  const flat = async (id) => (await t.text(id)).replace(/\s+/g, " ").trim();
+  t.check(`${who}: the record line`, (await flat("rmes-record")) === `RMES · ${caseId} · internal: never visible to the supplier · filled automatically from the CIQ`, await flat("rmes-record"));
+  t.check(`${who}: … and when the record was created`, /^Record created \d/.test(await flat("rmes-record-at")), await flat("rmes-record-at"));
+  const supplier = s.suppliers.find((x) => x.id === c.supplierId)?.name ?? "";
+  for (const [key, fid, want] of [["material", "FLD-GEN-001", shown("FLD-GEN-001", c.materialName)], ["supplier", "FLD-GEN-002", shown("FLD-GEN-002", supplier)], ["manufacturer", "FLD-GEN-004", shown("FLD-GEN-004")]]) {
+    const h = await flat(`rmes-header-${key}`);
+    t.check(`${who}: ${key} “${want.slice(0, 40)}”, with its source ${fid}`, h.includes(want.replace(/\s+/g, " ")) && h.includes(fid), h);
+  }
+  t.check(`${who}: the manufacturer is FLD-GEN-004 only, never the supplier's name in its place`, c.answers["FLD-GEN-004"] || !(await flat("rmes-header-manufacturer")).includes(supplier));
+  const heads = await t.tid("rmes-composition").locator("th").evaluateAll((els) => els.map((e) => (e.firstElementChild ?? e).textContent.trim()));
+  t.check(`${who}: the composition's columns`, JSON.stringify(heads) === JSON.stringify(["#", "INCI", "%", "CAS #", "EC #", "Source of origin", "Free text"]), heads);
+  t.check(`${who}: one row per component, in K2.1 order`, JSON.stringify(await t.page.locator('[data-testid^="rmes-row-"]').evaluateAll((els) => els.map((e) => e.dataset.testid.slice(9)))) === JSON.stringify(c.components.map((r) => r.id)));
+  for (const r of c.components) {
+    const row = await flat(`rmes-row-${r.id}`);
+    const conc = r.concMin === r.concMax ? `${r.concMin} %` : `${r.concMin}–${r.concMax} %`;
+    const free = (ORIGIN_TEXT[r.origin] ?? []).flatMap((f) => [f, shown(f)]);
+    const miss = [r.inci, conc, r.cas || "—", r.ec || "—", ORIGIN_LABEL[r.origin], ...free].filter((v) => !row.includes(v));
+    t.check(`${who}: ${r.inci}: INCI, %, CAS #, EC #, Source of origin and its free text with the field ids`, miss.length === 0, { row, miss });
+  }
+  const tab = t.tid("rmes-tab");
+  const controls = await tab.locator("input, textarea, select, [role=combobox], [contenteditable=true]").count();
+  const buttons = await tab.locator("button").evaluateAll((els) => els.map((e) => e.dataset.testid || e.textContent.trim()).filter((id) => !/^rmes-(source-FLD-|open-composition$)/.test(id)));
+  t.check(`${who}: nothing on the sheet is editable (its only buttons open a source)`, controls === 0 && buttons.length === 0, { controls, buttons });
+  const all = await t.text("rmes-tab");
+  t.check(`${who}: nothing of the criteria RMES, no IDs, no Declaration, no decision on the sheet`, !NOT_ON_SHEET.test(all) && (await tab.locator('[data-testid="decision-card"]').count()) === 0, all.match(NOT_ON_SHEET)?.[0]);
+  t.check(`${who}: no criteria or findings UI`, (await t.page.locator('[data-testid^="criterion-"], [data-testid^="finding-"], [data-testid="add-finding"], [data-testid="rmes-progress"]').count()) === 0);
 }
 
 async function completeReview(t, caseId, dept) {
@@ -575,7 +619,7 @@ async function completeReview(t, caseId, dept) {
   t.must(`${dept} review completed`, track(c, dept)?.status === "completed", track(c, dept));
 }
 
-/** Every open track completes (Safety and Regulatory record RMES first); RMM last unless `rmmFirst`. With `only`, just
+/** Every open track completes (Safety and Regulatory record their decision first); RMM last unless `rmmFirst`. With `only`, just
  *  those departments (the case then stays in review). */
 async function completeAll(t, caseId, { rmmLast = true, only } = {}) {
   const c = await t.kase(caseId);
@@ -584,7 +628,7 @@ async function completeAll(t, caseId, { rmmLast = true, only } = {}) {
   for (const d of sorted) {
     await t.viewAs(DEPT_PERSONA[d]);
     const cur = await t.kase(caseId);
-    if ((d === "SAF" || d === "REG") && !track(cur, d).decision) await recordRmes(t, caseId, d);
+    if ((d === "SAF" || d === "REG") && !track(cur, d).decision) await recordDecision(t, caseId, d);
     await completeReview(t, caseId, d);
     await t.step(`${d} completed ${caseId}`);
   }
@@ -820,7 +864,7 @@ def("S1", "the full demo flow from nothing", async (t) => {
   t.check("review-assigned mails to exactly RMM, Regulatory, Safety, QM and Microbiology", same(recipients(ev(s, "review-assigned", id)), ["u-rmm", "u-reg", "u-saf", "u-qm", "u-mic"]), recipients(ev(s, "review-assigned", id)));
   t.check("Customs and Legal are informed (one mail each, on K7 and K8)", ev(s, "informed", id).length === 2 && same(recipients(ev(s, "informed", id)), ["u-cus", "u-leg"]) && ev(s, "informed", id).every((m) => m.link.endsWith(`&s=${m.to[0] === "u-cus" ? "K7" : "K8"}`)));
   t.check("Sustainability got nothing", mailsTo(s, "u-sus").length === 0);
-  t.check("an RMES record exists (Safety and Regulatory review)", !!c.rmes && c.rmes.criteria.length > 0);
+  t.check("an RMES record exists (Safety and Regulatory review), header only: no criteria, no findings", !!c.rmes?.createdAt && c.rmes.criteria.length === 0 && c.rmes.findings.length === 0, c.rmes);
   await t.step("completeness confirmed: reviews activated");
   await t.click("person-chip");
   const tasks = Object.fromEntries(await t.page.locator('[data-testid^="view-as-"]').evaluateAll((els) => els.map((e) => [e.dataset.testid.slice(8), Number(e.dataset.tasks)])));
@@ -965,11 +1009,18 @@ def("S1", "the full demo flow from nothing", async (t) => {
   await t.step(`${op3} accepted`);
   t.check("op-answered of RMM's point went to RMM", ev(await t.state(), "op-answered", id).some((m) => m.opId === op3 && same(m.to, ["u-rmm"])));
 
-  // 9. Regulatory and Safety record RMES and decide; QM and Microbiology complete; RMM completes last
+  // 9. Regulatory and Safety read the RMES sheet (the 8 fields from the CIQ) and decide on the Questionnaire tab; QM and
+  // Microbiology complete; RMM completes last
+  let sheet = "";
   for (const d of ["REG", "SAF"]) {
     await t.viewAs(DEPT_PERSONA[d]);
-    await recordRmes(t, id, d, { comment: `RMES-${d}-NOTE checked against the evidence` });
-    await t.step(`${d} RMES recorded`);
+    await checkRmesSheet(t, id, d);
+    const now = await rmesSheetText(t, id);
+    if (sheet) t.check("Safety sees the same RMES sheet as Regulatory (one RMES for both)", now === sheet, [now.slice(0, 200), sheet.slice(0, 200)]);
+    sheet = now;
+    await t.step(`${d} RMES sheet`);
+    await recordDecision(t, id, d, { reason: `RMES-${d}-NOTE checked against the evidence` });
+    await t.step(`${d} decision recorded`);
     await completeReview(t, id, d);
     await t.step(`${d} completed`);
   }
@@ -1031,7 +1082,7 @@ def("S1", "the full demo flow from nothing", async (t) => {
   t.check("FD: completeness, 5 review completions and the final release", (await t.tid("fd-confirmation-completeness").count()) === 1 && (await t.tid("fd-confirmation-dept-completion").count()) === 5 && (await t.tid("fd-confirmation-final-release").count()) === 1);
   t.check("FD: the header names the manufacturer and site the supplier answered", c.finalDocument.header.site.startsWith("Plant 2") && c.finalDocument.header.manufacturer.includes("Polígono Industrial Sud"), c.finalDocument.header);
   t.check("FD: no answer of a section that closed (Annex 2)", !fd.includes("2-ethylhexyl hexadecanoate") && (await t.tid("fd-section-A2").count()) === 0);
-  t.check("FD: no RMES content", !/RMES|RMES-REG-NOTE|RMES-SAF-NOTE|INCI and CAS of every component/.test(fd));
+  t.check("FD: no RMES content (no decision comment, no sheet label, nothing of the criteria RMES)", LEAK_TERMS.every((x) => !fd.includes(x)), LEAK_TERMS.filter((x) => fd.includes(x)));
   t.check("FD: a documents-only section names its file, the others say no document was provided", (await t.attr("fd-section-K7", "data-files")) === "1" && (await t.text("fd-section-K7")).includes("Customs_statement_HS_code.pdf") && (await t.text("fd-section-K8")).includes("No document provided"));
   t.check("FD: the rule evidence is in the evidence list", ["Statements_Solvasoft300.pdf", "BSE_TSE_certificate_Solvasoft300.pdf", "Annex_II_419_conformity_Solvasoft300.pdf"].every((n) => fd.includes(n)));
   t.check("FD: numbers keep their unit", (await t.text("fd-section-K2.2")).includes("0.1 mg/kg"), (await t.text("fd-section-K2.2")).slice(0, 300));
@@ -1121,7 +1172,7 @@ def("S2", "late metadata change in review adds a section (grow-only)", async (t)
   t.check("an additional-part point for Regulatory (responsible Dr. Jonas Albrecht)", addPoint && addPoint.dept === "REG" && addPoint.responsibleId === "u-reg" && addPoint.status === "open", addPoint);
   t.check("Sustainability gets no track (it leads no section of this case)", !track(c, "SUS"));
   t.check("data-changed mail to RMM", ev(s, "data-changed", id).some((m) => m.to.includes("u-rmm")));
-  t.check("Annex 1 brings Regulatory's pesticide criterion R-C1", c.rmes.criteria.some((x) => x.id === "R-C1" && !x.result), c.rmes.criteria.map((x) => x.id));
+  t.check("the RMES record stays header only (no criteria planned for Annex 1)", c.rmes.criteria.length === 0, c.rmes.criteria.length);
   await t.step("SF-01 Mineral after the reopen");
   await t.notSee("final-release-card", "no release card while the review runs again");
   await config(t, "SF12", false); // would close K5.1: the scope only grows
@@ -1188,30 +1239,16 @@ def("S2", "late metadata change in review adds a section (grow-only)", async (t)
   await decide(t, id, added[0].id, "accept");
   await t.viewAs(P.saf);
   for (const p of added.slice(1)) await decide(t, id, p.id, "accept");
-  // the late Annex 4 brought the MOAH criterion into Safety's RMES record; Safety records it before completing again
+  // the RMES follows the supplier's Part 2 changes: the mineral and waste components with their specifications
   c = await t.kase(id);
-  const moah = c.rmes.criteria.find((x) => x.id === "S-C2");
-  t.check("the late Annex 4 adds the MOAH criterion (S-C2) with its limit check on the supplier's value", moah && !moah.result && moah.limit?.substance === "MOAH" && moah.limit.value === 0.4 && moah.limit.pass === true, moah);
-  await t.go(`/review/${id}?tab=rmes`);
-  await t.seeMust("rmes-tab", "Safety's RMES tab");
-  for (const cr of c.rmes.criteria.filter((x) => x.dept === "SAF" && !x.result)) {
-    await t.tid(`criterion-result-${cr.id}`).getByRole("combobox").click();
-    await t.page.getByRole("option", { name: "Available", exact: true }).click();
-    await t.click(`criterion-save-${cr.id}`);
-  }
-  t.check("Safety recorded the new criterion", (await t.kase(id)).rmes.criteria.filter((x) => x.dept === "SAF").every((x) => x.result));
+  await checkRmesSheet(t, id, "Safety (after the Part 2 changes)");
+  const waste = c.components.find((r) => r.origin === "waste");
+  t.check("the waste component's free text is its FLD-2.3-15 specification", !!waste && (await t.text(`rmes-row-${waste.id}`)).includes("Recovered ester from a refinery side stream") && (await t.text(`rmes-row-${waste.id}`)).includes("FLD-2.3-15"));
   await completeReview(t, id, "SAF");
   await t.step("Regulatory accepted Annex 1, Safety completed");
-  // Regulatory records the late pesticide criterion (its decision stays recorded), then completes again
+  // Regulatory completes again (its decision stays recorded; the RMES needs nothing)
   await t.viewAs(P.reg);
-  await t.go(`/review/${id}?tab=rmes`);
-  await t.seeMust("rmes-tab", "Regulatory's RMES tab");
-  for (const cr of (await t.kase(id)).rmes.criteria.filter((x) => x.dept === "REG" && !x.result)) {
-    await t.tid(`criterion-result-${cr.id}`).getByRole("combobox").click();
-    await t.page.getByRole("option", { name: "Available", exact: true }).click();
-    await t.click(`criterion-save-${cr.id}`);
-  }
-  t.check("Regulatory recorded R-C1", (await t.kase(id)).rmes.criteria.find((x) => x.id === "R-C1")?.result === "available");
+  t.check("Regulatory's decision stayed recorded", track(await t.kase(id), "REG")?.decision === "approved");
   await completeReview(t, id, "REG");
   await t.step("Regulatory completed again");
   for (const d of ["MIC", "QM"]) {
@@ -1227,11 +1264,16 @@ def("S2", "late metadata change in review adds a section (grow-only)", async (t)
   c = s.cases.find((x) => x.id === id);
   t.check("back to final-release: a second release request", c.phase === "final-release" && ev(s, "release-requested", id).length === 2);
   await t.step("all completed again");
+  await t.viewAs(P.saf);
+  const before = await rmesSheetText(t, id);
   await t.viewAs(P.elena);
   await release(t, id);
   c = await t.kase(id);
   t.check("the final document lists Annex 1, 4 and 9 as added later", ["A1", "A4", "A9"].every((x) => c.finalDocument.sections.some((y) => y.sectionId === x && y.addedLater)));
   await t.step("released");
+  await t.viewAs(P.saf);
+  t.check("after the final release the RMES sheet is unchanged (frozen with the case)", (await rmesSheetText(t, id)) === before, before.slice(0, 200));
+  await t.step("RMES after the release");
 });
 
 def("S3", "a department adds a missing section; the supplier completes it", async (t) => {
@@ -1381,16 +1423,18 @@ def("S4", "AS-08: edit and withdraw, incl. the supplier having the drawer open",
   await t.step("supplier view after the withdrawal");
 });
 
-def("S5", "RMES Rejected: RMM continues with a note or cancels; a completed RMM review reopens", async (t) => {
+def("S5", "Safety / Regulatory Rejected: RMM continues with a note or cancels; a completed RMM review reopens", async (t) => {
   await t.load("/");
   const id = await caseInReview(t);
   await t.viewAs(P.rmm);
   await completeReview(t, id, "RMM");
   await t.viewAs(P.saf);
-  await t.go(`/review/${id}?tab=rmes`);
+  await t.go(`/review/${id}`);
+  await t.seeMust("decision-card", "Safety's decision card on the Questionnaire tab");
   await t.tid("decision-choice").getByRole("button", { name: "Rejected", exact: true }).click();
-  t.check("a decision needs every criterion first", await t.tid("decision-record").isDisabled());
-  await recordRmes(t, id, "SAF", { decision: "rejected", reason: "SAF-REJECT-REASON: the arsenic evidence covers one batch only." });
+  await t.click("decision-record");
+  t.check("a rejection needs a reason (nothing is recorded without one)", (await t.text("decision-card")).includes("A rejection needs a reason.") && !track(await t.kase(id), "SAF").decision);
+  await recordDecision(t, id, "SAF", { decision: "rejected", reason: "SAF-REJECT-REASON: the arsenic evidence covers one batch only." });
   let s = await t.state();
   let c = s.cases.find((x) => x.id === id);
   t.check("Rejected reopens RMM's completed review", track(c, "RMM").status === "reopened");
@@ -1420,7 +1464,7 @@ def("S5", "RMES Rejected: RMM continues with a note or cancels; a completed RMM 
   // a second case: Regulatory rejects, RMM cancels the case
   const id2 = await caseInReview(t, { no: "RM-410002", material: "Solvasoft 310" });
   await t.viewAs(P.reg);
-  await recordRmes(t, id2, "REG", { decision: "rejected", reason: "REG-REJECT-REASON: not listed in the UK inventory." });
+  await recordDecision(t, id2, "REG", { decision: "rejected", reason: "REG-REJECT-REASON: not listed in the UK inventory." });
   await t.viewAs(P.rmm);
   await t.go(`/review/${id2}`);
   await t.click("rejection-choose");
@@ -1858,16 +1902,9 @@ def("S9", "supplier leak scan: views and mails never carry internal content", as
   await supplierAnswer(t, id, opA, "ISO 16128-2 is used for the index.");
   await t.viewAs(P.reg);
   await decide(t, id, opA, "not-accepted", "LEAK-NOT-ACCEPTED-NOTE the method is outdated");
-  await t.go(`/review/${id}?tab=rmes`);
-  await t.click("add-finding");
-  await t.fill("finding-text", "LEAK-FINDING: inventory listing unclear for the UK.");
-  await t.click("finding-save");
-  const f = (await t.kase(id)).rmes.findings.find((x) => x.text.startsWith("LEAK-FINDING"));
-  if (f) {
-    await t.go(`/review/${id}?tab=rmes`);
-    await t.click(`finding-close-${f.id}`);
-  }
-  await recordRmes(t, id, "REG", { comment: "LEAK-RMES-COMMENT", reason: "LEAK-DECISION-REASON approved with a remark" });
+  // the RMES sheet (Regulatory reads it) and the decision with a comment
+  await checkRmesSheet(t, id, "Regulatory");
+  await recordDecision(t, id, "REG", { reason: "LEAK-DECISION-REASON approved with a remark" });
   await t.viewAs(P.cus);
   await t.go(`/cases/${id}?tab=notes`);
   await t.fill("note-text", "LEAK-CUSTOMS-NOTE: HS code to be checked.");
@@ -1881,7 +1918,8 @@ def("S9", "supplier leak scan: views and mails never carry internal content", as
 
   const s = await t.state();
   const c = s.cases.find((x) => x.id === id);
-  const internal = ["LEAK-", "RMES", c.finalDocument.fingerprint, c.finalDocument.id, ...c.rmes.criteria.map((x) => x.title)];
+  // LEAK_TERMS (scripts/leak-scan.mjs): "RMES", the retired criteria RMES's texts and the RMES sheet's own labels
+  const internal = ["LEAK-", ...LEAK_TERMS, c.finalDocument.fingerprint, c.finalDocument.id];
   const otherSupplier = [other.name, "Isla Kerrow", "Kerrow Aloe Extract", otherCase];
   const secrets = [...internal, ...otherSupplier];
   const leaks = (text, list = secrets) => list.filter((x) => text.includes(x));

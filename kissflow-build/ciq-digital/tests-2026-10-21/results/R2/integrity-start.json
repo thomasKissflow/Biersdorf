@@ -1,14 +1,15 @@
 {
  "suite": "integrity-start",
  "run": "R2",
- "startedAt": "2026-10-21T00:08:31.269Z",
- "savedAt": "2026-10-21T00:09:50.426Z",
+ "startedAt": "2026-10-28T20:39:26.205Z",
+ "savedAt": "2026-10-28T20:45:51.456Z",
  "counts": {
-  "pass": 8,
-  "fail": 0,
+  "pass": 5,
+  "fail": 1,
   "blocked": 0,
-  "not-run": 2
+  "not-run": 1
  },
+ "stopped": "Stopped on GET /form/2/AcDOSunMEpSA/CIQ_Audit_Event_A00/PkEPEenB3PeK: 429 Too Many Requests. No retry; nothing calls Kissflow for 20 minutes.",
  "steps": [
   {
    "name": "integrations: the 12 hand-offs are Live and ON",
@@ -114,12 +115,13 @@
     ],
     "notes": {}
    },
-   "ms": 5947,
-   "at": "2026-10-21T00:08:31.346Z"
+   "ms": 9084,
+   "at": "2026-10-28T20:39:26.283Z"
   },
   {
    "name": "names: every flow of both apps follows the naming rule; the code's flows exist with their names",
-   "status": "pass",
+   "status": "fail",
+   "reason": "failed: every flow name starts \"CIQ \" (app) or \"CIQP \" (portal), or is a listed exception; flow names are unique across both apps",
    "evidence": {
     "readBacks": [
      {
@@ -478,6 +480,14 @@
        {
         "app": "CIQ_Digital_A00",
         "type": "integration",
+        "id": "CIQ_Review_completed_final_release_A00",
+        "name": "CIQ Review completed – final release when all done",
+        "status": "Live",
+        "isActive": true
+       },
+       {
+        "app": "CIQ_Digital_A00",
+        "type": "integration",
         "id": "CIQ_case_cancelled_Case_cancelled_A00",
         "name": "CIQ case.cancelled Case cancelled",
         "status": "Live",
@@ -553,7 +563,7 @@
         "id": "Mail_Integration_Thomas_A00",
         "name": "Mail Integration - Thomas",
         "status": "Live",
-        "isActive": false
+        "isActive": true
        },
        {
         "app": "CIQ_Digital_A00",
@@ -680,6 +690,22 @@
        {
         "app": "CIQ_Supplier_Portal_A00",
         "type": "integration",
+        "id": "Mail_Integration_Thomas_A01",
+        "name": "Mail Integration - Thomas",
+        "status": "Live",
+        "isActive": false
+       },
+       {
+        "app": "CIQ_Supplier_Portal_A00",
+        "type": "integration",
+        "id": "Communicate_to_App_Thomas_Test_A00",
+        "name": "Communicate to App - Thomas Test",
+        "status": "Live",
+        "isActive": false
+       },
+       {
+        "app": "CIQ_Supplier_Portal_A00",
+        "type": "integration",
         "id": "CIQP_Final_release_to_case_A00",
         "name": "CIQP Final release to case",
         "status": "Live",
@@ -720,13 +746,18 @@
      },
      {
       "label": "every flow name starts \"CIQ \" (app) or \"CIQP \" (portal), or is a listed exception",
-      "ok": true,
-      "detail": []
+      "ok": false,
+      "detail": [
+       "CIQ_Supplier_Portal_A00 integration Mail_Integration_Thomas_A01 \"Mail Integration - Thomas\"",
+       "CIQ_Supplier_Portal_A00 integration Communicate_to_App_Thomas_Test_A00 \"Communicate to App - Thomas Test\""
+      ]
      },
      {
       "label": "flow names are unique across both apps",
-      "ok": true,
-      "detail": []
+      "ok": false,
+      "detail": [
+       "CIQ_Digital_A00 Mail_Integration_Thomas_A00 \"Mail Integration - Thomas\" = CIQ_Supplier_Portal_A00 Mail_Integration_Thomas_A01 \"Mail Integration - Thomas\""
+      ]
      },
      {
       "label": "every flow the code uses is listed in its app",
@@ -921,6 +952,24 @@
        "kind": "spike",
        "follows": false,
        "why": "a spike (test flow of the build)"
+      },
+      {
+       "app": "CIQ_Supplier_Portal_A00",
+       "type": "integration",
+       "id": "Mail_Integration_Thomas_A01",
+       "name": "Mail Integration - Thomas",
+       "kind": "other",
+       "follows": false,
+       "why": "(not a known exception)"
+      },
+      {
+       "app": "CIQ_Supplier_Portal_A00",
+       "type": "integration",
+       "id": "Communicate_to_App_Thomas_Test_A00",
+       "name": "Communicate to App - Thomas Test",
+       "kind": "other",
+       "follows": false,
+       "why": "(not a known exception)"
       }
      ],
      "notUsedByTheCode": [
@@ -954,6 +1003,7 @@
       "list CIQ_Decision_A00 \"CIQ Decision\"",
       "list CIQ_Confirm_A00 \"CIQ Confirm\"",
       "list CIQ_Yes_No_A00 \"CIQ Yes No\"",
+      "integration CIQ_Review_completed_final_release_A00 \"CIQ Review completed – final release when all done\"",
       "integration Test_A00 \"Test\"",
       "integration CIQ_Mail_send_outbox_mail_A00 \"CIQ Mail – send outbox mail\"",
       "integration CIQ_Z2_Case_cancelled_neutral_e_ma_A00 \"CIQ Z2 Case cancelled – neutral e-mail\"",
@@ -962,12 +1012,14 @@
       "list CIQP_Doc_Kind_A00 \"CIQP Doc Kind\"",
       "list CIQP_Response_Kind_A00 \"CIQP Response Kind\"",
       "list CIQP_Confirm_A00 \"CIQP Confirm\"",
-      "list CIQP_Yes_No_A00 \"CIQP Yes No\""
+      "list CIQP_Yes_No_A00 \"CIQP Yes No\"",
+      "integration Mail_Integration_Thomas_A01 \"Mail Integration - Thomas\"",
+      "integration Communicate_to_App_Thomas_Test_A00 \"Communicate to App - Thomas Test\""
      ]
     }
    },
-   "ms": 29796,
-   "at": "2026-10-21T00:08:37.294Z"
+   "ms": 45257,
+   "at": "2026-10-28T20:39:35.368Z"
   },
   {
    "name": "names: the code's field ids against each flow's fields",
@@ -1140,7 +1192,8 @@
        "Change_Report_Text": "Textarea",
        "Change_Report_Rev": "Number",
        "Change_Report_By_Email": "Text",
-       "Change_Report_At": "DateTime"
+       "Change_Report_At": "DateTime",
+       "Review_Depts": "Text"
       }
      },
      {
@@ -1249,7 +1302,8 @@
        "Thread_JSON": "Textarea",
        "Closed_At": "DateTime",
        "Closed_By": "User",
-       "Raiser_Assignee": "MultiUser"
+       "Raiser_Assignee": "MultiUser",
+       "Raised_By_Email": "Text"
       }
      },
      {
@@ -1561,7 +1615,10 @@
        "Release_Flag": "Text",
        "Upload_Removed_At": "DateTime in CIQP_Request_A00_Uploads",
        "Upload_Removed_By_Email": "Text in CIQP_Request_A00_Uploads",
-       "Documents_JSON": "Textarea"
+       "Documents_JSON": "Textarea",
+       "Release_By_Email": "Email",
+       "Release_By_Role": "Text",
+       "Review_Depts": "Text"
       }
      },
      {
@@ -1595,7 +1652,9 @@
        "Response_Doc_Refs_JSON": "Textarea",
        "Supplier_Responsible_Email": "Text",
        "Edited_At": "DateTime",
-       "Edit_Note": "Text"
+       "Edit_Note": "Text",
+       "Raised_By_Email": "Text",
+       "Review_Depts": "Text"
       }
      },
      {
@@ -1722,8 +1781,8 @@
       "detail": {
        "flow": "CIQ_Case_A00",
        "app": "CIQ_Digital_A00",
-       "modifiedAt": "2026-10-19T21:50:07Z",
-       "lastPublishedAt": "2026-10-19T20:58:09Z",
+       "modifiedAt": "2026-10-28T13:46:50Z",
+       "lastPublishedAt": "2026-10-27T16:04:16Z",
        "draftAfterPublish": true
       }
      },
@@ -1733,8 +1792,8 @@
       "detail": {
        "flow": "CIQ_Review_A00",
        "app": "CIQ_Digital_A00",
-       "modifiedAt": "2026-10-19T21:55:07Z",
-       "lastPublishedAt": "2026-10-19T20:52:25Z",
+       "modifiedAt": "2026-10-28T09:00:08Z",
+       "lastPublishedAt": "2026-10-28T07:56:00Z",
        "draftAfterPublish": true
       }
      },
@@ -1744,8 +1803,8 @@
       "detail": {
        "flow": "CIQ_Open_Point_A00",
        "app": "CIQ_Digital_A00",
-       "modifiedAt": "2026-10-19T21:55:07Z",
-       "lastPublishedAt": "2026-10-19T20:52:31Z",
+       "modifiedAt": "2026-10-28T09:00:08Z",
+       "lastPublishedAt": "2026-10-28T07:56:05Z",
        "draftAfterPublish": true
       }
      },
@@ -1755,9 +1814,9 @@
       "detail": {
        "flow": "CIQ_Audit_Event_A00",
        "app": "CIQ_Digital_A00",
-       "modifiedAt": "2026-10-19T20:52:37Z",
+       "modifiedAt": "2026-10-26T11:04:41Z",
        "lastPublishedAt": "2026-10-19T20:52:37Z",
-       "draftAfterPublish": false
+       "draftAfterPublish": true
       }
      },
      {
@@ -1766,7 +1825,7 @@
       "detail": {
        "flow": "CIQ_Internal_Note_A00",
        "app": "CIQ_Digital_A00",
-       "modifiedAt": "2026-10-19T20:51:08Z",
+       "modifiedAt": "2026-10-26T11:04:43Z",
        "lastPublishedAt": "2026-10-14T18:37:48Z",
        "draftAfterPublish": true
       }
@@ -1777,7 +1836,7 @@
       "detail": {
        "flow": "CIQ_RMES_Safety_A00",
        "app": "CIQ_Digital_A00",
-       "modifiedAt": "2026-10-19T20:51:01Z",
+       "modifiedAt": "2026-10-26T11:04:48Z",
        "lastPublishedAt": "2026-10-14T18:37:35Z",
        "draftAfterPublish": true
       }
@@ -1788,7 +1847,7 @@
       "detail": {
        "flow": "CIQ_RMES_Regulatory_A00",
        "app": "CIQ_Digital_A00",
-       "modifiedAt": "2026-10-19T20:51:04Z",
+       "modifiedAt": "2026-10-26T11:04:46Z",
        "lastPublishedAt": "2026-10-14T18:37:42Z",
        "draftAfterPublish": true
       }
@@ -1799,7 +1858,7 @@
       "detail": {
        "flow": "CIQ_Supplier_A00",
        "app": "CIQ_Digital_A00",
-       "modifiedAt": "2026-10-19T20:50:50Z",
+       "modifiedAt": "2026-10-26T11:04:58Z",
        "lastPublishedAt": "2026-10-16T07:42:32Z",
        "draftAfterPublish": true
       }
@@ -1810,7 +1869,7 @@
       "detail": {
        "flow": "CIQ_Config_Version_A00",
        "app": "CIQ_Digital_A00",
-       "modifiedAt": "2026-10-19T20:50:53Z",
+       "modifiedAt": "2026-10-26T11:04:56Z",
        "lastPublishedAt": "2026-10-08T18:39:15Z",
        "draftAfterPublish": true
       }
@@ -1821,7 +1880,7 @@
       "detail": {
        "flow": "CIQ_Scope_Run_A00",
        "app": "CIQ_Digital_A00",
-       "modifiedAt": "2026-10-19T20:50:57Z",
+       "modifiedAt": "2026-10-26T11:04:52Z",
        "lastPublishedAt": "2026-10-08T18:39:17Z",
        "draftAfterPublish": true
       }
@@ -1832,9 +1891,9 @@
       "detail": {
        "flow": "CIQP_Request_A00",
        "app": "CIQ_Supplier_Portal_A00",
-       "modifiedAt": "2026-10-20T06:52:31Z",
-       "lastPublishedAt": "2026-10-19T20:57:59Z",
-       "draftAfterPublish": true
+       "modifiedAt": "2026-10-27T11:40:41Z",
+       "lastPublishedAt": "2026-10-27T11:40:40Z",
+       "draftAfterPublish": false
       }
      },
      {
@@ -1843,9 +1902,9 @@
       "detail": {
        "flow": "CIQP_Query_A00",
        "app": "CIQ_Supplier_Portal_A00",
-       "modifiedAt": "2026-10-16T14:28:51Z",
-       "lastPublishedAt": "2026-10-15T19:30:28Z",
-       "draftAfterPublish": true
+       "modifiedAt": "2026-10-27T08:07:33Z",
+       "lastPublishedAt": "2026-10-27T08:07:33Z",
+       "draftAfterPublish": false
       }
      },
      {
@@ -1854,8 +1913,8 @@
       "detail": {
        "flow": "CIQP_Final_Release_A00",
        "app": "CIQ_Supplier_Portal_A00",
-       "modifiedAt": "2026-10-19T20:47:24Z",
-       "lastPublishedAt": "2026-10-07T04:25:31Z",
+       "modifiedAt": "2026-10-27T08:02:21Z",
+       "lastPublishedAt": "2026-10-27T07:57:20Z",
        "draftAfterPublish": true
       }
      },
@@ -1865,7 +1924,7 @@
       "detail": {
        "flow": "CIQP_Help_Article_A00",
        "app": "CIQ_Supplier_Portal_A00",
-       "modifiedAt": "2026-10-16T14:28:54Z",
+       "modifiedAt": "2026-10-26T11:11:20Z",
        "lastPublishedAt": "2026-10-16T07:32:10Z",
        "draftAfterPublish": true
       }
@@ -2105,31 +2164,31 @@
       {
        "flow": "CIQ_Case_A00",
        "app": "CIQ_Digital_A00",
-       "modifiedAt": "2026-10-19T21:50:07Z",
-       "lastPublishedAt": "2026-10-19T20:58:09Z",
+       "modifiedAt": "2026-10-28T13:46:50Z",
+       "lastPublishedAt": "2026-10-27T16:04:16Z",
        "draftAfterPublish": true,
-       "source": "snapshot CIQ_Digital_A00.process.CIQ_Case_A00.json (flow unchanged since 2026-10-19T21:50:07Z)",
-       "fields": 164,
+       "source": "live draft (the flow changed at 2026-10-28T13:46:50Z, after the snapshot's 2026-10-19T21:50:07Z)",
+       "fields": 165,
        "tables": []
       },
       {
        "flow": "CIQ_Review_A00",
        "app": "CIQ_Digital_A00",
-       "modifiedAt": "2026-10-19T21:55:07Z",
-       "lastPublishedAt": "2026-10-19T20:52:25Z",
+       "modifiedAt": "2026-10-28T09:00:08Z",
+       "lastPublishedAt": "2026-10-28T07:56:00Z",
        "draftAfterPublish": true,
-       "source": "snapshot CIQ_Digital_A00.process.CIQ_Review_A00.json (flow unchanged since 2026-10-19T21:55:07Z)",
+       "source": "live draft (the flow changed at 2026-10-28T09:00:08Z, after the snapshot's 2026-10-19T21:55:07Z)",
        "fields": 30,
        "tables": []
       },
       {
        "flow": "CIQ_Open_Point_A00",
        "app": "CIQ_Digital_A00",
-       "modifiedAt": "2026-10-19T21:55:07Z",
-       "lastPublishedAt": "2026-10-19T20:52:31Z",
+       "modifiedAt": "2026-10-28T09:00:08Z",
+       "lastPublishedAt": "2026-10-28T07:56:05Z",
        "draftAfterPublish": true,
-       "source": "snapshot CIQ_Digital_A00.process.CIQ_Open_Point_A00.json (flow unchanged since 2026-10-19T21:55:07Z)",
-       "fields": 69,
+       "source": "live draft (the flow changed at 2026-10-28T09:00:08Z, after the snapshot's 2026-10-19T21:55:07Z)",
+       "fields": 70,
        "tables": [
         "Rounds"
        ]
@@ -2137,30 +2196,30 @@
       {
        "flow": "CIQ_Audit_Event_A00",
        "app": "CIQ_Digital_A00",
-       "modifiedAt": "2026-10-19T20:52:37Z",
+       "modifiedAt": "2026-10-26T11:04:41Z",
        "lastPublishedAt": "2026-10-19T20:52:37Z",
-       "draftAfterPublish": false,
-       "source": "snapshot CIQ_Digital_A00.form.CIQ_Audit_Event_A00.json (flow unchanged since 2026-10-19T20:52:37Z)",
+       "draftAfterPublish": true,
+       "source": "live draft (the flow changed at 2026-10-26T11:04:41Z, after the snapshot's 2026-10-19T20:52:37Z)",
        "fields": 34,
        "tables": []
       },
       {
        "flow": "CIQ_Internal_Note_A00",
        "app": "CIQ_Digital_A00",
-       "modifiedAt": "2026-10-19T20:51:08Z",
+       "modifiedAt": "2026-10-26T11:04:43Z",
        "lastPublishedAt": "2026-10-14T18:37:48Z",
        "draftAfterPublish": true,
-       "source": "snapshot CIQ_Digital_A00.form.CIQ_Internal_Note_A00.json (flow unchanged since 2026-10-19T20:51:08Z)",
+       "source": "live draft (the flow changed at 2026-10-26T11:04:43Z, after the snapshot's 2026-10-19T20:51:08Z)",
        "fields": 12,
        "tables": []
       },
       {
        "flow": "CIQ_RMES_Safety_A00",
        "app": "CIQ_Digital_A00",
-       "modifiedAt": "2026-10-19T20:51:01Z",
+       "modifiedAt": "2026-10-26T11:04:48Z",
        "lastPublishedAt": "2026-10-14T18:37:35Z",
        "draftAfterPublish": true,
-       "source": "snapshot CIQ_Digital_A00.form.CIQ_RMES_Safety_A00.json (flow unchanged since 2026-10-19T20:51:01Z)",
+       "source": "live draft (the flow changed at 2026-10-26T11:04:48Z, after the snapshot's 2026-10-19T20:51:01Z)",
        "fields": 49,
        "tables": [
         "Safety_Criteria",
@@ -2170,10 +2229,10 @@
       {
        "flow": "CIQ_RMES_Regulatory_A00",
        "app": "CIQ_Digital_A00",
-       "modifiedAt": "2026-10-19T20:51:04Z",
+       "modifiedAt": "2026-10-26T11:04:46Z",
        "lastPublishedAt": "2026-10-14T18:37:42Z",
        "draftAfterPublish": true,
-       "source": "snapshot CIQ_Digital_A00.form.CIQ_RMES_Regulatory_A00.json (flow unchanged since 2026-10-19T20:51:04Z)",
+       "source": "live draft (the flow changed at 2026-10-26T11:04:46Z, after the snapshot's 2026-10-19T20:51:04Z)",
        "fields": 49,
        "tables": [
         "Regulatory_Criteria",
@@ -2183,10 +2242,10 @@
       {
        "flow": "CIQ_Supplier_A00",
        "app": "CIQ_Digital_A00",
-       "modifiedAt": "2026-10-19T20:50:50Z",
+       "modifiedAt": "2026-10-26T11:04:58Z",
        "lastPublishedAt": "2026-10-16T07:42:32Z",
        "draftAfterPublish": true,
-       "source": "snapshot CIQ_Digital_A00.form.CIQ_Supplier_A00.json (flow unchanged since 2026-10-19T20:50:50Z)",
+       "source": "live draft (the flow changed at 2026-10-26T11:04:58Z, after the snapshot's 2026-10-19T20:50:50Z)",
        "fields": 23,
        "tables": [
         "Contacts"
@@ -2195,31 +2254,31 @@
       {
        "flow": "CIQ_Config_Version_A00",
        "app": "CIQ_Digital_A00",
-       "modifiedAt": "2026-10-19T20:50:53Z",
+       "modifiedAt": "2026-10-26T11:04:56Z",
        "lastPublishedAt": "2026-10-08T18:39:15Z",
        "draftAfterPublish": true,
-       "source": "snapshot CIQ_Digital_A00.form.CIQ_Config_Version_A00.json (flow unchanged since 2026-10-19T20:50:53Z)",
+       "source": "live draft (the flow changed at 2026-10-26T11:04:56Z, after the snapshot's 2026-10-19T20:50:53Z)",
        "fields": 21,
        "tables": []
       },
       {
        "flow": "CIQ_Scope_Run_A00",
        "app": "CIQ_Digital_A00",
-       "modifiedAt": "2026-10-19T20:50:57Z",
+       "modifiedAt": "2026-10-26T11:04:52Z",
        "lastPublishedAt": "2026-10-08T18:39:17Z",
        "draftAfterPublish": true,
-       "source": "snapshot CIQ_Digital_A00.form.CIQ_Scope_Run_A00.json (flow unchanged since 2026-10-19T20:50:57Z)",
+       "source": "live draft (the flow changed at 2026-10-26T11:04:52Z, after the snapshot's 2026-10-19T20:50:57Z)",
        "fields": 18,
        "tables": []
       },
       {
        "flow": "CIQP_Request_A00",
        "app": "CIQ_Supplier_Portal_A00",
-       "modifiedAt": "2026-10-20T06:52:31Z",
-       "lastPublishedAt": "2026-10-19T20:57:59Z",
-       "draftAfterPublish": true,
-       "source": "snapshot CIQ_Supplier_Portal_A00.process.CIQP_Request_A00.json (flow unchanged since 2026-10-20T06:52:31Z)",
-       "fields": 66,
+       "modifiedAt": "2026-10-27T11:40:41Z",
+       "lastPublishedAt": "2026-10-27T11:40:40Z",
+       "draftAfterPublish": false,
+       "source": "live draft (the flow changed at 2026-10-27T11:40:41Z, after the snapshot's 2026-10-20T06:52:31Z)",
+       "fields": 69,
        "tables": [
         "CIQP_Request_A00_Uploads"
        ]
@@ -2227,30 +2286,30 @@
       {
        "flow": "CIQP_Query_A00",
        "app": "CIQ_Supplier_Portal_A00",
-       "modifiedAt": "2026-10-16T14:28:51Z",
-       "lastPublishedAt": "2026-10-15T19:30:28Z",
-       "draftAfterPublish": true,
-       "source": "snapshot CIQ_Supplier_Portal_A00.process.CIQP_Query_A00.json (flow unchanged since 2026-10-16T14:28:51Z)",
-       "fields": 29,
+       "modifiedAt": "2026-10-27T08:07:33Z",
+       "lastPublishedAt": "2026-10-27T08:07:33Z",
+       "draftAfterPublish": false,
+       "source": "live draft (the flow changed at 2026-10-27T08:07:33Z, after the snapshot's 2026-10-16T14:28:51Z)",
+       "fields": 31,
        "tables": []
       },
       {
        "flow": "CIQP_Final_Release_A00",
        "app": "CIQ_Supplier_Portal_A00",
-       "modifiedAt": "2026-10-19T20:47:24Z",
-       "lastPublishedAt": "2026-10-07T04:25:31Z",
+       "modifiedAt": "2026-10-27T08:02:21Z",
+       "lastPublishedAt": "2026-10-27T07:57:20Z",
        "draftAfterPublish": true,
-       "source": "snapshot CIQ_Supplier_Portal_A00.process.CIQP_Final_Release_A00.json (flow unchanged since 2026-10-19T20:47:24Z)",
+       "source": "live draft (the flow changed at 2026-10-27T08:02:21Z, after the snapshot's 2026-10-19T20:47:24Z)",
        "fields": 14,
        "tables": []
       },
       {
        "flow": "CIQP_Help_Article_A00",
        "app": "CIQ_Supplier_Portal_A00",
-       "modifiedAt": "2026-10-16T14:28:54Z",
+       "modifiedAt": "2026-10-26T11:11:20Z",
        "lastPublishedAt": "2026-10-16T07:32:10Z",
        "draftAfterPublish": true,
-       "source": "snapshot CIQ_Supplier_Portal_A00.form.CIQP_Help_Article_A00.json (flow unchanged since 2026-10-16T14:28:54Z)",
+       "source": "live draft (the flow changed at 2026-10-26T11:11:20Z, after the snapshot's 2026-10-16T14:28:54Z)",
        "fields": 3,
        "tables": []
       },
@@ -2298,24 +2357,23 @@
       }
      ],
      "changedAfterPublish": [
-      "CIQ_Case_A00: modified 2026-10-19T21:50:07Z, published 2026-10-19T20:58:09Z",
-      "CIQ_Review_A00: modified 2026-10-19T21:55:07Z, published 2026-10-19T20:52:25Z",
-      "CIQ_Open_Point_A00: modified 2026-10-19T21:55:07Z, published 2026-10-19T20:52:31Z",
-      "CIQ_Internal_Note_A00: modified 2026-10-19T20:51:08Z, published 2026-10-14T18:37:48Z",
-      "CIQ_RMES_Safety_A00: modified 2026-10-19T20:51:01Z, published 2026-10-14T18:37:35Z",
-      "CIQ_RMES_Regulatory_A00: modified 2026-10-19T20:51:04Z, published 2026-10-14T18:37:42Z",
-      "CIQ_Supplier_A00: modified 2026-10-19T20:50:50Z, published 2026-10-16T07:42:32Z",
-      "CIQ_Config_Version_A00: modified 2026-10-19T20:50:53Z, published 2026-10-08T18:39:15Z",
-      "CIQ_Scope_Run_A00: modified 2026-10-19T20:50:57Z, published 2026-10-08T18:39:17Z",
-      "CIQP_Request_A00: modified 2026-10-20T06:52:31Z, published 2026-10-19T20:57:59Z",
-      "CIQP_Query_A00: modified 2026-10-16T14:28:51Z, published 2026-10-15T19:30:28Z",
-      "CIQP_Final_Release_A00: modified 2026-10-19T20:47:24Z, published 2026-10-07T04:25:31Z",
-      "CIQP_Help_Article_A00: modified 2026-10-16T14:28:54Z, published 2026-10-16T07:32:10Z"
+      "CIQ_Case_A00: modified 2026-10-28T13:46:50Z, published 2026-10-27T16:04:16Z",
+      "CIQ_Review_A00: modified 2026-10-28T09:00:08Z, published 2026-10-28T07:56:00Z",
+      "CIQ_Open_Point_A00: modified 2026-10-28T09:00:08Z, published 2026-10-28T07:56:05Z",
+      "CIQ_Audit_Event_A00: modified 2026-10-26T11:04:41Z, published 2026-10-19T20:52:37Z",
+      "CIQ_Internal_Note_A00: modified 2026-10-26T11:04:43Z, published 2026-10-14T18:37:48Z",
+      "CIQ_RMES_Safety_A00: modified 2026-10-26T11:04:48Z, published 2026-10-14T18:37:35Z",
+      "CIQ_RMES_Regulatory_A00: modified 2026-10-26T11:04:46Z, published 2026-10-14T18:37:42Z",
+      "CIQ_Supplier_A00: modified 2026-10-26T11:04:58Z, published 2026-10-16T07:42:32Z",
+      "CIQ_Config_Version_A00: modified 2026-10-26T11:04:56Z, published 2026-10-08T18:39:15Z",
+      "CIQ_Scope_Run_A00: modified 2026-10-26T11:04:52Z, published 2026-10-08T18:39:17Z",
+      "CIQP_Final_Release_A00: modified 2026-10-27T08:02:21Z, published 2026-10-27T07:57:20Z",
+      "CIQP_Help_Article_A00: modified 2026-10-26T11:11:20Z, published 2026-10-16T07:32:10Z"
      ],
      "scan": {
-      "files": 68,
-      "names": 282,
-      "uses": 1066
+      "files": 101,
+      "names": 263,
+      "uses": 1190
      },
      "perFlow": {
       "CIQ_Case_A00": {
@@ -2466,14 +2524,36 @@
         "Criteria_AI_Source_Doc_Uploaded_At",
         "Criteria_AI_Source_Quote",
         "Criteria_AI_State",
+        "Criteria_AI_Suggestion_Text",
+        "Criteria_Applicability_Basis",
+        "Criteria_Code",
         "Criteria_Impact_Resolution",
         "Criteria_Limit_Comparator",
+        "Criteria_Limit_Pass",
+        "Criteria_Limit_Set_Version",
+        "Criteria_Limit_Value",
         "Criteria_Override_Reason",
+        "Criteria_Part",
         "Criteria_Prefill_Value",
+        "Criteria_Recorded_At",
+        "Criteria_Reported_Unit",
+        "Criteria_Reported_Value",
         "Criteria_Source_Answers_Rev",
         "Criteria_Source_Doc_File_Name",
         "Criteria_Source_Doc_Uploaded_At",
-        "Criteria_Source_Row_Id"
+        "Criteria_Source_Field_Key",
+        "Criteria_Source_Row_Id",
+        "Criteria_Source_Section_Key",
+        "Criteria_Source_Value_Text",
+        "Criteria_Title",
+        "Findings_Blocking",
+        "Findings_Criterion_Code",
+        "Findings_Key",
+        "Findings_Linked_OP_Key",
+        "Findings_State",
+        "Findings_Text",
+        "Open_Blocking_Findings_Count",
+        "Open_Criteria_Count"
        ]
       },
       "CIQ_RMES_Regulatory_A00": {
@@ -2485,14 +2565,36 @@
         "Criteria_AI_Source_Doc_Uploaded_At",
         "Criteria_AI_Source_Quote",
         "Criteria_AI_State",
+        "Criteria_AI_Suggestion_Text",
+        "Criteria_Applicability_Basis",
+        "Criteria_Code",
         "Criteria_Impact_Resolution",
         "Criteria_Limit_Comparator",
+        "Criteria_Limit_Pass",
+        "Criteria_Limit_Set_Version",
+        "Criteria_Limit_Value",
         "Criteria_Override_Reason",
+        "Criteria_Part",
         "Criteria_Prefill_Value",
+        "Criteria_Recorded_At",
+        "Criteria_Reported_Unit",
+        "Criteria_Reported_Value",
         "Criteria_Source_Answers_Rev",
         "Criteria_Source_Doc_File_Name",
         "Criteria_Source_Doc_Uploaded_At",
-        "Criteria_Source_Row_Id"
+        "Criteria_Source_Field_Key",
+        "Criteria_Source_Row_Id",
+        "Criteria_Source_Section_Key",
+        "Criteria_Source_Value_Text",
+        "Criteria_Title",
+        "Findings_Blocking",
+        "Findings_Criterion_Code",
+        "Findings_Key",
+        "Findings_Linked_OP_Key",
+        "Findings_State",
+        "Findings_Text",
+        "Open_Blocking_Findings_Count",
+        "Open_Criteria_Count"
        ]
       },
       "CIQ_Supplier_A00": {
@@ -2511,10 +2613,6 @@
       "CIQ_Config_Version_A00": {
        "codeLacks": [],
        "flowOnly": [
-        "Internal_Annotations_JSON",
-        "Regression_Result_JSON",
-        "Release_Label",
-        "Release_Stage",
         "Section_Key",
         "Section_Rev",
         "Test_Case_Codes"
@@ -2524,14 +2622,20 @@
        "codeLacks": [],
        "flowOnly": [
         "Added_Section_Keys",
+        "Input_Hash",
+        "Input_JSON",
+        "Lead_Departments",
         "Override_Justification",
-        "Related_Key"
+        "Related_Key",
+        "Result_JSON",
+        "Run_At",
+        "Run_By",
+        "Run_No"
        ]
       },
       "CIQP_Request_A00": {
        "codeLacks": [],
        "flowOnly": [
-        "App_Case_Item_Id",
         "Keep_Open_Gate",
         "Release_Contacts",
         "Upload_File"
@@ -2540,14 +2644,12 @@
       "CIQP_Query_A00": {
        "codeLacks": [],
        "flowOnly": [
-        "App_Open_Point_Id",
         "New_Section_Item_Key"
        ]
       },
       "CIQP_Final_Release_A00": {
        "codeLacks": [],
        "flowOnly": [
-        "App_Case_Item_Id",
         "Declaration_Text",
         "Declaration_Text_Key"
        ]
@@ -2579,7 +2681,6 @@
       "CIQP_Completeness_Confirmation_A00": {
        "codeLacks": [],
        "flowOnly": [
-        "App_Case_Item_Id",
         "Declaration_Text",
         "Declaration_Text_Key"
        ]
@@ -2609,8 +2710,8 @@
      }
     }
    },
-   "ms": 35,
-   "at": "2026-10-21T00:09:07.097Z"
+   "ms": 63772,
+   "at": "2026-10-28T20:40:20.630Z"
   },
   {
    "name": "names: the code's steps exist with their names",
@@ -2707,8 +2808,8 @@
     ],
     "notes": {}
    },
-   "ms": 0,
-   "at": "2026-10-21T00:09:07.135Z"
+   "ms": 1,
+   "at": "2026-10-28T20:41:24.408Z"
   },
   {
    "name": "names: the roles of both apps match ids.ts ROLES and portal.ts ROLES",
@@ -2859,9 +2960,7 @@
      }
     ],
     "notes": {
-     "CIQ_Digital_A00 roles the code does not know": [
-      "Admin / Developer"
-     ],
+     "CIQ_Digital_A00 roles the code does not know": [],
      "CIQ_Supplier_Portal_A00 roles the code does not know": [
       "Test",
       "User"
@@ -2892,8 +2991,8 @@
      }
     }
    },
-   "ms": 5884,
-   "at": "2026-10-21T00:09:07.138Z"
+   "ms": 8978,
+   "at": "2026-10-28T20:41:24.414Z"
   },
   {
    "name": "no corruption: the fingerprint of everything that is not this run's, at the start",
@@ -2903,18 +3002,18 @@
      {
       "what": "items per flow (My items rows and form list rows), with their _modified_at",
       "value": {
-       "CIQ_Audit_Event_A00": 36,
+       "CIQ_Audit_Event_A00": 82,
        "CIQ_Internal_Note_A00": 2,
        "CIQ_RMES_Safety_A00": 2,
        "CIQ_RMES_Regulatory_A00": 2,
        "CIQ_Supplier_A00": 6,
        "CIQ_Config_Version_A00": 13,
-       "CIQ_Scope_Run_A00": 3,
-       "CIQ_Case_A00": 27,
-       "CIQ_Review_A00": 12,
-       "CIQ_Open_Point_A00": 17,
-       "CIQP_Request_A00": 14,
-       "CIQP_Query_A00": 19
+       "CIQ_Scope_Run_A00": 9,
+       "CIQ_Case_A00": 41,
+       "CIQ_Review_A00": 58,
+       "CIQ_Open_Point_A00": 21,
+       "CIQP_Request_A00": 26,
+       "CIQP_Query_A00": 22
       }
      }
     ],
@@ -2929,112 +3028,24 @@
      "saved": "/Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/kissflow-build/ciq-digital/tests-2026-10-21/results/R2/integrity-fingerprint-start.json"
     }
    },
-   "ms": 37368,
-   "at": "2026-10-21T00:09:13.027Z"
+   "ms": 65523,
+   "at": "2026-10-28T20:41:33.398Z"
   },
   {
    "name": "no corruption: every ledger item of this run reads back (or is gone where it should be)",
    "status": "not-run",
-   "reason": "the R2 ledger names no item yet: nothing to read back",
+   "reason": "stopped: Stopped on GET /form/2/AcDOSunMEpSA/CIQ_Audit_Event_A00/PkEPEenB3PeK: 429 Too Many Requests. No retry; nothing calls Kissflow for 20 minutes.",
    "evidence": {
     "readBacks": [],
     "checks": [],
-    "notes": {}
-   },
-   "ms": 1,
-   "at": "2026-10-21T00:09:50.402Z"
-  },
-  {
-   "name": "no corruption: this run's items (JSON parses, real user ids, valid dates)",
-   "status": "not-run",
-   "reason": "the R2 ledger names no item yet: nothing to check",
-   "evidence": {
-    "readBacks": [],
-    "checks": [],
-    "notes": {}
-   },
-   "ms": 0,
-   "at": "2026-10-21T00:09:50.408Z"
-  },
-  {
-   "name": "no corruption: every other item the key reads (JSON parses, real user ids, valid dates)",
-   "status": "pass",
-   "evidence": {
-    "readBacks": [
-     {
-      "what": "rows checked per flow (form rows in full, process items as their My items rows)",
-      "value": {
-       "CIQ_Audit_Event_A00": 36,
-       "CIQ_Internal_Note_A00": 2,
-       "CIQ_RMES_Safety_A00": 2,
-       "CIQ_RMES_Regulatory_A00": 2,
-       "CIQ_Supplier_A00": 6,
-       "CIQ_Config_Version_A00": 13,
-       "CIQ_Scope_Run_A00": 3,
-       "CIQ_Case_A00": 27,
-       "CIQ_Review_A00": 12,
-       "CIQ_Open_Point_A00": 17,
-       "CIQP_Request_A00": 14,
-       "CIQP_Query_A00": 19
-      }
-     }
-    ],
-    "checks": [
-     {
-      "label": "every JSON field parses and holds no self: id; every user field a real user; every date valid",
-      "ok": true,
-      "detail": []
-     }
-    ],
-    "notes": {}
-   },
-   "ms": 8,
-   "at": "2026-10-21T00:09:50.414Z"
-  },
-  {
-   "name": "read-only: S-INTEGRITY wrote nothing (so it has nothing of its own to clean up)",
-   "status": "pass",
-   "evidence": {
-    "readBacks": [
-     {
-      "what": "this phase's client calls per method, and its logged requests",
-      "value": {
-       "calls": {
-        "app.getRaw": 14,
-        "app.formList": 7,
-        "app.myItems": 3,
-        "portal.listMine": 2
-       },
-       "requests": 26
-      }
-     }
-    ],
-    "checks": [
-     {
-      "label": "no write call (create, update, submit, PUT, withdraw, delete, webhook)",
-      "ok": true,
-      "detail": []
-     },
-     {
-      "label": "every logged request is a read (classifyPath)",
-      "ok": true,
-      "detail": []
-     },
-     {
-      "label": "no new ledger line",
-      "ok": true,
-      "detail": {
-       "before": 0,
-       "after": 0
-      }
-     }
-    ],
     "notes": {
-     "cleanup": "S-INTEGRITY creates no items, so R2 has nothing of its own to delete"
+     "skipped": [
+      "CIQ_Audit_Event_A00 draft_UsEJUfjYLM8Y: a form's draft id (the user's single draft), not an item"
+     ]
     }
    },
-   "ms": 0,
-   "at": "2026-10-21T00:09:50.426Z"
+   "ms": 192517,
+   "at": "2026-10-28T20:42:38.939Z"
   }
  ]
 }

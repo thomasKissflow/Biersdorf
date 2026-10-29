@@ -21,7 +21,7 @@ import { fieldOf, sectionOf } from "@/domain/catalog";
 import { completenessBlockers } from "@/domain/selectors";
 import * as M from "@/domain/suppliers";
 import type { AppState, CiqCase, InternalPersonaId, ReviewDept } from "@/domain/types";
-import { FLOWS, LIST, STEP_NAMES, STEPS, TABLES } from "@/app-live/ids";
+import { FLOWS, LIST, OTHER_ROLES, STEP_NAMES, STEPS, TABLES } from "@/app-live/ids";
 import { Directory, selfContactId } from "@/app-live/map/people";
 import { suppliersFromRows } from "@/app-live/map/suppliersMap";
 import type { AnswerPatch } from "@/portal/data/answers";
@@ -296,14 +296,24 @@ export async function setupReviews(w: World, s: StepCtx, sess: Session, k: OpCas
     async () => (await w.client.adminSearch("review", k.caseItemId)).filter((x) => str(x, "Case_Item_Id") === k.caseItemId),
     (rows) => rows.some((x) => str(x, "Review_Dept") === "RMM"),
   );
-  s.note("E-A poll", { polls: found.polls, ms: found.ms, depts: found.value.map((x) => str(x, "Review_Dept")) });
-  s.check("I-2 started the case's reviews (E-A), RMM's among them", found.ok);
-  for (const raw of found.value) w.adopt(FLOWS.review.id, raw._id, `Review_Key=${str(raw, "Review_Key")} (started by I-2, E-A)`, stepName(raw));
+  s.note("E-A poll", { polls: found.polls, ms: found.ms, depts: (found.value ?? []).map((x) => str(x, "Review_Dept")), ...(found.error ? { error: found.error } : {}) });
+  for (const raw of found.value ?? []) w.adopt(FLOWS.review.id, raw._id, `Review_Key=${str(raw, "Review_Key")} (started by I-2, E-A)`, stepName(raw));
   sess.dirty();
   const back = await sess.view("rmm");
-  // and E-A's one case-level review.started row (the clean-up deletes it with the run's items)
+  // and E-A's one case-level review.started row (the clean-up deletes it with the run's items): I-2 writes it before its
+  // Approve, so it is there in the blocked case below too
   for (const r of back.snap.forms.audit.filter((x) => str(x, "Case_Item_Id") === k.caseItemId && str(x, "Action_Code") === "review.started" && str(x, "Object_Kind") === "Case"))
     w.adopt(FLOWS.audit.id, r._id, `Case_Code=${k.code} Action_Code=review.started (E-A)`, "saved");
+  // since 25 Oct the reviews are I-2's last step, after its Approve, which is refused while the key's user is not in
+  // Integration service: then no review exists (S-CASE 5 checks I-2's review.started row), and the points need one.
+  // Blocked only when the search answered and the case still waits at its step
+  if (found.value !== undefined && !found.error && !found.value.length && !w.heldRoles.app.some((r) => r.id === OTHER_ROLES.integration.id)) {
+    const kase = await w.client.adminGet("case", k.caseItemId);
+    s.readBack("CIQ Case step (no review found)", pick(kase, ["_status", "_current_step", "Case_Phase"]));
+    if (s.check(`the case still waits at "${STEP_NAMES[STEPS.case.waiting]}"`, stepName(kase) === STEP_NAMES[STEPS.case.waiting], stepName(kase)))
+      s.block(`expected: I-2 creates the reviews in its last step, after its Approve, and the Approve is refused while ${OTHER_ROLES.integration.name} has no members, so no review exists and no point can be raised. The points run once a user is in ${OTHER_ROLES.integration.name} again.`);
+  }
+  s.check("I-2 started the case's reviews (E-A), RMM's among them", found.ok);
   const c = caseIn(back.state, k.code);
   const reviews = (c?.reviews ?? []).map((r) => ({ dept: r.dept, status: r.status, item: back.mapped.index.reviews.get(`${k.code}|${r.dept}`)?.itemId ?? null }));
   s.readBack("the case's review tracks as RMM's screen maps them", reviews);

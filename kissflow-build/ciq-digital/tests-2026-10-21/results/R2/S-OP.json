@@ -1,0 +1,555 @@
+{
+ "suite": "S-OP",
+ "run": "R2",
+ "startedAt": "2026-10-28T22:07:59.719Z",
+ "savedAt": "2026-10-28T22:34:44.992Z",
+ "counts": {
+  "pass": 4,
+  "fail": 1,
+  "blocked": 0,
+  "not-run": 10
+ },
+ "steps": [
+  {
+   "name": "S1 supplier: the run's supplier with the self contact",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Supplier (raw)",
+      "value": {
+       "Supplier_Code": "ZZT-N21-R2-SUP-OP",
+       "Supplier_Legal_Name": "ZZT-N21-R2 S-OP Supplier GmbH",
+       "DUNS_Number": "921013200",
+       "Supplier_Country_Code": "DE",
+       "Supplier_Kind": "Manufacturer",
+       "Supplier_Active": "Yes",
+       "contacts": [
+        {
+         "key": "u-ZZT-N21-R2-SUP-OP-1",
+         "name": "ZZT-N21-R2 Thomas (self contact)",
+         "portalUser": "UsEJUfjYLM8Y",
+         "canConfirm": "Yes",
+         "active": "Yes"
+        },
+        {
+         "key": "u-ZZT-N21-R2-SUP-OP-2",
+         "name": "ZZT-N21-R2 Mira Lindqvist",
+         "portalUser": null,
+         "canConfirm": "No",
+         "active": "Yes"
+        }
+       ]
+      }
+     },
+     {
+      "what": "the supplier as RMM's screen maps it",
+      "value": {
+       "supplierId": "ZZT-N21-R2-SUP-OP",
+       "contacts": 2
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "addSupplier: the writer reports ok",
+      "ok": true
+     },
+     {
+      "label": "Supplier_Code and the name carry the run",
+      "ok": true
+     },
+     {
+      "label": "two contact rows, no duplicate",
+      "ok": true,
+      "detail": 2
+     },
+     {
+      "label": "the first contact is the self contact (portal user, its e-mail)",
+      "ok": true
+     },
+     {
+      "label": "RMM's screen maps the self contact to this supplier",
+      "ok": true,
+      "detail": "ZZT-N21-R2-SUP-OP"
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "not the app's code": "the domain's new supplier code is renamed to ZZT-N21-R2-SUP-OP before the writer runs (the run tag)",
+     "addSupplier: hand-offs": [],
+     "not the app's code (2)": "the self contact's portal user and login e-mail are a form edit (Contacts_Portal_User_Id, Contacts_Email): the administrator's invitation, which the app has no writer for",
+     "kissflowCalls": 40
+    }
+   },
+   "ms": 507728,
+   "at": "2026-10-28T22:07:59.720Z"
+  },
+  {
+   "name": "S2 case: createCase, I-1 creates its CIQP Request",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Case (raw)",
+      "value": {
+       "Case_Code": "ZZT-N21-R2-OPR2",
+       "Supplier_Code": "ZZT-N21-R2-SUP-OP",
+       "Trade_Name": "ZZT-N21-R2 Glycerin 99.5 (S-OP)",
+       "Portal_Request_Item_Id": "PkES7c5o0tNZ",
+       "Portal_Contact_Ids": "UsEJUfjYLM8Y",
+       "_status": "InProgress",
+       "_current_step": "Waiting for supplier: CIQ"
+      }
+     },
+     {
+      "what": "CIQP Request (raw)",
+      "value": {
+       "Case_Code": "ZZT-N21-R2-OPR2",
+       "App_Case_Item_Id": "PkES7bRWHfsC",
+       "Supplier_Code": "ZZT-N21-R2-SUP-OP",
+       "Case_Phase_Label": "Filling in",
+       "Assigned_Contacts": [
+        "UsEJUfjYLM8Y"
+       ],
+       "_status": "InProgress",
+       "_current_step": "Supplier: fill in the CIQ"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "createCase: the writer reports ok",
+      "ok": true
+     },
+     {
+      "label": "I-1 linked a CIQP Request on the case (Portal_Request_Item_Id)",
+      "ok": true
+     },
+     {
+      "label": "the case is at \"Waiting for supplier: CIQ\"",
+      "ok": true,
+      "detail": "Waiting for supplier: CIQ"
+     },
+     {
+      "label": "the case's portal contact is the self contact's user",
+      "ok": true
+     },
+     {
+      "label": "the request names the case and is assigned to the self contact",
+      "ok": true
+     },
+     {
+      "label": "the request is at \"Supplier: fill in the CIQ\"",
+      "ok": true,
+      "detail": "Supplier: fill in the CIQ"
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "createCase: hand-offs": [
+      {
+       "code": "case.started",
+       "status": "sent"
+      }
+     ],
+     "I-1 poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 12566
+     },
+     "kissflowCalls": 9
+    }
+   },
+   "ms": 113773,
+   "at": "2026-10-28T22:16:27.454Z"
+  },
+  {
+   "name": "S3 completeness: the supplier fills in and confirms (portal), I-2",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQP Request (raw)",
+      "value": {
+       "Completeness_Confirm": "Confirmed",
+       "Completeness_At": "2026-10-28T22:23:02Z",
+       "Case_Phase_Label": "Filling in",
+       "_status": "InProgress",
+       "_current_step": "Supplier: keep the CIQ up to date"
+      }
+     },
+     {
+      "what": "CIQ Case (raw)",
+      "value": {
+       "Completeness_Confirm": "Confirmed",
+       "Completeness_At": "2026-10-28T22:23:02Z",
+       "Case_Phase": "Review",
+       "_status": "InProgress",
+       "_current_step": "Waiting for supplier: CIQ"
+      }
+     },
+     {
+      "what": "the case as RMM's screen maps it",
+      "value": {
+       "phase": "review"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the supplier's portal lists the request as a task",
+      "ok": true
+     },
+     {
+      "label": "no completeness blocker left",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the request's completeness is confirmed by the self contact (its e-mail)",
+      "ok": true
+     },
+     {
+      "label": "the request moved on to \"Supplier: keep the CIQ up to date\"",
+      "ok": true,
+      "detail": "Supplier: keep the CIQ up to date"
+     },
+     {
+      "label": "I-2 wrote the completeness and phase Review on the case",
+      "ok": true
+     },
+     {
+      "label": "RMM's screen shows the case in review",
+      "ok": true
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "I-2 poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 33468
+     },
+     "case step after I-2": "still at Waiting for supplier: CIQ (I-2's Approve refused: Integration service has no members)",
+     "kissflowCalls": 42
+    }
+   },
+   "ms": 543167,
+   "at": "2026-10-28T22:18:21.228Z"
+  },
+  {
+   "name": "S4 reviews: I-2 starts the review tracks (E-A)",
+   "status": "fail",
+   "reason": "failed: I-2 started the case's reviews (E-A), RMM's among them; RMM's review track exists",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "the case's review tracks as RMM's screen maps them",
+      "value": [
+       {
+        "dept": "RMM",
+        "status": "in-review",
+        "item": null
+       },
+       {
+        "dept": "REG",
+        "status": "in-review",
+        "item": null
+       },
+       {
+        "dept": "SAF",
+        "status": "in-review",
+        "item": null
+       },
+       {
+        "dept": "QM",
+        "status": "in-review",
+        "item": null
+       },
+       {
+        "dept": "MIC",
+        "status": "in-review",
+        "item": null
+       }
+      ]
+     },
+     {
+      "what": "CIQ Review items (raw)",
+      "value": []
+     }
+    ],
+    "checks": [
+     {
+      "label": "I-2 started the case's reviews (E-A), RMM's among them",
+      "ok": false
+     },
+     {
+      "label": "RMM's review track exists",
+      "ok": false
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "E-A poll": {
+      "polls": 5,
+      "ms": 62493,
+      "depts": []
+     },
+     "the run's departments without a review track": [
+      "SAF",
+      "REG"
+     ],
+     "kissflowCalls": 18
+    }
+   },
+   "ms": 226994,
+   "at": "2026-10-28T22:27:24.399Z"
+  },
+  {
+   "name": "P1 SAF 1 raise: op.round makes the CIQP Query",
+   "status": "not-run",
+   "reason": "depends on \"S4 reviews: I-2 starts the review tracks (E-A)\", which is fail",
+   "evidence": {
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-28T22:31:11.395Z"
+  },
+  {
+   "name": "P1 SAF 2 edit: op.edited updates the query",
+   "status": "not-run",
+   "reason": "depends on \"P1 SAF 1 raise: op.round makes the CIQP Query\", which is not-run",
+   "evidence": {
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-28T22:31:11.396Z"
+  },
+  {
+   "name": "P1 SAF 3 supplier answer, round 1 (portal writer, I-4)",
+   "status": "not-run",
+   "reason": "depends on \"P1 SAF 1 raise: op.round makes the CIQP Query\", which is not-run",
+   "evidence": {
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-28T22:31:11.397Z"
+  },
+  {
+   "name": "P1 SAF 4 return: round 2, a new query (op.round)",
+   "status": "not-run",
+   "reason": "depends on \"P1 SAF 3 supplier answer, round 1 (portal writer, I-4)\", which is not-run",
+   "evidence": {
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-28T22:31:11.397Z"
+  },
+  {
+   "name": "P1 SAF 3 supplier answer, round 2 (portal writer, I-4)",
+   "status": "not-run",
+   "reason": "depends on \"P1 SAF 4 return: round 2, a new query (op.round)\", which is not-run",
+   "evidence": {
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-28T22:31:11.399Z"
+  },
+  {
+   "name": "P1 SAF 4 accept: the point ends, history.updated",
+   "status": "not-run",
+   "reason": "depends on \"P1 SAF 3 supplier answer, round 2 (portal writer, I-4)\", which is not-run",
+   "evidence": {
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-28T22:31:11.400Z"
+  },
+  {
+   "name": "P2 REG 1 raise: op.round makes the CIQP Query",
+   "status": "not-run",
+   "reason": "depends on \"S4 reviews: I-2 starts the review tracks (E-A)\", which is fail",
+   "evidence": {
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-28T22:31:11.404Z"
+  },
+  {
+   "name": "P2 REG 4 close while the query is open: op.closed",
+   "status": "not-run",
+   "reason": "depends on \"P2 REG 1 raise: op.round makes the CIQP Query\", which is not-run",
+   "evidence": {
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-28T22:31:11.405Z"
+  },
+  {
+   "name": "T1 thread: Thread_JSON holds every round's text",
+   "status": "not-run",
+   "reason": "depends on \"P1 SAF 4 accept: the point ends, history.updated\", which is not-run",
+   "evidence": {
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-28T22:31:11.405Z"
+  },
+  {
+   "name": "T2 thread: the questions history on the request",
+   "status": "not-run",
+   "reason": "depends on \"P1 SAF 4 accept: the point ends, history.updated\", which is not-run",
+   "evidence": {
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
+   },
+   "ms": 0,
+   "at": "2026-10-28T22:31:11.406Z"
+  },
+  {
+   "name": "C1 clean-up: adopt late portal items, delete this suite's ledger items (withdraw, admin DELETE, GET 404)",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "portal items the sweep adopted (created after their poll gave up)",
+      "value": []
+     },
+     {
+      "what": "this suite's ledger items after the clean-up",
+      "value": [
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "PkES7jEjL2Z1",
+        "what": "Case_Code=ZZT-N21-R2-OPR2 Action_Code=review.started (E-A)",
+        "gone": true
+       },
+       {
+        "flow": "CIQP_Request_A00",
+        "id": "PkES7c5o0tNZ",
+        "what": "ZZT-N21-R2-OPR2 request (S-OP)",
+        "gone": true
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "PkES7cVJfoRG",
+        "what": "Case_Code=ZZT-N21-R2-OPR2 Event_Key=EV-ZZT-N21-R2-OPR2-20261028221705-tw5f",
+        "gone": true
+       },
+       {
+        "flow": "CIQ_Case_A00",
+        "id": "PkES7bRWHfsC",
+        "what": "Case_Code=ZZT-N21-R2-OPR2 Supplier_Code=ZZT-N21-R2-SUP-OP",
+        "withdrawn": true,
+        "gone": true
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "PkES7YpAVM5F",
+        "what": "Event_Key=EV-LOG-20261028221239-u7of Action_Code=supplier.changed",
+        "gone": true
+       },
+       {
+        "flow": "CIQ_Supplier_A00",
+        "id": "PkES7YCGm4CC",
+        "what": "Supplier_Code=ZZT-N21-R2-SUP-OP Supplier_Legal_Name=ZZT-N21-R2 S-OP Supplier GmbH",
+        "gone": true
+       }
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "the sweep read every place a late item could be",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "every hand-off whose poll gave up has its portal item in the ledger now (else it may still come, outside the ledger)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 PkES7jEjL2Z1 is deleted (read again: not found)",
+      "ok": true,
+      "detail": true
+     },
+     {
+      "label": "CIQP_Request_A00 PkES7c5o0tNZ is deleted (read again: not found)",
+      "ok": true,
+      "detail": true
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 PkES7cVJfoRG is deleted (read again: not found)",
+      "ok": true,
+      "detail": true
+     },
+     {
+      "label": "CIQ_Case_A00 PkES7bRWHfsC is deleted (read again: not found)",
+      "ok": true,
+      "detail": true
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 PkES7YpAVM5F is deleted (read again: not found)",
+      "ok": true,
+      "detail": true
+     },
+     {
+      "label": "CIQ_Supplier_A00 PkES7YCGm4CC is deleted (read again: not found)",
+      "ok": true,
+      "detail": true
+     },
+     {
+      "label": "no hand-off failed after its save",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "request: My items outside the ledger changed since the suite started": 0,
+     "query: My items outside the ledger changed since the suite started": 0,
+     "deleted": 6,
+     "kissflowCalls": 17
+    }
+   },
+   "ms": 213582,
+   "at": "2026-10-28T22:31:11.407Z"
+  }
+ ]
+}

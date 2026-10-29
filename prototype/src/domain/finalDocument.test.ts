@@ -17,9 +17,7 @@ function released() {
   sc.step("edit due date", (s, at) => A.editOpenPoint(s, "u-reg", sc.id, withdrawn, { dueDate: "2026-12-15T00:00:00.000Z" }, at));
   sc.step("withdraw", (s, at) => A.closeOpenPoint(s, "u-reg", sc.id, withdrawn, "INTERNAL-REASON confirmed in the REACH dossier", at));
   sc.step("note", (s, at) => A.addInternalNote(s, "u-qm", sc.id, "INTERNAL-NOTE supplier was late last year", undefined, at));
-  const cr = sc.c.rmes!.criteria.find((x) => x.dept === "SAF")!;
-  sc.step("rmes comment", (s, at) => A.recordCriterion(s, "u-saf", sc.id, cr.id, "implausible", "INTERNAL-RMES the LD50 is unclear", at));
-  sc.rmes("SAF", "u-saf").decision("SAF", "u-saf", "rejected", "INTERNAL-DECISION data gap");
+  sc.decision("SAF", "u-saf", "rejected", "INTERNAL-DECISION data gap");
   sc.completeAll({ continueNote: "INTERNAL-CONTINUE agreed with Safety on 14 Oct" });
   sc.release("u-sup-2");
   return { sc, twoRounds, withdrawn };

@@ -3,7 +3,7 @@
 // is one recorded step (live/lib/results.ts) with its read-back: the Kissflow fields as the app maps them (load.ts +
 // toAppState, compared with the domain object the writer was given, as map/roundtrip.test.ts does) and the raw fields
 // that matter. Steps:
-//    0 the 12 integrations are ON (read-only)        6a/6b RMES Safety / Regulatory: ensureRmes, then saveRmes
+//    0 the 12 integrations are ON (read-only)        6a/6b RMES Safety / Regulatory: ensureRmes, the sheet
 //    1 supplier master (the app's addSupplier)       7  review completion: expected blocked (050201), the gate by admin PUT
 //    2 a Start draft (the app's own Start gate)      8  release.requested, as E-B leaves it (played, see below)
 //    3 a started case, I-1 makes its request         9  the supplier's final release, I-7 completes the case
@@ -13,8 +13,8 @@
 //    5 the reviews (I-2's E-A, 22 Oct)
 // R4 (21 Oct evening: Thomas is back in Integration service, so I-2's Approve moves a case on) leaves its items at
 // distinct stages for Thomas (case/data.ts tracksOf): the kept draft (2); C01 completed by I-7 (3–5, 8, 9: no RMES
-// steps); C03 kept in review after I-2's Approve, its reviews started, RMES Safety and Regulatory with criteria, a result
-// and a finding, its completion blocked (the same steps, names suffixed "(in-review case)"); C02 cancelled (10). C03's
+// steps); C03 kept in review after I-2's Approve, its reviews started, its RMES Safety and Regulatory records (header
+// only since 28 Oct), its completion blocked (the same steps, names suffixed "(in-review case)"); C02 cancelled (10). C03's
 // steps also name in the ledger what each proved on the case, its reviews and its RMES records (TrackPlan.stays), and
 // a step of it that did not pass names itself there as NOT verified (settle: also when it threw before its own line or
 // was not-run). R4's supplier line names its read-back and Thomas's portal user on its self contact (supplierStage).
@@ -43,11 +43,13 @@
 //      (KF_GAP_MS=8000 slows the pace; each step's timeout grows with it)
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import * as A from "@/domain/actions";
+import { RMES_RECORD_LINE, RMES_UNREADABLE, rmesSheet } from "@/domain/rmesSheet";
 import { departmentsForScope, releaseBlockers } from "@/domain/selectors";
 import * as M from "@/domain/suppliers";
 import type { AppState, CiqCase, InternalPersonaId, ReviewDept } from "@/domain/types";
+import { countryName } from "@/app-live/countries";
 import { FLOWS, LIST, OTHER_ROLES, ROLES, STEPS, STEP_NAMES, TABLES } from "@/app-live/ids";
-import { runLoadEffects } from "@/app-live/load";
+import { caseBannerOf, runLoadEffects } from "@/app-live/load";
 import { caseStepOf } from "@/app-live/map/caseMap";
 import { parseSnapshot } from "@/app-live/map/auditMap";
 import { selfContactId } from "@/app-live/map/people";
@@ -65,7 +67,7 @@ import { childRows, num, str, userIds, type RawItem } from "@/portal/data/raw";
 import { FLOWS as PORTAL_FLOWS, STEPS as PORTAL_STEPS } from "@/portal/kf/portal";
 import { errorText, kfDateTime } from "@/portal/kf/sdk";
 import { meter, type Meter } from "./case/calls";
-import { caseIn, caseKeys, contactKeys, critKeys, filled, findingKeys, instant, pseudoIds, requestVsCase, supplierKeys } from "./case/compare";
+import { caseIn, caseKeys, contactKeys, filled, instant, pseudoIds, requestVsCase, supplierKeys } from "./case/compare";
 import { caseInput, caseStepsHeld, codesOf, dataOf, keepsItems, renameSupplier, supplierInput, tracksOf, type Codes, type LifeStep, type TrackPlan } from "./case/data";
 import { blockersAfter, fillPatch } from "./case/fill";
 import { checkIntegrations, type Polled } from "./lib/hooks";
@@ -435,9 +437,10 @@ describe("S-CASE: a case from the supplier master to the final release, and a ca
 
       // as the RMM who starts the case sees it (load.ts + toAppState)
       const rmm = await boot(w, "rmm", RUN);
-      const want = { ...supplierKeys(r.next, code)!, country: countryCode(input.country) };
+      // the country goes as its live code (Supplier_Country_Code) and reads back as that code's name (suppliersMap.ts)
+      const want = { ...supplierKeys(r.next, code)!, country: countryName(countryCode(input.country)) || countryCode(input.country) };
       s.readBack("mapped supplier (RMM)", supplierKeys(rmm.state, code));
-      s.check("the supplier reads back as written (country as its live code)", JSON.stringify(supplierKeys(rmm.state, code)) === JSON.stringify(want), { got: supplierKeys(rmm.state, code), want });
+      s.check("the supplier reads back as written (the country through its live code)", JSON.stringify(supplierKeys(rmm.state, code)) === JSON.stringify(want), { got: supplierKeys(rmm.state, code), want });
       for (const u of [self!, placeholder!]) s.check(`contact ${u.email} reads back as written`, JSON.stringify(contactKeys(rmm.state, u.email)) === JSON.stringify(contactKeys(r.next, u.email)), { got: contactKeys(rmm.state, u.email), want: contactKeys(r.next, u.email) });
       const selfId = rmm.state.users.find((u) => u.email === selfEmail)?.id ?? "";
       s.check("the self contact maps to self:<the key's user>", selfId === selfContactId(w.who.id), selfId);
@@ -658,10 +661,29 @@ describe("S-CASE: a case from the supplier master to the final release, and a ca
           async () => (await w.client.adminSearch("review", itemId)).filter((x) => str(x, "Case_Item_Id") === itemId),
           (rows) => sorted(rows.map((x) => str(x, "Review_Dept") as ReviewDept)) === sorted(want),
         );
-        s.note("E-A poll", { polls: found.polls, ms: found.ms });
+        s.note("E-A poll", { polls: found.polls, ms: found.ms, ...(found.error ? { error: found.error } : {}) });
         const kase0 = await w.client.adminGet("case", itemId);
         s.readBack("CIQ Case (Review_Depts)", pick(kase0, ["Review_Depts", "Case_Phase", "_current_step"]));
         s.check("the case's Review_Depts names the scope's departments", sorted(str(kase0, "Review_Depts").split(",").map((x) => x.trim()).filter(Boolean) as ReviewDept[]) === sorted(want.filter((x) => x !== "RMM")), str(kase0, "Review_Depts"));
+        // 25 Oct (HANDOVER, the bulk create's 150 s timeout): the bulk create is I-2's LAST step, after the review.started
+        // row and the Approve. While the key's user is not in Integration service the Approve is refused (4c), I-2 stops
+        // there and no review exists (29 Oct, R2: the run history shows "Approve an item" Failed, "This item has moved out
+        // of your queue", and no bulk create step). Blocked only when the search answered, the case still waits there and
+        // every check so far held (a scope or Review_Depts failure stays a fail), and the row and the phase prove I-2 got
+        // that far
+        const refused = found.value !== undefined && !found.error && !found.value.length && caseStepOf(kase0) === "waiting";
+        if (refused && !w.heldRoles.app.some((r) => r.id === OTHER_ROLES.integration.id)) {
+          const b = await boot(w, "rmm", RUN);
+          const rows = auditOf(b, itemId).filter((x) => str(x, "Action_Code") === "review.started");
+          s.readBack("review.started (audit row)", rows.map((x) => pick(x, ["Object_Kind", "Object_Item_Id", "New_Value_Text"])));
+          for (const r of rows) w.adopt(FLOWS.audit.id, r._id, `Case_Code=${code} Action_Code=review.started (E-A)`, "saved");
+          if (!s.check("I-2 wrote its one review.started row before its Approve", rows.length === 1 && str(rows[0], "Object_Item_Id") === itemId, rows.length)) return;
+          if (!s.check("Case_Phase is Review", str(kase0, "Case_Phase") === LIST.phase.review, str(kase0, "Case_Phase"))) return;
+          if (!clean()) return;
+          s.block(
+            `expected: I-2 creates the reviews in its last step, after its Approve, and the Approve is refused while ${OTHER_ROLES.integration.name} has no members (4c), so no review exists. I-2 wrote the review.started row and the Review phase. The RMES steps and review completion need the reviews: they run once a user is in ${OTHER_ROLES.integration.name} again.`,
+          );
+        }
         s.check("I-2 started one review per department the scope activates, and RMM's", found.ok, found.value.map((x) => str(x, "Review_Dept")));
         for (const raw of found.value) w.adopt(FLOWS.review.id, raw._id, `Review_Key=${code}-${str(raw, "Review_Dept")}-1`, stageOf(raw, "started by I-2 (E-A)"));
 
@@ -702,7 +724,7 @@ describe("S-CASE: a case from the supplier master to the final release, and a ca
     for (const dept of ["SAF", "REG"] as const) {
       const persona: InternalPersonaId = dept === "SAF" ? "saf" : "reg";
       const name = n(RMES_STEP[dept]);
-      if (has(dept === "SAF" ? "6a" : "6b")) it(`${name}: ensureRmes creates the record, saveRmes writes a result and a finding`, async () => {
+      if (has(dept === "SAF" ? "6a" : "6b")) it(`${name}: ensureRmes creates the header-only record, the RMES sheet reads from the case`, async () => {
         // by the run's data only: step 5 fails when the live scope drops a department the data activates
         if (!d.reviews.includes(dept)) {
           done.set(name, rec.notRun(name, `the run's data activates no ${dept} review (${d.reviews.join(", ")})`));
@@ -736,47 +758,47 @@ describe("S-CASE: a case from the supplier master to the final release, and a ca
           }
           const b1 = await boot(w, persona, RUN);
           const rr = b1.mapped.index.rmes.get(`${code}|${dept}`);
-          const crits = caseIn(b1.state, code)?.rmes?.criteria.filter((x) => x.dept === dept) ?? [];
-          if (!rr || !crits.length) throw new Error(`The ${dept} RMES record of ${code} did not read back (${rr ? "no criteria" : "no row"}).`);
-          const plan = { ...d.rmes[dept], comment: d.rmes[dept].comment && w.text(d.rmes[dept].comment) };
-          const cr = crits.find((x) => !x.result) ?? crits[0]!;
-          const cr2 = crits.find((x) => x.id !== cr.id) ?? cr;
-          const r1 = await perform(w, b1, "recordCriterion", [code, cr.id, plan.result, plan.comment], (st, by) => A.recordCriterion(st, by, code, cr.id, plan.result, plan.comment));
-          written(r1, `recordCriterion ${cr.id}`);
-          const text = w.text(plan.finding);
-          const r2 = await perform(w, { ...b1, state: r1.next }, "addFinding", [code, cr2.id, text, plan.blocking], (st, by) => A.addFinding(st, by, code, cr2.id, text, plan.blocking));
-          written(r2, `addFinding on ${cr2.id}`);
-          const finding = caseIn(r2.next, code)!.rmes!.findings.find((f) => f.dept === dept && f.text === text)!;
+          const c1 = caseIn(b1.state, code);
+          if (!rr || !c1?.rmes) throw new Error(`The ${dept} RMES record of ${code} did not read back (${rr ? "not on the case" : "no row"}).`);
 
+          // 28 Oct (BDF: the RMES is 8 fields filled from the CIQ): the row is the record only (REQ-PROC-021: the case id
+          // and its time), with no criteria or findings rows; the decision is on the department's CIQ Review item
+          // (RMES_Decision, Mandatory at its step), whose task nobody can hold (the reviewer roles have no members), so
+          // this step writes none and 7's gate counts it missing (RMES_Gaps 1)
           const got = await w.client.formGet(flow, rr.itemId);
-          const rows = childRows(got, TABLES[dept].criteria, "Criteria_Code");
-          const frows = childRows(got, TABLES[dept].findings, "Findings_Key");
-          const row = rows.find((x) => str(x, "Criteria_Code") === cr.id);
-          const frow = frows.find((x) => str(x, "Findings_Key") === finding.id);
-          s.readBack(`CIQ RMES ${dept} (form GET)`, { ...pick(got, ["RMES_Key", "Case_Item_Id", "Case_Code", "Open_Criteria_Count", "Open_Blocking_Findings_Count", "RMES_Voided"]), criteria: rows.map((x) => pick(x as RawItem, ["Criteria_Code", "Criteria_Result", "Criteria_Comment", "Criteria_Recorded_At"])), findings: frows.map((x) => pick(x as RawItem, ["Findings_Key", "Findings_Criterion_Code", "Findings_Text", "Findings_Blocking", "Findings_State"])) });
-          s.check("the header names the case", str(got, "RMES_Key") === `${code}-RMES-${dept}` && str(got, "Case_Item_Id") === itemId && str(got, "RMES_Voided") === LIST.no);
-          s.check(`one row per planned criterion (${crits.length}), no duplicate`, rows.length === crits.length && new Set(rows.map((x) => str(x, "Criteria_Code"))).size === rows.length, rows.length);
-          s.check(`${cr.id}: the result as recorded`, str(row, "Criteria_Result") === LIST.rmesResult[plan.result] && sameText(row?.Criteria_Comment, plan.comment || undefined) && !!str(row, "Criteria_Recorded_At") && JSON.stringify(userIds(row, "Criteria_Recorded_By")) === JSON.stringify([w.identity.kfUserId]), pick(row as RawItem, ["Criteria_Result", "Criteria_Comment", "Criteria_Recorded_By"]));
-          s.check(`${finding.id}: one finding row as added`, frows.filter((x) => str(x, "Findings_Key") === finding.id).length === 1 && str(frow, "Findings_Text") === text && str(frow, "Findings_Blocking") === (plan.blocking ? LIST.yes : LIST.no) && str(frow, "Findings_State") === "open" && str(frow, "Findings_Criterion_Code") === cr2.id);
-          s.check("the open counts follow", num(got, "Open_Criteria_Count") === crits.filter((x) => x.id !== cr.id && !x.result).length && num(got, "Open_Blocking_Findings_Count") === (plan.blocking ? 1 : 0), pick(got, ["Open_Criteria_Count", "Open_Blocking_Findings_Count"]));
+          const tables = Object.keys(got).filter((k) => k.startsWith("Table::") && Array.isArray(got[k]) && (got[k] as unknown[]).length);
+          s.readBack(`CIQ RMES ${dept} (form GET)`, { ...pick(got, ["RMES_Key", "Case_Item_Id", "Case_Code", "Cycle_No", "RMES_Voided", "_created_at"]), tables: Object.fromEntries(tables.map((k) => [k, (got[k] as unknown[]).length])) });
+          s.check("the header names the case", str(got, "RMES_Key") === `${code}-RMES-${dept}` && str(got, "Case_Item_Id") === itemId && str(got, "Case_Code") === code && str(got, "RMES_Voided") === LIST.no, pick(got, ["RMES_Key", "Case_Item_Id", "Case_Code", "RMES_Voided"]));
+          s.check("header only: no criteria or findings rows (the criteria RMES is retired)", !tables.length, tables);
+          s.check("the screens map no criterion or finding of it", !Object.keys(rr.criteriaRows).length && !Object.keys(rr.findingRows).length && !c1.rmes.criteria.length && !c1.rmes.findings.length, { criteria: c1.rmes.criteria.length, findings: c1.rmes.findings.length });
 
-          const b2 = await boot(w, persona, RUN);
-          const back = caseIn(b2.state, code)?.rmes;
-          const crBack = back?.criteria.find((x) => x.id === cr.id);
-          const fBack = back?.findings.find((x) => x.id === finding.id);
-          const crWant = caseIn(r2.next, code)!.rmes!.criteria.find((x) => x.id === cr.id)!;
-          s.readBack(`mapped RMES ${dept}`, { criterion: crBack ? critKeys(crBack) : null, finding: fBack ? findingKeys(fBack) : null });
-          s.check("the criterion reads back as recorded", !!crBack && JSON.stringify(critKeys(crBack)) === JSON.stringify(critKeys(crWant)), crBack && { got: critKeys(crBack), want: critKeys(crWant) });
-          s.check("the finding reads back as added", !!fBack && JSON.stringify(findingKeys(fBack)) === JSON.stringify(findingKeys(finding)), fBack && { got: findingKeys(fBack), want: findingKeys(finding) });
-          t.rmesView[dept] = caseIn(b2.state, code);
-          const saved = auditOf(b2, itemId).filter((x) => str(x, "Action_Code") === "rmes.saved" && str(x, "Object_Item_Id") === rr.itemId);
-          s.check("three rmes.saved rows (record, result, finding)", ["RMES record", "RMES criterion", "RMES finding"].every((k) => saved.some((x) => str(x, "Object_Kind") === k)), saved.map((x) => str(x, "Object_Kind")));
+          // the sheet the RMES tab shows, derived from the case as this reviewer's load mapped it (domain/rmesSheet.ts);
+          // a case the role can't read in full gives the one notice (the shell's case banner, RmesTab.tsx)
+          const banner = caseBannerOf(b1.mapped.index, b1.snap, code);
+          const sheet = rmesSheet(b1.state, c1, { readable: !banner });
+          s.readBack(
+            `RMES sheet ${dept} (rmesSheet)`,
+            sheet.readable
+              ? { record: sheet.record, header: sheet.header.map((h) => [h.label, h.text, h.state, h.source.fieldId]), rows: sheet.rows.map((r) => [r.inci, r.conc, r.cas, r.ec, r.originLabel, r.freeText.map((f) => f.source.fieldId).join(" ")]) }
+              : { notice: sheet.notice, banner },
+          );
+          if (sheet.readable)
+            s.check(
+              "the sheet: its record line, the trade name (never the case code), one composition row per component",
+              sheet.record === RMES_RECORD_LINE(code) && sheet.header.length === 3 && sheet.header[0]!.text === c1.materialName && sheet.header[0]!.text !== code && sheet.rows.length === c1.components.length,
+              { record: sheet.record, material: sheet.header[0]?.text, rows: sheet.rows.length, components: c1.components.length },
+            );
+          else s.check("an unreadable case: the RMES notice instead of the 8 fields", sheet.notice === RMES_UNREADABLE, { notice: sheet.notice, banner });
+          t.rmesView[dept] = c1;
+          const saved = auditOf(b1, itemId).filter((x) => str(x, "Action_Code") === "rmes.saved" && str(x, "Object_Item_Id") === rr.itemId);
+          const made = saved.filter((x) => str(x, "Object_Kind") === "RMES record" && str(x, "Object_Key") === `${code}-RMES-${dept}`);
+          s.check("one rmes.saved row: the RMES record, created", made.length === 1 && !!parseSnapshot(made[0])?.audit.some((e) => e.action === "RMES record created"), saved.map((x) => [str(x, "Object_Kind"), str(x, "Object_Key")]));
           if (t.stays) {
             // the case kept in review: the RMES row (a form row: no step) and the case name what this step proved
-            const what = `${RMES_STEP[dept].slice(3)}: ${crits.length} criteria, ${cr.id} ${plan.result}, finding ${finding.id} ${plan.blocking ? "blocking" : "not blocking"} and open`;
+            const what = `${RMES_STEP[dept].slice(3)}: the record (header only, no criteria or findings), the sheet ${sheet.readable ? `with ${sheet.rows.length} composition row(s)` : "unreadable for the role"}, no decision yet`;
             const line = w.ledger.latest().find((e) => e.id === rr.itemId);
-            if (line) w.adopt(line.flow, rr.itemId, line.what, clean() ? `form row, ${what}; open counts ${num(got, "Open_Criteria_Count")} criteria, ${num(got, "Open_Blocking_Findings_Count")} blocking` : `form row, NOT verified: "${name}" (see the results)`);
-            w.adopt(CASE_FLOW, itemId, `Case_Code=${code}`, caseStage(t, b2.snap.items.case.find((x) => x._id === itemId), name, clean() && what));
+            if (line) w.adopt(line.flow, rr.itemId, line.what, clean() ? `form row, ${what}` : `form row, NOT verified: "${name}" (see the results)`);
+            w.adopt(CASE_FLOW, itemId, `Case_Code=${code}`, caseStage(t, b1.snap.items.case.find((x) => x._id === itemId), name, clean() && what));
           }
         });
       });
@@ -1055,14 +1077,17 @@ describe("S-CASE: a case from the supplier master to the final release, and a ca
     const by = (status: string) => rec.steps.filter((x) => x.status === status).map((x) => x.name);
     expect(rec.steps.filter((x) => x.status === "fail").map((x) => `${x.name}: ${x.reason}`)).toEqual([]);
     // the RMES steps of every department the run's data activates run on each track that takes them, live too (step 5
-    // checks the live scope)
-    const rmes = tracks.flatMap((t) => (["SAF", "REG"] as const).filter((x) => d.reviews.includes(x) && t.steps.includes(x === "SAF" ? "6a" : "6b")).map((x) => nm(t, RMES_STEP[x])));
+    // checks the live scope), unless step 5 was blocked: no review exists while I-2's Approve is refused
+    const fiveBlocked = (t: TrackPlan) => rec.steps.some((x) => x.name === nm(t, "5 reviews (E-A)") && x.status === "blocked");
+    const rmes = tracks.filter((t) => !fiveBlocked(t)).flatMap((t) => (["SAF", "REG"] as const).filter((x) => d.reviews.includes(x) && t.steps.includes(x === "SAF" ? "6a" : "6b")).map((x) => nm(t, RMES_STEP[x])));
     expect(rec.steps.filter((x) => rmes.includes(x.name) && x.status === "not-run").map((x) => `${x.name}: ${x.reason}`)).toEqual([]);
     if (w.live) return;
-    // offline, as the roles were read live at 02:30 on 21 Oct: I-2's Approve and review completion are blocked; R4 as on
-    // 21 Oct evening (Integration service has a member again): review completion only
+    // offline, as the roles were read live at 02:30 on 21 Oct: I-2's Approve is refused, so it creates no review (its
+    // last step since 25 Oct) and 4c and 5 are blocked, 6a to 9 not run; R4 as on 21 Oct evening (Integration service
+    // has a member again): review completion only
     const held = caseStepsHeld(w.run);
-    expect(by("blocked")).toEqual(tracks.flatMap((t) => [...(!held && t.steps.includes("4c") ? [nm(t, "4c I-2 Approve")] : []), ...(t.steps.includes("7") ? [nm(t, "7 review completion")] : [])]));
-    expect(by("not-run")).toEqual(keepsItems(w.run) ? ["11 cleanup"] : []);
+    const after5: [LifeStep, string][] = [["6a", RMES_STEP.SAF], ["6b", RMES_STEP.REG], ["7", "7 review completion"], ["8", "8 release requested"], ["9", "9 final release (I-7)"]];
+    expect(by("blocked")).toEqual(tracks.flatMap((t) => (held ? (t.steps.includes("7") ? [nm(t, "7 review completion")] : []) : (["4c", "5"] as const).filter((x) => t.steps.includes(x)).map((x) => nm(t, x === "4c" ? "4c I-2 Approve" : "5 reviews (E-A)")))));
+    expect(by("not-run")).toEqual([...tracks.flatMap((t) => (held ? [] : after5.filter(([x]) => t.steps.includes(x)).map(([, name]) => nm(t, name)))), ...(keepsItems(w.run) ? ["11 cleanup"] : [])]);
   });
 });

@@ -1,5 +1,5 @@
-// Modals that create supplier-facing open points: a query or document request on an exact object, an additional
-// section (a department adds a section during the review) and a query raised from an RMES finding.
+// Modals that create supplier-facing open points: a query or document request on an exact object and an additional
+// section (a department adds a section during the review).
 import { Link2, Lock, Mail } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useLiveFeatures } from "@/components/liveFeatures";
@@ -9,10 +9,10 @@ import { triggerText } from "@/domain/rules";
 import { caseContactIds } from "@/domain/mail";
 import { check } from "@/domain/permissions";
 import { userName } from "@/domain/selectors";
-import type { AppState, CiqCase, Finding, ReviewDept, SectionDef } from "@/domain/types";
+import type { AppState, CiqCase, ReviewDept, SectionDef } from "@/domain/types";
 import { useStore } from "@/store/store";
 import { activeDeptUsers, joinNames } from "./lib";
-import { type AskTarget, docLabel, fromDateInput, Notice, plusDaysIso, secCode, toDateInput, todayInput } from "./shared";
+import { type AskTarget, fromDateInput, Notice, plusDaysIso, toDateInput, todayInput } from "./shared";
 
 function RefBox({ label }: { label: string }) {
   return (
@@ -30,7 +30,7 @@ function SupplierSees({ state, c }: { state: AppState; c: CiqCase }) {
     <div className="space-y-1.5 text-xs text-ink-3">
       <p className="flex items-start gap-1.5">
         <Lock size={12} className="mt-0.5 shrink-0" />
-        The supplier sees the reference, the question, the justification and the due date. Internal notes, RMES results and findings stay internal.
+        The supplier sees the reference, the question, the justification and the due date. Internal notes, the RMES and the Safety and Regulatory decisions stay internal.
       </p>
       <p className="flex items-start gap-1.5" data-testid="ask-mail-to">
         <Mail size={12} className="mt-0.5 shrink-0" />
@@ -270,79 +270,6 @@ export function ActivateSectionModal({ c, dept, onClose, onDone }: { c: CiqCase;
           <SupplierSees state={state} c={c} />
         </div>
       )}
-    </Modal>
-  );
-}
-
-/** Turn an internal RMES finding into a supplier query without retyping the context (REQ-RMES-010). */
-export function FindingQueryModal({ c, finding, onClose }: { c: CiqCase; finding: Finding; onClose: () => void }) {
-  const { state, findingToQuery, me } = useStore();
-  const cr = c.rmes?.criteria.find((x) => x.id === finding.criterionId);
-  const [question, setQuestion] = useState("");
-  const [due, setDue] = useState(toDateInput(plusDaysIso(14)));
-  const [tried, setTried] = useState(false);
-  const sent = useRef(false);
-  const [sending, setSending] = useState(false);
-  const open = useOpen();
-  const dueBad = !due || due < todayInput();
-  if (!cr) return null;
-  const doc = cr.source.documentId ? c.documents.find((d) => d.id === cr.source.documentId) : undefined;
-
-  const submit = () => {
-    setTried(true);
-    if (!question.trim() || dueBad || sent.current) return;
-    sent.current = true;
-    const r = findingToQuery(c.id, finding.id, question.trim(), fromDateInput(due));
-    // as RaiseQueryModal: the modal closes only once the query reached Kissflow (gap 6)
-    setSending(true);
-    void Promise.resolve(r).then((ok) => {
-      setSending(false);
-      if (ok === false) sent.current = false;
-      else if (open.current) onClose();
-    });
-  };
-
-  return (
-    <Modal
-      open
-      onClose={onClose}
-      title="Ask the supplier about a finding"
-      subtitle={`${c.id} · finding ${finding.id}`}
-      footer={
-        <>
-          <Button variant="ghost" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={submit} disabled={(tried && (!question.trim() || dueBad)) || sending} data-testid="finding-ask-send">
-            {sending ? "Sending…" : "Send to supplier"}
-          </Button>
-        </>
-      }
-    >
-      <div className="space-y-4">
-        <Field label="Reference (the criterion's source)">
-          <RefBox label={`${cr.source.label} · ${secCode(cr.source.sectionId, c.templateVersion)}${doc ? ` · ${docLabel(doc)}` : ""}`} />
-        </Field>
-        <div className="rounded-lg bg-surface-2 px-3 py-2.5 text-[13px]">
-          <p className="flex items-center gap-1.5 text-xs font-medium text-ink-3">
-            <Lock size={12} /> Internal finding, not sent
-          </p>
-          <p className="mt-1 text-ink">{finding.text}</p>
-          <p className="mt-1 text-xs text-ink-3">
-            {cr.id} · {cr.title} · recorded for {DEPT_SHORT[finding.dept]}
-          </p>
-        </div>
-        <Field label="Question to the supplier" required hint="Write it for the supplier: the internal finding text is not included." error={tried && !question.trim() ? "Write the question the supplier should answer." : undefined}>
-          <TextArea value={question} onChange={(e) => setQuestion(e.target.value)} invalid={tried && !question.trim()} placeholder="What should the supplier provide or confirm?" data-testid="finding-ask-question" />
-        </Field>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <DueField value={due} onChange={setDue} error={tried && dueBad ? "Pick today or a later date." : undefined} />
-          <Field label="Responsible at Beiersdorf">
-            <TextInput value={`${me.name} (you)`} disabled />
-          </Field>
-        </div>
-        <SupplierSees state={state} c={c} />
-      </div>
     </Modal>
   );
 }

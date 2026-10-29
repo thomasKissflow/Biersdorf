@@ -66,10 +66,9 @@ describe("cancel and reactivate (spec §1.11)", () => {
   });
 });
 
-describe("RMES Rejected (AS-02): flagged for RMM, who continues with a note or cancels", () => {
+describe("Safety / Regulatory Rejected (AS-02): flagged for RMM, who continues with a note or cancels", () => {
   it("before RMM completes: RMM's completion needs the explicit continue choice", () => {
     const sc = new Scenario().toReview();
-    sc.rmes("SAF", "u-saf");
     expect(sc.refused("reject without reason", (s, at) => A.rmesDecision(s, "u-saf", sc.id, "SAF", "rejected", "", at))).toMatch(/reason is mandatory/);
     expect(sc.refused("REG decides for SAF", (s, at) => A.rmesDecision(s, "u-reg", sc.id, "SAF", "rejected", "x", at))).toMatch(/Only Safety/);
     sc.decision("SAF", "u-saf", "rejected", "Endocrine data missing");
@@ -77,7 +76,7 @@ describe("RMES Rejected (AS-02): flagged for RMM, who continues with a note or c
     expect(sc.c.audit.at(-1)?.action).toBe("Flagged for RMM");
     // a vegetable case without SF-09: Sustainability has no track (Annex 1 is Regulatory's since 28 Oct)
     for (const d of ["REG", "SAF", "QM", "MIC"] as const) {
-      if (d === "REG") sc.rmes("REG", "u-reg").decision("REG", "u-reg", "approved");
+      if (d === "REG") sc.decision("REG", "u-reg", "approved");
       sc.complete(d, Scenario.REVIEWER[d]);
     }
     expect(sc.refused("RMM without choice", (s, at) => A.completeReview(s, "u-rmm", sc.id, "RMM", at))).toMatch(/Safety recorded Rejected\. Choose: continue to the final release with a note, or cancel the case/);
@@ -93,7 +92,7 @@ describe("RMES Rejected (AS-02): flagged for RMM, who continues with a note or c
   it("after RMM completed: the rejection reopens RMM's review", () => {
     const sc = new Scenario().toReview();
     sc.complete("RMM", "u-rmm");
-    sc.rmes("SAF", "u-saf").decision("SAF", "u-saf", "rejected", "Endocrine data missing");
+    sc.decision("SAF", "u-saf", "rejected", "Endocrine data missing");
     expect(sc.track("RMM")?.status).toBe("reopened");
     expect(sc.c.audit.map((a) => a.action)).toEqual(expect.arrayContaining(["Flagged for RMM", "Reopened RMM review"]));
     expect(mailsFor(sc.s, "u-rmm")[0]).toMatchObject({ event: "review-assigned", body: expect.stringMatching(/reopened/) });
@@ -103,7 +102,7 @@ describe("RMES Rejected (AS-02): flagged for RMM, who continues with a note or c
 
   it("or RMM cancels the case with a justification", () => {
     const sc = new Scenario().toReview();
-    sc.rmes("SAF", "u-saf").decision("SAF", "u-saf", "rejected", "Endocrine data missing");
+    sc.decision("SAF", "u-saf", "rejected", "Endocrine data missing");
     sc.step("cancel", (s, at) => A.cancelCase(s, "u-rmm", sc.id, "Safety rejection: the material is not used", at));
     expect(sc.c.phase).toBe("cancelled");
   });

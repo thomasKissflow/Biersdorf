@@ -184,12 +184,6 @@ export class Scenario {
     return this.step(`${decision} ${opId}`, (s, at) => A.reviewResponse(s, by, this.id, opId, decision, text, at));
   }
 
-  /** Records a result for every open RMES criterion of the department (negative ones get a comment). */
-  rmes(dept: "SAF" | "REG", by: string): this {
-    for (const cr of this.c.rmes?.criteria.filter((x) => x.dept === dept && !x.result) ?? []) this.step(`rmes ${cr.id}`, (s, at) => A.recordCriterion(s, by, this.id, cr.id, "available", "", at));
-    return this;
-  }
-
   decision(dept: "SAF" | "REG", by: string, d: "approved" | "rejected", reason = ""): this {
     return this.step(`decision ${dept} ${d}`, (s, at) => A.rmesDecision(s, by, this.id, dept, d, reason, at));
   }
@@ -201,15 +195,12 @@ export class Scenario {
   /** The role holder of a track (one person per role in the empty start). */
   static readonly REVIEWER: Record<ReviewDept, string> = { RMM: "u-rmm", REG: "u-reg", SAF: "u-saf", QM: "u-qm", MIC: "u-mic", SUS: "u-sus" };
 
-  /** Completes every open track (RMES first for Safety and Regulatory), departments before RMM; `except` stay open. */
+  /** Completes every open track (the decision first for Safety and Regulatory), departments before RMM; `except` stay open. */
   completeAll(opts?: A.CompleteOptions, except: ReviewDept[] = []): this {
     const order = this.c.reviews.filter((r) => r.status !== "completed" && !except.includes(r.dept)).map((r) => r.dept).sort((a, b) => Number(a === "RMM") - Number(b === "RMM"));
     for (const d of order) {
       const by = this.track(d)!.assigneeId;
-      if (d === "SAF" || d === "REG") {
-        this.rmes(d, by);
-        if (!this.track(d)!.decision) this.decision(d, by, "approved");
-      }
+      if ((d === "SAF" || d === "REG") && !this.track(d)!.decision) this.decision(d, by, "approved");
       this.complete(d, by, d === "RMM" ? opts : undefined);
     }
     return this;

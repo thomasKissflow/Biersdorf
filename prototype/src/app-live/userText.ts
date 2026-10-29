@@ -60,7 +60,7 @@ export function unfinishedText(e: unknown): string {
   return /\breload\b/i.test(t) ? t : `${t} Reload to see the current state.`;
 }
 
-/** The cause alone, to go inside a sentence ("… was not added to the RMES record (<cause>)."). */
+/** The cause alone, to go inside a sentence ("… was not linked to the case (<cause>)."). */
 export function plainCause(e: unknown): string {
   const mine = own(e);
   return mine ? trimEnd(mine) : plain(e).why;
@@ -112,7 +112,7 @@ export const STILL_NEEDS = (what: string, outcome = "it did not move on") => `${
 /** C15: Diagnostics' Send found required fields still empty. */
 export const STILL_EMPTY = "Some required fields are still empty, so nothing was sent.";
 /** C16: Complete review read the review gate blank. */
-export const GATE_NOT_OK = "Kissflow does not see this review as ready yet (open points or RMES entries are still open). Nothing was completed; reload and check.";
+export const GATE_NOT_OK = "Kissflow does not see this review as ready yet (an open point is still open, or the decision is missing). Nothing was completed; reload and check.";
 /** C17: Complete review's fresh read kept a part from an earlier load. */
 export const NOT_READ_AGAIN_PLAIN = "Not completed: part of this case could not be read again just now, so the review could not be checked. Nothing was saved; try again.";
 /** C21: the pinned release can't give the supplier's bundle. */

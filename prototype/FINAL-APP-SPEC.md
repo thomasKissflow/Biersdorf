@@ -30,7 +30,7 @@ This spec settles every conflict between the inventory files in `overnight/p1/*.
    - Two contacts can work in parallel, and every answer shows who entered it.
    - Completeness is blocked until the required metadata questions, mandatory fields and documents are answered or justified. The blockers are named.
    - A contact with `mayConfirm` confirms completeness, recorded with name, e-mail, role and time. This is the gate.
-3. **The system activates the reviews:** the RMM track (assignee = case owner) plus only the departments concerned. When SAF or REG is involved, an RMES record is created.
+3. **The system activates the reviews:** the RMM track (assignee = case owner) plus only the departments concerned. When SAF or REG is involved, an RMES record is created (header only: the case and the time).
    - Customs and Legal are informed and read-only.
    - Mails: review-assigned to every track assignee, and informed to Customs and Legal.
    - An origin without rules (waste, CCU, chemical recycling) is flagged on RMM's review. The flag is informational.
@@ -40,7 +40,7 @@ This spec settles every conflict between the inventory files in `overnight/p1/*.
 5. **The departments review their sections in parallel.**
    - They raise queries pinned to a field, table row or document.
    - A department may add a missing section with a justification (REQ-ADR-002). The supplier gets a task, and the department gets an additional-part open point.
-   - Safety and Regulatory record RMES criteria, findings and their decision.
+   - Safety and Regulatory read the RMES and record their decision (Approved or Rejected; a rejection needs a reason) on the decision card of the Questionnaire tab. Since BDF's e-mail of 28 Oct the RMES is one read-only sheet of exactly 8 fields, filled automatically from the CIQ, each with its CIQ field id: Raw material / tradename (FLD-GEN-001), Supplier (FLD-GEN-002), Manufacturer (FLD-GEN-004); per K2.1 component INCI, %, CAS #, EC #, Source of origin and its K2.3 free text. It is derived from the case (domain/rmesSheet.ts), follows every Part 2 change and is frozen after the final release. No criteria, limit checks, suggestions or findings; the decision is outside the RMES.
 6. **Open points (AS-08 changed).**
    - A query needs a reference, a responsible person and a due date.
    - The supplier answers, uploads at the question (not in the chat) or explains why it cannot provide. It can also correct the field itself.
@@ -54,7 +54,7 @@ This spec settles every conflict between the inventory files in `overnight/p1/*.
    - **A change reopens the owners' completed reviews (Thomas, 15 Oct).** Once a department has completed its review, a supplier change in a section it leads or co-reviews (section owners, A-29) reopens that review automatically: an answer, a K2.1 row, a justification, an upload (also a file sent with an answer to a question) or a requested-document justification. It uses the reopen path of B-25/B-27: status "reopened", actor "system", the reason in plain words ("The supplier changed K2.1 after your review"), an audit entry, and one review-assigned mail to the track's assignee; while the track stays reopened, further changes add no mail (one per burst). RMM's review reopens only for a section RMM leads or co-reviews (GEN, K1, K2.3 today). The "changed since your review" markers keep counting from the completion the reopen undid.
    - A changed metadata answer only adds sections (grow-only, B-28). Each added section gets a task and an additional-part point and the lead track is activated or reopened. Metadata answers keep this rule; the owners' reopen above does not apply to them.
    - A reviewer who has already completed can reopen its review. In final-release the release request is then withdrawn (mail to the supplier), the questionnaire unlocks, and the request goes out again when everyone has completed.
-8. **Completion.** RMM and each track complete explicitly. Completion is refused while the track has open points or RMES gaps. It is not an approval.
+8. **Completion.** RMM and each track complete explicitly. Completion is refused while the track has open points, or, for Safety and Regulatory, while its decision is missing. It is not an approval.
    - The Safety or Regulatory decision is internal, Approved or Rejected, and Rejected needs a reason.
    - **A Rejected decision flags the case for RMM** (AS-02 confirmed). RMM's completion requires an explicit choice: "Continue to final release" with a note, or "Cancel the case" with a justification.
    - If RMM had already completed, the rejection reopens RMM's review.
@@ -97,7 +97,7 @@ This spec settles every conflict between the inventory files in `overnight/p1/*.
   - Supplier events go to every case contact.
   - op-answered goes to the raiser plus the responsible person (deduplicated).
   - data-changed goes to the active tracks that use that section.
-- Supplier mail bodies use only whitelisted, supplier-visible fields. Internal notes, RMES and findings never appear in them.
+- Supplier mail bodies use only whitelisted, supplier-visible fields. Internal notes, the RMES and the decisions never appear in them.
 - UI: an envelope in the top bar of every shell, with an unread count. It opens a drawer with a list and a reading pane, "Simulated e-mail". Each mail has a link that deep-links to the item. Mails can be marked read.
 
 ## 3. Navigation per role (final)
@@ -177,7 +177,8 @@ This spec settles every conflict between the inventory files in `overnight/p1/*.
 - Header: case, phase, my track, Reassign within the department.
 - Section nav with "changed since your review" markers.
 - Section content with Ask, on any section; RMM sees the whole CIQ.
-- RMES tab: Safety and Regulatory only.
+- RMES tab (Safety and Regulatory only, once the case is past Part 1; named "RMES", no count): the read-only 8-field sheet with the source of each field (a source opens its section). A case the role can't read shows one notice instead.
+- Decision card (Safety and Regulatory): top of the Questionnaire tab's right column, above the open points; the completion bar's decision line scrolls to it.
 - Right rail: My open points (accept, return, edit, close by the raiser) and Internal notes.
 - Completion bar with the blockers listed, the Safety/Regulatory decision, and RMM's rejection-handling choice.
 
@@ -213,7 +214,7 @@ This spec settles every conflict between the inventory files in `overnight/p1/*.
 **Supplier: Help:** how it works (the new flow), FAQs (including which e-mails come), the Beiersdorf contacts. No video.
 
 **Permissions**
-- A supplier contact sees only the cases it is named on, and never internal routes, notes, RMES, findings, other suppliers or the final document.
+- A supplier contact sees only the cases it is named on, and never internal routes, notes, the RMES, decisions, other suppliers or the final document. The portal bundle carries no RMES text (scripts/leak-scan.mjs).
 - Customs and Legal are read-only but may post internal notes.
 - The Admin, Business owner and Auditor read only the cases. The Admin alone maintains the supplier master; RMM looks it up read-only.
 
@@ -234,7 +235,7 @@ This spec settles every conflict between the inventory files in `overnight/p1/*.
   - open points (AS-08: edit, close, new round);
   - mail recipients, counts and leak scan;
   - the final document (content, exclusions, once-only, immutable);
-  - lifecycle (cancel and reactivate per phase; RMES Rejected; grow-only; reopen and release withdrawal; release blockers);
+  - lifecycle (cancel and reactivate per phase; Safety / Regulatory Rejected; grow-only; reopen and release withdrawal; release blockers);
   - zero-case metrics;
   - `checkInvariants(state)` after every scenario step.
 - **End-to-end:** `scripts/harness-prototype.mjs` (playwright-core from the path in `scripts/harness-portal.mjs`) runs against the built `dist`, with a fresh context per scenario. Every page is checked for console errors and for "NaN", "undefined" or "Infinity" text. Scenarios:
@@ -256,7 +257,7 @@ This spec settles every conflict between the inventory files in `overnight/p1/*.
 4. Every named contact may confirm (`mayConfirm`, default true).
 5. A contact sees only the cases it is named on.
 6. The final document is internal; the supplier gets a receipt.
-7. RMES Rejected: RMM must choose continue or cancel.
+7. Safety / Regulatory Rejected: RMM must choose continue or cancel.
 8. In final-release the questionnaire is locked (Thomas, 15 Oct); a reviewer may reopen, which withdraws the release request and unlocks it. During the review a supplier change reopens the completed reviews of the section's owners automatically.
 9. Release is blocked by open supplier questions and missing mandatory items.
 10. Report a change after the release.

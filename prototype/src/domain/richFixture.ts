@@ -4,14 +4,12 @@
 // empty (seed.ts). All people, suppliers and documents are fictional. INCI names are real ingredient names.
 
 import {
-  addFinding,
   cancelCase,
   completeReview,
   confirmCompleteness,
   createCase,
   finalRelease,
   raiseOpenPoint,
-  recordCriterion,
   reviewResponse,
   rmesDecision,
   saveConfig,
@@ -65,8 +63,6 @@ interface Spec {
   queries?: Q[];
   done?: ReviewDept[]; // completed reviews (RMM included); final-release and completed cases complete every track
   decisions?: Partial<Record<"SAF" | "REG", "approved" | "rejected">>;
-  rmesShare?: number; // share of criteria with results (review stage)
-  findings?: { crit: string; text: string; blocking: boolean }[];
   priority?: "high";
   metals?: [number, number, number];
   moah?: number;
@@ -96,7 +92,7 @@ const SPECS: Spec[] = [
   {
     n: 131, material: "HELIOSOFT 200", inci: "Helianthus Annuus Seed Oil", supplier: "s1", config: base(["vegetable"], ["EU", "UK"]),
     components: [C("Helianthus Annuus Seed Oil", "emollient", "vegetable", 99.4, 99.9, "8001-21-6"), C("Tocopherol", "antioxidant", "vegetable", 0.1, 0.6, "59-02-9", true)],
-    stage: "review", age: 46, rmesShare: 0.5, done: ["MIC"],
+    stage: "review", age: 46, done: ["MIC"],
     queries: [
       { dept: "REG", kind: "query", sec: "K2.1", row: "c2", label: "K2.1 › component 2 › CAS number", q: "Component 2 (Tocopherol) — please confirm the CAS number: is it the natural (10191-41-0 / 59-02-9) or synthetic form?", state: "open" },
       { dept: "REG", kind: "document-request", sec: "A1", field: "FLD-A1-202", label: "Annex 1 › Pesticides analysis (v1)", q: "The pesticide screening is older than 24 months. Please upload a current analysis.", state: "answered", reply: "Updated multi-residue screening from August 2026 attached." },
@@ -106,7 +102,7 @@ const SPECS: Spec[] = [
   {
     n: 132, material: "GLYCERA PK 99.7", inci: "Glycerin", supplier: "s5", config: base(["vegetable"], ["EU", "CN", "US"], { SF09: true }), palm: true,
     components: [C("Glycerin", "humectant", "vegetable", 99.5, 99.8, "56-81-5"), C("Aqua", "solvent", "vegetable", 0.2, 0.5, "7732-18-5")],
-    stage: "review", age: 38, rmesShare: 0.7,
+    stage: "review", age: 38,
     queries: [
       { dept: "REG", kind: "document-request", sec: "A1", field: "FLD-A1-206", label: "Annex 1 › RSPO certification", q: "The RSPO supply-chain certificate expired in March 2026. Please upload the renewed certificate and state the RSPO number on the CoA.", state: "returned", reply: "Renewal audit is scheduled; attached is the audit confirmation letter." },
       { dept: "SUS", kind: "query", sec: "K6.17", label: "K6.17 › EUDR scope", q: "Please confirm whether the palm feedstock is in EUDR scope and provide the geolocation statement.", state: "open" },
@@ -116,48 +112,45 @@ const SPECS: Spec[] = [
   { n: 133, material: "LUSTRA Mica White", inci: "Mica", supplier: "s7", config: base(["mineral"], ["EU", "US"], { SF05: ["colorant"] }), components: [C("Mica", "colorant", "mineral", 100, 100, "12001-26-2")], stage: "supplier-input", age: 20, fill: 0.6, priority: "high" },
   {
     n: 134, material: "PARAFLUID 70 Pharma", inci: "Paraffinum Liquidum", supplier: "s9", config: base(["petrochemical"], ["EU", "UK", "CA"], { SF07: true, SF12: false }),
-    components: [C("Paraffinum Liquidum", "emollient", "petrochemical", 100, 100, "8042-47-5")], stage: "review", age: 52, rmesShare: 0.8, moah: 1.6, priority: "high",
-    findings: [{ crit: "S-C2", text: "MOAH 1.6 mg/kg exceeds the BDF threshold of 1.0 mg/kg", blocking: true }],
+    components: [C("Paraffinum Liquidum", "emollient", "petrochemical", 100, 100, "8042-47-5")], stage: "review", age: 52, moah: 1.6, priority: "high",
     queries: [
-      { dept: "SAF", kind: "finding", sec: "A4", field: "FLD-A4-101", label: "Annex 4 › MOAH concentration", q: "Your MOAH value of 1.6 mg/kg exceeds our threshold. Please provide the full HPLC-GC-FID report incl. the MOAH fraction ≥ C25, or a lower-MOAH grade.", state: "open" },
+      { dept: "SAF", kind: "query", sec: "A4", field: "FLD-A4-101", label: "Annex 4 › MOAH concentration", q: "Your MOAH value of 1.6 mg/kg exceeds our threshold. Please provide the full HPLC-GC-FID report incl. the MOAH fraction ≥ C25, or a lower-MOAH grade.", state: "open" },
       { dept: "QM", kind: "query", sec: "K2.2", field: "FLD-2.2-001", label: "K2.2 › Batch analyses", q: "Only one batch analysis is attached. Two batches are required.", state: "closed", reply: "Second batch (24-0915) added." },
     ],
   },
   { n: 135, material: "MICROWAX 180", inci: "Cera Microcristallina", supplier: "s9", config: base(["mineral"], ["EU"], { SF07: true }), components: [C("Cera Microcristallina", "viscosity controlling", "mineral", 100, 100, "63231-60-7")], stage: "supplier-input", age: 6, fill: 0.15 },
-  { n: 136, material: "KESTREL Carbomer 30", inci: "Acrylates/C10-30 Alkyl Acrylate Crosspolymer", supplier: "s3", config: base(["polymer"], ["EU", "UK"], { SF03: true }), components: [C("Acrylates/C10-30 Alkyl Acrylate Crosspolymer", "viscosity controlling", "polymer", 99, 100)], stage: "final-release", age: 64, done: ["REG", "SAF", "QM", "MIC"], decisions: { SAF: "approved", REG: "approved" }, rmesShare: 1, queries: [{ dept: "SAF", kind: "query", sec: "K4.3", label: "K4.3 › SPM scope", q: "Please state whether the polymer is in scope of the SPM restriction (EU 2023/2055) and why.", state: "closed", reply: "Not in scope: the polymer is water-soluble (> 2 g/L at 20 °C), test report attached." }] },
-  { n: 137, material: "HYALURO Bio 1.5M", inci: "Sodium Hyaluronate", supplier: "s8", config: base(["vegetable"], ["EU", "CN"], { SF06: true }), components: [C("Sodium Hyaluronate", "skin conditioning", "vegetable", 98, 100, "9067-32-7")], stage: "review", age: 33, rmesShare: 0.3, queries: [{ dept: "QM", kind: "query", sec: "A3", label: "A3 › GMO", q: "Is the Streptococcus production strain genetically modified? Please describe the separation of GMO and non-GMO lines.", state: "open" }] },
-  { n: 138, material: "PHENOX Pure", inci: "Phenoxyethanol", supplier: "s6", config: base(["petrochemical"], ["EU", "US", "CA"], { SF05: ["preservative"], SF12: false }), components: [C("Phenoxyethanol", "preservative", "petrochemical", 99, 100, "122-99-6")], stage: "review", age: 41, done: ["REG", "QM", "RMM"], decisions: { REG: "approved" }, rmesShare: 0.9 },
+  { n: 136, material: "KESTREL Carbomer 30", inci: "Acrylates/C10-30 Alkyl Acrylate Crosspolymer", supplier: "s3", config: base(["polymer"], ["EU", "UK"], { SF03: true }), components: [C("Acrylates/C10-30 Alkyl Acrylate Crosspolymer", "viscosity controlling", "polymer", 99, 100)], stage: "final-release", age: 64, done: ["REG", "SAF", "QM", "MIC"], decisions: { SAF: "approved", REG: "approved" }, queries: [{ dept: "SAF", kind: "query", sec: "K4.3", label: "K4.3 › SPM scope", q: "Please state whether the polymer is in scope of the SPM restriction (EU 2023/2055) and why.", state: "closed", reply: "Not in scope: the polymer is water-soluble (> 2 g/L at 20 °C), test report attached." }] },
+  { n: 137, material: "HYALURO Bio 1.5M", inci: "Sodium Hyaluronate", supplier: "s8", config: base(["vegetable"], ["EU", "CN"], { SF06: true }), components: [C("Sodium Hyaluronate", "skin conditioning", "vegetable", 98, 100, "9067-32-7")], stage: "review", age: 33, queries: [{ dept: "QM", kind: "query", sec: "A3", label: "A3 › GMO", q: "Is the Streptococcus production strain genetically modified? Please describe the separation of GMO and non-GMO lines.", state: "open" }] },
+  { n: 138, material: "PHENOX Pure", inci: "Phenoxyethanol", supplier: "s6", config: base(["petrochemical"], ["EU", "US", "CA"], { SF05: ["preservative"], SF12: false }), components: [C("Phenoxyethanol", "preservative", "petrochemical", 99, 100, "122-99-6")], stage: "review", age: 41, done: ["REG", "QM", "RMM"], decisions: { REG: "approved" } },
   { n: 139, material: "CACAO Butter Deodorised", inci: "Theobroma Cacao Seed Butter", supplier: "s4", config: base(["vegetable"], ["EU"], { SF09: true, SF12: false }), components: [C("Theobroma Cacao Seed Butter", "emollient", "vegetable", 100, 100, "8002-31-1")], stage: "supplier-input", age: 12, fill: 0.3 },
   {
     n: 140, material: "TIOVEIL Pure 77891", inci: "Titanium Dioxide", supplier: "s7", config: base(["mineral", "vegetable"], ["EU", "US", "CN"], { SF04: true, SF05: ["colorant"] }),
     components: [C("Titanium Dioxide", "UV filter", "mineral", 96, 98, "13463-67-7"), C("Alumina", "coating", "mineral", 1, 3, "1344-28-1", true), C("Stearic Acid", "coating", "vegetable", 0.5, 1.5, "57-11-4", true)],
-    stage: "review", age: 57, rmesShare: 0.6, metals: [0.3, 0.12, 2.1],
-    findings: [{ crit: "S-A1", text: "Cadmium 0.12 mg/kg above the BDF limit of 0.1 mg/kg — justification under review", blocking: false }],
+    stage: "review", age: 57, metals: [0.3, 0.12, 2.1],
     queries: [{ dept: "SAF", kind: "query", sec: "K6.9", label: "K6.9 › Nanomaterials", q: "Please provide the particle size distribution (number-based) and confirm whether the grade is a nanomaterial under Reg. 1223/2009.", state: "open" }, { dept: "REG", kind: "query", sec: "A5", label: "Annex 5 › UV filters", q: "Please confirm approval status as UV filter in China (NMPA) and the USA (OTC monograph).", state: "returned", reply: "Approved in EU and US." }],
   },
-  { n: 141, material: "OLIVANE Squalane", inci: "Squalane", supplier: "s4", config: base(["vegetable"], ["EU", "UK"], { SF12: false }), components: [C("Squalane", "emollient", "vegetable", 100, 100, "111-01-3")], stage: "final-release", age: 70, done: ["REG", "SAF", "QM"], decisions: { SAF: "approved", REG: "approved" }, rmesShare: 1 },
+  { n: 141, material: "OLIVANE Squalane", inci: "Squalane", supplier: "s4", config: base(["vegetable"], ["EU", "UK"], { SF12: false }), components: [C("Squalane", "emollient", "vegetable", 100, 100, "111-01-3")], stage: "final-release", age: 70, done: ["REG", "SAF", "QM"], decisions: { SAF: "approved", REG: "approved" } },
   // Metadata half answered: the origin answer already opened Annex 1, 2 and 9; nothing filled in yet.
   { n: 142, material: "MCT Palm-Coco 60/40", inci: "Caprylic/Capric Triglyceride", supplier: "s5", config: { SF11: ["EU", "TR"], SF01: ["vegetable"] }, palm: true, components: [], stage: "supplier-input", age: 3, fill: 0 },
   { n: 143, material: "LANOCARE Pharma", inci: "Lanolin", supplier: "s1", config: base(["animal"], ["EU"]), components: [C("Lanolin", "emollient", "animal", 100, 100, "8006-54-0")], stage: "supplier-input", age: 25, fill: 0.8 },
-  { n: 144, material: "MARICOLL HC 2000", inci: "Hydrolyzed Collagen", supplier: "s8", config: base(["animal"], ["EU", "UK"]), components: [C("Hydrolyzed Collagen", "skin conditioning", "animal", 98, 100, "92113-31-0")], stage: "review", age: 29, rmesShare: 0.4, done: ["MIC"], queries: [{ dept: "QM", kind: "document-request", sec: "K1", label: "K1 › BSE/TSE certificate", q: "Animal origin: please upload the BSE/TSE certificate and confirm conformity with Annex II entry 419 of Reg. 1223/2009.", state: "answered", reply: "Fish-derived collagen (Pangasius); TSE statement and EDQM-aligned declaration attached." }, { dept: "QM", kind: "query", sec: "K6.12", label: "K6.12 › GMP/ISO", q: "Your ISO 9001 certificate expires on 31 Oct 2026 — please upload the renewed certificate when available.", state: "open" }] },
+  { n: 144, material: "MARICOLL HC 2000", inci: "Hydrolyzed Collagen", supplier: "s8", config: base(["animal"], ["EU", "UK"]), components: [C("Hydrolyzed Collagen", "skin conditioning", "animal", 98, 100, "92113-31-0")], stage: "review", age: 29, done: ["MIC"], queries: [{ dept: "QM", kind: "document-request", sec: "K1", label: "K1 › BSE/TSE certificate", q: "Animal origin: please upload the BSE/TSE certificate and confirm conformity with Annex II entry 419 of Reg. 1223/2009.", state: "answered", reply: "Fish-derived collagen (Pangasius); TSE statement and EDQM-aligned declaration attached." }, { dept: "QM", kind: "query", sec: "K6.12", label: "K6.12 › GMP/ISO", q: "Your ISO 9001 certificate expires on 31 Oct 2026 — please upload the renewed certificate when available.", state: "open" }] },
   // Every department has completed; only RMM's own review is pending, so the final-release request still waits.
   {
     n: 145, material: "TOCO-Mix 70 NonGMO", inci: "Tocopherol", supplier: "s10", config: base(["vegetable"], ["EU", "CN"]), components: [C("Tocopherol", "antioxidant", "vegetable", 70, 72, "59-02-9"), C("Glycine Soja Oil", "solvent", "vegetable", 28, 30, "8001-22-7")],
-    stage: "review", age: 36, rmesShare: 1, done: ["MIC", "QM", "REG", "SAF"], decisions: { SAF: "approved", REG: "approved" }, queries: [{ dept: "REG", kind: "query", sec: "K2.3", field: "FLD-A1-102", label: "K2.3 › Feedstock", q: "Please confirm the soy origin is certified non-GMO and deforestation-free (country of cultivation).", state: "closed", reply: "Certified non-GMO soy from Brazil (RTRS); deforestation-free statement attached." }],
+    stage: "review", age: 36, done: ["MIC", "QM", "REG", "SAF"], decisions: { SAF: "approved", REG: "approved" }, queries: [{ dept: "REG", kind: "query", sec: "K2.3", field: "FLD-A1-102", label: "K2.3 › Feedstock", q: "Please confirm the soy origin is certified non-GMO and deforestation-free (country of cultivation).", state: "closed", reply: "Certified non-GMO soy from Brazil (RTRS); deforestation-free statement attached." }],
   },
   { n: 146, material: "PANTHENOL 75 L", inci: "Panthenol", supplier: "s6", config: { SF11: ["EU", "US"] }, components: [], stage: "supplier-input", age: 2, fill: 0 },
   { n: 147, material: "CETYLSTEAR PK", inci: "Cetearyl Alcohol", supplier: "s5", config: base(["vegetable"], ["EU", "UK", "US"]), palm: true, components: [C("Cetearyl Alcohol", "emulsifier", "vegetable", 100, 100, "67762-27-0")], stage: "supplier-input", age: 15, fill: 0.5 },
   {
     n: 148, material: "SUNSHIELD OMC", inci: "Ethylhexyl Methoxycinnamate", supplier: "s6", config: base(["petrochemical"], ["EU", "US", "CA", "CN"], { SF04: true }),
     components: [C("Ethylhexyl Methoxycinnamate", "UV filter", "petrochemical", 98, 100, "5466-77-3"), C("BHT", "antioxidant", "petrochemical", 0, 0.05, "128-37-0", true)],
-    stage: "review", age: 48, done: ["QM", "MIC"], decisions: { SAF: "rejected" }, rmesShare: 1,
-    findings: [{ crit: "S-B1", text: "Endocrine-activity data insufficient for the intended leave-on use concentration", blocking: true }],
+    stage: "review", age: 48, done: ["QM", "MIC"], decisions: { SAF: "rejected" },
     queries: [{ dept: "SAF", kind: "query", sec: "K4.1", label: "K4.1 › Toxicity data", q: "Please provide the endocrine screening studies referenced in the SDS section 11.", state: "cannot", reply: "These studies are proprietary to the registrant and cannot be shared." }],
   },
   { n: 149, material: "BISABOLOL Natural", inci: "Bisabolol", supplier: "s4", config: base(["vegetable"], ["EU"], { SF10: true }), components: [C("Bisabolol", "skin conditioning", "vegetable", 95, 98, "23089-26-1")], stage: "supplier-input", age: 4, fill: 0.1 },
   // Origin without rules (CCU): standard sections only, flagged in RMM's review; RMM asks the supplier directly.
   {
-    n: 150, material: "CARBONETHANOL 96", inci: "Alcohol", supplier: "s8", config: base(["ccu"], ["EU"]), components: [C("Alcohol", "solvent", "ccu", 96, 96.5, "64-17-5")], stage: "review", age: 24, rmesShare: 0.3, priority: "high",
+    n: 150, material: "CARBONETHANOL 96", inci: "Alcohol", supplier: "s8", config: base(["ccu"], ["EU"]), components: [C("Alcohol", "solvent", "ccu", 96, 96.5, "64-17-5")], stage: "review", age: 24, priority: "high",
     queries: [{ dept: "RMM", kind: "query", sec: "K2.3", field: "FLD-2.3-13", label: "K2.3 › CCU specification", q: "Your raw material is made from captured CO₂, for which Beiersdorf has no rules yet. Please describe the CO₂ source and the purification steps and add any certificate (e.g. ISCC PLUS).", state: "open" }],
   },
   { n: 151, material: "SILICA Sphere 5", inci: "Silica", supplier: "s2", config: base(["mineral"], ["EU", "US"]), components: [C("Silica", "absorbent", "mineral", 100, 100, "7631-86-9")], stage: "cancelled", age: 40 },
@@ -330,18 +323,7 @@ function play(state: AppState, spec: Spec): AppState {
     if (q.state === "returned") s = reviewResponse(s, reviewer, id, op.id, "return", "Not sufficient: we need the certificate itself, not an audit letter.", at(t0 + reviewSpan * 0.12));
   });
 
-  // RMES results, findings, decisions
-  const rm = caseNow().rmes;
-  if (rm) {
-    const share = spec.stage === "completed" || spec.stage === "final-release" ? 1 : spec.rmesShare ?? 0.5;
-    rm.criteria.forEach((cr, i) => {
-      if (i >= Math.round(rm.criteria.length * share)) return;
-      const reviewer = caseNow().reviews.find((r) => r.dept === cr.dept)?.assigneeId ?? `u-${cr.dept.toLowerCase()}`;
-      const res = cr.limit && !cr.limit.pass ? "negative" : cr.part === "A" ? "available" : cr.part === "B" ? "plausible" : "listed";
-      s = recordCriterion(s, reviewer, id, cr.id, res, res === "negative" ? `${cr.limit!.substance} ${cr.limit!.value} ${cr.limit!.unit} > limit ${cr.limit!.limit}` : "", at(cut.input + reviewSpan * (0.2 + (i / rm.criteria.length) * 0.6)));
-    });
-    for (const f of spec.findings ?? []) s = addFinding(s, "u-saf", id, f.crit, f.text, f.blocking, at(cut.input + reviewSpan * 0.4));
-  }
+  // The Safety / Regulatory decisions (the RMES itself is a read-only sheet derived from the case: nothing to record)
   const decide = (d: "SAF" | "REG", dec: "approved" | "rejected") => {
     const by = caseNow().reviews.find((r) => r.dept === d)?.assigneeId ?? `u-${d.toLowerCase()}`;
     s = rmesDecision(s, by, id, d, dec, dec === "rejected" ? "Safety assessment cannot be concluded for leave-on use without endocrine data" : "", at(cut.review - 0.04));

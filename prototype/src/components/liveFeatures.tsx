@@ -18,10 +18,12 @@ export interface LiveFeatures {
   deptReopen: boolean;
   /** A replacement contact takes over a deactivated contact's open cases (live: refused; the window says so). */
   replaceContact: boolean;
-  /** The RMES record is created the moment Safety or Regulatory gets a review task (prototype). Live, on that reviewer's
-   *  own next load (app-live/load.ts runLoadEffects), so the waiting text names that. The reviews start at the supplier's
-   *  completeness confirmation and the final-release request goes on the last completion in both (live: I-2 with E-A,
-   *  E-B; 22 Oct). */
+  /** The case's RMES record (header only since 28 Oct: the sheet itself is derived from the case, domain/rmesSheet.ts)
+   *  is created the moment Safety or Regulatory gets a review task (prototype). Live, on that reviewer's own next load
+   *  (app-live/load.ts runLoadEffects), so the waiting text (the RMES tab's record line and the decision card,
+   *  features/review/shared.tsx rmesRecordPending) names that: the decision and the completion need the record.
+   *  The reviews start at the supplier's completeness confirmation and the final-release request goes on the last
+   *  completion in both (live: I-2 with E-A, E-B; 22 Oct). */
   instantRmes: boolean;
 }
 

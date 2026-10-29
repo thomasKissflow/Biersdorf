@@ -1,5 +1,5 @@
-// Open points tab of the case page: every query, document request, additional section and finding question with its
-// full history. Only the person who raised a point can edit or close it (AS-08); every change reaches the supplier.
+// Open points tab of the case page: every query, document request and additional section (a legacy finding question
+// shows as a query) with its full history. Only the person who raised a point can edit or close it (AS-08); every change reaches the supplier.
 import { ArrowUpRight, MessagesSquare, Paperclip, Pencil, XCircle } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -32,7 +32,7 @@ export function OpenPointsTab({ c }: { c: CiqCase }) {
       <Card data-testid="empty-open-points">
         <EmptyState icon={<MessagesSquare size={28} />} title="No open points">
           {c.reviews.length
-            ? "RMM and the departments ask the supplier from their review: queries, document requests, additional sections and finding questions. Each one appears here with its full history."
+            ? "RMM and the departments ask the supplier from their review: queries, document requests and additional sections. Each one appears here with its full history."
             : "Open points are raised during the review, which starts when the supplier confirms completeness."}
         </EmptyState>
       </Card>

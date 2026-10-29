@@ -46,8 +46,8 @@ export interface RunPlan {
   keep: boolean;
   /** R4: each kept item's ledger stage names what the steps proved on it (R1's name its step as read back). */
   proofs?: boolean;
-  /** Offline: the fake I-2's Approve moves the case on (lib/world.ts caseStepsHeld): R4 rehearses 21 Oct evening, when
-   *  Thomas is back in Integration service (the held roles stay as read at 02:30). Live reads the roles. */
+  /** R4 rehearses 21 Oct evening, when Thomas is back in Integration service. Since 29 Oct S-OP's offline world holds
+   *  the case steps in every run (op.live.ts: I-2 creates the reviews after its Approve); live reads the roles. */
   caseStepsHeld?: boolean;
   /** The suite's own timeout at the 2.5 s pace, in minutes (default 90; op.live.ts scales it with KF_GAP_MS). R4's five
    *  points make ≈750 calls, ≈1000 after S-CASE R4 (whose items each load reads too): 120. */

@@ -1,0 +1,44 @@
+
+ RUN  v2.1.9 /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/prototype
+
+stdout | live/op.live.ts > S-OP: open points, every department in turn across runs (SPEC §4) > raise, edit, the supplier's answer, accept / return / close, the threads
+S-OP R2 (live): 4/15 pass; 126 Kissflow calls, 27 min (budget 294 min)
+    40  S1 supplier: the run's supplier with the self contact
+     9  S2 case: createCase, I-1 creates its CIQP Request
+    42  S3 completeness: the supplier fills in and confirms (portal), I-2
+    18  S4 reviews: I-2 starts the review tracks (E-A)
+    17  C1 clean-up: adopt late portal items, delete this suite's ledger items (withdraw, admin DELETE, GET 404)
+results: /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/kissflow-build/ciq-digital/tests-2026-10-21/results/R2/S-OP.json
+
+ ❯ live/op.live.ts (1 test | 1 failed) 1669431ms
+   × S-OP: open points, every department in turn across runs (SPEC §4) > raise, edit, the supplier's answer, accept / return / close, the threads 1669430ms
+     → expected [ Array(1) ] to deeply equal []
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  live/op.live.ts > S-OP: open points, every department in turn across runs (SPEC §4) > raise, edit, the supplier's answer, accept / return / close, the threads
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- Array []
++ Array [
++   "S4 reviews: I-2 starts the review tracks (E-A): fail (failed: I-2 started the case's reviews (E-A), RMM's among them; RMM's review track exists)",
++ ]
+
+ ❯ live/op.live.ts:605:21
+    603|     }
+    604|     const notPass = rec.steps.filter((x) => (w.live ? x.status === "fa…
+    605|     expect(notPass).toEqual([]);
+       |                     ^
+    606|   }, TIMEOUT_MS);
+    607| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  03:36:54
+   Duration  1670.95s (transform 594ms, setup 0ms, collect 1.27s, tests 1669.43s, environment 0ms, prepare 42ms)
+

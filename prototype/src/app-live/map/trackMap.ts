@@ -5,16 +5,16 @@
 // - CIQ Open Point: Thread_JSON {thread, edits} is the point's history as the raiser's screen last wrote it. An answer
 //   the supplier gave since (I-4 writes Response_* and OP_Progress "In progress") is appended here once (G14); the
 //   raiser's next write persists it.
-// - RMES Safety / Regulatory rows with their criteria and findings child tables; internal notes.
+// - RMES Safety / Regulatory rows (the record only; their legacy criteria and findings tables are not read); internal notes.
 // Roles that can't read an item fall back to the latest audit snapshot of the object (auditMap.ts); an item read only as
 // a list row (TrackCtx.sparse) takes the fields it lacks from that snapshot, its own values (its status first) still
 // winning (a sparse row must not beat a richer snapshot). Pure.
 import { DEPT_SHORT, INTERNAL_PERSONAS, REVIEW_TRACK_DEPTS } from "@/domain/catalog";
-import type { Confirmation, Finding, InternalNote, Message, OpenPoint, OpenPointEdit, OpenPointKind, ReviewDept, ReviewTrack, RmesCriterion, RmesRecord, RmesResult } from "@/domain/types";
-import { childRows, json, num, str, type RawItem } from "@/portal/data/raw";
-import { LIST, STEPS, TABLES } from "../ids";
+import type { Confirmation, InternalNote, Message, OpenPoint, OpenPointEdit, OpenPointKind, ReviewDept, ReviewTrack, RmesRecord } from "@/domain/types";
+import { json, num, str, type RawItem } from "@/portal/data/raw";
+import { LIST, STEPS } from "../ids";
 import type { OpRef, ReviewRef, RmesRef, TaskRef } from "../types";
-import type { CancelSnapshot, CaseSnapshots } from "./auditMap";
+import type { AuditRow, CancelSnapshot, CaseSnapshots } from "./auditMap";
 import { deptOf, nameFromEmail, reviewDeptOf, type Directory } from "./people";
 
 type Row = Record<string, unknown>;
@@ -38,7 +38,6 @@ export interface TrackCtx {
 const invert = <K extends string>(m: Record<K, string>): Record<string, K> => Object.fromEntries(Object.entries(m).map(([k, v]) => [v, k])) as Record<string, K>;
 const OP_KIND_OF = invert(LIST.opKind);
 const OP_OUTCOME_OF = invert(LIST.opOutcome);
-const RMES_RESULT_OF = invert(LIST.rmesResult);
 const DECISION_OF = invert(LIST.decision);
 const time = (iso: string) => {
   const t = Date.parse(iso);
@@ -384,83 +383,39 @@ export const reviewStepOf = (dept: ReviewDept): string => STEPS.review[dept];
 
 // ---------------------------------------------------------------------------------- RMES
 
-function criterionOf(r: Row, dept: "SAF" | "REG", x: TrackCtx): RmesCriterion | undefined {
-  const id = str(r, "Criteria_Code");
-  if (!id) return undefined;
-  const resultText = str(r, "Criteria_Result");
-  const result: RmesResult | undefined = RMES_RESULT_OF[resultText];
-  if (resultText && !result) x.notes.push(`${x.caseId} RMES ${id}: the result "${resultText}" has no equivalent here; it is shown as not recorded.`);
-  const part = /([ABCD])\s*$/.exec(str(r, "Criteria_Part"))?.[1] as RmesCriterion["part"] | undefined;
-  const value = num(r, "Criteria_Reported_Value");
-  const limit = num(r, "Criteria_Limit_Value");
-  const by = x.dir.userField(r, "Criteria_Recorded_By", { dept });
-  return {
-    id,
-    part: part ?? "A",
-    dept,
-    title: str(r, "Criteria_Title"),
-    source: {
-      sectionId: str(r, "Criteria_Source_Section_Key") || "GEN",
-      ...(str(r, "Criteria_Source_Field_Key") ? { fieldId: str(r, "Criteria_Source_Field_Key") } : {}),
-      version: 1,
-      label: str(r, "Criteria_Applicability_Basis") || str(r, "Criteria_Source_Section_Key"),
-    },
-    ...(result ? { result } : {}),
-    ...(str(r, "Criteria_Comment") ? { comment: str(r, "Criteria_Comment") } : result ? { comment: "" } : {}),
-    ...(by ? { by } : {}),
-    ...(str(r, "Criteria_Recorded_At") ? { at: str(r, "Criteria_Recorded_At") } : {}),
-    ...(value !== undefined && limit !== undefined
-      ? { limit: { substance: str(r, "Criteria_Source_Value_Text"), value, unit: str(r, "Criteria_Reported_Unit"), limit, limitSetVersion: str(r, "Criteria_Limit_Set_Version"), pass: str(r, "Criteria_Limit_Pass") === LIST.yes } }
-      : {}),
-    ...(str(r, "Criteria_AI_Suggestion_Text") ? { aiSuggestion: str(r, "Criteria_AI_Suggestion_Text") } : {}),
-  };
-}
-
-function findingOf(r: Row, dept: "SAF" | "REG"): Finding | undefined {
-  const id = str(r, "Findings_Key");
-  if (!id) return undefined;
-  return {
-    id,
-    criterionId: str(r, "Findings_Criterion_Code"),
-    dept,
-    text: str(r, "Findings_Text"),
-    blocking: str(r, "Findings_Blocking") === LIST.yes,
-    status: str(r, "Findings_State").trim().toLowerCase() === "closed" ? "closed" : "open",
-    ...(str(r, "Findings_Linked_OP_Key") ? { openPointId: str(r, "Findings_Linked_OP_Key") } : {}),
-  };
-}
-
-/** The case's RMES record from the rows this role can read (SAF and/or REG); absent when none (the RMES card then
- *  stays hidden, as for RMM and the other departments). Voided rows are skipped; of several rows the newest counts. */
-export function rmesOf(rows: { dept: "SAF" | "REG"; item: RawItem }[], x: TrackCtx): { rmes?: RmesRecord; refs: RmesRef[] } {
+/** The case's RMES record from the rows this role can read (SAF and/or REG); absent when none (as for RMM and the
+ *  other departments). Voided rows are skipped; of several rows the newest counts. Only the record itself (its time,
+ *  the row's index entry): the RMES is a read-only sheet derived from the case (28 Oct), so the criteria and findings a
+ *  legacy row may still hold are not read and never block a review. `history` is the case's audit rows: a form LIST
+ *  row has no _created_at or _modified_at (live, 29 Oct), and the RMES forms are list-read only, so a row's time is its
+ *  own (a full read) else its rmes.saved creation row's Event_At. */
+export function rmesOf(rows: { dept: "SAF" | "REG"; item: RawItem }[], x: TrackCtx, history: readonly AuditRow[] = []): { rmes?: RmesRecord; refs: RmesRef[] } {
   const refs: RmesRef[] = [];
-  const criteria: RmesCriterion[] = [];
-  const findings: Finding[] = [];
   const created: string[] = [];
+  // per RMES item: its first rmes.saved creation row, and its latest rmes.saved row of any kind (its last change)
+  const madeAt = new Map<string, string>();
+  const savedAt = new Map<string, string>();
+  for (const r of history) {
+    if (r.code !== "rmes.saved" || !r.objectItemId || !validIso(r.at)) continue;
+    if (!savedAt.has(r.objectItemId) || time(r.at) > time(savedAt.get(r.objectItemId)!)) savedAt.set(r.objectItemId, r.at);
+    if (str(r.row, "Object_State") === "Created" || r.snap?.audit.some((e) => e.action === "RMES record created"))
+      if (!madeAt.has(r.objectItemId) || time(r.at) < time(madeAt.get(r.objectItemId)!)) madeAt.set(r.objectItemId, r.at);
+  }
+  const createdOf = (it: RawItem) => str(it, "_created_at") || madeAt.get(it._id) || "";
+  const changedOf = (it: RawItem) => str(it, "_modified_at") || savedAt.get(it._id) || createdOf(it);
+  // newest first; rows with no time at all keep one order on every load (by item id), never the list's
+  const newest = (a: RawItem, b: RawItem) => time(changedOf(b)) - time(changedOf(a)) || (a._id < b._id ? 1 : a._id > b._id ? -1 : 0);
   for (const dept of ["REG", "SAF"] as const) {
-    const mine = rows.filter((r) => r.dept === dept && str(r.item, "RMES_Voided") !== LIST.yes).sort((a, b) => time(str(b.item, "_modified_at") || str(b.item, "_created_at")) - time(str(a.item, "_modified_at") || str(a.item, "_created_at")));
+    const mine = rows.filter((r) => r.dept === dept && str(r.item, "RMES_Voided") !== LIST.yes).sort((a, b) => newest(a.item, b.item));
     if (!mine.length) continue;
     if (mine.length > 1) x.notes.push(`${x.caseId}: ${mine.length} ${DEPT_SHORT[dept]} RMES records exist; the newest is shown.`);
     const it = mine[0]!.item;
-    created.push(str(it, "_created_at"));
-    const ref: RmesRef = { caseId: x.caseId, dept, itemId: it._id, criteriaRows: {}, findingRows: {} };
-    for (const r of childRows(it, TABLES[dept].criteria, "Criteria_Code")) {
-      const cr = criterionOf(r, dept, x);
-      if (!cr) continue;
-      criteria.push(cr);
-      if (str(r, "_id")) ref.criteriaRows[cr.id] = str(r, "_id");
-    }
-    for (const r of childRows(it, TABLES[dept].findings, "Findings_Key")) {
-      const f = findingOf(r, dept);
-      if (!f) continue;
-      findings.push(f);
-      if (str(r, "_id")) ref.findingRows[f.id] = str(r, "_id");
-    }
-    refs.push(ref);
+    created.push(createdOf(it));
+    refs.push({ caseId: x.caseId, dept, itemId: it._id, criteriaRows: {}, findingRows: {} });
   }
   if (!refs.length) return { refs };
   const createdAt = created.filter(validIso).sort((a, b) => time(a) - time(b))[0] ?? "";
-  return { rmes: { createdAt, reviewVersion: 1, criteria, findings }, refs };
+  return { rmes: { createdAt, reviewVersion: 1, criteria: [], findings: [] }, refs };
 }
 
 // ---------------------------------------------------------------------------------- internal notes

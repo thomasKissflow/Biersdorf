@@ -260,13 +260,15 @@ export interface ReviewTrack {
   /** The completion a reopen undid (a reviewer's own reopen, a late activation, or the supplier changing a section this
    *  department owns, Thomas 15 Oct): the "changed since your review" markers keep counting from it. */
   lastCompletedAt?: string;
-  /** Only Safety and Regulatory record their internal RMES decision when completing (REQ-RMES-013). */
+  /** Only Safety and Regulatory record their internal decision when completing (REQ-RMES-013); it sits outside the
+   *  RMES sheet. */
   decision?: "approved" | "rejected";
   decisionReason?: string;
   /** RMM track only: RMM's explicit choice to continue to the final release despite a Rejected decision (AS-02). */
   continueAfterRejection?: { note: string; by: string; at: string; depts: ReviewDept[] };
 }
 
+/** "finding": a question raised from a retired RMES finding (legacy data only; shown to the supplier as a question). */
 export type OpenPointKind = "query" | "document-request" | "additional-part" | "finding";
 export type OpenPointStatus = "open" | "in-progress" | "closed";
 
@@ -365,6 +367,9 @@ export interface Finding {
   openPointId?: string;
 }
 
+/** The case's RMES record: since BDF's e-mail of 28 Oct only the record itself (REQ-PROC-021: the case and its time).
+ *  The sheet's 8 fields are derived from the case (rmesSheet.ts); `criteria` and `findings` are always [] and kept for
+ *  data compatibility: a legacy record's are ignored and never block a review. */
 export interface RmesRecord {
   createdAt: string;
   /** @deprecated There is no review version (BRM v2 REQ-PROC-016): kept for data compatibility, never shown. */

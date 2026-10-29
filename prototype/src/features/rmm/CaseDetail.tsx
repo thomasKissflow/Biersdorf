@@ -248,7 +248,7 @@ function StatusStrip({ c, onOpenDocument }: { c: CiqCase; onOpenDocument: () => 
 }
 
 /**
- * A Rejected RMES decision RMM has not answered yet (AS-02): internal, never shown to the supplier. RMM chooses in its
+ * A Rejected Safety / Regulatory decision RMM has not answered yet (AS-02): internal, never shown to the supplier. RMM chooses in its
  * review ("Continue to final release" with a note) or cancels the case here.
  */
 function RejectionBanner({ c, onCancel }: { c: CiqCase; onCancel: () => void }) {

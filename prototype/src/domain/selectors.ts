@@ -76,6 +76,10 @@ export const isSetByBdf = (c: Pick<CiqCase, "liveScope">, fieldId: string) => c.
 /** The manufacturer and production site as the supplier answered them in GEN (FLD-GEN-004/-005), else the case's start
  *  values (RMM starts a case with the supplier as manufacturer and no site). */
 export const manufacturerOf = (c: Pick<CiqCase, "answers" | "manufacturer">): string => (typeof c.answers["FLD-GEN-004"] === "string" && c.answers["FLD-GEN-004"].trim() ? c.answers["FLD-GEN-004"].trim() : c.manufacturer);
+/** The case's supplier as Beiersdorf set it at case start (FLD-GEN-002), else the supplier master's name, else the name
+ *  the case started with: a released document and the RMES must not follow later edits of the master. "" when none. */
+export const caseSupplierName = (s: Pick<AppState, "suppliers">, c: Pick<CiqCase, "answers" | "supplierId" | "manufacturer">): string =>
+  String(c.answers["FLD-GEN-002"] ?? "").trim() || s.suppliers.find((x) => x.id === c.supplierId)?.name || c.manufacturer;
 export const siteOf = (c: Pick<CiqCase, "answers" | "site">): string => (typeof c.answers["FLD-GEN-005"] === "string" && c.answers["FLD-GEN-005"].trim() ? c.answers["FLD-GEN-005"].trim() : c.site);
 
 /** Sections the supplier must work on (mandatory or optional), in questionnaire order. */
@@ -264,18 +268,17 @@ export function isOverdue(due: string, at = nowIso()): boolean {
 }
 
 /**
- * Everything that blocks a review track's completion (REQ-PROC-036, REQ-RMES-006/-009). For RMM these are only its
- * own open points; the undefined-origin flag (rmmFlags) is informational and never blocks.
+ * Everything that blocks a review track's completion (REQ-PROC-036): the track's own open points, and for Safety and
+ * Regulatory their Approved / Rejected decision. The RMES itself never blocks (a read-only sheet since BDF's e-mail of
+ * 28 Oct; criteria or findings on a legacy record are ignored). For RMM the undefined-origin flag (rmmFlags) is
+ * informational and never blocks.
  */
 export function reviewBlockers(c: CiqCase, dept: ReviewDept): string[] {
   const out: string[] = [];
   for (const p of c.openPoints.filter((x) => x.dept === dept && unresolved(x))) {
     out.push(`${p.id} · ${p.kind.replace("-", " ")} on ${p.ref.label} (${p.status === "open" ? "waiting for the supplier" : "answered, waiting for a decision"})`);
   }
-  if ((dept === "SAF" || dept === "REG") && c.rmes) {
-    for (const cr of c.rmes.criteria.filter((x) => x.dept === dept && !x.result)) out.push(`RMES criterion without result: ${cr.title}`);
-    // Every open finding blocks its department's completion (REQ-PROC-036, REQ-RMES-009).
-    for (const fd of c.rmes.findings.filter((x) => x.dept === dept && x.status === "open")) out.push(`Open finding: ${fd.text}`);
+  if (dept === "SAF" || dept === "REG") {
     const tr = c.reviews.find((r) => r.dept === dept);
     if (tr && !tr.decision) out.push(`Final ${DEPT_SHORT[dept]} decision (Approved / Rejected) not yet recorded`);
   }
@@ -430,7 +433,7 @@ export const canReactivate = (c: CiqCase, at = nowIso()) => c.phase === "cancell
 export type TrackView = ReviewTrack["status"] | "ended";
 export const trackView = (c: Pick<CiqCase, "phase">, r: Pick<ReviewTrack, "status">): TrackView => (c.phase === "cancelled" && r.status !== "completed" ? "ended" : r.status);
 
-/** The tracks whose internal RMES decision is Rejected (AS-02: the case is flagged for RMM). */
+/** The tracks whose internal Safety / Regulatory decision is Rejected (AS-02: the case is flagged for RMM). */
 export const rejectedDepts = (c: CiqCase): ReviewDept[] => c.reviews.filter((r) => r.decision === "rejected").map((r) => r.dept);
 
 /**

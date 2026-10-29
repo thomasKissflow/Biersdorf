@@ -14,6 +14,7 @@ import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { readFileSync, writeFileSync } from "node:fs";
+import { LEAK_TERMS, appSupplierBundle, leakHits } from "./leak-scan.mjs";
 
 const require = createRequire(import.meta.url);
 const PW = "/Users/thomas/Documents/Kissflow Projects/POC/Promotion Management/app/node_modules/playwright-core";
@@ -498,6 +499,17 @@ const RELEASE_LOCKED = "Your questionnaire is locked because Beiersdorf has requ
 const editable = (t) => t.ui.locator('[data-testid="q-root"] input:not([type="checkbox"]):not([type="file"]):not([disabled]):not([readonly]), [data-testid="q-root"] textarea:not([disabled]):not([readonly]), [data-testid^="q-upload-"] input[type="file"]:not([disabled])').count();
 
 const SCENARIOS = {
+  "bundle-leak": () =>
+    scenario("bundle-leak", async (t) => {
+      // 28 Oct (BDF: suppliers have no access to the RMES in any form): the built portal and the supplier-facing parts
+      // of the live app carry no RMES text, none of the retired criteria RMES and none of the sheet's labels
+      // (scripts/leak-scan.mjs; counts only, never the text around a hit)
+      const portal = leakHits(UI);
+      t.check(`the built portal (index.html, ${(UI.length / 1024).toFixed(0)} KB) holds none of the ${LEAK_TERMS.length} internal RMES terms`, portal.length === 0, portal);
+      const app = await appSupplierBundle();
+      const appHits = leakHits(app, { fieldIds: true });
+      t.check("the live app's supplier mails and questions history hold none of them either", app.length > 10000 && appHits.length === 0, appHits.length ? appHits : app.length);
+    }),
   outside: () =>
     scenario("outside", async (t) => {
       const t0 = Date.now();

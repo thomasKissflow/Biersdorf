@@ -57,7 +57,7 @@ Without that co-assignment, the integration can't submit a supplier-held step. T
 | CIQ Review | Process | The case's screen starts the department reviews: the first Beiersdorf user who opens a case after completeness creates the missing reviews, keyed by `Review_Key`, so a repeat creates nothing [decision, option c]. Grant **Init** to RMM (completeness, late activation, reopen). Steps as built | app session |
 | CIQ Open Point | Process | **The raiser starts it in the screen** (no service). Grant **Init** to RMM and the 5 reviewer roles; `Raiser_Assignee` = the raiser at Start | app session |
 | CIQ Audit Event | Form | **Written by the screens** (D-7). Add `Ref_Flow_Id`, `Ref_Item_Id`, `Ref_Activity_Instance_Id` (Text) if they are missing. Every acting role gets create; Delete only if S-6 shows Member-without-Delete is impossible | app session |
-| CIQ RMES Safety / Regulatory | Form | The Safety or Regulatory reviewer's screen creates the row on the first open of its review. Grants stay: own department only (V-53) | app session |
+| CIQ RMES Safety / Regulatory | Form | The Safety or Regulatory reviewer's screen creates the row on the first open of its review. Grants stay: own department only (V-53). **28 Oct (BDF's e-mail, Thomas: "do the changes in app and portal"): RMES = derived 8-field sheet; record header-only; decision on CIQ Review.** The sheet (trade name FLD-GEN-001, supplier FLD-GEN-002, manufacturer FLD-GEN-004; per K2.1 component INCI, %, CAS #, EC #, Source of origin and its K2.3 free text) is computed from CIQ Case by `prototype/src/domain/rmesSheet.ts` and stored nowhere. The row holds only RMES_Key, Case_Code, Case_Item_Id, Cycle_No and RMES_Voided (the REQ-PROC-021 record); its Criteria and Findings tables stay unused, and legacy rows never block. The Approved/Rejected decision stays on CIQ Review `RMES_Decision` (Mandatory at the SAF/REG steps); `RMES_Gaps` = decision missing ? 1 : 0, so `Review_Gate` is unchanged. No flow, field, permission or grant change | app session |
 | CIQ Supplier, CIQ Config Version, CIQ Scope Run, CIQ Internal Note | Form | Grants as v5 §6. Scope Run rows are written by the screen at completeness | app session |
 | CIQ Case Data, CIQ Service Request, CIQ Mail Outbox (+ its integration, off) | Form | Not used (D-13): grants go to the Case administrator only | app session |
 | CIQ Case - Thomas | Process | untouched (D-14) | — |
@@ -119,7 +119,7 @@ The webhook URLs go into the Settings row (`SET:current` → `webhooks`) once Th
 
 `op.raised` (round 1) stays I-3, a Process trigger on the open point's Start.
 
-**Audit-row codes** (the history; written by the screens; no trigger): `case.created`, `case.cancelled`, `case.reactivated`, `op.raised`, `op.round`, `op.edited`, `op.accepted`, `op.returned`, `op.notaccepted`, `op.closed`, `review.started`, `review.completed`, `review.reopened`, `review.reassigned`, `release.requested`, `rmes.saved`, `note.added`, `supplier.changed`, `config.published`.
+**Audit-row codes** (the history; written by the screens; no trigger): `case.created`, `case.cancelled`, `case.reactivated`, `op.raised`, `op.round`, `op.edited`, `op.accepted`, `op.returned`, `op.notaccepted`, `op.closed`, `review.started`, `review.completed`, `review.reopened`, `review.reassigned`, `release.requested`, `rmes.saved` (since 28 Oct: the RMES record created, or the Safety / Regulatory decision), `note.added`, `supplier.changed`, `config.published`.
 
 ### 4.2 The supplier's data in the app (added 20 Oct)
 

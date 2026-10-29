@@ -60,7 +60,7 @@
 > - **V-33:** one outbox, in the app.
 > - **V-35:** reminders and escalations are sent by the service.
 > - **V-52:** a default reviewer per department in the Settings configuration row.
-> - **V-53:** RMES is readable only by its own department, plus the Auditor (both forms) and the Case administrator.
+> - **V-53:** RMES is readable only by its own department, plus the Auditor (both forms) and the Case administrator. (28 Oct: the RMES is now a derived 8-field sheet with a header-only record, §4.9.)
 > - **V-03 / V-04:** the service runs locally in dev. For UAT it runs on AWS Lambda (else Google Apps Script) under a dedicated "CIQ Integration Service" user.
 > - **V-07:** the request stays with the supplier at "keep the CIQ up to date" for good.
 >
@@ -425,6 +425,18 @@ Track_Key (`…|v1|SAF|t1`), Track_Case (Reference → CIQ Case), Case_Code, Cyc
 
 ### 4.9 RMES (app Forms)
 
+> **28 Oct 2026: the RMES is a derived 8-field sheet; the criteria and findings design below is retired.** BDF's e-mail of 28 Oct scoped the MVP RMES to "exactly" 8 fields, "no more"; Thomas: "do the changes in app and portal … follow the recommendation". What is built (`plan-v6-native.md` §3.2):
+> - **The sheet.** One read-only sheet, the same for Safety and Regulatory, filled automatically from the CIQ, each field with its CIQ field id as the source reference (REQ-PROC-022):
+>   - header: Raw material / tradename = FLD-GEN-001 (else the case's material name, never the case id); Supplier = FLD-GEN-002 (else the supplier master, as the final document); Manufacturer = FLD-GEN-004 only (never the supplier-name fallback of `manufacturerOf()`); a supplier's "Cannot provide" shows as such;
+>   - composition, one row per K2.1 component in order: INCI (FLD-2.1-001), % (FLD-2.1-007, the min–max range; one value when min = max), CAS # (FLD-2.1-002), EC # (FLD-2.1-003, may be a REACH no.), Source of origin (FLD-2.3-01) and its Free text: the origin's K2.3 specification (petrochemical FLD-2.3-11, mineral -12, CCU -13, polymer -14, waste -15, chemical recycling -16; vegetable / animal FLD-2.1-101 Part(s) + FLD-2.3-10 Country). The CIQ asks the free text once per origin type, and once for vegetable and animal together, so rows of one origin, and vegetable with animal rows, share it (open question to BDF: these fields or FLD-A1-102 Feedstock; per component?).
+>   - Not shown: Process ID / RMT ID / IRMA ID and Declaration (not yellow in BDF's template); no criteria, limit checks, AI suggestion or findings.
+> - **Derived, not stored.** `prototype/src/domain/rmesSheet.ts` `rmesSheet()` computes it from CIQ Case (`Trade_Name`, `BDF_Set_JSON`, `Answers_JSON`, `Components_JSON`), the same in the prototype and the live app; it follows every Part 2 change and is frozen with the case after the final release. A role that cannot read the case sees one notice instead of the fields.
+> - **The record.** `CIQ RMES Safety` / `CIQ RMES Regulatory` keep one row per case and department, created header-only by the reviewer's screen (RMES_Key, Case_Code, Case_Item_Id, Cycle_No, RMES_Voided; no child-table rows): the REQ-PROC-021 record with the case id and time. The Criteria and Findings child tables stay in the forms, unused; legacy rows are ignored and never block.
+> - **The decision** (outside the RMES; REQ-PROC-021: RMES is "not … an approval step"): Approved/Rejected on CIQ Review `RMES_Decision` + `RMES_Decision_Reason`, Mandatory at the SAF/REG steps. `RMES_Gaps` = decision missing ? 1 : 0, so `Review_Gate = Open_Count+RMES_Gaps=0` is unchanged.
+> - **Who sees it:** Safety and Regulatory reviewers only (V-53 grants unchanged); not RMM's screens; never the supplier (the portal bundle carries no RMES text; `prototype/scripts/leak-scan.mjs`).
+> - **Retired / deferred:** A19–A22 below, the impact flags, the "RMES criteria" config kind (`RMES:current` stays in the configuration, unused) and the RMES export of A29. BDF's e-mail is the MVP deferral of REQ-RMES-002…012 and -016…-020 (`kissflow-build/BRM-v2-COVERAGE.md`).
+> - No Kissflow flow, field, permission or grant changed.
+
 - **A18 `CIQ RMES Record`:** RMES_Key (`…|v1`; exactly one per case × cycle), RMES_Case (Ref → CIQ Case), Case_Code, Cycle_No, Review_Version_Key, RMES_Config_Key, Limits_Config_Key, RuleSet_Key, Created_At, SAF_Decision_Hash, REG_Decision_Hash, Export_Doc_Key. Created at intake when SAF or REG is activated, by an RMM, Safety or Regulatory session holding the G4b lease (§9). If a duplicate appears anyway, the row with the earliest `_created_at` wins and later ones are marked void, never deleted.
 - **A19 / A20 `CIQ RMES Safety Result` / `CIQ RMES Regulatory Result`** (identical schemas): Result_Key (`…|v1|S-A1`), RMES_Key, Case_Code, Cycle_No, Criterion_Code, RMES_Part (Select `CIQ RMES Part`), Criterion_Title (copied, so later template edits never change history), Applicable (Yes/No; N.A. rows stay visible, REQ-RMES-004), Applicability_Basis (Text: Rule / Override), Override_Reason, Prefill_Value, Source_Section_Key, Source_Field_Key, Source_Row_Id, Source_Doc_Id, Source_Doc_Version, Source_Section_Rev (REQ-RMES-005), Criterion_Result (Select `CIQ RMES Result`), Result_Comment, Recorded_By (User), Recorded_At, Result_Rev (Number), Reported_Value, Reported_Unit (Select `CIQ Unit`), Limit_Value, Limit_Comparator (Text), Limits_Version_Label, Limit_Pass (Yes/No), Impact_Resolution (Select `CIQ Impact Resolution`: Reopened / No impact confirmed), Impact_Note, AI_Suggestion_Key, Is_Pending (formula `IF(Applicable="Yes", IF(ISBLANK(Criterion_Result),1,0), 0)`).
   - **Impacted is derived, not stored** (REQ-RMES-012): a result is impacted when its `Source_Section_Rev` is lower than the latest accepted revision of that section. The accepting department (say QM on K2.2) has no edit right on Safety rows, so a stored flag would need a cross-department write; deriving it needs none. The owner resolves it on its own row (new `Result_Rev`, or "No impact confirmed").
@@ -447,7 +459,7 @@ Payload shapes:
 | Template | Ordered manifest `[{sectionKey, sectionDefKey, hash, partGroup}]` |
 | Rule set | `[{ruleCode, configQuestion, condition, outcome, targets:{sections,evidence}, departments, precedence, basis, note, active}]`. Seed: R-00…R-121 from `proto:rules.ts`; R-111 Turkey in RS-2026.2 |
 | Section ownership | `{sectionKey: {lead, co[], coReviewMode:"Read only"\|"Track", informed[]}}`. K2.2 = Safety lead, QM co (REQ-CFG-006) |
-| RMES criteria | `[{criterionCode, part, dept, title, resultKind, applicability, prefill:[{from,key}], limitParams[], order, active}]`. Seed: `proto:actions.ts rmesCriteria` |
+| RMES criteria | **Obsolete since 28 Oct** (the criteria RMES is retired, §4.9; `RMES:current` stays in the configuration, unused). Was: `[{criterionCode, part, dept, title, resultKind, applicability, prefill:[{from,key}], limitParams[], order, active}]` |
 | Limit set | `[{param, substance, fieldKey, comparator, value, unit, method, loqRule, autoBlockingFinding}]`. Seed: As ≤ 0.5, Cd ≤ 0.1, Cr ≤ 5.0 mg/kg; MOAH ≤ 1.0 mg/kg |
 | Text bundle | `{textKey: {audience:"supplier"\|"internal", lang:{en,de}}}`: confirmation, notification and PDF texts |
 | Reminders | `proto:` `ReminderSetting[]` |

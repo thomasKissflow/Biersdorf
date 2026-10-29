@@ -3,7 +3,7 @@
 // the phase rules of spec §1) return the state unchanged plus a refusal toast, so nothing fails silently and the store
 // shows no success message. Every relevant step also sends its simulated mail (mail.ts).
 
-import { CONFIG_BY_ID, DEPT_SHORT, HEAVY_METAL_LIMITS, INTERNAL_PERSONAS, LIMIT_SET_VERSION, ORIGIN_LABEL, fieldOf, sectionOf } from "./catalog";
+import { CONFIG_BY_ID, DEPT_SHORT, INTERNAL_PERSONAS, ORIGIN_LABEL, fieldOf, sectionOf } from "./catalog";
 import { currentPair, draftPair, publishDraft } from "./configActions";
 import { audit, getCase, logEvent, mapCase, refuse, setPhase, toast } from "./core";
 import { buildFinalDocument } from "./finalDocument";
@@ -57,8 +57,6 @@ import type {
   ReminderSetting,
   ReviewDept,
   ReviewTrack,
-  RmesCriterion,
-  RmesResult,
   ScopeItem,
 } from "./types";
 
@@ -414,7 +412,7 @@ export function saveConfig(s: AppState, by: string, caseId: string, patch: Confi
       at,
     );
   }
-  return refreshRmes(next, caseId, at);
+  return next;
 }
 
 /**
@@ -458,7 +456,7 @@ export function extendScope(s: AppState, by: string, caseId: string, sectionId: 
     { dept: asker, kind: "additional-part", ref: { sectionId, label: `${codeOf(sectionId, c, s)} · ${secOf(s, c, sectionId)?.title ?? ""}` }, question: `Please complete the additional section ${codeOf(sectionId, c, s)}.`, justification, dueDate: new Date(Date.parse(at) + 14 * DAY_MS).toISOString() },
     at,
   );
-  return toast(refreshRmes(next, caseId, at), "success", `${codeOf(sectionId, c, s)} added. The supplier has a task to complete it.`);
+  return toast(next, "success", `${codeOf(sectionId, c, s)} added. The supplier has a task to complete it.`);
 }
 
 /**
@@ -514,7 +512,7 @@ export function setAnswer(s: AppState, by: string, caseId: string, fieldId: stri
   const next = mapCase(s, caseId, (x) => ({ ...x, answers: { ...x.answers, [fieldId]: value }, answeredBy: { ...x.answeredBy, [fieldId]: { by, at } } }));
   if (!isPart2(c!)) return next;
   const sectionId = fieldIn(s, c, fieldId)?.sectionId ?? "GEN";
-  return refreshRmes(part2Change(next, by, caseId, at, sectionId, "Changed answer after completeness", `${label}: “${short(prev ?? "—")}” → “${short(value ?? "—")}”`), caseId, at);
+  return part2Change(next, by, caseId, at, sectionId, "Changed answer after completeness", `${label}: “${short(prev ?? "—")}” → “${short(value ?? "—")}”`);
 }
 
 export function setComponents(s: AppState, by: string, caseId: string, rows: ComponentRow[], at = nowIso()): AppState {
@@ -599,70 +597,13 @@ export function uploadDocument(
   return { state, docId };
 }
 
-// RMES criteria templates (Parts A–D). The real template is still to be shared by BDF (G-07).
-function rmesCriteria(c: CiqCase): RmesCriterion[] {
-  const v = c.reviewVersion;
-  const has = (sec: string) => c.scope.some((x) => x.sectionId === sec && x.applicability !== "na");
-  const list: RmesCriterion[] = [
-    { id: "R-A1", part: "A", dept: "REG", title: "INCI and CAS of every component are consistent", source: { sectionId: "K2.1", version: v, label: "K2.1 composition table" } },
-    { id: "R-A2", part: "A", dept: "REG", title: "EU REACH registration status listed for each substance", source: { sectionId: "A10", version: v, label: "Annex 10" } },
-    { id: "R-B1", part: "B", dept: "REG", title: "Status under Reg. 1223/2009 Annexes III–VI", source: { sectionId: "K6.5", version: v, label: "K6.5" } },
-    { id: "R-B2", part: "B", dept: "REG", title: "Animal testing statement available (Art. 11(2)(e))", source: { sectionId: "K6.7", version: v, label: "K6.7" } },
-    { id: "S-A1", part: "A", dept: "SAF", title: "Byproducts and contaminants within BDF limits", source: { sectionId: "K2.2", fieldId: "FLD-A14-101", version: v, label: "K2.2 heavy metals" } },
-    { id: "S-B1", part: "B", dept: "SAF", title: "Toxicological profile available and plausible", source: { sectionId: "K4.1", version: v, label: "K4.1" } },
-    { id: "S-C1", part: "C", dept: "SAF", title: "Nanomaterial status plausible, justification given", source: { sectionId: "K6.9", version: v, label: "K6.9" } },
-  ];
-  if (has("A4")) list.push({ id: "S-C2", part: "C", dept: "SAF", title: "MOAH value assessed against BDF threshold", source: { sectionId: "A4", fieldId: "FLD-A4-101", version: v, label: "Annex 4 MOAH" } });
-  if (has("A1")) list.push({ id: "R-C1", part: "C", dept: "REG", title: "Pesticide analysis available or justified", source: { sectionId: "A1", fieldId: "FLD-A1-201", version: v, label: "Annex 1 pesticides" } });
-  if ((c.config.SF11 ?? []).some((m) => m !== "EU")) list.push({ id: "R-D1", part: "D", dept: "REG", title: "Listed in the chemical inventories of all target markets", source: { sectionId: "A13", version: v, label: "Annex 13" } });
-  list.push({ id: "S-D1", part: "D", dept: "SAF", title: "Overall safety conclusion documented", source: { sectionId: "K4.1", version: v, label: "Safety summary" } });
-  // Limit checks from structured answers (REQ-RMES-008)
-  const hm = HEAVY_METAL_LIMITS.map((m) => ({ m, v: c.answers[m.fieldId] })).filter((x) => typeof x.v === "number");
-  const s1 = list.find((x) => x.id === "S-A1")!;
-  if (hm.length) {
-    const worst = hm.reduce((a, b) => ((b.v as number) / b.m.limit > (a.v as number) / a.m.limit ? b : a));
-    s1.limit = { substance: worst.m.substance, value: worst.v as number, unit: worst.m.unit, limit: worst.m.limit, limitSetVersion: LIMIT_SET_VERSION, pass: (worst.v as number) <= worst.m.limit };
-  }
-  const moah = c.answers["FLD-A4-101"];
-  const s2 = list.find((x) => x.id === "S-C2");
-  if (s2 && typeof moah === "number") s2.limit = { substance: "MOAH", value: moah, unit: "mg/kg", limit: 1.0, limitSetVersion: LIMIT_SET_VERSION, pass: moah <= 1.0 };
-  const tox = list.find((x) => x.id === "S-B1")!;
-  tox.aiSuggestion = "AI suggestion: the uploaded SDS lists acute oral toxicity LD50 > 2000 mg/kg (rat) on page 4; no skin sensitisation data found. Please verify.";
-  return list;
-}
+// The RMES (BDF's e-mail of 28 Oct: exactly 8 fields, "no more") is a read-only sheet derived from the case
+// (rmesSheet.ts). The criteria template (Parts A–D), its limit checks and AI suggestion, the findings and the Part 2
+// refresh that reopened reviews are retired; the record (c.rmes) stays as the Safety / Regulatory record of the case
+// (REQ-PROC-021: case id and time), and legacy criteria or findings on it are ignored.
 
-/**
- * Keeps the RMES record current in Part 2 (REQ-RMES-012): criteria that now apply (e.g. MOAH after a late Annex 4)
- * are added, and the limit checks follow the current answers. Recorded results, comments and who/when stay as they are.
- */
-function refreshRmes(s: AppState, caseId: string, at: string): AppState {
-  const c = getCase(s, caseId);
-  if (!c?.rmes || !isPart2(c)) return s;
-  const fresh = rmesCriteria(c);
-  const stored = c.rmes.criteria;
-  const criteria: RmesCriterion[] = [
-    ...stored.map((old) => {
-      const f = fresh.find((x) => x.id === old.id);
-      if (!f) return old;
-      const y: RmesCriterion = { ...old };
-      if (f.limit) y.limit = f.limit;
-      else delete y.limit;
-      return y;
-    }),
-    ...fresh.filter((f) => !stored.some((o) => o.id === f.id)),
-  ];
-  const added = criteria.filter((x) => !stored.some((o) => o.id === x.id));
-  if (JSON.stringify(criteria) === JSON.stringify(stored)) return s;
-  const next = mapCase(s, caseId, (x) => {
-    const y: CiqCase = { ...x, rmes: { ...x.rmes!, criteria } };
-    return added.length ? audit(y, "system", at, "Updated RMES record", `Criteria added because the scope grew: ${added.map((a) => `${a.id} ${a.title}`).join("; ")}.`) : y;
-  });
-  // A new criterion needs a result before its department may complete (REQ-RMES-006): a completed Safety or
-  // Regulatory review that owns one is reopened (mail; a pending release request is withdrawn).
-  const reopen = [...new Set(added.map((a) => a.dept))].filter((d) => c.reviews.find((r) => r.dept === d)?.status === "completed");
-  if (!reopen.length) return next;
-  return activateTracks(next, caseId, reopen, at, `RMES criterion ${added.filter((a) => reopen.includes(a.dept)).map((a) => a.id).join(", ")} now applies`);
-}
+/** A new case's (header-only) RMES record. */
+const newRmes = (c: CiqCase, at: string): NonNullable<CiqCase["rmes"]> => ({ createdAt: at, reviewVersion: c.reviewVersion, criteria: [], findings: [] });
 
 export const COMPLETENESS_CONFIRMED = "Completeness confirmed. Beiersdorf can now review your questionnaire. You can still correct data and add documents until Beiersdorf requests your final release.";
 
@@ -688,7 +629,7 @@ function activateTracks(s: AppState, caseId: string, depts: ReviewDept[], at: st
     }
   }
   if (!y.rmes && y.reviews.some((r) => r.dept === "SAF" || r.dept === "REG")) {
-    y = audit({ ...y, rmes: { createdAt: at, reviewVersion: y.reviewVersion, criteria: rmesCriteria(y), findings: [] } }, "system", at, "Created RMES record", `Safety or Regulatory joined the review: ${why}.`);
+    y = audit({ ...y, rmes: newRmes(y, at) }, "system", at, "Created review record", `Safety or Regulatory joined the review: ${why}.`);
   }
   const withdrawn = y.phase === "final-release" && y.reviews.some((r) => r.status !== "completed");
   if (withdrawn) y = audit(setPhase(y, "review", at), "system", at, "Final-release request withdrawn", `${why}; the release request is sent again once every review has completed.`);
@@ -723,12 +664,12 @@ export function confirmCompleteness(s: AppState, by: string, caseId: string, at 
     reviews: [{ dept: "RMM", status: "in-review", assigneeId: assigneeFor(s, c, "RMM"), startedAt: at }, ...depts.map((d) => ({ dept: d, status: "in-review" as const, assigneeId: assigneeFor(s, c, d), startedAt: at }))],
     informed: ["CUS", "LEG"],
   };
-  y = { ...y, rmes: depts.some((d) => d === "SAF" || d === "REG") ? { createdAt: at, reviewVersion: y.reviewVersion, criteria: rmesCriteria(y), findings: [] } : undefined };
+  y = { ...y, rmes: depts.some((d) => d === "SAF" || d === "REG") ? newRmes(y, at) : undefined };
   // The requested documents are fixed now; after the confirmation they only grow, like the scope.
   const slots = requestedDocuments(c, s.config);
   if (slots.length) y = { ...y, requestedDocs: storableSlots(slots) };
   y = audit(y, by, at, "Confirmed completeness", `Confirmed by ${who?.name ?? by}${who?.email ? ` <${who.email}>` : ""}. Part 1 completed; the review starts.`);
-  y = audit(y, "system", at, "Activated reviews", `CIQ assigned to RMM (${userName(s, c.ownerId)}) for the whole-CIQ review; review tasks created for ${depts.map((d) => DEPT_SHORT[d]).join(", ") || "no department"}; Customs and Legal informed.${y.rmes ? " One RMES record created." : ""}`);
+  y = audit(y, "system", at, "Activated reviews", `CIQ assigned to RMM (${userName(s, c.ownerId)}) for the whole-CIQ review; review tasks created for ${depts.map((d) => DEPT_SHORT[d]).join(", ") || "no department"}; Customs and Legal informed.${y.rmes ? " The review record of Safety and Regulatory was created." : ""}`);
   if (rmmFlags(y).length) y = audit(y, "system", at, "Flagged for RMM", flagDetail(y.config));
   let next = mapCase(s, caseId, () => y);
   next = reviewAssignedMail(next, y, y.reviews.map((r) => r.dept), "system", at, `${who?.name ?? "The supplier"} confirmed completeness of the CIQ.`);
@@ -764,7 +705,8 @@ export interface RaiseInput {
   responsibleId?: string;
 }
 
-/** A query, document request, additional part or finding question to the supplier (spec §1.5–1.6). */
+/** A query, document request or additional part to the supplier (spec §1.5–1.6). A legacy "finding" point (the retired
+ *  RMES findings) is read as a question. */
 export function raiseOpenPoint(s: AppState, by: string, caseId: string, input: RaiseInput, at = nowIso()): AppState {
   const c = getCase(s, caseId);
   if (!c) return refuse(s, "This case no longer exists.");
@@ -852,12 +794,8 @@ export function reviewResponse(s: AppState, by: string, caseId: string, opId: st
       const fresh = new Date(Math.max(Date.parse(p.dueDate), Date.parse(at) + 7 * DAY_MS)).toISOString();
       return { ...p, status: "open", rounds: p.rounds + 1, dueDate: fresh, thread: [...p.thread, { ...msg, newRound: true }] };
     });
-    let y: CiqCase = { ...c, openPoints: ops, reviews: retrack(c.reviews, ops) };
-    y = audit(y, by, at, decision === "accept" ? "Accepted answer" : decision === "return" ? "Returned answer to supplier" : "Closed as not accepted", `${opId}${text.trim() ? `: ${text.trim()}` : ""}`, op0.ref.sectionId);
-    if (decision === "not-accepted" && c.rmes && (op0.dept === "SAF" || op0.dept === "REG")) {
-      y = { ...y, rmes: { ...c.rmes, findings: [...c.rmes.findings, { id: `${opId}-F`, criterionId: "", dept: op0.dept, text: `Not accepted: ${op0.question}`, blocking: false, status: "closed", openPointId: opId }] } };
-    }
-    return y;
+    const y: CiqCase = { ...c, openPoints: ops, reviews: retrack(c.reviews, ops) };
+    return audit(y, by, at, decision === "accept" ? "Accepted answer" : decision === "return" ? "Returned answer to supplier" : "Closed as not accepted", `${opId}${text.trim() ? `: ${text.trim()}` : ""}`, op0.ref.sectionId);
   });
   const c1 = getCase(next, caseId)!;
   next = supplierMail(next, c1, decision === "accept" ? "op-accepted" : decision === "return" ? "op-returned" : "op-closed", by, at, c1.openPoints.find((p) => p.id === opId));
@@ -957,62 +895,16 @@ export function closeOpenPoint(s: AppState, by: string, caseId: string, opId: st
   return toast(next, "success", "Open point closed. The supplier is told no answer is needed.");
 }
 
-// ---------------------------------------------------------------------------------- Part 2: RMES
+// ---------------------------------------------------------------------------------- Part 2: Safety / Regulatory decision
 
 function rmesGuard(s: AppState, by: string, c: CiqCase | undefined, dept: "SAF" | "REG"): string | null {
   if (!c) return "This case no longer exists.";
-  if (c.phase !== "review") return "The internal evaluation is recorded during the review.";
-  if (!c.rmes) return "This case has no RMES record.";
+  if (c.phase !== "review") return "The decision is recorded during the review.";
+  if (!c.rmes) return "This case has no review record yet.";
   const denied = check(s, by, "rmes.record", c, { dept });
   if (denied) return denied;
-  if (c.reviews.find((r) => r.dept === dept)?.status === "completed") return `The ${DEPT_SHORT[dept]} review is completed. Reopen it to change the evaluation.`;
+  if (c.reviews.find((r) => r.dept === dept)?.status === "completed") return `The ${DEPT_SHORT[dept]} review is completed. Reopen it to change the decision.`;
   return null;
-}
-
-export function recordCriterion(s: AppState, by: string, caseId: string, criterionId: string, result: RmesResult, comment: string, at = nowIso()): AppState {
-  const c = getCase(s, caseId);
-  const cr = c?.rmes?.criteria.find((x) => x.id === criterionId);
-  if (!cr) return refuse(s, "This RMES criterion no longer exists.");
-  const blocked = rmesGuard(s, by, c, cr.dept);
-  if (blocked) return refuse(s, blocked);
-  if ((result === "negative" || result === "implausible" || result === "na") && !comment.trim()) return refuse(s, "A comment is required for a negative, implausible or N.A. result.");
-  return mapCase(s, caseId, (x) =>
-    audit({ ...x, rmes: { ...x.rmes!, criteria: x.rmes!.criteria.map((y) => (y.id === criterionId ? { ...y, result, comment, by, at } : y)) } }, by, at, "Recorded RMES result", `${criterionId}: ${result}${comment ? ` — ${comment}` : ""}.`),
-  );
-}
-
-export function addFinding(s: AppState, by: string, caseId: string, criterionId: string, text: string, blocking: boolean, at = nowIso()): AppState {
-  const c = getCase(s, caseId);
-  const cr = c?.rmes?.criteria.find((x) => x.id === criterionId);
-  if (!cr) return refuse(s, "This RMES criterion no longer exists.");
-  const blocked = rmesGuard(s, by, c, cr.dept);
-  if (blocked) return refuse(s, blocked);
-  if (!text.trim()) return refuse(s, "Describe the finding.");
-  return mapCase(s, caseId, (x) => {
-    const id = `${x.id.slice(-4)}-F${x.rmes!.findings.length + 1}`;
-    return audit({ ...x, rmes: { ...x.rmes!, findings: [...x.rmes!.findings, { id, criterionId, dept: cr.dept, text, blocking, status: "open" }] } }, by, at, "Added finding", `${id} (${blocking ? "blocking" : "non-blocking"}) on ${criterionId}: ${text}`);
-  });
-}
-
-export function findingToQuery(s: AppState, by: string, caseId: string, findingId: string, question: string, dueDate: string, at = nowIso()): AppState {
-  const c = getCase(s, caseId);
-  const f = c?.rmes?.findings.find((x) => x.id === findingId);
-  const cr = c?.rmes?.criteria.find((x) => x.id === f?.criterionId);
-  if (!c || !f || !cr) return refuse(s, "This finding no longer exists.");
-  const next = raiseOpenPoint(s, by, caseId, { dept: f.dept, kind: "finding", ref: { sectionId: cr.source.sectionId, fieldId: cr.source.fieldId, label: cr.source.label }, question, justification: "Needed for the internal evaluation", dueDate }, at);
-  const after = getCase(next, caseId)!;
-  if (after.openPoints.length === c.openPoints.length) return next; // refused
-  const op = after.openPoints.at(-1)!;
-  return mapCase(next, caseId, (x) => (x.rmes ? { ...x, rmes: { ...x.rmes, findings: x.rmes.findings.map((y) => (y.id === findingId ? { ...y, openPointId: op.id } : y)) } } : x));
-}
-
-export function closeFinding(s: AppState, by: string, caseId: string, findingId: string, at = nowIso()): AppState {
-  const c = getCase(s, caseId);
-  const f = c?.rmes?.findings.find((x) => x.id === findingId);
-  if (!f) return refuse(s, "This finding no longer exists.");
-  const blocked = rmesGuard(s, by, c, f.dept);
-  if (blocked) return refuse(s, blocked);
-  return mapCase(s, caseId, (x) => audit({ ...x, rmes: { ...x.rmes!, findings: x.rmes!.findings.map((y) => (y.id === findingId ? { ...y, status: "closed" } : y)) } }, by, at, "Closed finding", findingId));
 }
 
 /**
@@ -1027,9 +919,6 @@ export function rmesDecision(s: AppState, by: string, caseId: string, dept: "SAF
   const blocked = rmesGuard(s, by, c, dept);
   if (blocked) return refuse(s, blocked);
   if (decision === "rejected" && !reason.trim()) return refuse(s, "A rejection reason is mandatory.");
-  const pending = c.rmes?.criteria.filter((x) => x.dept === dept && !x.result) ?? [];
-  if (pending.length) return refuse(s, `${pending.length} RMES criteria still have no result.`);
-  if (c.rmes?.findings.some((f) => f.dept === dept && f.status === "open") && decision === "approved") return refuse(s, "A finding is still open. Close it, or ask the supplier about it, first.");
   let next = mapCase(s, caseId, (x) => audit({ ...x, reviews: x.reviews.map((r) => (r.dept === dept ? { ...r, decision, decisionReason: reason } : r)) }, by, at, `Final ${DEPT_SHORT[dept]} decision`, `${decision === "approved" ? "Approved" : "Rejected"}${reason ? ` — ${reason}` : ""}`));
   if (decision === "rejected") {
     next = mapCase(next, caseId, (x) => audit(x, "system", at, "Flagged for RMM", `${DEPT_SHORT[dept]} recorded an internal Rejected decision. RMM agrees with ${DEPT_SHORT[dept]} whether to cancel the case or to continue to the final release.`));

@@ -19,7 +19,7 @@ const reopenMails = (sc: Scenario, user: string) => sc.mails("review-assigned").
 const doneByDept = (sc: Scenario, ...depts: ReviewDept[]) => {
   for (const d of depts) {
     const by = Scenario.REVIEWER[d];
-    if (d === "SAF" || d === "REG") sc.rmes(d, by).decision(d, by, "approved");
+    if (d === "SAF" || d === "REG") sc.decision(d, by, "approved");
     sc.complete(d, by);
   }
   return sc;
@@ -141,7 +141,7 @@ describe("1b. a completion applied after a later supplier change (the live servi
 
   it("even as the last completion: the change keeps the case in review instead of requesting the release", () => {
     const sc = new Scenario().toReview().completeAll(undefined, ["SAF"]);
-    sc.rmes("SAF", "u-saf").decision("SAF", "u-saf", "approved");
+    sc.decision("SAF", "u-saf", "approved");
     const safDoneAt = sc.now();
     // K2.2: Safety leads, QM co-reviews (QM is completed, so it reopens with the change itself)
     sc.step("K2.2 answer after Safety completed", (s, at) => A.setAnswer(s, "u-sup-1", sc.id, "FLD-A14-102", 0.04, at));

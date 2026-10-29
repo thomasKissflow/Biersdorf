@@ -79,7 +79,8 @@ export function checkInvariants(s: AppState): string[] {
     for (const m of s.mails.filter((x) => x.audience === "supplier" && x.caseId === c.id)) {
       const hit = secrets.find((t) => m.body.includes(t) || m.subject.includes(t));
       if (hit) at(`supplier mail ${m.id} contains internal text “${hit.slice(0, 40)}”`);
-      if (/\bRMES\b|internal note/i.test(m.body)) at(`supplier mail ${m.id} mentions internal evaluation terms`);
+      // lower case with /i: the same check, and the supplier portal's bundle (it holds this module) names no "RMES"
+      if (/\brmes\b|internal note/i.test(m.body)) at(`supplier mail ${m.id} mentions internal terms`);
     }
   }
   const mailIds = new Set<string>();

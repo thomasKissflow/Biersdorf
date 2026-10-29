@@ -112,21 +112,16 @@ describe("mail recipients and counts (spec §2)", () => {
 });
 
 describe("supplier mails never carry internal content (leak scan)", () => {
-  it("after a run full of internal notes, RMES comments, findings, decisions and internal reasons", () => {
+  it("after a run full of internal notes, decisions and internal reasons", () => {
     const sc = new Scenario().toReview();
-    const secrets = ["SECRET-NOTE price too high for the brand", "SECRET-RMES comment on the tox data", "SECRET-FINDING cadmium near the limit", "SECRET-DECISION endocrine data missing", "SECRET-CLOSE known from the audit", "SECRET-NOTACC answer insufficient", "SECRET-CONTINUE agreed with Safety"];
+    const secrets = ["SECRET-NOTE price too high for the brand", "SECRET-DECISION endocrine data missing", "SECRET-CLOSE known from the audit", "SECRET-NOTACC answer insufficient", "SECRET-CONTINUE agreed with Safety"];
     sc.step("note", (s, at) => A.addInternalNote(s, "u-saf", sc.id, secrets[0], "K1", at));
-    const cr = sc.c.rmes!.criteria.find((x) => x.dept === "SAF")!;
-    sc.step("rmes negative", (s, at) => A.recordCriterion(s, "u-saf", sc.id, cr.id, "negative", secrets[1], at));
-    sc.step("finding", (s, at) => A.addFinding(s, "u-saf", sc.id, cr.id, secrets[2], false, at));
     sc.raise("SAF", "u-saf", "K1", "Please send the tox summary.");
-    sc.step("withdraw", (s, at) => A.closeOpenPoint(s, "u-saf", sc.id, sc.op().id, secrets[4], at));
+    sc.step("withdraw", (s, at) => A.closeOpenPoint(s, "u-saf", sc.id, sc.op().id, secrets[2], at));
     sc.raise("SAF", "u-saf", "K1", "Please send the endocrine screening.");
-    sc.answer(sc.op().id).decide(sc.op().id, "u-saf", "not-accepted", secrets[5]);
-    sc.rmes("SAF", "u-saf").decision("SAF", "u-saf", "rejected", secrets[3]);
-    // An open finding blocks Safety's completion: it is closed once handled.
-    sc.step("close finding", (s, at) => A.closeFinding(s, "u-saf", sc.id, sc.c.rmes!.findings.find((f) => f.text === secrets[2])!.id, at));
-    sc.completeAll({ continueNote: secrets[6] });
+    sc.answer(sc.op().id).decide(sc.op().id, "u-saf", "not-accepted", secrets[3]);
+    sc.decision("SAF", "u-saf", "rejected", secrets[1]);
+    sc.completeAll({ continueNote: secrets[4] });
     sc.release();
     expect(internalStrings(sc.c)).toEqual(expect.arrayContaining(secrets));
     const supplierMails = sc.s.mails.filter((m) => m.audience === "supplier");

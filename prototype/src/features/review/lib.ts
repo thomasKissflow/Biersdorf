@@ -73,13 +73,14 @@ export function queueAlert(state: AppState, dept: ReviewDept, at = nowIso()): { 
 
 // ------------------------------------------------------------------ completion
 
-const KIND_TEXT: Record<OpenPointKind, string> = { query: "query", "document-request": "document request", "additional-part": "additional section", finding: "finding query" };
+// "finding": a question raised from a retired RMES finding (legacy data only); to the reviewer it is a query
+const KIND_TEXT: Record<OpenPointKind, string> = { query: "query", "document-request": "document request", "additional-part": "additional section", finding: "query" };
 
 export interface BlockerItem {
   key: string;
   text: string;
-  /** Where the blocker is resolved: the open point (in the right rail) or the RMES tab. */
-  target?: { kind: "point"; opId: string; sectionId: string } | { kind: "rmes" };
+  /** Where the blocker is resolved: the open point (in the right rail) or the Safety / Regulatory decision card. */
+  target?: { kind: "point"; opId: string; sectionId: string } | { kind: "decision" };
 }
 
 /**
@@ -95,11 +96,10 @@ export function blockerItems(state: AppState, c: CiqCase, dept: ReviewDept): Blo
       text: `${p.id} · ${KIND_TEXT[p.kind]} on ${p.ref.label} · ${p.status === "open" ? "with the supplier" : "answered, waiting for a decision"} · responsible ${userName(state, p.responsibleId)}`,
       target: { kind: "point", opId: p.id, sectionId: p.ref.sectionId },
     });
-  if ((dept === "SAF" || dept === "REG") && c.rmes) {
-    for (const cr of c.rmes.criteria.filter((x) => x.dept === dept && !x.result)) out.push({ key: cr.id, text: `RMES criterion without a result: ${cr.title}`, target: { kind: "rmes" } });
-    for (const f of c.rmes.findings.filter((x) => x.dept === dept && x.status === "open")) out.push({ key: f.id, text: `Open finding: ${f.text}`, target: { kind: "rmes" } });
+  // Safety and Regulatory: their decision (the RMES itself needs no input; legacy criteria and findings never block)
+  if (dept === "SAF" || dept === "REG") {
     const tr = c.reviews.find((r) => r.dept === dept);
-    if (tr && !tr.decision) out.push({ key: "decision", text: `The ${DEPT_SHORT[dept]} decision (Approved or Rejected) is not recorded yet`, target: { kind: "rmes" } });
+    if (tr && !tr.decision) out.push({ key: "decision", text: `The ${DEPT_SHORT[dept]} decision (Approved or Rejected) is not recorded yet`, target: { kind: "decision" } });
   }
   const domain = reviewBlockers(c, dept);
   return out.length === domain.length ? out : domain.map((text) => ({ key: text, text }));

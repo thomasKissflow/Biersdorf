@@ -6,8 +6,9 @@
 
 Push the app `CIQ_Digital_A00` and the portal `CIQ_Supplier_Portal_A00`. The push must carry:
 - **The custom screens:**
-  - app `ciq-app-ui-87002b74ba` (Live in dev since 28 Oct, 18:50 IST): the matrix v0.6 fixes (`MATRIX-v0.6-ASSUMPTIONS-2026-10-28.md`), on top of everything before (PDF design, Full screen, case cascade delete, Rules without Basis). Zip: `optimise-2026-10-26/rollback-zips/matrix-fixes-2026-10-28/ciq-app-ui-87002b74ba.zip`. Rollback: `rollback-zips/before-matrix-fixes/ciq-app-ui-9d9d136188.zip`.
-  - portal `ciq-portal-ui-b88be34e73` (Live in dev since 28 Oct, 18:52 IST): the matrix v0.6 fixes, plus everything up to `13fa931c27` (file details, HTML mails, attachment preview, no removal after sending). Zip: `optimise-2026-10-26/rollback-zips/matrix-fixes-2026-10-28/ciq-portal-ui-b88be34e73.zip`. Rollback: `rollback-zips/mail-template-2026-10-27/ciq-portal-ui-13fa931c27.zip`.
+  - app `ciq-app-ui-cfd65e5766` (Live in dev since 29 Oct, 05:47 IST): **the RMES as BDF's 8 fields** (read-only sheet for Safety and Regulatory, filled from the CIQ; no criteria or findings; the decision on the Questionnaire tab; the record's time from its history row, as Kissflow's list rows carry none), on top of the matrix v0.6 fixes (`MATRIX-v0.6-ASSUMPTIONS-2026-10-28.md`) and everything before (PDF design, Full screen, case cascade delete, Rules without Basis). Zip: `optimise-2026-10-26/rollback-zips/rmes-2026-10-29/ciq-app-ui-cfd65e5766.zip`. Rollback: `rollback-zips/rmes-2026-10-29/ciq-app-ui-c8447c06da.zip` (the RMES without the record-time fix) or `rollback-zips/before-rmes/ciq-app-ui-87002b74ba.zip` (the matrix fixes without the RMES change).
+  - portal `ciq-portal-ui-233cc982e5` (Live in dev since 29 Oct, 02:48 IST): the same build. For the supplier nothing changes, except that the bundle no longer holds any RMES text. Zip: `optimise-2026-10-26/rollback-zips/rmes-2026-10-29/ciq-portal-ui-233cc982e5.zip`. Rollback: `rollback-zips/before-rmes/ciq-portal-ui-b88be34e73.zip`.
+  - **The RMES change needs no Kissflow change in prod:** no field, form, step, permission or configuration row changed. The RMES forms keep their old criteria and findings tables, which are no longer used, and `RMES:current` stays as it is (obsolete).
   - The guide still names older bundles. Use these.
   - **Rollback:** app `rollback-zips/cascade-delete-2026-10-26/ciq-app-ui-46b3e1fb4a.zip` (before the call changes), `rollback-zips/supplier-fixes-2026-10-26/ciq-app-ui-50bcb6ac79.zip` (before the cascade delete), `rollback-zips/config-editor-2026-10-26/ciq-app-ui-780f6539bc.zip` (before the supplier fixes), `rollback-zips/console-2026-10-26/ciq-app-ui-071d9735d2.zip` (console only), `rollback-zips/live-2026-10-26/ciq-app-ui-e2189ee265.zip` (optimisation only), or `rollback-zips/ciq-app-ui-a3c14d721f.zip` (before the optimisation).
 - **The new fields:**
@@ -57,12 +58,12 @@ Push the app `CIQ_Digital_A00` and the portal `CIQ_Supplier_Portal_A00`. The pus
 6. **Data.**
    - **Configuration (rebuilt 28 Oct for the matrix fixes):** delete the 12 old CIQ Config Version rows in prod, then run `prod-seed-postman/CIQ-prod-seed-config-version.postman_collection.json` (its README). The same rows are in `CIQ-prod-seed-config-version-INTERNAL.xlsx`. Only `SET:current` is unchanged. Start new test cases after the import; older cases keep their old configuration.
    - `CIQ-prod-seed-help-article-INTERNAL.xlsx` (9 rows), if not imported yet. The guide, §0 step 5, has the details.
-   - **Client testers:** give them the updated `CIQ-UAT-test-cases.xlsx` (28 Oct).
+   - **Client testers:** give them the updated `CIQ-UAT-test-cases.xlsx` (29 Oct: TC-26 to TC-29 rewritten for the 8-field RMES).
 7. **Users and roles.**
    - One CIQ role per tester.
    - Supplier test contacts in the portal Supplier role, each linked by Portal User Id on the CIQ Supplier contacts table before the first case (guide §0 step 6).
 8. **Notifications:** your native Kissflow notifications, if they didn't travel with the push.
-9. **Final PDF:** paste the NEW `final-pdf/apps-script/Bundle.gs` (rebuilt 28 Oct with the matrix fixes, SHA-256 f863ff20…4380) into the Apps Script, then with prod Script Properties, then `probe()` and `installTrigger()` (guide §0 step 7). The app's own "Download PDF" button on the Final document tab works without it.
+9. **Final PDF:** paste the NEW `final-pdf/apps-script/Bundle.gs` (rebuilt 29 Oct, 05:10 IST, with the matrix fixes and the RMES change, SHA-256 93ce7ec1…92c2) into the Apps Script, then with prod Script Properties, then `probe()` and `installTrigger()` (guide §0 step 7). The app's own "Download PDF" button on the Final document tab works without it.
 10. **Documents:** run `python3 night-2026-10-21/docs-for-app-fe-cleanup.py --apply` from `kissflow-build/` (the client workbook and the guide's FE texts).
 
 ## C. Your first test: one case, start to finish (about 30 min)

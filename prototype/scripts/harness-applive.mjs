@@ -29,7 +29,7 @@
 //                      page: the app has no Kissflow host to post to and sends each hand-off by kf.api, relative path
 //  - appId=X           the container the handshake reports (container-guard); default CIQ_Digital_A00
 //  - refuse=CMD,…      these commands are refused with 050302 (read-refusals, write-refused); "API:GET"/"API:POST" too;
-//                      "CMD@flow" (e.g. DATAFORM_GET_ITEM@rmesSAF) refuses it on that flow only
+//                      "CMD@flow" (e.g. DATAFORM_GET_ITEMS@rmesSAF) refuses it on that flow only
 //  - empty=1           no items except the config rows (empty start)
 //  - noConfig=1        no CIQ Config Version rows (production before the seed import; the data console imports them)
 //  - roles=developer   the Admin / Developer role (no CIQ persona: the data console, 26 Oct); it reads and writes
@@ -111,6 +111,7 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { readFileSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
+import { LEAK_TERMS, RETIRED_TERMS, leakHits } from "./leak-scan.mjs";
 
 const require = createRequire(import.meta.url);
 const PW = "/Users/thomas/Documents/Kissflow Projects/POC/Promotion Management/app/node_modules/playwright-core";
@@ -822,6 +823,70 @@ const mailText = (v) => String(v).replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "
 const isMailLayout = (body) => typeof body === "string" && body.startsWith("<!DOCTYPE html>") && body.includes(">CIQ Digital</p>") && body.includes(">Sent automatically by CIQ Digital. Please do not reply to this e-mail.</p>") && !/<style|<link|<script|<img/i.test(body);
 /** The 20 Oct transport: a POST by the browser's fetch, mode no-cors, text/plain, the JSON text as the body. */
 const byFetch = (h) => h.route === "fetch" && h.method === "POST" && h.mode === "no-cors" && /^text\/plain\b/.test(h.contentType ?? "") && typeof h.body === "object";
+
+// ---- the RMES sheet (28 Oct, BDF's e-mail: exactly 8 fields, filled automatically from the CIQ, read only; derived
+// from the case by domain/rmesSheet.ts, nothing stored; the decision sits outside it, on the Questionnaire tab)
+/** domain/rmesSheet.ts ORIGIN_TEXT_FIELDS and catalog.ts ORIGIN_LABEL (the harness checks the built bundle, so it
+ *  keeps its own copy): the free-text field(s) of each Source of origin. */
+const ORIGIN_TEXT = { vegetable: ["FLD-2.1-101", "FLD-2.3-10"], animal: ["FLD-2.1-101", "FLD-2.3-10"], petrochemical: ["FLD-2.3-11"], mineral: ["FLD-2.3-12"], ccu: ["FLD-2.3-13"], polymer: ["FLD-2.3-14"], waste: ["FLD-2.3-15"], chemrec: ["FLD-2.3-16"] };
+const ORIGIN_NAME = { vegetable: "Vegetable (bio mass)", animal: "Animal", mineral: "Mineral", petrochemical: "Petrochemical / fossil", polymer: "Polymer", waste: "Waste / side stream", ccu: "Carbon capture (CCU)", chemrec: "Chemical recycling of post-consumer plastic" };
+/** What the criteria RMES showed (retired 28 Oct) and the fields BDF left out (not yellow): never on the sheet. */
+const NOT_ON_SHEET = /criteri|finding|\bPart [A-D]\b|AI suggestion|BDF limit|limit check|Process ID|RMT ID|IRMA|Declaration|Recorded RMES result|Approved|Rejected/i;
+/** The old criteria RMES's test ids and labels: nowhere in the app any more. */
+const OLD_RMES_UI = '[data-testid^="criterion-"], [data-testid^="finding-"], [data-testid="add-finding"], [data-testid="findings-card"], [data-testid="rmes-progress"]';
+/** The 8 fields as the case item in Kissflow holds them now (BDF_Set_JSON over Answers_JSON, Components_JSON). */
+async function rmesExpected(t, caseItemId) {
+  const kase = await t.item(caseItemId);
+  const set = Object.fromEntries(Object.entries(J(kase.BDF_Set_JSON) ?? {}).filter(([, v]) => v !== null && v !== ""));
+  const answers = { ...(J(kase.Answers_JSON) ?? {}), ...set };
+  const text = (v) => (Array.isArray(v) ? v.join(", ") : v == null ? "" : String(v)).trim();
+  return {
+    material: text(answers["FLD-GEN-001"]) || kase.Trade_Name,
+    supplier: text(answers["FLD-GEN-002"]) || kase.Supplier_Legal_Name,
+    manufacturer: text(answers["FLD-GEN-004"]) || "Not answered yet",
+    rows: (J(kase.Components_JSON) ?? []).map((r) => ({
+      id: r.id,
+      inci: r.inci,
+      conc: r.concMin === r.concMax ? `${r.concMin} %` : `${r.concMin}–${r.concMax} %`,
+      cas: r.cas || "—",
+      ec: r.ec || "—",
+      origin: ORIGIN_NAME[r.origin],
+      free: (ORIGIN_TEXT[r.origin] ?? []).map((f) => [f, text(answers[f]) || "Not answered yet"]),
+    })),
+  };
+}
+/** Safety / Regulatory: the RMES tab of a case shows its 8 fields as Kissflow holds them, each with its CIQ source, and
+ *  nothing else: no input, no decision, nothing of the criteria RMES, no Process / RMT / IRMA ID, no Declaration. */
+async function checkRmesSheet(t, caseCode, caseItemId, who) {
+  await t.go(`/review/${caseCode}?tab=rmes`);
+  await t.seeTid("rmes-tab", `${who}: the RMES tab`);
+  await t.seeTid("rmes-header-material", `${who}: … with the sheet`);
+  const x = await rmesExpected(t, caseItemId);
+  const txt = async (id) => ((await t.tid(id).first().innerText({ timeout: 3000 }).catch(() => "")) || "").replace(/\s+/g, " ").trim();
+  t.check(`${who}: the record line`, (await txt("rmes-record")) === `RMES · ${caseCode} · internal: never visible to the supplier · filled automatically from the CIQ`, await txt("rmes-record"));
+  t.check(`${who}: … and when the record was created`, /^Record created \d/.test(await txt("rmes-record-at")), await txt("rmes-record-at"));
+  for (const [key, fid, want] of [["material", "FLD-GEN-001", x.material], ["supplier", "FLD-GEN-002", x.supplier], ["manufacturer", "FLD-GEN-004", x.manufacturer]]) {
+    const h = await txt(`rmes-header-${key}`);
+    t.check(`${who}: ${key} “${want}”, with its source ${fid}`, h.includes(want) && h.includes(fid), h);
+  }
+  t.check(`${who}: exactly 3 header fields`, (await t.ui.locator('[data-testid^="rmes-header-"]').count()) === 3, await t.ui.locator('[data-testid^="rmes-header-"]').count());
+  const heads = await t.tid("rmes-composition").first().locator("th").evaluateAll((els) => els.map((e) => (e.firstElementChild ?? e).textContent.trim()));
+  t.check(`${who}: the composition's columns`, JSON.stringify(heads) === JSON.stringify(["#", "INCI", "%", "CAS #", "EC #", "Source of origin", "Free text"]), heads);
+  const n = await t.ui.locator('[data-testid^="rmes-row-"]').count();
+  t.check(`${who}: one row per component (${x.rows.length})`, x.rows.length > 0 && n === x.rows.length, [n, x.rows.length]);
+  for (const r of x.rows) {
+    const row = await txt(`rmes-row-${r.id}`);
+    const miss = [r.inci, r.conc, r.cas, r.ec, r.origin, ...r.free.flat()].filter((v) => !row.includes(v));
+    t.check(`${who}: ${r.inci}: INCI, %, CAS #, EC #, Source of origin and its free text with the field ids`, miss.length === 0, { row, miss });
+  }
+  const tab = t.tid("rmes-tab").first();
+  const controls = await tab.locator("input, textarea, select, [role=combobox], [contenteditable=true]").count();
+  const buttons = await tab.locator("button").evaluateAll((els) => els.map((e) => e.dataset.testid || e.textContent.trim()).filter((id) => !/^rmes-(source-FLD-|open-composition$)/.test(id)));
+  t.check(`${who}: nothing on the sheet is editable (its only buttons open a source)`, controls === 0 && buttons.length === 0, { controls, buttons });
+  const all = await tab.innerText();
+  t.check(`${who}: nothing of the criteria RMES, no IDs, no Declaration, no decision on the sheet`, !NOT_ON_SHEET.test(all) && (await tab.locator('[data-testid="decision-card"]').count()) === 0, all.match(NOT_ON_SHEET)?.[0]);
+  t.check(`${who}: no criteria or findings UI`, (await t.ui.locator(OLD_RMES_UI).count()) === 0, await t.ui.locator(OLD_RMES_UI).count());
+}
 
 // ---- the data console's case delete with everything (26 Oct)
 const P_FLOW = FX.portal.flows; // { request: "CIQP_Request_A00", query: "CIQP_Query_A00" }
@@ -1746,39 +1811,51 @@ const SCENARIOS = {
     }),
   "saf-review": () =>
     scenario("saf-review", async (t) => {
-      // one Kissflow user holding RMM and Product Safety: RMM activates ZZT-0001, then works as Safety
+      // one Kissflow user holding RMM and Product Safety: RMM activates ZZT-0001, then works as Safety. Since BDF's RMES
+      // scope of 28 Oct: the RMES record is a header-only row, the RMES tab a read-only sheet of 8 fields derived from
+      // the case, and the Safety decision sits on the Questionnaire tab
       await open(t, { roles: "rmm,saf", byid: "1" });
       await playCompleteness(t, CASE1);
       await t.reload();
       const saf = (await t.rows(F.review)).find((x) => x.Case_Item_Id === CASE1 && x.Review_Dept === "SAF");
       t.must("I-2 (E-A, played) started the Safety review of ZZT-0001", !!saf);
       const rmesBefore = (await t.rows(F.rmesSAF)).length;
+      const audits0 = (await t.rows(F.audit)).length;
+      const created0 = (await t.calls()).length;
       await t.tid("role-switcher").click();
       await t.tid("switch-role-saf").click(); // held: switches the screens, no Kissflow role change
       await t.settle(800);
       const rmes = (await t.rows(F.rmesSAF)).slice(rmesBefore).find((x) => x.Case_Item_Id === CASE1);
       t.must("Safety's first open creates its RMES row for ZZT-0001", !!rmes);
-      const crit = rmes["Table::Safety_Criteria"] ?? rmes.Safety_Criteria ?? [];
-      t.check("with the planned criteria as child rows", crit.length > 0 && crit.every((r) => r.Criteria_Code), crit.length);
+      const create = (await t.calls((c) => c.seq >= created0 && c.command === "DATAFORM_CREATE_ITEM" && c.flowId === F.rmesSAF))[0];
+      t.check("header only: RMES_Key, Case_Code, Case_Item_Id, Cycle_No and RMES_Voided, no child table", create?.keys === "Case_Code,Case_Item_Id,Cycle_No,RMES_Key,RMES_Voided", create?.keys);
+      t.check("… and Kissflow holds no criteria or findings rows on it", !Object.keys(rmes).some((k) => /Criteria|Findings|^Table::/.test(k)) && rmes.RMES_Key === "ZZT-0001-RMES-SAF", Object.keys(rmes));
+      const made = (await auditSince(t, audits0)).filter((r) => r.Action_Code === "rmes.saved");
+      t.check("one audit row: “RMES record created”", made.length === 1 && made[0].Object_Kind === "RMES record" && /RMES record created/.test(made[0].Snapshot_JSON ?? ""), made.map((r) => [r.Object_Kind, r.New_Value_Text]));
       const audits = (await t.rows(F.audit)).length;
       const from = (await t.calls()).length;
+      // the RMES tab: the 8 fields of ZZT-0001 as I-2 (played) copied them from the supplier's request
+      await checkRmesSheet(t, "ZZT-0001", CASE1, "Safety");
+      await t.shot("rmes-sheet");
+      // a source reference opens its section in the Questionnaire tab
+      await t.act("rmes-source-FLD-GEN-004");
+      const jumped = await t.hash();
+      t.check("the Manufacturer's source opens GEN on the Questionnaire tab", !/tab=rmes/.test(jumped) && /[?&]s=GEN\b/.test(jumped), jumped);
+      // the completion bar's decision line: not recorded yet; its link goes to the decision card on the Questionnaire tab
       await t.go("/review/ZZT-0001?tab=rmes");
-      await t.seeTid("rmes-tab", "the RMES tab");
-      const ids = await t.ui.locator('[data-testid^="criterion-result-"]').evaluateAll((els) => els.map((e) => e.dataset.testid.slice("criterion-result-".length)));
-      t.check("every criterion can be recorded", ids.length === crit.length, [ids.length, crit.length]);
-      for (const id of ids) {
-        await t.tid(`criterion-result-${id}`).getByRole("combobox").click();
-        await t.ui.getByRole("option", { name: "Available", exact: true }).click();
-        await t.act(`criterion-save-${id}`);
-      }
-      const after = (await t.rows(F.rmesSAF)).find((x) => x._id === rmes._id);
-      const rowsAfter = after["Table::Safety_Criteria"] ?? after.Safety_Criteria ?? [];
-      t.check("each result written on its own row (no duplicate row)", rowsAfter.length === crit.length && rowsAfter.every((r) => r.Criteria_Result === "Available"), rowsAfter.map((r) => [r.Criteria_Code, r.Criteria_Result]));
+      await t.seeTid("complete-decision", "the bar's decision line");
+      const line = (await t.tid("complete-decision").first().innerText()).replace(/\s+/g, " ").trim();
+      t.check("“Safety decision: not recorded yet · Record the decision”", /^Safety decision: not recorded yet Record the decision\b/.test(line), line);
+      await t.act("decision-go");
+      const h = await t.hash();
+      await t.seeTid("decision-card", "“Record the decision” opens the decision card");
+      t.check("… on the Questionnaire tab, focused", !/tab=rmes/.test(h) && (await t.frame().evaluate(() => document.activeElement?.getAttribute("data-testid"))) === "decision-card", [h, await t.frame().evaluate(() => document.activeElement?.getAttribute("data-testid"))]);
+      t.check("the card is titled “Safety decision” and sits outside the RMES", /^Safety decision/.test((await t.tid("decision-card").first().innerText()).trim()) && (await t.tid("rmes-tab").count()) === 0);
+      t.check("no criteria or findings UI on the Questionnaire tab", (await t.ui.locator(OLD_RMES_UI).count()) === 0);
       await t.tid("decision-choice").getByRole("button", { name: "Approved", exact: true }).click();
       await t.act("decision-record");
       const rev = (await t.rows(F.review)).find((x) => x._id === saf._id);
       t.check("the decision is written on the Safety review", rev.RMES_Decision === "Approved", rev.RMES_Decision);
-      await t.go("/review/ZZT-0001");
       await t.seeTid("complete-review", "Complete my review");
       const n = (await t.calls()).length;
       await t.act("complete-review");
@@ -1786,11 +1863,54 @@ const SCENARIOS = {
       const upd = (await t.calls((c) => c.seq >= n && c.flowId === F.review && c.command === "PROCESS_UPDATE_ITEM"))[0];
       t.check("complete: the counts and confirmation, then the submit", seq.join(" ") === "PROCESS_UPDATE_ITEM PROCESS_SUBMIT_ITEM" && ["Open_Count", "RMES_Gaps", "Review_Confirm", "Completed_At", "Completed_By"].every((k) => upd.keys.includes(k)), [seq, upd?.keys]);
       const done = (await t.rows(F.review)).find((x) => x._id === saf._id);
-      t.check("the Safety review is at End, Review_Gate OK", done._status === "Completed" && done.Review_Gate === "OK", [done._status, done.Review_Gate]);
+      t.check("the Safety review is at End, RMES_Gaps 0 (the decision is there), Review_Gate OK", done._status === "Completed" && done.RMES_Gaps === 0 && done.Review_Gate === "OK", [done._status, done.RMES_Gaps, done.Review_Gate]);
       const rows = await auditSince(t, audits);
-      t.check("audit rows: rmes.saved per result and the decision, then review.completed", codes(rows).filter((c) => c === "rmes.saved").length === ids.length + 1 && codes(rows).at(-1) === "review.completed", codes(rows));
+      t.check("audit rows: rmes.saved for the decision, then review.completed", codes(rows).join() === "rmes.saved,review.completed" && rows[0].Object_Kind === "RMES decision", codes(rows));
+      t.check("the RMES record is never read item by item (no criteria to read)", (await t.calls((c) => c.seq >= from && c.command === "DATAFORM_GET_ITEM" && c.flowId === F.rmesSAF)).length === 0);
       t.check("no write refused", (await refusedCalls(t, from)).length === 0, await refusedCalls(t, from));
       await t.shot("completed");
+    }),
+  "rmes-sheet": () =>
+    scenario("rmes-sheet", async (t) => {
+      // 28 Oct (BDF: the RMES is Regulatory's and Safety's internal sheet, exactly 8 fields from the CIQ, no access for
+      // anybody else): Safety and Regulatory see the same sheet of ZZT-0003; a role that can't read the questionnaire
+      // gets one notice instead of blank or wrong fields; RMM and QM have no RMES tab, and RMM's case page no RMES card
+      await open(t, { roles: "saf", byid: "1" });
+      await checkRmesSheet(t, "ZZT-0003", CASE3, "Safety");
+      const sheetOf = async () => (await t.tid("rmes-tab").first().innerText()).replace(/Record created [^\n]*/, "").replace(/\s+/g, " ").trim();
+      const safSheet = await sheetOf();
+      t.check("Safety: the tab is named “RMES” (no count)", (await t.tid("workspace-tab-rmes").first().innerText()).trim() === "RMES", await t.tid("workspace-tab-rmes").first().innerText());
+      await open(t, { roles: "reg", byid: "1" });
+      await checkRmesSheet(t, "ZZT-0003", CASE3, "Regulatory");
+      t.check("Regulatory sees the same sheet as Safety (one RMES for both)", (await sheetOf()) === safSheet, [await sheetOf(), safSheet]);
+      t.check("… and decides only its own decision, on the Questionnaire tab", await (async () => { await t.go("/review/ZZT-0003"); await t.seeTid("decision-card"); return /^Regulatory decision/.test((await t.tid("decision-card").first().innerText()).trim()) && (await t.tid("decision-card").count()) === 1; })());
+      await t.shot("regulatory");
+      // Safety without the viewer route (R-1): Kissflow does not let the role read ZZT-0003's questionnaire
+      await open(t, { roles: "saf" });
+      await t.go("/review/ZZT-0003?tab=rmes");
+      await t.seeTid("rmes-unreadable", "an unreadable case: the RMES notice");
+      t.check("… “Kissflow did not let your role read this case's questionnaire, so the RMES can't be filled.”", (await t.tid("rmes-unreadable").first().innerText()).replace(/\s+/g, " ").trim() === "Kissflow did not let your role read this case's questionnaire, so the RMES can't be filled.", await t.tid("rmes-unreadable").first().innerText());
+      t.check("… instead of the 8 fields (no header field, no composition, never the case id as the trade name)", (await t.ui.locator('[data-testid^="rmes-header-"]').count()) === 0 && (await t.tid("rmes-composition").count()) === 0);
+      await t.shot("unreadable");
+      // RMM and Quality Management: no RMES
+      for (const [role, who] of [["rmm", "RMM"], ["qm", "Quality Management"]]) {
+        await open(t, { roles: role, byid: "1" });
+        await t.go("/review/ZZT-0003");
+        await t.seeTid("review-workspace", `${who}: the review workspace`);
+        t.check(`${who}: no RMES tab`, (await t.tid("workspace-tab-rmes").count()) === 0 && (await t.tid("decision-card").count()) === 0);
+        await t.go("/review/ZZT-0003?tab=rmes");
+        await t.seeTid("review-workspace", `${who}: ?tab=rmes`);
+        t.check(`${who}: ?tab=rmes shows the questionnaire, not the RMES`, (await t.tid("rmes-tab").count()) === 0);
+      }
+      await open(t, { roles: "rmm", byid: "1" });
+      await t.go("/cases/ZZT-0003");
+      await t.seeTid("case-facts", "RMM: the case page");
+      const overview = await mainText(t);
+      t.check("RMM: no RMES card on the case Overview (and no RMES at all)", !/RMES/.test(overview) && (await t.ui.locator(OLD_RMES_UI).count()) === 0, overview.match(/.{0,60}RMES.{0,60}/)?.[0]);
+      // nothing of the retired criteria RMES is left in the built app, internal screens included (scripts/leak-scan.mjs
+      // RETIRED_TERMS: its criterion titles, the canned AI text, the old history label; counts only)
+      const retired = leakHits(UI, { terms: RETIRED_TERMS });
+      t.check(`the built app (index.html) holds none of the ${RETIRED_TERMS.length} texts of the retired criteria RMES`, retired.length === 0, retired);
     }),
   "mic-raise-accept": () =>
     scenario("mic-raise-accept", async (t) => {
@@ -1915,6 +2035,9 @@ const SCENARIOS = {
       const closed = hooks.filter((h) => h.code === "mail");
       t.check("close: op.closed, then one mail, without the internal reason", codesNoHist(hooks) === "op.closed,mail" && closed[0]?.body?.Subject === "ZZT-0003: an open question was closed" && !closed[0]?.body?.Body.includes("Internal"), hooks.map((h) => [h.code, h.body?.Subject]));
       t.check("… in the shared e-mail layout: no answer needed", isMailLayout(closed[0]?.body?.Body) && closed[0].body.Body.includes("No answer is needed any more.") && !closed[0].body.Body.includes("<a "));
+      // 28 Oct: the internal RMES never reaches the supplier (scripts/leak-scan.mjs LEAK_TERMS)
+      const leaked = [...edited, ...closed].flatMap((h) => LEAK_TERMS.filter((x) => `${h.body?.Subject ?? ""}\n${h.body?.Body ?? ""}`.includes(x)));
+      t.check("… and neither supplier mail carries anything of the internal RMES", edited.length + closed.length === 2 && leaked.length === 0, leaked);
     }),
   "mic-return-edit-close": () =>
     scenario("mic-return-edit-close", async (t) => {
@@ -2087,30 +2210,24 @@ const SCENARIOS = {
       // APP-SAVING-GAPS gap 1 (the portal's autosave rule, harness-portal.mjs k21-typing): a save that moves no step shows
       // the items as Kissflow read them back after the write; no list is read again, and the screen keeps the value
       const LISTS = /^(DATAFORM_GET_ITEMS|PROCESS_GET_MY_TASKS_ITEMS|PROCESS_GET_MY_ITEMS|PROCESS_GET_ADMIN_ITEMS)$/;
-      const OWN = new Set([F.rmesSAF, F.note, F.audit]);
+      const OWN = new Set([F.review, F.note, F.audit]);
       await open(t, { roles: "saf", byid: "1" });
       await t.settle(600);
       t.check("the first load read the lists", (await t.calls((c) => LISTS.test(c.command))).length > 0);
-      await t.go("/review/ZZT-0003?tab=rmes");
-      await t.seeTid("rmes-tab", "the RMES tab");
-      const ids = await t.ui.locator('[data-testid^="criterion-result-"]').evaluateAll((els) => els.map((e) => e.dataset.testid.slice("criterion-result-".length)));
-      t.must("a Safety criterion waits for its result", ids.length > 0, ids);
-      const id = ids[0];
+      // the Safety decision (28 Oct: on the Questionnaire tab, stored on the CIQ Review item; the RMES has no input)
+      await t.go("/review/ZZT-0003");
+      await t.seeTid("decision-card", "the Safety decision card");
       let from = (await t.calls()).length;
       const toasts = (await t.toastLog()).length;
-      await t.tid(`criterion-result-${id}`).getByRole("combobox").click();
-      await t.ui.getByRole("option", { name: "Available", exact: true }).click();
-      await t.act(`criterion-save-${id}`);
-      t.check("“RMES result saved.”", !!(await t.waitToast(/RMES result saved/, toasts)), (await t.toastLog()).slice(toasts));
-      const rmes = (await t.rows(F.rmesSAF)).find((x) => x.Case_Item_Id === CASE3);
-      const row = (rmes?.["Table::Safety_Criteria"] ?? rmes?.Safety_Criteria ?? []).find((r) => r.Criteria_Code === id);
-      t.check("Kissflow holds the result", row?.Criteria_Result === "Available", row);
+      await t.tid("decision-choice").getByRole("button", { name: "Approved", exact: true }).click();
+      await t.act("decision-record");
+      t.check("“Decision recorded.”", !!(await t.waitToast(/^Decision recorded\./, toasts)), (await t.toastLog()).slice(toasts));
+      t.check("Kissflow holds the decision", (await t.item("PkRevZZT0003SAF1"))?.RMES_Decision === "Approved", (await t.item("PkRevZZT0003SAF1"))?.RMES_Decision);
       let since = await t.calls((c) => c.seq >= from);
-      t.check("Save result reads no list again (no DATAFORM_GET_ITEMS / PROCESS_GET_MY_TASKS_ITEMS / PROCESS_GET_MY_ITEMS / PROCESS_GET_ADMIN_ITEMS)", !since.some((c) => LISTS.test(c.command)), summary(since));
-      t.check("… only its own calls: the RMES row read, written and read back, and its audit row", since.length > 0 && since.every((c) => /^DATAFORM_(GET_ITEM|UPDATE_ITEM|CREATE_ITEM|SUBMIT_ITEM)$/.test(c.command) && OWN.has(c.flowId)), summary(since));
-      const crit = t.tid(`criterion-${id}`);
-      const text = (await crit.innerText().catch(() => "")) || "";
-      t.check("the screen shows the saved result (Kissflow's read-back, the optimistic state is gone)", /Available/.test(text) && !/No result/.test(text), text.slice(0, 200));
+      t.check("Record approval reads no list again (no DATAFORM_GET_ITEMS / PROCESS_GET_MY_TASKS_ITEMS / PROCESS_GET_MY_ITEMS / PROCESS_GET_ADMIN_ITEMS)", !since.some((c) => LISTS.test(c.command)), summary(since));
+      t.check("… only its own calls: the review read, written and read back, and its audit row", since.length > 0 && since.every((c) => /^(PROCESS_(GET_ITEM|UPDATE_ITEM)|DATAFORM_(GET_ITEM|CREATE_ITEM|SUBMIT_ITEM))$/.test(c.command) && OWN.has(c.flowId)), summary(since));
+      const card = (await t.tid("decision-card").first().innerText().catch(() => "")) || "";
+      t.check("the card shows the saved decision (Kissflow's read-back, the optimistic state is gone)", /Approved/.test(card) && (await t.tid("decision-record").count()) === 0 && (await t.tid("decision-change").count()) === 1, card.slice(0, 200));
       // an internal note on the review workspace
       await t.go("/review/ZZT-0003");
       await t.seeTid("review-workspace", "the review workspace");
@@ -2271,6 +2388,8 @@ const SCENARIOS = {
         await t.go(route);
         await t.seeTid(tid, `${tag}: ${route} renders`);
         await t.settle(200);
+        // 28 Oct: the criteria RMES is retired on every screen
+        t.check(`${tag}: no criteria or findings UI`, (await t.ui.locator(OLD_RMES_UI).count()) === 0, await t.ui.locator(OLD_RMES_UI).count());
         await t.shot(tag);
       };
       // each persona on its own page load (the host's call log starts again with each)
@@ -2469,59 +2588,29 @@ const SCENARIOS = {
       const done = await t.item("PkOpOP000301");
       t.check("sent again: the point is closed as not accepted", !!done.OP_Outcome && (await t.tid("op-decide-OP-0003-01").count()) === 0, done.OP_Outcome);
     }),
-  "finding-kept-on-failure": () =>
-    scenario("finding-kept-on-failure", async (t) => {
-      // gap 6 on the RMES tab: Add finding and Ask the supplier about a finding keep their modal open with the text
-      // when the save fails; sent again, they close
+  "decision-kept-on-failure": () =>
+    scenario("decision-kept-on-failure", async (t) => {
+      // gap 6 for the Safety decision (28 Oct: it replaced the RMES findings as the reviewer's only RMES-side input): a
+      // rejection whose save fails keeps the choice and the reason typed; sent again once Kissflow answers, it is saved
       await open(t, { roles: "saf", byid: "1" });
-      await t.go("/review/ZZT-0003?tab=rmes");
-      await t.seeTid("rmes-tab", "the RMES tab");
-      const findings = async () => {
-        const rmes = (await t.rows(F.rmesSAF)).find((x) => x.Case_Item_Id === CASE3);
-        return rmes?.["Table::Safety_Findings"] ?? rmes?.Safety_Findings ?? [];
-      };
-      const before = (await findings()).length;
-      // 1. a finding (the RMES row's update refused)
-      const TEXT = "The CoA gives no limit for nickel.";
-      await t.tid("add-finding").first().click();
-      await t.fillText("finding-text", TEXT);
-      await t.refuse("DATAFORM_UPDATE_ITEM");
-      await t.lag(300);
-      let toasts = (await t.toastLog()).length;
-      await t.tid("finding-save").first().click();
-      let busy = await t.button("finding-save");
-      t.check("Add finding says “Sending…” and is disabled while the finding is saved", busy.disabled && busy.text === "Sending…", busy);
-      await t.lag(0);
-      await t.settle();
-      t.check("the finding: “Not saved: …”", !!(await t.waitToast(/^Not saved: /, toasts)), (await t.toastLog()).slice(toasts));
-      const kept = (await t.tid("finding-save").count()) === 1;
-      t.check("a failed finding keeps the modal open with its text", kept && (await t.value("finding-text")) === TEXT, [kept, kept && (await t.value("finding-text"))]);
-      t.check("Kissflow holds no new finding", (await findings()).length === before, (await findings()).length);
-      await t.refuse("DATAFORM_UPDATE_ITEM", false);
-      await t.act("finding-save");
-      const fid = (await findings()).find((r) => r.Findings_Text === TEXT)?.Findings_Key;
-      t.must("sent again: Kissflow holds the finding and the modal closes", !!fid && (await t.tid("finding-save").count()) === 0, [fid, await t.tid("finding-save").count()]);
-      // 2. a query from that finding (the CIQ Open Point create refused)
-      const ops = (await t.rows(F.op)).map((x) => x._id);
-      const Q = "Please send the nickel limit of the material.";
-      await t.tid(`finding-ask-${fid}`).first().click();
-      await t.fillText("finding-ask-question", Q);
-      await t.refuse("PROCESS_CREATE_ITEM");
-      await t.lag(300);
-      toasts = (await t.toastLog()).length;
-      await t.tid("finding-ask-send").first().click();
-      busy = await t.button("finding-ask-send");
-      t.check("Send to supplier says “Sending…” and is disabled while the query is raised", busy.disabled && busy.text === "Sending…", busy);
-      await t.lag(0);
-      await t.settle();
-      t.check("the query: “Not saved: …”", !!(await t.waitToast(/^Not saved: /, toasts)), (await t.toastLog()).slice(toasts));
-      const open1 = (await t.tid("finding-ask-send").count()) === 1;
-      t.check("a failed query keeps the modal open with its question", open1 && (await t.value("finding-ask-question")) === Q, [open1, open1 && (await t.value("finding-ask-question"))]);
-      t.check("Kissflow holds no new open point", (await t.rows(F.op)).every((x) => ops.includes(x._id)));
-      await t.refuse("PROCESS_CREATE_ITEM", false);
-      await t.act("finding-ask-send");
-      const op = (await t.rows(F.op)).find((x) => !ops.includes(x._id));
-      t.check("sent again: Kissflow holds the point and the modal closes", op?.Question_Text === Q && (await t.tid("finding-ask-send").count()) === 0, [op?.Question_Text, await t.tid("finding-ask-send").count()]);
+      await t.go("/review/ZZT-0003");
+      await t.seeTid("decision-card", "the Safety decision card");
+      const R = "The arsenic evidence covers one batch only.";
+      await t.tid("decision-choice").getByRole("button", { name: "Rejected", exact: true }).click();
+      await t.fillText("decision-reason", R);
+      await t.refuse("PROCESS_UPDATE_ITEM");
+      const toasts = (await t.toastLog()).length;
+      await t.act("decision-record");
+      t.check("the rejection: “Not saved: …”", !!(await t.waitToast(/^Not saved: /, toasts)), (await t.toastLog()).slice(toasts));
+      const open1 = (await t.tid("decision-record").count()) === 1;
+      const pressed = open1 ? await t.tid("decision-choice").getByRole("button", { name: "Rejected", exact: true }).getAttribute("aria-pressed").catch(() => null) : null;
+      t.check("a failed rejection keeps the card open with the reason", open1 && (await t.value("decision-reason")) === R, [open1, open1 && (await t.value("decision-reason"))]);
+      t.check("… and the choice (“Record rejection”)", open1 && (await t.button("decision-record")).text === "Record rejection", [pressed, open1 && (await t.button("decision-record")).text]);
+      t.check("Kissflow holds no decision", !(await t.item("PkRevZZT0003SAF1")).RMES_Decision, (await t.item("PkRevZZT0003SAF1")).RMES_Decision);
+      await t.refuse("PROCESS_UPDATE_ITEM", false);
+      await t.act("decision-record");
+      const rev = await t.item("PkRevZZT0003SAF1");
+      t.check("sent again: Kissflow holds Rejected with the reason, and the card shows it", rev.RMES_Decision === "Rejected" && rev.RMES_Decision_Reason === R && (await t.tid("decision-record").count()) === 0, [rev.RMES_Decision, rev.RMES_Decision_Reason]);
     }),
   "new-case-failed": () =>
     scenario("new-case-failed", async (t) => {
@@ -2573,30 +2662,25 @@ const SCENARIOS = {
   "reload-kept": () =>
     scenario("reload-kept", async (t) => {
       // APP-SAVING-GAPS gap 8: a reload that could not read a part again shows that part as the last load read it, so
-      // what the reviewer typed stays: first the RMES list refused, then only the record's full read (its criteria)
+      // what the reviewer typed stays: the RMES list refused on Reload keeps the record (and the decision reason typed);
+      // since 28 Oct the record is never read item by item (no criteria), so its list is the only RMES read
       await open(t, { roles: "saf", byid: "1" });
-      await t.go("/review/ZZT-0003?tab=rmes");
-      await t.seeTid("rmes-tab", "the RMES tab");
-      const criteria = () => t.ui.locator('[data-testid^="criterion-result-"]').evaluateAll((els) => els.map((e) => e.dataset.testid.slice("criterion-result-".length)));
-      const ids = await criteria();
-      t.must("a Safety criterion waits for its result", ids.length > 0, ids);
-      const id = ids[0];
+      await t.go("/review/ZZT-0003");
+      await t.seeTid("decision-card", "the Safety decision card");
       const NOTE = "Nickel checked against the CoA; waiting for the second batch.";
-      await t.fillText(`criterion-comment-${id}`, NOTE);
+      await t.fillText("decision-reason", NOTE);
       const warned = async () => ((await t.tid("load-warnings").count()) ? (await t.tid("load-warnings").first().textContent()) ?? "" : "");
-      for (const [cmd, what] of [["DATAFORM_GET_ITEMS@rmesSAF", "the RMES list"], ["DATAFORM_GET_ITEM@rmesSAF", "the RMES record's own read (its criteria)"]]) {
-        await t.refuse(cmd);
-        await t.reload();
-        const now = await criteria();
-        t.check(`${what} refused on Reload: the criteria stay on screen`, now.length === ids.length, [now.length, ids.length]);
-        const kept = (await t.tid(`criterion-comment-${id}`).count()) === 1;
-        t.check(`… and so does the comment typed before it`, kept && (await t.value(`criterion-comment-${id}`)) === NOTE, kept && (await t.value(`criterion-comment-${id}`)));
-        t.check(`… with a warning that it is shown as of the earlier read`, /shown as of \d{2}:\d{2}/.test(await warned()), await warned());
-        await t.refuse(cmd, false);
-      }
+      await t.refuse("DATAFORM_GET_ITEMS@rmesSAF");
+      await t.reload();
+      const kept = (await t.tid("decision-reason").count()) === 1;
+      t.check("the RMES list refused on Reload: the reason typed stays", kept && (await t.value("decision-reason")) === NOTE, kept && (await t.value("decision-reason")));
+      t.check("… the decision can still be recorded (the record is kept from the earlier read)", kept && !(await t.button("decision-record")).disabled && (await t.tid("decision-no-record").count()) === 0);
+      t.check("… with a warning that it is shown as of the earlier read", /shown as of \d{2}:\d{2}/.test(await warned()), await warned());
+      await t.refuse("DATAFORM_GET_ITEMS@rmesSAF", false);
       await t.reload();
       t.check("read again: no “shown as of” warning", !/shown as of/.test(await warned()), await warned());
-      t.check("… and the comment is still there", (await t.value(`criterion-comment-${id}`)) === NOTE);
+      t.check("… and the reason is still there", (await t.value("decision-reason")) === NOTE);
+      t.check("no load read an RMES record item by item", (await t.calls((c) => c.command === "DATAFORM_GET_ITEM" && (c.flowId === F.rmesSAF || c.flowId === F.rmesREG))).length === 0);
     }),
   "step-kept": () =>
     scenario("step-kept", async (t) => {
@@ -2622,9 +2706,10 @@ const SCENARIOS = {
     }),
   "complete-fresh": () =>
     scenario("complete-fresh", async (t) => {
-      // APP-SAVING-GAPS gap 9: Complete review decides from what Kissflow holds when it runs. A finding a colleague added
-      // after the screen loaded: with the record's own read refused, the completion is refused as not read again (the
-      // list row has no findings, the last load's rows not this one); read again, the domain refuses it for the finding
+      // APP-SAVING-GAPS gap 9: Complete review decides from what Kissflow holds when it runs. Since 28 Oct the Safety
+      // gate is its own open points, the RMES record's presence and the decision: with the RMES list refused, the
+      // completion is refused as not read again (it can't see the record); read again, a legacy row that still holds an
+      // unrecorded criterion and an open blocking finding (the criteria RMES, retired) does not block it
       await open(t, { roles: "rmm,saf", byid: "1" });
       await playCompleteness(t, CASE1);
       await t.reload();
@@ -2635,40 +2720,36 @@ const SCENARIOS = {
       await t.settle(800);
       const rmes = (await t.rows(F.rmesSAF)).find((x) => x.Case_Item_Id === CASE1);
       t.must("Safety's RMES row for ZZT-0001", !!rmes);
-      await t.go("/review/ZZT-0001?tab=rmes");
-      await t.seeTid("rmes-tab", "the RMES tab");
-      const ids = await t.ui.locator('[data-testid^="criterion-result-"]').evaluateAll((els) => els.map((e) => e.dataset.testid.slice("criterion-result-".length)));
-      for (const id of ids) {
-        await t.tid(`criterion-result-${id}`).getByRole("combobox").click();
-        await t.ui.getByRole("option", { name: "Available", exact: true }).click();
-        await t.act(`criterion-save-${id}`);
-      }
+      const created = (await t.calls()).length;
+      await t.go("/review/ZZT-0001");
+      await t.seeTid("decision-card", "the Safety decision card");
       await t.tid("decision-choice").getByRole("button", { name: "Approved", exact: true }).click();
       await t.act("decision-record");
-      await t.go("/review/ZZT-0001");
       await t.seeTid("complete-review", "Complete my review");
-      // a Safety colleague adds an open blocking finding on the record (another session)
-      await t.page.evaluate(([flow, id, crit]) => {
+      // an older version of the app left criteria and findings on the record (legacy dev / prod rows)
+      await t.page.evaluate(([flow, id]) => {
         const x = window.__kfDb[flow].find((r) => r._id === id);
-        const key = Array.isArray(x.Safety_Findings) ? "Safety_Findings" : "Table::Safety_Findings";
-        (x[key] ??= []).push({ _id: "Safety_Findings_rowColleague", Findings_Key: "ZZT-0001-SAF-F99", Findings_Criterion_Code: crit, Findings_Text: "The CoA lacks the nickel limit.", Findings_Blocking: "Yes", Findings_State: "open" });
+        x["Table::Safety_Criteria"] = [{ _id: "Safety_Criteria_rowLegacy", Criteria_Code: "S-B1", Criteria_Part: "B", Criteria_Title: "LEGACY-CRITERION toxicological profile", Criteria_Applicable: "Yes" }];
+        x["Table::Safety_Findings"] = [{ _id: "Safety_Findings_rowLegacy", Findings_Key: "ZZT-0001-SAF-F99", Findings_Criterion_Code: "S-B1", Findings_Text: "LEGACY-FINDING The CoA lacks the nickel limit.", Findings_Blocking: "Yes", Findings_State: "open" }];
         x._modified_at = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
-      }, [F.rmesSAF, rmes._id, ids[0]]);
+      }, [F.rmesSAF, rmes._id]);
       const status = async () => (await t.rows(F.review)).find((x) => x._id === saf._id)._status;
-      await t.refuse("DATAFORM_GET_ITEM@rmesSAF");
+      await t.refuse("DATAFORM_GET_ITEMS@rmesSAF");
       let toasts = (await t.toastLog()).length;
       await t.act("complete-review");
-      t.check("the record's own read refused: “Not completed: Kissflow could not read … again”", !!(await t.waitToast(/^Not completed: Kissflow could not read .*CIQ RMES Safety record of ZZT-0001.* again/, toasts)), (await t.toastLog()).slice(toasts));
+      t.check("the RMES list refused: “Not completed: Kissflow could not read … CIQ RMES Safety … again”", !!(await t.waitToast(/^Not completed: Kissflow could not read .*CIQ RMES Safety.* again/, toasts)), (await t.toastLog()).slice(toasts));
       t.check("… and the Safety review is not completed in Kissflow", (await status()) !== "Completed", await status());
-      await t.refuse("DATAFORM_GET_ITEM@rmesSAF", false);
-      // the read after the refusal still showed the last load's rows: the screen allows Complete again
+      await t.refuse("DATAFORM_GET_ITEMS@rmesSAF", false);
       t.must("Complete my review can be clicked again", !(await t.button("complete-review")).disabled);
       toasts = (await t.toastLog()).length;
       await t.act("complete-review");
-      t.check("read again: the colleague's open finding refuses it (“Cannot complete: …”)", !!(await t.waitToast(/^Cannot complete/, toasts)), (await t.toastLog()).slice(toasts));
-      t.check("… and the Safety review is still not completed", (await status()) !== "Completed", await status());
+      const done = (await t.rows(F.review)).find((x) => x._id === saf._id);
+      t.check("read again: the legacy criterion and finding do not block; completed with RMES_Gaps 0", done._status === "Completed" && done.RMES_Gaps === 0 && done.Review_Gate === "OK", [done._status, done.RMES_Gaps, done.Review_Gate, (await t.toastLog()).slice(toasts)]);
       await t.go("/review/ZZT-0001?tab=rmes");
-      await t.see("The CoA lacks the nickel limit.", "the colleague's finding is on screen now");
+      await t.seeTid("rmes-tab", "the RMES tab");
+      await t.notSee("LEGACY-", "the legacy criterion and finding are not on screen");
+      t.check("no criteria or findings UI", (await t.ui.locator(OLD_RMES_UI).count()) === 0);
+      t.check("after its creation's read-back, the RMES record was never read item by item", (await t.calls((c) => c.seq >= created && c.command === "DATAFORM_GET_ITEM" && c.flowId === F.rmesSAF)).length === 0);
     }),
   "notes-kept-on-failure": () =>
     scenario("notes-kept-on-failure", async (t) => {

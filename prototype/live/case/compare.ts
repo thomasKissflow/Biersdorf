@@ -4,7 +4,7 @@
 // Copy checks count the fields that hold something: two blanks compare equal but prove nothing.
 // Times compare as instants to the second: Kissflow stores DateTimes without milliseconds (kfDateTime drops them).
 import { BDF_SET_FIELDS } from "@/domain/selectors";
-import type { AppState, CiqCase, Finding, RmesCriterion } from "@/domain/types";
+import type { AppState, CiqCase } from "@/domain/types";
 import { str, userIds, type RawItem } from "@/portal/data/raw";
 
 export const instant = (iso: string | undefined) => (iso && Number.isFinite(Date.parse(iso)) ? new Date(Math.floor(Date.parse(iso) / 1000) * 1000).toISOString() : iso);
@@ -44,8 +44,6 @@ export const contactKeys = (s: AppState, email: string) => {
   return u && { name: u.name, email: u.email, title: u.title, mayConfirm: u.mayConfirm !== false, active: u.active !== false, supplierId: u.supplierId };
 };
 
-export const critKeys = (x: RmesCriterion) => ({ id: x.id, dept: x.dept, part: x.part, title: x.title, result: x.result, comment: x.comment || undefined, by: x.by, at: instant(x.at), source: { sectionId: x.source.sectionId, fieldId: x.source.fieldId, label: x.source.label } });
-export const findingKeys = (f: Finding) => ({ id: f.id, dept: f.dept, criterionId: f.criterionId, text: f.text, blocking: f.blocking, status: f.status, openPointId: f.openPointId });
 
 // ---------------------------------------------------------------------------------- pseudo ids
 

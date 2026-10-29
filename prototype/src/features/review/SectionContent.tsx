@@ -50,14 +50,13 @@ export function ChangedBadge({ by, at, state }: { by: string; at: string; state:
   );
 }
 
-/** Limit check shown next to a value: heavy metals from the limit set, MOAH from its RMES criterion. */
+/** Limit check shown next to a value: the K2.2 heavy metals against the limit set (LIM:current). The MOAH check of the
+ *  retired criteria RMES is gone (BDF's RMES scope, 28 Oct). */
 function limitFor(c: CiqCase, f: FieldDef) {
   const v = answerOf(c, f);
   if (typeof v !== "number") return null;
   const hm = HEAVY_METAL_LIMITS.find((m) => m.fieldId === f.id);
-  if (hm) return { limit: hm.limit, unit: hm.unit, pass: v <= hm.limit, version: LIMIT_SET_VERSION };
-  const cr = c.rmes?.criteria.find((x) => x.source.fieldId === f.id && x.limit && x.limit.value === v);
-  return cr?.limit ? { limit: cr.limit.limit, unit: cr.limit.unit, pass: cr.limit.pass, version: cr.limit.limitSetVersion } : null;
+  return hm ? { limit: hm.limit, unit: hm.unit, pass: v <= hm.limit, version: LIMIT_SET_VERSION } : null;
 }
 
 function who(state: AppState, by: { by: string; at: string } | undefined, answered: boolean): ReactNode {

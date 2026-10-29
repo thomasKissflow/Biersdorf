@@ -1,6 +1,7 @@
 // The case (DESIGN §5.1): the 15 supplier-data fields parsed with the portal's readers, the phase table (G1), the phase
 // history, confirmations, the supplier's side of the history, the configuration pin check, and the snapshot fallback.
 import { describe, expect, it } from "vitest";
+import { RMES_RECORD_LINE, RMES_UNREADABLE, rmesSheet } from "@/domain/rmesSheet";
 import { completenessBlockers } from "@/domain/selectors";
 import type { ReviewTrack } from "@/domain/types";
 import type { RawItem } from "@/portal/data/raw";
@@ -177,7 +178,7 @@ describe("header, confirmations, history", () => {
 
   it("the change report after the release (G6) and the computed final document (G4)", () => {
     const m = mapped();
-    expect(m.state.changeReports).toEqual([{ id: "ZZT-0005-cr1", caseId: "ZZT-0005", at: "2026-10-20T13:00:00Z", by: "UsElena", text: "The antioxidant changes from batch 2611 on." }]);
+    expect(m.state.changeReports).toEqual([{ id: "ZZT-0005-cr1", caseId: "ZZT-0005", at: "2026-10-19T19:00:00Z", by: "UsElena", text: "The antioxidant changes from batch 2611 on." }]);
     const fd = caseOf(m, "ZZT-0005").finalDocument!;
     expect(fd.trigger).toBe("Final release by Elena Márquez");
     expect(fd.sections.length).toBe(fx.cases["ZZT-0005"].finalDocument!.sections.length);
@@ -231,5 +232,32 @@ describe("pins and unreadable cases", () => {
     expect([c.materialName, c.supplierId, c.phase]).toEqual([fx.cases["ZZT-0003"].materialName, "SUP-ZZT-SOLVARO", "review"]);
     expect(c.reviews.length).toBe(5); // RMM, REG, SAF, QM, MIC (no SF-09: no Sustainability track)
     expect(Number.isFinite(Date.parse(c.createdAt))).toBe(true);
+  });
+});
+
+describe("the RMES sheet on the live-mapped case (domain/rmesSheet.ts, the same selector as the prototype)", () => {
+  it("is filled from CIQ Case: Trade_Name / BDF_Set_JSON, Answers_JSON (FLD-GEN-004, the free texts) and Components_JSON", () => {
+    const m = mapped(() => {}, "saf");
+    const c = caseOf(m, "ZZT-0003");
+    const want = fx.cases["ZZT-0003"];
+    const live = rmesSheet(m.state, c, { readable: m.index.cases.get("ZZT-0003")!.readable });
+    const proto = rmesSheet(fx.state, fx.state.cases.find((x) => x.id === want.id)!);
+    expect(live.readable && proto.readable).toBe(true);
+    if (!live.readable || !proto.readable) return;
+    expect(live.record).toBe(RMES_RECORD_LINE("ZZT-0003"));
+    expect(live.header.map((h) => [h.key, h.text, h.state])).toEqual(proto.header.map((h) => [h.key, h.text, h.state]));
+    expect(live.header.find((h) => h.key === "manufacturer")!.text).toBe(String(want.answers["FLD-GEN-004"]));
+    expect(live.rows).toEqual(proto.rows);
+    expect(live.rows.length).toBeGreaterThan(0);
+  });
+
+  it("a case the role can't read: the one notice, never the case id as the trade name or the supplier as manufacturer", () => {
+    const m = mapped((s) => {
+      s.items.case = s.items.case.filter((i) => i.Case_Code !== "ZZT-0003");
+      s.unreadableCases["AppZZT-0003"] = "403 no permission";
+    }, "saf");
+    const ref = m.index.cases.get("ZZT-0003")!;
+    expect(ref.readable).toBe(false);
+    expect(rmesSheet(m.state, caseOf(m, "ZZT-0003"), { readable: ref.readable })).toMatchObject({ readable: false, notice: RMES_UNREADABLE });
   });
 });

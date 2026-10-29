@@ -44,7 +44,8 @@
 - [ ] Return gives Elena "More information needed". She answers again, and the point is accepted.
 - [ ] Close (withdraw) with an internal reason: the supplier sees "Closed, no answer needed" without the reason.
 - [ ] Add a missing section with a justification: the supplier gets a task and the department an open point.
-- [ ] RMES tab (Safety and Regulatory): criteria and findings (an open finding blocks), decision Approved or Rejected (Rejected needs a reason).
+- [ ] RMES tab (Safety and Regulatory only): the 8 fields filled automatically from the CIQ, each with its source (a source opens its section); nothing editable; components of one origin share the free text (footnote).
+- [ ] Decision card on the Questionnaire tab (Safety and Regulatory): Approved or Rejected (Rejected needs a reason); the completion bar's decision link scrolls to it. RMM's case page has no RMES card.
 - [ ] Complete my review is refused while blockers remain; they are listed.
 - [ ] Reassign works within the department.
 - [ ] Sections changed since the review are marked.

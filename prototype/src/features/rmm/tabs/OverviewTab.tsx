@@ -1,8 +1,9 @@
-// Overview tab of the case page: the case facts, the review tracks, the confirmations, a scope summary and, for
-// Safety and Regulatory, the internal RMES progress. Once completed it links to the final document.
+// Overview tab of the case page: the case facts, the review tracks (with the Safety / Regulatory decisions), the
+// confirmations and a scope summary. Once completed it links to the final document. The RMES is not shown here: it is
+// the Safety and Regulatory reviewers' sheet in their review workspace (BDF's RMES scope, 28 Oct).
 import { ArrowRight, FileCheck2, FilePlus2, Info, TriangleAlert } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Avatar, Badge, Button, Card, CardHeader, KeyValue, Mono, ProgressBar } from "@/components/ui";
+import { Avatar, Badge, Button, Card, CardHeader, KeyValue, Mono } from "@/components/ui";
 import { DecisionBadge, TrackBadge } from "@/components/status";
 import { DEPT_LABEL } from "@/domain/catalog";
 import { REQUIRED_CONFIG, departmentsForScope, fmtDate, fmtDateTime, isClosed, isConfigAnswered, manufacturerOf, siteOf, trackView, userById, userName } from "@/domain/selectors";
@@ -26,7 +27,6 @@ export function OverviewTab({ c, goTo }: { c: CiqCase; goTo: (t: CaseTab) => voi
         {c.phase === "completed" && c.finalDocument && <FinalDocumentCard c={c} goTo={goTo} />}
         <ScopeSummary c={c} goTo={goTo} />
         <Contacts c={c} />
-        <RmesProgress c={c} />
       </div>
     </div>
   );
@@ -304,48 +304,6 @@ function Confirmations({ c }: { c: CiqCase }) {
           })}
         </ul>
       )}
-    </Card>
-  );
-}
-
-/** RMM sees RMES progress per Safety / Regulatory with the blocking reason (REQ-RMES-018). */
-function RmesProgress({ c }: { c: CiqCase }) {
-  if (!c.rmes) return null;
-  const rmes = c.rmes;
-  return (
-    <Card data-testid="case-rmes">
-      <CardHeader title="RMES progress" subtitle="Internal evaluation by Safety and Regulatory, never shown to the supplier" />
-      <div className="space-y-4 p-4">
-        {(["SAF", "REG"] as const).map((d) => {
-          const crit = rmes.criteria.filter((x) => x.dept === d);
-          if (!crit.length) return null;
-          const done = crit.filter((x) => x.result).length;
-          const blocking = rmes.findings.filter((f) => f.dept === d && f.status === "open");
-          const negative = crit.filter((x) => x.result === "negative" || x.result === "implausible");
-          return (
-            <div key={d}>
-              <div className="flex items-baseline justify-between text-[13px]">
-                <span className="font-medium text-ink">{DEPT_LABEL[d]}</span>
-                <span className="text-ink-3">
-                  {done} of {crit.length} criteria
-                </span>
-              </div>
-              <ProgressBar value={done} max={crit.length} tone={blocking.length ? "bad" : done === crit.length ? "ok" : "brand"} className="mt-1.5" />
-              {blocking.map((f) => (
-                <p key={f.id} className="mt-1.5 text-[12.5px] text-bad">
-                  Open finding: {f.text}
-                </p>
-              ))}
-              {negative.map((x) => (
-                <p key={x.id} className="mt-1 text-[12.5px] text-ink-2">
-                  <Mono className="text-ink-3">{x.id}</Mono> {x.title}: <span className="font-medium">{x.result}</span>
-                </p>
-              ))}
-            </div>
-          );
-        })}
-        <p className="text-[11.5px] text-ink-3">Criteria are recorded by Safety and Regulatory in their review.</p>
-      </div>
     </Card>
   );
 }

@@ -61,7 +61,7 @@ export function attentionItems(cases: CiqCase[]): AttentionItem[] {
     const rmmTrack = c.reviews.find((r) => r.dept === "RMM");
     const reviewLink = rmmTrack && c.phase === "review" ? `/review/${c.id}` : `/cases/${c.id}`;
 
-    // A Rejected RMES decision RMM has not answered yet (AS-02): continue to the final release with a note, or cancel.
+    // A Rejected Safety / Regulatory decision RMM has not answered yet (AS-02): continue to the final release with a note, or cancel.
     for (const d of rejectionNeedsRmmChoice(c)) {
       const r = c.reviews.find((x) => x.dept === d);
       const decidedAt = c.audit.filter((a) => a.action === `Final ${DEPT_SHORT[d]} decision`).at(-1)?.at ?? phaseSince(c);

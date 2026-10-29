@@ -638,6 +638,8 @@ describe("fake integrations: the 12 hand-offs' effects, with their guards", () =
     // SPEC §2 (02:30): the fields are recorded, then the Approve fails (Integration service has no members)
     no(fi.dispatch("completenessConfirmed", { portalRequestItemId: rid }), /recorded the completeness.*050201.*Integration service, which has no members/);
     expect([fake.stepOf(caseId)?.activityId, kase().Case_Phase, kase().Completeness_Confirm, kase().Completeness_At]).toEqual([STEPS.case.waiting, "Review", "Confirmed", "2026-10-21T02:00:00Z"]);
+    // 25 Oct: the reviews are I-2's last step, after the Approve: the refused Approve leaves the review.started row only
+    expect([fake.db.review.filter((r) => r.Case_Item_Id === caseId).length, fake.db.audit.filter((r) => r.Case_Item_Id === caseId && r.Action_Code === "review.started").length]).toEqual([0, 1]);
     no(fi.dispatch("completenessConfirmed", { portalRequestItemId: rid }), /already has its completeness/);
   });
 
@@ -648,6 +650,7 @@ describe("fake integrations: the 12 hand-offs' effects, with their guards", () =
     portal.set(rid, { Completeness_Confirm: "Confirmed" });
     ok(fi.dispatch("completenessConfirmed", { portalRequestItemId: rid }));
     expect(fake.stepOf(caseId)?.activityId).toBe(STEPS.case.release);
+    expect(fake.db.review.filter((r) => r.Case_Item_Id === caseId).map((r) => r.Review_Dept)).toEqual(["RMM"]);
   });
 
   it("op.round, op.edited, I-4, op.closed: a query per round, edited, answered, completed", async () => {

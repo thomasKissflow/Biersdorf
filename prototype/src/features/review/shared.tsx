@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { Badge, Card, EmptyState, cx, type Tone } from "@/components/ui";
 import { DEPT_LABEL, DEPT_SHORT, REVIEW_TRACK_DEPTS, sectionOf } from "@/domain/catalog";
 import { DAY, fmtDate, nowIso, rmmFlags, trackView, type TrackView } from "@/domain/selectors";
-import type { CiqCase, Dept, DocumentRef, FieldDef, ObjectRef, ReviewDept, ReviewTrack, RmesResult, TrackStatus } from "@/domain/types";
+import type { CiqCase, Dept, DocumentRef, FieldDef, ObjectRef, ReviewDept, ReviewTrack, TrackStatus } from "@/domain/types";
 import { useStore } from "@/store/store";
 
 /** Has a Part 2 review lane: RMM (the whole CIQ) and the five section-owning departments. */
@@ -65,20 +65,12 @@ export function sectionTarget(sectionId: string, templateVersion?: string): AskT
   return { ref: { sectionId, label: `${secCode(sectionId, templateVersion)} › ${secTitle(sectionId, templateVersion)}` } };
 }
 
-// ------------------------------------------------------------------ RMES vocabulary
+// ------------------------------------------------------------------ RMES record
 
-export const RESULT_OPTIONS: { value: RmesResult; label: string }[] = [
-  { value: "available", label: "Available" },
-  { value: "plausible", label: "Plausible" },
-  { value: "listed", label: "Listed" },
-  { value: "not-listed", label: "Not listed" },
-  { value: "negative", label: "Negative" },
-  { value: "implausible", label: "Implausible" },
-  { value: "na", label: "Not applicable" },
-];
-export const RESULT_LABEL = Object.fromEntries(RESULT_OPTIONS.map((o) => [o.value, o.label])) as Record<RmesResult, string>;
-export const RESULT_TONE: Record<RmesResult, Tone> = { available: "ok", plausible: "ok", listed: "ok", "not-listed": "warn", negative: "bad", implausible: "bad", na: "neutral" };
-export const needsComment = (r: RmesResult | "") => r === "negative" || r === "implausible" || r === "na";
+/** While the case's RMES record does not exist yet: when it is created (the decision and, live, the completion need
+ *  it). Prototype: with the Safety / Regulatory review task; live: on that reviewer's own next load (FE-CLEANUP A14). */
+export const rmesRecordPending = (instant: boolean) =>
+  instant ? "The internal RMES record is created when Safety or Regulatory gets a review task on the case." : "The internal RMES record is created the next time a Safety or Regulatory reviewer with a review task on the case opens CIQ Digital.";
 
 // ------------------------------------------------------------------ case facts
 

@@ -63,10 +63,11 @@ const REVIEWERS = new Set<InternalPersonaId>(["reg", "saf", "qm", "mic", "sus"])
 const OP_DEPT_STEPS = (["REG", "SAF", "QM", "MIC", "SUS", "RMM"] as const).map((d) => STEPS.op[d]);
 /** Item reads in flight per rung; the client caps the whole load at MAX_IN_FLIGHT. */
 const LANES = 6;
-/** The forms with child tables, whose list rows lack them (read item by item; see readForm). */
-const CHILD_TABLE_FORMS: ReadonlySet<ReadForm> = new Set(["supplier", "rmesSAF", "rmesREG"]);
+/** The forms whose child tables are read, whose list rows lack them (read item by item; see readForm). The RMES forms
+ *  are not (28 Oct): their criteria and findings tables are retired, the list row is the whole record. */
+const CHILD_TABLE_FORMS: ReadonlySet<ReadForm> = new Set(["supplier"]);
 /** What a form's child tables hold, for the warnings. */
-const ROWS_OF: Partial<Record<ReadForm, string>> = { supplier: "contacts", rmesSAF: "criteria and findings", rmesREG: "criteria and findings" };
+const ROWS_OF: Partial<Record<ReadForm, string>> = { supplier: "contacts" };
 
 // ---------------------------------------------------------------------------------- the plan per persona
 
@@ -812,11 +813,10 @@ const noStep = (it: RawItem): RawItem => {
 /**
  * A new load with the parts it could not read again taken from the previous load (APP-SAVING-GAPS gap 8; the portal
  * keeps its last good data when a read fails): one transient error must not blank good data (an RMES record whose
- * form read failed would unmount the reviewer's unsaved criterion comments; a flow whose task list failed would lose
- * its held steps).
+ * form read failed would hide the case's record; a flow whose task list failed would lose its held steps).
  * - A form whose list failed now but answered before: its previous rows.
  * - A form row whose full read failed now (its list row has no child tables): the previous load's row under the new
- *   list row, so its criteria, findings or contacts stay (`keptRows`, each with a warning).
+ *   list row, so its contacts stay (`keptRows`, each with a warning).
  * - A process flow whose admin or tasks rung failed now but answered before: the items this load read win, the ones it
  *   no longer has come from the previous load (a list row this load could not read in full is laid over the previous
  *   load's full read). The held steps are this load's when its task lists answered (an item from the previous load
@@ -910,7 +910,7 @@ export function keepUnread(prev: LiveSnapshot | undefined, next: LiveSnapshot): 
 }
 
 /** The parts a review's gate is decided from (Complete review, gap 9): the history (the points a colleague raised), the
- *  open points, the reviews and the RMES records. */
+ *  open points, the reviews (the decisions) and the RMES records (that the record exists). */
 const GATE_PARTS: readonly FlowKey[] = ["audit", "op", "review", "rmesSAF", "rmesREG"];
 
 /** Complete review's refusal when its fresh read is not one (some of it is an earlier load's). */
@@ -918,17 +918,13 @@ export const NOT_READ_AGAIN = (parts: string[]) => `Not completed: Kissflow coul
 
 /**
  * Why a load cannot decide the review gate of case `caseId` (APP-SAVING-GAPS gap 9: Kissflow's Review_Gate trusts the
- * counts Complete review writes), or undefined: a part it decides from was kept from an earlier load (keepUnread), or
- * the case's RMES record was listed without its criteria and findings (its full read failed; counting from the list row
- * would find no gap). A list that never answered is no reason: the screen never had it either, and a rung refused on
- * every load would block Complete review for good.
+ * counts Complete review writes), or undefined: a part it decides from was kept from an earlier load (keepUnread). An
+ * RMES record is never read item by item any more (28 Oct: no criteria or findings), so it never stands in the way. A
+ * list that never answered is no reason: the screen never had it either, and a rung refused on every load would block
+ * Complete review for good.
  */
-export function notReadAgain(snap: LiveSnapshot, caseId: string): string | undefined {
+export function notReadAgain(snap: LiveSnapshot, _caseId: string): string | undefined {
   const parts = GATE_PARTS.filter((f) => snap.kept?.[f] !== undefined).map((f) => FLOW_LABEL[f]);
-  for (const f of ["rmesSAF", "rmesREG"] as const) {
-    const unread = new Set(snap.unreadRows?.[f] ?? []);
-    if (snap.forms[f].some((r) => unread.has(r._id) && str(r, "Case_Code") === caseId)) parts.push(`the ${FLOW_LABEL[f]} record of ${caseId}`);
-  }
   return parts.length ? NOT_READ_AGAIN(parts) : undefined;
 }
 

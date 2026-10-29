@@ -121,7 +121,7 @@ export function MailTemplates() {
       </div>
 
       <Callout tone="brand" icon={<Lock size={15} />} title="Supplier e-mails never contain internal content">
-        They hold only what the supplier sees in the portal anyway: the case, the material, the question with its reference and due date. Internal notes, RMES results, findings, department decisions and internal reasons
+        They hold only what the supplier sees in the portal anyway: the case, the material, the question with its reference and due date. Internal notes, the RMES, department decisions and internal reasons
         never appear in them.
       </Callout>
     </div>

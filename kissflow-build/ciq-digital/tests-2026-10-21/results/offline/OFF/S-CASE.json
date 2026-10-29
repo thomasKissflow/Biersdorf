@@ -1,13 +1,13 @@
 {
  "suite": "S-CASE",
  "run": "OFF",
- "startedAt": "2026-10-28T12:19:11.909Z",
- "savedAt": "2026-10-28T12:19:11.939Z",
+ "startedAt": "2026-10-28T19:18:12.189Z",
+ "savedAt": "2026-10-28T19:18:12.316Z",
  "counts": {
-  "pass": 2,
-  "fail": 1,
-  "blocked": 0,
-  "not-run": 12
+  "pass": 13,
+  "fail": 0,
+  "blocked": 2,
+  "not-run": 0
  },
  "steps": [
   {
@@ -49,13 +49,12 @@
      "calls": 2
     }
    },
-   "ms": 0,
-   "at": "2026-10-28T12:19:11.910Z"
+   "ms": 1,
+   "at": "2026-10-28T19:18:12.190Z"
   },
   {
    "name": "1 supplier master",
-   "status": "fail",
-   "reason": "failed: the supplier reads back as written (country as its live code)",
+   "status": "pass",
    "evidence": {
     "readBacks": [
      {
@@ -164,8 +163,8 @@
       }
      },
      {
-      "label": "the supplier reads back as written (country as its live code)",
-      "ok": false,
+      "label": "the supplier reads back as written (the country through its live code)",
+      "ok": true,
       "detail": {
        "got": {
         "id": "ZZT-N21-OFF-SC1-SUP",
@@ -181,7 +180,7 @@
         "id": "ZZT-N21-OFF-SC1-SUP",
         "name": "ZZT-N21-OFF Supplier",
         "duns": "920000001",
-        "country": "DE",
+        "country": "Germany",
         "city": "ZZT-N21-OFF Hamburg",
         "type": "manufacturer",
         "active": true,
@@ -251,152 +250,1496 @@
      "calls": 22
     }
    },
-   "ms": 12,
-   "at": "2026-10-28T12:19:11.911Z"
+   "ms": 16,
+   "at": "2026-10-28T19:18:12.208Z"
   },
   {
    "name": "2 draft",
-   "status": "not-run",
-   "reason": "needs \"1 supplier master\" (fail)",
+   "status": "pass",
    "evidence": {
-    "readBacks": [],
-    "checks": [],
-    "notes": {}
+    "readBacks": [
+     {
+      "what": "ZZT-N21-OFF-SC1-D01 (the draft as loaded)",
+      "value": {
+       "_status": "Draft",
+       "_current_step": "Create case",
+       "Case_Code": "ZZT-N21-OFF-SC1-D01",
+       "Trade_Name": "ZZT-N21-OFF Sunflower Seed Oil",
+       "Supplier_Code": "ZZT-N21-OFF-SC1-SUP",
+       "Main_INCI": "Helianthus Annuus Seed Oil",
+       "BDF_Material_No": null,
+       "Owner_RMM": {
+        "_id": "UsRmmKatrin",
+        "Name": "Katrin Vogel"
+       },
+       "Portal_Contact_Ids": "UsRmmKatrin",
+       "Release_Key": "RS-2026.1 + v1",
+       "draft": {
+        "flow": "case",
+        "itemId": "PkCase5",
+        "act": "Act6",
+        "activityId": "Activity_p1i6xz",
+        "label": "New case ZZT-N21-OFF-SC1-D01 · ZZT-N21-OFF Sunflower Seed Oil"
+       }
+      }
+     },
+     {
+      "what": "ZZT-N21-OFF-SC1-D01 after the discard (admin GET)",
+      "value": "KISSFLOW_ERROR_01015 Document not found (PkCase5)"
+     }
+    ],
+    "checks": [
+     {
+      "label": "ZZT-N21-OFF-SC1-D01: the writer stopped at the gate and left a draft",
+      "ok": true,
+      "detail": "Case ZZT-N21-OFF-SC1-D01 was saved as a draft in Kissflow but not sent: Kissflow misses BDF_Material_No. Use Unsent items at the top of the page to send or discard it."
+     },
+     {
+      "label": "ZZT-N21-OFF-SC1-D01: a Start draft (Diagnostics lists it)",
+      "ok": true
+     },
+     {
+      "label": "ZZT-N21-OFF-SC1-D01: its fields are there, BDF_Material_No is not",
+      "ok": true
+     },
+     {
+      "label": "ZZT-N21-OFF-SC1-D01: not part of any case, but blocks a twin (ownDraftKeys)",
+      "ok": true
+     },
+     {
+      "label": "ZZT-N21-OFF-SC1-D01: discarded, the GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 Document not found (PkCase5)"
+     }
+    ],
+    "notes": {
+     "approximated": "the domain never leaves a Mandatory Start field blank; the suite blanks the material number in its result, so BDF_Material_No is missing for the app's own gate (assertMandatory)",
+     "calls": 14
+    }
    },
-   "ms": 0,
-   "at": "2026-10-28T12:19:11.924Z"
+   "ms": 9,
+   "at": "2026-10-28T19:18:12.225Z"
   },
   {
    "name": "3 started (I-1)",
-   "status": "not-run",
-   "reason": "needs \"1 supplier master\" (fail)",
+   "status": "pass",
    "evidence": {
-    "readBacks": [],
-    "checks": [],
-    "notes": {}
+    "readBacks": [
+     {
+      "what": "CIQ Case (admin GET)",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Waiting for supplier: CIQ",
+       "Case_Code": "ZZT-N21-OFF-SC1-C01",
+       "Case_Phase": "Supplier filling in the CIQ",
+       "Portal_Request_Item_Id": "PkReq1",
+       "Portal_Contact_Ids": "UsRmmKatrin",
+       "Confirm_Contact_Ids": "UsRmmKatrin",
+       "Portal_Assignees_JSON": "[{\"_id\":\"UsRmmKatrin\"}]",
+       "Release_Assignees_JSON": "[{\"_id\":\"UsRmmKatrin\"}]",
+       "Case_Contacts_JSON": "[{\"id\":\"UsRmmKatrin\",\"name\":\"Katrin Vogel\",\"email\":\"zzt-n21-off-sc1.self@example.test\",\"title\":\"Regulatory Manager\",\"mayConfirm\":true},{\"name\":\"Marta Lindqvist\",\"email\":\"marta.lindqvist.sc1@zzt-n21-r1.example\",\"title\":\"QA Specialist\",\"mayConfirm\":false}]",
+       "Owner_RMM": {
+        "_id": "UsRmmKatrin",
+        "Name": "Katrin Vogel"
+       }
+      }
+     },
+     {
+      "what": "CIQP Request (admin GET)",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Supplier: fill in the CIQ",
+       "Request_Key": "ZZT-N21-OFF-SC1-C01|1",
+       "App_Case_Item_Id": "PkCase7",
+       "Case_Code": "ZZT-N21-OFF-SC1-C01",
+       "Case_Phase_Label": "Filling in",
+       "Request_Locked": "No",
+       "Assigned_Contacts": [
+        {
+         "_id": "UsRmmKatrin"
+        }
+       ],
+       "Release_Contacts": [
+        {
+         "_id": "UsRmmKatrin"
+        }
+       ],
+       "Config_Bundle_Hash": "a090aadd72c34ccfa5e4ed0c784c7411d09e01b7c0a56f425fe966d814d9bbf7"
+      }
+     },
+     {
+      "what": "case.created (audit row)",
+      "value": {
+       "Action_Code": "case.created",
+       "Object_State": "Supplier filling in the CIQ",
+       "Ref_Flow_Id": "CIQ_Case_A00",
+       "Ref_Item_Id": "PkCase7",
+       "Ref_Activity_Instance_Id": "Act8",
+       "Notify_Channel": "webhook",
+       "handoffs": [
+        {
+         "code": "case.started",
+         "status": "sent",
+         "detail": "handed over",
+         "key": "HO-case.started-mvshysjw-rq0808"
+        }
+       ]
+      }
+     },
+     {
+      "what": "mapped case (RMM)",
+      "value": {
+       "id": "ZZT-N21-OFF-SC1-C01",
+       "materialName": "ZZT-N21-OFF Sunflower Seed Oil",
+       "inci": "Helianthus Annuus Seed Oil",
+       "materialNo": "ZZT-N21-OFF-SC1-RM-01",
+       "supplierId": "ZZT-N21-OFF-SC1-SUP",
+       "manufacturer": "ZZT-N21-OFF Supplier",
+       "ownerId": "UsRmmKatrin",
+       "priority": "normal",
+       "templateVersion": "CIQ-2026 v1",
+       "ruleSetVersion": "RS-2026.1",
+       "supplierContactIds": [
+        "self:UsRmmKatrin",
+        "u-ZZT-N21-OFF-SC1-SUP-2"
+       ],
+       "markets": [
+        "EU"
+       ],
+       "due": "2026-11-27",
+       "bdfAnswers": {
+        "FLD-GEN-001": "ZZT-N21-OFF Sunflower Seed Oil",
+        "FLD-GEN-002": "ZZT-N21-OFF Supplier",
+        "FLD-GEN-003": "920000001",
+        "FLD-GEN-008": "zzt-n21-off-sc1.self@example.test",
+        "FLD-GEN-009": "marta.lindqvist.sc1@zzt-n21-r1.example"
+       },
+       "phase": "supplier-input"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "case.started was handed over",
+      "ok": true,
+      "detail": [
+       {
+        "code": "case.started",
+        "status": "sent",
+        "detail": "handed over",
+        "key": "HO-case.started-mvshysjw-rq0808"
+       }
+      ]
+     },
+     {
+      "label": "the case is at \"Waiting for supplier: CIQ\"",
+      "ok": true,
+      "detail": [
+       "Waiting for supplier: CIQ",
+       "InProgress"
+      ]
+     },
+     {
+      "label": "the request names its case (App_Case_Item_Id)",
+      "ok": true,
+      "detail": "PkCase7"
+     },
+     {
+      "label": "Request_Key is <case>|<cycle>",
+      "ok": true,
+      "detail": "ZZT-N21-OFF-SC1-C01|1"
+     },
+     {
+      "label": "Supplier_Display_Name is the supplier's legal name",
+      "ok": true,
+      "detail": "ZZT-N21-OFF Supplier"
+     },
+     {
+      "label": "I-1 copied the 16 header, bundle and contact fields (16 hold something)",
+      "ok": true
+     },
+     {
+      "label": "phase label Filling in, not locked",
+      "ok": true,
+      "detail": [
+       "Filling in",
+       "No"
+      ]
+     },
+     {
+      "label": "Assigned_Contacts = the case's Portal_Assignees_JSON",
+      "ok": true,
+      "detail": {
+       "request": [
+        "UsRmmKatrin"
+       ],
+       "case": [
+        "UsRmmKatrin"
+       ]
+      }
+     },
+     {
+      "label": "Release_Contacts = the case's Release_Assignees_JSON",
+      "ok": true,
+      "detail": {
+       "request": [
+        "UsRmmKatrin"
+       ],
+       "case": [
+        "UsRmmKatrin"
+       ]
+      }
+     },
+     {
+      "label": "the bundle matches its hash (the portal's own check)",
+      "ok": true
+     },
+     {
+      "label": "the request's contacts: the self contact by its portal user, the placeholder without one",
+      "ok": true,
+      "detail": [
+       {
+        "id": "UsRmmKatrin",
+        "name": "Katrin Vogel",
+        "email": "zzt-n21-off-sc1.self@example.test",
+        "role": "Regulatory Manager",
+        "mayConfirm": true
+       },
+       {
+        "name": "Marta Lindqvist",
+        "email": "marta.lindqvist.sc1@zzt-n21-r1.example",
+        "role": "QA Specialist",
+        "mayConfirm": false
+       }
+      ]
+     },
+     {
+      "label": "the request is assigned to the self contact only",
+      "ok": true,
+      "detail": [
+       "UsRmmKatrin"
+      ]
+     },
+     {
+      "label": "its release contact is the self contact only",
+      "ok": true,
+      "detail": [
+       "UsRmmKatrin"
+      ]
+     },
+     {
+      "label": "no pseudo id in the case's or the request's user fields",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "case.created row with its snapshot, naming the case and its Start step",
+      "ok": true
+     },
+     {
+      "label": "its hand-offs: case.started sent",
+      "ok": true,
+      "detail": [
+       {
+        "code": "case.started",
+        "status": "sent",
+        "detail": "handed over",
+        "key": "HO-case.started-mvshysjw-rq0808"
+       }
+      ]
+     },
+     {
+      "label": "no pseudo id in the audit row",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the case reads back as the domain wrote it (caseKeys)",
+      "ok": true,
+      "detail": {
+       "got": {
+        "id": "ZZT-N21-OFF-SC1-C01",
+        "materialName": "ZZT-N21-OFF Sunflower Seed Oil",
+        "inci": "Helianthus Annuus Seed Oil",
+        "materialNo": "ZZT-N21-OFF-SC1-RM-01",
+        "supplierId": "ZZT-N21-OFF-SC1-SUP",
+        "manufacturer": "ZZT-N21-OFF Supplier",
+        "ownerId": "UsRmmKatrin",
+        "priority": "normal",
+        "templateVersion": "CIQ-2026 v1",
+        "ruleSetVersion": "RS-2026.1",
+        "supplierContactIds": [
+         "self:UsRmmKatrin",
+         "u-ZZT-N21-OFF-SC1-SUP-2"
+        ],
+        "markets": [
+         "EU"
+        ],
+        "due": "2026-11-27",
+        "bdfAnswers": {
+         "FLD-GEN-001": "ZZT-N21-OFF Sunflower Seed Oil",
+         "FLD-GEN-002": "ZZT-N21-OFF Supplier",
+         "FLD-GEN-003": "920000001",
+         "FLD-GEN-008": "zzt-n21-off-sc1.self@example.test",
+         "FLD-GEN-009": "marta.lindqvist.sc1@zzt-n21-r1.example"
+        }
+       },
+       "want": {
+        "id": "ZZT-N21-OFF-SC1-C01",
+        "materialName": "ZZT-N21-OFF Sunflower Seed Oil",
+        "inci": "Helianthus Annuus Seed Oil",
+        "materialNo": "ZZT-N21-OFF-SC1-RM-01",
+        "supplierId": "ZZT-N21-OFF-SC1-SUP",
+        "manufacturer": "ZZT-N21-OFF Supplier",
+        "ownerId": "UsRmmKatrin",
+        "priority": "normal",
+        "templateVersion": "CIQ-2026 v1",
+        "ruleSetVersion": "RS-2026.1",
+        "supplierContactIds": [
+         "self:UsRmmKatrin",
+         "u-ZZT-N21-OFF-SC1-SUP-2"
+        ],
+        "markets": [
+         "EU"
+        ],
+        "due": "2026-11-27",
+        "bdfAnswers": {
+         "FLD-GEN-001": "ZZT-N21-OFF Sunflower Seed Oil",
+         "FLD-GEN-002": "ZZT-N21-OFF Supplier",
+         "FLD-GEN-003": "920000001",
+         "FLD-GEN-008": "zzt-n21-off-sc1.self@example.test",
+         "FLD-GEN-009": "marta.lindqvist.sc1@zzt-n21-r1.example"
+        }
+       }
+      }
+     },
+     {
+      "label": "phase supplier-input; the index knows the item and its request",
+      "ok": true
+     },
+     {
+      "label": "no hand-off of the step failed after its save (case.started)",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "I-1 poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "calls": 19
+    }
    },
-   "ms": 0,
-   "at": "2026-10-28T12:19:11.924Z"
+   "ms": 9,
+   "at": "2026-10-28T19:18:12.235Z"
   },
   {
    "name": "4a answers saved (request.changed)",
-   "status": "not-run",
-   "reason": "needs \"3 started (I-1)\" (not-run)",
+   "status": "pass",
    "evidence": {
-    "readBacks": [],
-    "checks": [],
-    "notes": {}
+    "readBacks": [
+     {
+      "what": "CIQP Request after the save (the writer's read-back)",
+      "value": {
+       "Answers_Rev": 1,
+       "Answers_Changed_At": "2026-10-28T19:18:12Z",
+       "Answers_Changed_By_Email": "katrin.vogel@beiersdorf.example",
+       "Scope_JSON": "[{\"sectionId\":\"GEN\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.3\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K5.1\",\"applicability\":\"mandatory\",\"reason\":\"Microbiological test required is Yes or not answered\"},{\"sectionId\":\"K5.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K5.3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.2\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.4\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.5\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.6\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.7\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.8\",\"applicability\":\"optional\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.9\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.10\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.11\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.12\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.13\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.14\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.15\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.16\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.16.1\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.17\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K7\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K8\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K8.1\",\"applicability\":\"optional\",\"reason\":\"Every case\"},{\"sectionId\":\"A1\",\"applicability\":\"mandatory\",\"reason\":\"Origin includes Vegetable\"},{\"sectionId\":\"A2\",\"applicability\":\"mandatory\",\"reason\":\"Origin includes Vegetable\"},{\"sectionId\":\"A3\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A4\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A5\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A6\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A7\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A8\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A9\",\"applicability\":\"mandatory\",\"reason\":\"Origin includes Vegetable\"},{\"sectionId\":\"A10\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"A11\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A13\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"}]"
+      }
+     },
+     {
+      "what": "CIQ Case: the 15 supplier-data fields",
+      "value": {
+       "Config_Answers_JSON": "{\"SF03\":false,\"SF04\":false,\"SF05\":[],\"SF06\":false,\"SF07\":false,\"SF09\":false,\"SF10\":false,\"SF12\":true,\"SF01\":[\"vegetable\"]}",
+       "Answers_JSON": "{\"FLD-GEN-004\":\"ZZT-N21-OFF Described in the supplier's statement.\",\"FLD-GEN-005\":\"ZZT-N21-OFF Described in the supplier's statement.\",\"FLD-2.1-102\":0.5,\"FLD-A14-101\":1,\"FLD-A14-102\":1,\"FLD-A14-103\":1,\"FLD-2.1-101\":[\"Bark\"],\"FLD-2.3-10\":\"ZZT-N21-OFF Test value\",\"FLD-A1-102\":\"ZZT-N21-OFF Test value\",\"FLD-A1-103\":1,\"FLD-A1-104\":1,\"FLD-A1-201\":false,\"FLD-A1-204\":false,\"FLD-A2-101\":\"ZZT-N21-OFF Test value\",\"FLD-A2-102\":[\"Chemical\"],\"FLD-2.2-002\":\"ZZT-N21-OFF Described in the supplier's statement.\",\"FLD-A1-203\":\"ZZT-N21-OFF Described in the supplier's statement.\"}",
+       "Answered_By_JSON": "{\"SF03\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"SF04\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"SF05\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"SF06\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"SF07\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"SF09\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"SF10\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"SF12\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"SF01\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-GEN-004\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-GEN-005\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-2.1-102\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-A14-101\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-A14-102\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-A14-103\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-2.1-101\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-2.3-10\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-A1-102\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-A1-103\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-A1-104\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-A1-201\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-A1-204\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-A2-101\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-A2-102\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-2.2-002\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-A1-203\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-K1-001\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-K1-002\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-K1-003\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-K1-004\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-K1-005\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-2.2-001\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"FLD-5.1-001\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"},\"K2.1:components\":{\"name\":\"Katrin Vogel\",\"email\":\"katrin.vogel@beiersdorf.example\",\"at\":\"2026-10-28T19:18:12Z\",\"by\":\"UsRmmKatrin\"}}",
+       "Justifications_JSON": "{\"FLD-K1-001\":\"ZZT-N21-OFF Not available for this material; statement on request.\",\"FLD-K1-002\":\"ZZT-N21-OFF Not available for this material; statement on request.\",\"FLD-K1-003\":\"ZZT-N21-OFF Not available for this material; statement on request.\",\"FLD-K1-004\":\"ZZT-N21-OFF Not available for this material; statement on request.\",\"FLD-K1-005\":\"ZZT-N21-OFF Not available for this material; statement on request.\",\"FLD-2.2-001\":\"ZZT-N21-OFF Not available for this material; statement on request.\",\"FLD-5.1-001\":\"ZZT-N21-OFF Not available for this material; statement on request.\"}",
+       "Components_JSON": "[{\"id\":\"c1\",\"inci\":\"Helianthus Annuus Seed Oil\",\"fn\":\"emollient\",\"additive\":false,\"origin\":\"vegetable\",\"concMin\":90,\"concMax\":99,\"cas\":\"8001-25-0\"}]",
+       "Scope_JSON": "[{\"sectionId\":\"GEN\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.3\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K5.1\",\"applicability\":\"mandatory\",\"reason\":\"Microbiological test required is Yes or not answered\"},{\"sectionId\":\"K5.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K5.3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.2\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.4\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.5\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.6\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.7\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.8\",\"applicability\":\"optional\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.9\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.10\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.11\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.12\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.13\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.14\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.15\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.16\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.16.1\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.17\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K7\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K8\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K8.1\",\"applicability\":\"optional\",\"reason\":\"Every case\"},{\"sectionId\":\"A1\",\"applicability\":\"mandatory\",\"reason\":\"Origin includes Vegetable\"},{\"sectionId\":\"A2\",\"applicability\":\"mandatory\",\"reason\":\"Origin includes Vegetable\"},{\"sectionId\":\"A3\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A4\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A5\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A6\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A7\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A8\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A9\",\"applicability\":\"mandatory\",\"reason\":\"Origin includes Vegetable\"},{\"sectionId\":\"A10\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"A11\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A13\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"}]",
+       "Requested_Docs_JSON": "[]",
+       "Documents_JSON": null,
+       "Answers_Rev": 1,
+       "Answers_Changed_At": "2026-10-28T19:18:12Z",
+       "Answers_Changed_By_Email": "katrin.vogel@beiersdorf.example",
+       "Change_Report_Text": null,
+       "Change_Report_Rev": null,
+       "Change_Report_By_Email": null,
+       "Change_Report_At": null
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the request is the self contact's task at \"Supplier: fill in the CIQ\"",
+      "ok": true,
+      "detail": "fill"
+     },
+     {
+      "label": "everything missing can be answered (no requested document: the suite uploads no files)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "every answer of the patch is on the request",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the portal shows nothing missing any more",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the case holds the request's 15 supplier-data fields (9 hold something; blank on both: Requested_Docs_JSON, Documents_JSON, Change_Report_Text, Change_Report_Rev, Change_Report_By_Email, Change_Report_At)",
+      "ok": true,
+      "detail": {}
+     },
+     {
+      "label": "every field the save left filled on the request is filled on the case",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "no hand-off of the step failed after its save (portal)",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "fill-in": {
+      "config": [
+       "SF03",
+       "SF04",
+       "SF05",
+       "SF06",
+       "SF07",
+       "SF09",
+       "SF10",
+       "SF12",
+       "SF01"
+      ],
+      "set": [
+       "FLD-GEN-004",
+       "FLD-GEN-005",
+       "FLD-2.1-102",
+       "FLD-A14-101",
+       "FLD-A14-102",
+       "FLD-A14-103",
+       "FLD-2.1-101",
+       "FLD-2.3-10",
+       "FLD-A1-102",
+       "FLD-A1-103",
+       "FLD-A1-104",
+       "FLD-A1-201",
+       "FLD-A1-204",
+       "FLD-A2-101",
+       "FLD-A2-102",
+       "FLD-2.2-002",
+       "FLD-A1-203"
+      ],
+      "just": [
+       "FLD-K1-001",
+       "FLD-K1-002",
+       "FLD-K1-003",
+       "FLD-K1-004",
+       "FLD-K1-005",
+       "FLD-2.2-001",
+       "FLD-5.1-001"
+      ],
+      "components": 1
+     },
+     "request.changed poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "calls": 8
+    }
    },
-   "ms": 0,
-   "at": "2026-10-28T12:19:11.925Z"
+   "ms": 13,
+   "at": "2026-10-28T19:18:12.246Z"
   },
   {
    "name": "4b completeness confirmed (I-2 fields)",
-   "status": "not-run",
-   "reason": "needs \"4a answers saved (request.changed)\" (not-run)",
+   "status": "pass",
    "evidence": {
-    "readBacks": [],
-    "checks": [],
-    "notes": {}
+    "readBacks": [
+     {
+      "what": "CIQP Request",
+      "value": {
+       "_current_step": "Supplier: keep the CIQ up to date",
+       "Completeness_Confirm": "Confirmed",
+       "Completeness_By_Name": "Katrin Vogel",
+       "Completeness_By_Email": "katrin.vogel@beiersdorf.example",
+       "Completeness_By_Role": "Regulatory Manager",
+       "Completeness_At": "2026-10-28T19:18:12Z"
+      }
+     },
+     {
+      "what": "CIQ Case (admin GET)",
+      "value": {
+       "_current_step": "Waiting for supplier: CIQ",
+       "Case_Phase": "Review",
+       "Completeness_Confirm": "Confirmed",
+       "Completeness_By_Name": "Katrin Vogel",
+       "Completeness_At": "2026-10-28T19:18:12Z",
+       "Answers_Rev": 1
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the request moved to \"Supplier: keep the CIQ up to date\"",
+      "ok": true,
+      "detail": "Supplier: keep the CIQ up to date"
+     },
+     {
+      "label": "its completeness names the self contact",
+      "ok": true
+     },
+     {
+      "label": "I-2 copied Completeness_* and the 15 fields (14 of 20 hold something)",
+      "ok": true,
+      "detail": {}
+     },
+     {
+      "label": "Case_Phase is Review",
+      "ok": true,
+      "detail": "Review"
+     },
+     {
+      "label": "no hand-off of the step failed after its save (portal)",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "I-2 poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "calls": 8
+    }
    },
-   "ms": 0,
-   "at": "2026-10-28T12:19:11.925Z"
+   "ms": 3,
+   "at": "2026-10-28T19:18:12.261Z"
   },
   {
    "name": "4c I-2 Approve",
-   "status": "not-run",
-   "reason": "needs \"4b completeness confirmed (I-2 fields)\" (not-run)",
+   "status": "blocked",
+   "reason": "050201 expected: \"Waiting for supplier: CIQ\" is held by Integration service, and the key's user, whom I-2 acts as, is not in it (app roles read at boot: Business administrator; SPEC §2: the role has no members since 21 Oct 02:30). I-2 recorded the completeness and the 15 fields (4b); its Approve did not move the case. The fake I-2 answered: recorded the completeness on CIQ Case PkCase7 and started 5 reviews, then its Approve of \"Waiting for supplier: CIQ\" was refused: KISSFLOW_ERROR_050201 This item has moved out of your queue. (held by Integration service, which has no members)",
    "evidence": {
-    "readBacks": [],
-    "checks": [],
-    "notes": {}
+    "readBacks": [
+     {
+      "what": "CIQ Case step",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Waiting for supplier: CIQ"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "still at \"Waiting for supplier: CIQ\"",
+      "ok": true,
+      "detail": "Waiting for supplier: CIQ"
+     },
+     {
+      "label": "not moved, and the key's user is not in Integration service (else I-2's Approve should have acted)",
+      "ok": true,
+      "detail": [
+       "Business administrator"
+      ]
+     }
+    ],
+    "notes": {
+     "app roles of the key's user (read at boot)": [
+      "Business administrator"
+     ],
+     "calls": 1
+    }
    },
    "ms": 0,
-   "at": "2026-10-28T12:19:11.926Z"
+   "at": "2026-10-28T19:18:12.266Z"
   },
   {
    "name": "5 reviews (E-A)",
-   "status": "not-run",
-   "reason": "needs \"4b completeness confirmed (I-2 fields)\" (not-run)",
+   "status": "pass",
    "evidence": {
-    "readBacks": [],
-    "checks": [],
-    "notes": {}
+    "readBacks": [
+     {
+      "what": "CIQ Case (Review_Depts)",
+      "value": {
+       "Review_Depts": "REG,SAF,QM,MIC",
+       "Case_Phase": "Review",
+       "_current_step": "Waiting for supplier: CIQ"
+      }
+     },
+     {
+      "what": "mapped reviews (RMM)",
+      "value": [
+       {
+        "dept": "RMM",
+        "status": "in-review",
+        "assigneeId": "UsRmmKatrin",
+        "startedAt": "2026-10-28T19:18:12Z"
+       },
+       {
+        "dept": "REG",
+        "status": "in-review",
+        "assigneeId": "role:REG",
+        "startedAt": "2026-10-28T19:18:12Z"
+       },
+       {
+        "dept": "SAF",
+        "status": "in-review",
+        "assigneeId": "role:SAF",
+        "startedAt": "2026-10-28T19:18:12Z"
+       },
+       {
+        "dept": "QM",
+        "status": "in-review",
+        "assigneeId": "role:QM",
+        "startedAt": "2026-10-28T19:18:12Z"
+       },
+       {
+        "dept": "MIC",
+        "status": "in-review",
+        "assigneeId": "role:MIC",
+        "startedAt": "2026-10-28T19:18:12Z"
+       }
+      ]
+     },
+     {
+      "what": "CIQ Review RMM",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Review – RMM",
+       "Review_Key": "ZZT-N21-OFF-SC1-C01-RMM-1",
+       "Case_Code": "ZZT-N21-OFF-SC1-C01",
+       "Case_Item_Id": "PkCase7",
+       "Cycle_No": 1,
+       "Supplier_Code": "ZZT-N21-OFF-SC1-SUP",
+       "Trade_Name": "ZZT-N21-OFF Sunflower Seed Oil",
+       "Review_Dept": "RMM",
+       "Round_No": 1,
+       "Activation_Kind": "Completeness",
+       "Track_Status": "In review",
+       "Assignee_User": null,
+       "Open_Count": 0,
+       "RMES_Gaps": 0
+      }
+     },
+     {
+      "what": "CIQ Review REG",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Review – Regulatory",
+       "Review_Key": "ZZT-N21-OFF-SC1-C01-REG-1",
+       "Case_Code": "ZZT-N21-OFF-SC1-C01",
+       "Case_Item_Id": "PkCase7",
+       "Cycle_No": 1,
+       "Supplier_Code": "ZZT-N21-OFF-SC1-SUP",
+       "Trade_Name": "ZZT-N21-OFF Sunflower Seed Oil",
+       "Review_Dept": "REG",
+       "Round_No": 1,
+       "Activation_Kind": "Completeness",
+       "Track_Status": "In review",
+       "Assignee_User": null,
+       "Open_Count": 0,
+       "RMES_Gaps": 0
+      }
+     },
+     {
+      "what": "CIQ Review SAF",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Review – Safety",
+       "Review_Key": "ZZT-N21-OFF-SC1-C01-SAF-1",
+       "Case_Code": "ZZT-N21-OFF-SC1-C01",
+       "Case_Item_Id": "PkCase7",
+       "Cycle_No": 1,
+       "Supplier_Code": "ZZT-N21-OFF-SC1-SUP",
+       "Trade_Name": "ZZT-N21-OFF Sunflower Seed Oil",
+       "Review_Dept": "SAF",
+       "Round_No": 1,
+       "Activation_Kind": "Completeness",
+       "Track_Status": "In review",
+       "Assignee_User": null,
+       "Open_Count": 0,
+       "RMES_Gaps": 0
+      }
+     },
+     {
+      "what": "CIQ Review QM",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Review – QM",
+       "Review_Key": "ZZT-N21-OFF-SC1-C01-QM-1",
+       "Case_Code": "ZZT-N21-OFF-SC1-C01",
+       "Case_Item_Id": "PkCase7",
+       "Cycle_No": 1,
+       "Supplier_Code": "ZZT-N21-OFF-SC1-SUP",
+       "Trade_Name": "ZZT-N21-OFF Sunflower Seed Oil",
+       "Review_Dept": "QM",
+       "Round_No": 1,
+       "Activation_Kind": "Completeness",
+       "Track_Status": "In review",
+       "Assignee_User": null,
+       "Open_Count": 0,
+       "RMES_Gaps": 0
+      }
+     },
+     {
+      "what": "CIQ Review MIC",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Review – Microbiology",
+       "Review_Key": "ZZT-N21-OFF-SC1-C01-MIC-1",
+       "Case_Code": "ZZT-N21-OFF-SC1-C01",
+       "Case_Item_Id": "PkCase7",
+       "Cycle_No": 1,
+       "Supplier_Code": "ZZT-N21-OFF-SC1-SUP",
+       "Trade_Name": "ZZT-N21-OFF Sunflower Seed Oil",
+       "Review_Dept": "MIC",
+       "Round_No": 1,
+       "Activation_Kind": "Completeness",
+       "Track_Status": "In review",
+       "Assignee_User": null,
+       "Open_Count": 0,
+       "RMES_Gaps": 0
+      }
+     },
+     {
+      "what": "review.started (audit row)",
+      "value": [
+       {
+        "Object_Kind": "Case",
+        "Object_Item_Id": "PkCase7",
+        "New_Value_Text": "Reviews started: RMM, Regulatory, Safety, QM, Microbiology."
+       }
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "the scope activates the run's departments (case/data.ts: RMM, REG, SAF, QM, MIC)",
+      "ok": true,
+      "detail": {
+       "scope": [
+        "RMM",
+        "REG",
+        "SAF",
+        "QM",
+        "MIC"
+       ],
+       "run": [
+        "RMM",
+        "REG",
+        "SAF",
+        "QM",
+        "MIC"
+       ]
+      }
+     },
+     {
+      "label": "the case's Review_Depts names the scope's departments",
+      "ok": true,
+      "detail": "REG,SAF,QM,MIC"
+     },
+     {
+      "label": "I-2 started one review per department the scope activates, and RMM's",
+      "ok": true,
+      "detail": [
+       "RMM",
+       "REG",
+       "SAF",
+       "QM",
+       "MIC"
+      ]
+     },
+     {
+      "label": "RMM's screen shows one review per department, and RMM's",
+      "ok": true,
+      "detail": {
+       "got": [
+        "RMM",
+        "REG",
+        "SAF",
+        "QM",
+        "MIC"
+       ],
+       "want": [
+        "RMM",
+        "REG",
+        "SAF",
+        "QM",
+        "MIC"
+       ]
+      }
+     },
+     {
+      "label": "each in review, started; RMM's assigned to the case owner",
+      "ok": true
+     },
+     {
+      "label": "RMM: at \"Review – RMM\"",
+      "ok": true,
+      "detail": "Review – RMM"
+     },
+     {
+      "label": "RMM: its fields name the case",
+      "ok": true
+     },
+     {
+      "label": "REG: at \"Review – Regulatory\"",
+      "ok": true,
+      "detail": "Review – Regulatory"
+     },
+     {
+      "label": "REG: its fields name the case",
+      "ok": true
+     },
+     {
+      "label": "SAF: at \"Review – Safety\"",
+      "ok": true,
+      "detail": "Review – Safety"
+     },
+     {
+      "label": "SAF: its fields name the case",
+      "ok": true
+     },
+     {
+      "label": "QM: at \"Review – QM\"",
+      "ok": true,
+      "detail": "Review – QM"
+     },
+     {
+      "label": "QM: its fields name the case",
+      "ok": true
+     },
+     {
+      "label": "MIC: at \"Review – Microbiology\"",
+      "ok": true,
+      "detail": "Review – Microbiology"
+     },
+     {
+      "label": "MIC: its fields name the case",
+      "ok": true
+     },
+     {
+      "label": "one review.started row for the case, with every review's track",
+      "ok": true,
+      "detail": 1
+     }
+    ],
+    "notes": {
+     "E-A poll": {
+      "polls": 1,
+      "ms": 6000
+     },
+     "calls": 27
+    }
    },
-   "ms": 0,
-   "at": "2026-10-28T12:19:11.926Z"
+   "ms": 6,
+   "at": "2026-10-28T19:18:12.267Z"
   },
   {
    "name": "6a RMES Safety",
-   "status": "not-run",
-   "reason": "needs \"5 reviews (E-A)\" (not-run)",
+   "status": "pass",
    "evidence": {
-    "readBacks": [],
-    "checks": [],
-    "notes": {}
+    "readBacks": [
+     {
+      "what": "CIQ RMES SAF (form GET)",
+      "value": {
+       "RMES_Key": "ZZT-N21-OFF-SC1-C01-RMES-SAF",
+       "Case_Item_Id": "PkCase7",
+       "Case_Code": "ZZT-N21-OFF-SC1-C01",
+       "Cycle_No": 1,
+       "RMES_Voided": "No",
+       "_created_at": "2026-10-28T19:18:27Z",
+       "tables": {}
+      }
+     },
+     {
+      "what": "RMES sheet SAF (rmesSheet)",
+      "value": {
+       "record": "RMES · ZZT-N21-OFF-SC1-C01 · internal: never visible to the supplier · filled automatically from the CIQ",
+       "header": [
+        [
+         "Raw material / tradename",
+         "ZZT-N21-OFF Sunflower Seed Oil",
+         "answered",
+         "FLD-GEN-001"
+        ],
+        [
+         "Supplier",
+         "ZZT-N21-OFF Supplier",
+         "answered",
+         "FLD-GEN-002"
+        ],
+        [
+         "Manufacturer",
+         "ZZT-N21-OFF Described in the supplier's statement.",
+         "answered",
+         "FLD-GEN-004"
+        ]
+       ],
+       "rows": [
+        [
+         "Helianthus Annuus Seed Oil",
+         "90–99 %",
+         "8001-25-0",
+         "—",
+         "Vegetable (bio mass)",
+         "FLD-2.1-101 FLD-2.3-10"
+        ]
+       ]
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "ensureRmes created the record",
+      "ok": true,
+      "detail": "Started in Kissflow: ZZT-N21-OFF-SC1-C01 Safety RMES record."
+     },
+     {
+      "label": "the header names the case",
+      "ok": true,
+      "detail": {
+       "RMES_Key": "ZZT-N21-OFF-SC1-C01-RMES-SAF",
+       "Case_Item_Id": "PkCase7",
+       "Case_Code": "ZZT-N21-OFF-SC1-C01",
+       "RMES_Voided": "No"
+      }
+     },
+     {
+      "label": "header only: no criteria or findings rows (the criteria RMES is retired)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the screens map no criterion or finding of it",
+      "ok": true,
+      "detail": {
+       "criteria": 0,
+       "findings": 0
+      }
+     },
+     {
+      "label": "the sheet: its record line, the trade name (never the case code), one composition row per component",
+      "ok": true,
+      "detail": {
+       "record": "RMES · ZZT-N21-OFF-SC1-C01 · internal: never visible to the supplier · filled automatically from the CIQ",
+       "material": "ZZT-N21-OFF Sunflower Seed Oil",
+       "rows": 1,
+       "components": 1
+      }
+     },
+     {
+      "label": "one rmes.saved row: the RMES record, created",
+      "ok": true,
+      "detail": [
+       [
+        "RMES record",
+        "ZZT-N21-OFF-SC1-C01-RMES-SAF"
+       ]
+      ]
+     }
+    ],
+    "notes": {
+     "ensureRmes as loaded": "nothing: the review task is not held",
+     "approximated": "\"Review – Safety\" is held by Product Safety reviewer, which has no members (SPEC §2); ensureRmes ran with the review's live activity instance (Act14) as held. The RMES write itself needs no task.",
+     "ensureRmes": "Started in Kissflow: ZZT-N21-OFF-SC1-C01 Safety RMES record.",
+     "calls": 31
+    }
    },
-   "ms": 0,
-   "at": "2026-10-28T12:19:11.927Z"
+   "ms": 5,
+   "at": "2026-10-28T19:18:12.275Z"
   },
   {
    "name": "6b RMES Regulatory",
-   "status": "not-run",
-   "reason": "needs \"5 reviews (E-A)\" (not-run)",
+   "status": "pass",
    "evidence": {
-    "readBacks": [],
-    "checks": [],
-    "notes": {}
+    "readBacks": [
+     {
+      "what": "CIQ RMES REG (form GET)",
+      "value": {
+       "RMES_Key": "ZZT-N21-OFF-SC1-C01-RMES-REG",
+       "Case_Item_Id": "PkCase7",
+       "Case_Code": "ZZT-N21-OFF-SC1-C01",
+       "Cycle_No": 1,
+       "RMES_Voided": "No",
+       "_created_at": "2026-10-28T19:18:29Z",
+       "tables": {}
+      }
+     },
+     {
+      "what": "RMES sheet REG (rmesSheet)",
+      "value": {
+       "record": "RMES · ZZT-N21-OFF-SC1-C01 · internal: never visible to the supplier · filled automatically from the CIQ",
+       "header": [
+        [
+         "Raw material / tradename",
+         "ZZT-N21-OFF Sunflower Seed Oil",
+         "answered",
+         "FLD-GEN-001"
+        ],
+        [
+         "Supplier",
+         "ZZT-N21-OFF Supplier",
+         "answered",
+         "FLD-GEN-002"
+        ],
+        [
+         "Manufacturer",
+         "ZZT-N21-OFF Described in the supplier's statement.",
+         "answered",
+         "FLD-GEN-004"
+        ]
+       ],
+       "rows": [
+        [
+         "Helianthus Annuus Seed Oil",
+         "90–99 %",
+         "8001-25-0",
+         "—",
+         "Vegetable (bio mass)",
+         "FLD-2.1-101 FLD-2.3-10"
+        ]
+       ]
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "ensureRmes created the record",
+      "ok": true,
+      "detail": "Started in Kissflow: ZZT-N21-OFF-SC1-C01 Regulatory RMES record."
+     },
+     {
+      "label": "the header names the case",
+      "ok": true,
+      "detail": {
+       "RMES_Key": "ZZT-N21-OFF-SC1-C01-RMES-REG",
+       "Case_Item_Id": "PkCase7",
+       "Case_Code": "ZZT-N21-OFF-SC1-C01",
+       "RMES_Voided": "No"
+      }
+     },
+     {
+      "label": "header only: no criteria or findings rows (the criteria RMES is retired)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the screens map no criterion or finding of it",
+      "ok": true,
+      "detail": {
+       "criteria": 0,
+       "findings": 0
+      }
+     },
+     {
+      "label": "the sheet: its record line, the trade name (never the case code), one composition row per component",
+      "ok": true,
+      "detail": {
+       "record": "RMES · ZZT-N21-OFF-SC1-C01 · internal: never visible to the supplier · filled automatically from the CIQ",
+       "material": "ZZT-N21-OFF Sunflower Seed Oil",
+       "rows": 1,
+       "components": 1
+      }
+     },
+     {
+      "label": "one rmes.saved row: the RMES record, created",
+      "ok": true,
+      "detail": [
+       [
+        "RMES record",
+        "ZZT-N21-OFF-SC1-C01-RMES-REG"
+       ]
+      ]
+     }
+    ],
+    "notes": {
+     "ensureRmes as loaded": "nothing: the review task is not held",
+     "approximated": "\"Review – Regulatory\" is held by Regulatory Affairs reviewer, which has no members (SPEC §2); ensureRmes ran with the review's live activity instance (Act13) as held. The RMES write itself needs no task.",
+     "ensureRmes": "Started in Kissflow: ZZT-N21-OFF-SC1-C01 Regulatory RMES record.",
+     "calls": 31
+    }
    },
-   "ms": 0,
-   "at": "2026-10-28T12:19:11.927Z"
+   "ms": 5,
+   "at": "2026-10-28T19:18:12.281Z"
   },
   {
    "name": "7 review completion",
-   "status": "not-run",
-   "reason": "needs \"5 reviews (E-A)\" (not-run)",
+   "status": "blocked",
+   "reason": "050201: \"Review – RMM\" is held by Raw Material Manager (RMM), which has no members; the app refused first (The RMM review of this case is not one of your open tasks in Kissflow (it may have moved on). Reload to see its current state.). Kissflow: KISSFLOW_ERROR_050201 This item has moved out of your queue.",
    "evidence": {
-    "readBacks": [],
-    "checks": [],
-    "notes": {}
+    "readBacks": [
+     {
+      "what": "CIQ Review RMM: Review_Gate",
+      "value": {
+       "Open_Count": 0,
+       "RMES_Gaps": 0,
+       "Review_Gate": "OK"
+      }
+     },
+     {
+      "what": "CIQ Review REG: Review_Gate",
+      "value": {
+       "Open_Count": 0,
+       "RMES_Gaps": 1,
+       "Review_Gate": ""
+      }
+     },
+     {
+      "what": "CIQ Review SAF: Review_Gate",
+      "value": {
+       "Open_Count": 0,
+       "RMES_Gaps": 1,
+       "Review_Gate": ""
+      }
+     },
+     {
+      "what": "CIQ Review QM: Review_Gate",
+      "value": {
+       "Open_Count": 0,
+       "RMES_Gaps": 0,
+       "Review_Gate": "OK"
+      }
+     },
+     {
+      "what": "CIQ Review MIC: Review_Gate",
+      "value": {
+       "Open_Count": 0,
+       "RMES_Gaps": 0,
+       "Review_Gate": "OK"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "RMM: Review_Gate \"OK\" for 0 + 0",
+      "ok": true,
+      "detail": "OK"
+     },
+     {
+      "label": "REG: Review_Gate \"\" for 0 + 1",
+      "ok": true,
+      "detail": ""
+     },
+     {
+      "label": "SAF: Review_Gate \"\" for 0 + 1",
+      "ok": true,
+      "detail": ""
+     },
+     {
+      "label": "QM: Review_Gate \"OK\" for 0 + 0",
+      "ok": true,
+      "detail": "OK"
+     },
+     {
+      "label": "MIC: Review_Gate \"OK\" for 0 + 0",
+      "ok": true,
+      "detail": "OK"
+     }
+    ],
+    "notes": {
+     "completeReview (the app)": "The RMM review of this case is not one of your open tasks in Kissflow (it may have moved on). Reload to see its current state.",
+     "Kissflow (the review's task read)": "KISSFLOW_ERROR_050201 This item has moved out of your queue.",
+     "approximated": "the counts written by admin PUT (P-RO), as each department's completion would write them (countsOf on that department's view)",
+     "calls": 27
+    }
    },
-   "ms": 0,
-   "at": "2026-10-28T12:19:11.928Z"
+   "ms": 2,
+   "at": "2026-10-28T19:18:12.288Z"
   },
   {
    "name": "8 release requested",
-   "status": "not-run",
-   "reason": "needs \"5 reviews (E-A)\" (not-run)",
+   "status": "pass",
    "evidence": {
-    "readBacks": [],
-    "checks": [],
-    "notes": {}
+    "readBacks": [
+     {
+      "what": "CIQ Case",
+      "value": {
+       "_current_step": "Waiting for supplier: CIQ",
+       "Release_Requested_At": "2026-10-28T19:18:12Z",
+       "Release_Assignees_JSON": "[{\"_id\":\"UsRmmKatrin\"}]"
+      }
+     },
+     {
+      "what": "CIQP Request",
+      "value": {
+       "_current_step": "Supplier: keep the CIQ up to date",
+       "Release_Flag": "Requested",
+       "Request_Locked": "Yes",
+       "Case_Phase_Label": "Awaiting your final release",
+       "Release_Contacts": [
+        {
+         "_id": "UsRmmKatrin"
+        }
+       ]
+      }
+     },
+     {
+      "what": "release.requested (audit row)",
+      "value": {
+       "Action_Code": "release.requested",
+       "Object_State": "Awaiting final release",
+       "Notify_Recipient": "[{\"code\":\"release.requested\",\"status\":\"sent\",\"detail\":\"handed over\",\"key\":\"REL-PkCase7-R1\"}]"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "release.requested sent with the case's release key",
+      "ok": true,
+      "detail": [
+       {
+        "code": "release.requested",
+        "status": "sent",
+        "detail": "handed over",
+        "key": "REL-PkCase7-R1"
+       }
+      ]
+     },
+     {
+      "label": "the case has Release_Requested_At",
+      "ok": true,
+      "detail": {
+       "polls": 1,
+       "ms": 6000
+      }
+     },
+     {
+      "label": "the request: Release_Flag Requested, locked, awaiting the final release",
+      "ok": true,
+      "detail": {
+       "Release_Flag": "Requested",
+       "Request_Locked": "Yes",
+       "Case_Phase_Label": "Awaiting your final release"
+      }
+     },
+     {
+      "label": "Release_Contacts = the case's release contacts",
+      "ok": true,
+      "detail": [
+       "UsRmmKatrin"
+      ]
+     },
+     {
+      "label": "Release_Contacts = the self contact only",
+      "ok": true,
+      "detail": [
+       "UsRmmKatrin"
+      ]
+     },
+     {
+      "label": "its release.requested row",
+      "ok": true
+     },
+     {
+      "label": "the case reads as awaiting the final release",
+      "ok": true,
+      "detail": "final-release"
+     },
+     {
+      "label": "no hand-off of the step failed after its save (release.requested)",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "approximated": "E-B sends the request when the last review completes; completion is blocked (step 7), so the suite plays E-B: the release.requested hand-off and E-B's history row.",
+     "playRelease": {
+      "handoffs": [
+       {
+        "code": "release.requested",
+        "status": "sent",
+        "detail": "handed over",
+        "key": "REL-PkCase7-R1"
+       }
+      ],
+      "warnings": []
+     },
+     "calls": 36
+    }
    },
-   "ms": 0,
-   "at": "2026-10-28T12:19:11.928Z"
+   "ms": 4,
+   "at": "2026-10-28T19:18:12.291Z"
   },
   {
    "name": "9 final release (I-7)",
-   "status": "not-run",
-   "reason": "needs \"8 release requested\" (not-run)",
+   "status": "pass",
    "evidence": {
-    "readBacks": [],
-    "checks": [],
-    "notes": {}
+    "readBacks": [
+     {
+      "what": "the portal's release gates (caseOfRequest on the request)",
+      "value": {
+       "phase": "final-release",
+       "blockers": [],
+       "mayConfirm": true
+      }
+     },
+     {
+      "what": "CIQP Request",
+      "value": {
+       "_current_step": "Supplier: keep the CIQ up to date",
+       "Release_Flag": "Requested",
+       "Release_By_Name": "Katrin Vogel",
+       "Release_At": "2026-10-28T19:18:12Z"
+      }
+     },
+     {
+      "what": "CIQ Case",
+      "value": {
+       "_status": "Completed",
+       "_current_step": "End",
+       "Final_Release_Confirm": "Confirmed",
+       "Final_Release_By_Name": "Katrin Vogel",
+       "Final_Release_At": "2026-10-28T19:18:12Z",
+       "Case_Phase": "Completed"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the self contact may confirm (B-11)",
+      "ok": true,
+      "detail": {
+       "id": "UsRmmKatrin",
+       "name": "Katrin Vogel",
+       "email": "zzt-n21-off-sc1.self@example.test",
+       "role": "Regulatory Manager",
+       "mayConfirm": true
+      }
+     },
+     {
+      "label": "no release blocker (B-33)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the request holds the release",
+      "ok": true
+     },
+     {
+      "label": "the case reached End",
+      "ok": true,
+      "detail": [
+       "Completed",
+       "End"
+      ]
+     },
+     {
+      "label": "Final_Release_* from the request",
+      "ok": true
+     },
+     {
+      "label": "the case reads as completed",
+      "ok": true,
+      "detail": "completed"
+     },
+     {
+      "label": "no hand-off of the step failed after its save (portal)",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "approximated": "the request is at \"Supplier: keep the CIQ up to date\", not at \"Supplier: give the final release\": admin PUT of Release_By_Name and Release_At (what the portal's finalRelease writes there), then the releaseGiven webhook (I-7)",
+     "I-7 poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "calls": 23
+    }
    },
-   "ms": 0,
-   "at": "2026-10-28T12:19:11.929Z"
+   "ms": 5,
+   "at": "2026-10-28T19:18:12.297Z"
   },
   {
    "name": "10 cancelled case",
-   "status": "not-run",
-   "reason": "needs \"1 supplier master\" (fail)",
+   "status": "pass",
    "evidence": {
-    "readBacks": [],
-    "checks": [],
-    "notes": {}
+    "readBacks": [
+     {
+      "what": "CIQP Request",
+      "value": {
+       "_current_step": "Supplier: fill in the CIQ",
+       "Case_Phase_Label": "Cancelled",
+       "Request_Locked": "Yes"
+      }
+     },
+     {
+      "what": "CIQ Case",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Waiting for supplier: CIQ",
+       "Case_Phase": "Supplier filling in the CIQ"
+      }
+     },
+     {
+      "what": "case.cancelled (audit row)",
+      "value": {
+       "Action_Code": "case.cancelled",
+       "Object_State": "Cancelled",
+       "Event_Reason": "ZZT-N21-OFF Material replaced by another grade."
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "case.cancelled was handed over",
+      "ok": true,
+      "detail": [
+       {
+        "code": "case.cancelled",
+        "status": "sent",
+        "detail": "handed over",
+        "key": "HO-case.cancelled-mvshyslw-k6pl2t"
+       }
+      ]
+     },
+     {
+      "label": "the request's phase label is Cancelled, locked",
+      "ok": true,
+      "detail": {
+       "polls": 1,
+       "label": "Cancelled"
+      }
+     },
+     {
+      "label": "as the app does it: the item stays at \"Waiting for supplier: CIQ\", the history cancels it",
+      "ok": true,
+      "detail": [
+       "InProgress",
+       "Waiting for supplier: CIQ"
+      ]
+     },
+     {
+      "label": "the case reads as cancelled, with its reason",
+      "ok": true,
+      "detail": "cancelled"
+     },
+     {
+      "label": "no hand-off of the step failed after its save (case.started, case.cancelled)",
+      "ok": true,
+      "detail": []
+     }
+    ],
+    "notes": {
+     "calls": 46
+    }
    },
-   "ms": 0,
-   "at": "2026-10-28T12:19:11.930Z"
+   "ms": 6,
+   "at": "2026-10-28T19:18:12.304Z"
   },
   {
    "name": "11 cleanup",
@@ -406,6 +1749,25 @@
      {
       "what": "this suite's ledger items after the cleanup",
       "value": [
+       "CIQ_Audit_Event_A00 FmAudit33: row, deleted",
+       "CIQP_Request_A00 PkReq4: InProgress, deleted",
+       "CIQ_Audit_Event_A00 FmAudit31: row, deleted",
+       "CIQ_Case_A00 PkCase27: InProgress, withdrawn, deleted",
+       "CIQ_Audit_Event_A00 FmAudit26: row, deleted",
+       "CIQ_Audit_Event_A00 FmAudit24: row, deleted",
+       "CIQ_RMES_Regulatory_A00 FmRmesReg22: row, deleted",
+       "CIQ_Audit_Event_A00 FmAudit20: row, deleted",
+       "CIQ_RMES_Safety_A00 FmRmesSaf18: row, deleted",
+       "CIQ_Audit_Event_A00 PkEvEAZZTN21OFFSC1C01: row, deleted",
+       "CIQ_Review_A00 PkEAZZTN21OFFSC1C01MIC: InProgress, withdrawn, deleted",
+       "CIQ_Review_A00 PkEAZZTN21OFFSC1C01QM: InProgress, withdrawn, deleted",
+       "CIQ_Review_A00 PkEAZZTN21OFFSC1C01SAF: InProgress, withdrawn, deleted",
+       "CIQ_Review_A00 PkEAZZTN21OFFSC1C01REG: InProgress, withdrawn, deleted",
+       "CIQ_Review_A00 PkEAZZTN21OFFSC1C01RMM: InProgress, withdrawn, deleted",
+       "CIQP_Request_A00 PkReq1: InProgress, deleted",
+       "CIQ_Audit_Event_A00 FmAudit11: row, deleted",
+       "CIQ_Case_A00 PkCase7: Completed, deleted",
+       "CIQ_Case_A00 PkCase5: already gone",
        "CIQ_Audit_Event_A00 FmAudit4: row, deleted",
        "CIQ_Supplier_A00 FmSup2: row, deleted"
       ]
@@ -413,7 +1775,97 @@
     ],
     "checks": [
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit4 (Event_Key=EV-LOG-20261028121911-odd1 Action_Code=supplier.changed): deleted, GET answers not found",
+      "label": "CIQ_Audit_Event_A00 FmAudit33 (Case_Code=ZZT-N21-OFF-SC1-C02 Event_Key=EV-ZZT-N21-OFF-SC1-C02-20261028191812-9rw6): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 Document not found (FmAudit33)"
+     },
+     {
+      "label": "CIQP_Request_A00 PkReq4 (Request_Key=ZZT-N21-OFF-SC1-C02|1): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 Document not found (PkReq4)"
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit31 (Case_Code=ZZT-N21-OFF-SC1-C02 Event_Key=EV-ZZT-N21-OFF-SC1-C02-20261028191812-vhuq): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 Document not found (FmAudit31)"
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase27 (Case_Code=ZZT-N21-OFF-SC1-C02): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 Document not found (PkCase27)"
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit26 (Case_Code=ZZT-N21-OFF-SC1-C01 Event_Key=EV-ZZT-N21-OFF-SC1-C01-20261028191812-jty0): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 Document not found (FmAudit26)"
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit24 (Case_Code=ZZT-N21-OFF-SC1-C01 Event_Key=EV-ZZT-N21-OFF-SC1-C01-20261028191812-qmu9): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 Document not found (FmAudit24)"
+     },
+     {
+      "label": "CIQ_RMES_Regulatory_A00 FmRmesReg22 (Case_Code=ZZT-N21-OFF-SC1-C01 RMES_Key=ZZT-N21-OFF-SC1-C01-RMES-REG): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 Document not found (FmRmesReg22)"
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit20 (Case_Code=ZZT-N21-OFF-SC1-C01 Event_Key=EV-ZZT-N21-OFF-SC1-C01-20261028191812-1sk1): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 Document not found (FmAudit20)"
+     },
+     {
+      "label": "CIQ_RMES_Safety_A00 FmRmesSaf18 (Case_Code=ZZT-N21-OFF-SC1-C01 RMES_Key=ZZT-N21-OFF-SC1-C01-RMES-SAF): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 Document not found (FmRmesSaf18)"
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 PkEvEAZZTN21OFFSC1C01 (Case_Code=ZZT-N21-OFF-SC1-C01 Action_Code=review.started (E-A)): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 Document not found (PkEvEAZZTN21OFFSC1C01)"
+     },
+     {
+      "label": "CIQ_Review_A00 PkEAZZTN21OFFSC1C01MIC (Review_Key=ZZT-N21-OFF-SC1-C01-MIC-1): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 Document not found (PkEAZZTN21OFFSC1C01MIC)"
+     },
+     {
+      "label": "CIQ_Review_A00 PkEAZZTN21OFFSC1C01QM (Review_Key=ZZT-N21-OFF-SC1-C01-QM-1): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 Document not found (PkEAZZTN21OFFSC1C01QM)"
+     },
+     {
+      "label": "CIQ_Review_A00 PkEAZZTN21OFFSC1C01SAF (Review_Key=ZZT-N21-OFF-SC1-C01-SAF-1): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 Document not found (PkEAZZTN21OFFSC1C01SAF)"
+     },
+     {
+      "label": "CIQ_Review_A00 PkEAZZTN21OFFSC1C01REG (Review_Key=ZZT-N21-OFF-SC1-C01-REG-1): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 Document not found (PkEAZZTN21OFFSC1C01REG)"
+     },
+     {
+      "label": "CIQ_Review_A00 PkEAZZTN21OFFSC1C01RMM (Review_Key=ZZT-N21-OFF-SC1-C01-RMM-1): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 Document not found (PkEAZZTN21OFFSC1C01RMM)"
+     },
+     {
+      "label": "CIQP_Request_A00 PkReq1 (Request_Key=ZZT-N21-OFF-SC1-C01|1): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 Document not found (PkReq1)"
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit11 (Case_Code=ZZT-N21-OFF-SC1-C01 Event_Key=EV-ZZT-N21-OFF-SC1-C01-20261028191812-zw9a): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 Document not found (FmAudit11)"
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase7 (Case_Code=ZZT-N21-OFF-SC1-C01): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 Document not found (PkCase7)"
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit4 (Event_Key=EV-LOG-20261028191812-rj0h Action_Code=supplier.changed): deleted, GET answers not found",
       "ok": true,
       "detail": "KISSFLOW_ERROR_01015 Document not found (FmAudit4)"
      },
@@ -425,11 +1877,11 @@
     ],
     "notes": {
      "I-1's requests found at the cleanup (adopted)": [],
-     "calls": 6
+     "calls": 67
     }
    },
    "ms": 1,
-   "at": "2026-10-28T12:19:11.930Z"
+   "at": "2026-10-28T19:18:12.312Z"
   }
  ]
 }

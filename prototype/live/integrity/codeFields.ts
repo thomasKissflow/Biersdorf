@@ -29,6 +29,9 @@ const LAYOUT_ID = /^(Activity|Row|Column|Appearance|Style|Permission|Node|Expres
 const FLOW_ID = /_A00$/;
 /** Role ids have the shape too ("RoEK3_yhR4wx"), and the two app ids that of a flow. */
 const NOT_NAMES = new Set<string>([...[...Object.values(ROLES), ...Object.values(OTHER_ROLES), ...Object.values(PORTAL_ROLES)].map((r) => r.id), APP_ID, PORTAL_ID]);
+/** Field-id shaped names that are no form's field: a user record's key from the user directory (colleagues.ts) and the
+ *  data console's placeholder for a field id (console/ItemDrawer.tsx). */
+const NOT_FIELDS = new Set<string>(["Full_Name", "Field_Id"]);
 
 export interface Use {
   token: string;
@@ -177,7 +180,7 @@ export function scanCode(o: { dir?: string } = {}): Scan {
     const { code, strings } = lex(readFileSync(p, "utf8"));
     const add = (raw: string, line: number) => {
       const token = raw.startsWith("Table::") ? raw.slice("Table::".length) : raw;
-      if (!FIELD_ID.test(token) || !/[a-z]/.test(token) || LAYOUT_ID.test(token) || NOT_NAMES.has(token)) return;
+      if (!FIELD_ID.test(token) || !/[a-z]/.test(token) || LAYOUT_ID.test(token) || NOT_NAMES.has(token) || NOT_FIELDS.has(token)) return;
       (FLOW_ID.test(token) ? flows : fields).push({ token, file, line });
     };
     for (const s of strings) add(s.text, s.line);
@@ -250,6 +253,8 @@ export function declared(): Map<string, Declared> {
   }
   const formulas = FORMULA_FIELDS as Record<string, readonly string[]>;
   for (const key of ["case", "review", "op"] as const) for (const field of formulas[key] ?? []) of(FLOWS[key].id).formulas.push({ field, why: `ids.ts FORMULA_FIELDS.${key}` });
+  // the RMES forms keep their criteria and findings tables in Kissflow (no flow change on 28 Oct), although the app
+  // writes and reads neither any more
   for (const [dept, flow] of [["SAF", FLOWS.rmesSAF.id], ["REG", FLOWS.rmesREG.id]] as const) {
     const t = TABLES[dept];
     of(flow).models.push({ model: t.criteria, why: `ids.ts TABLES.${dept}.criteria` }, { model: t.findings, why: `ids.ts TABLES.${dept}.findings` });

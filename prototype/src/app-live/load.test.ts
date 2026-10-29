@@ -613,11 +613,12 @@ describe("forms with child tables (Kissflow's list leaves them out; proven live 
     expect(mapped.state.suppliers.every((s) => s.contactIds.length > 0)).toBe(true);
   });
 
-  it("a Safety reviewer's load has its RMES record's criteria", async () => {
+  it("a Safety reviewer's load lists its RMES records and reads none of them item by item (28 Oct: no criteria or findings)", async () => {
     const { identity, acting, client } = setup("saf");
     const snap = await loadSnapshot(client, identity, acting);
     expect(snap.forms.rmesSAF.length).toBeGreaterThan(0);
-    for (const row of snap.forms.rmesSAF) expect(Array.isArray((row as Record<string, unknown>)["Table::Safety_Criteria"]), row._id).toBe(true);
+    expect(callsOf(client, "formGet", "rmesSAF")).toEqual([]);
+    expect(viewOf(snap, identity, acting).mapped.state.cases.find((c) => c.id === "ZZT-0003")!.rmes).toMatchObject({ criteria: [], findings: [] });
   });
 
   it("a failed full read keeps the list row and says so", async () => {
@@ -632,20 +633,20 @@ describe("saving like the portal: what the store shows between loads (APP-SAVING
   const LISTS = new Set(["formList", "myTasks", "myItems", "adminList"]);
   const TIMEOUT = "Kissflow did not answer within 30 s. If you were saving or sending, reload to see whether it went through.";
 
-  it("gap 1: a saved RMES result and a new note show from the writers' read-backs, with no list read again", async () => {
+  it("gap 1: a saved Safety decision and a new note show from the writers' read-backs, with no list read again", async () => {
     const { client, identity, acting } = setup("saf");
     const snap = await loadSnapshot(client, identity, acting);
     const view = viewOf(snap, identity, acting);
     const ctx: WriteCtx = { client, identity, acting, index: view.mapped.index, webhooks: {}, now: () => "2026-10-24T08:00:00Z", containerOk: true };
     const prev = view.mapped.state;
-    const cr = prev.cases.find((c) => c.id === "ZZT-0003")!.rmes!.criteria.find((x) => x.dept === "SAF" && !x.result)!;
-    const next = A.recordCriterion(prev, acting.me.id, "ZZT-0003", cr.id, "available", "Within the BDF limits.");
+    expect(prev.cases.find((c) => c.id === "ZZT-0003")!.reviews.find((r) => r.dept === "SAF")?.decision).toBeUndefined();
+    const next = A.rmesDecision(prev, acting.me.id, "ZZT-0003", "SAF", "approved", "");
     const from = client.calls.length;
-    const r = await liveWriters.recordCriterion!(ctx, prev, next, ["ZZT-0003", cr.id, "available", "Within the BDF limits."]);
+    const r = await liveWriters.rmesDecision!(ctx, prev, next, ["ZZT-0003", "SAF", "approved", ""]);
     expect(r).toMatchObject({ ok: true, moved: false });
     const shown = withSaved(snap, r.saved ?? [], r.auditRow);
     const after = viewOf(shown, identity, acting).mapped.state;
-    expect(after.cases.find((c) => c.id === "ZZT-0003")!.rmes!.criteria.find((x) => x.id === cr.id)).toMatchObject({ result: "available", comment: "Within the BDF limits." });
+    expect(after.cases.find((c) => c.id === "ZZT-0003")!.reviews.find((x) => x.dept === "SAF")).toMatchObject({ decision: "approved" });
     expect(shown.forms.audit.length).toBe(snap.forms.audit.length + 1);
     // the note: a NEW form item and its audit row, appended
     const n0 = viewOf(shown, identity, acting).mapped;
@@ -699,8 +700,7 @@ describe("saving like the portal: what the store shows between loads (APP-SAVING
     expect(heldOps.length).toBeGreaterThan(0);
     failing = true;
     const second = await loadSnapshot(client, identity, acting);
-    // before: the RMES record vanished (its criteria rows and their unsaved comments with it) and the held points lost
-    // their tasks
+    // before: the RMES record vanished (and with it the decision's precondition) and the held points lost their tasks
     expect(rmesOf(second)).toBeUndefined();
     expect(second.tasks.filter((t) => t.flow === "op")).toEqual([]);
     const kept = keepUnread(first, second);
@@ -759,39 +759,49 @@ describe("saving like the portal: what the store shows between loads (APP-SAVING
     expect(now.tasks.filter((t) => t.flow === "op")).toEqual(second.tasks.filter((t) => t.flow === "op"));
   });
 
-  it("gap 8: a record whose full read failed keeps the last load's criteria and findings, with a warning, until a read or a save reads them again", async () => {
+  it("gap 8: a supplier whose full read failed keeps the last load's contacts, with a warning, until a read or a save reads them again", async () => {
     let failing = false;
-    const { client, identity, acting } = setup("saf", { refuse: { formGet: (c) => (failing && c.flow === "rmesSAF" ? TIMEOUT : undefined) } });
+    const { client, identity, acting } = setup("admin", { refuse: { formGet: (c) => (failing && c.flow === "supplier" ? TIMEOUT : undefined) } });
     const first = await loadSnapshot(client, identity, acting);
-    const rmesOf = (s: LiveSnapshot) => viewOf(s, identity, acting).mapped.state.cases.find((c) => c.id === "ZZT-0003")!.rmes;
-    const criteria = rmesOf(first)!.criteria;
-    expect(criteria.length).toBeGreaterThan(0);
+    const contactsOf = (s: LiveSnapshot) => viewOf(s, identity, acting).mapped.state.suppliers.map((x) => x.contactIds);
+    const contacts = contactsOf(first);
+    expect(contacts.flat().length).toBeGreaterThan(0);
     failing = true;
     const second = await loadSnapshot(client, identity, acting);
-    const row = second.forms.rmesSAF.find((r) => r.Case_Code === "ZZT-0003")!;
-    expect(second.unreadRows).toEqual({ rmesSAF: second.forms.rmesSAF.map((r) => r._id) });
-    expect(rmesOf(second)?.criteria ?? []).toEqual([]); // before: the criteria rows (and their unsaved comments) vanished
+    const row = second.forms.supplier[0]!;
+    expect(second.unreadRows).toEqual({ supplier: second.forms.supplier.map((r) => r._id) });
+    expect(contactsOf(second).flat()).toEqual([]); // before: the contacts vanished
     const now = keepUnread(first, second);
-    expect(rmesOf(now)!.criteria).toEqual(criteria);
-    const all = Object.fromEntries(second.forms.rmesSAF.map((r) => [r._id, first.loadedAt]));
+    expect(contactsOf(now)).toEqual(contacts);
+    const all = Object.fromEntries(second.forms.supplier.map((r) => [r._id, first.loadedAt]));
     expect(now.keptRows).toEqual(all);
     expect(now.kept).toBeUndefined(); // the form list answered: the rest of the form is this load's
-    expect(now.warnings).toContain(keptRowText("rmesSAF", row._id, first.loadedAt));
-    // Complete review can't decide from it (gap 9), nor from a part kept from an earlier load
-    expect(notReadAgain(now, "ZZT-0003")).toBe(NOT_READ_AGAIN(["the CIQ RMES Safety record of ZZT-0003"]));
-    expect(notReadAgain(now, "ZZT-0001")).toBeUndefined();
+    expect(now.warnings).toContain(keptRowText("supplier", row._id, first.loadedAt));
+    // a supplier is no part of a review's gate (gap 9); a part kept from an earlier load is
+    expect(notReadAgain(now, "ZZT-0003")).toBeUndefined();
     expect(notReadAgain({ ...first, kept: { op: first.loadedAt, note: first.loadedAt } }, "ZZT-0003")).toBe(NOT_READ_AGAIN(["CIQ Open Point"]));
     expect(notReadAgain(first, "ZZT-0003")).toBeUndefined();
     // still failing: the first load's rows and time
     const third = keepUnread(now, await loadSnapshot(client, identity, acting));
     expect(third.keptRows).toEqual(all);
-    expect(rmesOf(third)!.criteria).toEqual(criteria);
-    // a save's read-back of the record reads its rows again
+    expect(contactsOf(third)).toEqual(contacts);
+    // a save's read-back of the row reads its rows again
     const back = { ...structuredClone(client.find(row._id)!.item) };
-    const saved = withSaved(third, [{ flow: "rmesSAF", item: back }]);
-    expect(saved.unreadRows?.rmesSAF).not.toContain(row._id);
+    const saved = withSaved(third, [{ flow: "supplier", item: back }]);
+    expect(saved.unreadRows?.supplier).not.toContain(row._id);
     expect(saved.keptRows?.[row._id]).toBeUndefined();
-    expect(notReadAgain(saved, "ZZT-0003")).toBeUndefined();
+  });
+
+  it("gap 9: an RMES row is never read item by item, so no failing item read can refuse Complete review (28 Oct)", async () => {
+    const { client, identity, acting } = setup("saf", { refuse: { formGet: (c) => (c.flow === "rmesSAF" ? TIMEOUT : undefined) } });
+    const snap = await loadSnapshot(client, identity, acting);
+    expect(callsOf(client, "formGet", "rmesSAF")).toEqual([]);
+    expect(snap.unreadRows?.rmesSAF).toBeUndefined();
+    expect(snap.warnings.filter((w) => /RMES/.test(w))).toEqual([]);
+    expect(viewOf(snap, identity, acting).mapped.state.cases.find((c) => c.id === "ZZT-0003")!.rmes).toBeDefined();
+    expect(notReadAgain(snap, "ZZT-0003")).toBeUndefined();
+    // a snapshot of an older build that still names an unread RMES row: no refusal either
+    expect(notReadAgain({ ...snap, unreadRows: { rmesSAF: snap.forms.rmesSAF.map((r) => r._id) } }, "ZZT-0003")).toBeUndefined();
   });
 });
 

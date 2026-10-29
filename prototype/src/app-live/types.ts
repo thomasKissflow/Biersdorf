@@ -151,6 +151,8 @@ export interface ReviewRef { caseId: string; dept: ReviewDept; itemId?: string; 
   itemStatus?: string }
 export interface OpRef { caseId: string; opId: string; itemId?: string; act?: string; activityId?: string; roundNo: number;
   portalQueryItemId?: string; modifiedAt?: string; live: boolean }
+/** An RMES record row. `criteriaRows` / `findingRows` stay empty since 28 Oct (the criteria and findings are retired;
+ *  a legacy row's are not read): kept so the shape the live suite reads is unchanged. */
 export interface RmesRef { caseId: string; dept: "SAF" | "REG"; itemId: string; criteriaRows: Record<string, string>; findingRows: Record<string, string> }
 export interface SupplierRef { supplierId: string; itemId: string; contactRows: Record<string /* user id */, string /* row _id */>;
   /** Its contact rows were not read on this load (the row's full read failed) and no earlier load's are shown
@@ -223,7 +225,7 @@ export interface WriteResult { ok: boolean; message?: string; tone?: "success" |
 /** `next` is the pure domain action's result on `prev` (already accepted); the writer encodes it. */
 export type Writer = (ctx: WriteCtx, prev: AppState, next: AppState, args: unknown[]) => Promise<WriteResult>;
 export type WritableMethod = "createCase" | "raiseOpenPoint" | "reviewResponse" | "editOpenPoint" | "closeOpenPoint" |
-  "recordCriterion" | "addFinding" | "closeFinding" | "findingToQuery" | "rmesDecision" | "completeReview" | "addInternalNote" |
+  "rmesDecision" | "completeReview" | "addInternalNote" |
   "reassignReview" | "reopenReview" | "cancelCase" | "addSupplier" | "updateSupplier" | "addContact" | "updateContact" | "setContactActive" |
   // 26 Oct: the configuration editor (Business administrator; write/config.ts)
   ConfigMethod;

@@ -1,8 +1,8 @@
 {
  "suite": "integrity-end",
  "run": "R1",
- "startedAt": "2026-10-21T19:28:29.865Z",
- "savedAt": "2026-10-21T19:28:29.928Z",
+ "startedAt": "2026-10-28T20:38:12.179Z",
+ "savedAt": "2026-10-28T20:38:12.253Z",
  "counts": {
   "pass": 10,
   "fail": 0,
@@ -114,8 +114,8 @@
     ],
     "notes": {}
    },
-   "ms": 3,
-   "at": "2026-10-21T19:28:29.883Z"
+   "ms": 4,
+   "at": "2026-10-28T20:38:12.203Z"
   },
   {
    "name": "names: every flow of both apps follows the naming rule; the code's flows exist with their names",
@@ -967,7 +967,7 @@
     }
    },
    "ms": 9,
-   "at": "2026-10-21T19:28:29.886Z"
+   "at": "2026-10-28T20:38:12.207Z"
   },
   {
    "name": "names: the code's field ids against each flow's fields",
@@ -1249,7 +1249,8 @@
        "Thread_JSON": "Textarea",
        "Closed_At": "DateTime",
        "Closed_By": "User",
-       "Raiser_Assignee": "MultiUser"
+       "Raiser_Assignee": "MultiUser",
+       "Raised_By_Email": "Text"
       }
      },
      {
@@ -1563,7 +1564,8 @@
        "Upload_Removed_By_Email": "Text in CIQP_Request_A00_Uploads",
        "Documents_JSON": "Textarea",
        "Release_By_Email": "Email",
-       "Release_By_Role": "Text"
+       "Release_By_Role": "Text",
+       "Review_Depts": "Text"
       }
      },
      {
@@ -2131,7 +2133,10 @@
        "lastPublishedAt": "2026-10-19T20:52:31Z",
        "draftAfterPublish": true,
        "source": "snapshot CIQ_Digital_A00.process.CIQ_Open_Point_A00.json (flow unchanged since 2026-10-19T21:55:07Z)",
-       "fields": 69,
+       "overlay": [
+        "Raised_By_Email (Text, as Raised_By_Name): added 22 Oct 14:31 IST by the portal session (Text; Editable at \"Raise open point\", ReadOnly at every other step, as Raised_By_Name; agreed with the app session for the load-time redesign); the app's raise (src/app-live/write/encode.ts opStartFields) writes it, op.round copies it to the query"
+       ],
+       "fields": 70,
        "tables": [
         "Rounds"
        ]
@@ -2223,9 +2228,10 @@
        "source": "snapshot CIQ_Supplier_Portal_A00.process.CIQP_Request_A00.json (flow unchanged since 2026-10-20T06:52:31Z)",
        "overlay": [
         "Release_By_Email (Email, as Release_By_Name): added 21 Oct 09:59Z (15:29 IST) by the portal session's kissflow-build/night-2026-10-21/release-fields.mjs (REQ-PROC-042, Thomas approved 21 Oct; the draft before it: backups/CIQP_Request_A00-before-release-fields-2026-10-21T095948245Z.json); the portal's final release (src/portal/data/liveActions.ts) writes it",
-        "Release_By_Role (Text, as Release_By_Name): added 21 Oct 09:59Z (15:29 IST) by the portal session's kissflow-build/night-2026-10-21/release-fields.mjs (REQ-PROC-042, Thomas approved 21 Oct; the draft before it: backups/CIQP_Request_A00-before-release-fields-2026-10-21T095948245Z.json); the portal's final release (src/portal/data/liveActions.ts) writes it"
+        "Release_By_Role (Text, as Release_By_Name): added 21 Oct 09:59Z (15:29 IST) by the portal session's kissflow-build/night-2026-10-21/release-fields.mjs (REQ-PROC-042, Thomas approved 21 Oct; the draft before it: backups/CIQP_Request_A00-before-release-fields-2026-10-21T095948245Z.json); the portal's final release (src/portal/data/liveActions.ts) writes it",
+        "Review_Depts (Text, as Completeness_By_Role): added 22 Oct by the portal session (Text; Editable at \"Supplier: fill in the CIQ\", ReadOnly at every other step, as Completeness_By_Role; the load-time redesign's phase 2): the portal's completeness confirmation (src/portal/data/liveActions.ts) writes it, I-2 copies it to the case for E-A"
        ],
-       "fields": 68,
+       "fields": 69,
        "tables": [
         "CIQP_Request_A00_Uploads"
        ]
@@ -2319,9 +2325,9 @@
       "CIQP_Help_Article_A00: modified 2026-10-16T14:28:54Z, published 2026-10-16T07:32:10Z"
      ],
      "scan": {
-      "files": 68,
-      "names": 284,
-      "uses": 1082
+      "files": 101,
+      "names": 263,
+      "uses": 1190
      },
      "perFlow": {
       "CIQ_Case_A00": {
@@ -2472,14 +2478,36 @@
         "Criteria_AI_Source_Doc_Uploaded_At",
         "Criteria_AI_Source_Quote",
         "Criteria_AI_State",
+        "Criteria_AI_Suggestion_Text",
+        "Criteria_Applicability_Basis",
+        "Criteria_Code",
         "Criteria_Impact_Resolution",
         "Criteria_Limit_Comparator",
+        "Criteria_Limit_Pass",
+        "Criteria_Limit_Set_Version",
+        "Criteria_Limit_Value",
         "Criteria_Override_Reason",
+        "Criteria_Part",
         "Criteria_Prefill_Value",
+        "Criteria_Recorded_At",
+        "Criteria_Reported_Unit",
+        "Criteria_Reported_Value",
         "Criteria_Source_Answers_Rev",
         "Criteria_Source_Doc_File_Name",
         "Criteria_Source_Doc_Uploaded_At",
-        "Criteria_Source_Row_Id"
+        "Criteria_Source_Field_Key",
+        "Criteria_Source_Row_Id",
+        "Criteria_Source_Section_Key",
+        "Criteria_Source_Value_Text",
+        "Criteria_Title",
+        "Findings_Blocking",
+        "Findings_Criterion_Code",
+        "Findings_Key",
+        "Findings_Linked_OP_Key",
+        "Findings_State",
+        "Findings_Text",
+        "Open_Blocking_Findings_Count",
+        "Open_Criteria_Count"
        ]
       },
       "CIQ_RMES_Regulatory_A00": {
@@ -2491,14 +2519,36 @@
         "Criteria_AI_Source_Doc_Uploaded_At",
         "Criteria_AI_Source_Quote",
         "Criteria_AI_State",
+        "Criteria_AI_Suggestion_Text",
+        "Criteria_Applicability_Basis",
+        "Criteria_Code",
         "Criteria_Impact_Resolution",
         "Criteria_Limit_Comparator",
+        "Criteria_Limit_Pass",
+        "Criteria_Limit_Set_Version",
+        "Criteria_Limit_Value",
         "Criteria_Override_Reason",
+        "Criteria_Part",
         "Criteria_Prefill_Value",
+        "Criteria_Recorded_At",
+        "Criteria_Reported_Unit",
+        "Criteria_Reported_Value",
         "Criteria_Source_Answers_Rev",
         "Criteria_Source_Doc_File_Name",
         "Criteria_Source_Doc_Uploaded_At",
-        "Criteria_Source_Row_Id"
+        "Criteria_Source_Field_Key",
+        "Criteria_Source_Row_Id",
+        "Criteria_Source_Section_Key",
+        "Criteria_Source_Value_Text",
+        "Criteria_Title",
+        "Findings_Blocking",
+        "Findings_Criterion_Code",
+        "Findings_Key",
+        "Findings_Linked_OP_Key",
+        "Findings_State",
+        "Findings_Text",
+        "Open_Blocking_Findings_Count",
+        "Open_Criteria_Count"
        ]
       },
       "CIQ_Supplier_A00": {
@@ -2517,10 +2567,6 @@
       "CIQ_Config_Version_A00": {
        "codeLacks": [],
        "flowOnly": [
-        "Internal_Annotations_JSON",
-        "Regression_Result_JSON",
-        "Release_Label",
-        "Release_Stage",
         "Section_Key",
         "Section_Rev",
         "Test_Case_Codes"
@@ -2530,14 +2576,20 @@
        "codeLacks": [],
        "flowOnly": [
         "Added_Section_Keys",
+        "Input_Hash",
+        "Input_JSON",
+        "Lead_Departments",
         "Override_Justification",
-        "Related_Key"
+        "Related_Key",
+        "Result_JSON",
+        "Run_At",
+        "Run_By",
+        "Run_No"
        ]
       },
       "CIQP_Request_A00": {
        "codeLacks": [],
        "flowOnly": [
-        "App_Case_Item_Id",
         "Keep_Open_Gate",
         "Release_Contacts",
         "Upload_File"
@@ -2546,14 +2598,12 @@
       "CIQP_Query_A00": {
        "codeLacks": [],
        "flowOnly": [
-        "App_Open_Point_Id",
         "New_Section_Item_Key"
        ]
       },
       "CIQP_Final_Release_A00": {
        "codeLacks": [],
        "flowOnly": [
-        "App_Case_Item_Id",
         "Declaration_Text",
         "Declaration_Text_Key"
        ]
@@ -2585,7 +2635,6 @@
       "CIQP_Completeness_Confirmation_A00": {
        "codeLacks": [],
        "flowOnly": [
-        "App_Case_Item_Id",
         "Declaration_Text",
         "Declaration_Text_Key"
        ]
@@ -2615,8 +2664,8 @@
      }
     }
    },
-   "ms": 9,
-   "at": "2026-10-21T19:28:29.895Z"
+   "ms": 8,
+   "at": "2026-10-28T20:38:12.216Z"
   },
   {
    "name": "names: the code's steps exist with their names",
@@ -2714,7 +2763,7 @@
     "notes": {}
    },
    "ms": 0,
-   "at": "2026-10-21T19:28:29.905Z"
+   "at": "2026-10-28T20:38:12.226Z"
   },
   {
    "name": "names: the roles of both apps match ids.ts ROLES and portal.ts ROLES",
@@ -2865,9 +2914,7 @@
      }
     ],
     "notes": {
-     "CIQ_Digital_A00 roles the code does not know": [
-      "Admin / Developer"
-     ],
+     "CIQ_Digital_A00 roles the code does not know": [],
      "CIQ_Supplier_Portal_A00 roles the code does not know": [
       "Test",
       "User"
@@ -2899,7 +2946,7 @@
     }
    },
    "ms": 0,
-   "at": "2026-10-21T19:28:29.907Z"
+   "at": "2026-10-28T20:38:12.228Z"
   },
   {
    "name": "no corruption: nothing that is not this run's changed during the run",
@@ -2909,14 +2956,14 @@
      {
       "what": "items per flow (My items rows and form list rows), with their _modified_at",
       "value": {
-       "CIQ_Audit_Event_A00": 46,
+       "CIQ_Audit_Event_A00": 31,
        "CIQ_Internal_Note_A00": 2,
        "CIQ_RMES_Safety_A00": 2,
        "CIQ_RMES_Regulatory_A00": 2,
        "CIQ_Supplier_A00": 2,
        "CIQ_Config_Version_A00": 13,
        "CIQ_Case_A00": 3,
-       "CIQ_Review_A00": 12,
+       "CIQ_Review_A00": 10,
        "CIQ_Open_Point_A00": 3
       }
      },
@@ -2926,8 +2973,8 @@
        "changed": [],
        "removed": [],
        "added": [],
-       "same": 85,
-       "startedAt": "2026-10-21T19:28:29.824Z"
+       "same": 68,
+       "startedAt": "2026-10-28T20:38:12.131Z"
       }
      }
     ],
@@ -2954,8 +3001,8 @@
     ],
     "notes": {}
    },
-   "ms": 2,
-   "at": "2026-10-21T19:28:29.908Z"
+   "ms": 1,
+   "at": "2026-10-28T20:38:12.230Z"
   },
   {
    "name": "no corruption: every ledger item of this run reads back (or is gone where it should be)",
@@ -2967,7 +3014,7 @@
       "value": {
        "raw": {
         "_id": "FmSup2",
-        "_modified_at": "2026-10-23T16:00:01Z",
+        "_modified_at": "2026-10-28T20:38:12Z",
         "Supplier_Code": "s1",
         "Supplier_Legal_Name": "ZZT-N21-R1 Supplier"
        },
@@ -2980,12 +3027,12 @@
       }
      },
      {
-      "what": "CIQ_Audit_Event_A00 FmAudit4 (Event_Key=EV-LOG-20261021192829-ghsw Action_Code=supplier.changed; stage saved)",
+      "what": "CIQ_Audit_Event_A00 FmAudit4 (Event_Key=EV-LOG-20261028203812-c50l Action_Code=supplier.changed; stage saved)",
       "value": {
        "raw": {
         "_id": "FmAudit4",
-        "_modified_at": "2026-10-23T16:00:02Z",
-        "Event_Key": "EV-LOG-20261021192829-ghsw",
+        "_modified_at": "2026-10-28T20:38:13Z",
+        "Event_Key": "EV-LOG-20261028203812-c50l",
         "Action_Code": "supplier.changed",
         "Object_Item_Id": "FmSup2"
        },
@@ -3002,7 +3049,7 @@
         "_id": "PkCase5",
         "_status": "InProgress",
         "_current_step": "Waiting for supplier: CIQ",
-        "_modified_at": "2026-10-23T16:00:05Z",
+        "_modified_at": "2026-10-28T20:38:16Z",
         "Case_Code": "ZZT-N21-R1-INT-C01",
         "Cycle_No": 1,
         "Supplier_Code": "SUP-ZZT-SOLVARO",
@@ -3022,14 +3069,14 @@
       }
      },
      {
-      "what": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261021192829-rx0m; stage saved)",
+      "what": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261028203812-fh9v; stage saved)",
       "value": {
        "raw": {
         "_id": "FmAudit9",
-        "_modified_at": "2026-10-23T16:00:06Z",
+        "_modified_at": "2026-10-28T20:38:17Z",
         "Case_Code": "ZZT-N21-R1-INT-C01",
         "Cycle_No": 1,
-        "Event_Key": "EV-ZZT-N21-R1-INT-C01-20261021192829-rx0m",
+        "Event_Key": "EV-ZZT-N21-R1-INT-C01-20261028203812-fh9v",
         "Action_Code": "case.created",
         "Case_Item_Id": "PkCase5",
         "Object_Item_Id": "PkCase5"
@@ -3048,7 +3095,7 @@
         "_id": "PkReq1",
         "_status": "InProgress",
         "_current_step": "Supplier: fill in the CIQ",
-        "_modified_at": "2026-10-21T19:28:31Z",
+        "_modified_at": "2026-10-28T20:38:14Z",
         "Case_Code": "ZZT-N21-R1-INT-C01",
         "Cycle_No": 1,
         "Request_Key": "ZZT-N21-R1-INT-C01|1",
@@ -3067,7 +3114,7 @@
       "value": {
        "raw": {
         "_id": "FmNote11",
-        "_modified_at": "2026-10-23T16:00:07Z",
+        "_modified_at": "2026-10-28T20:38:18Z",
         "Case_Code": "ZZT-N21-R1-INT-C01",
         "Cycle_No": 1,
         "Note_Key": "ZZT-N21-R1-INT-C01-n1",
@@ -3083,14 +3130,14 @@
       }
      },
      {
-      "what": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261021192829-jfhf; stage saved)",
+      "what": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261028203812-im2v; stage saved)",
       "value": {
        "raw": {
         "_id": "FmAudit13",
-        "_modified_at": "2026-10-23T16:00:08Z",
+        "_modified_at": "2026-10-28T20:38:19Z",
         "Case_Code": "ZZT-N21-R1-INT-C01",
         "Cycle_No": 1,
-        "Event_Key": "EV-ZZT-N21-R1-INT-C01-20261021192829-jfhf",
+        "Event_Key": "EV-ZZT-N21-R1-INT-C01-20261028203812-im2v",
         "Action_Code": "note.added",
         "Case_Item_Id": "PkCase5",
         "Object_Item_Id": "FmNote11"
@@ -3147,32 +3194,32 @@
       "ok": true,
       "detail": {
        "rows": [
-        "Contacts_lmcq7frrdz"
+        "Contacts_g056vw7n0s"
        ],
        "mapped": [
-        "Contacts_lmcq7frrdz"
+        "Contacts_g056vw7n0s"
        ]
       }
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit4 (Event_Key=EV-LOG-20261021192829-ghsw Action_Code=supplier.changed; stage saved): Event_Key is as the ledger recorded it",
+      "label": "CIQ_Audit_Event_A00 FmAudit4 (Event_Key=EV-LOG-20261028203812-c50l Action_Code=supplier.changed; stage saved): Event_Key is as the ledger recorded it",
       "ok": true
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit4 (Event_Key=EV-LOG-20261021192829-ghsw Action_Code=supplier.changed; stage saved): Action_Code is as the ledger recorded it",
+      "label": "CIQ_Audit_Event_A00 FmAudit4 (Event_Key=EV-LOG-20261028203812-c50l Action_Code=supplier.changed; stage saved): Action_Code is as the ledger recorded it",
       "ok": true
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit4 (Event_Key=EV-LOG-20261021192829-ghsw Action_Code=supplier.changed; stage saved): is R1's (names only its ledger items, or carries \"ZZT-N21-R1\")",
+      "label": "CIQ_Audit_Event_A00 FmAudit4 (Event_Key=EV-LOG-20261028203812-c50l Action_Code=supplier.changed; stage saved): is R1's (names only its ledger items, or carries \"ZZT-N21-R1\")",
       "ok": true
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit4 (Event_Key=EV-LOG-20261021192829-ghsw Action_Code=supplier.changed; stage saved): Action_Code is a code the app reads (auditMap ACTION_LABEL)",
+      "label": "CIQ_Audit_Event_A00 FmAudit4 (Event_Key=EV-LOG-20261028203812-c50l Action_Code=supplier.changed; stage saved): Action_Code is a code the app reads (auditMap ACTION_LABEL)",
       "ok": true,
       "detail": "supplier.changed"
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit4 (Event_Key=EV-LOG-20261021192829-ghsw Action_Code=supplier.changed; stage saved): Snapshot_JSON is there and reads as the app's snapshot (parseSnapshot)",
+      "label": "CIQ_Audit_Event_A00 FmAudit4 (Event_Key=EV-LOG-20261028203812-c50l Action_Code=supplier.changed; stage saved): Snapshot_JSON is there and reads as the app's snapshot (parseSnapshot)",
       "ok": true
      },
      {
@@ -3293,33 +3340,33 @@
       }
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261021192829-rx0m; stage saved): Case_Code is as the ledger recorded it",
+      "label": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261028203812-fh9v; stage saved): Case_Code is as the ledger recorded it",
       "ok": true
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261021192829-rx0m; stage saved): Event_Key is as the ledger recorded it",
+      "label": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261028203812-fh9v; stage saved): Event_Key is as the ledger recorded it",
       "ok": true
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261021192829-rx0m; stage saved): is R1's (names only its ledger items, or carries \"ZZT-N21-R1\")",
+      "label": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261028203812-fh9v; stage saved): is R1's (names only its ledger items, or carries \"ZZT-N21-R1\")",
       "ok": true
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261021192829-rx0m; stage saved): Case_Code carries \"ZZT-N21-R1\"",
+      "label": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261028203812-fh9v; stage saved): Case_Code carries \"ZZT-N21-R1\"",
       "ok": true,
       "detail": "ZZT-N21-R1-INT-C01"
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261021192829-rx0m; stage saved): Action_Code is a code the app reads (auditMap ACTION_LABEL)",
+      "label": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261028203812-fh9v; stage saved): Action_Code is a code the app reads (auditMap ACTION_LABEL)",
       "ok": true,
       "detail": "case.created"
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261021192829-rx0m; stage saved): Snapshot_JSON is there and reads as the app's snapshot (parseSnapshot)",
+      "label": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261028203812-fh9v; stage saved): Snapshot_JSON is there and reads as the app's snapshot (parseSnapshot)",
       "ok": true
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261021192829-rx0m; stage saved): names a case on the screens",
+      "label": "CIQ_Audit_Event_A00 FmAudit9 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261028203812-fh9v; stage saved): names a case on the screens",
       "ok": true,
       "detail": "PkCase5"
      },
@@ -3390,33 +3437,33 @@
       }
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261021192829-jfhf; stage saved): Case_Code is as the ledger recorded it",
+      "label": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261028203812-im2v; stage saved): Case_Code is as the ledger recorded it",
       "ok": true
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261021192829-jfhf; stage saved): Event_Key is as the ledger recorded it",
+      "label": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261028203812-im2v; stage saved): Event_Key is as the ledger recorded it",
       "ok": true
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261021192829-jfhf; stage saved): is R1's (names only its ledger items, or carries \"ZZT-N21-R1\")",
+      "label": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261028203812-im2v; stage saved): is R1's (names only its ledger items, or carries \"ZZT-N21-R1\")",
       "ok": true
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261021192829-jfhf; stage saved): Case_Code carries \"ZZT-N21-R1\"",
+      "label": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261028203812-im2v; stage saved): Case_Code carries \"ZZT-N21-R1\"",
       "ok": true,
       "detail": "ZZT-N21-R1-INT-C01"
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261021192829-jfhf; stage saved): Action_Code is a code the app reads (auditMap ACTION_LABEL)",
+      "label": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261028203812-im2v; stage saved): Action_Code is a code the app reads (auditMap ACTION_LABEL)",
       "ok": true,
       "detail": "note.added"
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261021192829-jfhf; stage saved): Snapshot_JSON is there and reads as the app's snapshot (parseSnapshot)",
+      "label": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261028203812-im2v; stage saved): Snapshot_JSON is there and reads as the app's snapshot (parseSnapshot)",
       "ok": true
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261021192829-jfhf; stage saved): names a case on the screens",
+      "label": "CIQ_Audit_Event_A00 FmAudit13 (Case_Code=ZZT-N21-R1-INT-C01 Event_Key=EV-ZZT-N21-R1-INT-C01-20261028203812-im2v; stage saved): names a case on the screens",
       "ok": true,
       "detail": "PkCase5"
      }
@@ -3432,8 +3479,8 @@
      "expect": "R1 keeps its items at their stages"
     }
    },
-   "ms": 8,
-   "at": "2026-10-21T19:28:29.911Z"
+   "ms": 10,
+   "at": "2026-10-28T20:38:12.232Z"
   },
   {
    "name": "no corruption: this run's items (JSON parses, real user ids, valid dates)",
@@ -3491,7 +3538,7 @@
     "notes": {}
    },
    "ms": 0,
-   "at": "2026-10-21T19:28:29.921Z"
+   "at": "2026-10-28T20:38:12.247Z"
   },
   {
    "name": "no corruption: every other item the key reads (JSON parses, real user ids, valid dates)",
@@ -3501,14 +3548,14 @@
      {
       "what": "rows checked per flow (form rows in full, process items as their My items rows)",
       "value": {
-       "CIQ_Audit_Event_A00": 46,
+       "CIQ_Audit_Event_A00": 31,
        "CIQ_Internal_Note_A00": 2,
        "CIQ_RMES_Safety_A00": 2,
        "CIQ_RMES_Regulatory_A00": 2,
        "CIQ_Supplier_A00": 2,
        "CIQ_Config_Version_A00": 13,
        "CIQ_Case_A00": 3,
-       "CIQ_Review_A00": 12,
+       "CIQ_Review_A00": 10,
        "CIQ_Open_Point_A00": 3
       }
      }
@@ -3522,8 +3569,8 @@
     ],
     "notes": {}
    },
-   "ms": 2,
-   "at": "2026-10-21T19:28:29.924Z"
+   "ms": 1,
+   "at": "2026-10-28T20:38:12.250Z"
   },
   {
    "name": "read-only: S-INTEGRITY wrote nothing (so it has nothing of its own to clean up)",
@@ -3576,7 +3623,7 @@
     }
    },
    "ms": 0,
-   "at": "2026-10-21T19:28:29.928Z"
+   "at": "2026-10-28T20:38:12.253Z"
   }
  ]
 }

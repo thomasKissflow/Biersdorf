@@ -233,23 +233,16 @@ describe("round trip: domain → encode → Kissflow items → toAppState", () =
     expect(noteKeys(caseIn(back, "ZZT-0003").internalNotes.find((n) => n.id === note.id)!)).toEqual(noteKeys(note));
   });
 
-  it("RMES: a recorded result and a new finding read back on their rows", async () => {
+  it("the Safety decision reads back from its review; the RMES record stays the record only (28 Oct)", async () => {
     const b = boot("saf");
-    const open = caseIn(b.m.state, "ZZT-0003").rmes!.criteria.find((x) => x.dept === "SAF" && !x.result)!;
-    const rec = await roundtrip(b, "recordCriterion", ["ZZT-0003", open.id, "plausible", "Dossier checked."], (s, by) => A.recordCriterion(s, by, "ZZT-0003", open.id, "plausible", "Dossier checked.", AT));
-    const crit = (c: CiqCase) => {
-      const x = c.rmes!.criteria.find((y) => y.id === open.id)!;
-      return { id: x.id, dept: x.dept, part: x.part, title: x.title, result: x.result, comment: x.comment, by: x.by, at: instant(x.at), source: { sectionId: x.source.sectionId, fieldId: x.source.fieldId, label: x.source.label } };
+    const rec = await roundtrip(b, "rmesDecision", ["ZZT-0003", "SAF", "rejected", "Endocrine data missing."], (s, by) => A.rmesDecision(s, by, "ZZT-0003", "SAF", "rejected", "Endocrine data missing.", AT));
+    const dec = (c: CiqCase) => {
+      const t = c.reviews.find((r) => r.dept === "SAF")!;
+      return { decision: t.decision, reason: t.decisionReason };
     };
-    expect(crit(caseIn(rec.back, "ZZT-0003"))).toEqual(crit(caseIn(rec.next, "ZZT-0003")));
-    const before = caseIn(b.m.state, "ZZT-0003").rmes!.findings.map((f) => f.id);
-    const fnd = await roundtrip(b, "addFinding", ["ZZT-0003", open.id, "The sensitisation study is older than 10 years.", true], (s, by) => A.addFinding(s, by, "ZZT-0003", open.id, "The sensitisation study is older than 10 years.", true, AT));
-    const added = caseIn(fnd.next, "ZZT-0003").rmes!.findings.find((f) => !before.includes(f.id))!;
-    const fk = (c: CiqCase) => {
-      const f = c.rmes!.findings.find((x) => x.id === added.id)!;
-      return { id: f.id, dept: f.dept, criterionId: f.criterionId, text: f.text, blocking: f.blocking, status: f.status, openPointId: f.openPointId };
-    };
-    expect(fk(caseIn(fnd.back, "ZZT-0003"))).toEqual(fk(caseIn(fnd.next, "ZZT-0003")));
+    expect(dec(caseIn(rec.next, "ZZT-0003"))).toEqual({ decision: "rejected", reason: "Endocrine data missing." });
+    expect(dec(caseIn(rec.back, "ZZT-0003"))).toEqual(dec(caseIn(rec.next, "ZZT-0003")));
+    expect(caseIn(rec.back, "ZZT-0003").rmes).toMatchObject({ criteria: [], findings: [] });
   });
 
   it("the supplier master: a new contact and a changed city read back from the CIQ Supplier row", async () => {

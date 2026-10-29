@@ -88,7 +88,8 @@ export interface AuditRow {
   snap?: AuditSnapshot;
 }
 
-/** The prototype's phrase for a row without a snapshot (actions.ts wording). */
+/** The prototype's phrase for a row without a snapshot (actions.ts wording). rmes.saved names the record, not a result:
+ *  since 28 Oct the code covers the RMES record's creation and the department's decision (the criteria are retired). */
 export const ACTION_LABEL: Record<AuditCode, string> = {
   "case.created": "Created case",
   "case.cancelled": "Cancelled case",
@@ -105,7 +106,7 @@ export const ACTION_LABEL: Record<AuditCode, string> = {
   "review.reopened": "Reopened review",
   "review.reassigned": "Reassigned review",
   "release.requested": "All reviews completed",
-  "rmes.saved": "Recorded RMES result",
+  "rmes.saved": "Saved RMES record",
   "note.added": "Added internal note",
   "supplier.changed": "Changed supplier master",
   "config.published": "Published configuration",

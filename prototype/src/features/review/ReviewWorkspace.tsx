@@ -1,23 +1,23 @@
 // /review/:caseId — the review workspace of RMM and the departments: read every section, ask the supplier on any of
-// them, decide on the supplier's answers (only the raiser), record RMES (Safety / Regulatory) and complete the review.
-// RMM reviews the whole CIQ (RMM lane) and never adds sections; a department may add a missing one. Deep links:
-// ?s=<section>, ?tab=rmes, ?op=<open point> (from the mails).
+// them, decide on the supplier's answers (only the raiser), record the Safety / Regulatory decision and complete the
+// review. Safety and Regulatory also have the RMES tab: the read-only sheet filled from the CIQ (BDF's scope of 28 Oct;
+// the decision is not part of it and sits on the Questionnaire tab). RMM reviews the whole CIQ (RMM lane) and never adds
+// sections; a department may add a missing one. Deep links: ?s=<section>, ?tab=rmes, ?op=<open point> (from the mails).
 import { Info, Lock, TriangleAlert } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { Card, EmptyState, Tabs } from "@/components/ui";
-import { DEPT_LABEL, DEPT_SHORT, ORIGIN_LABEL, sectionOf } from "@/domain/catalog";
+import { DEPT_LABEL, ORIGIN_LABEL, sectionOf } from "@/domain/catalog";
 import { can } from "@/domain/permissions";
 import { undefinedOrigins } from "@/domain/rules";
 import { PHASE_LABEL, activeSections, isClosed, rmmFlags, sectionsOwnedBy } from "@/domain/selectors";
-import type { Finding } from "@/domain/types";
 import { useCase, useStore } from "@/store/store";
-import { ActivateSectionModal, FindingQueryModal, RaiseQueryModal } from "./AskModals";
+import { ActivateSectionModal, RaiseQueryModal } from "./AskModals";
 import { CompletePanel } from "./CompletePanel";
 import { InternalNotes } from "./InternalNotes";
 import { changeMarkers, joinNames } from "./lib";
 import { OpenPointsPanel } from "./OpenPointsPanel";
-import { AddFindingModal } from "./RmesSide";
+import { DecisionCard } from "./RmesSide";
 import { RmesTab } from "./RmesTab";
 import { SectionContent } from "./SectionContent";
 import { SectionNav, SectionPicker } from "./SectionNav";
@@ -45,13 +45,22 @@ export function ReviewWorkspace() {
   const [params, setParams] = useSearchParams();
   const [ask, setAsk] = useState<AskTarget | null>(null);
   const [activate, setActivate] = useState(false);
-  const [findingAsk, setFindingAsk] = useState<Finding | null>(null);
-  const [addFinding, setAddFinding] = useState<{ criterionId?: string } | null>(null);
+  /** Set by the completion bar's decision link: scroll to the decision card once the Questionnaire tab shows it. */
+  const [toDecision, setToDecision] = useState(0);
   const [highlight, setHighlight] = useState<string | null>(null);
   const timer = useRef<number | undefined>(undefined);
   /** The section opened by default, kept per case so it does not jump away when a point gets closed. */
   const defaultSection = useRef<Record<string, string | undefined>>({});
   useEffect(() => () => window.clearTimeout(timer.current), []);
+  useEffect(() => {
+    if (!toDecision) return;
+    const el = document.getElementById("decision-card");
+    // still on the RMES tab: wait for the switch to the Questionnaire tab (a params change)
+    if (!el && params.get("tab") === "rmes") return;
+    el?.scrollIntoView({ behavior: "smooth", block: "center" });
+    el?.focus({ preventScroll: true });
+    setToDecision(0);
+  }, [toDecision, params]);
 
   const focusOp = useCallback((id: string) => {
     setHighlight(id);
@@ -109,7 +118,7 @@ export function ReviewWorkspace() {
     );
 
   const closed = isClosed(c);
-  // Asking, deciding and the RMES work happen while the case is in review and this track is not completed.
+  // Asking and deciding happen while the case is in review and this track is not completed.
   const trackOpen = !closed && c.phase === "review" && track.status !== "completed";
   const rmm = isRmmLane(dept);
   const active = activeSections(c).map((s) => s.sectionId);
@@ -120,7 +129,9 @@ export function ReviewWorkspace() {
   // Only a department adds a section during the review (REQ-ADR-002); RMM asks the supplier or the department concerned.
   const canActivate = trackOpen && !rmm && c.scope.some((s) => s.applicability === "na") && can(state, me.id, "scope.extend", c);
   const flagged = rmm && rmmFlags(c).length > 0;
-  const hasRmes = isRmesDept(dept) && !!c.rmes;
+  // Safety and Regulatory read the RMES once the case is past Part 1 (whether or not its record exists yet: the sheet
+  // is derived from the case); nobody else sees it.
+  const hasRmes = isRmesDept(dept) && c.phase !== "supplier-input";
   const tab = hasRmes && params.get("tab") === "rmes" ? "rmes" : "ciq";
   const markers = changeMarkers(c, dept);
   const changed = markers.sections.filter((id) => active.includes(id));
@@ -157,12 +168,12 @@ export function ReviewWorkspace() {
     );
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-  const openRmes = () => {
-    setParam("tab", "rmes");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  // the decision card is on the Questionnaire tab: switch to it, then the effect above scrolls there
+  const showDecision = () => {
+    if (tab !== "ciq") setParam("tab", null);
+    setToDecision((n) => n + 1);
   };
   const myOpen = c.openPoints.filter((p) => p.dept === dept && p.status !== "closed").length;
-  const rmesPending = c.rmes?.criteria.filter((x) => x.dept === dept && !x.result).length ?? 0;
   const origins = undefinedOrigins(c.config).map((o) => ORIGIN_LABEL[o]);
 
   return (
@@ -210,7 +221,7 @@ export function ReviewWorkspace() {
           onChange={(v) => setParam("tab", v === "rmes" ? "rmes" : null)}
           tabs={[
             { value: "ciq", label: <span data-testid="workspace-tab-ciq">Questionnaire</span>, count: myOpen || undefined },
-            { value: "rmes", label: <span data-testid="workspace-tab-rmes">RMES · {DEPT_SHORT[dept]}</span>, count: rmesPending || undefined },
+            { value: "rmes", label: <span data-testid="workspace-tab-rmes">RMES</span> },
           ]}
         />
       )}
@@ -229,15 +240,16 @@ export function ReviewWorkspace() {
             )}
           </div>
           <div className="min-w-0 space-y-5 lg:col-span-2 xl:col-span-1">
+            {isRmesDept(dept) && <DecisionCard c={c} dept={dept} track={track} canAct={trackOpen} />}
             <OpenPointsPanel c={c} dept={dept} trackOpen={trackOpen} highlight={highlight} onJump={jump} />
             <InternalNotes c={c} sectionId={selected || undefined} onJump={jump} />
           </div>
         </div>
       ) : (
-        isRmesDept(dept) && <RmesTab c={c} dept={dept} track={track} canAct={trackOpen} onJump={jump} onAddFinding={(criterionId) => setAddFinding({ criterionId })} onAskFinding={setFindingAsk} />
+        <RmesTab c={c} state={state} onJump={jump} />
       )}
 
-      <CompletePanel c={c} dept={dept} track={track} onRmesTab={tab === "rmes"} onShowPoint={showPoint} onOpenRmes={openRmes} />
+      <CompletePanel c={c} dept={dept} track={track} onShowPoint={showPoint} onShowDecision={showDecision} />
 
       {ask && <RaiseQueryModal c={c} dept={dept} target={ask} onClose={() => setAsk(null)} />}
       {activate && canActivate && (
@@ -251,8 +263,6 @@ export function ReviewWorkspace() {
           }}
         />
       )}
-      {findingAsk && <FindingQueryModal c={c} finding={findingAsk} onClose={() => setFindingAsk(null)} />}
-      {addFinding && isRmesDept(dept) && <AddFindingModal c={c} dept={dept} initialCriterion={addFinding.criterionId} onClose={() => setAddFinding(null)} />}
     </div>
   );
 }

@@ -120,7 +120,7 @@ describe("closing (withdrawing) an open point (AS-08)", () => {
   it("an answered point can be closed too, which unblocks the completion", () => {
     const { sc, op } = withQuery();
     sc.answer(op);
-    sc.rmes("REG", "u-reg").decision("REG", "u-reg", "approved");
+    sc.decision("REG", "u-reg", "approved");
     expect(sc.refused("complete with open point", (s, at) => completeReview(s, "u-reg", sc.id, "REG", at))).toMatch(/Cannot complete/);
     sc.step("withdraw", (s, at) => closeOpenPoint(s, "u-reg", sc.id, op, "Answered elsewhere", at));
     sc.complete("REG", "u-reg");

@@ -55,7 +55,7 @@ export function InternalNotes({ c, sectionId, onJump }: { c: CiqCase; sectionId?
             onChange={setText}
             people={mentionableUsers(state)}
             meId={me.id}
-            placeholder="Align with colleagues, e.g. on a shared section or a finding. Type @ to mention someone."
+            placeholder="Align with colleagues, e.g. on a shared section or an open point. Type @ to mention someone."
             className="min-h-[64px]"
             aria-label="New internal note"
             aria-describedby={hintId}

@@ -62,11 +62,7 @@ export const WHAT: Record<WritableMethod, string> = {
   reviewResponse: "Deciding on the supplier's answer",
   editOpenPoint: "Editing an open point",
   closeOpenPoint: "Closing an open point",
-  recordCriterion: "Recording RMES results",
-  addFinding: "Adding a finding",
-  closeFinding: "Closing a finding",
-  findingToQuery: "Asking the supplier about a finding",
-  rmesDecision: "Recording the RMES decision",
+  rmesDecision: "Recording the Safety or Regulatory decision",
   completeReview: "Completing a review",
   addInternalNote: "Internal notes",
   reassignReview: "Reassigning a review",
@@ -162,8 +158,7 @@ export type FreshCheck = (f: Fresh, clicked: WriteCtx) => { tone: Tone; text: st
 
 /**
  * Complete review's checks on its fresh read (gap 9). The read must be one: a part the review gate is decided from that
- * could not be read again (kept from an earlier load, or the case's RMES record without its criteria and findings) would
- * count as "no gap" (load.ts notReadAgain). And the review item must be the one the user acted on: its `_modified_at`
+ * could not be read again (kept from an earlier load) would count as "no gap" (load.ts notReadAgain). And the review item must be the one the user acted on: its `_modified_at`
  * in the fresh read must still be the click's (the writer's staleCheck now compares with a read made just before, so
  * it can't see that; our own earlier writes moved the click's stamp along, write/actions.ts updateHeld).
  */
@@ -220,7 +215,7 @@ export interface JobDeps {
 /**
  * One write job on the store's chain (DESIGN §6 steps 5–6, APP-SAVING-GAPS gaps 1, 2 and 6). When it runs: if a job
  * queued before it failed in the meantime, it is not sent (NOT_SENT: it was built on that job's optimistic state, e.g. a
- * Complete review clicked on a criterion result that never reached Kissflow; the portal refuses a task action over
+ * Complete review clicked on a decision that never reached Kissflow; the portal refuses a task action over
  * unsaved answers, LiveSupplierStore.tsx:324). Otherwise the writer runs. The result is logged and toasted; a failure
  * bumps `failEpoch` and drops the optimistic state (what the screens showed did not reach Kissflow). A save that moved
  * no step (`moved: false`) shows its read-backs at once; a step move, an item-writing hand-off, an unknown `moved` or a
@@ -319,7 +314,7 @@ export function createLiveApi(deps: ApiDeps): StoreApi {
     const done = deps.enqueue(method, async () => {
       try {
         if (!o.fresh) return finalize(await writer(ctx, prev, next, args), success);
-        // gap 9: decide from what Kissflow holds now (a point raised or a finding added by a colleague since the load)
+        // gap 9: decide from what Kissflow holds now (a point raised by a colleague since the load)
         const f = await deps.fresh();
         const why = o.fresh(f, ctx);
         if (why) return { ok: false, tone: why.tone, message: why.text, handoffs: [], warnings: [] };
@@ -404,10 +399,6 @@ export function createLiveApi(deps: ApiDeps): StoreApi {
       actSaved("reviewResponse", [id, op, d, t], (s) => A.reviewResponse(s, by, id, op, d, t), d === "accept" ? "Answer accepted." : d === "return" ? "Returned to the supplier." : "Closed as not accepted."),
     editOpenPoint: (id, op, patch) => act("editOpenPoint", [id, op, patch], (s) => A.editOpenPoint(s, by, id, op, patch), "Open point changed."),
     closeOpenPoint: (id, op, reason) => act("closeOpenPoint", [id, op, reason], (s) => A.closeOpenPoint(s, by, id, op, reason), "Open point closed."),
-    recordCriterion: (id, c, r, t) => void act("recordCriterion", [id, c, r, t], (s) => A.recordCriterion(s, by, id, c, r, t), "RMES result saved."),
-    addFinding: (id, c, t, bl) => actSaved("addFinding", [id, c, t, bl], (s) => A.addFinding(s, by, id, c, t, bl), "Finding added."),
-    findingToQuery: (id, f, q, d) => actSaved("findingToQuery", [id, f, q, d], (s) => A.findingToQuery(s, by, id, f, q, d), "Sent to the supplier as a task."),
-    closeFinding: (id, f) => void act("closeFinding", [id, f], (s) => A.closeFinding(s, by, id, f), "Finding closed."),
     rmesDecision: (id, d, dec, r) => void act("rmesDecision", [id, d, dec, r], (s) => A.rmesDecision(s, by, id, d, dec, r), "Decision recorded."),
     // gap 9: its job reads everything again first (Kissflow's Review_Gate trusts the counts the writer sends)
     completeReview: (id, d, opts) => void act("completeReview", [id, d, opts], (s) => A.completeReview(s, by, id, d, nowIso(), opts), "Review completed.", { fresh: reviewGateCheck(id, d) }),

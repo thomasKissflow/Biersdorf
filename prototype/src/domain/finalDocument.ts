@@ -6,7 +6,7 @@
 
 import { CONFIG_QUESTIONS, DEPT_SHORT, fieldOf, sectionOf } from "./catalog";
 import { isSlotKey, requestedDocStatus, requestedDocuments, slotDocuments } from "./requestedDocs";
-import { answerOf, answeredByOf, caseFields, closedByCancellation, formatValue, hasValue, isConfigAnswered, isVisible, manufacturerOf, siteOf, userName } from "./selectors";
+import { answerOf, answeredByOf, caseFields, caseSupplierName, closedByCancellation, formatValue, hasValue, isConfigAnswered, isVisible, manufacturerOf, siteOf, userName } from "./selectors";
 import type { AnswerValue, AppState, CiqCase, ConfirmationType, DocumentRef, FieldDef, FinalDocAnswer, FinalDocEvidence, FinalDocMetadataAnswer, FinalDocThread, FinalDocThreadEntry, FinalDocument, OpenPoint } from "./types";
 
 export const CONFIRMATION_LABEL: Record<ConfirmationType, string> = {
@@ -134,7 +134,7 @@ export function buildFinalDocument(s: AppState, c: CiqCase, at: string, trigger:
       materialNo: c.materialNo,
       // From the case (FLD-GEN-002/-003, set at case start): a released document must not follow later edits of the
       // supplier master. The master only for a case without them.
-      supplierName: String(c.answers["FLD-GEN-002"] ?? "").trim() || sup?.name || c.manufacturer,
+      supplierName: caseSupplierName(s, c),
       duns: String(c.answers["FLD-GEN-003"] ?? "").trim() || sup?.duns || "",
       manufacturer: manufacturerOf(c),
       site: siteOf(c),

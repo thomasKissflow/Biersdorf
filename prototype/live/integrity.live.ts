@@ -92,8 +92,9 @@ const KEY_FIELDS = ["_id", "_status", "_current_step", "_modified_at", "Case_Cod
 const keysOf = (it: RawItem | undefined) => (it ? Object.fromEntries(KEY_FIELDS.filter((k) => it[k] != null && it[k] !== "").map((k) => [k, it[k]])) : undefined);
 const day = (iso: unknown) => (typeof iso === "string" ? iso.slice(0, 10) : "");
 const same = (a: unknown, b: unknown) => String(a ?? "") === String(b ?? "");
-/** The forms whose rows carry child tables (load.ts CHILD_TABLE_FORMS): their list rows have none. */
-const CHILD_TABLE_FORMS = new Set<string>([FLOWS.supplier.id, FLOWS.rmesSAF.id, FLOWS.rmesREG.id]);
+/** The forms whose rows carry child tables (load.ts CHILD_TABLE_FORMS): their list rows have none. The RMES forms are
+ *  not (28 Oct: header only, the list row is the whole record). */
+const CHILD_TABLE_FORMS = new Set<string>([FLOWS.supplier.id]);
 /** The key fields a ledger line may name ("Case_Code=… Supplier_Code=…" as liveClient whatOf writes it, "Request_Key=
  *  …|1" as the suites adopt): identities, set once. Supplier_Legal_Name is left out (a name: editable, with spaces). */
 const LEDGER_KEYS = new Set(["Case_Code", "Review_Key", "OP_Key", "RMES_Key", "Event_Key", "Action_Code", "Note_Key", "Supplier_Code", "Request_Key", "Query_Key"]);
@@ -409,8 +410,8 @@ export async function runIntegrity(w0: World, phase: Phase, o: { rec?: Recorder;
     }, { scope: "run" });
     ledger = read.items;
     const views = read.views;
-    // a load's warning that names an item of this run: the app could not read it in full (a supplier's contacts, an
-    // RMES row's criteria; the load then keeps the list row), which the item's own read-back would not show
+    // a load's warning that names an item of this run: the app could not read it in full (a supplier's contacts; the
+    // load then keeps the list row), which the item's own read-back would not show
     const warnings = loadWarnings(views);
     if (warnings.length) s.note("loadWarnings", warnings);
     const naming = warnings.filter((t) => ledger!.some((r) => mentions(t, r.id)));
@@ -665,19 +666,13 @@ function mappedOf(r: LedgerRead, v: Views, holder: Holder): { mapped?: Record<st
       const ref = b && [...b.mapped.index.rmes.values()].find((x) => x.itemId === it._id);
       checks.push(["is an RMES record on the screens", !!ref]);
       if (!ref) break;
-      // row for row (trackMap.ts rmesOf): ensureRmes writes the criteria with the row, so there is at least one; findings
-      // come with saveRmes, so none is fine
-      const t = TABLES[ref.dept];
-      const rows = (model: string, field: string) => childRows(it, model, field).map((x) => String(x._id ?? ""));
-      const oneEach = (got: string[], mapped: string[]) => got.length === mapped.length && got.every((id) => mapped.includes(id));
-      const crit = Object.values(ref.criteriaRows);
-      const find = Object.values(ref.findingRows);
-      const critRows = rows(t.criteria, "Criteria_Code");
-      const findRows = rows(t.findings, "Findings_Key");
-      checks.push(["has criteria rows (its criteria table was read)", critRows.length > 0, critRows.length]);
-      checks.push(["every criteria row is one criterion on the screens (as many as rows)", oneEach(critRows, crit), { rows: critRows, mapped: crit }]);
-      checks.push(["every finding row is one finding on the screens (as many as rows)", oneEach(findRows, find), { rows: findRows, mapped: find }]);
-      return { mapped: { caseId: ref.caseId, dept: ref.dept, criteria: crit.length, findings: find.length }, checks };
+      // the record only (28 Oct: the RMES is a sheet derived from the case, domain/rmesSheet.ts; trackMap.ts rmesOf maps
+      // no criteria or findings, and a legacy row's child rows are never read): it names its case, and the screens hold
+      // no criterion or finding of it
+      const c = b!.state.cases.find((x) => x.id === ref.caseId);
+      eq("Case_Code → the case", str(it, "Case_Code"), ref.caseId.replace(/·\d+$/, ""));
+      checks.push(["the screens map no criterion or finding of it", !Object.keys(ref.criteriaRows).length && !Object.keys(ref.findingRows).length && !c?.rmes?.criteria.length && !c?.rmes?.findings.length, { criteria: c?.rmes?.criteria.length, findings: c?.rmes?.findings.length }]);
+      return { mapped: { caseId: ref.caseId, dept: ref.dept, record: !!c?.rmes }, checks };
     }
     case FLOWS.scopeRun.id:
       return { note: "raw only: the app's load reads no CIQ Scope Run rows (the app's ensureReviews wrote them until 22 Oct)", checks };

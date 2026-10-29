@@ -128,9 +128,10 @@ const PLANNED: Record<PointFlow, string> = {
 
 describe("S-OP: open points, every department in turn across runs (SPEC §4)", () => {
   it("raise, edit, the supplier's answer, accept / return / close, the threads", async () => {
-    // offline R4: the fake I-2's Approve moves the case (Thomas back in Integration service), while the held roles stay
-    // as read at 02:30 (case/data.ts caseStepsHeld); live reads the roles
-    const w = await createWorld({ caseStepsHeld: planOf(RUN).caseStepsHeld === true });
+    // offline: the fake I-2's Approve moves the case (Thomas back in Integration service) in every run, while the held
+    // roles stay as read at 02:30: since 25 Oct I-2 creates the reviews after its Approve, and the open points need them
+    // (S-CASE rehearses the refused Approve); live reads the roles
+    const w = await createWorld({ caseStepsHeld: true });
     const plan = planOf(w.run);
     const raw = { app: w.client, portal: w.portal };
     // offline: everything outside the ledger must be untouched at the end (S-INTEGRITY's check reads everything live)
@@ -604,4 +605,37 @@ describe("S-OP: open points, every department in turn across runs (SPEC §4)", (
     const notPass = rec.steps.filter((x) => (w.live ? x.status === "fail" : x.status !== "pass")).map((x) => `${x.name}: ${x.status} (${x.reason ?? ""})`);
     expect(notPass).toEqual([]);
   }, TIMEOUT_MS);
+});
+
+// Offline only: S4 while I-2's Approve is refused (the live state since 21 Oct; the main suite's offline world holds the
+// case steps so the points run). S4 must block, adopt I-2's review.started row, and the clean-up leave nothing behind.
+describe("S-OP offline: S4 while I-2's Approve is refused", () => {
+  it("blocks S4, adopts I-2's review.started row, and the clean-up leaves nothing outside the ledger", async () => {
+    const w = await createWorld({ live: false, run: "R2", caseStepsHeld: false });
+    const plan = planOf("R2");
+    const raw = { app: w.client, portal: w.portal };
+    const printBefore = await fingerprint(raw, w.ledger);
+    const rec = w.recorder("S-OP-S4-REFUSED");
+    const before = new Set(w.ledger.latest().map((e) => e.id));
+    const sess = session(w);
+    const late: LateHandoff[] = [];
+    let sup: OpSupplier | undefined;
+    let k: OpCase | undefined;
+    const setup = [
+      await rec.step("S1", async (s) => void (sup = await setupSupplier(w, s, sess))),
+      await rec.step("S2", async (s) => void (k = await setupCase(w, s, sess, plan, sup!, late))),
+      await rec.step("S3", (s) => setupCompleteness(w, s, sess, plan, k!)),
+    ];
+    const s4 = await rec.step("S4", (s) => setupReviews(w, s, sess, k!, plan.depts));
+    const c1 = await rec.step("C1", async (s) => {
+      await sweepLate(w, s, before, { since: Date.now(), late });
+      await deleteOwn(w, s, before);
+    });
+    expect(setup.map((x) => `${x.name}: ${x.status} ${x.reason ?? ""}`.trim())).toEqual(["S1: pass", "S2: pass", "S3: pass"]);
+    expect({ status: s4.status, reason: s4.reason }).toMatchObject({ status: "blocked", reason: expect.stringMatching(/its last step, after its Approve/) });
+    expect(w.ledger.latest().some((e) => e.flow === FLOWS.audit.id && /review\.started/.test(e.what))).toBe(true);
+    expect(c1.status).toBe("pass");
+    const after = await fingerprint(raw, w.ledger);
+    expect(diff(printBefore, after, new Set(w.ledger.latest().map((e) => e.id)))).toMatchObject({ changed: [], removed: [], added: [] });
+  });
 });

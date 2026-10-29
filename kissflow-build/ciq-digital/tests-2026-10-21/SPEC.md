@@ -75,6 +75,7 @@ The live client emulates them:
 - **Roles read live at 02:30 IST, 21 Oct:** Thomas is a member of **Business administrator** (app) and **Admin** (portal) only. **Integration service has NO members** (it still had Thomas on 20 Oct). Every other app role is empty, and so is the portal Supplier role.
 - **CIQ Case:** "Waiting for supplier: CIQ" and "Beiersdorf review and final release" are held by Integration service. The key can therefore NOT move a case past Start.
   - I-2's last action (Approve "Waiting for supplier: CIQ") is expected to fail with 050201, so record it as **blocked: Integration service has no members**. Its earlier actions (the completeness fields, the 15 fields, phase Review) still run, so check those.
+  - **Since 25 Oct, the reviews come after that Approve:** E-A's bulk create is I-2's last step. While the Approve fails, I-2 writes its review.started row and creates **no review**. S-CASE 5 and S-OP S4 are then **blocked**, and the steps that need a review (the RMES 6a/6b, 7–9, every open point) don't run. This was proven on 29 Oct, R2: the run history shows "Approve an item" Failed ("This item has moved out of your queue") and no bulk create. Offline, S-OP holds the case steps in every run, so the points are still rehearsed.
   - I-7's Skip and complete still ends a case from any step.
   - Don't re-add Thomas to the role: that is his decision, and it's on his morning list.
 - **CIQ Open Point:** every department step is held by the field **Raiser_Assignee**. With Thomas as raiser, the key can act.
@@ -140,10 +141,11 @@ The live client emulates them:
    - as RMM, the app's load effects (ensureReviews) start the reviews the scope needs;
    - each sits at its department step;
    - check the fields against the case.
-6. **RMES:**
-   - as SAF, then REG, ensureRmes creates the RMES row with criteria;
-   - saveRmes writes results and findings;
-   - check the child rows on the form GET.
+6. **RMES** (since 28 Oct the RMES is a read-only sheet of 8 fields derived from the case; the criteria and findings are retired):
+   - as SAF, then REG, ensureRmes creates the RMES row, header only;
+   - check the header on the form GET, that it has no criteria or findings rows, and one "RMES record created" history row;
+   - check the sheet the RMES tab derives from the reviewer's view of the case (record line, trade name, one row per component).
+   - The decision is on the CIQ Review item, whose step nobody can hold, so step 7 counts it as missing (RMES_Gaps 1).
 7. **Review completion:**
    - expected **blocked** (050201). Record the exact answer.
    - Admin-PUT the counts and check Review_Gate.

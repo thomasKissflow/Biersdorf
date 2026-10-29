@@ -33,7 +33,6 @@ import type {
   PersonaId,
   ReminderSetting,
   ReviewDept,
-  RmesResult,
   Toast,
   User,
 } from "@/domain/types";
@@ -126,11 +125,7 @@ export interface StoreApi {
   editOpenPoint(caseId: string, opId: string, patch: A.OpenPointPatch): boolean;
   /** AS-08, raiser only: withdraw with an internal reason. */
   closeOpenPoint(caseId: string, opId: string, reason: string): boolean;
-  recordCriterion(caseId: string, criterionId: string, result: RmesResult, comment: string): void;
-  /** In the live app (this and findingToQuery) a Promise of whether it reached Kissflow. */
-  addFinding(caseId: string, criterionId: string, text: string, blocking: boolean): void | Promise<boolean>;
-  findingToQuery(caseId: string, findingId: string, question: string, dueDate: string): void | Promise<boolean>;
-  closeFinding(caseId: string, findingId: string): void;
+  /** The Safety / Regulatory decision (outside the RMES, which is a read-only sheet: domain/rmesSheet.ts). */
   rmesDecision(caseId: string, dept: "SAF" | "REG", decision: "approved" | "rejected", reason: string): void;
   /** RMM or a department completes its review track; the last one sends the single final-release request. RMM passes
    *  `continueNote` when a department recorded Rejected ("Continue to final release"). */
@@ -376,10 +371,6 @@ export function StoreProvider({ children, seed = buildSeed, storageKey = KEY }: 
       reviewResponse: (id, op, d, t) => void run((s, b) => A.reviewResponse(s, b, id, op, d, t), d === "accept" ? "Answer accepted." : d === "return" ? "Returned to the supplier." : "Closed as not accepted."),
       editOpenPoint: (id, op, patch) => run((s, b) => A.editOpenPoint(s, b, id, op, patch)),
       closeOpenPoint: (id, op, reason) => run((s, b) => A.closeOpenPoint(s, b, id, op, reason)),
-      recordCriterion: (id, c, r, t) => void run((s, b) => A.recordCriterion(s, b, id, c, r, t)),
-      addFinding: (id, c, t, bl) => void run((s, b) => A.addFinding(s, b, id, c, t, bl)),
-      findingToQuery: (id, f, q, d) => void run((s, b) => A.findingToQuery(s, b, id, f, q, d), "Sent to the supplier as a task."),
-      closeFinding: (id, f) => void run((s, b) => A.closeFinding(s, b, id, f)),
       rmesDecision: (id, d, dec, r) => void run((s, b) => A.rmesDecision(s, b, id, d, dec, r), "Decision recorded."),
       completeReview: (id, d, opts) => void run((s, b) => A.completeReview(s, b, id, d, nowIso(), opts)),
       reopenReview: (id, d, r) => void run((s, b) => A.reopenReview(s, b, id, d, r)),

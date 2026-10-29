@@ -5,16 +5,7 @@
 // name (offline "OFF", a rehearsal) takes R1's data.
 import type { NewCaseInput } from "@/domain/actions";
 import type { ContactInput, SupplierInput } from "@/domain/suppliers";
-import type { AppState, ConfigAnswers, Market, ReviewDept, RmesResult } from "@/domain/types";
-
-export interface RmesPlan {
-  /** The result recorded on the department's first criterion (a comment is required for negative, implausible, N.A.). */
-  result: RmesResult;
-  comment: string;
-  /** The finding added on the department's second criterion (the first when it has only one). */
-  finding: string;
-  blocking: boolean;
-}
+import type { AppState, ConfigAnswers, Market, ReviewDept } from "@/domain/types";
 
 export interface RunData {
   supplier: Omit<SupplierInput, "name" | "contacts" | "duns">;
@@ -26,7 +17,6 @@ export interface RunData {
   /** The review departments the scope must activate (RMM's own included), as the rule set of the fixtures gives them:
    *  S-CASE checks the live scope against it (a rule set that drops one is a fail, not a quietly smaller run). */
   reviews: ReviewDept[];
-  rmes: Record<"SAF" | "REG", RmesPlan>;
   cancelReason: string;
 }
 
@@ -41,10 +31,6 @@ const DATA: Record<"R1" | "R2" | "R3" | "R4", RunData> = {
     material: { name: "Sunflower Seed Oil", inci: "Helianthus Annuus Seed Oil", markets: ["EU"], priority: "normal" },
     config: { ...NO, SF01: ["vegetable"] },
     reviews: ["RMM", "REG", "SAF", "QM", "MIC"],
-    rmes: {
-      SAF: { result: "available", comment: "Dossier within the limits.", finding: "Sensitisation study older than ten years.", blocking: false },
-      REG: { result: "plausible", comment: "", finding: "Annex III entry to be confirmed.", blocking: false },
-    },
     cancelReason: "Material replaced by another grade.",
   },
   // a polymer from a waste side stream, EU and UK, high priority: no Sustainability review, the polymer sections
@@ -55,10 +41,6 @@ const DATA: Record<"R1" | "R2" | "R3" | "R4", RunData> = {
     material: { name: "Recycled Polyethylene Wax", inci: "Polyethylene", markets: ["EU", "UK"], priority: "high" },
     config: { ...NO, SF01: ["waste"], SF03: true },
     reviews: ["RMM", "REG", "SAF", "QM", "MIC"],
-    rmes: {
-      SAF: { result: "negative", comment: "Residual monomer above the limit.", finding: "Residual monomer content too high.", blocking: true },
-      REG: { result: "listed", comment: "", finding: "UK REACH registration number missing.", blocking: false },
-    },
     cancelReason: "Supplier withdrew the offer.",
   },
   // mineral, no microbiological test (K5.1 waived with a justification; Microbiology still reviews), EU and China: the
@@ -70,15 +52,11 @@ const DATA: Record<"R1" | "R2" | "R3" | "R4", RunData> = {
     material: { name: "Kaolin Fine", inci: "Kaolin", markets: ["EU", "CN"], priority: "normal" },
     config: { ...NO, SF01: ["mineral"], SF12: false },
     reviews: ["RMM", "REG", "SAF", "QM", "MIC"],
-    rmes: {
-      SAF: { result: "implausible", comment: "Heavy metal values not plausible for the grade.", finding: "Lead value needs a new analysis.", blocking: true },
-      REG: { result: "na", comment: "No China-specific restriction applies.", finding: "IECIC listing to be documented.", blocking: false },
-    },
     cancelReason: "Project stopped by Beiersdorf.",
   },
   // R4, the evening showcase: a polyamide powder from a waste side stream, EU and UK, high priority. The same scope as
   // R2 (its five reviews were proven live on 21 Oct), so the case kept in review is a cheaper load; its own supplier,
-  // people, material and RMES outcomes (Safety with a blocking finding, Regulatory listed)
+  // people and material
   R4: {
     supplier: { country: "Austria", city: "Linz", type: "manufacturer" },
     placeholder: { name: "Katrin Moser", email: "katrin.moser@zzt-n21-r4.example", title: "Quality Assurance Officer", mayConfirm: false },
@@ -86,10 +64,6 @@ const DATA: Record<"R1" | "R2" | "R3" | "R4", RunData> = {
     material: { name: "Recycled Polyamide Powder", inci: "Nylon-12", markets: ["EU", "UK"], priority: "high" },
     config: { ...NO, SF01: ["waste"], SF03: true },
     reviews: ["RMM", "REG", "SAF", "QM", "MIC"],
-    rmes: {
-      SAF: { result: "available", comment: "Particle size distribution within the limits.", finding: "Statement on the EU microplastics restriction missing.", blocking: true },
-      REG: { result: "listed", comment: "", finding: "UK REACH registration number to be confirmed.", blocking: false },
-    },
     cancelReason: "Supplier site closed for requalification.",
   },
 };

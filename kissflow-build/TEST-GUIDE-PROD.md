@@ -30,10 +30,10 @@ Tell us either way: a test that started before the file existed may need stoppin
    - **Do:** open ZZT-NT-G2-FILLED, change one answer and leave the field. It saves by itself ("Saving…", then "Updated …"); there is no Save button.
    - **Pass:** within a minute, the portal's Manage → Integrations → Run history shows a run of "CIQP Request changed to case". Passed or refused, either way the post reached Kissflow on that domain.
    - **If no run appears:** stop before the push and tell me. The fix is a portal rebuild that posts the hand-offs elsewhere, which then needs your deploy.
-2. **The reviewer writes (10 min).** These were never proven on the user route: completing a review, and for Safety and Regulatory also the RMES decision.
+2. **The reviewer writes (10 min).** These were never proven on the user route: completing a review, and for Safety and Regulatory also their decision.
    1. **Start the reviews:** load the dev app once as RMM ("Role:" in the top bar). That load starts the missing reviews of every case in review. In dev that is every ZZT case in review, not only this one, and the clean-up list doesn't include them.
-   2. **Pick a review:** open ZZT-NT2-STAGE3-IN-REVIEW. Its Overview → "Reviews" card lists the reviews the load started. Pick one department, preferably Product Safety, since it also tests the RMES decision.
-   3. **Complete it:** switch to that reviewer role and open the case from My reviews. For Safety or Regulatory, record the RMES results and the decision. Then click "Complete my review" and check that it reads Completed.
+   2. **Pick a review:** open ZZT-NT2-STAGE3-IN-REVIEW. Its Overview → "Reviews" card lists the reviews the load started. Pick one department, preferably Product Safety, since it also tests the Safety decision and the RMES tab.
+   3. **Complete it:** switch to that reviewer role and open the case from My reviews. For Safety or Regulatory, check the RMES tab (the 8 fields read from the CIQ, nothing to fill in since 29 Oct), then record the decision on the Questionnaire tab ("Safety decision" / "Regulatory decision", right column). Then click "Complete my review" and check that it reads Completed.
    4. **Restore your roles:** switch back to Business administrator, and add yourself to "Integration service" again. That role is not in the switch. Use the app's role settings in Kissflow, run `node kissflow-build/night-2026-10-20/integrations/role-integration-service-add.mjs` from the Beiersdorf folder (it adds you, keeps the other members and prints "verified: …"), or tell me to run it.
    5. **If it fails,** we fix it in dev before the push.
 
@@ -90,7 +90,7 @@ Keep one browser window or profile per user: the RMM, each reviewer, and the por
 | 10a | Reviewer · app | "Return to supplier" with a reason (round 2) | Round 2 in the portal: the question shows "More information needed" | **op.round** (app) |
 | 10b | Supplier · portal | Answer round 2, send | The question shows "With Beiersdorf" | **query.answered** (portal) |
 | 10c | Reviewer · app | "Accept" the answer | The point is closed; in the portal the question shows "Closed" | **history.updated** (app) |
-| 11 | Each department reviewer, then the RMM (My reviews → the RMM review) · app | Complete the review ("Complete my review"; for Safety and Regulatory, also the RMES decision) | All reviews completed, the RMM's own included | — |
+| 11 | Each department reviewer, then the RMM (My reviews → the RMM review) · app | Complete the review ("Complete my review"; for Safety and Regulatory, also their decision, on the Questionnaire tab) | All reviews completed, the RMM's own included | — |
 | 12 | RMM · app | Reload the app after the last review is completed. There is no button: the release request goes out by itself on the RMM's load | Phase "Awaiting final release"; case history "All reviews completed" ("… One request for the final release sent to the supplier.") | Every latest-round review reads Completed, the RMM's own included, and every department the case's scope activates has its review |
 | 13 | Supplier · portal | Open the request | "Final release needed" and the action "Give the final release" (name, e-mail, role recorded) | **release.requested** (app) |
 | 14 | Supplier · portal | Give the final release | The request shows "Completed"; the supplier can still view it and "Report a change" | — |

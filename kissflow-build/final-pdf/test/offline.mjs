@@ -552,7 +552,7 @@ test("the PDF words the document as the app's tab: labels, not codes; part 4 rou
     "Dr. Mira Hansen (Beiersdorf) · Closed as not accepted · 20 Oct 2026, 13:30 CEST\nClosed as not accepted.",
     "5. Confirmations",
     "None of these confirmations is a raw-material approval.",
-    "ZZT-0005-FD · generated 20 Oct 2026, 14:00 CEST", // 28 Oct: two steps earlier (no Sustainability review in the fixtures), then four more (FLD-A2-101 pre-filled when Annex 2 opens, M9: one answer step less per fixture case)
+    "ZZT-0005-FD · generated 19 Oct 2026, 20:00 CEST", // 28 Oct: two steps earlier (no Sustainability review in the fixtures), then four more (FLD-A2-101 pre-filled when Annex 2 opens, M9: one answer step less per fixture case), then 18 more (the RMES criteria are retired: completeAll records no criterion results)
     `Document seal ${EXPECTED.fingerprint}`,
     "The SHA-256 of this PDF is filed on the case (Final Document Hash).",
   ]) assert.ok(text.includes(want), `the PDF lacks: ${want}`);

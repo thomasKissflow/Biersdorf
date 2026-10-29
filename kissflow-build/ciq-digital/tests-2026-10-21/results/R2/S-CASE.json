@@ -1,15 +1,14 @@
 {
  "suite": "S-CASE",
  "run": "R2",
- "startedAt": "2026-10-21T00:10:09.239Z",
- "savedAt": "2026-10-21T00:33:03.648Z",
+ "startedAt": "2026-10-28T21:21:15.012Z",
+ "savedAt": "2026-10-28T22:04:52.799Z",
  "counts": {
-  "pass": 11,
+  "pass": 8,
   "fail": 1,
-  "blocked": 2,
-  "not-run": 1
+  "blocked": 1,
+  "not-run": 5
  },
- "stopped": "Stopped on GET /process/2/AcDOSunMEpSA/admin/CIQ_Review_A00/PkEPEW2f_LqV: 429 Too Many Requests. No retry; nothing calls Kissflow for 20 minutes.",
  "steps": [
   {
    "name": "0 integrations ON",
@@ -50,8 +49,8 @@
      "calls": 2
     }
    },
-   "ms": 6035,
-   "at": "2026-10-21T00:10:09.242Z"
+   "ms": 25098,
+   "at": "2026-10-28T21:21:15.015Z"
   },
   {
    "name": "1 supplier master",
@@ -61,27 +60,27 @@
      {
       "what": "CIQ Supplier (form GET)",
       "value": {
-       "Supplier_Code": "ZZT-N21-R2-SC1-SUP",
+       "Supplier_Code": "ZZT-N21-R2-SC2-SUP",
        "Supplier_Legal_Name": "ZZT-N21-R2 Supplier",
-       "DUNS_Number": "922000001",
+       "DUNS_Number": "922000002",
        "Supplier_Kind": "Distributor",
        "Supplier_Country_Code": "ES",
        "Supplier_City": "ZZT-N21-R2 Reus",
        "Supplier_Active": "Yes",
        "contacts": [
         {
-         "Contacts_Key": "u-ZZT-N21-R2-SC1-SUP-1",
+         "Contacts_Key": "u-ZZT-N21-R2-SC2-SUP-1",
          "Contacts_Full_Name": "Thomas",
-         "Contacts_Email": "zzt-n21-r2-sc1.self@example.test",
+         "Contacts_Email": "zzt-n21-r2-sc2.self@example.test",
          "Contacts_Title": "Quality Lead",
          "Contacts_Can_Confirm": "Yes",
          "Contacts_Active": "Yes",
          "Contacts_Portal_User_Id": "UsEJUfjYLM8Y"
         },
         {
-         "Contacts_Key": "u-ZZT-N21-R2-SC1-SUP-2",
+         "Contacts_Key": "u-ZZT-N21-R2-SC2-SUP-2",
          "Contacts_Full_Name": "Jordi Castell",
-         "Contacts_Email": "jordi.castell.sc1@zzt-n21-r2.example",
+         "Contacts_Email": "jordi.castell.sc2@zzt-n21-r2.example",
          "Contacts_Title": "Sales Engineer",
          "Contacts_Can_Confirm": "No",
          "Contacts_Active": "Yes",
@@ -106,10 +105,10 @@
      {
       "what": "mapped supplier (RMM)",
       "value": {
-       "id": "ZZT-N21-R2-SC1-SUP",
+       "id": "ZZT-N21-R2-SC2-SUP",
        "name": "ZZT-N21-R2 Supplier",
-       "duns": "922000001",
-       "country": "ES",
+       "duns": "922000002",
+       "country": "Spain",
        "city": "ZZT-N21-R2 Reus",
        "type": "distributor",
        "active": true,
@@ -129,12 +128,12 @@
       "detail": 2
      },
      {
-      "label": "contact row u-ZZT-N21-R2-SC1-SUP-1 as written (contactRow)",
+      "label": "contact row u-ZZT-N21-R2-SC2-SUP-1 as written (contactRow)",
       "ok": true,
       "detail": []
      },
      {
-      "label": "contact row u-ZZT-N21-R2-SC1-SUP-2 as written (contactRow)",
+      "label": "contact row u-ZZT-N21-R2-SC2-SUP-2 as written (contactRow)",
       "ok": true,
       "detail": []
      },
@@ -156,28 +155,28 @@
       "ok": true,
       "detail": {
        "Action_Code": "supplier.changed",
-       "Object_Item_Id": "PkEPER0C0XB6"
+       "Object_Item_Id": "PkES6knZmC2V"
       }
      },
      {
-      "label": "the supplier reads back as written (country as its live code)",
+      "label": "the supplier reads back as written (the country through its live code)",
       "ok": true,
       "detail": {
        "got": {
-        "id": "ZZT-N21-R2-SC1-SUP",
+        "id": "ZZT-N21-R2-SC2-SUP",
         "name": "ZZT-N21-R2 Supplier",
-        "duns": "922000001",
-        "country": "ES",
+        "duns": "922000002",
+        "country": "Spain",
         "city": "ZZT-N21-R2 Reus",
         "type": "distributor",
         "active": true,
         "contacts": 2
        },
        "want": {
-        "id": "ZZT-N21-R2-SC1-SUP",
+        "id": "ZZT-N21-R2-SC2-SUP",
         "name": "ZZT-N21-R2 Supplier",
-        "duns": "922000001",
-        "country": "ES",
+        "duns": "922000002",
+        "country": "Spain",
         "city": "ZZT-N21-R2 Reus",
         "type": "distributor",
         "active": true,
@@ -186,46 +185,46 @@
       }
      },
      {
-      "label": "contact zzt-n21-r2-sc1.self@example.test reads back as written",
+      "label": "contact zzt-n21-r2-sc2.self@example.test reads back as written",
       "ok": true,
       "detail": {
        "got": {
         "name": "Thomas",
-        "email": "zzt-n21-r2-sc1.self@example.test",
+        "email": "zzt-n21-r2-sc2.self@example.test",
         "title": "Quality Lead",
         "mayConfirm": true,
         "active": true,
-        "supplierId": "ZZT-N21-R2-SC1-SUP"
+        "supplierId": "ZZT-N21-R2-SC2-SUP"
        },
        "want": {
         "name": "Thomas",
-        "email": "zzt-n21-r2-sc1.self@example.test",
+        "email": "zzt-n21-r2-sc2.self@example.test",
         "title": "Quality Lead",
         "mayConfirm": true,
         "active": true,
-        "supplierId": "ZZT-N21-R2-SC1-SUP"
+        "supplierId": "ZZT-N21-R2-SC2-SUP"
        }
       }
      },
      {
-      "label": "contact jordi.castell.sc1@zzt-n21-r2.example reads back as written",
+      "label": "contact jordi.castell.sc2@zzt-n21-r2.example reads back as written",
       "ok": true,
       "detail": {
        "got": {
         "name": "Jordi Castell",
-        "email": "jordi.castell.sc1@zzt-n21-r2.example",
+        "email": "jordi.castell.sc2@zzt-n21-r2.example",
         "title": "Sales Engineer",
         "mayConfirm": false,
         "active": true,
-        "supplierId": "ZZT-N21-R2-SC1-SUP"
+        "supplierId": "ZZT-N21-R2-SC2-SUP"
        },
        "want": {
         "name": "Jordi Castell",
-        "email": "jordi.castell.sc1@zzt-n21-r2.example",
+        "email": "jordi.castell.sc2@zzt-n21-r2.example",
         "title": "Sales Engineer",
         "mayConfirm": false,
         "active": true,
-        "supplierId": "ZZT-N21-R2-SC1-SUP"
+        "supplierId": "ZZT-N21-R2-SC2-SUP"
        }
       }
      },
@@ -237,33 +236,32 @@
      {
       "label": "the placeholder keeps the domain's id",
       "ok": true,
-      "detail": "u-ZZT-N21-R2-SC1-SUP-2"
+      "detail": "u-ZZT-N21-R2-SC2-SUP-2"
      }
     ],
     "notes": {
-     "approximated": "the domain named the supplier \"s1\"; the suite renamed it to \"ZZT-N21-R2-SC1-SUP\" before the app's writer encoded it (the run tag on every supplier code, SPEC §1)",
-     "CIQ Supplier": "PkEPER0C0XB6",
+     "approximated": "the domain named the supplier \"s1\"; the suite renamed it to \"ZZT-N21-R2-SC2-SUP\" before the app's writer encoded it (the run tag on every supplier code, SPEC §1)",
+     "CIQ Supplier": "PkES6knZmC2V",
      "not the app's writer": "Contacts_Portal_User_Id of the self contact written by a form update (by the row's _id): no app writer writes it",
-     "calls": 22
+     "calls": 27
     }
    },
-   "ms": 68768,
-   "at": "2026-10-21T00:10:15.280Z"
+   "ms": 343351,
+   "at": "2026-10-28T21:21:40.116Z"
   },
   {
    "name": "2 draft",
-   "status": "fail",
-   "reason": "failed: ZZT-N21-R2-SC1-D01: a Start draft (Diagnostics lists it); ZZT-N21-R2-SC1-D01: not part of any case, but blocks a twin (ownDraftKeys)",
+   "status": "pass",
    "evidence": {
     "readBacks": [
      {
-      "what": "ZZT-N21-R2-SC1-D01 (the draft as loaded)",
+      "what": "ZZT-N21-R2-SC2-D01 (the draft as loaded)",
       "value": {
        "_status": "Draft",
        "_current_step": "Create case",
-       "Case_Code": "ZZT-N21-R2-SC1-D01",
+       "Case_Code": "ZZT-N21-R2-SC2-D01",
        "Trade_Name": "ZZT-N21-R2 Recycled Polyethylene Wax",
-       "Supplier_Code": "ZZT-N21-R2-SC1-SUP",
+       "Supplier_Code": "ZZT-N21-R2-SC2-SUP",
        "Main_INCI": "Polyethylene",
        "BDF_Material_No": null,
        "Owner_RMM": {
@@ -273,45 +271,51 @@
        },
        "Portal_Contact_Ids": "UsEJUfjYLM8Y",
        "Release_Key": "RS-2026.1 + v1",
-       "draft": null
+       "draft": {
+        "flow": "case",
+        "itemId": "PkES6p40nwSR",
+        "act": "PkES6p41bGkC",
+        "activityId": "Activity_p1i6xz",
+        "label": "New case ZZT-N21-R2-SC2-D01 · ZZT-N21-R2 Recycled Polyethylene Wax"
+       }
       }
      },
      {
-      "what": "ZZT-N21-R2-SC1-D01 after the discard (admin GET)",
-      "value": "KISSFLOW_ERROR_01015 The item, PkEPERslItqU, could not be located within CIQ Case."
+      "what": "ZZT-N21-R2-SC2-D01 after the discard (admin GET)",
+      "value": "KISSFLOW_ERROR_01015 The item, PkES6p40nwSR, could not be located within CIQ Case."
      }
     ],
     "checks": [
      {
-      "label": "ZZT-N21-R2-SC1-D01: the writer stopped at the gate and left a draft",
+      "label": "ZZT-N21-R2-SC2-D01: the writer stopped at the gate and left a draft",
       "ok": true,
-      "detail": "Case ZZT-N21-R2-SC1-D01 was saved as a draft in Kissflow but not sent: Kissflow misses BDF_Material_No. Open Diagnostics to send or discard it."
+      "detail": "Case ZZT-N21-R2-SC2-D01 was saved as a draft in Kissflow but not sent: Kissflow misses BDF_Material_No. Use Unsent items at the top of the page to send or discard it."
      },
      {
-      "label": "ZZT-N21-R2-SC1-D01: a Start draft (Diagnostics lists it)",
-      "ok": false
-     },
-     {
-      "label": "ZZT-N21-R2-SC1-D01: its fields are there, BDF_Material_No is not",
+      "label": "ZZT-N21-R2-SC2-D01: a Start draft (Diagnostics lists it)",
       "ok": true
      },
      {
-      "label": "ZZT-N21-R2-SC1-D01: not part of any case, but blocks a twin (ownDraftKeys)",
-      "ok": false
+      "label": "ZZT-N21-R2-SC2-D01: its fields are there, BDF_Material_No is not",
+      "ok": true
      },
      {
-      "label": "ZZT-N21-R2-SC1-D01: discarded, the GET answers not found",
+      "label": "ZZT-N21-R2-SC2-D01: not part of any case, but blocks a twin (ownDraftKeys)",
+      "ok": true
+     },
+     {
+      "label": "ZZT-N21-R2-SC2-D01: discarded, the GET answers not found",
       "ok": true,
-      "detail": "KISSFLOW_ERROR_01015 The item, PkEPERslItqU, could not be located within CIQ Case."
+      "detail": "KISSFLOW_ERROR_01015 The item, PkES6p40nwSR, could not be located within CIQ Case."
      }
     ],
     "notes": {
      "approximated": "the domain never leaves a Mandatory Start field blank; the suite blanks the material number in its result, so BDF_Material_No is missing for the app's own gate (assertMandatory)",
-     "calls": 14
+     "calls": 17
     }
    },
-   "ms": 42617,
-   "at": "2026-10-21T00:11:24.052Z"
+   "ms": 214990,
+   "at": "2026-10-28T21:27:23.470Z"
   },
   {
    "name": "3 started (I-1)",
@@ -323,14 +327,14 @@
       "value": {
        "_status": "InProgress",
        "_current_step": "Waiting for supplier: CIQ",
-       "Case_Code": "ZZT-N21-R2-SC1-C01",
+       "Case_Code": "ZZT-N21-R2-SC2-C01",
        "Case_Phase": "Supplier filling in the CIQ",
-       "Portal_Request_Item_Id": "PkEPESlGo4j4",
+       "Portal_Request_Item_Id": "PkES6tKAf17Q",
        "Portal_Contact_Ids": "UsEJUfjYLM8Y",
        "Confirm_Contact_Ids": "UsEJUfjYLM8Y",
        "Portal_Assignees_JSON": "[{\"_id\":\"UsEJUfjYLM8Y\"}]",
        "Release_Assignees_JSON": "[{\"_id\":\"UsEJUfjYLM8Y\"}]",
-       "Case_Contacts_JSON": "[{\"id\":\"UsEJUfjYLM8Y\",\"name\":\"Thomas\",\"email\":\"zzt-n21-r2-sc1.self@example.test\",\"title\":\"Quality Lead\",\"mayConfirm\":true},{\"name\":\"Jordi Castell\",\"email\":\"jordi.castell.sc1@zzt-n21-r2.example\",\"title\":\"Sales Engineer\",\"mayConfirm\":false}]",
+       "Case_Contacts_JSON": "[{\"id\":\"UsEJUfjYLM8Y\",\"name\":\"Thomas\",\"email\":\"zzt-n21-r2-sc2.self@example.test\",\"title\":\"Quality Lead\",\"mayConfirm\":true},{\"name\":\"Jordi Castell\",\"email\":\"jordi.castell.sc2@zzt-n21-r2.example\",\"title\":\"Sales Engineer\",\"mayConfirm\":false}]",
        "Owner_RMM": {
         "_id": "UsEJUfjYLM8Y",
         "Name": "Thomas",
@@ -343,9 +347,9 @@
       "value": {
        "_status": "InProgress",
        "_current_step": "Supplier: fill in the CIQ",
-       "Request_Key": "ZZT-N21-R2-SC1-C01|1",
-       "App_Case_Item_Id": "PkEPESamhRAM",
-       "Case_Code": "ZZT-N21-R2-SC1-C01",
+       "Request_Key": "ZZT-N21-R2-SC2-C01|1",
+       "App_Case_Item_Id": "PkES6sfB95Fo",
+       "Case_Code": "ZZT-N21-R2-SC2-C01",
        "Case_Phase_Label": "Filling in",
        "Request_Locked": "No",
        "Assigned_Contacts": [
@@ -362,7 +366,7 @@
          "Kind": "User"
         }
        ],
-       "Config_Bundle_Hash": "50be73f8a30e30d5bd9508c1ea45497c41f0d5d1a015493ac0d7338ee80f9edd"
+       "Config_Bundle_Hash": "a090aadd72c34ccfa5e4ed0c784c7411d09e01b7c0a56f425fe966d814d9bbf7"
       }
      },
      {
@@ -371,15 +375,15 @@
        "Action_Code": "case.created",
        "Object_State": "Supplier filling in the CIQ",
        "Ref_Flow_Id": "CIQ_Case_A00",
-       "Ref_Item_Id": "PkEPESamhRAM",
-       "Ref_Activity_Instance_Id": "PkEPESanhL2K",
+       "Ref_Item_Id": "PkES6sfB95Fo",
+       "Ref_Activity_Instance_Id": "PkES6sfCLZgx",
        "Notify_Channel": "webhook",
        "handoffs": [
         {
          "code": "case.started",
          "status": "sent",
          "detail": "handed over",
-         "key": "HO-case.started-mvhcy59b-z5c08p"
+         "key": "HO-case.started-mvsmqcow-swlzpi"
         }
        ]
       }
@@ -387,11 +391,11 @@
      {
       "what": "mapped case (RMM)",
       "value": {
-       "id": "ZZT-N21-R2-SC1-C01",
+       "id": "ZZT-N21-R2-SC2-C01",
        "materialName": "ZZT-N21-R2 Recycled Polyethylene Wax",
        "inci": "Polyethylene",
-       "materialNo": "ZZT-N21-R2-SC1-RM-01",
-       "supplierId": "ZZT-N21-R2-SC1-SUP",
+       "materialNo": "ZZT-N21-R2-SC2-RM-01",
+       "supplierId": "ZZT-N21-R2-SC2-SUP",
        "manufacturer": "ZZT-N21-R2 Supplier",
        "ownerId": "UsEJUfjYLM8Y",
        "priority": "high",
@@ -399,19 +403,19 @@
        "ruleSetVersion": "RS-2026.1",
        "supplierContactIds": [
         "self:UsEJUfjYLM8Y",
-        "u-ZZT-N21-R2-SC1-SUP-2"
+        "u-ZZT-N21-R2-SC2-SUP-2"
        ],
        "markets": [
         "EU",
         "UK"
        ],
-       "due": "2026-11-20",
+       "due": "2026-11-27",
        "bdfAnswers": {
         "FLD-GEN-001": "ZZT-N21-R2 Recycled Polyethylene Wax",
         "FLD-GEN-002": "ZZT-N21-R2 Supplier",
-        "FLD-GEN-003": "922000001",
-        "FLD-GEN-008": "zzt-n21-r2-sc1.self@example.test",
-        "FLD-GEN-009": "jordi.castell.sc1@zzt-n21-r2.example"
+        "FLD-GEN-003": "922000002",
+        "FLD-GEN-008": "zzt-n21-r2-sc2.self@example.test",
+        "FLD-GEN-009": "jordi.castell.sc2@zzt-n21-r2.example"
        },
        "phase": "supplier-input"
       }
@@ -426,7 +430,7 @@
         "code": "case.started",
         "status": "sent",
         "detail": "handed over",
-        "key": "HO-case.started-mvhcy59b-z5c08p"
+        "key": "HO-case.started-mvsmqcow-swlzpi"
        }
       ]
      },
@@ -441,12 +445,12 @@
      {
       "label": "the request names its case (App_Case_Item_Id)",
       "ok": true,
-      "detail": "PkEPESamhRAM"
+      "detail": "PkES6sfB95Fo"
      },
      {
       "label": "Request_Key is <case>|<cycle>",
       "ok": true,
-      "detail": "ZZT-N21-R2-SC1-C01|1"
+      "detail": "ZZT-N21-R2-SC2-C01|1"
      },
      {
       "label": "Supplier_Display_Name is the supplier's legal name",
@@ -500,13 +504,13 @@
        {
         "id": "UsEJUfjYLM8Y",
         "name": "Thomas",
-        "email": "zzt-n21-r2-sc1.self@example.test",
+        "email": "zzt-n21-r2-sc2.self@example.test",
         "role": "Quality Lead",
         "mayConfirm": true
        },
        {
         "name": "Jordi Castell",
-        "email": "jordi.castell.sc1@zzt-n21-r2.example",
+        "email": "jordi.castell.sc2@zzt-n21-r2.example",
         "role": "Sales Engineer",
         "mayConfirm": false
        }
@@ -543,7 +547,7 @@
         "code": "case.started",
         "status": "sent",
         "detail": "handed over",
-        "key": "HO-case.started-mvhcy59b-z5c08p"
+        "key": "HO-case.started-mvsmqcow-swlzpi"
        }
       ]
      },
@@ -557,11 +561,11 @@
       "ok": true,
       "detail": {
        "got": {
-        "id": "ZZT-N21-R2-SC1-C01",
+        "id": "ZZT-N21-R2-SC2-C01",
         "materialName": "ZZT-N21-R2 Recycled Polyethylene Wax",
         "inci": "Polyethylene",
-        "materialNo": "ZZT-N21-R2-SC1-RM-01",
-        "supplierId": "ZZT-N21-R2-SC1-SUP",
+        "materialNo": "ZZT-N21-R2-SC2-RM-01",
+        "supplierId": "ZZT-N21-R2-SC2-SUP",
         "manufacturer": "ZZT-N21-R2 Supplier",
         "ownerId": "UsEJUfjYLM8Y",
         "priority": "high",
@@ -569,27 +573,27 @@
         "ruleSetVersion": "RS-2026.1",
         "supplierContactIds": [
          "self:UsEJUfjYLM8Y",
-         "u-ZZT-N21-R2-SC1-SUP-2"
+         "u-ZZT-N21-R2-SC2-SUP-2"
         ],
         "markets": [
          "EU",
          "UK"
         ],
-        "due": "2026-11-20",
+        "due": "2026-11-27",
         "bdfAnswers": {
          "FLD-GEN-001": "ZZT-N21-R2 Recycled Polyethylene Wax",
          "FLD-GEN-002": "ZZT-N21-R2 Supplier",
-         "FLD-GEN-003": "922000001",
-         "FLD-GEN-008": "zzt-n21-r2-sc1.self@example.test",
-         "FLD-GEN-009": "jordi.castell.sc1@zzt-n21-r2.example"
+         "FLD-GEN-003": "922000002",
+         "FLD-GEN-008": "zzt-n21-r2-sc2.self@example.test",
+         "FLD-GEN-009": "jordi.castell.sc2@zzt-n21-r2.example"
         }
        },
        "want": {
-        "id": "ZZT-N21-R2-SC1-C01",
+        "id": "ZZT-N21-R2-SC2-C01",
         "materialName": "ZZT-N21-R2 Recycled Polyethylene Wax",
         "inci": "Polyethylene",
-        "materialNo": "ZZT-N21-R2-SC1-RM-01",
-        "supplierId": "ZZT-N21-R2-SC1-SUP",
+        "materialNo": "ZZT-N21-R2-SC2-RM-01",
+        "supplierId": "ZZT-N21-R2-SC2-SUP",
         "manufacturer": "ZZT-N21-R2 Supplier",
         "ownerId": "UsEJUfjYLM8Y",
         "priority": "high",
@@ -597,19 +601,19 @@
         "ruleSetVersion": "RS-2026.1",
         "supplierContactIds": [
          "self:UsEJUfjYLM8Y",
-         "u-ZZT-N21-R2-SC1-SUP-2"
+         "u-ZZT-N21-R2-SC2-SUP-2"
         ],
         "markets": [
          "EU",
          "UK"
         ],
-        "due": "2026-11-20",
+        "due": "2026-11-27",
         "bdfAnswers": {
          "FLD-GEN-001": "ZZT-N21-R2 Recycled Polyethylene Wax",
          "FLD-GEN-002": "ZZT-N21-R2 Supplier",
-         "FLD-GEN-003": "922000001",
-         "FLD-GEN-008": "zzt-n21-r2-sc1.self@example.test",
-         "FLD-GEN-009": "jordi.castell.sc1@zzt-n21-r2.example"
+         "FLD-GEN-003": "922000002",
+         "FLD-GEN-008": "zzt-n21-r2-sc2.self@example.test",
+         "FLD-GEN-009": "jordi.castell.sc2@zzt-n21-r2.example"
         }
        }
       }
@@ -628,13 +632,13 @@
      "I-1 poll": {
       "ok": true,
       "polls": 1,
-      "ms": 6663
+      "ms": 12576
      },
-     "calls": 19
+     "calls": 22
     }
    },
-   "ms": 63392,
-   "at": "2026-10-21T00:12:06.672Z"
+   "ms": 278490,
+   "at": "2026-10-28T21:30:58.464Z"
   },
   {
    "name": "4a answers saved (request.changed)",
@@ -645,7 +649,7 @@
       "what": "CIQP Request after the save (the writer's read-back)",
       "value": {
        "Answers_Rev": 1,
-       "Answers_Changed_At": "2026-10-21T00:13:19Z",
+       "Answers_Changed_At": "2026-10-28T21:36:14Z",
        "Answers_Changed_By_Email": "thomas@kissflow.com",
        "Scope_JSON": "[{\"sectionId\":\"GEN\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.3\",\"applicability\":\"mandatory\",\"reason\":\"Polymer is Yes\"},{\"sectionId\":\"K5.1\",\"applicability\":\"mandatory\",\"reason\":\"Microbiological test required is Yes or not answered\"},{\"sectionId\":\"K5.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K5.3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.2\",\"applicability\":\"mandatory\",\"reason\":\"Target markets include United Kingdom\"},{\"sectionId\":\"K6.4\",\"applicability\":\"mandatory\",\"reason\":\"Any target market outside the EU\"},{\"sectionId\":\"K6.5\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.6\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.7\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.8\",\"applicability\":\"optional\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.9\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.10\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.11\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.12\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.13\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.14\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.15\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.16\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.16.1\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.17\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K7\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K8\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K8.1\",\"applicability\":\"optional\",\"reason\":\"Every case\"},{\"sectionId\":\"A1\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A2\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A3\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A4\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A5\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A6\",\"applicability\":\"mandatory\",\"reason\":\"Polymer is Yes\"},{\"sectionId\":\"A7\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A8\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A9\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A10\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"A11\",\"applicability\":\"mandatory\",\"reason\":\"Target markets include United Kingdom\"},{\"sectionId\":\"A13\",\"applicability\":\"mandatory\",\"reason\":\"Any target market outside the EU\"}]"
       }
@@ -653,16 +657,16 @@
      {
       "what": "CIQ Case: the 15 supplier-data fields",
       "value": {
-       "Config_Answers_JSON": "{\"SF02\":false,\"SF03\":true,\"SF04\":false,\"SF05\":[],\"SF06\":false,\"SF07\":false,\"SF08\":false,\"SF09\":false,\"SF10\":false,\"SF12\":true,\"SF01\":[\"waste\"]}",
-       "Answers_JSON": "{\"FLD-GEN-004\":\"ZZT-N21-R2 Described in the supplier's statement.\",\"FLD-GEN-005\":\"ZZT-N21-R2 Described in the supplier's statement.\",\"FLD-2.1-102\":0.5,\"FLD-A14-101\":1,\"FLD-A14-102\":1,\"FLD-A14-103\":1,\"FLD-2.3-15\":\"ZZT-N21-R2 Test value\",\"FLD-2.2-002\":\"ZZT-N21-R2 Described in the supplier's statement.\"}",
-       "Answered_By_JSON": "{\"SF02\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"SF03\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"SF04\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"SF05\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"SF06\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"SF07\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"SF08\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"SF09\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"SF10\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"SF12\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"SF01\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-GEN-004\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-GEN-005\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-2.1-102\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-A14-101\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-A14-102\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-A14-103\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-2.3-15\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-2.2-002\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-K1-001\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-K1-002\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-K1-003\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-K1-004\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-2.2-001\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-5.1-001\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"},\"K2.1:components\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-21T00:13:19Z\",\"by\":\"UsEJUfjYLM8Y\"}}",
+       "Config_Answers_JSON": "{\"SF03\":true,\"SF04\":false,\"SF05\":[],\"SF06\":false,\"SF07\":false,\"SF09\":false,\"SF10\":false,\"SF12\":true,\"SF01\":[\"waste\"]}",
+       "Answers_JSON": "{\"FLD-GEN-004\":\"ZZT-N21-R2 Described in the supplier's statement.\",\"FLD-GEN-005\":\"ZZT-N21-R2 Described in the supplier's statement.\",\"FLD-2.1-102\":0.5,\"FLD-A14-101\":1,\"FLD-A14-102\":1,\"FLD-A14-103\":1,\"FLD-2.3-15\":\"ZZT-N21-R2 Test value\",\"FLD-A1-102\":\"ZZT-N21-R2 Test value\",\"FLD-A1-103\":1,\"FLD-A1-104\":1,\"FLD-2.2-002\":\"ZZT-N21-R2 Described in the supplier's statement.\"}",
+       "Answered_By_JSON": "{\"SF03\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"SF04\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"SF05\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"SF06\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"SF07\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"SF09\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"SF10\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"SF12\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"SF01\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-GEN-004\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-GEN-005\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-2.1-102\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-A14-101\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-A14-102\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-A14-103\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-2.3-15\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-A1-102\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-A1-103\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-A1-104\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-2.2-002\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-K1-001\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-K1-002\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-K1-003\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-K1-004\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-2.2-001\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"FLD-5.1-001\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"},\"K2.1:components\":{\"name\":\"Thomas\",\"email\":\"thomas@kissflow.com\",\"at\":\"2026-10-28T21:36:14Z\",\"by\":\"UsEJUfjYLM8Y\"}}",
        "Justifications_JSON": "{\"FLD-K1-001\":\"ZZT-N21-R2 Not available for this material; statement on request.\",\"FLD-K1-002\":\"ZZT-N21-R2 Not available for this material; statement on request.\",\"FLD-K1-003\":\"ZZT-N21-R2 Not available for this material; statement on request.\",\"FLD-K1-004\":\"ZZT-N21-R2 Not available for this material; statement on request.\",\"FLD-2.2-001\":\"ZZT-N21-R2 Not available for this material; statement on request.\",\"FLD-5.1-001\":\"ZZT-N21-R2 Not available for this material; statement on request.\"}",
-       "Components_JSON": "[{\"id\":\"c1\",\"inci\":\"Polyethylene\",\"fn\":\"emollient\",\"additive\":false,\"origin\":\"waste\",\"concMin\":99,\"concMax\":100,\"cas\":\"8001-25-0\"}]",
+       "Components_JSON": "[{\"id\":\"c1\",\"inci\":\"Polyethylene\",\"fn\":\"emollient\",\"additive\":false,\"origin\":\"waste\",\"concMin\":90,\"concMax\":99,\"cas\":\"8001-25-0\"}]",
        "Scope_JSON": "[{\"sectionId\":\"GEN\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K2.3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K4.3\",\"applicability\":\"mandatory\",\"reason\":\"Polymer is Yes\"},{\"sectionId\":\"K5.1\",\"applicability\":\"mandatory\",\"reason\":\"Microbiological test required is Yes or not answered\"},{\"sectionId\":\"K5.2\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K5.3\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.1\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.2\",\"applicability\":\"mandatory\",\"reason\":\"Target markets include United Kingdom\"},{\"sectionId\":\"K6.4\",\"applicability\":\"mandatory\",\"reason\":\"Any target market outside the EU\"},{\"sectionId\":\"K6.5\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.6\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.7\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.8\",\"applicability\":\"optional\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.9\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.10\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.11\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.12\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.13\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.14\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.15\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.16\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K6.16.1\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K6.17\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"K7\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K8\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"K8.1\",\"applicability\":\"optional\",\"reason\":\"Every case\"},{\"sectionId\":\"A1\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A2\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A3\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A4\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A5\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A6\",\"applicability\":\"mandatory\",\"reason\":\"Polymer is Yes\"},{\"sectionId\":\"A7\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A8\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A9\",\"applicability\":\"na\",\"reason\":\"No rule activates this section for these answers\"},{\"sectionId\":\"A10\",\"applicability\":\"mandatory\",\"reason\":\"Every case\"},{\"sectionId\":\"A11\",\"applicability\":\"mandatory\",\"reason\":\"Target markets include United Kingdom\"},{\"sectionId\":\"A13\",\"applicability\":\"mandatory\",\"reason\":\"Any target market outside the EU\"}]",
        "Requested_Docs_JSON": "[]",
        "Documents_JSON": null,
        "Answers_Rev": 1,
-       "Answers_Changed_At": "2026-10-21T00:13:19Z",
+       "Answers_Changed_At": "2026-10-28T21:36:14Z",
        "Answers_Changed_By_Email": "thomas@kissflow.com",
        "Change_Report_Text": null,
        "Change_Report_Rev": null,
@@ -711,13 +715,11 @@
     "notes": {
      "fill-in": {
       "config": [
-       "SF02",
        "SF03",
        "SF04",
        "SF05",
        "SF06",
        "SF07",
-       "SF08",
        "SF09",
        "SF10",
        "SF12",
@@ -731,6 +733,9 @@
        "FLD-A14-102",
        "FLD-A14-103",
        "FLD-2.3-15",
+       "FLD-A1-102",
+       "FLD-A1-103",
+       "FLD-A1-104",
        "FLD-2.2-002"
       ],
       "just": [
@@ -746,13 +751,13 @@
      "request.changed poll": {
       "ok": true,
       "polls": 1,
-      "ms": 6497
+      "ms": 25393
      },
      "calls": 9
     }
    },
-   "ms": 27630,
-   "at": "2026-10-21T00:13:10.067Z"
+   "ms": 113554,
+   "at": "2026-10-28T21:35:36.957Z"
   },
   {
    "name": "4b completeness confirmed (I-2 fields)",
@@ -767,7 +772,7 @@
        "Completeness_By_Name": "Thomas",
        "Completeness_By_Email": "thomas@kissflow.com",
        "Completeness_By_Role": "Quality Lead",
-       "Completeness_At": "2026-10-21T00:13:40Z"
+       "Completeness_At": "2026-10-28T21:37:43Z"
       }
      },
      {
@@ -777,7 +782,7 @@
        "Case_Phase": "Review",
        "Completeness_Confirm": "Confirmed",
        "Completeness_By_Name": "Thomas",
-       "Completeness_At": "2026-10-21T00:13:40Z",
+       "Completeness_At": "2026-10-28T21:37:43Z",
        "Answers_Rev": 1
       }
      }
@@ -812,13 +817,13 @@
      "I-2 poll": {
       "ok": true,
       "polls": 1,
-      "ms": 6503
+      "ms": 25362
      },
      "calls": 8
     }
    },
-   "ms": 24637,
-   "at": "2026-10-21T00:13:37.703Z"
+   "ms": 101035,
+   "at": "2026-10-28T21:37:30.519Z"
   },
   {
    "name": "4c I-2 Approve",
@@ -855,14 +860,23 @@
      "calls": 1
     }
    },
-   "ms": 2991,
-   "at": "2026-10-21T00:14:02.348Z"
+   "ms": 12591,
+   "at": "2026-10-28T21:39:11.561Z"
   },
   {
-   "name": "5 reviews (ensureReviews)",
-   "status": "pass",
+   "name": "5 reviews (E-A)",
+   "status": "fail",
+   "reason": "failed: I-2 started one review per department the scope activates, and RMM's; RMM: its review item reads back; REG: its review item reads back; SAF: its review item reads back; QM: its review item reads back; MIC: its review item reads back",
    "evidence": {
     "readBacks": [
+     {
+      "what": "CIQ Case (Review_Depts)",
+      "value": {
+       "Review_Depts": "REG,SAF,QM,MIC",
+       "Case_Phase": "Review",
+       "_current_step": "Waiting for supplier: CIQ"
+      }
+     },
      {
       "what": "mapped reviews (RMM)",
       "value": [
@@ -870,149 +884,143 @@
         "dept": "RMM",
         "status": "in-review",
         "assigneeId": "UsEJUfjYLM8Y",
-        "startedAt": "2026-10-21T00:14:39Z"
+        "startedAt": "2026-10-28T21:38:57Z"
        },
        {
         "dept": "REG",
         "status": "in-review",
         "assigneeId": "role:REG",
-        "startedAt": "2026-10-21T00:14:58Z"
+        "startedAt": "2026-10-28T21:38:57Z"
        },
        {
         "dept": "SAF",
         "status": "in-review",
         "assigneeId": "role:SAF",
-        "startedAt": "2026-10-21T00:15:16Z"
+        "startedAt": "2026-10-28T21:38:57Z"
        },
        {
         "dept": "QM",
         "status": "in-review",
         "assigneeId": "role:QM",
-        "startedAt": "2026-10-21T00:15:34Z"
+        "startedAt": "2026-10-28T21:38:57Z"
        },
        {
         "dept": "MIC",
         "status": "in-review",
         "assigneeId": "role:MIC",
-        "startedAt": "2026-10-21T00:15:53Z"
+        "startedAt": "2026-10-28T21:38:57Z"
        }
       ]
      },
      {
       "what": "CIQ Review RMM",
       "value": {
-       "_status": "InProgress",
-       "_current_step": "Review – RMM",
-       "Review_Key": "ZZT-N21-R2-SC1-C01-RMM-1",
-       "Case_Code": "ZZT-N21-R2-SC1-C01",
-       "Case_Item_Id": "PkEPESamhRAM",
-       "Cycle_No": 1,
-       "Supplier_Code": "ZZT-N21-R2-SC1-SUP",
-       "Trade_Name": "ZZT-N21-R2 Recycled Polyethylene Wax",
-       "Review_Dept": "RMM",
-       "Round_No": 1,
-       "Activation_Kind": "Completeness",
-       "Track_Status": "In review",
-       "Assignee_User": {
-        "_id": "UsEJUfjYLM8Y",
-        "Name": "Thomas",
-        "Kind": "User"
-       },
-       "Open_Count": 0,
-       "RMES_Gaps": 0
+       "_status": null,
+       "_current_step": null,
+       "Review_Key": null,
+       "Case_Code": null,
+       "Case_Item_Id": null,
+       "Cycle_No": null,
+       "Supplier_Code": null,
+       "Trade_Name": null,
+       "Review_Dept": null,
+       "Round_No": null,
+       "Activation_Kind": null,
+       "Track_Status": null,
+       "Assignee_User": null,
+       "Open_Count": null,
+       "RMES_Gaps": null
       }
      },
      {
       "what": "CIQ Review REG",
       "value": {
-       "_status": "InProgress",
-       "_current_step": "Review – Regulatory",
-       "Review_Key": "ZZT-N21-R2-SC1-C01-REG-1",
-       "Case_Code": "ZZT-N21-R2-SC1-C01",
-       "Case_Item_Id": "PkEPESamhRAM",
-       "Cycle_No": 1,
-       "Supplier_Code": "ZZT-N21-R2-SC1-SUP",
-       "Trade_Name": "ZZT-N21-R2 Recycled Polyethylene Wax",
-       "Review_Dept": "REG",
-       "Round_No": 1,
-       "Activation_Kind": "Completeness",
-       "Track_Status": "In review",
+       "_status": null,
+       "_current_step": null,
+       "Review_Key": null,
+       "Case_Code": null,
+       "Case_Item_Id": null,
+       "Cycle_No": null,
+       "Supplier_Code": null,
+       "Trade_Name": null,
+       "Review_Dept": null,
+       "Round_No": null,
+       "Activation_Kind": null,
+       "Track_Status": null,
        "Assignee_User": null,
-       "Open_Count": 0,
-       "RMES_Gaps": 0
+       "Open_Count": null,
+       "RMES_Gaps": null
       }
      },
      {
       "what": "CIQ Review SAF",
       "value": {
-       "_status": "InProgress",
-       "_current_step": "Review – Safety",
-       "Review_Key": "ZZT-N21-R2-SC1-C01-SAF-1",
-       "Case_Code": "ZZT-N21-R2-SC1-C01",
-       "Case_Item_Id": "PkEPESamhRAM",
-       "Cycle_No": 1,
-       "Supplier_Code": "ZZT-N21-R2-SC1-SUP",
-       "Trade_Name": "ZZT-N21-R2 Recycled Polyethylene Wax",
-       "Review_Dept": "SAF",
-       "Round_No": 1,
-       "Activation_Kind": "Completeness",
-       "Track_Status": "In review",
+       "_status": null,
+       "_current_step": null,
+       "Review_Key": null,
+       "Case_Code": null,
+       "Case_Item_Id": null,
+       "Cycle_No": null,
+       "Supplier_Code": null,
+       "Trade_Name": null,
+       "Review_Dept": null,
+       "Round_No": null,
+       "Activation_Kind": null,
+       "Track_Status": null,
        "Assignee_User": null,
-       "Open_Count": 0,
-       "RMES_Gaps": 0
+       "Open_Count": null,
+       "RMES_Gaps": null
       }
      },
      {
       "what": "CIQ Review QM",
       "value": {
-       "_status": "InProgress",
-       "_current_step": "Review – QM",
-       "Review_Key": "ZZT-N21-R2-SC1-C01-QM-1",
-       "Case_Code": "ZZT-N21-R2-SC1-C01",
-       "Case_Item_Id": "PkEPESamhRAM",
-       "Cycle_No": 1,
-       "Supplier_Code": "ZZT-N21-R2-SC1-SUP",
-       "Trade_Name": "ZZT-N21-R2 Recycled Polyethylene Wax",
-       "Review_Dept": "QM",
-       "Round_No": 1,
-       "Activation_Kind": "Completeness",
-       "Track_Status": "In review",
+       "_status": null,
+       "_current_step": null,
+       "Review_Key": null,
+       "Case_Code": null,
+       "Case_Item_Id": null,
+       "Cycle_No": null,
+       "Supplier_Code": null,
+       "Trade_Name": null,
+       "Review_Dept": null,
+       "Round_No": null,
+       "Activation_Kind": null,
+       "Track_Status": null,
        "Assignee_User": null,
-       "Open_Count": 0,
-       "RMES_Gaps": 0
+       "Open_Count": null,
+       "RMES_Gaps": null
       }
      },
      {
       "what": "CIQ Review MIC",
       "value": {
-       "_status": "InProgress",
-       "_current_step": "Review – Microbiology",
-       "Review_Key": "ZZT-N21-R2-SC1-C01-MIC-1",
-       "Case_Code": "ZZT-N21-R2-SC1-C01",
-       "Case_Item_Id": "PkEPESamhRAM",
-       "Cycle_No": 1,
-       "Supplier_Code": "ZZT-N21-R2-SC1-SUP",
-       "Trade_Name": "ZZT-N21-R2 Recycled Polyethylene Wax",
-       "Review_Dept": "MIC",
-       "Round_No": 1,
-       "Activation_Kind": "Completeness",
-       "Track_Status": "In review",
+       "_status": null,
+       "_current_step": null,
+       "Review_Key": null,
+       "Case_Code": null,
+       "Case_Item_Id": null,
+       "Cycle_No": null,
+       "Supplier_Code": null,
+       "Trade_Name": null,
+       "Review_Dept": null,
+       "Round_No": null,
+       "Activation_Kind": null,
+       "Track_Status": null,
        "Assignee_User": null,
-       "Open_Count": 0,
-       "RMES_Gaps": 0
+       "Open_Count": null,
+       "RMES_Gaps": null
       }
      },
      {
-      "what": "CIQ Scope Run (form GET)",
-      "value": {
-       "Run_Key": "ZZT-N21-R2-SC1-C01-SR-1",
-       "Case_Code": "ZZT-N21-R2-SC1-C01",
-       "Case_Item_Id": "PkEPESamhRAM",
-       "Scope_Trigger": "Completeness",
-       "Lead_Departments": "REG, SAF, QM, MIC",
-       "Rule_Set_Version": "RS-2026.1",
-       "Input_Hash": "8df38732de7d3f69bb23019a397afb936dd5dd24820455909c3a7abdebf9cdb2"
-      }
+      "what": "review.started (audit row)",
+      "value": [
+       {
+        "Object_Kind": "Case",
+        "Object_Item_Id": "PkES6sfB95Fo",
+        "New_Value_Text": "Reviews started: RMM, Regulatory, Safety, QM, Microbiology."
+       }
+      ]
      }
     ],
     "checks": [
@@ -1037,17 +1045,17 @@
       }
      },
      {
-      "label": "ensureReviews started the reviews",
+      "label": "the case's Review_Depts names the scope's departments",
       "ok": true,
-      "detail": "Started in Kissflow: ZZT-N21-R2-SC1-C01 reviews for RMM, Regulatory, Safety, QM, Microbiology."
+      "detail": "REG,SAF,QM,MIC"
      },
      {
-      "label": "no warning (scope run recorded, history lines written)",
-      "ok": true,
+      "label": "I-2 started one review per department the scope activates, and RMM's",
+      "ok": false,
       "detail": []
      },
      {
-      "label": "one review per department the scope activates, and RMM's",
+      "label": "RMM's screen shows one review per department, and RMM's",
       "ok": true,
       "detail": {
        "got": [
@@ -1071,780 +1079,101 @@
       "ok": true
      },
      {
-      "label": "RMM: at \"Review – RMM\"",
+      "label": "RMM: its review item reads back",
+      "ok": false
+     },
+     {
+      "label": "REG: its review item reads back",
+      "ok": false
+     },
+     {
+      "label": "SAF: its review item reads back",
+      "ok": false
+     },
+     {
+      "label": "QM: its review item reads back",
+      "ok": false
+     },
+     {
+      "label": "MIC: its review item reads back",
+      "ok": false
+     },
+     {
+      "label": "one review.started row for the case, with every review's track",
       "ok": true,
-      "detail": "Review – RMM"
-     },
-     {
-      "label": "RMM: its fields name the case",
-      "ok": true
-     },
-     {
-      "label": "RMM: Assignee_User is the case owner",
-      "ok": true,
-      "detail": [
-       "UsEJUfjYLM8Y"
-      ]
-     },
-     {
-      "label": "RMM: its review.started row",
-      "ok": true
-     },
-     {
-      "label": "REG: at \"Review – Regulatory\"",
-      "ok": true,
-      "detail": "Review – Regulatory"
-     },
-     {
-      "label": "REG: its fields name the case",
-      "ok": true
-     },
-     {
-      "label": "REG: its review.started row",
-      "ok": true
-     },
-     {
-      "label": "SAF: at \"Review – Safety\"",
-      "ok": true,
-      "detail": "Review – Safety"
-     },
-     {
-      "label": "SAF: its fields name the case",
-      "ok": true
-     },
-     {
-      "label": "SAF: its review.started row",
-      "ok": true
-     },
-     {
-      "label": "QM: at \"Review – QM\"",
-      "ok": true,
-      "detail": "Review – QM"
-     },
-     {
-      "label": "QM: its fields name the case",
-      "ok": true
-     },
-     {
-      "label": "QM: its review.started row",
-      "ok": true
-     },
-     {
-      "label": "MIC: at \"Review – Microbiology\"",
-      "ok": true,
-      "detail": "Review – Microbiology"
-     },
-     {
-      "label": "MIC: its fields name the case",
-      "ok": true
-     },
-     {
-      "label": "MIC: its review.started row",
-      "ok": true
-     },
-     {
-      "label": "the Scope Run row names the case and its lead departments",
-      "ok": true
+      "detail": 1
      }
     ],
     "notes": {
-     "ensureReviews": {
-      "message": "Started in Kissflow: ZZT-N21-R2-SC1-C01 reviews for RMM, Regulatory, Safety, QM, Microbiology.",
-      "warnings": []
+     "E-A poll": {
+      "polls": 5,
+      "ms": 63054
      },
-     "calls": 59
+     "calls": 32
     }
    },
-   "ms": 181444,
-   "at": "2026-10-21T00:14:05.343Z"
+   "ms": 403304,
+   "at": "2026-10-28T21:39:24.158Z"
   },
   {
    "name": "6a RMES Safety",
-   "status": "pass",
+   "status": "not-run",
+   "reason": "needs \"5 reviews (E-A)\" (fail)",
    "evidence": {
-    "readBacks": [
-     {
-      "what": "CIQ RMES SAF (form GET)",
-      "value": {
-       "RMES_Key": "ZZT-N21-R2-SC1-C01-RMES-SAF",
-       "Case_Item_Id": "PkEPESamhRAM",
-       "Case_Code": "ZZT-N21-R2-SC1-C01",
-       "Open_Criteria_Count": 3,
-       "Open_Blocking_Findings_Count": 1,
-       "RMES_Voided": "No",
-       "criteria": [
-        {
-         "Criteria_Code": "S-A1",
-         "Criteria_Result": "Negative",
-         "Criteria_Comment": "ZZT-N21-R2 Residual monomer above the limit.",
-         "Criteria_Recorded_At": "2026-10-21T00:18:42Z"
-        },
-        {
-         "Criteria_Code": "S-B1",
-         "Criteria_Result": null,
-         "Criteria_Comment": null,
-         "Criteria_Recorded_At": null
-        },
-        {
-         "Criteria_Code": "S-C1",
-         "Criteria_Result": null,
-         "Criteria_Comment": null,
-         "Criteria_Recorded_At": null
-        },
-        {
-         "Criteria_Code": "S-D1",
-         "Criteria_Result": null,
-         "Criteria_Comment": null,
-         "Criteria_Recorded_At": null
-        }
-       ],
-       "findings": [
-        {
-         "Findings_Key": "-C01-F1",
-         "Findings_Criterion_Code": "S-B1",
-         "Findings_Text": "ZZT-N21-R2 Residual monomer content too high.",
-         "Findings_Blocking": "Yes",
-         "Findings_State": "open"
-        }
-       ]
-      }
-     },
-     {
-      "what": "mapped RMES SAF",
-      "value": {
-       "criterion": {
-        "id": "S-A1",
-        "dept": "SAF",
-        "part": "A",
-        "title": "Byproducts and contaminants within BDF limits",
-        "result": "negative",
-        "comment": "ZZT-N21-R2 Residual monomer above the limit.",
-        "by": "UsEJUfjYLM8Y",
-        "at": "2026-10-21T00:18:42.000Z",
-        "source": {
-         "sectionId": "K2.2",
-         "fieldId": "FLD-A14-101",
-         "label": "K2.2 heavy metals"
-        }
-       },
-       "finding": {
-        "id": "-C01-F1",
-        "dept": "SAF",
-        "criterionId": "S-B1",
-        "text": "ZZT-N21-R2 Residual monomer content too high.",
-        "blocking": true,
-        "status": "open"
-       }
-      }
-     }
-    ],
-    "checks": [
-     {
-      "label": "ensureRmes created the record",
-      "ok": true,
-      "detail": "Started in Kissflow: ZZT-N21-R2-SC1-C01 Safety RMES record (4 criteria)."
-     },
-     {
-      "label": "the header names the case",
-      "ok": true
-     },
-     {
-      "label": "one row per planned criterion (4), no duplicate",
-      "ok": true,
-      "detail": 4
-     },
-     {
-      "label": "S-A1: the result as recorded",
-      "ok": true,
-      "detail": {
-       "Criteria_Result": "Negative",
-       "Criteria_Comment": "ZZT-N21-R2 Residual monomer above the limit.",
-       "Criteria_Recorded_By": {
-        "_id": "UsEJUfjYLM8Y",
-        "Name": "Thomas",
-        "Kind": "User"
-       }
-      }
-     },
-     {
-      "label": "-C01-F1: one finding row as added",
-      "ok": true
-     },
-     {
-      "label": "the open counts follow",
-      "ok": true,
-      "detail": {
-       "Open_Criteria_Count": 3,
-       "Open_Blocking_Findings_Count": 1
-      }
-     },
-     {
-      "label": "the criterion reads back as recorded",
-      "ok": true,
-      "detail": {
-       "got": {
-        "id": "S-A1",
-        "dept": "SAF",
-        "part": "A",
-        "title": "Byproducts and contaminants within BDF limits",
-        "result": "negative",
-        "comment": "ZZT-N21-R2 Residual monomer above the limit.",
-        "by": "UsEJUfjYLM8Y",
-        "at": "2026-10-21T00:18:42.000Z",
-        "source": {
-         "sectionId": "K2.2",
-         "fieldId": "FLD-A14-101",
-         "label": "K2.2 heavy metals"
-        }
-       },
-       "want": {
-        "id": "S-A1",
-        "dept": "SAF",
-        "part": "A",
-        "title": "Byproducts and contaminants within BDF limits",
-        "result": "negative",
-        "comment": "ZZT-N21-R2 Residual monomer above the limit.",
-        "by": "UsEJUfjYLM8Y",
-        "at": "2026-10-21T00:18:42.000Z",
-        "source": {
-         "sectionId": "K2.2",
-         "fieldId": "FLD-A14-101",
-         "label": "K2.2 heavy metals"
-        }
-       }
-      }
-     },
-     {
-      "label": "the finding reads back as added",
-      "ok": true,
-      "detail": {
-       "got": {
-        "id": "-C01-F1",
-        "dept": "SAF",
-        "criterionId": "S-B1",
-        "text": "ZZT-N21-R2 Residual monomer content too high.",
-        "blocking": true,
-        "status": "open"
-       },
-       "want": {
-        "id": "-C01-F1",
-        "dept": "SAF",
-        "criterionId": "S-B1",
-        "text": "ZZT-N21-R2 Residual monomer content too high.",
-        "blocking": true,
-        "status": "open"
-       }
-      }
-     },
-     {
-      "label": "three rmes.saved rows (record, result, finding)",
-      "ok": true,
-      "detail": [
-       "RMES record",
-       "RMES criterion",
-       "RMES finding"
-      ]
-     }
-    ],
-    "notes": {
-     "ensureRmes as loaded": "nothing: the review task is not held",
-     "approximated": "\"Review – Safety\" is held by Product Safety reviewer, which has no members (SPEC §2); ensureRmes ran with the review's live activity instance (PkEPEVpZIuM_) as held. The RMES write itself needs no task.",
-     "ensureRmes": "Started in Kissflow: ZZT-N21-R2-SC1-C01 Safety RMES record (4 criteria).",
-     "calls": 57
-    }
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
    },
-   "ms": 176058,
-   "at": "2026-10-21T00:17:06.799Z"
+   "ms": 0,
+   "at": "2026-10-28T21:46:07.470Z"
   },
   {
    "name": "6b RMES Regulatory",
-   "status": "pass",
+   "status": "not-run",
+   "reason": "needs \"5 reviews (E-A)\" (fail)",
    "evidence": {
-    "readBacks": [
-     {
-      "what": "CIQ RMES REG (form GET)",
-      "value": {
-       "RMES_Key": "ZZT-N21-R2-SC1-C01-RMES-REG",
-       "Case_Item_Id": "PkEPESamhRAM",
-       "Case_Code": "ZZT-N21-R2-SC1-C01",
-       "Open_Criteria_Count": 4,
-       "Open_Blocking_Findings_Count": 0,
-       "RMES_Voided": "No",
-       "criteria": [
-        {
-         "Criteria_Code": "R-A1",
-         "Criteria_Result": "Listed",
-         "Criteria_Comment": null,
-         "Criteria_Recorded_At": "2026-10-21T00:21:39Z"
-        },
-        {
-         "Criteria_Code": "R-A2",
-         "Criteria_Result": null,
-         "Criteria_Comment": null,
-         "Criteria_Recorded_At": null
-        },
-        {
-         "Criteria_Code": "R-B1",
-         "Criteria_Result": null,
-         "Criteria_Comment": null,
-         "Criteria_Recorded_At": null
-        },
-        {
-         "Criteria_Code": "R-B2",
-         "Criteria_Result": null,
-         "Criteria_Comment": null,
-         "Criteria_Recorded_At": null
-        },
-        {
-         "Criteria_Code": "R-D1",
-         "Criteria_Result": null,
-         "Criteria_Comment": null,
-         "Criteria_Recorded_At": null
-        }
-       ],
-       "findings": [
-        {
-         "Findings_Key": "-C01-F1",
-         "Findings_Criterion_Code": "R-A2",
-         "Findings_Text": "ZZT-N21-R2 UK REACH registration number missing.",
-         "Findings_Blocking": "No",
-         "Findings_State": "open"
-        }
-       ]
-      }
-     },
-     {
-      "what": "mapped RMES REG",
-      "value": {
-       "criterion": {
-        "id": "R-A1",
-        "dept": "REG",
-        "part": "A",
-        "title": "INCI and CAS of every component are consistent",
-        "result": "listed",
-        "by": "UsEJUfjYLM8Y",
-        "at": "2026-10-21T00:21:39.000Z",
-        "source": {
-         "sectionId": "K2.1",
-         "label": "K2.1 composition table"
-        }
-       },
-       "finding": {
-        "id": "-C01-F1",
-        "dept": "REG",
-        "criterionId": "R-A2",
-        "text": "ZZT-N21-R2 UK REACH registration number missing.",
-        "blocking": false,
-        "status": "open"
-       }
-      }
-     }
-    ],
-    "checks": [
-     {
-      "label": "ensureRmes created the record",
-      "ok": true,
-      "detail": "Started in Kissflow: ZZT-N21-R2-SC1-C01 Regulatory RMES record (5 criteria)."
-     },
-     {
-      "label": "the header names the case",
-      "ok": true
-     },
-     {
-      "label": "one row per planned criterion (5), no duplicate",
-      "ok": true,
-      "detail": 5
-     },
-     {
-      "label": "R-A1: the result as recorded",
-      "ok": true,
-      "detail": {
-       "Criteria_Result": "Listed",
-       "Criteria_Comment": null,
-       "Criteria_Recorded_By": {
-        "_id": "UsEJUfjYLM8Y",
-        "Name": "Thomas",
-        "Kind": "User"
-       }
-      }
-     },
-     {
-      "label": "-C01-F1: one finding row as added",
-      "ok": true
-     },
-     {
-      "label": "the open counts follow",
-      "ok": true,
-      "detail": {
-       "Open_Criteria_Count": 4,
-       "Open_Blocking_Findings_Count": 0
-      }
-     },
-     {
-      "label": "the criterion reads back as recorded",
-      "ok": true,
-      "detail": {
-       "got": {
-        "id": "R-A1",
-        "dept": "REG",
-        "part": "A",
-        "title": "INCI and CAS of every component are consistent",
-        "result": "listed",
-        "by": "UsEJUfjYLM8Y",
-        "at": "2026-10-21T00:21:39.000Z",
-        "source": {
-         "sectionId": "K2.1",
-         "label": "K2.1 composition table"
-        }
-       },
-       "want": {
-        "id": "R-A1",
-        "dept": "REG",
-        "part": "A",
-        "title": "INCI and CAS of every component are consistent",
-        "result": "listed",
-        "by": "UsEJUfjYLM8Y",
-        "at": "2026-10-21T00:21:39.000Z",
-        "source": {
-         "sectionId": "K2.1",
-         "label": "K2.1 composition table"
-        }
-       }
-      }
-     },
-     {
-      "label": "the finding reads back as added",
-      "ok": true,
-      "detail": {
-       "got": {
-        "id": "-C01-F1",
-        "dept": "REG",
-        "criterionId": "R-A2",
-        "text": "ZZT-N21-R2 UK REACH registration number missing.",
-        "blocking": false,
-        "status": "open"
-       },
-       "want": {
-        "id": "-C01-F1",
-        "dept": "REG",
-        "criterionId": "R-A2",
-        "text": "ZZT-N21-R2 UK REACH registration number missing.",
-        "blocking": false,
-        "status": "open"
-       }
-      }
-     },
-     {
-      "label": "three rmes.saved rows (record, result, finding)",
-      "ok": true,
-      "detail": [
-       "RMES record",
-       "RMES criterion",
-       "RMES finding"
-      ]
-     }
-    ],
-    "notes": {
-     "app finding": "this session already attempted \"ensureRmes|ZZT-N21-R2-SC1-C01\" as another reviewer: with the dev role switch the store would not attempt the REG record; run in the reviewer's own session",
-     "ensureRmes as loaded": "nothing: the review task is not held",
-     "approximated": "\"Review – Regulatory\" is held by Regulatory Affairs reviewer, which has no members (SPEC §2); ensureRmes ran with the review's live activity instance (PkEPEVX7w_K9) as held. The RMES write itself needs no task.",
-     "ensureRmes": "Started in Kissflow: ZZT-N21-R2-SC1-C01 Regulatory RMES record (5 criteria).",
-     "calls": 57
-    }
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
    },
-   "ms": 177003,
-   "at": "2026-10-21T00:20:02.866Z"
+   "ms": 0,
+   "at": "2026-10-28T21:46:07.476Z"
   },
   {
    "name": "7 review completion",
-   "status": "blocked",
-   "reason": "050201: \"Review – RMM\" is held by Raw Material Manager (RMM), which has no members; the app refused first (The RMM review of this case is not one of your open tasks in Kissflow (it may have moved on). Reload to see its current state.). Kissflow: KISSFLOW_ERROR_050201 This item has moved out of your queue.",
+   "status": "not-run",
+   "reason": "needs \"5 reviews (E-A)\" (fail)",
    "evidence": {
-    "readBacks": [
-     {
-      "what": "CIQ Review RMM: Review_Gate",
-      "value": {
-       "Open_Count": 0,
-       "RMES_Gaps": 0,
-       "Review_Gate": "OK"
-      }
-     },
-     {
-      "what": "CIQ Review REG: Review_Gate",
-      "value": {
-       "Open_Count": 0,
-       "RMES_Gaps": 6,
-       "Review_Gate": ""
-      }
-     },
-     {
-      "what": "CIQ Review SAF: Review_Gate",
-      "value": {
-       "Open_Count": 0,
-       "RMES_Gaps": 5,
-       "Review_Gate": ""
-      }
-     },
-     {
-      "what": "CIQ Review QM: Review_Gate",
-      "value": {
-       "Open_Count": 0,
-       "RMES_Gaps": 0,
-       "Review_Gate": "OK"
-      }
-     },
-     {
-      "what": "CIQ Review MIC: Review_Gate",
-      "value": {
-       "Open_Count": 0,
-       "RMES_Gaps": 0,
-       "Review_Gate": "OK"
-      }
-     }
-    ],
-    "checks": [
-     {
-      "label": "RMM: Review_Gate \"OK\" for 0 + 0",
-      "ok": true,
-      "detail": "OK"
-     },
-     {
-      "label": "REG: Review_Gate \"\" for 0 + 6",
-      "ok": true,
-      "detail": ""
-     },
-     {
-      "label": "SAF: Review_Gate \"\" for 0 + 5",
-      "ok": true,
-      "detail": ""
-     },
-     {
-      "label": "QM: Review_Gate \"OK\" for 0 + 0",
-      "ok": true,
-      "detail": "OK"
-     },
-     {
-      "label": "MIC: Review_Gate \"OK\" for 0 + 0",
-      "ok": true,
-      "detail": "OK"
-     }
-    ],
-    "notes": {
-     "completeReview (the app)": "The RMM review of this case is not one of your open tasks in Kissflow (it may have moved on). Reload to see its current state.",
-     "Kissflow (the review's task read)": "KISSFLOW_ERROR_050201 This item has moved out of your queue.",
-     "approximated": "the counts written by admin PUT (P-RO), as each department's completion would write them (countsOf on that department's view)",
-     "calls": 27
-    }
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
    },
-   "ms": 81801,
-   "at": "2026-10-21T00:22:59.875Z"
+   "ms": 0,
+   "at": "2026-10-28T21:46:07.480Z"
   },
   {
    "name": "8 release requested",
-   "status": "pass",
+   "status": "not-run",
+   "reason": "needs \"5 reviews (E-A)\" (fail)",
    "evidence": {
-    "readBacks": [
-     {
-      "what": "CIQ Case",
-      "value": {
-       "_current_step": "Waiting for supplier: CIQ",
-       "Release_Requested_At": "2026-10-21T00:25:10Z",
-       "Release_Assignees_JSON": "[{\"_id\":\"UsEJUfjYLM8Y\"}]"
-      }
-     },
-     {
-      "what": "CIQP Request",
-      "value": {
-       "_current_step": "Supplier: keep the CIQ up to date",
-       "Release_Flag": "Requested",
-       "Request_Locked": "Yes",
-       "Case_Phase_Label": "Awaiting your final release",
-       "Release_Contacts": [
-        {
-         "_id": "UsEJUfjYLM8Y",
-         "Name": "Thomas",
-         "Kind": "User"
-        }
-       ]
-      }
-     },
-     {
-      "what": "release.requested (audit row)",
-      "value": {
-       "Action_Code": "release.requested",
-       "Object_State": "Awaiting final release",
-       "Notify_Recipient": "[{\"code\":\"release.requested\",\"status\":\"sent\",\"detail\":\"handed over\",\"key\":\"REL-PkEPESamhRAM-R1\"}]"
-      }
-     }
-    ],
-    "checks": [
-     {
-      "label": "release.requested sent with the case's release key",
-      "ok": true,
-      "detail": [
-       {
-        "code": "release.requested",
-        "status": "sent",
-        "detail": "handed over",
-        "key": "REL-PkEPESamhRAM-R1"
-       }
-      ]
-     },
-     {
-      "label": "the case has Release_Requested_At",
-      "ok": true,
-      "detail": {
-       "polls": 1,
-       "ms": 6722
-      }
-     },
-     {
-      "label": "the request: Release_Flag Requested, locked, awaiting the final release",
-      "ok": true,
-      "detail": {
-       "Release_Flag": "Requested",
-       "Request_Locked": "Yes",
-       "Case_Phase_Label": "Awaiting your final release"
-      }
-     },
-     {
-      "label": "Release_Contacts = the case's release contacts",
-      "ok": true,
-      "detail": [
-       "UsEJUfjYLM8Y"
-      ]
-     },
-     {
-      "label": "Release_Contacts = the self contact only",
-      "ok": true,
-      "detail": [
-       "UsEJUfjYLM8Y"
-      ]
-     },
-     {
-      "label": "its release.requested row",
-      "ok": true
-     },
-     {
-      "label": "the case reads as awaiting the final release",
-      "ok": true,
-      "detail": "final-release"
-     },
-     {
-      "label": "no hand-off of the step failed after its save (release.requested)",
-      "ok": true,
-      "detail": []
-     }
-    ],
-    "notes": {
-     "approximated": "ensureRelease sends only when every review reads Completed live; completion is blocked (step 7), so the reviews' status is given as Completed in the index it decides from. The hand-off, its key and the audit row are its own.",
-     "ensureRelease": {
-      "message": "Sent in Kissflow: ZZT-N21-R2-SC1-C01 final-release request.",
-      "handoffs": [
-       {
-        "code": "release.requested",
-        "status": "sent",
-        "detail": "handed over",
-        "key": "REL-PkEPESamhRAM-R1"
-       }
-      ]
-     },
-     "calls": 37
-    }
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
    },
-   "ms": 119986,
-   "at": "2026-10-21T00:24:21.684Z"
+   "ms": 0,
+   "at": "2026-10-28T21:46:07.482Z"
   },
   {
    "name": "9 final release (I-7)",
-   "status": "pass",
+   "status": "not-run",
+   "reason": "needs \"8 release requested\" (not-run)",
    "evidence": {
-    "readBacks": [
-     {
-      "what": "the portal's release gates (caseOfRequest on the request)",
-      "value": {
-       "phase": "final-release",
-       "blockers": [],
-       "mayConfirm": true
-      }
-     },
-     {
-      "what": "CIQP Request",
-      "value": {
-       "_current_step": "Supplier: keep the CIQ up to date",
-       "Release_Flag": "Requested",
-       "Release_By_Name": "Thomas",
-       "Release_At": "2026-10-21T00:26:30Z"
-      }
-     },
-     {
-      "what": "CIQ Case",
-      "value": {
-       "_status": "Completed",
-       "_current_step": null,
-       "Final_Release_Confirm": "Confirmed",
-       "Final_Release_By_Name": "Thomas",
-       "Final_Release_At": "2026-10-21T00:26:30Z",
-       "Case_Phase": "Completed"
-      }
-     }
-    ],
-    "checks": [
-     {
-      "label": "the self contact may confirm (B-11)",
-      "ok": true,
-      "detail": {
-       "id": "UsEJUfjYLM8Y",
-       "name": "Thomas",
-       "email": "zzt-n21-r2-sc1.self@example.test",
-       "role": "Quality Lead",
-       "mayConfirm": true
-      }
-     },
-     {
-      "label": "no release blocker (B-33)",
-      "ok": true,
-      "detail": []
-     },
-     {
-      "label": "the request holds the release",
-      "ok": true
-     },
-     {
-      "label": "the case reached End",
-      "ok": true,
-      "detail": [
-       "Completed",
-       ""
-      ]
-     },
-     {
-      "label": "Final_Release_* from the request",
-      "ok": true
-     },
-     {
-      "label": "the case reads as completed",
-      "ok": true,
-      "detail": "completed"
-     },
-     {
-      "label": "no hand-off of the step failed after its save (portal)",
-      "ok": true,
-      "detail": []
-     }
-    ],
-    "notes": {
-     "approximated": "the request is at \"Supplier: keep the CIQ up to date\", not at \"Supplier: give the final release\": admin PUT of Release_By_Name and Release_At (what the portal's finalRelease writes there), then the releaseGiven webhook (I-7)",
-     "I-7 poll": {
-      "ok": true,
-      "polls": 2,
-      "ms": 13756
-     },
-     "calls": 24
-    }
+    "readBacks": [],
+    "checks": [],
+    "notes": {}
    },
-   "ms": 80982,
-   "at": "2026-10-21T00:26:21.676Z"
+   "ms": 0,
+   "at": "2026-10-28T21:46:07.486Z"
   },
   {
    "name": "10 cancelled case",
@@ -1885,7 +1214,7 @@
         "code": "case.cancelled",
         "status": "sent",
         "detail": "handed over",
-        "key": "HO-case.cancelled-mvhdjqt0-jub6yw"
+        "key": "HO-case.cancelled-mvsnijo9-ck72u7"
        }
       ]
      },
@@ -1917,111 +1246,93 @@
      }
     ],
     "notes": {
-     "calls": 48
-    }
-   },
-   "ms": 155026,
-   "at": "2026-10-21T00:27:42.664Z"
-  },
-  {
-   "name": "11 cleanup",
-   "status": "not-run",
-   "reason": "stopped: Stopped on GET /process/2/AcDOSunMEpSA/admin/CIQ_Review_A00/PkEPEW2f_LqV: 429 Too Many Requests. No retry; nothing calls Kissflow for 20 minutes.",
-   "evidence": {
-    "readBacks": [],
-    "checks": [
-     {
-      "label": "CIQ_Audit_Event_A00 PkEPEiklkAic (Case_Code=ZZT-N21-R2-SC1-C02 Event_Key=EV-ZZT-N21-R2-SC1-C02-20261021002903-5aen): deleted, GET answers not found",
-      "ok": true,
-      "detail": "KISSFLOW_ERROR_01015 The item, PkEPEiklkAic, could not be located within CIQ Audit Event."
-     },
-     {
-      "label": "CIQP_Request_A00 PkEPEhUHclNI (Request_Key=ZZT-N21-R2-SC1-C02|1): deleted, GET answers not found",
-      "ok": true,
-      "detail": "KISSFLOW_ERROR_050201 This item has moved out of your queue."
-     },
-     {
-      "label": "CIQ_Audit_Event_A00 PkEPEhZWo7_A (Case_Code=ZZT-N21-R2-SC1-C02 Event_Key=EV-ZZT-N21-R2-SC1-C02-20261021002752-5xol): deleted, GET answers not found",
-      "ok": true,
-      "detail": "KISSFLOW_ERROR_01015 The item, PkEPEhZWo7_A, could not be located within CIQ Audit Event."
-     },
-     {
-      "label": "CIQ_Case_A00 PkEPEhIlJEPs (Case_Code=ZZT-N21-R2-SC1-C02): deleted, GET answers not found",
-      "ok": true,
-      "detail": "KISSFLOW_ERROR_050201 This item has moved out of your queue."
-     },
-     {
-      "label": "CIQ_Audit_Event_A00 PkEPEenB3PeK (Case_Code=ZZT-N21-R2-SC1-C01 Event_Key=EV-ZZT-N21-R2-SC1-C01-20261021002507-jm2p): deleted, GET answers not found",
-      "ok": true,
-      "detail": "KISSFLOW_ERROR_01015 The item, PkEPEenB3PeK, could not be located within CIQ Audit Event."
-     },
-     {
-      "label": "CIQ_Audit_Event_A00 PkEPEbifus4b (Case_Code=ZZT-N21-R2-SC1-C01 Event_Key=EV-ZZT-N21-R2-SC1-C01-20261021002207-a54e): deleted, GET answers not found",
-      "ok": true,
-      "detail": "KISSFLOW_ERROR_01015 The item, PkEPEbifus4b, could not be located within CIQ Audit Event."
-     },
-     {
-      "label": "CIQ_Audit_Event_A00 PkEPEbQB9EHt (Case_Code=ZZT-N21-R2-SC1-C01 Event_Key=EV-ZZT-N21-R2-SC1-C01-20261021002148-lsqa): deleted, GET answers not found",
-      "ok": true,
-      "detail": "KISSFLOW_ERROR_01015 The item, PkEPEbQB9EHt, could not be located within CIQ Audit Event."
-     },
-     {
-      "label": "CIQ_Audit_Event_A00 PkEPEaQvpMBc (Case_Code=ZZT-N21-R2-SC1-C01 Event_Key=EV-ZZT-N21-R2-SC1-C01-20261021002049-m612): deleted, GET answers not found",
-      "ok": true,
-      "detail": "KISSFLOW_ERROR_01015 The item, PkEPEaQvpMBc, could not be located within CIQ Audit Event."
-     },
-     {
-      "label": "CIQ_RMES_Regulatory_A00 PkEPEaGs_WLG (Case_Code=ZZT-N21-R2-SC1-C01 RMES_Key=ZZT-N21-R2-SC1-C01-RMES-REG): deleted, GET answers not found",
-      "ok": true,
-      "detail": "KISSFLOW_ERROR_01015 The item, PkEPEaGs_WLG, could not be located within CIQ RMES Regulatory."
-     },
-     {
-      "label": "CIQ_Audit_Event_A00 PkEPEZkMoY2C (Case_Code=ZZT-N21-R2-SC1-C01 Event_Key=EV-ZZT-N21-R2-SC1-C01-20261021001910-vntp): deleted, GET answers not found",
-      "ok": true,
-      "detail": "KISSFLOW_ERROR_01015 The item, PkEPEZkMoY2C, could not be located within CIQ Audit Event."
-     },
-     {
-      "label": "CIQ_Audit_Event_A00 PkEPEZRjHYRs (Case_Code=ZZT-N21-R2-SC1-C01 Event_Key=EV-ZZT-N21-R2-SC1-C01-20261021001851-ly1w): deleted, GET answers not found",
-      "ok": true,
-      "detail": "KISSFLOW_ERROR_01015 The item, PkEPEZRjHYRs, could not be located within CIQ Audit Event."
-     },
-     {
-      "label": "CIQ_Audit_Event_A00 PkEPEYSVLA9n (Case_Code=ZZT-N21-R2-SC1-C01 Event_Key=EV-ZZT-N21-R2-SC1-C01-20261021001752-odpi): deleted, GET answers not found",
-      "ok": true,
-      "detail": "KISSFLOW_ERROR_01015 The item, PkEPEYSVLA9n, could not be located within CIQ Audit Event."
-     },
-     {
-      "label": "CIQ_RMES_Safety_A00 PkEPEYIqrY3L (Case_Code=ZZT-N21-R2-SC1-C01 RMES_Key=ZZT-N21-R2-SC1-C01-RMES-SAF): deleted, GET answers not found",
-      "ok": true,
-      "detail": "KISSFLOW_ERROR_01015 The item, PkEPEYIqrY3L, could not be located within CIQ RMES Safety."
-     },
-     {
-      "label": "CIQ_Scope_Run_A00 PkEPEWhkh0p0 (Case_Code=ZZT-N21-R2-SC1-C01): deleted, GET answers not found",
-      "ok": true,
-      "detail": "KISSFLOW_ERROR_01015 The item, PkEPEWhkh0p0, could not be located within CIQ Scope Run."
-     },
-     {
-      "label": "CIQ_Audit_Event_A00 PkEPEWZ83IAu (Case_Code=ZZT-N21-R2-SC1-C01 Event_Key=EV-ZZT-N21-R2-SC1-C01-20261021001559-7r9t): deleted, GET answers not found",
-      "ok": true,
-      "detail": "KISSFLOW_ERROR_01015 The item, PkEPEWZ83IAu, could not be located within CIQ Audit Event."
-     },
-     {
-      "label": "CIQ_Review_A00 PkEPEWMHYDJl (Review_Key=ZZT-N21-R2-SC1-C01-MIC-1): deleted, GET answers not found",
-      "ok": true,
-      "detail": "KISSFLOW_ERROR_050201 This item has moved out of your queue."
-     },
-     {
-      "label": "CIQ_Audit_Event_A00 PkEPEWFq430z (Case_Code=ZZT-N21-R2-SC1-C01 Event_Key=EV-ZZT-N21-R2-SC1-C01-20261021001541-zd14): deleted, GET answers not found",
-      "ok": true,
-      "detail": "KISSFLOW_ERROR_01015 The item, PkEPEWFq430z, could not be located within CIQ Audit Event."
-     }
-    ],
-    "notes": {
      "calls": 55
     }
    },
-   "ms": 165904,
-   "at": "2026-10-21T00:30:17.700Z"
+   "ms": 697779,
+   "at": "2026-10-28T21:46:07.488Z"
+  },
+  {
+   "name": "11 cleanup",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "this suite's ledger items after the cleanup",
+      "value": [
+       "CIQ_Audit_Event_A00 PkES7FmhfKCH: row, deleted",
+       "CIQP_Request_A00 PkES7BLYivrf: InProgress, deleted",
+       "CIQ_Audit_Event_A00 PkES7Bkg3msw: row, deleted",
+       "CIQ_Case_A00 PkES7AgZwEkJ: InProgress, withdrawn, deleted",
+       "CIQ_Audit_Event_A00 PkES70V07kzj: row, deleted",
+       "CIQP_Request_A00 PkES6tKAf17Q: InProgress, deleted",
+       "CIQ_Audit_Event_A00 PkES6tix3uNn: row, deleted",
+       "CIQ_Case_A00 PkES6sfB95Fo: InProgress, withdrawn, deleted",
+       "CIQ_Case_A00 PkES6p40nwSR: already gone",
+       "CIQ_Audit_Event_A00 PkES6lRPct8X: row, deleted",
+       "CIQ_Supplier_A00 PkES6knZmC2V: row, deleted"
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "CIQ_Audit_Event_A00 PkES7FmhfKCH (Case_Code=ZZT-N21-R2-SC2-C02 Event_Key=EV-ZZT-N21-R2-SC2-C02-20261028215331-5hcw): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 The item, PkES7FmhfKCH, could not be located within CIQ Audit Event."
+     },
+     {
+      "label": "CIQP_Request_A00 PkES7BLYivrf (Request_Key=ZZT-N21-R2-SC2-C02|1): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_050201 This item has moved out of your queue."
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 PkES7Bkg3msw (Case_Code=ZZT-N21-R2-SC2-C02 Event_Key=EV-ZZT-N21-R2-SC2-C02-20261028214931-8tbs): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 The item, PkES7Bkg3msw, could not be located within CIQ Audit Event."
+     },
+     {
+      "label": "CIQ_Case_A00 PkES7AgZwEkJ (Case_Code=ZZT-N21-R2-SC2-C02): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_050201 This item has moved out of your queue."
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 PkES70V07kzj (Case_Code=ZZT-N21-R2-SC2-C01 Action_Code=review.started (E-A)): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 The item, PkES70V07kzj, could not be located within CIQ Audit Event."
+     },
+     {
+      "label": "CIQP_Request_A00 PkES6tKAf17Q (Request_Key=ZZT-N21-R2-SC2-C01|1): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_050201 This item has moved out of your queue."
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 PkES6tix3uNn (Case_Code=ZZT-N21-R2-SC2-C01 Event_Key=EV-ZZT-N21-R2-SC2-C01-20261028213136-1tvu): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 The item, PkES6tix3uNn, could not be located within CIQ Audit Event."
+     },
+     {
+      "label": "CIQ_Case_A00 PkES6sfB95Fo (Case_Code=ZZT-N21-R2-SC2-C01): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_050201 This item has moved out of your queue."
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 PkES6lRPct8X (Event_Key=EV-LOG-20261028212334-rmxb Action_Code=supplier.changed): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 The item, PkES6lRPct8X, could not be located within CIQ Audit Event."
+     },
+     {
+      "label": "CIQ_Supplier_A00 PkES6knZmC2V (Supplier_Code=ZZT-N21-R2-SC2-SUP Supplier_Legal_Name=ZZT-N21-R2 Supplier): deleted, GET answers not found",
+      "ok": true,
+      "detail": "KISSFLOW_ERROR_01015 The item, PkES6knZmC2V, could not be located within CIQ Supplier."
+     }
+    ],
+    "notes": {
+     "I-1's requests found at the cleanup (adopted)": [],
+     "calls": 34
+    }
+   },
+   "ms": 427463,
+   "at": "2026-10-28T21:57:45.273Z"
   }
  ]
 }

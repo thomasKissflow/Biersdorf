@@ -15,7 +15,8 @@ Everything sits in one app form: **CIQ Config Version** (`CIQ_Config_Version_A00
 | `OWN:current` | Section ownership | Published | Which department leads and co-owns each questionnaire section. |
 | `REM:current` | Reminders | Published | The reminder and escalation days. |
 | `SET:current` | Settings | Published | Undefined origins, default reviewers, the basis labels, the hand-off webhook tokens (`webhooks`) and the mail hook (`mailHook`). The hand-offs and the screens' mails depend on it. |
-| `RMES:current`, `LIM:current`, `REG:current` | RMES criteria, Limit set, Regression set | Published | Stored for completeness and the sync service. The screens don't read them in this version. |
+| `RMES:current` | RMES criteria | Published | **Obsolete since 28 Oct.** BDF's e-mail scoped the RMES to 8 fields filled automatically from the CIQ (no criteria), so nothing reads these placeholder criteria. The row stays in the configuration, unused; don't edit or delete it for the tests. |
+| `LIM:current`, `REG:current` | Limit set, Regression set | Published | Stored for completeness and the sync service. The screens don't read them in this version (K2.2's heavy-metal limits are built into the questionnaire). |
 
 **Why New case says "Questionnaire RS-2026.1 + v1 has no published version":**
 - The screens show version 1's rules and questionnaire even on an empty form, because version 1 is also built into the app's code.

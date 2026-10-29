@@ -10,11 +10,11 @@
 // Pure: no SDK, no Kissflow call.
 import { DEPT_LABEL } from "@/domain/catalog";
 import type { NewCaseInput } from "@/domain/actions";
-import type { AppState, CiqCase, Dept, Finding, InternalNote, ObjectRef, OpenPoint, ReviewDept, RmesCriterion, Supplier, User } from "@/domain/types";
+import type { AppState, CiqCase, Dept, InternalNote, ObjectRef, OpenPoint, ReviewDept, Supplier, User } from "@/domain/types";
 import { str } from "@/portal/data/raw";
 import { kfDateTime, type KfData } from "@/portal/kf/sdk";
 import { countryCode } from "../countries";
-import { LIST, TABLES } from "../ids";
+import { LIST } from "../ids";
 import type { CaseHeader } from "../map/auditMap";
 import { kfIdOfContact, selfContactId } from "../map/people";
 import { CASE_START_FIELDS, type CaseStartFields } from "../shared/caseStartPayload";
@@ -102,15 +102,12 @@ export const deptValue = (d: string | undefined): Dept | undefined => (d && DEPT
 
 // ---------------------------------------------------------------------------------- counts (Review_Gate inputs)
 
-/** Open_Count and RMES_Gaps of a track: the domain's reviewBlockers split in two (selectors.ts:202). */
+/** Open_Count and RMES_Gaps of a track: the domain's reviewBlockers split in two (selectors.ts reviewBlockers). Since
+ *  28 Oct RMES_Gaps counts only a missing Safety / Regulatory decision (the RMES is a read-only sheet): criteria or
+ *  findings a legacy RMES row still holds never block. Kissflow's Review_Gate stays Open_Count + RMES_Gaps = 0. */
 export function countsOf(c: CiqCase, dept: ReviewDept): { Open_Count: number; RMES_Gaps: number } {
   const open = c.openPoints.filter((p) => p.dept === dept && p.status !== "closed").length;
-  let gaps = 0;
-  if ((dept === "SAF" || dept === "REG") && c.rmes) {
-    gaps += c.rmes.criteria.filter((x) => x.dept === dept && !x.result).length;
-    gaps += c.rmes.findings.filter((f) => f.dept === dept && f.status === "open").length;
-    if (!c.reviews.find((r) => r.dept === dept)?.decision) gaps += 1;
-  }
+  const gaps = (dept === "SAF" || dept === "REG") && !c.reviews.find((r) => r.dept === dept)?.decision ? 1 : 0;
   return { Open_Count: open, RMES_Gaps: gaps };
 }
 
@@ -197,51 +194,10 @@ export function reviewStartFields(c: CiqCase, ref: CaseRef, dept: ReviewDept, ro
   });
 }
 
-// ---------------------------------------------------------------------------------- RMES child rows
+// ---------------------------------------------------------------------------------- RMES
 
-/** One RMES criterion as a child row (no `_id`: the caller adds it). Criteria_Open_Num is a formula, never written. */
-export function criterionRow(cr: RmesCriterion, who: Who): KfData {
-  return compact({
-    Criteria_Code: cr.id,
-    Criteria_Part: cr.part,
-    Criteria_Title: cr.title,
-    Criteria_Applicable: LIST.yes,
-    Criteria_Applicability_Basis: cr.source.label,
-    Criteria_Source_Section_Key: cr.source.sectionId,
-    Criteria_Source_Field_Key: cr.source.fieldId,
-    Criteria_Result: cr.result ? LIST.rmesResult[cr.result] : undefined,
-    Criteria_Comment: cr.comment,
-    Criteria_Recorded_By: userRef(cr.by, who),
-    Criteria_Recorded_At: kfDateTimeOf(cr.at),
-    ...(cr.limit
-      ? {
-          Criteria_Reported_Value: cr.limit.value,
-          Criteria_Reported_Unit: cr.limit.unit,
-          Criteria_Limit_Value: cr.limit.limit,
-          Criteria_Limit_Set_Version: cr.limit.limitSetVersion,
-          Criteria_Limit_Pass: yesNo(cr.limit.pass),
-          Criteria_Source_Value_Text: cr.limit.substance,
-        }
-      : {}),
-    Criteria_AI_Suggestion_Text: cr.aiSuggestion,
-  });
-}
-
-/** One finding as a child row (no `_id`). Findings_State is a Text field: "open" / "closed". */
-export function findingRow(f: Finding): KfData {
-  return compact({
-    Findings_Key: f.id,
-    Findings_Criterion_Code: f.criterionId,
-    Findings_Text: f.text,
-    Findings_Blocking: yesNo(f.blocking),
-    Findings_State: f.status,
-    Findings_Linked_OP_Key: f.openPointId,
-  });
-}
-
-/** The RMES form and its child models of a department. */
+/** The RMES form of a department (its criteria and findings tables are retired: write/activation.ts ensureRmes). */
 export const rmesFlowOf = (dept: "SAF" | "REG") => (dept === "SAF" ? "rmesSAF" : "rmesREG") as "rmesSAF" | "rmesREG";
-export const rmesTables = (dept: "SAF" | "REG") => TABLES[dept];
 
 // ---------------------------------------------------------------------------------- notes
 

@@ -12,15 +12,18 @@ const LABEL: Record<ReviewDept, string> = { RMM: "RMM", REG: "Regulatory", SAF: 
 const ORDER: ReviewDept[] = ["RMM", "REG", "SAF", "QM", "MIC", "SUS"];
 export const INTEGRATION_CONNECTION = { _id: "UsIntegrationConnection", Name: "Kissflow integration" };
 
-/** Plays E-A for the case item `caseItemId` with the departments of Review_Depts; returns the reviews it created. */
-export function playEA(fake: FakeClient, caseItemId: string, depts: ReviewDept[], at = "2026-10-24T08:30:00Z"): RawItem[] {
+/** Plays E-A for the case item `caseItemId` with the departments of Review_Depts; returns the reviews it created.
+ *  `reviews: false` plays a refused Approve: since 25 Oct the bulk create is I-2's last step, after the review.started
+ *  row and the Approve, so only the row is written. */
+export function playEA(fake: FakeClient, caseItemId: string, depts: ReviewDept[], at = "2026-10-24T08:30:00Z", o: { reviews?: boolean } = {}): RawItem[] {
   const c = fake.find(caseItemId)?.item;
   if (!c) throw new Error(`playEA: no case ${caseItemId}`);
   const code = str(c, "Case_Code");
   const have = new Set(fake.db.review.filter((r) => str(r, "Case_Item_Id") === caseItemId).map((r) => str(r, "Review_Key")));
   const want = ORDER.filter((d) => d === "RMM" || depts.includes(d)).filter((d) => !have.has(`${code}-${d}-1`));
+  if (!want.length) return [];
   const made: RawItem[] = [];
-  for (const d of want) {
+  if (o.reviews !== false) for (const d of want) {
     const id = `PkEA${code.replace(/-/g, "")}${d}`;
     const item: RawItem = {
       _id: id,
@@ -48,7 +51,6 @@ export function playEA(fake: FakeClient, caseItemId: string, depts: ReviewDept[]
     fake.move(id, STEPS.review[d]);
     made.push(item);
   }
-  if (!made.length) return made;
   const text = `Reviews started: ${want.map((d) => LABEL[d]).join(", ")}.`;
   const owner = (c.Owner_RMM as { _id?: string } | undefined)?._id;
   fake.db.audit.push({

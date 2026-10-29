@@ -6,7 +6,7 @@ import { str, type RawItem } from "@/portal/data/raw";
 import { LIST, STEPS } from "../ids";
 import { KF_USERS, UNPERSISTED_ANSWER, appFixtures, fixtureActing, fixtureIdentity, opItemId } from "../testing/rawFixtures";
 import type { TaskRef } from "../types";
-import type { CaseSnapshots } from "./auditMap";
+import type { AuditRow, CaseSnapshots } from "./auditMap";
 import { Directory } from "./people";
 import { closeByCancellation, notesOf, openPointsOf, parseThread, reviewsOf, rmesOf, type TrackCtx } from "./trackMap";
 
@@ -208,29 +208,50 @@ describe("review tracks", () => {
 describe("RMES", () => {
   const rows = () => [...fx.db.rmesSAF, ...fx.db.rmesREG].filter((r) => r.Case_Item_Id === ITEM3).map((item) => ({ dept: (fx.db.rmesSAF.includes(item) ? "SAF" : "REG") as "SAF" | "REG", item: structuredClone(item) }));
 
-  it("maps both departments' criteria and findings with their row ids", () => {
+  it("maps both departments' records: the record and the row's index entry only (28 Oct)", () => {
     const r = rmesOf(rows(), ctx());
     const want = c3.rmes!;
-    const key = (cr: (typeof want.criteria)[number]) => [cr.id, cr.dept, cr.part, cr.title, cr.result, cr.comment ?? "", cr.by, cr.source.sectionId, cr.aiSuggestion];
-    expect(r.rmes!.criteria.map(key).sort()).toEqual(want.criteria.map(key).sort());
-    expect(r.rmes!.findings).toEqual(want.findings);
+    expect(r.rmes).toMatchObject({ criteria: [], findings: [] });
     expect(Date.parse(r.rmes!.createdAt)).toBe(Date.parse(want.createdAt));
-    const saf = r.refs.find((f) => f.dept === "SAF")!;
-    expect(Object.keys(saf.criteriaRows).sort()).toEqual(want.criteria.filter((c) => c.dept === "SAF").map((c) => c.id).sort());
-    expect(saf.findingRows[want.findings[0]!.id]).toMatch(/^Safety_Findings_/);
+    expect(r.refs.map((f) => f.dept).sort()).toEqual(["REG", "SAF"]);
+    for (const f of r.refs) expect(f).toMatchObject({ caseId: "ZZT-0003", criteriaRows: {}, findingRows: {} });
   });
 
-  it("'Not available' has no domain value: undefined with a warning; voided rows are skipped; no row → no record", () => {
+  it("a legacy row's criteria and findings are not read, so they never block; voided rows are skipped; no row → no record", () => {
     const list = rows();
     const saf = list.find((r) => r.dept === "SAF")!.item;
-    const crit = (saf["Table::Safety_Criteria"] as Record<string, unknown>[])[0]!;
-    crit.Criteria_Result = "Not available";
+    // as the retired criteria RMES left a row: a criterion without a result and an open blocking finding
+    saf["Table::Safety_Criteria"] = [{ _id: "Safety_Criteria_legacy0001", Criteria_Code: "S-B1", Criteria_Part: "B", Criteria_Title: "Toxicological profile available and plausible", Criteria_Result: "Not available" }];
+    saf["Table::Safety_Findings"] = [{ _id: "Safety_Findings_legacy0001", Findings_Key: "0003-F1", Findings_Text: "Sensitisation data missing", Findings_Blocking: LIST.yes, Findings_State: "open" }];
     const x = ctx();
-    const got = rmesOf(list, x).rmes!.criteria.find((c) => c.id === crit.Criteria_Code)!;
-    expect(got.result).toBeUndefined();
-    expect(x.notes.some((w) => w.includes("Not available"))).toBe(true);
+    const got = rmesOf(list, x);
+    expect(got.rmes).toMatchObject({ criteria: [], findings: [] });
+    expect(got.refs.find((f) => f.dept === "SAF")).toMatchObject({ criteriaRows: {}, findingRows: {} });
+    expect(x.notes).toEqual([]);
     expect(rmesOf(list.map((r) => ({ ...r, item: { ...r.item, RMES_Voided: LIST.yes } })), ctx()).rmes).toBeUndefined();
     expect(rmesOf([], ctx())).toEqual({ refs: [] });
+  });
+
+  it("a list row has no _created_at (live, 29 Oct): the record's time is its rmes.saved creation row's", () => {
+    // as Kissflow's form list returns them: business fields and _id only
+    const listed = rows().map((r) => ({ ...r, item: Object.fromEntries(Object.entries(r.item).filter(([k]) => !/^_(created|modified)_(at|by)$/.test(k))) as RawItem }));
+    const saf = listed.find((r) => r.dept === "SAF")!.item;
+    const reg = listed.find((r) => r.dept === "REG")!.item;
+    const row = (objectItemId: string, at: string, state: string): AuditRow => ({ row: { _id: `PkEv${at}`, Object_State: state }, at, code: "rmes.saved", caseItemId: ITEM3, caseCode: "ZZT-0003", category: "RMES", objectItemId, by: "system" });
+    expect(rmesOf(listed, ctx()).rmes!.createdAt).toBe("");
+    // the earlier department's creation; a later decision row (not "Created") never counts
+    const history = [row(reg._id, "2026-10-21T09:00:00Z", "Created"), row(saf._id, "2026-10-20T08:00:00Z", "Created"), row(saf._id, "2026-10-19T07:00:00Z", "Approved")];
+    expect(rmesOf(listed, ctx(), history).rmes!.createdAt).toBe("2026-10-20T08:00:00Z");
+    // a full read's own _created_at still wins
+    expect(Date.parse(rmesOf(rows(), ctx(), history).rmes!.createdAt)).toBe(Date.parse(c3.rmes!.createdAt));
+    // two Safety list rows: the one with the later rmes.saved row is the record; without any history, the same one on
+    // every load whatever the list order
+    const twin = { dept: "SAF" as const, item: { ...saf, _id: `${saf._id}Z` } };
+    const two = [listed.find((r) => r.dept === "SAF")!, twin];
+    const later = [...history, row(twin.item._id, "2026-10-22T10:00:00Z", "Created")];
+    expect(rmesOf(two, ctx(), later).refs[0]!.itemId).toBe(twin.item._id);
+    expect(rmesOf(two, ctx(), [...later, row(saf._id, "2026-10-23T10:00:00Z", "Approved")]).refs[0]!.itemId).toBe(saf._id);
+    expect(rmesOf(two, ctx()).refs[0]!.itemId).toBe(rmesOf([...two].reverse(), ctx()).refs[0]!.itemId);
   });
 });
 

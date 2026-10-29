@@ -9,7 +9,7 @@
 // app's screens (write/*) and the integrations (I-1, I-2, I-4, request.changed, I-7) leave them:
 //   ZZT-0001 the supplier fills in the CIQ (no answers yet)
 //   ZZT-0003 in review: RMM's three points (one answered since RMM last wrote its thread: the synthesis case, one
-//            returned to round 2, one accepted), a Safety point, RMES results and a finding, two notes, QM completed
+//            returned to round 2, one accepted), a Safety point, the RMES records (header only), two notes, QM completed
 //   ZZT-0005 completed (final release, a change report afterwards)
 // Kissflow user ids are fictional ("Us…"); the contacts are the portal fixtures' Elena Márquez and Ravi Menon.
 import { readFileSync, readdirSync } from "node:fs";
@@ -81,9 +81,6 @@ function domainState(): { s: AppState; ids: Record<FixtureCode, string> } {
   sc.id = fx.cases["ZZT-0003"]!.id;
   sc.answer("OP-0003-01", "u-sup-1", "The shelf life is 24 months from production.");
   sc.raise("SAF", "u-saf", "K1", "Please send the full toxicological dossier.");
-  sc.step("record S-A1", (s, at) => A.recordCriterion(s, "u-saf", sc.id, "S-A1", "available", "Within the BDF limits.", at));
-  sc.step("record R-A1", (s, at) => A.recordCriterion(s, "u-reg", sc.id, "R-A1", "plausible", "", at));
-  sc.step("add finding", (s, at) => A.addFinding(s, "u-saf", sc.id, "S-B1", "Sensitisation data missing from the dossier.", false, at));
   sc.step("note RMM", (s, at) => A.addInternalNote(s, "u-rmm", sc.id, "@Dr. Mira Hansen please check the SDS before you complete.", "K1", at));
   sc.step("note QM", (s, at) => A.addInternalNote(s, "u-qm", sc.id, "No QM remarks so far.", undefined, at));
   sc.complete("QM", "u-qm");
@@ -218,7 +215,8 @@ function reviewItem(c: CiqCase, code: FixtureCode, r: ReviewTrack): RawItem {
   const completer = conf ? KF_USERS[conf.by] : undefined;
   const assignee = KF_USERS[r.assigneeId];
   const own = c.openPoints.filter((p) => p.dept === r.dept && p.status !== "closed").length;
-  const gaps = r.dept === "SAF" || r.dept === "REG" ? (c.rmes?.criteria.filter((x) => x.dept === r.dept && !x.result).length ?? 0) : 0;
+  // write/encode.ts countsOf: Safety and Regulatory have one gap until their decision is recorded
+  const gaps = (r.dept === "SAF" || r.dept === "REG") && !r.decision ? 1 : 0;
   return {
     ...processSys(id, r.startedAt ?? c.createdAt, done ? (r.completedAt ?? c.createdAt) : (r.startedAt ?? c.createdAt), done ? "end" : STEPS.review[r.dept], c.ownerId),
     Review_Key: `${code}-${r.dept}-1`,
@@ -311,49 +309,18 @@ function opItem(op: OpenPoint, code: FixtureCode, s: AppState): RawItem {
 
 // ------------------------------------------------------------------------------------------------ RMES, notes
 
+/** A case's RMES row as ensureRmes creates it (28 Oct): the header only, no criteria or findings tables. */
 function rmesRow(c: CiqCase, code: FixtureCode, dept: "SAF" | "REG"): RawItem | undefined {
   const r = c.rmes;
   if (!r) return undefined;
-  const t = TABLES[dept];
-  const criteria = r.criteria.filter((x) => x.dept === dept);
-  const findings = r.findings.filter((x) => x.dept === dept);
-  const modified = latest(r.createdAt, ...criteria.map((x) => x.at));
   return {
     ...formSys(`PkRmes${code.replace(/-/g, "")}${dept}`, r.createdAt, dept === "SAF" ? "u-saf" : "u-reg"),
-    _modified_at: noMs(modified),
     RMES_Key: `${code}-RMES-${dept}`,
     Case_Code: code,
     Result_Case: { _id: caseItemIdOf(code) },
     Case_Item_Id: caseItemIdOf(code),
     Cycle_No: 1,
-    Open_Criteria_Count: criteria.filter((x) => !x.result).length,
-    Open_Blocking_Findings_Count: findings.filter((f) => f.blocking && f.status === "open").length,
     RMES_Voided: LIST.no,
-    [`Table::${t.criteria}`]: criteria.map((x, i) => ({
-      _id: `${t.criteria}_${code.slice(-4)}${String(i + 1).padStart(6, "0")}`,
-      Criteria_Code: x.id,
-      Criteria_Part: x.part,
-      Criteria_Title: x.title,
-      Criteria_Applicable: LIST.yes,
-      Criteria_Applicability_Basis: x.source.label,
-      Criteria_Source_Section_Key: x.source.sectionId,
-      ...(x.source.fieldId ? { Criteria_Source_Field_Key: x.source.fieldId } : {}),
-      ...(x.result ? { Criteria_Result: LIST.rmesResult[x.result] } : {}),
-      ...(x.comment ? { Criteria_Comment: x.comment } : {}),
-      ...(x.by ? { Criteria_Recorded_By: userRef(x.by) } : {}),
-      ...(x.at ? { Criteria_Recorded_At: noMs(x.at) } : {}),
-      ...(x.limit ? { Criteria_Reported_Value: x.limit.value, Criteria_Reported_Unit: x.limit.unit, Criteria_Limit_Value: x.limit.limit, Criteria_Limit_Set_Version: x.limit.limitSetVersion, Criteria_Limit_Pass: x.limit.pass ? LIST.yes : LIST.no, Criteria_Source_Value_Text: x.limit.substance } : {}),
-      ...(x.aiSuggestion ? { Criteria_AI_Suggestion_Text: x.aiSuggestion } : {}),
-    })),
-    [`Table::${t.findings}`]: findings.map((f, i) => ({
-      _id: `${t.findings}_${code.slice(-4)}${String(i + 1).padStart(6, "0")}`,
-      Findings_Key: f.id,
-      Findings_Criterion_Code: f.criterionId,
-      Findings_Text: f.text,
-      Findings_Blocking: f.blocking ? LIST.yes : LIST.no,
-      Findings_State: f.status,
-      ...(f.openPointId ? { Findings_Linked_OP_Key: f.openPointId } : {}),
-    })),
   };
 }
 
@@ -401,7 +368,7 @@ function codeOf(e: AuditEvent): AuditCode | undefined {
   if (a.startsWith("Completed ") && a.endsWith(" review")) return "review.completed";
   if (a === "Continue after rejection") return "review.completed";
   if (a === "All reviews completed") return "release.requested";
-  if (a === "Recorded RMES result" || a === "Added finding" || a === "Closed finding" || /^Final .* decision$/.test(a) || (a === "Flagged for RMM" && e.by === "system" && /recorded an internal Rejected/.test(e.detail))) return "rmes.saved";
+  if (/^Final .* decision$/.test(a) || (a === "Flagged for RMM" && e.by === "system" && /recorded an internal Rejected/.test(e.detail))) return "rmes.saved";
   if (a === "Added internal note") return "note.added";
   if (a === "Cancelled case") return "case.cancelled";
   return undefined;

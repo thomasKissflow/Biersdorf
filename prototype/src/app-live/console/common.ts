@@ -70,17 +70,16 @@ export const SUMMARY_FIELDS: Record<FlowKey, readonly string[]> = {
   supplier: ["Supplier_Legal_Name", "Supplier_Active"],
   audit: ["Case_Code", "Action_Code", "Event_At"],
   note: ["Case_Code", "Linked_Key", "Note_At"],
-  rmesSAF: ["Case_Code", "Open_Criteria_Count"],
-  rmesREG: ["Case_Code", "Open_Criteria_Count"],
+  rmesSAF: ["Case_Code", "Cycle_No"],
+  rmesREG: ["Case_Code", "Cycle_No"],
   scopeRun: ["Case_Code", "Scope_Trigger"],
 };
 
 /** The child tables (models) of each form, as the app writes them ("Table::<model>"); a full read returns them, a list
- *  row does not (load.ts CHILD_TABLE_FORMS). */
+ *  row does not (load.ts CHILD_TABLE_FORMS). The RMES forms have none the app writes (28 Oct: the record is header
+ *  only); a legacy row's criteria or findings still show, as any table found on an item does (fields.ts tablesOf). */
 export const CHILD_MODELS: Partial<Record<FlowKey, readonly string[]>> = {
   supplier: [TABLES.contacts],
-  rmesSAF: [TABLES.SAF.criteria, TABLES.SAF.findings],
-  rmesREG: [TABLES.REG.criteria, TABLES.REG.findings],
 };
 
 /** Formula fields Kissflow computes (ids.ts FORMULA_FIELDS): shown, never written. */

@@ -22,7 +22,7 @@ import type { CompleteOptions, NewCaseInput, OpenPointPatch, RaiseInput } from "
 import { DEPT_SHORT } from "@/domain/catalog";
 import { pairLabel } from "@/domain/configActions";
 import type { ContactInput, SupplierInput, SupplierPatch } from "@/domain/suppliers";
-import type { AppState, CiqCase, Confirmation, LogEvent, OpenPoint, ReviewDept, RmesResult, User } from "@/domain/types";
+import type { AppState, CiqCase, Confirmation, LogEvent, OpenPoint, ReviewDept, User } from "@/domain/types";
 import { portalUserIdProblem } from "@/components/portalUser";
 import { caseContactsOf, parseMarkets } from "@/portal/data/map";
 import { childRows, json, num, refUser, str, type RawItem } from "@/portal/data/raw";
@@ -47,7 +47,6 @@ import {
   compact,
   contactRow,
   countsOf,
-  findingRow,
   isPortalUser,
   kfDate,
   kfDateTimeOf,
@@ -55,13 +54,11 @@ import {
   noteFields,
   opStartFields,
   reviewStartFields,
-  rmesFlowOf,
-  rmesTables,
   supplierFields,
   threadJson,
   userRef,
 } from "./encode";
-import { GUARD_TEXT, caseRefOf, contactRowOf, heldOp, heldReview, portalIdsProblem, rmesRefOf, supplierRefOf } from "./guards";
+import { GUARD_TEXT, caseRefOf, contactRowOf, heldOp, heldReview, portalIdsProblem, supplierRefOf } from "./guards";
 import { handoff, historyHandoff } from "./handoff";
 import { MAILS, mentionToast, sendMail, sendMentionMails } from "./mail";
 import { CONTACT_KEY_HELD, StaleError, assertMandatory, firstThen, leftQueue, lostRows, missingOf, rowsMissing, settle, staleCheck, writeVerified } from "./verify";
@@ -325,12 +322,12 @@ async function formCreated(ctx: WriteCtx, w: Work, flow: FormKey, data: KfData, 
 
 /** Raises the point `next` added on the case: create at "Raise open point", gate, submit, then op.round (round 1: I-3
  *  takes it to the supplier) and history.updated. */
-async function raise(ctx: WriteCtx, w: Work, prev: AppState, next: AppState, caseId: string, internalKey?: string) {
+async function raise(ctx: WriteCtx, w: Work, prev: AppState, next: AppState, caseId: string) {
   const c0 = caseIn(prev, caseId);
   const c = caseIn(next, caseId);
   const op = need(added(c0.openPoints, c.openPoints)[0], lostTrack("open point"));
   const ref = need(caseRefOf(ctx, caseId), GUARD_TEXT.caseUnknown);
-  const data = opStartFields(c, op, ref, ctx, next.users, internalKey);
+  const data = opStartFields(c, op, ref, ctx, next.users);
   const { id, act } = await createStarted(ctx, w, "op", data, STEPS.op.start, `Open point ${op.id}`);
   w.done.push(`Open point ${op.id} was raised.`);
   w.handoffs.push(await handoff(ctx, "op.round", { opItemId: id }));
@@ -338,53 +335,11 @@ async function raise(ctx: WriteCtx, w: Work, prev: AppState, next: AppState, cas
   return { c0, c, op, itemId: id, act };
 }
 
-/** P2: a point closed as not accepted on Safety / Regulatory adds the domain's closed finding `<op>-F`. */
-async function closedFinding(ctx: WriteCtx, w: Work, c0: CiqCase, c: CiqCase, op: OpenPoint): Promise<void> {
-  const f = added(c0.rmes?.findings ?? [], c.rmes?.findings ?? []).find((x) => x.id === `${op.id}-F`);
-  if (!f) return;
-  const rr = rmesRefOf(ctx, c.id, f.dept);
-  if (!rr) {
-    w.warnings.push(`${op.id} was closed, but its finding was not added to the ${DEPT_SHORT[f.dept]} RMES record (your role can't read it).`);
-    return;
-  }
-  const model = rmesTables(f.dept).findings;
-  const row = findingRow(f);
-  try {
-    await formWrite(ctx, w, rmesFlowOf(f.dept), rr.itemId, { [`Table::${model}`]: [{ _is_created: true, _id: childRowId(model), ...row }] }, (b) => rowsMissing(b, model, "Findings_Key", [row]), { [model]: "Findings_Key" });
-  } catch (e) {
-    w.warnings.push(`${op.id} was closed, but its finding was not added to the RMES record (${causeFor(ctx.env, e, w.details)}).`);
-  }
-}
-
 const raiseOpenPoint: Writer = (ctx, prev, next, args) =>
   attempt(ctx, async (w) => {
     const [caseId] = args as [string, RaiseInput];
     const r = await raise(ctx, w, prev, next, caseId);
     await recordAudit(ctx, w, { code: "op.raised", caseId, object: opObject(r.op, r.itemId), ref: { flow: "op", itemId: r.itemId, act: r.act }, entries: newEntries(r.c0, r.c), snapshot: { op: r.op } }, `Open point ${r.op.id}`);
-  });
-
-const findingToQuery: Writer = (ctx, prev, next, args) =>
-  attempt(ctx, async (w) => {
-    const [caseId, findingId] = args as [string, string, string, string];
-    const r = await raise(ctx, w, prev, next, caseId, findingId);
-    const f = r.c.rmes?.findings.find((x) => x.id === findingId);
-    const rr = f ? rmesRefOf(ctx, caseId, f.dept) : undefined;
-    const rowId = rr?.findingRows[findingId];
-    if (f && rr && rowId) {
-      const model = rmesTables(f.dept).findings;
-      const row = { _id: rowId, Findings_Linked_OP_Key: r.op.id };
-      try {
-        await formWrite(ctx, w, rmesFlowOf(f.dept), rr.itemId, { [`Table::${model}`]: [row] }, (b) => rowsMissing(b, model, "Findings_Key", [row]));
-      } catch (e) {
-        w.warnings.push(`Open point ${r.op.id} was raised, but finding ${findingId} was not linked to it (${causeFor(ctx.env, e, w.details)}).`);
-      }
-    } else w.warnings.push(`Open point ${r.op.id} was raised, but finding ${findingId} was not linked to it (${isProd(ctx) ? "its RMES entry is not loaded" : "its RMES row is not known"}).`);
-    await recordAudit(
-      ctx,
-      w,
-      { code: "op.raised", caseId, object: opObject(r.op, r.itemId), ref: { flow: "op", itemId: r.itemId, act: r.act }, entries: newEntries(r.c0, r.c), snapshot: { op: r.op, ...(f ? { rmes: { dept: f.dept, finding: f } } : {}) } },
-      `Open point ${r.op.id}`,
-    );
   });
 
 const reviewResponse: Writer = (ctx, prev, next, args) =>
@@ -408,7 +363,6 @@ const reviewResponse: Writer = (ctx, prev, next, args) =>
     const back = await updateHeld(ctx, w, "op", ref, data);
     w.done.push(`Your decision on ${opId} was saved.`);
     if (decision !== "return") await submitGated(ctx, w, "op", ref, back, `Open point ${opId}`);
-    if (decision === "not-accepted") await closedFinding(ctx, w, c0, c, op);
     // the new round is on the point (written and read back): the integration reads it there
     if (decision === "return") w.handoffs.push(await handoff(ctx, "op.round", { opItemId: ref.itemId }));
     w.handoffs.push(await historyHandoff(ctx, c, next.users, [opId]));
@@ -483,63 +437,10 @@ const closeOpenPoint: Writer = (ctx, prev, next, args) =>
     await recordAudit(ctx, w, { code: "op.closed", caseId, object: opObject(op, ref.itemId), ref: { flow: "op", itemId: ref.itemId, act: ref.act }, reason: reason.trim(), entries: newEntries(c0, c), snapshot: { op } }, `The closing of open point ${opId}`);
   });
 
-// ---------------------------------------------------------------------------------- RMES
+// ---------------------------------------------------------------------------------- Safety / Regulatory decision
 
-const recordCriterion: Writer = (ctx, prev, next, args) =>
-  attempt(ctx, async (w) => {
-    const [caseId, criterionId] = args as [string, string, RmesResult, string];
-    const c0 = caseIn(prev, caseId);
-    const c = caseIn(next, caseId);
-    const cr = need(c.rmes?.criteria.find((x) => x.id === criterionId), "This RMES criterion is no longer loaded.");
-    const rr = need(rmesRefOf(ctx, caseId, cr.dept), GUARD_TEXT.rmesUnknown);
-    const rowId = need(rr.criteriaRows[criterionId], GUARD_TEXT.rowUnknown);
-    const model = rmesTables(cr.dept).criteria;
-    const flow = rmesFlowOf(cr.dept);
-    const row = compact({ _id: rowId, Criteria_Result: cr.result ? LIST.rmesResult[cr.result] : undefined, Criteria_Comment: cr.comment, Criteria_Recorded_By: userRef(cr.by, ctx), Criteria_Recorded_At: kfDateTimeOf(cr.at) });
-    const header = { Open_Criteria_Count: c.rmes!.criteria.filter((x) => x.dept === cr.dept && !x.result).length };
-    await formWrite(ctx, w, flow, rr.itemId, { ...header, [`Table::${model}`]: [row] }, (b) => [...missingOf(header, b), ...rowsMissing(b, model, "Criteria_Code", [row])]);
-    w.done.push(`${criterionId} was saved.`);
-    await recordAudit(
-      ctx,
-      w,
-      { code: "rmes.saved", caseId, object: { kind: "RMES criterion", key: criterionId, itemId: rr.itemId, ...(cr.result ? { state: LIST.rmesResult[cr.result] } : {}) }, ref: { flow, itemId: rr.itemId }, entries: newEntries(c0, c), snapshot: { rmes: { dept: cr.dept, criterion: cr } } },
-      `RMES ${criterionId}`,
-    );
-  });
-
-const addFinding: Writer = (ctx, prev, next, args) =>
-  attempt(ctx, async (w) => {
-    const [caseId] = args as [string, string, string, boolean];
-    const c0 = caseIn(prev, caseId);
-    const c = caseIn(next, caseId);
-    const f = need(added(c0.rmes?.findings ?? [], c.rmes?.findings ?? [])[0], lostTrack("finding"));
-    const rr = need(rmesRefOf(ctx, caseId, f.dept), GUARD_TEXT.rmesUnknown);
-    const model = rmesTables(f.dept).findings;
-    const flow = rmesFlowOf(f.dept);
-    const row = findingRow(f);
-    const header = { Open_Blocking_Findings_Count: c.rmes!.findings.filter((x) => x.dept === f.dept && x.blocking && x.status === "open").length };
-    await formWrite(ctx, w, flow, rr.itemId, { ...header, [`Table::${model}`]: [{ _is_created: true, _id: childRowId(model), ...row }] }, (b) => [...missingOf(header, b), ...rowsMissing(b, model, "Findings_Key", [row])], { [model]: "Findings_Key" });
-    w.done.push(`Finding ${f.id} was saved.`);
-    await recordAudit(ctx, w, { code: "rmes.saved", caseId, object: { kind: "RMES finding", key: f.id, itemId: rr.itemId, state: f.status }, ref: { flow, itemId: rr.itemId }, entries: newEntries(c0, c), snapshot: { rmes: { dept: f.dept, finding: f } } }, `Finding ${f.id}`);
-  });
-
-const closeFinding: Writer = (ctx, prev, next, args) =>
-  attempt(ctx, async (w) => {
-    const [caseId, findingId] = args as [string, string];
-    const c0 = caseIn(prev, caseId);
-    const c = caseIn(next, caseId);
-    const f = need(c.rmes?.findings.find((x) => x.id === findingId), "This finding is no longer loaded.");
-    const rr = need(rmesRefOf(ctx, caseId, f.dept), GUARD_TEXT.rmesUnknown);
-    const rowId = need(rr.findingRows[findingId], GUARD_TEXT.rowUnknown);
-    const model = rmesTables(f.dept).findings;
-    const flow = rmesFlowOf(f.dept);
-    const row = { _id: rowId, Findings_State: f.status };
-    const header = { Open_Blocking_Findings_Count: c.rmes!.findings.filter((x) => x.dept === f.dept && x.blocking && x.status === "open").length };
-    await formWrite(ctx, w, flow, rr.itemId, { ...header, [`Table::${model}`]: [row] }, (b) => [...missingOf(header, b), ...rowsMissing(b, model, "Findings_Key", [row])]);
-    w.done.push(`Finding ${findingId} was closed.`);
-    await recordAudit(ctx, w, { code: "rmes.saved", caseId, object: { kind: "RMES finding", key: findingId, itemId: rr.itemId, state: f.status }, ref: { flow, itemId: rr.itemId }, entries: newEntries(c0, c), snapshot: { rmes: { dept: f.dept, finding: f } } }, `Finding ${findingId}`);
-  });
-
+// The RMES is a read-only sheet derived from the case (domain/rmesSheet.ts; BDF's e-mail of 28 Oct): nothing of it is
+// written. The decision is on the department's CIQ Review item (RMES_Decision, Mandatory at its step).
 const rmesDecision: Writer = (ctx, prev, next, args) =>
   attempt(ctx, async (w) => {
     const [caseId, dept, decision, reason] = args as [string, "SAF" | "REG", "approved" | "rejected", string];
@@ -1039,10 +940,6 @@ export const liveWriters: LiveWriters = {
   reviewResponse,
   editOpenPoint,
   closeOpenPoint,
-  recordCriterion,
-  addFinding,
-  closeFinding,
-  findingToQuery,
   rmesDecision,
   completeReview,
   addInternalNote,

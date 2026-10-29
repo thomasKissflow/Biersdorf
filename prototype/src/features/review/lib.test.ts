@@ -29,10 +29,11 @@ describe("My reviews", () => {
     sc.raise("REG", "u-reg");
     const op = sc.op().id;
     expect(queueRows(sc.s, "REG")).toMatchObject({ todo: [], waiting: [{ c: { id: sc.id } }] });
-    expect(pointCounts(sc.c, "REG")).toEqual({ open: 1, answered: 0, overdue: 0 });
+    // on the scenario's clock, not the real one (the scenario's due dates are in October 2026)
+    expect(pointCounts(sc.c, "REG", sc.now())).toEqual({ open: 1, answered: 0, overdue: 0 });
     sc.answer(op);
     expect(queueRows(sc.s, "REG").todo.map((r) => r.c.id)).toEqual([sc.id]);
-    expect(queueAlert(sc.s, "REG")).toMatchObject({ answered: 1, answeredTab: "todo", overdue: 0 });
+    expect(queueAlert(sc.s, "REG", sc.now())).toMatchObject({ answered: 1, answeredTab: "todo", overdue: 0 });
     // returned to the supplier: overdue once its due date has passed
     sc.decide(op, "u-reg", "return", "Please add the batch number.");
     const dayAfterDue = new Date(Date.parse(sc.op(op).dueDate) + 86_400_000).toISOString();
@@ -54,14 +55,32 @@ describe("completion bar blockers", () => {
     expect(items).toHaveLength(reviewBlockers(sc.c, "REG").length);
     expect(items[0]).toMatchObject({ key: sc.op().id, target: { kind: "point", opId: sc.op().id, sectionId: "K1" } });
     expect(items[0].text).toMatch(/query on K1 › specification · with the supplier · responsible Dr\. Jonas Albrecht$/);
-    expect(items.filter((b) => b.target?.kind === "rmes").length).toBeGreaterThan(0); // RMES criteria and the decision
-    expect(items.at(-1)?.text).toBe("The Regulatory decision (Approved or Rejected) is not recorded yet");
+    // besides the point, only the decision (the RMES needs no input), which leads to the decision card
+    expect(items).toHaveLength(2);
+    expect(items[1]).toEqual({ key: "decision", text: "The Regulatory decision (Approved or Rejected) is not recorded yet", target: { kind: "decision" } });
     expect(blockerItems(sc.s, sc.c, "RMM")).toEqual([]);
+  });
+
+  it("never lists legacy RMES criteria or findings (BDF's RMES scope, 28 Oct), with or without an RMES record", () => {
+    const sc = new Scenario().toReview();
+    const legacy = {
+      ...sc.c,
+      rmes: {
+        ...sc.c.rmes!,
+        criteria: [{ id: "S-B1", part: "B" as const, dept: "SAF" as const, title: "Legacy criterion", source: { sectionId: "K4.1", version: 1, label: "K4.1" } }],
+        findings: [{ id: "F-1", criterionId: "S-B1", dept: "SAF" as const, text: "Legacy finding", blocking: true, status: "open" as const }],
+      },
+    };
+    const decision = { key: "decision", text: "The Safety decision (Approved or Rejected) is not recorded yet", target: { kind: "decision" } };
+    expect(blockerItems(sc.s, legacy, "SAF")).toEqual([decision]);
+    expect(blockerItems(sc.s, { ...sc.c, rmes: undefined }, "SAF")).toEqual([decision]);
+    sc.decision("SAF", "u-saf", "approved");
+    expect(blockerItems(sc.s, { ...legacy, reviews: sc.c.reviews }, "SAF")).toEqual([]);
   });
 
   it("is empty once the track may complete", () => {
     const sc = new Scenario().toReview();
-    sc.rmes("SAF", "u-saf").decision("SAF", "u-saf", "approved");
+    sc.decision("SAF", "u-saf", "approved");
     expect(blockerItems(sc.s, sc.c, "SAF")).toEqual([]);
     expect(reviewBlockers(sc.c, "SAF")).toEqual([]);
   });

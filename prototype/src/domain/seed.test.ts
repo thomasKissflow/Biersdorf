@@ -51,7 +51,9 @@ describe("rich fixture", () => {
       expect(c.reviews.length).toBeGreaterThan(0);
       expect(completenessBlockers(c)).toEqual([]);
     }
-    expect(byId("CIQ-2026-0131").rmes?.criteria.length).toBeGreaterThan(5);
+    // the record only (28 Oct): the RMES sheet is derived from the case, so no criteria or findings are stored
+    expect(byId("CIQ-2026-0131").rmes).toMatchObject({ criteria: [], findings: [] });
+    expect(s.cases.every((c) => !c.rmes || (c.rmes.criteria.length === 0 && c.rmes.findings.length === 0))).toBe(true);
   });
 
   it("every case past the completeness confirmation has RMM's whole-CIQ review, assigned to the case owner", () => {
@@ -80,8 +82,11 @@ describe("rich fixture", () => {
     expect(unansweredConfig(fresh)).toEqual(REQUIRED_CONFIG);
   });
 
-  it("the MOAH case is blocked by a blocking finding and open points", () => {
-    expect(reviewBlockers(byId("CIQ-2026-0134"), "SAF").length).toBeGreaterThan(0);
+  it("the MOAH case is blocked by Safety's open question and its missing decision", () => {
+    const c = byId("CIQ-2026-0134");
+    expect(reviewBlockers(c, "SAF")).toHaveLength(2);
+    expect(reviewBlockers(c, "SAF")[1]).toBe("Final Safety decision (Approved / Rejected) not yet recorded");
+    expect(c.openPoints.find((p) => p.dept === "SAF")).toMatchObject({ kind: "query", status: "open", ref: { sectionId: "A4" } });
   });
 
   it("an origin without rules gets the standard sections and is flagged in RMM's Part 2 review (CIQ-2026-0150)", () => {
@@ -220,7 +225,8 @@ describe("D-1: the supplier fills in the CIQ in one step; the scope follows the 
     const st = saveConfig(stripped, "u-s3a", id, { SF07: true });
     expect(app(st, id, "A4")).toBe("mandatory");
     expect(track(st, id, "SAF")?.status).toBe("waiting-supplier");
-    expect(caseIn(st, id).rmes?.criteria.some((x) => x.id === "S-C2")).toBe(true);
+    expect(caseIn(st, id).rmes).toMatchObject({ criteria: [], findings: [] });
+    expect(caseIn(st, id).audit.some((a) => a.action === "Created review record")).toBe(true);
     expect(caseIn(st, id).openPoints.filter((p) => p.kind === "additional-part").map((p) => p.ref.sectionId)).toEqual(["A4", "A9"]);
   });
 

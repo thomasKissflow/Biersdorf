@@ -1,12 +1,12 @@
 // The writers against the in-memory Kissflow (kf/fakeClient.ts) seeded with the live-shaped fixtures (DESIGN §7.1):
-// one test per P1 method, the load-time activation (ensureRmes, planRmesCriteria pinned to the real
-// confirmCompleteness), idempotency, the order write → read-back → gate → submit → hand-offs → one audit row, field
+// one test per P1 method, the load-time activation (ensureRmes: the header-only RMES record), idempotency, the order write → read-back → gate → submit → hand-offs → one audit row, field
 // sets with every Mandatory field, Select texts, no milliseconds, stale and refused writes, partial failures (a draft
 // left behind; a lost audit row is a warning), hand-offs pending without a URL and sent with one, and their payloads:
 // app item ids only (shared/handoff.ts, 20 Oct).
 import { describe, expect, it } from "vitest";
 import * as A from "@/domain/actions";
 import { INTERNAL_PERSONAS } from "@/domain/catalog";
+import { reviewBlockers } from "@/domain/selectors";
 import * as M from "@/domain/suppliers";
 import type { AppState, CiqCase, InternalPersonaId } from "@/domain/types";
 import { childRows, str, userIds, type RawItem } from "@/portal/data/raw";
@@ -21,7 +21,7 @@ import { CASE_START_FIELDS } from "../shared/caseStartPayload";
 import { NO_PORTAL_CONTACT, appFixtures, caseItemIdOf, fixtureActing, fixtureIdentity, opItemId } from "../testing/rawFixtures";
 import type { AppClient, FlowKey, LiveSnapshot, Mapped, WritableMethod, WriteCtx, WriteResult } from "../types";
 import { MOVE_PROBES, draftSentAudit, draftUnread, draftWaits, liveWriters } from "./actions";
-import { RMES_WAITS, ensureRmes, planRmesCriteria } from "./activation";
+import { ensureRmes } from "./activation";
 import { GUARD_TEXT, liveGuard } from "./guards";
 import { NO_PORTAL_CONTACT as NO_PORTAL_CONTACT_TEXT } from "../userText";
 import { HANDED_OVER, PENDING_NO_URL, PENDING_PARTIAL_HISTORY } from "./handoff";
@@ -222,25 +222,7 @@ describe("createCase (RMM)", () => {
 // ------------------------------------------------------------------------------------------------ activation
 
 describe("activation", () => {
-  it("planRmesCriteria equals the criteria of a real completeness confirmation", () => {
-    const fx = appFixtures();
-    const real = fx.state.cases.find((c) => c.id === "ZZT-0003")!;
-    // the real confirmCompleteness, by the case's own contact, on the case as it was in Part 1
-    const part1: CiqCase = { ...real, supplierId: "s1", phase: "supplier-input", reviews: [], rmes: undefined, requestedDocs: undefined, reviewVersion: 0, confirmations: real.confirmations.filter((k) => k.type !== "completeness") };
-    const s = { ...fx.state, cases: fx.state.cases.map((c) => (c.id === real.id ? part1 : c)) };
-    const confirmed = A.confirmCompleteness(s, real.supplierContactIds[0]!, real.id, AT);
-    expect(A.wasRefused(s, confirmed)).toBe(false);
-    const want = caseOf(confirmed, real.id).rmes!.criteria;
-    const plan = planRmesCriteria(s, real.id, AT);
-    expect("criteria" in plan && plan.criteria).toEqual(want);
-    // and on the live-mapped case (a reviewer's view)
-    const mapped = boot("saf").m.state;
-    const live = planRmesCriteria(mapped, "ZZT-0003", AT);
-    expect("criteria" in live && live.criteria.map((x) => [x.id, x.part, x.dept, x.title, x.source])).toEqual(want.map((x) => [x.id, x.part, x.dept, x.title, x.source]));
-    expect(planRmesCriteria(mapped, "nope", AT)).toEqual({ error: "This case is no longer loaded." });
-  });
-
-  it("ensureRmes (SAF) creates its RMES row with the planned criteria once", async () => {
+  it("ensureRmes (SAF) creates its RMES row once, header only: no Table:: key, no criteria (28 Oct)", async () => {
     const db = without({ rmesSAF: (it) => str(it, "Case_Code") === "ZZT-0003", audit: (it) => str(it, "Object_Key") === "ZZT-0003-RMES-SAF" });
     const b = boot("saf", { db });
     const from = b.fake.calls.length;
@@ -250,34 +232,31 @@ describe("activation", () => {
     expect(writesOf(calls)).toEqual(["formCreate rmesSAF", "formCreate audit"]);
     expect(calls.map((x) => x.m)).toContain("formGet");
     const data = dataOf(calls, "formCreate", "rmesSAF");
-    const plan = planRmesCriteria(b.m.state, "ZZT-0003", AT);
-    const saf = "criteria" in plan ? plan.criteria.filter((x) => x.dept === "SAF") : [];
-    const rows = data[`Table::${TABLES.SAF.criteria}`] as Record<string, unknown>[];
-    expect(rows.map((x) => x.Criteria_Code)).toEqual(saf.map((x) => x.id));
-    for (const row of rows) {
-      expect(row._is_created).toBe(true);
-      expect(String(row._id)).toMatch(/^Safety_Criteria_[a-z0-9]{10}$/);
-      expect(row).not.toHaveProperty("Criteria_Open_Num");
-    }
-    expect(data).toMatchObject({ RMES_Key: "ZZT-0003-RMES-SAF", Case_Item_Id: caseItemIdOf("ZZT-0003"), Open_Criteria_Count: saf.length, Open_Blocking_Findings_Count: 0, RMES_Voided: LIST.no });
+    expect(data).toEqual({ RMES_Key: "ZZT-0003-RMES-SAF", Case_Item_Id: caseItemIdOf("ZZT-0003"), Case_Code: "ZZT-0003", Cycle_No: 1, RMES_Voided: LIST.no });
+    expect(Object.keys(data).filter((k) => k.startsWith("Table::"))).toEqual([]);
     // m13: no Reference to the case (refused when the reviewer can't read it); Case_Item_Id is the join key
     expect(data).not.toHaveProperty("Result_Case");
-    expect(auditsOf(calls)[0]).toMatchObject({ Action_Code: "rmes.saved", Event_Category: "RMES", Object_Kind: "RMES record" });
+    expect(auditsOf(calls)[0]).toMatchObject({ Action_Code: "rmes.saved", Event_Category: "RMES", Object_Kind: "RMES record", Object_Key: "ZZT-0003-RMES-SAF" });
+    expect(parseSnapshot(auditsOf(calls)[0] as RawItem)!.audit[0]).toMatchObject({ action: "RMES record created", detail: "Safety RMES record created." });
+    expect(r.message).toBe("Started in Kissflow: ZZT-0003 Safety RMES record.");
     expect(await ensureRmes(b.ctx(), b.m.state, factsOf(b))).toBeNull();
     const again = boot("saf", { db: b.fake.db });
     expect(again.m.index.rmes.get("ZZT-0003|SAF")).toBeTruthy();
+    expect(again.m.state.cases.find((c) => c.id === "ZZT-0003")!.rmes).toMatchObject({ criteria: [], findings: [] });
     expect(await ensureRmes(again.ctx(), again.m.state, factsOf(again))).toBeNull();
   });
 });
 
 describe("activation with tonight's grants (the case item unreadable, R-1)", () => {
-  it("ensureRmes creates nothing while the case can't be read (the criteria would stay incomplete): a note instead (M1)", async () => {
+  it("ensureRmes creates the header-only record although the case can't be read: it needs none of its answers (no wait)", async () => {
     const b = boot("saf", { mode: "role", db: without({ rmesSAF: (it) => str(it, "Case_Code") === "ZZT-0003", audit: (it) => str(it, "Object_Key") === "ZZT-0003-RMES-SAF" }) });
     expect(b.m.index.cases.get("ZZT-0003")!.readable).toBe(false);
     const from = b.fake.calls.length;
     const r = (await ensureRmes(b.ctx(), b.m.state, factsOf(b)))!;
-    expect(r).toMatchObject({ ok: true, note: true, message: RMES_WAITS("ZZT-0003", "SAF") });
-    expect(writesOf(b.fake.calls.slice(from))).toEqual([]);
+    ok(r);
+    expect(r).not.toHaveProperty("note");
+    expect(writesOf(b.fake.calls.slice(from))).toEqual(["formCreate rmesSAF", "formCreate audit"]);
+    expect(dataOf(b.fake.calls.slice(from), "formCreate", "rmesSAF")).toMatchObject({ RMES_Key: "ZZT-0003-RMES-SAF", Case_Code: "ZZT-0003" });
   });
 
   it("ensureRmes creates nothing when the history names the record although this load did not list it (M1)", async () => {
@@ -510,66 +489,10 @@ describe("open points", () => {
 
 // ------------------------------------------------------------------------------------------------ RMES
 
-describe("RMES (Safety)", () => {
-  it("recordCriterion updates the known criterion row by its _id, never adds one", async () => {
-    const b = boot("saf");
-    const rowId = b.m.index.rmes.get("ZZT-0003|SAF")!.criteriaRows["S-B1"]!;
-    const { r, calls } = await act(b, "recordCriterion", ["ZZT-0003", "S-B1", "plausible", "Dossier checked."], (s, by) => A.recordCriterion(s, by, "ZZT-0003", "S-B1", "plausible", "Dossier checked.", AT));
-    ok(r);
-    expect(writesOf(calls)).toEqual(["formUpdate rmesSAF", "formCreate audit"]);
-    const data = dataOf(calls, "formUpdate", "rmesSAF");
-    expect(data[`Table::${TABLES.SAF.criteria}`]).toEqual([{ _id: rowId, Criteria_Result: LIST.rmesResult.plausible, Criteria_Comment: "Dossier checked.", Criteria_Recorded_By: { _id: "UsSafMira" }, Criteria_Recorded_At: "2026-10-24T09:00:00Z" }]);
-    expect(b.fake.warnings).toEqual([]);
-    const row = childRows(b.fake.find("PkRmesZZT0003SAF")!.item, TABLES.SAF.criteria, "Criteria_Code").filter((x) => x.Criteria_Code === "S-B1");
-    expect(row).toHaveLength(1);
-    expect(auditsOf(calls)[0]).toMatchObject({ Action_Code: "rmes.saved", Object_Kind: "RMES criterion", Object_Key: "S-B1" });
-  });
-
-  it("addFinding adds a created row; closeFinding updates its row", async () => {
-    const b = boot("saf");
-    const add = await act(b, "addFinding", ["ZZT-0003", "S-C1", "Nano status unclear.", true], (s, by) => A.addFinding(s, by, "ZZT-0003", "S-C1", "Nano status unclear.", true, AT));
-    ok(add.r);
-    const rows = dataOf(add.calls, "formUpdate", "rmesSAF")[`Table::${TABLES.SAF.findings}`] as Record<string, unknown>[];
-    expect(rows).toEqual([expect.objectContaining({ _is_created: true, Findings_Text: "Nano status unclear.", Findings_Blocking: LIST.yes, Findings_State: "open" })]);
-    expect(dataOf(add.calls, "formUpdate", "rmesSAF")).toMatchObject({ Open_Blocking_Findings_Count: 1 });
-
-    const b2 = boot("saf");
-    const rowId = b2.m.index.rmes.get("ZZT-0003|SAF")!.findingRows["0003-F1"];
-    const close = await act(b2, "closeFinding", ["ZZT-0003", "0003-F1"], (s, by) => A.closeFinding(s, by, "ZZT-0003", "0003-F1", AT));
-    ok(close.r);
-    expect(dataOf(close.calls, "formUpdate", "rmesSAF")[`Table::${TABLES.SAF.findings}`]).toEqual([{ _id: rowId, Findings_State: "closed" }]);
-    expect(b2.fake.warnings).toEqual([]);
-  });
-
-  it("findingToQuery raises the point (Ref_Internal_Key) and links the finding row; one op.raised row", async () => {
-    const b = boot("saf");
-    const { r, next, calls } = await act(b, "findingToQuery", ["ZZT-0003", "0003-F1", "Please send the sensitisation data.", DUE], (s, by) => A.findingToQuery(s, by, "ZZT-0003", "0003-F1", "Please send the sensitisation data.", DUE, AT));
-    ok(r);
-    expect(writesOf(calls)).toEqual(["create op", "submit op", "formUpdate rmesSAF", "formCreate audit"]);
-    const op = caseOf(next, "ZZT-0003").openPoints.at(-1)!;
-    expect(dataOf(calls, "create", "op")).toMatchObject({ Ref_Internal_Key: "0003-F1", OP_Kind: LIST.opKind.finding, Kind_Label: LIST.kindLabel.finding });
-    expect(dataOf(calls, "formUpdate", "rmesSAF")[`Table::${TABLES.SAF.findings}`]).toEqual([{ _id: b.m.index.rmes.get("ZZT-0003|SAF")!.findingRows["0003-F1"], Findings_Linked_OP_Key: op.id }]);
-    const rows = auditsOf(calls);
-    expect(rows).toHaveLength(1);
-    expect(parseSnapshot(rows[0] as RawItem)!.rmes).toMatchObject({ dept: "SAF", finding: { id: "0003-F1", openPointId: op.id } });
-  });
-
-  it("findingToQuery sends op.round {opItemId} (round 1, I-3) after the Start submit, as a raise does", async () => {
-    const b = boot("saf", { webhooks: HOOKS });
-    const { r, calls } = await act(b, "findingToQuery", ["ZZT-0003", "0003-F1", "Please send the sensitisation data.", DUE], (s, by) => A.findingToQuery(s, by, "ZZT-0003", "0003-F1", "Please send the sensitisation data.", DUE, AT));
-    ok(r);
-    const id = calls.find((x) => x.m === "create")!.id!;
-    expect(calls.findIndex((x) => x.m === "postWebhook")).toBeGreaterThan(calls.findIndex((x) => x.m === "submit" && x.id === id));
-    expect(b.fake.hooks[0]).toEqual({ url: HOOKS["op.round"], payload: idsOnly("op.round", { opItemId: id }) });
-    expect(r.handoffs[0]).toMatchObject({ code: "op.round", status: "sent", detail: HANDED_OVER });
-  });
-
+describe("Safety decision (the RMES is a read-only sheet since 28 Oct: nothing of it is written)", () => {
   it("rmesDecision writes the decision on the own review; Rejected is refused while RMM's review is completed", async () => {
     const b = boot("saf");
-    // the evaluation is complete in the screen's state (each step its own write, tested above)
-    let s = b.m.state;
-    for (const cr of caseOf(s, "ZZT-0003").rmes!.criteria.filter((x) => x.dept === "SAF" && !x.result)) s = A.recordCriterion(s, b.me, "ZZT-0003", cr.id, "available", "", AT);
-    s = A.closeFinding(s, b.me, "ZZT-0003", "0003-F1", AT);
+    const s = b.m.state;
     const { r, calls } = await act(b, "rmesDecision", ["ZZT-0003", "SAF", "approved", ""], (x, by) => A.rmesDecision(x, by, "ZZT-0003", "SAF", "approved", "", AT), s);
     ok(r);
     expect(writesOf(calls)).toEqual(["update review", "formCreate audit"]);
@@ -582,15 +505,39 @@ describe("RMES (Safety)", () => {
     expect(liveGuard("rmesDecision", b.ctx(), rmmDone, ["ZZT-0003", "SAF", "rejected", "x"])).toBe(GUARD_TEXT.rmmCompleted);
   });
 
-  it("completeReview is refused for Safety when its RMES record could not be read", () => {
-    const b = boot("saf", { db: without({ rmesSAF: () => true }), mode: "role" });
-    // tonight's grants: Safety can't read the case item, so the record was never prepared (not a reload problem)
-    expect(b.ctx().index.cases.get("ZZT-0003")?.readable).toBe(false);
-    expect(liveGuard("completeReview", b.ctx(), b.m.state, ["ZZT-0003", "SAF"])).toBe(GUARD_TEXT.rmesCaseUnreadable);
+  it("a legacy RMES row with a pending criterion and an open finding never blocks: the decision, then Complete review writes RMES_Gaps 0 and submits", async () => {
+    const db = appFixtures().db;
+    const row = db.rmesSAF.find((it) => str(it, "Case_Code") === "ZZT-0003")!;
+    // as the retired criteria RMES left a row in dev and prod
+    row[`Table::${TABLES.SAF.criteria}`] = [{ _id: "Safety_Criteria_legacy0001", Criteria_Code: "S-B1", Criteria_Part: "B", Criteria_Title: "Toxicological profile available and plausible", Criteria_Applicable: LIST.yes }];
+    row[`Table::${TABLES.SAF.findings}`] = [{ _id: "Safety_Findings_legacy0001", Findings_Key: "0003-F1", Findings_Text: "Sensitisation data missing", Findings_Blocking: LIST.yes, Findings_State: "open" }];
+    row.Open_Criteria_Count = 1;
+    row.Open_Blocking_Findings_Count = 1;
+    const b = boot("saf", { db });
+    // Safety's own point first (the other half of the gate)
+    const own = caseOf(b.m.state, "ZZT-0003").openPoints.find((p) => p.dept === "SAF" && p.status !== "closed")!;
+    ok((await act(b, "closeOpenPoint", ["ZZT-0003", own.id, "Covered by the SDS."], (x, by) => A.closeOpenPoint(x, by, "ZZT-0003", own.id, "Covered by the SDS.", AT))).r);
+    b.reload();
+    expect(reviewBlockers(caseOf(b.m.state, "ZZT-0003"), "SAF")).toEqual(["Final Safety decision (Approved / Rejected) not yet recorded"]);
+    ok((await act(b, "rmesDecision", ["ZZT-0003", "SAF", "approved", ""], (x, by) => A.rmesDecision(x, by, "ZZT-0003", "SAF", "approved", "", AT))).r);
+    b.reload();
+    const { r, calls } = await act(b, "completeReview", ["ZZT-0003", "SAF"], (x, by) => A.completeReview(x, by, "ZZT-0003", "SAF", AT));
+    ok(r);
+    expect(writesOf(calls)).toEqual(["update review", "submit review", "formCreate audit"]);
+    expect(dataOf(calls, "update", "review")).toMatchObject({ Open_Count: 0, RMES_Gaps: 0 });
+    expect(str(b.fake.find("PkRevZZT0003SAF1")!.item, "_status")).toBe("Completed");
+    // the legacy rows are left as they are (never voided: a voided record would refuse the completion)
+    expect(writesOf(calls).some((w) => w.includes("rmesSAF"))).toBe(false);
   });
 
-  it("asks for a reload when the case is readable but its RMES record was not read", () => {
+  it("no criterion or finding write is offered any more (no writer, so the store says it is not available)", () => {
+    for (const m of ["recordCriterion", "addFinding", "closeFinding", "findingToQuery"]) expect(liveWriters, m).not.toHaveProperty(m);
+  });
+
+  it("completeReview is refused for Safety until its RMES record is read (a reload), whether or not the case can be read", () => {
     const b = boot("saf", { db: without({ rmesSAF: () => true }), mode: "role" });
+    expect(b.ctx().index.cases.get("ZZT-0003")?.readable).toBe(false);
+    expect(liveGuard("completeReview", b.ctx(), b.m.state, ["ZZT-0003", "SAF"])).toBe(GUARD_TEXT.rmesUnknown);
     const ctx = b.ctx();
     const ref = ctx.index.cases.get("ZZT-0003")!;
     ctx.index.cases.set("ZZT-0003", { ...ref, readable: true });
@@ -1202,12 +1149,12 @@ const lagging =
 describe("saving like the portal (APP-SAVING-GAPS, 20 Oct)", () => {
   it("gap 1: a write that moves no step carries its read-backs and its audit row, so the store can show them without reading everything again", async () => {
     const b = boot("saf");
-    const crit = await act(b, "recordCriterion", ["ZZT-0003", "S-B1", "plausible", "Dossier checked."], (s, by) => A.recordCriterion(s, by, "ZZT-0003", "S-B1", "plausible", "Dossier checked.", AT));
-    ok(crit.r);
-    expect(crit.r.saved).toEqual([{ flow: "rmesSAF", item: b.fake.find("PkRmesZZT0003SAF")!.item }]);
-    expect(crit.r.auditRow).toEqual(b.fake.db.audit.at(-1));
-    expect(crit.r.auditRow).toMatchObject({ Action_Code: "rmes.saved", Object_Key: "S-B1" });
-    expect(crit.r.moved).toBe(false);
+    const dec = await act(b, "rmesDecision", ["ZZT-0003", "SAF", "approved", ""], (s, by) => A.rmesDecision(s, by, "ZZT-0003", "SAF", "approved", "", AT));
+    ok(dec.r);
+    expect(dec.r.saved).toEqual([{ flow: "review", item: expect.objectContaining({ Review_Key: "ZZT-0003-SAF-1", RMES_Decision: LIST.decision.approved }) }]);
+    expect(dec.r.auditRow).toEqual(b.fake.db.audit.at(-1));
+    expect(dec.r.auditRow).toMatchObject({ Action_Code: "rmes.saved", Object_Kind: "RMES decision", Object_Key: "ZZT-0003-RMES-SAF" });
+    expect(dec.r.moved).toBe(false);
     // a new form row (a note): as read back
     const cus = boot("cus");
     const note = await act(cus, "addInternalNote", ["ZZT-0003", "HS code checked.", "K7"], (s, by) => A.addInternalNote(s, by, "ZZT-0003", "HS code checked.", "K7", AT));
@@ -1418,15 +1365,7 @@ describe("saving like the portal (APP-SAVING-GAPS, 20 Oct)", () => {
     expect(auditsOf(b.fake.calls.slice(from)).map((x) => x.Action_Code)).toEqual(["op.closed"]);
   });
 
-  it("gap 7: a new finding or contact whose row Kissflow shows late is not added twice", async () => {
-    const saf = boot("saf", { client: lagging({ [TABLES.SAF.findings]: "Findings_Key" }) });
-    const add = await act(saf, "addFinding", ["ZZT-0003", "S-C1", "Nano status unclear.", true], (s, by) => A.addFinding(s, by, "ZZT-0003", "S-C1", "Nano status unclear.", true, AT));
-    ok(add.r);
-    const f = added(saf.m.state, add.next);
-    expect(childRows(saf.fake.find("PkRmesZZT0003SAF")!.item, TABLES.SAF.findings, "Findings_Key").filter((x) => x.Findings_Key === f)).toHaveLength(1);
-    expect(writesOf(add.calls)).toEqual(["formUpdate rmesSAF", "formCreate audit"]);
-    expect(saf.fake.warnings).toEqual([]);
-
+  it("gap 7: a new contact whose row Kissflow shows late is not added twice", async () => {
     const admin = boot("admin", { client: lagging({ [TABLES.contacts]: "Contacts_Key" }) });
     const input: M.ContactInput = { name: "Ines Duarte", email: "ines.duarte@solvaro.example", title: "Regulatory Specialist", mayConfirm: true };
     const contact = await act(admin, "addContact", ["SUP-ZZT-SOLVARO", input], (s, by) => M.addContact(s, by, "SUP-ZZT-SOLVARO", input, AT).state);
@@ -1436,26 +1375,18 @@ describe("saving like the portal (APP-SAVING-GAPS, 20 Oct)", () => {
     expect(writesOf(contact.calls)).toEqual(["formUpdate supplier", "formCreate audit"]);
   }, 15000);
 
-  it("gap 7: ensureRmes waits and reads again before it adds criteria rows Kissflow shows late (no duplicate criteria)", async () => {
+  it("gap 7: ensureRmes sends no child rows, so none can come twice: one create, its header read back", async () => {
     const db = without({ rmesSAF: (it) => str(it, "Case_Code") === "ZZT-0003", audit: (it) => str(it, "Object_Key") === "ZZT-0003-RMES-SAF" });
     const b = boot("saf", { db, client: lagging({ [TABLES.SAF.criteria]: "Criteria_Code" }) });
     const from = b.fake.calls.length;
     ok((await ensureRmes(b.ctx(), b.m.state, factsOf(b)))!);
     const calls = b.fake.calls.slice(from);
     expect(writesOf(calls)).toEqual(["formCreate rmesSAF", "formCreate audit"]);
-    const plan = planRmesCriteria(b.m.state, "ZZT-0003", AT);
-    const want = "criteria" in plan ? plan.criteria.filter((x) => x.dept === "SAF").map((x) => x.id) : [];
-    expect(want.length).toBeGreaterThan(0);
     const item = b.fake.db.rmesSAF.find((x) => str(x, "RMES_Key") === "ZZT-0003-RMES-SAF")!;
-    expect(childRows(item, TABLES.SAF.criteria, "Criteria_Code").map((x) => str(x, "Criteria_Code"))).toEqual(want);
+    expect(childRows(item, TABLES.SAF.criteria, "Criteria_Code")).toEqual([]);
+    expect(b.fake.warnings).toEqual([]);
   }, 10000);
 });
-
-/** The id of the one finding `next` added on ZZT-0003. */
-function added(prev: AppState, next: AppState): string {
-  const had = new Set((caseOf(prev, "ZZT-0003").rmes?.findings ?? []).map((x) => x.id));
-  return caseOf(next, "ZZT-0003").rmes!.findings.find((x) => !had.has(x.id))!.id;
-}
 
 // ------------------------------------------------------------------------------------------------ FE-CLEANUP texts
 
@@ -1500,7 +1431,7 @@ describe("FE-CLEANUP: what the writers say in production (22 Oct)", () => {
     const lax = (f: FakeClient): AppClient => ({ ...f, getTask: async (flow, id, a) => ({ ...(await f.getTask(flow, id, a)), Review_Gate: "" }) });
     const b = boot("mic", { fake: { enforceMandatory: false }, client: lax });
     const r = await run(b, "prod", "completeReview", ["ZZT-0003", "MIC"], (s, by) => A.completeReview(s, by, "ZZT-0003", "MIC", AT));
-    expect(r).toMatchObject({ ok: false, message: "Kissflow does not see this review as ready yet (open points or RMES entries are still open). Nothing was completed; reload and check.", detail: "Kissflow's review gate is not OK yet." });
+    expect(r).toMatchObject({ ok: false, message: "Kissflow does not see this review as ready yet (an open point is still open, or the decision is missing). Nothing was completed; reload and check.", detail: "Kissflow's review gate is not OK yet." });
   });
 
   it("C19: a partial success's warning: the case-history grammar in both environments, the cause plain in prod", async () => {

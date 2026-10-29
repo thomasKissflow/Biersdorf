@@ -279,7 +279,7 @@ describe("requested documents follow the live scope", () => {
     const sc = new Scenario();
     customDocsRelease(sc);
     sc.create().metadata(POLYMER).fillMandatory().confirm();
-    sc.rmes("SAF", "u-saf").decision("SAF", "u-saf", "approved").complete("SAF", "u-saf");
+    sc.decision("SAF", "u-saf", "approved").complete("SAF", "u-saf");
     sc.step("justify", (s, at) => A.setJustification(s, SUP, sc.id, K_REPORT, "The test report follows in November.", at));
     expect(sc.track("SAF")!.status).toBe("reopened");
     expect(sc.c.audit.find((a) => a.action === "Reopened Safety review")).toMatchObject({ by: "system", detail: "The supplier changed K6.18 after your review." });

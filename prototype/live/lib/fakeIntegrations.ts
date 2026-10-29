@@ -214,8 +214,9 @@ export function createFakeIntegrations(o: { app: FakeClient; portal: FakePortal;
       app.set(c._id, pick(r, SYNCED_REQUEST_FIELDS));
       return `copied the ${SYNCED_REQUEST_FIELDS.length} supplier-data fields to CIQ Case ${c._id}`;
     },
-    // I-2: completeness and the answers onto the case with Review_Depts, then E-A (22 Oct: the round-1 reviews and ONE
-    // case-level review.started row, before the Approve, so a refused Approve leaves them), then the Approve
+    // I-2: completeness and the answers onto the case with Review_Depts, then E-A's ONE case-level review.started row,
+    // the Approve, and last (25 Oct, the bulk create's timeout) the round-1 reviews: a refused Approve leaves the row and
+    // no review
     completenessConfirmed: (p) => {
       const r = inPortal("request", p.portalRequestItemId, "CIQP Request");
       if (cancelled(r)) refuse(`CIQP Request ${r._id}: the case was cancelled`);
@@ -227,9 +228,12 @@ export function createFakeIntegrations(o: { app: FakeClient; portal: FakePortal;
       if (!app.stepOf(c._id)?.act) refuse(`CIQ Case ${c._id} has no open step`);
       app.set(c._id, { ...pick(r, [...COMPLETENESS, ...SYNCED_REQUEST_FIELDS, "Review_Depts"]), Case_Phase: LIST.phase.review });
       const depts = str(r, "Review_Depts").split(",").map((d) => d.trim().toUpperCase()).filter(Boolean) as ReviewDept[];
-      const started = playEA(app, c._id, depts, now());
-      if (!o.caseStepsHeld) refuse(`recorded the completeness on CIQ Case ${c._id} and started ${started.length} reviews, then its Approve of "Waiting for supplier: CIQ" was refused: ${FAKE_ERRORS.queue} (held by Integration service, which has no members)`);
+      if (!o.caseStepsHeld) {
+        playEA(app, c._id, depts, now(), { reviews: false });
+        refuse(`recorded the completeness and the review.started row on CIQ Case ${c._id}, then its Approve of "Waiting for supplier: CIQ" was refused: ${FAKE_ERRORS.queue} (held by Integration service, which has no members), so it created no review (its last step)`);
+      }
       app.move(c._id, STEPS.case.release);
+      const started = playEA(app, c._id, depts, now());
       return `recorded the completeness on CIQ Case ${c._id}, started ${started.length} reviews and moved it to review`;
     },
     // I-4: the supplier's answer onto the open point this query belongs to

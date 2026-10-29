@@ -1,0 +1,372 @@
+{
+ "suite": "S-OP-S4-REFUSED",
+ "run": "R2",
+ "startedAt": "2026-10-29T00:02:19.017Z",
+ "savedAt": "2026-10-29T00:02:19.039Z",
+ "counts": {
+  "pass": 4,
+  "fail": 0,
+  "blocked": 1,
+  "not-run": 0
+ },
+ "steps": [
+  {
+   "name": "S1",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Supplier (raw)",
+      "value": {
+       "Supplier_Code": "ZZT-N21-R2-SUP-OP",
+       "Supplier_Legal_Name": "ZZT-N21-R2 S-OP Supplier GmbH",
+       "DUNS_Number": "921013200",
+       "Supplier_Country_Code": "DE",
+       "Supplier_Kind": "Manufacturer",
+       "Supplier_Active": "Yes",
+       "contacts": [
+        {
+         "key": "u-ZZT-N21-R2-SUP-OP-1",
+         "name": "ZZT-N21-R2 Thomas (self contact)",
+         "portalUser": "UsRmmKatrin",
+         "canConfirm": "Yes",
+         "active": "Yes"
+        },
+        {
+         "key": "u-ZZT-N21-R2-SUP-OP-2",
+         "name": "ZZT-N21-R2 Mira Lindqvist",
+         "portalUser": null,
+         "canConfirm": "No",
+         "active": "Yes"
+        }
+       ]
+      }
+     },
+     {
+      "what": "the supplier as RMM's screen maps it",
+      "value": {
+       "supplierId": "ZZT-N21-R2-SUP-OP",
+       "contacts": 2
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "addSupplier: the writer reports ok",
+      "ok": true
+     },
+     {
+      "label": "Supplier_Code and the name carry the run",
+      "ok": true
+     },
+     {
+      "label": "two contact rows, no duplicate",
+      "ok": true,
+      "detail": 2
+     },
+     {
+      "label": "the first contact is the self contact (portal user, its e-mail)",
+      "ok": true
+     },
+     {
+      "label": "RMM's screen maps the self contact to this supplier",
+      "ok": true,
+      "detail": "ZZT-N21-R2-SUP-OP"
+     }
+    ],
+    "notes": {
+     "not the app's code": "the domain's new supplier code is renamed to ZZT-N21-R2-SUP-OP before the writer runs (the run tag)",
+     "addSupplier: hand-offs": [],
+     "not the app's code (2)": "the self contact's portal user and login e-mail are a form edit (Contacts_Portal_User_Id, Contacts_Email): the administrator's invitation, which the app has no writer for"
+    }
+   },
+   "ms": 3,
+   "at": "2026-10-29T00:02:19.017Z"
+  },
+  {
+   "name": "S2",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Case (raw)",
+      "value": {
+       "Case_Code": "ZZT-N21-R2-OPR2",
+       "Supplier_Code": "ZZT-N21-R2-SUP-OP",
+       "Trade_Name": "ZZT-N21-R2 Glycerin 99.5 (S-OP)",
+       "Portal_Request_Item_Id": "PkReq1",
+       "Portal_Contact_Ids": "UsRmmKatrin",
+       "_status": "InProgress",
+       "_current_step": "Waiting for supplier: CIQ"
+      }
+     },
+     {
+      "what": "CIQP Request (raw)",
+      "value": {
+       "Case_Code": "ZZT-N21-R2-OPR2",
+       "App_Case_Item_Id": "PkCase5",
+       "Supplier_Code": "ZZT-N21-R2-SUP-OP",
+       "Case_Phase_Label": "Filling in",
+       "Assigned_Contacts": [
+        "UsRmmKatrin"
+       ],
+       "_status": "InProgress",
+       "_current_step": "Supplier: fill in the CIQ"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "createCase: the writer reports ok",
+      "ok": true
+     },
+     {
+      "label": "I-1 linked a CIQP Request on the case (Portal_Request_Item_Id)",
+      "ok": true
+     },
+     {
+      "label": "the case is at \"Waiting for supplier: CIQ\"",
+      "ok": true,
+      "detail": "Waiting for supplier: CIQ"
+     },
+     {
+      "label": "the case's portal contact is the self contact's user",
+      "ok": true
+     },
+     {
+      "label": "the request names the case and is assigned to the self contact",
+      "ok": true
+     },
+     {
+      "label": "the request is at \"Supplier: fill in the CIQ\"",
+      "ok": true,
+      "detail": "Supplier: fill in the CIQ"
+     }
+    ],
+    "notes": {
+     "createCase: hand-offs": [
+      {
+       "code": "case.started",
+       "status": "sent"
+      }
+     ],
+     "I-1 poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     }
+    }
+   },
+   "ms": 2,
+   "at": "2026-10-29T00:02:19.021Z"
+  },
+  {
+   "name": "S3",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQP Request (raw)",
+      "value": {
+       "Completeness_Confirm": "Confirmed",
+       "Completeness_At": "2026-10-29T00:02:19Z",
+       "Case_Phase_Label": "Filling in",
+       "_status": "InProgress",
+       "_current_step": "Supplier: keep the CIQ up to date"
+      }
+     },
+     {
+      "what": "CIQ Case (raw)",
+      "value": {
+       "Completeness_Confirm": "Confirmed",
+       "Completeness_At": "2026-10-29T00:02:19Z",
+       "Case_Phase": "Review",
+       "_status": "InProgress",
+       "_current_step": "Waiting for supplier: CIQ"
+      }
+     },
+     {
+      "what": "the case as RMM's screen maps it",
+      "value": {
+       "phase": "review"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the supplier's portal lists the request as a task",
+      "ok": true
+     },
+     {
+      "label": "no completeness blocker left",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "the request's completeness is confirmed by the self contact (its e-mail)",
+      "ok": true
+     },
+     {
+      "label": "the request moved on to \"Supplier: keep the CIQ up to date\"",
+      "ok": true,
+      "detail": "Supplier: keep the CIQ up to date"
+     },
+     {
+      "label": "I-2 wrote the completeness and phase Review on the case",
+      "ok": true
+     },
+     {
+      "label": "RMM's screen shows the case in review",
+      "ok": true
+     }
+    ],
+    "notes": {
+     "I-2 poll": {
+      "ok": true,
+      "polls": 1,
+      "ms": 6000
+     },
+     "case step after I-2": "still at Waiting for supplier: CIQ (I-2's Approve refused: Integration service has no members)"
+    }
+   },
+   "ms": 13,
+   "at": "2026-10-29T00:02:19.023Z"
+  },
+  {
+   "name": "S4",
+   "status": "blocked",
+   "reason": "expected: I-2 creates the reviews in its last step, after its Approve, and the Approve is refused while Integration service has no members, so no review exists and no point can be raised. The points run once a user is in Integration service again.",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "CIQ Case step (no review found)",
+      "value": {
+       "_status": "InProgress",
+       "_current_step": "Waiting for supplier: CIQ",
+       "Case_Phase": "Review"
+      }
+     }
+    ],
+    "checks": [
+     {
+      "label": "the case still waits at \"Waiting for supplier: CIQ\"",
+      "ok": true,
+      "detail": "Waiting for supplier: CIQ"
+     }
+    ],
+    "notes": {
+     "E-A poll": {
+      "polls": 10,
+      "ms": 60000,
+      "depts": []
+     }
+    }
+   },
+   "ms": 1,
+   "at": "2026-10-29T00:02:19.037Z"
+  },
+  {
+   "name": "C1",
+   "status": "pass",
+   "evidence": {
+    "readBacks": [
+     {
+      "what": "portal items the sweep adopted (created after their poll gave up)",
+      "value": []
+     },
+     {
+      "what": "this suite's ledger items after the clean-up",
+      "value": [
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "PkEvEAZZTN21R2OPR2",
+        "what": "Case_Code=ZZT-N21-R2-OPR2 Action_Code=review.started (E-A)",
+        "gone": true
+       },
+       {
+        "flow": "CIQP_Request_A00",
+        "id": "PkReq1",
+        "what": "ZZT-N21-R2-OPR2 request (S-OP)",
+        "gone": true
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit9",
+        "what": "Case_Code=ZZT-N21-R2-OPR2 Event_Key=EV-ZZT-N21-R2-OPR2-20261029000219-scmf",
+        "gone": true
+       },
+       {
+        "flow": "CIQ_Case_A00",
+        "id": "PkCase5",
+        "what": "Case_Code=ZZT-N21-R2-OPR2 Supplier_Code=ZZT-N21-R2-SUP-OP",
+        "withdrawn": true,
+        "gone": true
+       },
+       {
+        "flow": "CIQ_Audit_Event_A00",
+        "id": "FmAudit4",
+        "what": "Event_Key=EV-LOG-20261029000219-k8le Action_Code=supplier.changed",
+        "gone": true
+       },
+       {
+        "flow": "CIQ_Supplier_A00",
+        "id": "FmSup2",
+        "what": "Supplier_Code=ZZT-N21-R2-SUP-OP Supplier_Legal_Name=ZZT-N21-R2 S-OP Supplier GmbH",
+        "gone": true
+       }
+      ]
+     }
+    ],
+    "checks": [
+     {
+      "label": "the sweep read every place a late item could be",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "every hand-off whose poll gave up has its portal item in the ledger now (else it may still come, outside the ledger)",
+      "ok": true,
+      "detail": []
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 PkEvEAZZTN21R2OPR2 is deleted (read again: not found)",
+      "ok": true,
+      "detail": true
+     },
+     {
+      "label": "CIQP_Request_A00 PkReq1 is deleted (read again: not found)",
+      "ok": true,
+      "detail": true
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit9 is deleted (read again: not found)",
+      "ok": true,
+      "detail": true
+     },
+     {
+      "label": "CIQ_Case_A00 PkCase5 is deleted (read again: not found)",
+      "ok": true,
+      "detail": true
+     },
+     {
+      "label": "CIQ_Audit_Event_A00 FmAudit4 is deleted (read again: not found)",
+      "ok": true,
+      "detail": true
+     },
+     {
+      "label": "CIQ_Supplier_A00 FmSup2 is deleted (read again: not found)",
+      "ok": true,
+      "detail": true
+     }
+    ],
+    "notes": {
+     "request: My items outside the ledger changed since the suite started": 0,
+     "query: My items outside the ledger changed since the suite started": 0,
+     "deleted": 6
+    }
+   },
+   "ms": 1,
+   "at": "2026-10-29T00:02:19.038Z"
+  }
+ ]
+}

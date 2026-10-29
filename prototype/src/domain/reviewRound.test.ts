@@ -10,42 +10,60 @@ import { PLAIN_CONFIG, Scenario, seedWithRegColleague } from "./testkit";
 
 const due = (sc: Scenario) => new Date(sc.t + 10 * 86_400_000).toISOString();
 
-describe("RMES: every open finding blocks (REQ-PROC-036, REQ-RMES-009)", () => {
-  it("a finding added without the old 'blocking' flag still blocks the approval and the completion", () => {
+describe("Safety / Regulatory: open points and the decision are the whole gate (RMES retired, 28 Oct)", () => {
+  /** A record as the retired criteria RMES left it: a criterion without a result and an open blocking finding. */
+  const legacy = (sc: Scenario) => {
+    sc.s = {
+      ...sc.s,
+      cases: sc.s.cases.map((c) =>
+        c.id === sc.id
+          ? {
+              ...c,
+              rmes: {
+                ...c.rmes!,
+                criteria: [{ id: "S-B1", part: "B", dept: "SAF", title: "Toxicological profile available and plausible", source: { sectionId: "K4.1", version: 1, label: "K4.1" } }],
+                findings: [{ id: "0001-F1", criterionId: "S-B1", dept: "SAF", text: "Sensitisation data missing", blocking: true, status: "open" }],
+              },
+            }
+          : c,
+      ),
+    };
+  };
+
+  it("a legacy record with a pending criterion and an open finding never blocks: the decision completes the review", () => {
     const sc = new Scenario().toReview();
-    sc.rmes("SAF", "u-saf");
-    const cr = sc.c.rmes!.criteria.find((x) => x.dept === "SAF")!;
-    sc.step("finding", (s, at) => A.addFinding(s, "u-saf", sc.id, cr.id, "Cadmium close to the limit in batch 2", false, at));
-    expect(sc.refused("approve", (s, at) => A.rmesDecision(s, "u-saf", sc.id, "SAF", "approved", "", at))).toMatch(/finding is still open/);
-    expect(reviewBlockers(sc.c, "SAF")).toContain("Open finding: Cadmium close to the limit in batch 2");
-    sc.step("close finding", (s, at) => A.closeFinding(s, "u-saf", sc.id, sc.c.rmes!.findings[0].id, at));
+    legacy(sc);
+    expect(reviewBlockers(sc.c, "SAF")).toEqual(["Final Safety decision (Approved / Rejected) not yet recorded"]);
+    sc.refused("no decision yet", (s, at) => A.completeReview(s, "u-saf", sc.id, "SAF", at));
     sc.decision("SAF", "u-saf", "approved").complete("SAF", "u-saf");
     expect(sc.track("SAF")?.status).toBe("completed");
+    expect(reviewBlockers(sc.c, "SAF")).toEqual([]);
   });
 
-  it("the record follows Part 2: a late Annex 4 adds the MOAH criterion, a corrected value moves the limit check", () => {
+  it("a late Annex 4 and changed heavy-metal answers leave the record as it is (no criteria, no limit checks)", () => {
     const sc = new Scenario().toReview();
-    expect(sc.c.rmes!.criteria.some((x) => x.id === "S-C2")).toBe(false);
-    const before = sc.c.rmes!.criteria.find((x) => x.id === "S-A1")!;
-    sc.step("record S-A1", (s, at) => A.recordCriterion(s, "u-saf", sc.id, "S-A1", "available", "Checked", at));
+    const record = sc.c.rmes;
+    expect(record).toMatchObject({ criteria: [], findings: [] });
     sc.step("late SF-07", (s, at) => A.saveConfig(s, "u-sup-1", sc.id, { SF07: true }, at));
-    expect(sc.c.rmes!.criteria.some((x) => x.id === "S-C2")).toBe(true);
-    expect(sc.c.audit.some((a) => a.action === "Updated RMES record" && a.detail.includes("S-C2"))).toBe(true);
-    sc.step("arsenic 0.2", (s, at) => A.setAnswer(s, "u-sup-1", sc.id, "FLD-A14-101", 0.2, at));
-    sc.step("cadmium 0.05", (s, at) => A.setAnswer(s, "u-sup-1", sc.id, "FLD-A14-102", 0.05, at));
-    sc.step("chromium 9", (s, at) => A.setAnswer(s, "u-sup-1", sc.id, "FLD-A14-103", 9, at));
-    const after = sc.c.rmes!.criteria.find((x) => x.id === "S-A1")!;
-    expect(after.limit).toMatchObject({ substance: "Chromium (Cr)", value: 9, pass: false });
-    expect(after.limit).not.toEqual(before.limit);
-    // the recorded result stays as it was recorded
-    expect(after).toMatchObject({ result: "available", comment: "Checked", by: "u-saf" });
+    sc.step("cadmium 0.5", (s, at) => A.setAnswer(s, "u-sup-1", sc.id, "FLD-A14-102", 0.5, at));
+    expect(sc.c.rmes).toEqual(record);
+    expect(sc.c.audit.some((a) => /RMES/.test(a.action))).toBe(false);
+  });
+
+  it("a point closed as not accepted adds nothing to the record", () => {
+    const sc = new Scenario().toReview();
+    sc.raise("SAF", "u-saf", "K1", "Please send the tox summary.");
+    sc.answer(sc.op().id).decide(sc.op().id, "u-saf", "not-accepted", "The summary is not the dossier.");
+    expect(sc.c.rmes).toMatchObject({ criteria: [], findings: [] });
+    sc.decision("SAF", "u-saf", "approved").complete("SAF", "u-saf");
+    expect(sc.track("SAF")?.status).toBe("completed");
   });
 });
 
 describe("adding a section follows the same rule as a query", () => {
   it("only an open review of the asker's department adds a section; never in final-release", () => {
     const sc = new Scenario().toReview();
-    sc.rmes("REG", "u-reg").decision("REG", "u-reg", "approved").complete("REG", "u-reg");
+    sc.decision("REG", "u-reg", "approved").complete("REG", "u-reg");
     expect(sc.refused("REG completed", (s, at) => A.extendScope(s, "u-reg", sc.id, "A5", "UV absorber found in the SDS", at))).toMatch(/Your review is completed/);
     sc.step("SAF adds A4", (s, at) => A.extendScope(s, "u-saf", sc.id, "A4", "MOAH risk from the refining", at));
     expect(sc.c.scope.find((x) => x.sectionId === "A4")?.applicability).toBe("mandatory");

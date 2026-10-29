@@ -54,7 +54,7 @@ This follows `scripts/harness-prototype.mjs` S1, which passes. Values are sugges
    - **Questionnaire tab** (case page): the summary bar counts complete sections and filters them (Missing items, With open points, Changed after completeness, Not applicable); the navigator on the left (a picker on phones) opens one section with Previous / Next, and every answer shows who entered it and when.
    - **@mentions:** in Internal notes, the review's notes panel or the K7/K8 note box, type @ and pick a colleague (Beiersdorf only); they get one mail whose link opens the note, shown with the mention as a chip.
 7. **Completion:**
-   - Safety and Regulatory record RMES and their internal decision.
+   - Safety and Regulatory read the RMES tab (the 8 fields filled automatically from the CIQ, read only) and record their internal decision on the Questionnaire tab.
    - QM and Microbiology complete.
    - RMM completes last. The release request is sent only now, exactly once, and the supplier's questionnaire locks.
    - Optional edge case: record **Rejected** in Safety. RMM must then choose *Continue to final release* (with a note) or *Cancel the case*.
@@ -72,7 +72,7 @@ This follows `scripts/harness-prototype.mjs` S1, which passes. Values are sugges
 
 ## Thomas's two rules of 15 Oct (about 3 minutes, harness S17)
 
-1. **A supplier change reopens the review of the section's owners.** As **Dr. Jonas Albrecht (Regulatory)**, complete the review (RMES and decision first). As **Elena**, change the natural origin index in K2.1.
+1. **A supplier change reopens the review of the section's owners.** As **Dr. Jonas Albrecht (Regulatory)**, complete the review (decision first). As **Elena**, change the natural origin index in K2.1.
    - Regulatory's review is reopened at once by the system, with the reason "The supplier changed K2.1 after your review". Regulatory gets one mail, and the workspace marks K2.1 as changed since the completion.
    - Change K2.1 again (add a component): no second mail while the review is open again.
    - It works for every section owner: an upload in K1 reopens QM (lead) and the co-reviewers that had completed (Regulatory, Safety, RMM), but not Microbiology. RMM's review reopens only for its own sections (General information, K1, K2.3).
@@ -144,7 +144,7 @@ Other things to show: **Edit** or **Delete** a rule in the draft, **Retire** and
 6. **Safety or Regulatory Rejected:** RMM must explicitly choose to continue (with a note) or cancel.
 7. **Release** is blocked while the supplier's own questions are open or a mandatory item is missing.
 8. **Changes after completeness:** a change to a metadata answer only adds sections. Any other supplier change reopens the completed reviews of the section's owners automatically (your rule, 15 Oct). From the release request on the questionnaire is locked (your rule, 15 Oct); a reviewer who has completed can reopen, which withdraws the release request and unlocks it.
-9. **Every open finding** blocks its department's completion. There is no blocking/non-blocking toggle.
+9. **The RMES** (BDF's e-mail, 28 Oct) is exactly 8 fields, read only and filled automatically from the CIQ: Raw material / tradename, Supplier, Manufacturer, and per component INCI, %, CAS #, EC #, Source of origin and its free text. The earlier criteria, limit checks, suggestion and findings are gone. The Safety / Regulatory decision stays, outside the RMES, and is the only thing besides open points that blocks their completion.
 10. **The evidence the rules name** is now a required upload slot with a "cannot provide + justification" option: Statements on every case, BSE/TSE and Annex II 419 for Animal, sustainability certificates for Vegetable, PAH for Petrochemical, residual monomer and SPM statement for Polymer. These are new fields `FLD-K1-004…010`; check the labels.
 11. **Removed:** Corrections, Notices, the old Scope tab (merged into Questionnaire), Reconstruct (merged into the case History tab), "Informed cases" (Customs and Legal use Cases), "Operations" for the owner, and "Reports" for RMM. Also removed: "Our understanding" in the app menu (the call page stays), and every "review version" wording.
 12. **No manual completion:** a case without the supplier's release can only be cancelled.

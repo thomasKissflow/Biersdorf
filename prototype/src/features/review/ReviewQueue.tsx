@@ -49,7 +49,7 @@ export function ReviewQueue() {
         subtitle={
           rmm
             ? "Your review of the whole CIQ, in parallel with the departments. Ask the supplier on any section, align in internal notes and complete your review. The final-release request waits for you too."
-            : `Cases with a ${DEPT_SHORT[dept]} review task. You read every section, ask the supplier directly and complete the ${DEPT_SHORT[dept]} review${isRmesDept(dept) ? ", including the internal RMES evaluation and its decision" : ""}.`
+            : `Cases with a ${DEPT_SHORT[dept]} review task. You read every section, ask the supplier directly${isRmesDept(dept) ? ", record your internal decision" : ""} and complete the ${DEPT_SHORT[dept]} review.${isRmesDept(dept) ? " The RMES tab shows the material's evaluation sheet, filled automatically from the CIQ." : ""}`
         }
         actions={
           total > 0 ? (

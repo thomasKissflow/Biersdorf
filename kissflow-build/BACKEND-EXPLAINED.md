@@ -2,6 +2,8 @@
 
 **Kissflow-internal. For Thomas. Never cite this file to Beiersdorf.** The client-facing version is `ciq-digital/BACKEND-SHOWCASE.md`.
 
+> **29 Oct: the RMES changed.** BDF scoped it to 8 fields filled automatically from the CIQ (e-mail of 28 Oct). The app no longer records RMES criteria, results or findings, and there is no RMES refresh: the RMES rows are header-only records, the RMES tab is a read-only sheet derived from the case, and only the Safety / Regulatory decision (`RMES_Decision` on CIQ Review) gates the review (`RMES_Gaps` = decision missing). The RMES lines below describe the earlier design. See `RMES-REPLY-DRAFT-2026-10-29.md` and `prototype/src/app-live/DESIGN.md` "RMES (28 Oct)".
+
 This note explains how the v5 backend works, and checks what is really built today. The design is `docs/kissflow-data-model/plan-v5-final.md` (cited as "plan §n").
 
 ## How to read the tags

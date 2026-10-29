@@ -21,18 +21,12 @@ import { NO_PORTAL_CONTACT } from "../userText";
 import { isConfigMethod } from "./config";
 import { countryCode, isPortalUser } from "./encode";
 
-/** Why an RMES record is missing: an unreadable case never gets one (write/activation.ts ensureRmes), so "reload" would not help. */
-function rmesMissing(ctx: WriteCtx, caseId: string): string {
-  return ctx.index.cases.get(caseId)?.readable === false ? GUARD_TEXT.rmesCaseUnreadable : GUARD_TEXT.rmesUnknown;
-}
-
 export const GUARD_TEXT = {
   caseUnknown: "This case can't be changed from your role right now. Reload and try again.",
   opNotHeld: "This open point is not one of your open tasks in Kissflow (it may have moved on). Reload to see its current state.",
   reviewNotHeld: (dept: ReviewDept) => `The ${DEPT_SHORT[dept]} review of this case is not one of your open tasks in Kissflow (it may have moved on). Reload to see its current state.`,
-  rmesUnknown: "The RMES record could not be read; reload.",
-  rmesCaseUnreadable: "The RMES record can't be prepared because your role can't read this case's questionnaire. Ask your CIQ administrator to check your role's access.",
-  rowUnknown: "This RMES entry is not fully loaded yet. Reload and try again.",
+  // the record is created on the reviewer's load (write/activation.ts ensureRmes), also for a case the role can't read
+  rmesUnknown: "Your department's RMES record of this case was not found. Reload the page (close and reopen CIQ Digital): the record is created then.",
   rmmCompleted: "RMM has completed its review. Ask RMM to reopen it before you record Rejected.",
   reopenNotRmm: "Ask RMM: only RMM can restart a review in this version.",
   noEmail: "Your Kissflow account has no e-mail address, and the supplier needs one to reach Beiersdorf. Ask the administrator to add it, then start the case.",
@@ -131,13 +125,6 @@ function createCaseGuard(ctx: WriteCtx, s: AppState, input: NewCaseInput | undef
   return null;
 }
 
-/** The criterion's or finding's department on the case's RMES record. */
-const rmesDeptOf = (s: AppState, caseId: string, key: { criterionId?: string; findingId?: string }): "SAF" | "REG" | undefined => {
-  const r = caseOf(s, caseId)?.rmes;
-  if (key.criterionId) return r?.criteria.find((x) => x.id === key.criterionId)?.dept;
-  return r?.findings.find((x) => x.id === key.findingId)?.dept;
-};
-
 /** Null when the live write can go ahead, else the refusal text (DESIGN §6 pre-guards). */
 export function liveGuard(method: WritableMethod, ctx: WriteCtx, state: AppState, args: unknown[]): string | null {
   if (!ctx.containerOk) return NOT_IN_APP;
@@ -151,38 +138,14 @@ export function liveGuard(method: WritableMethod, ctx: WriteCtx, state: AppState
     case "addInternalNote":
     case "cancelCase":
       return caseRefOf(ctx, caseId) ? null : GUARD_TEXT.caseUnknown;
-    case "findingToQuery": {
-      if (!caseRefOf(ctx, caseId)) return GUARD_TEXT.caseUnknown;
-      const findingId = String(args[1] ?? "");
-      const dept = rmesDeptOf(state, caseId, { findingId });
-      if (!dept) return null; // the domain refuses an unknown finding
-      return rmesRefOf(ctx, caseId, dept)?.findingRows[findingId] ? null : GUARD_TEXT.rowUnknown;
-    }
     case "reviewResponse":
     case "editOpenPoint":
     case "closeOpenPoint":
       return heldOp(ctx, state, caseId, String(args[1] ?? "")) ? null : GUARD_TEXT.opNotHeld;
-    case "recordCriterion":
-    case "addFinding": {
-      const criterionId = String(args[1] ?? "");
-      const dept = rmesDeptOf(state, caseId, { criterionId });
-      if (!dept) return null; // the domain refuses an unknown criterion
-      const r = rmesRefOf(ctx, caseId, dept);
-      if (!r) return rmesMissing(ctx, caseId);
-      return method === "addFinding" || r.criteriaRows[criterionId] ? null : GUARD_TEXT.rowUnknown;
-    }
-    case "closeFinding": {
-      const findingId = String(args[1] ?? "");
-      const dept = rmesDeptOf(state, caseId, { findingId });
-      if (!dept) return null;
-      const r = rmesRefOf(ctx, caseId, dept);
-      if (!r) return rmesMissing(ctx, caseId);
-      return r.findingRows[findingId] ? null : GUARD_TEXT.rowUnknown;
-    }
     case "rmesDecision": {
       const dept = args[1] as "SAF" | "REG";
       if (!heldReview(ctx, caseId, dept)) return GUARD_TEXT.reviewNotHeld(dept);
-      if (!caseOf(state, caseId)?.rmes || !rmesRefOf(ctx, caseId, dept)) return rmesMissing(ctx, caseId);
+      if (!caseOf(state, caseId)?.rmes || !rmesRefOf(ctx, caseId, dept)) return GUARD_TEXT.rmesUnknown;
       // the domain would reopen RMM's completed review, which Safety and Regulatory can't write in Kissflow
       if (args[2] === "rejected" && caseOf(state, caseId)?.reviews.find((r) => r.dept === "RMM")?.status === "completed") return GUARD_TEXT.rmmCompleted;
       return null;
@@ -190,8 +153,8 @@ export function liveGuard(method: WritableMethod, ctx: WriteCtx, state: AppState
     case "completeReview": {
       const dept = args[1] as ReviewDept;
       if (!heldReview(ctx, caseId, dept)) return GUARD_TEXT.reviewNotHeld(dept);
-      // without the record, reviewBlockers would skip the RMES checks (domain/selectors.ts:208)
-      if ((dept === "SAF" || dept === "REG") && (!caseOf(state, caseId)?.rmes || !rmesRefOf(ctx, caseId, dept))) return rmesMissing(ctx, caseId);
+      // Safety and Regulatory complete with the case's RMES record present (REQ-PROC-021: created on their load)
+      if ((dept === "SAF" || dept === "REG") && (!caseOf(state, caseId)?.rmes || !rmesRefOf(ctx, caseId, dept))) return GUARD_TEXT.rmesUnknown;
       return null;
     }
     case "reassignReview": {

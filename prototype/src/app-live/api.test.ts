@@ -103,7 +103,7 @@ describe("createLiveApi: the store flow", () => {
     const members = {
       state: 1, persona: 1, me: 1, setPersona: 1, reset: 1, notify: 1, dismissToast: 1, createCase: 1, updateCaseContacts: 1, saveConfig: 1, submitMetadata: 1, extendScope: 1,
       setAnswer: 1, setComponents: 1, setJustification: 1, uploadDocument: 1, confirmCompleteness: 1, raiseOpenPoint: 1, supplierRespond: 1, reviewResponse: 1, editOpenPoint: 1,
-      closeOpenPoint: 1, recordCriterion: 1, addFinding: 1, findingToQuery: 1, closeFinding: 1, rmesDecision: 1, completeReview: 1, reopenReview: 1, reassignReview: 1,
+      closeOpenPoint: 1, rmesDecision: 1, completeReview: 1, reopenReview: 1, reassignReview: 1,
       finalRelease: 1, cancelCase: 1, reactivateCase: 1, reportChange: 1, addInternalNote: 1, addSupplier: 1, updateSupplier: 1, addContact: 1, updateContact: 1,
       setContactActive: 1, markMailRead: 1, markAllMailsRead: 1, runReminders: 1, publishTemplateV2: 1, setOwnership: 1, updateReminder: 1, createDraft: 1, discardDraft: 1,
       upsertRule: 1, deleteRule: 1, upsertSection: 1, retireSection: 1, restoreSection: 1, upsertField: 1, moveField: 1, removeField: 1, validateDraft: 1, publishDraft: 1,
@@ -355,11 +355,11 @@ describe("saving like the portal: the store side (APP-SAVING-GAPS, 20 Oct)", () 
     return { state, seen, enqueue };
   }
   const result = (r: Partial<WriteResult> = {}): WriteResult => ({ ok: true, handoffs: [], warnings: [], ...r });
-  const saved = [{ flow: "rmesSAF" as const, item: { _id: "PkRmes1", Open_Criteria_Count: 3 } }];
+  const saved = [{ flow: "review" as const, item: { _id: "PkRev1", RMES_Decision: "Approved" } }];
 
   it("gap 1: a save that moved no step shows its read-backs and reads nothing again; a step move reads once, after the last job", async () => {
     const c = chain();
-    const r = await c.enqueue("recordCriterion", async () => result({ saved, auditRow: { _id: "PkEv1" }, moved: false }));
+    const r = await c.enqueue("rmesDecision", async () => result({ saved, auditRow: { _id: "PkEv1" }, moved: false }));
     expect(r.ok).toBe(true);
     expect(c.seen.shown).toEqual([r]);
     expect(c.seen.reads).toBe(0);
@@ -369,13 +369,13 @@ describe("saving like the portal: the store side (APP-SAVING-GAPS, 20 Oct)", () 
     const plain = c.enqueue("addInternalNote", async () => result({ saved: [{ flow: "note", item: { _id: "PkNote9" } }], moved: false }));
     await Promise.all([moved, plain]);
     expect(c.seen.reads).toBe(1);
-    expect(c.seen.shown.map((x) => x.saved?.[0]?.item._id)).toEqual(["PkRmes1", "PkNote9"]);
+    expect(c.seen.shown.map((x) => x.saved?.[0]?.item._id)).toEqual(["PkRev1", "PkNote9"]);
     // a result that does not say whether it moved (not a writer's) reads again
     await c.enqueue("x", async () => result());
     expect(c.seen.reads).toBe(2);
     // read-backs the store could not show: it reads again
     const d = chain({ showSaved: () => false });
-    await d.enqueue("recordCriterion", async () => result({ saved, moved: false }));
+    await d.enqueue("rmesDecision", async () => result({ saved, moved: false }));
     expect(d.seen.reads).toBe(1);
     expect(c.seen.saving).toBe(0);
   });
@@ -386,22 +386,22 @@ describe("saving like the portal: the store side (APP-SAVING-GAPS, 20 Oct)", () 
     const c = chain({
       // the click after the failure: the screens no longer show the failed job's optimistic state
       onDrop: () => {
-        if (later.length === 0) later.push(c.enqueue("closeFinding", async () => (ran.push("closeFinding"), result({ moved: false }))));
+        if (later.length === 0) later.push(c.enqueue("addInternalNote", async () => (ran.push("addInternalNote"), result({ moved: false }))));
       },
     });
-    const first = c.enqueue("recordCriterion", async () => (ran.push("recordCriterion"), { ok: false, tone: "danger" as const, message: "Not saved: Kissflow did not answer within 30 s.", handoffs: [], warnings: [] }));
+    const first = c.enqueue("rmesDecision", async () => (ran.push("rmesDecision"), { ok: false, tone: "danger" as const, message: "Not saved: Kissflow did not answer within 30 s.", handoffs: [], warnings: [] }));
     const queued = c.enqueue("completeReview", async () => (ran.push("completeReview"), result({ moved: true })));
     const [a, b] = await Promise.all([first, queued]);
     await later[0];
     expect(a.ok).toBe(false);
     expect(b).toEqual({ ok: false, tone: "warning", message: NOT_SENT, handoffs: [], warnings: [] });
-    expect(ran).toEqual(["recordCriterion", "closeFinding"]);
+    expect(ran).toEqual(["rmesDecision", "addInternalNote"]);
     expect(c.state.failEpoch).toBe(1); // the job that was not sent is no new failure
-    expect(c.seen.reports.map((x) => [x.label, x.r.ok])).toEqual([["recordCriterion", false], ["completeReview", false], ["closeFinding", true]]);
+    expect(c.seen.reports.map((x) => [x.label, x.r.ok])).toEqual([["rmesDecision", false], ["completeReview", false], ["addInternalNote", true]]);
     expect(c.seen.reads).toBe(1); // once, after the last job
     ran = [];
-    expect((await c.enqueue("addFinding", async () => (ran.push("addFinding"), result({ moved: false })))).ok).toBe(true);
-    expect(ran).toEqual(["addFinding"]);
+    expect((await c.enqueue("closeOpenPoint", async () => (ran.push("closeOpenPoint"), result({ moved: false })))).ok).toBe(true);
+    expect(ran).toEqual(["closeOpenPoint"]);
   });
 
   it("gap 4: the writer gets the write context of the click, not the one of a load that finished before the job ran", async () => {
@@ -431,7 +431,7 @@ describe("saving like the portal: the store side (APP-SAVING-GAPS, 20 Oct)", () 
     expect(await api.addInternalNote("ZZT-0003", "   ")).toBe(false);
     expect(rec.jobs).toHaveLength(2);
     const op = initial.cases.find((c) => c.id === "ZZT-0003")!.openPoints.find((p) => p.status !== "closed")!;
-    for (const p of [api.reviewResponse("ZZT-0003", op.id, "accept", ""), api.addFinding("ZZT-0003", "S-A2", "x", true), api.findingToQuery("ZZT-0003", "nope", "q", "2026-11-30")]) expect(p).toBeInstanceOf(Promise);
+    expect(api.reviewResponse("ZZT-0003", op.id, "accept", "")).toBeInstanceOf(Promise);
   });
 
   it("gap 9: Complete review decides from what Kissflow holds now: a point a colleague raised since the load refuses it, nothing is written", async () => {

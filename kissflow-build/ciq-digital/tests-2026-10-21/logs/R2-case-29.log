@@ -1,0 +1,64 @@
+
+ RUN  v2.1.9 /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/prototype
+
+stdout | live/case.live.ts > S-CASE: a case from the supplier master to the final release, and a cancelled one
+S-CASE R2 (live): /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/kissflow-build/ciq-digital/tests-2026-10-21/results/R2/S-CASE.json
+pass     0 integrations ON [2 calls]
+pass     1 supplier master [27 calls]
+pass     2 draft [17 calls]
+pass     3 started (I-1) [22 calls]
+pass     4a answers saved (request.changed) [9 calls]
+pass     4b completeness confirmed (I-2 fields) [8 calls]
+blocked  4c I-2 Approve [1 calls] — 050201 expected: "Waiting for supplier: CIQ" is held by Integration service, and the key's user, whom I-2 acts as, is not in it (app roles read at boot: Busines
+fail     5 reviews (E-A) [32 calls] — failed: I-2 started one review per department the scope activates, and RMM's; RMM: its review item reads back; REG: its review item reads back; SAF: its review 
+not-run  6a RMES Safety — needs "5 reviews (E-A)" (fail)
+not-run  6b RMES Regulatory — needs "5 reviews (E-A)" (fail)
+not-run  7 review completion — needs "5 reviews (E-A)" (fail)
+not-run  8 release requested — needs "5 reviews (E-A)" (fail)
+not-run  9 final release (I-7) — needs "8 release requested" (not-run)
+pass     10 cancelled case [55 calls]
+pass     11 cleanup [34 calls]
+calls: 213
+
+ ❯ live/case.live.ts (16 tests | 1 failed) 2681823ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 0 the integrations are ON (read-only) 25102ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 1 supplier master: the app's addSupplier, Thomas as self contact and a placeholder 343358ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 2 draft: the app's Start gate leaves a draft; it is discarded (R1 and R4 keep one) 214996ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 3 started: createCase, I-1 makes the request 278486ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 4a the supplier saves answers through the portal's writer (request.changed) 113561ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 4b the supplier confirms completeness (I-2's fields) 101041ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 4c I-2's Approve moves the case on (expected blocked: Integration service has no members) 12597ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 5 reviews: I-2 starts them (E-A) 403314ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 10 cancel: a second case is started, then cancelled (case.cancelled) 697786ms
+   ✓ S-CASE: a case from the supplier master to the final release, and a cancelled one > 11 cleanup: R2, R3 (and offline) delete their own items; R1 and R4 keep the showcase 427479ms
+   × S-CASE: a case from the supplier master to the final release, and a cancelled one > records every step; offline the expected outcome 52ms
+     → expected [ Array(1) ] to deeply equal []
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  live/case.live.ts > S-CASE: a case from the supplier master to the final release, and a cancelled one > records every step; offline the expected outcome
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- Array []
++ Array [
++   "5 reviews (E-A): failed: I-2 started one review per department the scope activates, and RMM's; RMM: its review item reads back; REG: its review item reads back; SAF: its review item reads back; QM: its review item reads back; MIC: its review item reads back",
++ ]
+
+ ❯ live/case.live.ts:1059:95
+    1057|     if (!rec) throw new Error("the world was not created");
+    1058|     const by = (status: string) => rec.steps.filter((x) => x.status ==…
+    1059|     expect(rec.steps.filter((x) => x.status === "fail").map((x) => `${…
+       |                                                                                               ^
+    1060|     // the RMES steps of every department the run's data activates run…
+    1061|     // checks the live scope)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 15 passed (16)
+   Start at  02:50:09
+   Duration  2683.33s (transform 690ms, setup 0ms, collect 1.27s, tests 2681.82s, environment 0ms, prepare 35ms)
+

@@ -41,7 +41,7 @@ export function HotspotCard({ v }: { v: ReturnType<typeof hotspotView> }) {
           </Table>
         ) : undefined
       }
-      footer={v.rows.length ? `${v.total} open points (queries, document requests, additional sections and findings) by the section they refer to.` : undefined}
+      footer={v.rows.length ? `${v.total} open points (queries, document requests and additional sections) by the section they refer to.` : undefined}
     >
       {v.rows.length ? (
         <RankedBars rows={v.rows} labelWidth={260} highlight={v.highlight} />

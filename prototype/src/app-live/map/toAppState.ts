@@ -254,7 +254,7 @@ export function toAppState(x: MapInput): Mapped {
       const ops = openPointsOf(opsBy.get(s.itemId) ?? [], snaps.ops, ctx, seenOps);
       const points = closeByCancellation(ops.points, snaps.cancelled).sort((a, b) => time(a.createdAt) - time(b.createdAt));
       const tracks = reviewsOf(reviewsBy.get(s.itemId) ?? [], snaps.tracks, points, ctx);
-      const rmes = rmesOf(rmesBy.get(s.itemId) ?? [], ctx);
+      const rmes = rmesOf(rmesBy.get(s.itemId) ?? [], ctx, s.rows);
       const notes = notesOf(notesBy.get(s.itemId) ?? [], snaps.notes, ctx);
       const m = toCase(base, { reviews: tracks.reviews, openPoints: points, ...(rmes.rmes ? { rmes: rmes.rmes } : {}), notes, completions: tracks.completions, entries: caseEntries(s.rows, dir, x.env) }, conf, dir, snap.loadedAt, mapNotes);
       cases.push(m.c);

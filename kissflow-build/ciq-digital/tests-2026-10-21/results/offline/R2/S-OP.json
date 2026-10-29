@@ -1,8 +1,8 @@
 {
  "suite": "S-OP",
  "run": "R2",
- "startedAt": "2026-10-21T19:27:49.752Z",
- "savedAt": "2026-10-21T19:27:49.852Z",
+ "startedAt": "2026-10-29T00:02:18.904Z",
+ "savedAt": "2026-10-29T00:02:19.011Z",
  "counts": {
   "pass": 15,
   "fail": 0,
@@ -87,8 +87,8 @@
      "integration runs (offline fakes)": []
     }
    },
-   "ms": 11,
-   "at": "2026-10-21T19:27:49.752Z"
+   "ms": 12,
+   "at": "2026-10-29T00:02:18.904Z"
   },
   {
    "name": "S2 case: createCase, I-1 creates its CIQP Request",
@@ -177,8 +177,8 @@
      ]
     }
    },
-   "ms": 4,
-   "at": "2026-10-21T19:27:49.764Z"
+   "ms": 5,
+   "at": "2026-10-29T00:02:18.916Z"
   },
   {
    "name": "S3 completeness: the supplier fills in and confirms (portal), I-2",
@@ -189,7 +189,7 @@
       "what": "CIQP Request (raw)",
       "value": {
        "Completeness_Confirm": "Confirmed",
-       "Completeness_At": "2026-10-21T19:27:49Z",
+       "Completeness_At": "2026-10-29T00:02:18Z",
        "Case_Phase_Label": "Filling in",
        "_status": "InProgress",
        "_current_step": "Supplier: keep the CIQ up to date"
@@ -199,10 +199,10 @@
       "what": "CIQ Case (raw)",
       "value": {
        "Completeness_Confirm": "Confirmed",
-       "Completeness_At": "2026-10-21T19:27:49Z",
+       "Completeness_At": "2026-10-29T00:02:18Z",
        "Case_Phase": "Review",
        "_status": "InProgress",
-       "_current_step": "Waiting for supplier: CIQ"
+       "_current_step": "Beiersdorf review and final release"
       }
      },
      {
@@ -251,8 +251,8 @@
       "polls": 1,
       "ms": 6000
      },
-     "case step after I-2": "still at Waiting for supplier: CIQ (I-2's Approve refused: Integration service has no members)",
-     "kissflowCalls (estimated live)": 32,
+     "case step after I-2": "Beiersdorf review and final release",
+     "kissflowCalls (estimated live)": 38,
      "integration runs (offline fakes)": [
       {
        "code": "requestChanged",
@@ -265,18 +265,23 @@
        "detail": "copied the 15 supplier-data fields to CIQ Case PkCase5"
       },
       {
+       "code": "requestChanged",
+       "ok": true,
+       "detail": "copied the 15 supplier-data fields to CIQ Case PkCase5"
+      },
+      {
        "code": "completenessConfirmed",
-       "ok": false,
-       "detail": "recorded the completeness on CIQ Case PkCase5, then its Approve of \"Waiting for supplier: CIQ\" was refused: KISSFLOW_ERROR_050201 This item has moved out of your queue. (held by Integration service, which has no members)"
+       "ok": true,
+       "detail": "recorded the completeness on CIQ Case PkCase5, started 5 reviews and moved it to review"
       }
      ]
     }
    },
-   "ms": 21,
-   "at": "2026-10-21T19:27:49.768Z"
+   "ms": 26,
+   "at": "2026-10-29T00:02:18.921Z"
   },
   {
-   "name": "S4 reviews: ensureReviews starts the scope's review tracks",
+   "name": "S4 reviews: I-2 starts the review tracks (E-A)",
    "status": "pass",
    "evidence": {
     "readBacks": [
@@ -286,32 +291,27 @@
        {
         "dept": "RMM",
         "status": "in-review",
-        "item": "PkRev10"
+        "item": "PkEAZZTN21R2OPR2RMM"
        },
        {
         "dept": "REG",
         "status": "in-review",
-        "item": "PkRev15"
+        "item": "PkEAZZTN21R2OPR2REG"
        },
        {
         "dept": "SAF",
         "status": "in-review",
-        "item": "PkRev20"
+        "item": "PkEAZZTN21R2OPR2SAF"
        },
        {
         "dept": "QM",
         "status": "in-review",
-        "item": "PkRev25"
+        "item": "PkEAZZTN21R2OPR2QM"
        },
        {
         "dept": "MIC",
         "status": "in-review",
-        "item": "PkRev30"
-       },
-       {
-        "dept": "SUS",
-        "status": "in-review",
-        "item": "PkRev35"
+        "item": "PkEAZZTN21R2OPR2MIC"
        }
       ]
      },
@@ -347,11 +347,8 @@
     ],
     "checks": [
      {
-      "label": "ensureReviews ran without a failure",
-      "ok": true,
-      "detail": [
-       "Started in Kissflow: ZZT-N21-R2-OPR2 reviews for RMM, Regulatory, Safety, QM, Microbiology, Sustainability."
-      ]
+      "label": "I-2 started the case's reviews (E-A), RMM's among them",
+      "ok": true
      },
      {
       "label": "RMM's review track exists",
@@ -391,20 +388,24 @@
      }
     ],
     "notes": {
-     "load effects": [
-      {
-       "effect": "ensureReviews",
-       "ok": true,
-       "message": "Started in Kissflow: ZZT-N21-R2-OPR2 reviews for RMM, Regulatory, Safety, QM, Microbiology, Sustainability."
-      }
-     ],
+     "E-A poll": {
+      "polls": 1,
+      "ms": 6000,
+      "depts": [
+       "RMM",
+       "REG",
+       "SAF",
+       "QM",
+       "MIC"
+      ]
+     },
      "the run's departments without a review track": [],
-     "kissflowCalls (estimated live)": 64,
+     "kissflowCalls (estimated live)": 24,
      "integration runs (offline fakes)": []
     }
    },
-   "ms": 9,
-   "at": "2026-10-21T19:27:49.790Z"
+   "ms": 3,
+   "at": "2026-10-29T00:02:18.948Z"
   },
   {
    "name": "P1 SAF 1 raise: op.round makes the CIQP Query",
@@ -423,7 +424,7 @@
        "OP_Outcome": null,
        "Question_Text": "ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2 and name the test method.",
        "Supplier_Justification": "ZZT-N21-R2 SAF P1: needed for the SAF review.",
-       "Supplier_Due_Date": "2026-11-04",
+       "Supplier_Due_Date": "2026-11-12",
        "Portal_Query_Item_Id": "PkQry4",
        "Response_Kind": null,
        "Response_Text": null,
@@ -444,7 +445,7 @@
       "value": {
        "Query_Key": "OP-OPR2-01-R1",
        "Round_No": 1,
-       "App_Open_Point_Id": "PkOp42",
+       "App_Open_Point_Id": "PkOp16",
        "Case_Code": "ZZT-N21-R2-OPR2",
        "Kind_Label": "Question",
        "Responsible_Department": "Product Safety",
@@ -452,7 +453,7 @@
        "Ref_Label": "K2.2 · Byproducts and contaminations",
        "Question_Text": "ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2 and name the test method.",
        "Supplier_Justification": "ZZT-N21-R2 SAF P1: needed for the SAF review.",
-       "Supplier_Due_Date": "2026-11-04",
+       "Supplier_Due_Date": "2026-11-12",
        "Edited_At": null,
        "Response_Kind": null,
        "Response_Text": null,
@@ -476,14 +477,14 @@
        "question": "ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2 and name the test method.",
        "justification": "ZZT-N21-R2 SAF P1: needed for the SAF review.",
        "responsibleId": "UsRmmKatrin",
-       "due": "2026-11-04",
+       "due": "2026-11-12",
        "rounds": 1,
        "status": "open",
        "createdBy": "UsRmmKatrin",
        "thread": [
         {
          "id": "ZZT-N21-R2-OPR2-m1-1",
-         "at": "2026-10-21T19:27:49.000Z",
+         "at": "2026-10-29T00:02:18.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "raised",
@@ -503,8 +504,7 @@
        "REG",
        "SAF",
        "QM",
-       "MIC",
-       "SUS"
+       "MIC"
       ]
      },
      {
@@ -604,14 +604,14 @@
      ],
      "open point": {
       "opId": "OP-OPR2-01",
-      "itemId": "PkOp42"
+      "itemId": "PkOp16"
      },
      "op.round poll": {
       "ok": true,
       "polls": 1,
       "ms": 6000
      },
-     "kissflowCalls (estimated live)": 50,
+     "kissflowCalls (estimated live)": 46,
      "integration runs (offline fakes)": [
       {
        "code": "op.round",
@@ -626,8 +626,8 @@
      ]
     }
    },
-   "ms": 7,
-   "at": "2026-10-21T19:27:49.799Z"
+   "ms": 10,
+   "at": "2026-10-29T00:02:18.952Z"
   },
   {
    "name": "P1 SAF 2 edit: op.edited updates the query",
@@ -639,7 +639,7 @@
       "value": {
        "Query_Key": "OP-OPR2-01-R1",
        "Round_No": 1,
-       "App_Open_Point_Id": "PkOp42",
+       "App_Open_Point_Id": "PkOp16",
        "Case_Code": "ZZT-N21-R2-OPR2",
        "Kind_Label": "Question",
        "Responsible_Department": "Product Safety",
@@ -647,8 +647,8 @@
        "Ref_Label": "K2.2 · Byproducts and contaminations",
        "Question_Text": "ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.",
        "Supplier_Justification": "ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).",
-       "Supplier_Due_Date": "2026-11-11",
-       "Edited_At": "2026-10-21T19:27:49Z",
+       "Supplier_Due_Date": "2026-11-19",
+       "Edited_At": "2026-10-29T00:02:18Z",
        "Response_Kind": null,
        "Response_Text": null,
        "Assigned_Contacts": [
@@ -670,7 +670,7 @@
        "OP_Outcome": null,
        "Question_Text": "ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.",
        "Supplier_Justification": "ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).",
-       "Supplier_Due_Date": "2026-11-11",
+       "Supplier_Due_Date": "2026-11-19",
        "Portal_Query_Item_Id": "PkQry4",
        "Response_Kind": null,
        "Response_Text": null,
@@ -699,14 +699,14 @@
        "question": "ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.",
        "justification": "ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).",
        "responsibleId": "UsRmmKatrin",
-       "due": "2026-11-11",
+       "due": "2026-11-19",
        "rounds": 1,
        "status": "open",
        "createdBy": "UsRmmKatrin",
        "thread": [
         {
          "id": "ZZT-N21-R2-OPR2-m1-1",
-         "at": "2026-10-21T19:27:49.000Z",
+         "at": "2026-10-29T00:02:18.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "raised",
@@ -714,11 +714,11 @@
         },
         {
          "id": "OP-OPR2-01-m2",
-         "at": "2026-10-21T19:27:49.000Z",
+         "at": "2026-10-29T00:02:18.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "edited",
-         "text": "Question changed from “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2 and name the test method.” to “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.”. Justification changed to “ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).”. Due date changed from 4 Nov 2026 to 11 Nov 2026."
+         "text": "Question changed from “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2 and name the test method.” to “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.”. Justification changed to “ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).”. Due date changed from 12 Nov 2026 to 19 Nov 2026."
         }
        ],
        "edits": [
@@ -727,21 +727,21 @@
          "from": "ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2 and name the test method.",
          "to": "ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.",
          "by": "UsRmmKatrin",
-         "at": "2026-10-21T19:27:49.000Z"
+         "at": "2026-10-29T00:02:18.000Z"
         },
         {
          "field": "justification",
          "from": "ZZT-N21-R2 SAF P1: needed for the SAF review.",
          "to": "ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).",
          "by": "UsRmmKatrin",
-         "at": "2026-10-21T19:27:49.000Z"
+         "at": "2026-10-29T00:02:18.000Z"
         },
         {
          "field": "dueDate",
-         "from": "2026-11-04",
-         "to": "2026-11-11",
+         "from": "2026-11-12",
+         "to": "2026-11-19",
          "by": "UsRmmKatrin",
-         "at": "2026-10-21T19:27:49.000Z"
+         "at": "2026-10-29T00:02:18.000Z"
         }
        ]
       }
@@ -798,7 +798,7 @@
       "polls": 1,
       "ms": 6000
      },
-     "kissflowCalls (estimated live)": 31,
+     "kissflowCalls (estimated live)": 29,
      "integration runs (offline fakes)": [
       {
        "code": "op.edited",
@@ -813,8 +813,8 @@
      ]
     }
    },
-   "ms": 4,
-   "at": "2026-10-21T19:27:49.807Z"
+   "ms": 5,
+   "at": "2026-10-29T00:02:18.962Z"
   },
   {
    "name": "P1 SAF 3 supplier answer, round 1 (portal writer, I-4)",
@@ -826,7 +826,7 @@
       "value": {
        "Query_Key": "OP-OPR2-01-R1",
        "Round_No": 1,
-       "App_Open_Point_Id": "PkOp42",
+       "App_Open_Point_Id": "PkOp16",
        "Case_Code": "ZZT-N21-R2-OPR2",
        "Kind_Label": "Question",
        "Responsible_Department": "Product Safety",
@@ -834,8 +834,8 @@
        "Ref_Label": "K2.2 · Byproducts and contaminations",
        "Question_Text": "ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.",
        "Supplier_Justification": "ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).",
-       "Supplier_Due_Date": "2026-11-11",
-       "Edited_At": "2026-10-21T19:27:49Z",
+       "Supplier_Due_Date": "2026-11-19",
+       "Edited_At": "2026-10-29T00:02:18Z",
        "Response_Kind": "Answer",
        "Response_Text": "ZZT-N21-R2 Supplier P1: the limits are in the specification of 12 Oct; method per Ph. Eur. 2.6.12.",
        "Assigned_Contacts": [
@@ -857,7 +857,7 @@
        "OP_Outcome": null,
        "Question_Text": "ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.",
        "Supplier_Justification": "ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).",
-       "Supplier_Due_Date": "2026-11-11",
+       "Supplier_Due_Date": "2026-11-19",
        "Portal_Query_Item_Id": "PkQry4",
        "Response_Kind": "Answer",
        "Response_Text": "ZZT-N21-R2 Supplier P1: the limits are in the specification of 12 Oct; method per Ph. Eur. 2.6.12.",
@@ -888,7 +888,7 @@
         {
          "side": "internal",
          "action": "edited",
-         "text": "Question changed from “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2 and name the test method.” to “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.”. Justification changed to “ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).”. Due date changed from 4 Nov 2026 to 11 Nov 2026."
+         "text": "Question changed from “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2 and name the test method.” to “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.”. Justification changed to “ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).”. Due date changed from 12 Nov 2026 to 19 Nov 2026."
         },
         {
          "side": "supplier",
@@ -941,18 +941,18 @@
       "ms": 6000
      },
      "the answer is attributed to": "the self contact",
-     "kissflowCalls (estimated live)": 32,
+     "kissflowCalls (estimated live)": 31,
      "integration runs (offline fakes)": [
       {
        "code": "queryAnswered",
        "ok": true,
-       "detail": "wrote the answer of CIQP Query PkQry4 on CIQ Open Point PkOp42"
+       "detail": "wrote the answer of CIQP Query PkQry4 on CIQ Open Point PkOp16"
       }
      ]
     }
    },
-   "ms": 5,
-   "at": "2026-10-21T19:27:49.811Z"
+   "ms": 6,
+   "at": "2026-10-29T00:02:18.967Z"
   },
   {
    "name": "P1 SAF 4 return: round 2, a new query (op.round)",
@@ -971,7 +971,7 @@
        "OP_Outcome": null,
        "Question_Text": "ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.",
        "Supplier_Justification": "ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).",
-       "Supplier_Due_Date": "2026-11-11",
+       "Supplier_Due_Date": "2026-11-19",
        "Portal_Query_Item_Id": "PkQry6",
        "Response_Kind": "Answer",
        "Response_Text": "ZZT-N21-R2 Supplier P1: the limits are in the specification of 12 Oct; method per Ph. Eur. 2.6.12.",
@@ -992,7 +992,7 @@
       "value": {
        "Query_Key": "OP-OPR2-01-R2",
        "Round_No": 2,
-       "App_Open_Point_Id": "PkOp42",
+       "App_Open_Point_Id": "PkOp16",
        "Case_Code": "ZZT-N21-R2-OPR2",
        "Kind_Label": "Question",
        "Responsible_Department": "Product Safety",
@@ -1000,7 +1000,7 @@
        "Ref_Label": "K2.2 · Byproducts and contaminations",
        "Question_Text": "ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.",
        "Supplier_Justification": "ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).",
-       "Supplier_Due_Date": "2026-11-11",
+       "Supplier_Due_Date": "2026-11-19",
        "Edited_At": null,
        "Response_Kind": null,
        "Response_Text": null,
@@ -1024,14 +1024,14 @@
        "question": "ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.",
        "justification": "ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).",
        "responsibleId": "UsRmmKatrin",
-       "due": "2026-11-11",
+       "due": "2026-11-19",
        "rounds": 2,
        "status": "open",
        "createdBy": "UsRmmKatrin",
        "thread": [
         {
          "id": "ZZT-N21-R2-OPR2-m1-1",
-         "at": "2026-10-21T19:27:49.000Z",
+         "at": "2026-10-29T00:02:18.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "raised",
@@ -1039,15 +1039,15 @@
         },
         {
          "id": "OP-OPR2-01-m2",
-         "at": "2026-10-21T19:27:49.000Z",
+         "at": "2026-10-29T00:02:18.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "edited",
-         "text": "Question changed from “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2 and name the test method.” to “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.”. Justification changed to “ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).”. Due date changed from 4 Nov 2026 to 11 Nov 2026."
+         "text": "Question changed from “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2 and name the test method.” to “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.”. Justification changed to “ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).”. Due date changed from 12 Nov 2026 to 19 Nov 2026."
         },
         {
          "id": "OP-OPR2-01-m3",
-         "at": "2026-10-23T16:00:36.000Z",
+         "at": "2026-10-29T00:02:41.000Z",
          "by": "self:UsRmmKatrin",
          "side": "supplier",
          "action": "answered",
@@ -1055,7 +1055,7 @@
         },
         {
          "id": "OP-OPR2-01-m4",
-         "at": "2026-10-21T19:27:49.000Z",
+         "at": "2026-10-29T00:02:18.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "returned",
@@ -1069,21 +1069,21 @@
          "from": "ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2 and name the test method.",
          "to": "ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.",
          "by": "UsRmmKatrin",
-         "at": "2026-10-21T19:27:49.000Z"
+         "at": "2026-10-29T00:02:18.000Z"
         },
         {
          "field": "justification",
          "from": "ZZT-N21-R2 SAF P1: needed for the SAF review.",
          "to": "ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).",
          "by": "UsRmmKatrin",
-         "at": "2026-10-21T19:27:49.000Z"
+         "at": "2026-10-29T00:02:18.000Z"
         },
         {
          "field": "dueDate",
-         "from": "2026-11-04",
-         "to": "2026-11-11",
+         "from": "2026-11-12",
+         "to": "2026-11-19",
          "by": "UsRmmKatrin",
-         "at": "2026-10-21T19:27:49.000Z"
+         "at": "2026-10-29T00:02:18.000Z"
         }
        ]
       }
@@ -1210,7 +1210,7 @@
       "polls": 1,
       "ms": 6000
      },
-     "kissflowCalls (estimated live)": 32,
+     "kissflowCalls (estimated live)": 30,
      "integration runs (offline fakes)": [
       {
        "code": "op.round",
@@ -1226,7 +1226,7 @@
     }
    },
    "ms": 4,
-   "at": "2026-10-21T19:27:49.817Z"
+   "at": "2026-10-29T00:02:18.974Z"
   },
   {
    "name": "P1 SAF 3 supplier answer, round 2 (portal writer, I-4)",
@@ -1238,7 +1238,7 @@
       "value": {
        "Query_Key": "OP-OPR2-01-R2",
        "Round_No": 2,
-       "App_Open_Point_Id": "PkOp42",
+       "App_Open_Point_Id": "PkOp16",
        "Case_Code": "ZZT-N21-R2-OPR2",
        "Kind_Label": "Question",
        "Responsible_Department": "Product Safety",
@@ -1246,7 +1246,7 @@
        "Ref_Label": "K2.2 · Byproducts and contaminations",
        "Question_Text": "ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.",
        "Supplier_Justification": "ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).",
-       "Supplier_Due_Date": "2026-11-11",
+       "Supplier_Due_Date": "2026-11-19",
        "Edited_At": null,
        "Response_Kind": "Answer",
        "Response_Text": "ZZT-N21-R2 Supplier P1: the detection limit is 10 cfu/g.",
@@ -1269,7 +1269,7 @@
        "OP_Outcome": null,
        "Question_Text": "ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.",
        "Supplier_Justification": "ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).",
-       "Supplier_Due_Date": "2026-11-11",
+       "Supplier_Due_Date": "2026-11-19",
        "Portal_Query_Item_Id": "PkQry6",
        "Response_Kind": "Answer",
        "Response_Text": "ZZT-N21-R2 Supplier P1: the detection limit is 10 cfu/g.",
@@ -1300,7 +1300,7 @@
         {
          "side": "internal",
          "action": "edited",
-         "text": "Question changed from “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2 and name the test method.” to “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.”. Justification changed to “ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).”. Due date changed from 4 Nov 2026 to 11 Nov 2026."
+         "text": "Question changed from “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2 and name the test method.” to “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.”. Justification changed to “ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).”. Due date changed from 12 Nov 2026 to 19 Nov 2026."
         },
         {
          "side": "supplier",
@@ -1363,18 +1363,18 @@
       "ms": 6000
      },
      "the answer is attributed to": "the self contact",
-     "kissflowCalls (estimated live)": 33,
+     "kissflowCalls (estimated live)": 32,
      "integration runs (offline fakes)": [
       {
        "code": "queryAnswered",
        "ok": true,
-       "detail": "wrote the answer of CIQP Query PkQry6 on CIQ Open Point PkOp42"
+       "detail": "wrote the answer of CIQP Query PkQry6 on CIQ Open Point PkOp16"
       }
      ]
     }
    },
    "ms": 5,
-   "at": "2026-10-21T19:27:49.821Z"
+   "at": "2026-10-29T00:02:18.979Z"
   },
   {
    "name": "P1 SAF 4 accept: the point ends, history.updated",
@@ -1393,13 +1393,13 @@
        "OP_Outcome": "Accepted",
        "Question_Text": "ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.",
        "Supplier_Justification": "ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).",
-       "Supplier_Due_Date": "2026-11-11",
+       "Supplier_Due_Date": "2026-11-19",
        "Portal_Query_Item_Id": "PkQry6",
        "Response_Kind": "Answer",
        "Response_Text": "ZZT-N21-R2 Supplier P1: the detection limit is 10 cfu/g.",
        "Return_Reason": "ZZT-N21-R2 SAF P1: please add the detection limit of the method.",
        "Outcome_Reason": null,
-       "Closed_At": "2026-10-21T19:27:49Z",
+       "Closed_At": "2026-10-29T00:02:18Z",
        "Closed_By": [
         "UsRmmKatrin"
        ],
@@ -1424,17 +1424,17 @@
        "question": "ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.",
        "justification": "ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).",
        "responsibleId": "UsRmmKatrin",
-       "due": "2026-11-11",
+       "due": "2026-11-19",
        "rounds": 2,
        "status": "closed",
        "outcome": "accepted",
        "createdBy": "UsRmmKatrin",
        "closedBy": "UsRmmKatrin",
-       "closedAt": "2026-10-21T19:27:49.000Z",
+       "closedAt": "2026-10-29T00:02:18.000Z",
        "thread": [
         {
          "id": "ZZT-N21-R2-OPR2-m1-1",
-         "at": "2026-10-21T19:27:49.000Z",
+         "at": "2026-10-29T00:02:18.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "raised",
@@ -1442,15 +1442,15 @@
         },
         {
          "id": "OP-OPR2-01-m2",
-         "at": "2026-10-21T19:27:49.000Z",
+         "at": "2026-10-29T00:02:18.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "edited",
-         "text": "Question changed from “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2 and name the test method.” to “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.”. Justification changed to “ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).”. Due date changed from 4 Nov 2026 to 11 Nov 2026."
+         "text": "Question changed from “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2 and name the test method.” to “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.”. Justification changed to “ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).”. Due date changed from 12 Nov 2026 to 19 Nov 2026."
         },
         {
          "id": "OP-OPR2-01-m3",
-         "at": "2026-10-23T16:00:36.000Z",
+         "at": "2026-10-29T00:02:41.000Z",
          "by": "self:UsRmmKatrin",
          "side": "supplier",
          "action": "answered",
@@ -1458,7 +1458,7 @@
         },
         {
          "id": "OP-OPR2-01-m4",
-         "at": "2026-10-21T19:27:49.000Z",
+         "at": "2026-10-29T00:02:18.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "returned",
@@ -1467,7 +1467,7 @@
         },
         {
          "id": "OP-OPR2-01-m5",
-         "at": "2026-10-23T16:00:40.000Z",
+         "at": "2026-10-29T00:02:45.000Z",
          "by": "self:UsRmmKatrin",
          "side": "supplier",
          "action": "answered",
@@ -1475,7 +1475,7 @@
         },
         {
          "id": "OP-OPR2-01-m6",
-         "at": "2026-10-21T19:27:49.000Z",
+         "at": "2026-10-29T00:02:18.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "accepted",
@@ -1488,21 +1488,21 @@
          "from": "ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2 and name the test method.",
          "to": "ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.",
          "by": "UsRmmKatrin",
-         "at": "2026-10-21T19:27:49.000Z"
+         "at": "2026-10-29T00:02:18.000Z"
         },
         {
          "field": "justification",
          "from": "ZZT-N21-R2 SAF P1: needed for the SAF review.",
          "to": "ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).",
          "by": "UsRmmKatrin",
-         "at": "2026-10-21T19:27:49.000Z"
+         "at": "2026-10-29T00:02:18.000Z"
         },
         {
          "field": "dueDate",
-         "from": "2026-11-04",
-         "to": "2026-11-11",
+         "from": "2026-11-12",
+         "to": "2026-11-19",
          "by": "UsRmmKatrin",
-         "at": "2026-10-21T19:27:49.000Z"
+         "at": "2026-10-29T00:02:18.000Z"
         }
        ]
       }
@@ -1571,7 +1571,7 @@
       "polls": 1,
       "ms": 6000
      },
-     "kissflowCalls (estimated live)": 31,
+     "kissflowCalls (estimated live)": 29,
      "integration runs (offline fakes)": [
       {
        "code": "history.updated",
@@ -1582,7 +1582,7 @@
     }
    },
    "ms": 3,
-   "at": "2026-10-21T19:27:49.828Z"
+   "at": "2026-10-29T00:02:18.985Z"
   },
   {
    "name": "P2 REG 1 raise: op.round makes the CIQP Query",
@@ -1601,7 +1601,7 @@
        "OP_Outcome": null,
        "Question_Text": "ZZT-N21-R2 REG P2: please confirm the specification limits for section K6.1 and name the test method.",
        "Supplier_Justification": "ZZT-N21-R2 REG P2: needed for the REG review.",
-       "Supplier_Due_Date": "2026-11-04",
+       "Supplier_Due_Date": "2026-11-12",
        "Portal_Query_Item_Id": "PkQry8",
        "Response_Kind": null,
        "Response_Text": null,
@@ -1622,7 +1622,7 @@
       "value": {
        "Query_Key": "OP-OPR2-02-R1",
        "Round_No": 1,
-       "App_Open_Point_Id": "PkOp53",
+       "App_Open_Point_Id": "PkOp27",
        "Case_Code": "ZZT-N21-R2-OPR2",
        "Kind_Label": "Question",
        "Responsible_Department": "Regulatory Affairs",
@@ -1630,7 +1630,7 @@
        "Ref_Label": "K6.1 · EU REACH",
        "Question_Text": "ZZT-N21-R2 REG P2: please confirm the specification limits for section K6.1 and name the test method.",
        "Supplier_Justification": "ZZT-N21-R2 REG P2: needed for the REG review.",
-       "Supplier_Due_Date": "2026-11-04",
+       "Supplier_Due_Date": "2026-11-12",
        "Edited_At": null,
        "Response_Kind": null,
        "Response_Text": null,
@@ -1654,14 +1654,14 @@
        "question": "ZZT-N21-R2 REG P2: please confirm the specification limits for section K6.1 and name the test method.",
        "justification": "ZZT-N21-R2 REG P2: needed for the REG review.",
        "responsibleId": "UsRmmKatrin",
-       "due": "2026-11-04",
+       "due": "2026-11-12",
        "rounds": 1,
        "status": "open",
        "createdBy": "UsRmmKatrin",
        "thread": [
         {
          "id": "ZZT-N21-R2-OPR2-m2-1",
-         "at": "2026-10-21T19:27:49.000Z",
+         "at": "2026-10-29T00:02:18.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "raised",
@@ -1681,8 +1681,7 @@
        "REG",
        "SAF",
        "QM",
-       "MIC",
-       "SUS"
+       "MIC"
       ]
      },
      {
@@ -1782,14 +1781,14 @@
      ],
      "open point": {
       "opId": "OP-OPR2-02",
-      "itemId": "PkOp53"
+      "itemId": "PkOp27"
      },
      "op.round poll": {
       "ok": true,
       "polls": 1,
       "ms": 6000
      },
-     "kissflowCalls (estimated live)": 54,
+     "kissflowCalls (estimated live)": 50,
      "integration runs (offline fakes)": [
       {
        "code": "op.round",
@@ -1805,7 +1804,7 @@
     }
    },
    "ms": 5,
-   "at": "2026-10-21T19:27:49.832Z"
+   "at": "2026-10-29T00:02:18.990Z"
   },
   {
    "name": "P2 REG 4 close while the query is open: op.closed",
@@ -1817,7 +1816,7 @@
       "value": {
        "Query_Key": "OP-OPR2-02-R1",
        "Round_No": 1,
-       "App_Open_Point_Id": "PkOp53",
+       "App_Open_Point_Id": "PkOp27",
        "Case_Code": "ZZT-N21-R2-OPR2",
        "Kind_Label": "Question",
        "Responsible_Department": "Regulatory Affairs",
@@ -1825,7 +1824,7 @@
        "Ref_Label": "K6.1 · EU REACH",
        "Question_Text": "ZZT-N21-R2 REG P2: please confirm the specification limits for section K6.1 and name the test method.",
        "Supplier_Justification": "ZZT-N21-R2 REG P2: needed for the REG review.",
-       "Supplier_Due_Date": "2026-11-04",
+       "Supplier_Due_Date": "2026-11-12",
        "Edited_At": null,
        "Response_Kind": null,
        "Response_Text": null,
@@ -1848,13 +1847,13 @@
        "OP_Outcome": "Withdrawn",
        "Question_Text": "ZZT-N21-R2 REG P2: please confirm the specification limits for section K6.1 and name the test method.",
        "Supplier_Justification": "ZZT-N21-R2 REG P2: needed for the REG review.",
-       "Supplier_Due_Date": "2026-11-04",
+       "Supplier_Due_Date": "2026-11-12",
        "Portal_Query_Item_Id": "PkQry8",
        "Response_Kind": null,
        "Response_Text": null,
        "Return_Reason": null,
        "Outcome_Reason": "ZZT-N21-R2 REG P2: already answered in the dossier on file; no answer needed.",
-       "Closed_At": "2026-10-21T19:27:49Z",
+       "Closed_At": "2026-10-29T00:02:18Z",
        "Closed_By": [
         "UsRmmKatrin"
        ],
@@ -1879,17 +1878,17 @@
        "question": "ZZT-N21-R2 REG P2: please confirm the specification limits for section K6.1 and name the test method.",
        "justification": "ZZT-N21-R2 REG P2: needed for the REG review.",
        "responsibleId": "UsRmmKatrin",
-       "due": "2026-11-04",
+       "due": "2026-11-12",
        "rounds": 1,
        "status": "closed",
        "outcome": "withdrawn",
        "createdBy": "UsRmmKatrin",
        "closedBy": "UsRmmKatrin",
-       "closedAt": "2026-10-21T19:27:49.000Z",
+       "closedAt": "2026-10-29T00:02:18.000Z",
        "thread": [
         {
          "id": "ZZT-N21-R2-OPR2-m2-1",
-         "at": "2026-10-21T19:27:49.000Z",
+         "at": "2026-10-29T00:02:18.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "raised",
@@ -1897,7 +1896,7 @@
         },
         {
          "id": "OP-OPR2-02-m2",
-         "at": "2026-10-21T19:27:49.000Z",
+         "at": "2026-10-29T00:02:18.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "withdrawn",
@@ -1983,7 +1982,7 @@
       "polls": 1,
       "ms": 6000
      },
-     "kissflowCalls (estimated live)": 35,
+     "kissflowCalls (estimated live)": 33,
      "integration runs (offline fakes)": [
       {
        "code": "op.closed",
@@ -1999,7 +1998,7 @@
     }
    },
    "ms": 3,
-   "at": "2026-10-21T19:27:49.838Z"
+   "at": "2026-10-29T00:02:18.996Z"
   },
   {
    "name": "T1 thread: Thread_JSON holds every round's text",
@@ -2017,7 +2016,7 @@
        {
         "side": "internal",
         "action": "edited",
-        "text": "Question changed from “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2 and name the test method.” to “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.”. Justification changed to “ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).”. Due date changed from 4 Nov 2026 to 11 Nov 2026."
+        "text": "Question changed from “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2 and name the test method.” to “ZZT-N21-R2 SAF P1: please confirm the specification limits for section K2.2, the test method and its detection limit.”. Justification changed to “ZZT-N21-R2 SAF P1: needed for the SAF review (detection limit added).”. Due date changed from 12 Nov 2026 to 19 Nov 2026."
        },
        {
         "side": "supplier",
@@ -2126,8 +2125,8 @@
      "integration runs (offline fakes)": []
     }
    },
-   "ms": 1,
-   "at": "2026-10-21T19:27:49.842Z"
+   "ms": 0,
+   "at": "2026-10-29T00:02:19.001Z"
   },
   {
    "name": "T2 thread: the questions history on the request",
@@ -2236,7 +2235,7 @@
     }
    },
    "ms": 3,
-   "at": "2026-10-21T19:27:49.844Z"
+   "at": "2026-10-29T00:02:19.003Z"
   },
   {
    "name": "C1 clean-up: adopt late portal items, delete this suite's ledger items (withdraw, admin DELETE, GET 404)",
@@ -2252,8 +2251,8 @@
       "value": [
        {
         "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit59",
-        "what": "Case_Code=ZZT-N21-R2-OPR2 Event_Key=EV-ZZT-N21-R2-OPR2-20261021192749-say8",
+        "id": "FmAudit33",
+        "what": "Case_Code=ZZT-N21-R2-OPR2 Event_Key=EV-ZZT-N21-R2-OPR2-20261029000218-t9vg",
         "gone": true
        },
        {
@@ -2264,20 +2263,20 @@
        },
        {
         "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit57",
-        "what": "Case_Code=ZZT-N21-R2-OPR2 Event_Key=EV-ZZT-N21-R2-OPR2-20261021192749-unv8",
+        "id": "FmAudit31",
+        "what": "Case_Code=ZZT-N21-R2-OPR2 Event_Key=EV-ZZT-N21-R2-OPR2-20261029000218-l4ya",
         "gone": true
        },
        {
         "flow": "CIQ_Open_Point_A00",
-        "id": "PkOp53",
+        "id": "PkOp27",
         "what": "Case_Code=ZZT-N21-R2-OPR2 OP_Key=OP-OPR2-02",
         "gone": true
        },
        {
         "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit52",
-        "what": "Case_Code=ZZT-N21-R2-OPR2 Event_Key=EV-ZZT-N21-R2-OPR2-20261021192749-8h2r",
+        "id": "FmAudit26",
+        "what": "Case_Code=ZZT-N21-R2-OPR2 Event_Key=EV-ZZT-N21-R2-OPR2-20261029000218-q7x9",
         "gone": true
        },
        {
@@ -2288,14 +2287,14 @@
        },
        {
         "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit50",
-        "what": "Case_Code=ZZT-N21-R2-OPR2 Event_Key=EV-ZZT-N21-R2-OPR2-20261021192749-mil4",
+        "id": "FmAudit24",
+        "what": "Case_Code=ZZT-N21-R2-OPR2 Event_Key=EV-ZZT-N21-R2-OPR2-20261029000218-rjc6",
         "gone": true
        },
        {
         "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit48",
-        "what": "Case_Code=ZZT-N21-R2-OPR2 Event_Key=EV-ZZT-N21-R2-OPR2-20261021192749-xz5o",
+        "id": "FmAudit22",
+        "what": "Case_Code=ZZT-N21-R2-OPR2 Event_Key=EV-ZZT-N21-R2-OPR2-20261029000218-0jco",
         "gone": true
        },
        {
@@ -2306,97 +2305,54 @@
        },
        {
         "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit46",
-        "what": "Case_Code=ZZT-N21-R2-OPR2 Event_Key=EV-ZZT-N21-R2-OPR2-20261021192749-szfo",
+        "id": "FmAudit20",
+        "what": "Case_Code=ZZT-N21-R2-OPR2 Event_Key=EV-ZZT-N21-R2-OPR2-20261029000218-l0c8",
         "gone": true
        },
        {
         "flow": "CIQ_Open_Point_A00",
-        "id": "PkOp42",
+        "id": "PkOp16",
         "what": "Case_Code=ZZT-N21-R2-OPR2 OP_Key=OP-OPR2-01",
         "gone": true
        },
        {
-        "flow": "CIQ_Scope_Run_A00",
-        "id": "FmScope41",
-        "what": "Case_Code=ZZT-N21-R2-OPR2",
-        "gone": true
-       },
-       {
         "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit39",
-        "what": "Case_Code=ZZT-N21-R2-OPR2 Event_Key=EV-ZZT-N21-R2-OPR2-20261021192749-oece",
+        "id": "PkEvEAZZTN21R2OPR2",
+        "what": "Case_Code=ZZT-N21-R2-OPR2 Action_Code=review.started (E-A)",
         "gone": true
        },
        {
         "flow": "CIQ_Review_A00",
-        "id": "PkRev35",
-        "what": "Case_Code=ZZT-N21-R2-OPR2 Review_Key=ZZT-N21-R2-OPR2-SUS-1",
+        "id": "PkEAZZTN21R2OPR2MIC",
+        "what": "Review_Key=ZZT-N21-R2-OPR2-MIC-1 (started by I-2, E-A)",
         "withdrawn": true,
         "gone": true
        },
        {
-        "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit34",
-        "what": "Case_Code=ZZT-N21-R2-OPR2 Event_Key=EV-ZZT-N21-R2-OPR2-20261021192749-a01b",
-        "gone": true
-       },
-       {
         "flow": "CIQ_Review_A00",
-        "id": "PkRev30",
-        "what": "Case_Code=ZZT-N21-R2-OPR2 Review_Key=ZZT-N21-R2-OPR2-MIC-1",
+        "id": "PkEAZZTN21R2OPR2QM",
+        "what": "Review_Key=ZZT-N21-R2-OPR2-QM-1 (started by I-2, E-A)",
         "withdrawn": true,
         "gone": true
        },
        {
-        "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit29",
-        "what": "Case_Code=ZZT-N21-R2-OPR2 Event_Key=EV-ZZT-N21-R2-OPR2-20261021192749-lcgw",
-        "gone": true
-       },
-       {
         "flow": "CIQ_Review_A00",
-        "id": "PkRev25",
-        "what": "Case_Code=ZZT-N21-R2-OPR2 Review_Key=ZZT-N21-R2-OPR2-QM-1",
+        "id": "PkEAZZTN21R2OPR2SAF",
+        "what": "Review_Key=ZZT-N21-R2-OPR2-SAF-1 (started by I-2, E-A)",
         "withdrawn": true,
         "gone": true
        },
        {
-        "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit24",
-        "what": "Case_Code=ZZT-N21-R2-OPR2 Event_Key=EV-ZZT-N21-R2-OPR2-20261021192749-oa8i",
-        "gone": true
-       },
-       {
         "flow": "CIQ_Review_A00",
-        "id": "PkRev20",
-        "what": "Case_Code=ZZT-N21-R2-OPR2 Review_Key=ZZT-N21-R2-OPR2-SAF-1",
+        "id": "PkEAZZTN21R2OPR2REG",
+        "what": "Review_Key=ZZT-N21-R2-OPR2-REG-1 (started by I-2, E-A)",
         "withdrawn": true,
         "gone": true
        },
        {
-        "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit19",
-        "what": "Case_Code=ZZT-N21-R2-OPR2 Event_Key=EV-ZZT-N21-R2-OPR2-20261021192749-0kkr",
-        "gone": true
-       },
-       {
         "flow": "CIQ_Review_A00",
-        "id": "PkRev15",
-        "what": "Case_Code=ZZT-N21-R2-OPR2 Review_Key=ZZT-N21-R2-OPR2-REG-1",
-        "withdrawn": true,
-        "gone": true
-       },
-       {
-        "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit14",
-        "what": "Case_Code=ZZT-N21-R2-OPR2 Event_Key=EV-ZZT-N21-R2-OPR2-20261021192749-s35b",
-        "gone": true
-       },
-       {
-        "flow": "CIQ_Review_A00",
-        "id": "PkRev10",
-        "what": "Case_Code=ZZT-N21-R2-OPR2 Review_Key=ZZT-N21-R2-OPR2-RMM-1",
+        "id": "PkEAZZTN21R2OPR2RMM",
+        "what": "Review_Key=ZZT-N21-R2-OPR2-RMM-1 (started by I-2, E-A)",
         "withdrawn": true,
         "gone": true
        },
@@ -2409,7 +2365,7 @@
        {
         "flow": "CIQ_Audit_Event_A00",
         "id": "FmAudit9",
-        "what": "Case_Code=ZZT-N21-R2-OPR2 Event_Key=EV-ZZT-N21-R2-OPR2-20261021192749-0w65",
+        "what": "Case_Code=ZZT-N21-R2-OPR2 Event_Key=EV-ZZT-N21-R2-OPR2-20261029000218-rroh",
         "gone": true
        },
        {
@@ -2422,7 +2378,7 @@
        {
         "flow": "CIQ_Audit_Event_A00",
         "id": "FmAudit4",
-        "what": "Event_Key=EV-LOG-20261021192749-eifp Action_Code=supplier.changed",
+        "what": "Event_Key=EV-LOG-20261029000218-k37i Action_Code=supplier.changed",
         "gone": true
        },
        {
@@ -2446,7 +2402,7 @@
       "detail": []
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit59 is deleted (read again: not found)",
+      "label": "CIQ_Audit_Event_A00 FmAudit33 is deleted (read again: not found)",
       "ok": true,
       "detail": true
      },
@@ -2456,17 +2412,17 @@
       "detail": true
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit57 is deleted (read again: not found)",
+      "label": "CIQ_Audit_Event_A00 FmAudit31 is deleted (read again: not found)",
       "ok": true,
       "detail": true
      },
      {
-      "label": "CIQ_Open_Point_A00 PkOp53 is deleted (read again: not found)",
+      "label": "CIQ_Open_Point_A00 PkOp27 is deleted (read again: not found)",
       "ok": true,
       "detail": true
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit52 is deleted (read again: not found)",
+      "label": "CIQ_Audit_Event_A00 FmAudit26 is deleted (read again: not found)",
       "ok": true,
       "detail": true
      },
@@ -2476,12 +2432,12 @@
       "detail": true
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit50 is deleted (read again: not found)",
+      "label": "CIQ_Audit_Event_A00 FmAudit24 is deleted (read again: not found)",
       "ok": true,
       "detail": true
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit48 is deleted (read again: not found)",
+      "label": "CIQ_Audit_Event_A00 FmAudit22 is deleted (read again: not found)",
       "ok": true,
       "detail": true
      },
@@ -2491,77 +2447,42 @@
       "detail": true
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit46 is deleted (read again: not found)",
+      "label": "CIQ_Audit_Event_A00 FmAudit20 is deleted (read again: not found)",
       "ok": true,
       "detail": true
      },
      {
-      "label": "CIQ_Open_Point_A00 PkOp42 is deleted (read again: not found)",
+      "label": "CIQ_Open_Point_A00 PkOp16 is deleted (read again: not found)",
       "ok": true,
       "detail": true
      },
      {
-      "label": "CIQ_Scope_Run_A00 FmScope41 is deleted (read again: not found)",
+      "label": "CIQ_Audit_Event_A00 PkEvEAZZTN21R2OPR2 is deleted (read again: not found)",
       "ok": true,
       "detail": true
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit39 is deleted (read again: not found)",
+      "label": "CIQ_Review_A00 PkEAZZTN21R2OPR2MIC is deleted (read again: not found)",
       "ok": true,
       "detail": true
      },
      {
-      "label": "CIQ_Review_A00 PkRev35 is deleted (read again: not found)",
+      "label": "CIQ_Review_A00 PkEAZZTN21R2OPR2QM is deleted (read again: not found)",
       "ok": true,
       "detail": true
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit34 is deleted (read again: not found)",
+      "label": "CIQ_Review_A00 PkEAZZTN21R2OPR2SAF is deleted (read again: not found)",
       "ok": true,
       "detail": true
      },
      {
-      "label": "CIQ_Review_A00 PkRev30 is deleted (read again: not found)",
+      "label": "CIQ_Review_A00 PkEAZZTN21R2OPR2REG is deleted (read again: not found)",
       "ok": true,
       "detail": true
      },
      {
-      "label": "CIQ_Audit_Event_A00 FmAudit29 is deleted (read again: not found)",
-      "ok": true,
-      "detail": true
-     },
-     {
-      "label": "CIQ_Review_A00 PkRev25 is deleted (read again: not found)",
-      "ok": true,
-      "detail": true
-     },
-     {
-      "label": "CIQ_Audit_Event_A00 FmAudit24 is deleted (read again: not found)",
-      "ok": true,
-      "detail": true
-     },
-     {
-      "label": "CIQ_Review_A00 PkRev20 is deleted (read again: not found)",
-      "ok": true,
-      "detail": true
-     },
-     {
-      "label": "CIQ_Audit_Event_A00 FmAudit19 is deleted (read again: not found)",
-      "ok": true,
-      "detail": true
-     },
-     {
-      "label": "CIQ_Review_A00 PkRev15 is deleted (read again: not found)",
-      "ok": true,
-      "detail": true
-     },
-     {
-      "label": "CIQ_Audit_Event_A00 FmAudit14 is deleted (read again: not found)",
-      "ok": true,
-      "detail": true
-     },
-     {
-      "label": "CIQ_Review_A00 PkRev10 is deleted (read again: not found)",
+      "label": "CIQ_Review_A00 PkEAZZTN21R2OPR2RMM is deleted (read again: not found)",
       "ok": true,
       "detail": true
      },
@@ -2599,13 +2520,13 @@
     "notes": {
      "request: My items outside the ledger changed since the suite started": 0,
      "query: My items outside the ledger changed since the suite started": 0,
-     "deleted": 29,
-     "kissflowCalls (estimated live)": 50,
+     "deleted": 22,
+     "kissflowCalls (estimated live)": 41,
      "integration runs (offline fakes)": []
     }
    },
    "ms": 2,
-   "at": "2026-10-21T19:27:49.848Z"
+   "at": "2026-10-29T00:02:19.007Z"
   }
  ]
 }

@@ -770,7 +770,7 @@ export const INTERNAL_PERSONAS: Persona[] = [
     landing: "/review",
     description:
       d === "SAF" || d === "REG"
-        ? `Reviews the ${DEPT_SHORT[d]} sections, asks the supplier directly, records the internal evaluation (RMES) with its Approved or Rejected decision, and completes the ${DEPT_SHORT[d]} review.`
+        ? `Reviews the ${DEPT_SHORT[d]} sections, asks the supplier directly, records the department's decision and completes the ${DEPT_SHORT[d]} review.`
         : `Reviews the ${DEPT_SHORT[d]} sections, asks the supplier directly and completes the ${DEPT_SHORT[d]} review.`,
     nav: [REVIEWS_NAV, CASES_NAV],
   })),
@@ -865,7 +865,7 @@ export const ASSUMPTIONS_LIST: { id: string; topic: string; text: string; source
   {
     id: "AS-02",
     topic: "Rejection",
-    text: "Safety and Regulatory each record their internal RMES decision, Approved or Rejected, when they complete their review; a rejection needs a reason and does not stop the other reviews. What a Rejected decision means for the case is still open. We propose: RMM sees the rejection flagged on the case and agrees with the department whether to cancel the case with a justification. If the case continues, the supplier is still asked for the final release once RMM and every activated department have completed, and the case completes. The supplier never sees the decision.",
+    text: "Safety and Regulatory each record their internal decision, Approved or Rejected, when they complete their review; a rejection needs a reason and does not stop the other reviews. What a Rejected decision means for the case is still open. We propose: RMM sees the rejection flagged on the case and agrees with the department whether to cancel the case with a justification. If the case continues, the supplier is still asked for the final release once RMM and every activated department have completed, and the case completes. The supplier never sees the decision.",
     source: "ReqDoc §3.3.2 (open) vs BRM (no Beiersdorf rejection; cancellation REQ-PROC-049); the requirements-matrix ending was confirmed on our call of 9 October",
     question: 8,
   },

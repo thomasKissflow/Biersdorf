@@ -61,8 +61,9 @@ export function finalDocumentFor(x: FinalInput): FinalResult {
   return { ...(doc ? { doc, seal: doc.fingerprint } : {}), ok: !!doc && verifyFinalDocument(doc), phase: c?.phase, caseCode: c?.id, warnings: m.warnings };
 }
 
-/** components/status.tsx kindLabel (that file imports React). */
-const KIND_LABEL: Record<string, string> = { query: "Query", "document-request": "Document request", "additional-part": "Additional section", finding: "Finding" };
+/** components/status.tsx kindLabel (that file imports React): a legacy "finding" point (raised from a retired RMES
+ *  finding) reads as a query. */
+const KIND_LABEL: Record<string, string> = { query: "Query", "document-request": "Document request", "additional-part": "Additional section", finding: "Query" };
 /** FinalDocumentTab.tsx section tags. */
 const APPLICABILITY_LABEL: Record<string, string> = { na: "Not applicable, justified", mandatory: "Mandatory", optional: "Optional" };
 

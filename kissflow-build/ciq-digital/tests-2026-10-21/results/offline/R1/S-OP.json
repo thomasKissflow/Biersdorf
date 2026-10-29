@@ -1,8 +1,8 @@
 {
  "suite": "S-OP",
  "run": "R1",
- "startedAt": "2026-10-21T19:27:48.063Z",
- "savedAt": "2026-10-21T19:27:48.170Z",
+ "startedAt": "2026-10-28T22:47:20.617Z",
+ "savedAt": "2026-10-28T22:47:20.728Z",
  "counts": {
   "pass": 17,
   "fail": 0,
@@ -87,8 +87,8 @@
      "integration runs (offline fakes)": []
     }
    },
-   "ms": 10,
-   "at": "2026-10-21T19:27:48.063Z"
+   "ms": 11,
+   "at": "2026-10-28T22:47:20.618Z"
   },
   {
    "name": "S2 case: createCase, I-1 creates its CIQP Request",
@@ -178,7 +178,7 @@
     }
    },
    "ms": 4,
-   "at": "2026-10-21T19:27:48.074Z"
+   "at": "2026-10-28T22:47:20.630Z"
   },
   {
    "name": "S3 completeness: the supplier fills in and confirms (portal), I-2",
@@ -189,7 +189,7 @@
       "what": "CIQP Request (raw)",
       "value": {
        "Completeness_Confirm": "Confirmed",
-       "Completeness_At": "2026-10-21T19:27:48Z",
+       "Completeness_At": "2026-10-28T22:47:20Z",
        "Case_Phase_Label": "Filling in",
        "_status": "InProgress",
        "_current_step": "Supplier: keep the CIQ up to date"
@@ -199,10 +199,10 @@
       "what": "CIQ Case (raw)",
       "value": {
        "Completeness_Confirm": "Confirmed",
-       "Completeness_At": "2026-10-21T19:27:48Z",
+       "Completeness_At": "2026-10-28T22:47:20Z",
        "Case_Phase": "Review",
        "_status": "InProgress",
-       "_current_step": "Waiting for supplier: CIQ"
+       "_current_step": "Beiersdorf review and final release"
       }
      },
      {
@@ -251,8 +251,8 @@
       "polls": 1,
       "ms": 6000
      },
-     "case step after I-2": "still at Waiting for supplier: CIQ (I-2's Approve refused: Integration service has no members)",
-     "kissflowCalls (estimated live)": 32,
+     "case step after I-2": "Beiersdorf review and final release",
+     "kissflowCalls (estimated live)": 38,
      "integration runs (offline fakes)": [
       {
        "code": "requestChanged",
@@ -265,18 +265,23 @@
        "detail": "copied the 15 supplier-data fields to CIQ Case PkCase5"
       },
       {
+       "code": "requestChanged",
+       "ok": true,
+       "detail": "copied the 15 supplier-data fields to CIQ Case PkCase5"
+      },
+      {
        "code": "completenessConfirmed",
-       "ok": false,
-       "detail": "recorded the completeness on CIQ Case PkCase5, then its Approve of \"Waiting for supplier: CIQ\" was refused: KISSFLOW_ERROR_050201 This item has moved out of your queue. (held by Integration service, which has no members)"
+       "ok": true,
+       "detail": "recorded the completeness on CIQ Case PkCase5, started 5 reviews and moved it to review"
       }
      ]
     }
    },
-   "ms": 24,
-   "at": "2026-10-21T19:27:48.078Z"
+   "ms": 27,
+   "at": "2026-10-28T22:47:20.635Z"
   },
   {
-   "name": "S4 reviews: ensureReviews starts the scope's review tracks",
+   "name": "S4 reviews: I-2 starts the review tracks (E-A)",
    "status": "pass",
    "evidence": {
     "readBacks": [
@@ -286,32 +291,27 @@
        {
         "dept": "RMM",
         "status": "in-review",
-        "item": "PkRev10"
+        "item": "PkEAZZTN21R1OPR1RMM"
        },
        {
         "dept": "REG",
         "status": "in-review",
-        "item": "PkRev15"
+        "item": "PkEAZZTN21R1OPR1REG"
        },
        {
         "dept": "SAF",
         "status": "in-review",
-        "item": "PkRev20"
+        "item": "PkEAZZTN21R1OPR1SAF"
        },
        {
         "dept": "QM",
         "status": "in-review",
-        "item": "PkRev25"
+        "item": "PkEAZZTN21R1OPR1QM"
        },
        {
         "dept": "MIC",
         "status": "in-review",
-        "item": "PkRev30"
-       },
-       {
-        "dept": "SUS",
-        "status": "in-review",
-        "item": "PkRev35"
+        "item": "PkEAZZTN21R1OPR1MIC"
        }
       ]
      },
@@ -339,11 +339,8 @@
     ],
     "checks": [
      {
-      "label": "ensureReviews ran without a failure",
-      "ok": true,
-      "detail": [
-       "Started in Kissflow: ZZT-N21-R1-OPR1 reviews for RMM, Regulatory, Safety, QM, Microbiology, Sustainability."
-      ]
+      "label": "I-2 started the case's reviews (E-A), RMM's among them",
+      "ok": true
      },
      {
       "label": "RMM's review track exists",
@@ -374,20 +371,24 @@
      }
     ],
     "notes": {
-     "load effects": [
-      {
-       "effect": "ensureReviews",
-       "ok": true,
-       "message": "Started in Kissflow: ZZT-N21-R1-OPR1 reviews for RMM, Regulatory, Safety, QM, Microbiology, Sustainability."
-      }
-     ],
+     "E-A poll": {
+      "polls": 1,
+      "ms": 6000,
+      "depts": [
+       "RMM",
+       "REG",
+       "SAF",
+       "QM",
+       "MIC"
+      ]
+     },
      "the run's departments without a review track": [],
-     "kissflowCalls (estimated live)": 63,
+     "kissflowCalls (estimated live)": 23,
      "integration runs (offline fakes)": []
     }
    },
-   "ms": 6,
-   "at": "2026-10-21T19:27:48.103Z"
+   "ms": 3,
+   "at": "2026-10-28T22:47:20.663Z"
   },
   {
    "name": "P1 QM 1 raise: op.round makes the CIQP Query",
@@ -406,7 +407,7 @@
        "OP_Outcome": null,
        "Question_Text": "ZZT-N21-R1 QM P1: please confirm the specification limits for section K3 and name the test method.",
        "Supplier_Justification": "ZZT-N21-R1 QM P1: needed for the QM review.",
-       "Supplier_Due_Date": "2026-11-04",
+       "Supplier_Due_Date": "2026-11-11",
        "Portal_Query_Item_Id": "PkQry4",
        "Response_Kind": null,
        "Response_Text": null,
@@ -427,7 +428,7 @@
       "value": {
        "Query_Key": "OP-OPR1-01-R1",
        "Round_No": 1,
-       "App_Open_Point_Id": "PkOp42",
+       "App_Open_Point_Id": "PkOp16",
        "Case_Code": "ZZT-N21-R1-OPR1",
        "Kind_Label": "Question",
        "Responsible_Department": "Quality Management",
@@ -435,7 +436,7 @@
        "Ref_Label": "K3 · Storage conditions and handling",
        "Question_Text": "ZZT-N21-R1 QM P1: please confirm the specification limits for section K3 and name the test method.",
        "Supplier_Justification": "ZZT-N21-R1 QM P1: needed for the QM review.",
-       "Supplier_Due_Date": "2026-11-04",
+       "Supplier_Due_Date": "2026-11-11",
        "Edited_At": null,
        "Response_Kind": null,
        "Response_Text": null,
@@ -459,14 +460,14 @@
        "question": "ZZT-N21-R1 QM P1: please confirm the specification limits for section K3 and name the test method.",
        "justification": "ZZT-N21-R1 QM P1: needed for the QM review.",
        "responsibleId": "UsRmmKatrin",
-       "due": "2026-11-04",
+       "due": "2026-11-11",
        "rounds": 1,
        "status": "open",
        "createdBy": "UsRmmKatrin",
        "thread": [
         {
          "id": "ZZT-N21-R1-OPR1-m1-1",
-         "at": "2026-10-21T19:27:48.000Z",
+         "at": "2026-10-28T22:47:20.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "raised",
@@ -486,8 +487,7 @@
        "REG",
        "SAF",
        "QM",
-       "MIC",
-       "SUS"
+       "MIC"
       ]
      },
      {
@@ -587,14 +587,14 @@
      ],
      "open point": {
       "opId": "OP-OPR1-01",
-      "itemId": "PkOp42"
+      "itemId": "PkOp16"
      },
      "op.round poll": {
       "ok": true,
       "polls": 1,
       "ms": 6000
      },
-     "kissflowCalls (estimated live)": 48,
+     "kissflowCalls (estimated live)": 44,
      "integration runs (offline fakes)": [
       {
        "code": "op.round",
@@ -610,7 +610,7 @@
     }
    },
    "ms": 8,
-   "at": "2026-10-21T19:27:48.109Z"
+   "at": "2026-10-28T22:47:20.666Z"
   },
   {
    "name": "P1 QM 2 edit: op.edited updates the query",
@@ -622,7 +622,7 @@
       "value": {
        "Query_Key": "OP-OPR1-01-R1",
        "Round_No": 1,
-       "App_Open_Point_Id": "PkOp42",
+       "App_Open_Point_Id": "PkOp16",
        "Case_Code": "ZZT-N21-R1-OPR1",
        "Kind_Label": "Question",
        "Responsible_Department": "Quality Management",
@@ -630,8 +630,8 @@
        "Ref_Label": "K3 · Storage conditions and handling",
        "Question_Text": "ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.",
        "Supplier_Justification": "ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).",
-       "Supplier_Due_Date": "2026-11-11",
-       "Edited_At": "2026-10-21T19:27:48Z",
+       "Supplier_Due_Date": "2026-11-18",
+       "Edited_At": "2026-10-28T22:47:20Z",
        "Response_Kind": null,
        "Response_Text": null,
        "Assigned_Contacts": [
@@ -653,7 +653,7 @@
        "OP_Outcome": null,
        "Question_Text": "ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.",
        "Supplier_Justification": "ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).",
-       "Supplier_Due_Date": "2026-11-11",
+       "Supplier_Due_Date": "2026-11-18",
        "Portal_Query_Item_Id": "PkQry4",
        "Response_Kind": null,
        "Response_Text": null,
@@ -682,14 +682,14 @@
        "question": "ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.",
        "justification": "ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).",
        "responsibleId": "UsRmmKatrin",
-       "due": "2026-11-11",
+       "due": "2026-11-18",
        "rounds": 1,
        "status": "open",
        "createdBy": "UsRmmKatrin",
        "thread": [
         {
          "id": "ZZT-N21-R1-OPR1-m1-1",
-         "at": "2026-10-21T19:27:48.000Z",
+         "at": "2026-10-28T22:47:20.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "raised",
@@ -697,11 +697,11 @@
         },
         {
          "id": "OP-OPR1-01-m2",
-         "at": "2026-10-21T19:27:48.000Z",
+         "at": "2026-10-28T22:47:20.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "edited",
-         "text": "Question changed from “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3 and name the test method.” to “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.”. Justification changed to “ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).”. Due date changed from 4 Nov 2026 to 11 Nov 2026."
+         "text": "Question changed from “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3 and name the test method.” to “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.”. Justification changed to “ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).”. Due date changed from 11 Nov 2026 to 18 Nov 2026."
         }
        ],
        "edits": [
@@ -710,21 +710,21 @@
          "from": "ZZT-N21-R1 QM P1: please confirm the specification limits for section K3 and name the test method.",
          "to": "ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.",
          "by": "UsRmmKatrin",
-         "at": "2026-10-21T19:27:48.000Z"
+         "at": "2026-10-28T22:47:20.000Z"
         },
         {
          "field": "justification",
          "from": "ZZT-N21-R1 QM P1: needed for the QM review.",
          "to": "ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).",
          "by": "UsRmmKatrin",
-         "at": "2026-10-21T19:27:48.000Z"
+         "at": "2026-10-28T22:47:20.000Z"
         },
         {
          "field": "dueDate",
-         "from": "2026-11-04",
-         "to": "2026-11-11",
+         "from": "2026-11-11",
+         "to": "2026-11-18",
          "by": "UsRmmKatrin",
-         "at": "2026-10-21T19:27:48.000Z"
+         "at": "2026-10-28T22:47:20.000Z"
         }
        ]
       }
@@ -781,7 +781,7 @@
       "polls": 1,
       "ms": 6000
      },
-     "kissflowCalls (estimated live)": 30,
+     "kissflowCalls (estimated live)": 28,
      "integration runs (offline fakes)": [
       {
        "code": "op.edited",
@@ -796,8 +796,8 @@
      ]
     }
    },
-   "ms": 3,
-   "at": "2026-10-21T19:27:48.118Z"
+   "ms": 4,
+   "at": "2026-10-28T22:47:20.675Z"
   },
   {
    "name": "P1 QM 3 supplier answer, round 1 (portal writer, I-4)",
@@ -809,7 +809,7 @@
       "value": {
        "Query_Key": "OP-OPR1-01-R1",
        "Round_No": 1,
-       "App_Open_Point_Id": "PkOp42",
+       "App_Open_Point_Id": "PkOp16",
        "Case_Code": "ZZT-N21-R1-OPR1",
        "Kind_Label": "Question",
        "Responsible_Department": "Quality Management",
@@ -817,8 +817,8 @@
        "Ref_Label": "K3 · Storage conditions and handling",
        "Question_Text": "ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.",
        "Supplier_Justification": "ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).",
-       "Supplier_Due_Date": "2026-11-11",
-       "Edited_At": "2026-10-21T19:27:48Z",
+       "Supplier_Due_Date": "2026-11-18",
+       "Edited_At": "2026-10-28T22:47:20Z",
        "Response_Kind": "Answer",
        "Response_Text": "ZZT-N21-R1 Supplier P1: the limits are in the specification of 12 Oct; method per Ph. Eur. 2.6.12.",
        "Assigned_Contacts": [
@@ -840,7 +840,7 @@
        "OP_Outcome": null,
        "Question_Text": "ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.",
        "Supplier_Justification": "ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).",
-       "Supplier_Due_Date": "2026-11-11",
+       "Supplier_Due_Date": "2026-11-18",
        "Portal_Query_Item_Id": "PkQry4",
        "Response_Kind": "Answer",
        "Response_Text": "ZZT-N21-R1 Supplier P1: the limits are in the specification of 12 Oct; method per Ph. Eur. 2.6.12.",
@@ -871,7 +871,7 @@
         {
          "side": "internal",
          "action": "edited",
-         "text": "Question changed from “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3 and name the test method.” to “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.”. Justification changed to “ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).”. Due date changed from 4 Nov 2026 to 11 Nov 2026."
+         "text": "Question changed from “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3 and name the test method.” to “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.”. Justification changed to “ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).”. Due date changed from 11 Nov 2026 to 18 Nov 2026."
         },
         {
          "side": "supplier",
@@ -924,18 +924,18 @@
       "ms": 6000
      },
      "the answer is attributed to": "the self contact",
-     "kissflowCalls (estimated live)": 31,
+     "kissflowCalls (estimated live)": 30,
      "integration runs (offline fakes)": [
       {
        "code": "queryAnswered",
        "ok": true,
-       "detail": "wrote the answer of CIQP Query PkQry4 on CIQ Open Point PkOp42"
+       "detail": "wrote the answer of CIQP Query PkQry4 on CIQ Open Point PkOp16"
       }
      ]
     }
    },
-   "ms": 6,
-   "at": "2026-10-21T19:27:48.122Z"
+   "ms": 5,
+   "at": "2026-10-28T22:47:20.680Z"
   },
   {
    "name": "P1 QM 4 return: round 2, a new query (op.round)",
@@ -954,7 +954,7 @@
        "OP_Outcome": null,
        "Question_Text": "ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.",
        "Supplier_Justification": "ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).",
-       "Supplier_Due_Date": "2026-11-11",
+       "Supplier_Due_Date": "2026-11-18",
        "Portal_Query_Item_Id": "PkQry6",
        "Response_Kind": "Answer",
        "Response_Text": "ZZT-N21-R1 Supplier P1: the limits are in the specification of 12 Oct; method per Ph. Eur. 2.6.12.",
@@ -975,7 +975,7 @@
       "value": {
        "Query_Key": "OP-OPR1-01-R2",
        "Round_No": 2,
-       "App_Open_Point_Id": "PkOp42",
+       "App_Open_Point_Id": "PkOp16",
        "Case_Code": "ZZT-N21-R1-OPR1",
        "Kind_Label": "Question",
        "Responsible_Department": "Quality Management",
@@ -983,7 +983,7 @@
        "Ref_Label": "K3 · Storage conditions and handling",
        "Question_Text": "ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.",
        "Supplier_Justification": "ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).",
-       "Supplier_Due_Date": "2026-11-11",
+       "Supplier_Due_Date": "2026-11-18",
        "Edited_At": null,
        "Response_Kind": null,
        "Response_Text": null,
@@ -1007,14 +1007,14 @@
        "question": "ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.",
        "justification": "ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).",
        "responsibleId": "UsRmmKatrin",
-       "due": "2026-11-11",
+       "due": "2026-11-18",
        "rounds": 2,
        "status": "open",
        "createdBy": "UsRmmKatrin",
        "thread": [
         {
          "id": "ZZT-N21-R1-OPR1-m1-1",
-         "at": "2026-10-21T19:27:48.000Z",
+         "at": "2026-10-28T22:47:20.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "raised",
@@ -1022,15 +1022,15 @@
         },
         {
          "id": "OP-OPR1-01-m2",
-         "at": "2026-10-21T19:27:48.000Z",
+         "at": "2026-10-28T22:47:20.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "edited",
-         "text": "Question changed from “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3 and name the test method.” to “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.”. Justification changed to “ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).”. Due date changed from 4 Nov 2026 to 11 Nov 2026."
+         "text": "Question changed from “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3 and name the test method.” to “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.”. Justification changed to “ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).”. Due date changed from 11 Nov 2026 to 18 Nov 2026."
         },
         {
          "id": "OP-OPR1-01-m3",
-         "at": "2026-10-23T16:00:36.000Z",
+         "at": "2026-10-28T22:47:43.000Z",
          "by": "self:UsRmmKatrin",
          "side": "supplier",
          "action": "answered",
@@ -1038,7 +1038,7 @@
         },
         {
          "id": "OP-OPR1-01-m4",
-         "at": "2026-10-21T19:27:48.000Z",
+         "at": "2026-10-28T22:47:20.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "returned",
@@ -1052,21 +1052,21 @@
          "from": "ZZT-N21-R1 QM P1: please confirm the specification limits for section K3 and name the test method.",
          "to": "ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.",
          "by": "UsRmmKatrin",
-         "at": "2026-10-21T19:27:48.000Z"
+         "at": "2026-10-28T22:47:20.000Z"
         },
         {
          "field": "justification",
          "from": "ZZT-N21-R1 QM P1: needed for the QM review.",
          "to": "ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).",
          "by": "UsRmmKatrin",
-         "at": "2026-10-21T19:27:48.000Z"
+         "at": "2026-10-28T22:47:20.000Z"
         },
         {
          "field": "dueDate",
-         "from": "2026-11-04",
-         "to": "2026-11-11",
+         "from": "2026-11-11",
+         "to": "2026-11-18",
          "by": "UsRmmKatrin",
-         "at": "2026-10-21T19:27:48.000Z"
+         "at": "2026-10-28T22:47:20.000Z"
         }
        ]
       }
@@ -1193,7 +1193,7 @@
       "polls": 1,
       "ms": 6000
      },
-     "kissflowCalls (estimated live)": 31,
+     "kissflowCalls (estimated live)": 29,
      "integration runs (offline fakes)": [
       {
        "code": "op.round",
@@ -1208,8 +1208,8 @@
      ]
     }
    },
-   "ms": 4,
-   "at": "2026-10-21T19:27:48.128Z"
+   "ms": 3,
+   "at": "2026-10-28T22:47:20.686Z"
   },
   {
    "name": "P1 QM 3 supplier answer, round 2 (portal writer, I-4)",
@@ -1221,7 +1221,7 @@
       "value": {
        "Query_Key": "OP-OPR1-01-R2",
        "Round_No": 2,
-       "App_Open_Point_Id": "PkOp42",
+       "App_Open_Point_Id": "PkOp16",
        "Case_Code": "ZZT-N21-R1-OPR1",
        "Kind_Label": "Question",
        "Responsible_Department": "Quality Management",
@@ -1229,7 +1229,7 @@
        "Ref_Label": "K3 · Storage conditions and handling",
        "Question_Text": "ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.",
        "Supplier_Justification": "ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).",
-       "Supplier_Due_Date": "2026-11-11",
+       "Supplier_Due_Date": "2026-11-18",
        "Edited_At": null,
        "Response_Kind": "Answer",
        "Response_Text": "ZZT-N21-R1 Supplier P1: the detection limit is 10 cfu/g.",
@@ -1252,7 +1252,7 @@
        "OP_Outcome": null,
        "Question_Text": "ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.",
        "Supplier_Justification": "ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).",
-       "Supplier_Due_Date": "2026-11-11",
+       "Supplier_Due_Date": "2026-11-18",
        "Portal_Query_Item_Id": "PkQry6",
        "Response_Kind": "Answer",
        "Response_Text": "ZZT-N21-R1 Supplier P1: the detection limit is 10 cfu/g.",
@@ -1283,7 +1283,7 @@
         {
          "side": "internal",
          "action": "edited",
-         "text": "Question changed from “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3 and name the test method.” to “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.”. Justification changed to “ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).”. Due date changed from 4 Nov 2026 to 11 Nov 2026."
+         "text": "Question changed from “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3 and name the test method.” to “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.”. Justification changed to “ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).”. Due date changed from 11 Nov 2026 to 18 Nov 2026."
         },
         {
          "side": "supplier",
@@ -1346,18 +1346,18 @@
       "ms": 6000
      },
      "the answer is attributed to": "the self contact",
-     "kissflowCalls (estimated live)": 32,
+     "kissflowCalls (estimated live)": 31,
      "integration runs (offline fakes)": [
       {
        "code": "queryAnswered",
        "ok": true,
-       "detail": "wrote the answer of CIQP Query PkQry6 on CIQ Open Point PkOp42"
+       "detail": "wrote the answer of CIQP Query PkQry6 on CIQ Open Point PkOp16"
       }
      ]
     }
    },
    "ms": 4,
-   "at": "2026-10-21T19:27:48.133Z"
+   "at": "2026-10-28T22:47:20.690Z"
   },
   {
    "name": "P1 QM 4 accept: the point ends, history.updated",
@@ -1376,13 +1376,13 @@
        "OP_Outcome": "Accepted",
        "Question_Text": "ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.",
        "Supplier_Justification": "ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).",
-       "Supplier_Due_Date": "2026-11-11",
+       "Supplier_Due_Date": "2026-11-18",
        "Portal_Query_Item_Id": "PkQry6",
        "Response_Kind": "Answer",
        "Response_Text": "ZZT-N21-R1 Supplier P1: the detection limit is 10 cfu/g.",
        "Return_Reason": "ZZT-N21-R1 QM P1: please add the detection limit of the method.",
        "Outcome_Reason": null,
-       "Closed_At": "2026-10-21T19:27:48Z",
+       "Closed_At": "2026-10-28T22:47:20Z",
        "Closed_By": [
         "UsRmmKatrin"
        ],
@@ -1407,17 +1407,17 @@
        "question": "ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.",
        "justification": "ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).",
        "responsibleId": "UsRmmKatrin",
-       "due": "2026-11-11",
+       "due": "2026-11-18",
        "rounds": 2,
        "status": "closed",
        "outcome": "accepted",
        "createdBy": "UsRmmKatrin",
        "closedBy": "UsRmmKatrin",
-       "closedAt": "2026-10-21T19:27:48.000Z",
+       "closedAt": "2026-10-28T22:47:20.000Z",
        "thread": [
         {
          "id": "ZZT-N21-R1-OPR1-m1-1",
-         "at": "2026-10-21T19:27:48.000Z",
+         "at": "2026-10-28T22:47:20.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "raised",
@@ -1425,15 +1425,15 @@
         },
         {
          "id": "OP-OPR1-01-m2",
-         "at": "2026-10-21T19:27:48.000Z",
+         "at": "2026-10-28T22:47:20.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "edited",
-         "text": "Question changed from “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3 and name the test method.” to “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.”. Justification changed to “ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).”. Due date changed from 4 Nov 2026 to 11 Nov 2026."
+         "text": "Question changed from “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3 and name the test method.” to “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.”. Justification changed to “ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).”. Due date changed from 11 Nov 2026 to 18 Nov 2026."
         },
         {
          "id": "OP-OPR1-01-m3",
-         "at": "2026-10-23T16:00:36.000Z",
+         "at": "2026-10-28T22:47:43.000Z",
          "by": "self:UsRmmKatrin",
          "side": "supplier",
          "action": "answered",
@@ -1441,7 +1441,7 @@
         },
         {
          "id": "OP-OPR1-01-m4",
-         "at": "2026-10-21T19:27:48.000Z",
+         "at": "2026-10-28T22:47:20.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "returned",
@@ -1450,7 +1450,7 @@
         },
         {
          "id": "OP-OPR1-01-m5",
-         "at": "2026-10-23T16:00:40.000Z",
+         "at": "2026-10-28T22:47:47.000Z",
          "by": "self:UsRmmKatrin",
          "side": "supplier",
          "action": "answered",
@@ -1458,7 +1458,7 @@
         },
         {
          "id": "OP-OPR1-01-m6",
-         "at": "2026-10-21T19:27:48.000Z",
+         "at": "2026-10-28T22:47:20.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "accepted",
@@ -1471,21 +1471,21 @@
          "from": "ZZT-N21-R1 QM P1: please confirm the specification limits for section K3 and name the test method.",
          "to": "ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.",
          "by": "UsRmmKatrin",
-         "at": "2026-10-21T19:27:48.000Z"
+         "at": "2026-10-28T22:47:20.000Z"
         },
         {
          "field": "justification",
          "from": "ZZT-N21-R1 QM P1: needed for the QM review.",
          "to": "ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).",
          "by": "UsRmmKatrin",
-         "at": "2026-10-21T19:27:48.000Z"
+         "at": "2026-10-28T22:47:20.000Z"
         },
         {
          "field": "dueDate",
-         "from": "2026-11-04",
-         "to": "2026-11-11",
+         "from": "2026-11-11",
+         "to": "2026-11-18",
          "by": "UsRmmKatrin",
-         "at": "2026-10-21T19:27:48.000Z"
+         "at": "2026-10-28T22:47:20.000Z"
         }
        ]
       }
@@ -1554,7 +1554,7 @@
       "polls": 1,
       "ms": 6000
      },
-     "kissflowCalls (estimated live)": 30,
+     "kissflowCalls (estimated live)": 28,
      "integration runs (offline fakes)": [
       {
        "code": "history.updated",
@@ -1564,8 +1564,8 @@
      ]
     }
    },
-   "ms": 3,
-   "at": "2026-10-21T19:27:48.138Z"
+   "ms": 4,
+   "at": "2026-10-28T22:47:20.695Z"
   },
   {
    "name": "P2 QM 1 raise: op.round makes the CIQP Query",
@@ -1584,7 +1584,7 @@
        "OP_Outcome": null,
        "Question_Text": "ZZT-N21-R1 QM P2: please confirm the specification limits for section K3 and name the test method.",
        "Supplier_Justification": "ZZT-N21-R1 QM P2: needed for the QM review.",
-       "Supplier_Due_Date": "2026-11-04",
+       "Supplier_Due_Date": "2026-11-11",
        "Portal_Query_Item_Id": "PkQry8",
        "Response_Kind": null,
        "Response_Text": null,
@@ -1605,7 +1605,7 @@
       "value": {
        "Query_Key": "OP-OPR1-02-R1",
        "Round_No": 1,
-       "App_Open_Point_Id": "PkOp53",
+       "App_Open_Point_Id": "PkOp27",
        "Case_Code": "ZZT-N21-R1-OPR1",
        "Kind_Label": "Question",
        "Responsible_Department": "Quality Management",
@@ -1613,7 +1613,7 @@
        "Ref_Label": "K3 · Storage conditions and handling",
        "Question_Text": "ZZT-N21-R1 QM P2: please confirm the specification limits for section K3 and name the test method.",
        "Supplier_Justification": "ZZT-N21-R1 QM P2: needed for the QM review.",
-       "Supplier_Due_Date": "2026-11-04",
+       "Supplier_Due_Date": "2026-11-11",
        "Edited_At": null,
        "Response_Kind": null,
        "Response_Text": null,
@@ -1637,14 +1637,14 @@
        "question": "ZZT-N21-R1 QM P2: please confirm the specification limits for section K3 and name the test method.",
        "justification": "ZZT-N21-R1 QM P2: needed for the QM review.",
        "responsibleId": "UsRmmKatrin",
-       "due": "2026-11-04",
+       "due": "2026-11-11",
        "rounds": 1,
        "status": "open",
        "createdBy": "UsRmmKatrin",
        "thread": [
         {
          "id": "ZZT-N21-R1-OPR1-m2-1",
-         "at": "2026-10-21T19:27:48.000Z",
+         "at": "2026-10-28T22:47:20.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "raised",
@@ -1664,8 +1664,7 @@
        "REG",
        "SAF",
        "QM",
-       "MIC",
-       "SUS"
+       "MIC"
       ]
      },
      {
@@ -1765,14 +1764,14 @@
      ],
      "open point": {
       "opId": "OP-OPR1-02",
-      "itemId": "PkOp53"
+      "itemId": "PkOp27"
      },
      "op.round poll": {
       "ok": true,
       "polls": 1,
       "ms": 6000
      },
-     "kissflowCalls (estimated live)": 32,
+     "kissflowCalls (estimated live)": 30,
      "integration runs (offline fakes)": [
       {
        "code": "op.round",
@@ -1787,8 +1786,8 @@
      ]
     }
    },
-   "ms": 4,
-   "at": "2026-10-21T19:27:48.142Z"
+   "ms": 3,
+   "at": "2026-10-28T22:47:20.701Z"
   },
   {
    "name": "P2 QM 4 close while the query is open: op.closed",
@@ -1800,7 +1799,7 @@
       "value": {
        "Query_Key": "OP-OPR1-02-R1",
        "Round_No": 1,
-       "App_Open_Point_Id": "PkOp53",
+       "App_Open_Point_Id": "PkOp27",
        "Case_Code": "ZZT-N21-R1-OPR1",
        "Kind_Label": "Question",
        "Responsible_Department": "Quality Management",
@@ -1808,7 +1807,7 @@
        "Ref_Label": "K3 · Storage conditions and handling",
        "Question_Text": "ZZT-N21-R1 QM P2: please confirm the specification limits for section K3 and name the test method.",
        "Supplier_Justification": "ZZT-N21-R1 QM P2: needed for the QM review.",
-       "Supplier_Due_Date": "2026-11-04",
+       "Supplier_Due_Date": "2026-11-11",
        "Edited_At": null,
        "Response_Kind": null,
        "Response_Text": null,
@@ -1831,13 +1830,13 @@
        "OP_Outcome": "Withdrawn",
        "Question_Text": "ZZT-N21-R1 QM P2: please confirm the specification limits for section K3 and name the test method.",
        "Supplier_Justification": "ZZT-N21-R1 QM P2: needed for the QM review.",
-       "Supplier_Due_Date": "2026-11-04",
+       "Supplier_Due_Date": "2026-11-11",
        "Portal_Query_Item_Id": "PkQry8",
        "Response_Kind": null,
        "Response_Text": null,
        "Return_Reason": null,
        "Outcome_Reason": "ZZT-N21-R1 QM P2: already answered in the dossier on file; no answer needed.",
-       "Closed_At": "2026-10-21T19:27:48Z",
+       "Closed_At": "2026-10-28T22:47:20Z",
        "Closed_By": [
         "UsRmmKatrin"
        ],
@@ -1862,17 +1861,17 @@
        "question": "ZZT-N21-R1 QM P2: please confirm the specification limits for section K3 and name the test method.",
        "justification": "ZZT-N21-R1 QM P2: needed for the QM review.",
        "responsibleId": "UsRmmKatrin",
-       "due": "2026-11-04",
+       "due": "2026-11-11",
        "rounds": 1,
        "status": "closed",
        "outcome": "withdrawn",
        "createdBy": "UsRmmKatrin",
        "closedBy": "UsRmmKatrin",
-       "closedAt": "2026-10-21T19:27:48.000Z",
+       "closedAt": "2026-10-28T22:47:20.000Z",
        "thread": [
         {
          "id": "ZZT-N21-R1-OPR1-m2-1",
-         "at": "2026-10-21T19:27:48.000Z",
+         "at": "2026-10-28T22:47:20.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "raised",
@@ -1880,7 +1879,7 @@
         },
         {
          "id": "OP-OPR1-02-m2",
-         "at": "2026-10-21T19:27:48.000Z",
+         "at": "2026-10-28T22:47:20.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "withdrawn",
@@ -1966,7 +1965,7 @@
       "polls": 1,
       "ms": 6000
      },
-     "kissflowCalls (estimated live)": 34,
+     "kissflowCalls (estimated live)": 32,
      "integration runs (offline fakes)": [
       {
        "code": "op.closed",
@@ -1981,8 +1980,8 @@
      ]
     }
    },
-   "ms": 4,
-   "at": "2026-10-21T19:27:48.147Z"
+   "ms": 3,
+   "at": "2026-10-28T22:47:20.705Z"
   },
   {
    "name": "P3 QM 1 raise: op.round makes the CIQP Query",
@@ -2001,7 +2000,7 @@
        "OP_Outcome": null,
        "Question_Text": "ZZT-N21-R1 QM P3: please confirm the specification limits for section K3 and name the test method.",
        "Supplier_Justification": "ZZT-N21-R1 QM P3: needed for the QM review.",
-       "Supplier_Due_Date": "2026-11-04",
+       "Supplier_Due_Date": "2026-11-11",
        "Portal_Query_Item_Id": "PkQry10",
        "Response_Kind": null,
        "Response_Text": null,
@@ -2022,7 +2021,7 @@
       "value": {
        "Query_Key": "OP-OPR1-03-R1",
        "Round_No": 1,
-       "App_Open_Point_Id": "PkOp60",
+       "App_Open_Point_Id": "PkOp34",
        "Case_Code": "ZZT-N21-R1-OPR1",
        "Kind_Label": "Question",
        "Responsible_Department": "Quality Management",
@@ -2030,7 +2029,7 @@
        "Ref_Label": "K3 · Storage conditions and handling",
        "Question_Text": "ZZT-N21-R1 QM P3: please confirm the specification limits for section K3 and name the test method.",
        "Supplier_Justification": "ZZT-N21-R1 QM P3: needed for the QM review.",
-       "Supplier_Due_Date": "2026-11-04",
+       "Supplier_Due_Date": "2026-11-11",
        "Edited_At": null,
        "Response_Kind": null,
        "Response_Text": null,
@@ -2054,14 +2053,14 @@
        "question": "ZZT-N21-R1 QM P3: please confirm the specification limits for section K3 and name the test method.",
        "justification": "ZZT-N21-R1 QM P3: needed for the QM review.",
        "responsibleId": "UsRmmKatrin",
-       "due": "2026-11-04",
+       "due": "2026-11-11",
        "rounds": 1,
        "status": "open",
        "createdBy": "UsRmmKatrin",
        "thread": [
         {
          "id": "ZZT-N21-R1-OPR1-m3-1",
-         "at": "2026-10-21T19:27:48.000Z",
+         "at": "2026-10-28T22:47:20.000Z",
          "by": "UsRmmKatrin",
          "side": "internal",
          "action": "raised",
@@ -2081,8 +2080,7 @@
        "REG",
        "SAF",
        "QM",
-       "MIC",
-       "SUS"
+       "MIC"
       ]
      },
      {
@@ -2182,14 +2180,14 @@
      ],
      "open point": {
       "opId": "OP-OPR1-03",
-      "itemId": "PkOp60"
+      "itemId": "PkOp34"
      },
      "op.round poll": {
       "ok": true,
       "polls": 1,
       "ms": 6000
      },
-     "kissflowCalls (estimated live)": 34,
+     "kissflowCalls (estimated live)": 32,
      "integration runs (offline fakes)": [
       {
        "code": "op.round",
@@ -2205,7 +2203,7 @@
     }
    },
    "ms": 3,
-   "at": "2026-10-21T19:27:48.152Z"
+   "at": "2026-10-28T22:47:20.709Z"
   },
   {
    "name": "P3 QM 3 supplier answer, round 1 (portal writer, I-4)",
@@ -2217,7 +2215,7 @@
       "value": {
        "Query_Key": "OP-OPR1-03-R1",
        "Round_No": 1,
-       "App_Open_Point_Id": "PkOp60",
+       "App_Open_Point_Id": "PkOp34",
        "Case_Code": "ZZT-N21-R1-OPR1",
        "Kind_Label": "Question",
        "Responsible_Department": "Quality Management",
@@ -2225,7 +2223,7 @@
        "Ref_Label": "K3 · Storage conditions and handling",
        "Question_Text": "ZZT-N21-R1 QM P3: please confirm the specification limits for section K3 and name the test method.",
        "Supplier_Justification": "ZZT-N21-R1 QM P3: needed for the QM review.",
-       "Supplier_Due_Date": "2026-11-04",
+       "Supplier_Due_Date": "2026-11-11",
        "Edited_At": null,
        "Response_Kind": "Answer",
        "Response_Text": "ZZT-N21-R1 Supplier P3: the limits are in the specification of 12 Oct; method per Ph. Eur. 2.6.12.",
@@ -2248,7 +2246,7 @@
        "OP_Outcome": null,
        "Question_Text": "ZZT-N21-R1 QM P3: please confirm the specification limits for section K3 and name the test method.",
        "Supplier_Justification": "ZZT-N21-R1 QM P3: needed for the QM review.",
-       "Supplier_Due_Date": "2026-11-04",
+       "Supplier_Due_Date": "2026-11-11",
        "Portal_Query_Item_Id": "PkQry10",
        "Response_Kind": "Answer",
        "Response_Text": "ZZT-N21-R1 Supplier P3: the limits are in the specification of 12 Oct; method per Ph. Eur. 2.6.12.",
@@ -2327,18 +2325,18 @@
       "ms": 6000
      },
      "the answer is attributed to": "the self contact",
-     "kissflowCalls (estimated live)": 38,
+     "kissflowCalls (estimated live)": 35,
      "integration runs (offline fakes)": [
       {
        "code": "queryAnswered",
        "ok": true,
-       "detail": "wrote the answer of CIQP Query PkQry10 on CIQ Open Point PkOp60"
+       "detail": "wrote the answer of CIQP Query PkQry10 on CIQ Open Point PkOp34"
       }
      ]
     }
    },
    "ms": 4,
-   "at": "2026-10-21T19:27:48.156Z"
+   "at": "2026-10-28T22:47:20.714Z"
   },
   {
    "name": "T1 thread: Thread_JSON holds every round's text",
@@ -2356,7 +2354,7 @@
        {
         "side": "internal",
         "action": "edited",
-        "text": "Question changed from “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3 and name the test method.” to “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.”. Justification changed to “ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).”. Due date changed from 4 Nov 2026 to 11 Nov 2026."
+        "text": "Question changed from “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3 and name the test method.” to “ZZT-N21-R1 QM P1: please confirm the specification limits for section K3, the test method and its detection limit.”. Justification changed to “ZZT-N21-R1 QM P1: needed for the QM review (detection limit added).”. Due date changed from 11 Nov 2026 to 18 Nov 2026."
        },
        {
         "side": "supplier",
@@ -2506,7 +2504,7 @@
     }
    },
    "ms": 1,
-   "at": "2026-10-21T19:27:48.162Z"
+   "at": "2026-10-28T22:47:20.719Z"
   },
   {
    "name": "T2 thread: the questions history on the request",
@@ -2647,8 +2645,8 @@
      "integration runs (offline fakes)": []
     }
    },
-   "ms": 2,
-   "at": "2026-10-21T19:27:48.164Z"
+   "ms": 3,
+   "at": "2026-10-28T22:47:20.721Z"
   },
   {
    "name": "R1 showcase: late portal items adopted, the ledger names each item's stage",
@@ -2671,19 +2669,19 @@
        {
         "flow": "CIQ_Audit_Event_A00",
         "id": "FmAudit4",
-        "what": "Event_Key=EV-LOG-20261021192748-pffb Action_Code=supplier.changed",
+        "what": "Event_Key=EV-LOG-20261028224720-nqyp Action_Code=supplier.changed",
         "stage": "saved"
        },
        {
         "flow": "CIQ_Case_A00",
         "id": "PkCase5",
         "what": "Case_Code=ZZT-N21-R1-OPR1 Supplier_Code=ZZT-N21-R1-SUP-OP",
-        "stage": "Waiting for supplier: CIQ"
+        "stage": "Beiersdorf review and final release"
        },
        {
         "flow": "CIQ_Audit_Event_A00",
         "id": "FmAudit9",
-        "what": "Case_Code=ZZT-N21-R1-OPR1 Event_Key=EV-ZZT-N21-R1-OPR1-20261021192748-qlp6",
+        "what": "Case_Code=ZZT-N21-R1-OPR1 Event_Key=EV-ZZT-N21-R1-OPR1-20261028224720-z6u9",
         "stage": "saved"
        },
        {
@@ -2694,92 +2692,50 @@
        },
        {
         "flow": "CIQ_Review_A00",
-        "id": "PkRev10",
-        "what": "Case_Code=ZZT-N21-R1-OPR1 Review_Key=ZZT-N21-R1-OPR1-RMM-1",
+        "id": "PkEAZZTN21R1OPR1RMM",
+        "what": "Review_Key=ZZT-N21-R1-OPR1-RMM-1 (started by I-2, E-A)",
         "stage": "Review – RMM"
        },
        {
-        "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit14",
-        "what": "Case_Code=ZZT-N21-R1-OPR1 Event_Key=EV-ZZT-N21-R1-OPR1-20261021192748-20rp",
-        "stage": "saved"
-       },
-       {
         "flow": "CIQ_Review_A00",
-        "id": "PkRev15",
-        "what": "Case_Code=ZZT-N21-R1-OPR1 Review_Key=ZZT-N21-R1-OPR1-REG-1",
+        "id": "PkEAZZTN21R1OPR1REG",
+        "what": "Review_Key=ZZT-N21-R1-OPR1-REG-1 (started by I-2, E-A)",
         "stage": "Review – Regulatory"
        },
        {
-        "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit19",
-        "what": "Case_Code=ZZT-N21-R1-OPR1 Event_Key=EV-ZZT-N21-R1-OPR1-20261021192748-1w20",
-        "stage": "saved"
-       },
-       {
         "flow": "CIQ_Review_A00",
-        "id": "PkRev20",
-        "what": "Case_Code=ZZT-N21-R1-OPR1 Review_Key=ZZT-N21-R1-OPR1-SAF-1",
+        "id": "PkEAZZTN21R1OPR1SAF",
+        "what": "Review_Key=ZZT-N21-R1-OPR1-SAF-1 (started by I-2, E-A)",
         "stage": "Review – Safety"
        },
        {
-        "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit24",
-        "what": "Case_Code=ZZT-N21-R1-OPR1 Event_Key=EV-ZZT-N21-R1-OPR1-20261021192748-4bs9",
-        "stage": "saved"
-       },
-       {
         "flow": "CIQ_Review_A00",
-        "id": "PkRev25",
-        "what": "Case_Code=ZZT-N21-R1-OPR1 Review_Key=ZZT-N21-R1-OPR1-QM-1",
+        "id": "PkEAZZTN21R1OPR1QM",
+        "what": "Review_Key=ZZT-N21-R1-OPR1-QM-1 (started by I-2, E-A)",
         "stage": "Review – QM"
        },
        {
-        "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit29",
-        "what": "Case_Code=ZZT-N21-R1-OPR1 Event_Key=EV-ZZT-N21-R1-OPR1-20261021192748-uzzw",
-        "stage": "saved"
-       },
-       {
         "flow": "CIQ_Review_A00",
-        "id": "PkRev30",
-        "what": "Case_Code=ZZT-N21-R1-OPR1 Review_Key=ZZT-N21-R1-OPR1-MIC-1",
+        "id": "PkEAZZTN21R1OPR1MIC",
+        "what": "Review_Key=ZZT-N21-R1-OPR1-MIC-1 (started by I-2, E-A)",
         "stage": "Review – Microbiology"
        },
        {
         "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit34",
-        "what": "Case_Code=ZZT-N21-R1-OPR1 Event_Key=EV-ZZT-N21-R1-OPR1-20261021192748-au93",
-        "stage": "saved"
-       },
-       {
-        "flow": "CIQ_Review_A00",
-        "id": "PkRev35",
-        "what": "Case_Code=ZZT-N21-R1-OPR1 Review_Key=ZZT-N21-R1-OPR1-SUS-1",
-        "stage": "Review – Sustainability"
-       },
-       {
-        "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit39",
-        "what": "Case_Code=ZZT-N21-R1-OPR1 Event_Key=EV-ZZT-N21-R1-OPR1-20261021192748-52yo",
-        "stage": "saved"
-       },
-       {
-        "flow": "CIQ_Scope_Run_A00",
-        "id": "FmScope41",
-        "what": "Case_Code=ZZT-N21-R1-OPR1",
+        "id": "PkEvEAZZTN21R1OPR1",
+        "what": "Case_Code=ZZT-N21-R1-OPR1 Action_Code=review.started (E-A)",
         "stage": "saved"
        },
        {
         "flow": "CIQ_Open_Point_A00",
-        "id": "PkOp42",
+        "id": "PkOp16",
         "what": "Case_Code=ZZT-N21-R1-OPR1 OP_Key=OP-OPR1-01",
         "stage": "Completed"
        },
        {
         "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit46",
-        "what": "Case_Code=ZZT-N21-R1-OPR1 Event_Key=EV-ZZT-N21-R1-OPR1-20261021192748-9dzx",
+        "id": "FmAudit20",
+        "what": "Case_Code=ZZT-N21-R1-OPR1 Event_Key=EV-ZZT-N21-R1-OPR1-20261028224720-qmbt",
         "stage": "saved"
        },
        {
@@ -2790,14 +2746,14 @@
        },
        {
         "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit48",
-        "what": "Case_Code=ZZT-N21-R1-OPR1 Event_Key=EV-ZZT-N21-R1-OPR1-20261021192748-vwkp",
+        "id": "FmAudit22",
+        "what": "Case_Code=ZZT-N21-R1-OPR1 Event_Key=EV-ZZT-N21-R1-OPR1-20261028224720-5dkj",
         "stage": "saved"
        },
        {
         "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit50",
-        "what": "Case_Code=ZZT-N21-R1-OPR1 Event_Key=EV-ZZT-N21-R1-OPR1-20261021192748-vl23",
+        "id": "FmAudit24",
+        "what": "Case_Code=ZZT-N21-R1-OPR1 Event_Key=EV-ZZT-N21-R1-OPR1-20261028224720-r5am",
         "stage": "saved"
        },
        {
@@ -2808,20 +2764,20 @@
        },
        {
         "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit52",
-        "what": "Case_Code=ZZT-N21-R1-OPR1 Event_Key=EV-ZZT-N21-R1-OPR1-20261021192748-eod4",
+        "id": "FmAudit26",
+        "what": "Case_Code=ZZT-N21-R1-OPR1 Event_Key=EV-ZZT-N21-R1-OPR1-20261028224720-omne",
         "stage": "saved"
        },
        {
         "flow": "CIQ_Open_Point_A00",
-        "id": "PkOp53",
+        "id": "PkOp27",
         "what": "Case_Code=ZZT-N21-R1-OPR1 OP_Key=OP-OPR1-02",
         "stage": "Completed"
        },
        {
         "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit57",
-        "what": "Case_Code=ZZT-N21-R1-OPR1 Event_Key=EV-ZZT-N21-R1-OPR1-20261021192748-5rfo",
+        "id": "FmAudit31",
+        "what": "Case_Code=ZZT-N21-R1-OPR1 Event_Key=EV-ZZT-N21-R1-OPR1-20261028224720-dc5p",
         "stage": "saved"
        },
        {
@@ -2832,20 +2788,20 @@
        },
        {
         "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit59",
-        "what": "Case_Code=ZZT-N21-R1-OPR1 Event_Key=EV-ZZT-N21-R1-OPR1-20261021192748-b0m6",
+        "id": "FmAudit33",
+        "what": "Case_Code=ZZT-N21-R1-OPR1 Event_Key=EV-ZZT-N21-R1-OPR1-20261028224720-oydu",
         "stage": "saved"
        },
        {
         "flow": "CIQ_Open_Point_A00",
-        "id": "PkOp60",
+        "id": "PkOp34",
         "what": "Case_Code=ZZT-N21-R1-OPR1 OP_Key=OP-OPR1-03",
         "stage": "Open point – QM"
        },
        {
         "flow": "CIQ_Audit_Event_A00",
-        "id": "FmAudit64",
-        "what": "Case_Code=ZZT-N21-R1-OPR1 Event_Key=EV-ZZT-N21-R1-OPR1-20261021192748-xh3w",
+        "id": "FmAudit38",
+        "what": "Case_Code=ZZT-N21-R1-OPR1 Event_Key=EV-ZZT-N21-R1-OPR1-20261028224720-g6tb",
         "stage": "saved"
        },
        {
@@ -2881,12 +2837,12 @@
     "notes": {
      "request: My items outside the ledger changed since the suite started": 0,
      "query: My items outside the ledger changed since the suite started": 0,
-     "kissflowCalls (estimated live)": 21,
+     "kissflowCalls (estimated live)": 20,
      "integration runs (offline fakes)": []
     }
    },
    "ms": 1,
-   "at": "2026-10-21T19:27:48.167Z"
+   "at": "2026-10-28T22:47:20.725Z"
   }
  ]
 }
