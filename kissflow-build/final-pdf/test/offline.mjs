@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // Offline test of the CIQ final document service: Bundle.gs + Code.gs in a node:vm with Apps Script stand-ins
 // (gas.mjs) against an in-memory Kissflow (fake-kissflow.mjs) holding the app's live-shaped ZZT fixtures
-// (fixtures/kissflow.json, from make-fixtures.mjs). No network. Usage: node kissflow-build/final-pdf/test/offline.mjs
+// (fixtures/kissflow.json, from make-fixtures.mjs). Event mode (29 Oct): the integration's POST (doPost) queues the
+// case, a one-off trigger runs drain(), which files the case PDF, the portal's supplier-safe copy, the audit row and one
+// RMM webhook POST. No network. Usage: node kissflow-build/final-pdf/test/offline.mjs
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -43,10 +45,14 @@ const P = {
   TIME_ZONE: "Europe/Berlin",
   MAIL_ENABLED: "true",
   ADMIN_EMAIL: "admin.zzt@example.com",
-  FALLBACK_RMM_EMAIL: "rmm.fallback.zzt@example.com",
+  DOPOST_TOKEN: "zzt-dopost-token-77aa",
+  RMM_WEBHOOK_URL: "https://zzt-sandbox.kissflow.example/integration/2/AcZZTsandbox01/webhook/ZZTRMMHOOK0123456789",
 };
+const HOOK_TOKEN = "ZZTRMMHOOK0123456789";
+const PORTAL_APP = "CIQ_Supplier_Portal_A00";
+const REQ_ID = "PkReq5";
 const WEBHOOK = "https://zzt-sandbox.kissflow.example/integration/2/AcZZTsandbox01/webhook/ZZTHOOKTOKEN0123456789";
-const SECRETS = [P.KF_ACCESS_KEY_ID, P.KF_ACCESS_KEY_SECRET, "ZZTHOOKTOKEN0123456789", "zzt-dopost-token-77aa"];
+const SECRETS = [P.KF_ACCESS_KEY_ID, P.KF_ACCESS_KEY_SECRET, "ZZTHOOKTOKEN0123456789", HOOK_TOKEN, P.DOPOST_TOKEN];
 const NOW0 = Date.parse("2026-10-24T08:00:00Z");
 const CASE_ID = "AppZZT-0005";
 const PDF_NAME = "ZZT-0005-final-document.pdf";
@@ -63,8 +69,9 @@ const variant = (base, code, patch) => {
 /** Every log line, mail and write body of every execution, for the secrets check at the end. */
 const everything = [];
 
-/** A fake Kissflow with the fixtures and the case variants, a fake clock, Script Properties and a cache. */
-function world({ props = {}, listMode = "status", mutate } = {}) {
+/** A fake Kissflow with the fixtures, the case variants and the portal request of ZZT-0005, a fake clock, Script
+ *  Properties and a cache; `post` is the integration's HTTP step (doPost), `fire` Apps Script's trigger runner. */
+function world({ props = {}, listMode = "status", mutate, patch } = {}) {
   const clock = { t: NOW0, now() { return this.t; }, advance(ms) { this.t += Math.max(0, ms); } };
   const db = Object.fromEntries(Object.entries(FLOWS).map(([k, id]) => [id, clone(fx.db[k])]));
   const base = db.CIQ_Case_A00.find((x) => x._id === CASE_ID);
@@ -74,11 +81,14 @@ function world({ props = {}, listMode = "status", mutate } = {}) {
     variant(base, "ZZT-0008", { Final_Document_Hash: `seal:0123456789abcdef sha256:${"a".repeat(64)}` }),
     variant(base, "ZZT-0009", { _status: "InProgress", Final_Release_At: iso(NOW0 - 60000) }),
   );
+  // the portal request of ZZT-0005 (the case names it in Portal_Request_Item_Id); the variants name it too, but it
+  // names only ZZT-0005 (App_Case_Item_Id)
+  db.CIQP_Request_A00 = [{ _id: REQ_ID, App_Case_Item_Id: CASE_ID, Case_Code: "ZZT-0005", Cycle_No: 1, _status: "Completed" }];
   // the SET:current row holds webhook URLs live: they must never reach a log
   const set = db.CIQ_Config_Version_A00.find((r) => r.Config_Key === "SET:current");
   set.Payload_JSON = JSON.stringify({ ...JSON.parse(set.Payload_JSON), webhooks: { "I-1": WEBHOOK } });
   if (mutate) mutate(db);
-  const kf = fakeKissflow({ domain: P.KF_DOMAIN, acc: P.KF_ACCOUNT_ID, app: P.KF_APP_ID, keyId: P.KF_ACCESS_KEY_ID, keySecret: P.KF_ACCESS_KEY_SECRET, db, clock, listMode });
+  const kf = fakeKissflow({ domain: P.KF_DOMAIN, acc: P.KF_ACCOUNT_ID, app: P.KF_APP_ID, portalApp: PORTAL_APP, hookToken: HOOK_TOKEN, keyId: P.KF_ACCESS_KEY_ID, keySecret: P.KF_ACCESS_KEY_SECRET, db, clock, listMode });
   const store = new Map(Object.entries({ ...P, ...props }).filter(([, v]) => v !== undefined));
   const cache = new Map();
   const shared = newWorld();
@@ -90,9 +100,10 @@ function world({ props = {}, listMode = "status", mutate } = {}) {
     store,
     world: shared,
     runs,
-    /** A new Apps Script execution (fresh globals; the same properties, cache, mails and Kissflow). */
-    exec() {
-      const ex = execution({ fetch: kf.handle, store, cache, world: shared, clock });
+    /** A new Apps Script execution (fresh globals; the same properties, cache, mails, triggers and Kissflow). */
+    exec(o = {}) {
+      const ex = execution({ fetch: kf.handle, store, cache, world: shared, clock, ...o });
+      if (patch) patch(ex.ctx, clock);
       runs.push(ex);
       return ex;
     },
@@ -101,8 +112,38 @@ function world({ props = {}, listMode = "status", mutate } = {}) {
       const r = ex.call(fn, ...args);
       return { r, ex };
     },
+    /** The integration's HTTP POST: a JSON body (the token in it by default), an optional query. */
+    post(body = { caseItemId: CASE_ID, token: P.DOPOST_TOKEN }, { query = {}, type = "application/json" } = {}) {
+      const contents = typeof body === "string" ? body : JSON.stringify(body);
+      const out = w.exec().call("doPost", { parameter: query, parameters: Object.fromEntries(Object.entries(query).map(([k, v]) => [k, [v]])), queryString: new URLSearchParams(query).toString(), contentLength: contents.length, postData: { contents, type, length: contents.length, name: "postData" } });
+      assert.equal(out.mime, "JSON");
+      return JSON.parse(out.getContent());
+    },
+    /** Apps Script's runner: the earliest unfired one-off trigger fires (30 s after its time); it stays listed. */
+    fire(o) {
+      const t = shared.triggers.filter((x) => x.dueAt !== undefined && !x.fired).sort((a, b) => a.dueAt - b.dueAt)[0];
+      if (!t) return false;
+      if (clock.now() < t.dueAt + 30000) clock.t = t.dueAt + 30000;
+      t.fired = true;
+      w.exec(o).call(t.fn, { triggerUid: t.id, authMode: "FULL" });
+      return true;
+    },
+    fireAll(max = 40) {
+      let n = 0;
+      while (n < max && w.fire()) n++;
+      return n;
+    },
+    /** One event for the case, then every drain it leads to. */
+    event(id = CASE_ID) {
+      const a = w.post({ caseItemId: id, token: P.DOPOST_TOKEN });
+      return { answer: a, drains: w.fireAll() };
+    },
+    queue: () => [...store.keys()].filter((k) => k.startsWith("Q_")),
+    pending: () => shared.triggers.filter((t) => t.fn === "drain" && !t.fired),
+    drainTriggers: () => shared.triggers.filter((t) => t.fn === "drain"),
     logs: () => runs.flatMap((x) => x.logs),
     caseItem: (id = CASE_ID) => db.CIQ_Case_A00.find((x) => x._id === id),
+    request: () => db.CIQP_Request_A00.find((x) => x._id === REQ_ID),
     state: (id = CASE_ID) => (store.has(`FD_${id}`) ? JSON.parse(store.get(`FD_${id}`)) : null),
   };
   everything.push(w);
@@ -114,8 +155,15 @@ const pdfText = (bytes) => Buffer.from(bytes).toString("latin1");
 const JSON_H = { "Content-Type": "application/json" };
 const answer = (status, body = {}) => ({ status, headers: JSON_H, body: JSON.stringify(body) });
 const isAttach = (c) => c.method === "POST" && /\/Final_PDF\/attachment$/.test(c.path);
-const rmmMails = (w) => w.world.mails.filter((m) => m.subject.endsWith(": final document ready"));
+const isCaseAttach = (c) => isAttach(c) && c.path.includes("/CIQ_Case_A00/");
+const hooks = (w) => w.kf.calls.filter((c) => c.write === "webhook");
 const auditRows = (w) => w.db.CIQ_Audit_Event_A00.filter((r) => r.Event_Key === "ZZT-0005-FD-PDF");
+const adminMails = (w) => w.world.mails.filter((m) => m.to === P.ADMIN_EMAIL);
+const sealOf = (bytes) => /\/Subject \(document seal ([0-9a-f]{16})\)/.exec(pdfText(bytes))?.[1] ?? "";
+/** The Beiersdorf people of the parity case (names and e-mail addresses) and its supplier contacts. */
+const BDF_PEOPLE = ["Katrin Vogel", "Jonas Albrecht", "Mira Hansen", "Lena Krause", "Tobias Keller", "Katrin", "Vogel", "Albrecht", "Hansen", "Krause", "Keller"];
+const SUPPLIER_PEOPLE = ["Elena Márquez", "Ravi Menon"];
+
 // WinAnsi bytes 0x80-0x9f that pdf.mjs writes (CP1252) back to Unicode
 const CP1252 = { 0x80: "€", 0x82: "‚", 0x83: "ƒ", 0x84: "„", 0x85: "…", 0x86: "†", 0x87: "‡", 0x88: "ˆ", 0x89: "‰", 0x8a: "Š", 0x8b: "‹", 0x8c: "Œ", 0x8e: "Ž", 0x91: "‘", 0x92: "’", 0x93: "“", 0x94: "”", 0x95: "•", 0x96: "–", 0x97: "—", 0x98: "˜", 0x99: "™", 0x9a: "š", 0x9b: "›", 0x9c: "œ", 0x9e: "ž", 0x9f: "Ÿ" };
 /** The text of a sync/pdf.mjs PDF, one string per shown line (one BT…ET text object; its runs joined), escapes decoded. */
@@ -188,338 +236,723 @@ test("bundle in a bare vm (polyfilled built-ins deleted) gives the app's own doc
   assert.equal(vm.runInContext("CIQFinal.verifyFinalDocument(changed)", ctx), false, "a changed document must fail the seal");
 });
 
-// ------------------------------------------------------------------ eligibility
+// ------------------------------------------------------------------ the supplier-safe copy (entry.ts supplierCopy)
 
-test("eligibility: completed with release yes; no release, cancelled, filed, rejected, settling no", () => {
-  const w = world();
-  const ex = w.exec();
-  const c = ex.ctx.cfg_();
-  const el = (patch, now = NOW0) => ex.ctx.eligibility_({ ...clone(w.caseItem()), ...patch }, c, now);
-  assert.deepEqual(clone(el({})), { ok: true });
-  assert.equal(el({ Final_Release_Confirm: undefined }).why, "no final release");
-  assert.equal(el({ Final_Release_At: "" }).why, "no final release");
-  assert.deepEqual(clone(el({ Case_Phase: "Cancelled" })), { ok: false, why: "cancelled", ended: true });
-  assert.equal(el({ Cancelled_At: "2026-10-20T19:00:00Z" }).why, "cancelled");
-  assert.equal(el({ Cancelled_At: "2026-10-20T10:00:00Z", Reactivated_At: "2026-10-20T11:00:00Z" }).ok, true, "reactivated after the cancellation");
-  assert.deepEqual(clone(el({ Final_Document_Hash: "seal:x sha256:y" })), { ok: false, why: "already filed", done: true });
-  assert.equal(el({ _status: "Rejected" }).ended, true);
-  assert.equal(el({ _status: "Withdrawn" }).ended, true);
-  assert.equal(el({ Final_Release_At: iso(NOW0 - 60000) }).why, "settling", "completed 1 min ago (SETTLE_MINUTES 2)");
-  assert.equal(el({ _status: "InProgress", Final_Release_At: iso(NOW0 - 10 * 60000) }).why, "settling");
-  assert.equal(el({ _status: "InProgress", Final_Release_At: iso(NOW0 - 16 * 60000) }).ok, true, "released 16 min ago, not completed (failed skip)");
-  ex.store.set("RELEASED_AFTER", "2026-10-21T00:00:00Z");
-  const ex2 = w.exec();
-  assert.equal(ex2.ctx.eligibility_(clone(w.caseItem()), ex2.ctx.cfg_(), NOW0).why, "released before RELEASED_AFTER");
+/** Bundle.gs alone in a vm, with the parity document. */
+function bundleCtx() {
+  const ctx = vm.createContext({});
+  vm.runInContext(readFileSync(resolve(GS_DIR, "Bundle.gs"), "utf8"), ctx, { filename: "Bundle.gs" });
+  ctx.doc = clone(EXPECTED);
+  return ctx;
+}
+
+test("supplierCopy: Beiersdorf people as 'Beiersdorf' plus their role, no names or e-mail addresses; suppliers kept; its own seal", () => {
+  const ctx = bundleCtx();
+  const before = JSON.stringify(ctx.doc);
+  const copy = clone(vm.runInContext("CIQFinal.supplierCopy(doc)", ctx));
+  assert.equal(JSON.stringify(ctx.doc), before, "the internal document is not changed");
+  ctx.copy = copy;
+  assert.equal(vm.runInContext("CIQFinal.verifyFinalDocument(copy)", ctx), true, "the copy's seal verifies (the app's fingerprint)");
+  assert.notEqual(copy.fingerprint, EXPECTED.fingerprint, "its own seal");
+  assert.equal(clone(vm.runInContext("CIQFinal.supplierCopy(doc)", ctx)).fingerprint, copy.fingerprint, "deterministic");
+  const text = JSON.stringify({ ...copy, fingerprint: "" });
+  for (const p of BDF_PEOPLE) assert.ok(!text.includes(p), `a Beiersdorf name in the copy: ${p}`);
+  assert.ok(!/@beiersdorf/i.test(text), "a Beiersdorf e-mail address in the copy");
+  for (const p of SUPPLIER_PEOPLE) assert.ok(text.includes(p), `a supplier name is kept: ${p}`);
+  assert.equal(copy.header.ownerName, "Beiersdorf");
+  assert.equal(copy.trigger, EXPECTED.trigger, "the supplier's final release");
+  assert.deepEqual(copy.confirmations.map((c) => [c.type, c.name, c.email, c.role]), EXPECTED.confirmations.map((c) => (c.type === "dept-completion" ? [c.type, "Beiersdorf", "", c.role] : [c.type, c.name, c.email, c.role])));
+  assert.deepEqual(copy.threads.map((t) => t.raisedBy), ["Beiersdorf, Raw Material Manager (RMM)", "Beiersdorf, Product Safety reviewer"]);
+  const entries = copy.threads.flatMap((t) => t.rounds.flatMap((r) => r.entries));
+  assert.deepEqual([...new Set(entries.filter((e) => e.side !== "supplier").map((e) => e.by))].sort(), ["Product Safety reviewer", "Raw Material Manager (RMM)"], "the PDF adds '(Beiersdorf)' to these itself");
+  assert.deepEqual([...new Set(entries.filter((e) => e.side === "supplier").map((e) => e.by))].sort(), ["Elena Márquez", "Ravi Menon"]);
+  // everything else is the internal document's
+  const strip = (d) => ({ ...d, fingerprint: "", header: { ...d.header, ownerName: "" }, threads: [], confirmations: [] });
+  assert.deepEqual(strip(copy), strip(EXPECTED));
 });
 
-// ------------------------------------------------------------------ the main path
+test("supplierCopy: free text loses Beiersdorf names and e-mail addresses; a name shared with a supplier is masked where unsure", () => {
+  const ctx = bundleCtx();
+  const d = ctx.doc;
+  d.threads[0].rounds[0].entries[0].text = "Katrin Vogel here, write to katrin.vogel@beiersdorf.example or qa.team@beiersdorf.example. Thanks, Katrin Vogels";
+  d.sections[0].answers[0].by = "Katrin Vogel"; // an answer a Beiersdorf person entered
+  d.sections[0].answers[0].value = "elena.marquez@solvaro.example";
+  d.evidence[0].uploadedBy = "Dr. Mira Hansen";
+  const copy = clone(vm.runInContext("CIQFinal.supplierCopy(doc)", ctx));
+  assert.equal(copy.threads[0].rounds[0].entries[0].text, "Beiersdorf here, write to Beiersdorf or Beiersdorf. Thanks, Katrin Vogels", "whole words only; any address on a Beiersdorf-only domain");
+  assert.equal(copy.sections[0].answers[0].by, "Beiersdorf, Raw Material Manager (RMM)");
+  assert.equal(copy.sections[0].answers[0].value, "elena.marquez@solvaro.example", "a supplier address stays");
+  assert.equal(copy.evidence[0].uploadedBy, "Beiersdorf, Product Safety reviewer");
+});
 
-test("tick files ZZT-0005 once: PDF attached, case fields, RMM mail, audit row", () => {
+test("the internal PDF is unchanged by the copy; the copy's PDF says 'document seal <its seal>' and names no Beiersdorf person", () => {
+  const ctx = bundleCtx();
+  const render = (expr) => Buffer.from(Uint8Array.from(vm.runInContext(`CIQFinal.renderPdf(${expr}, {})`, ctx)));
+  const internal = render("doc");
+  ctx.copy = vm.runInContext("CIQFinal.supplierCopy(doc)", ctx);
+  const sup = render("copy");
+  assert.ok(render("doc").equals(internal), "rendering the copy leaves the internal PDF as it was");
+  assert.equal(sealOf(internal), EXPECTED.fingerprint);
+  assert.equal(sealOf(sup), ctx.copy.fingerprint);
+  const text = pdfLines(sup).join("\n");
+  for (const p of BDF_PEOPLE) assert.ok(!text.includes(p), `a Beiersdorf name in the supplier PDF: ${p}`);
+  assert.ok(!/beiersdorf\.example/i.test(pdfText(sup)), "no Beiersdorf e-mail address in the supplier PDF");
+  for (const want of ["Case owner (RMM)\nBeiersdorf", "Raised by Beiersdorf, Raw Material Manager (RMM), ", "Raw Material Manager (RMM) (Beiersdorf) · Returned to supplier · ", "Product Safety reviewer (Beiersdorf) · Closed as not accepted · ", "Elena Márquez (supplier) · Answered · ", "Document seal: unchanged"]) assert.ok(text.includes(want), `the supplier PDF lacks: ${want}`);
+  assert.ok(text.includes(`ZZT-0005-FD · document seal ${ctx.copy.fingerprint}`), "its own seal in the footer");
+  assert.ok(pdfLines(internal).join("\n").includes("Katrin Vogel"), "the internal PDF keeps the names");
+});
+
+// ------------------------------------------------------------------ doPost
+
+test("doPost: the token (body first, ?token= fallback), the step-test sample, bad ids; it queues and calls no Kissflow route", () => {
+  const w0 = world({ props: { DOPOST_TOKEN: undefined } });
+  assert.deepEqual(w0.post(), { ok: false, status: "disabled" });
   const w = world();
-  w.run("tick");
+  assert.equal(w.post({ caseItemId: CASE_ID }).status, "refused", "no token");
+  assert.equal(w.post({ caseItemId: CASE_ID, token: "zzt-dopost-token-77ab" }).status, "refused", "a wrong token");
+  assert.equal(w.post({ caseItemId: CASE_ID, token: "wrong" }, { query: { token: P.DOPOST_TOKEN } }).status, "refused", "the body token wins over the query");
+  assert.equal(w.post({ caseItemId: "SampleInstance001" }).status, "refused", "the token is checked before the sample id");
+  assert.equal(w.post({ caseItemId: "../../x", token: P.DOPOST_TOKEN }).status, "bad case item id");
+  assert.equal(w.post("{not json").status, "bad request");
+  assert.deepEqual(w.queue(), []);
+  assert.deepEqual(w.post({ caseItemId: "SampleInstance001", token: P.DOPOST_TOKEN }), { ok: true, status: "test event", caseItemId: "SampleInstance001" }, "the builder's step test: ok, nothing else");
+  assert.deepEqual(w.post({ _id: "SampleInstance001", token: P.DOPOST_TOKEN }).status, "test event");
+  assert.deepEqual(w.queue(), []);
+  assert.equal(w.world.triggers.length, 0, "no trigger for a step test");
+  assert.deepEqual(w.post(), { ok: true, status: "queued", caseItemId: CASE_ID });
+  const q = JSON.parse(w.store.get(`Q_${CASE_ID}`));
+  assert.equal(q.rev, w.exec().ctx.FD_.CODE_REV, "the entry carries the code revision");
+  assert.equal(w.post({ _id: CASE_ID, token: P.DOPOST_TOKEN }).status, "already queued", "_id is accepted");
+  assert.equal(w.post({ caseItemId: CASE_ID }, { query: { token: P.DOPOST_TOKEN } }).status, "already queued", "?token= as a fallback");
+  assert.equal(w.drainTriggers().length, 1, "one drain trigger for all three events");
+  assert.ok(w.drainTriggers()[0].afterMs >= 120000, "SETTLE_MINUTES 2");
+  assert.equal(w.kf.calls.length, 0, "doPost calls no Kissflow route");
+  assert.equal(w.world.mails.length, 0);
+});
+
+test("doPost: a full queue refuses the event with one admin alert an hour", () => {
+  const w = world();
+  for (let i = 0; i < 50; i++) w.store.set(`Q_PkFAKE${String(i).padStart(4, "0")}`, JSON.stringify({ at: NOW0 + 3600e3, next: NOW0 + 3600e3, n: 0 }));
+  assert.equal(w.post().status, "queue full");
+  assert.equal(w.post().status, "queue full");
+  assert.equal(adminMails(w).length, 1);
+  w.clock.advance(61 * 60000);
+  w.post();
+  assert.equal(adminMails(w).length, 2);
+});
+
+// ------------------------------------------------------------------ the event path: doPost → drain
+
+test("event → drain files ZZT-0005 once: case PDF, case fields, supplier copy on the request, audit row, one webhook; no MailApp", () => {
+  const w = world();
+  const { answer: a, drains } = w.event();
+  assert.deepEqual(a, { ok: true, status: "queued", caseItemId: CASE_ID });
+  assert.equal(drains, 2, "the filing, then its successor (WATCHDOG_MS) on an empty queue, which schedules nothing");
   const calls = w.kf.calls;
   const writes = writesOf(calls);
-  assert.deepEqual(writes.map((c) => c.write), ["attach", "put", "form-create", "form-submit"], "exactly these writes, in this order");
+  assert.deepEqual(writes.map((c) => c.write), ["attach", "put", "portal-attach", "form-create", "form-submit", "webhook"], "exactly these writes, in this order");
 
-  // the attachment
+  // the internal PDF on the case
   const att = writes[0];
   assert.match(att.path, new RegExp(`^/process/2/${P.KF_ACCOUNT_ID}/admin/CIQ_Case_A00/${CASE_ID}/Final_PDF/attachment$`));
-  assert.ok(att.multipart?.file, "multipart part 'file'");
   assert.equal(att.multipart.file.name, PDF_NAME);
   assert.equal(att.multipart.file.type, "application/pdf");
   assert.equal(att.contentType, undefined, "no JSON content type on the multipart call");
   const pdf = att.multipart.file.bytes;
   const text = pdfText(pdf);
-  assert.ok(text.startsWith("%PDF-1.4"), "starts with %PDF");
-  assert.ok(text.trimEnd().endsWith("%%EOF"));
-  assert.ok(text.includes("ZZT-0005"), "names the case code");
-  assert.ok(text.includes(`document seal ${EXPECTED.fingerprint}`), "the app's seal in the footer");
-  assert.ok(!text.includes("SHA-256 of the final document JSON") && !text.includes("filed on the case data"), "no retired Case Data wording");
+  assert.ok(text.startsWith("%PDF-1.4") && text.trimEnd().endsWith("%%EOF"));
+  assert.ok(text.includes(`document seal ${EXPECTED.fingerprint}`), "the app's seal");
   assert.ok(/CES?T\)/.test(text), "dates in TIME_ZONE (Europe/Berlin)");
   const sha = createHash("sha256").update(pdf).digest("hex");
 
   // the case fields
   const put = writes[1];
   assert.equal(put.path, `/process/2/${P.KF_ACCOUNT_ID}/admin/CIQ_Case_A00/${CASE_ID}`);
-  assert.equal(put.contentType, "application/json");
   assert.deepEqual(Object.keys(put.body).sort(), ["Completion_Trigger", "Final_Document_At", "Final_Document_Hash"]);
   assert.equal(put.body.Final_Document_Hash, `seal:${EXPECTED.fingerprint} sha256:${sha}`);
-  assert.match(put.body.Final_Document_At, /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ$/, "ISO without milliseconds");
+  assert.match(put.body.Final_Document_At, /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ$/);
   assert.equal(put.body.Completion_Trigger, "Final release by Elena Márquez");
-  const item = w.caseItem();
-  assert.equal(item.Final_Document_Hash, put.body.Final_Document_Hash);
-  assert.deepEqual(item.Final_PDF.map((a) => a.name), [PDF_NAME]);
+  assert.deepEqual(w.caseItem().Final_PDF.map((x) => x.name), [PDF_NAME]);
 
-  // the audit row
-  const [create, submit] = writes.slice(2);
-  assert.equal(create.path, `/form/2/${P.KF_ACCOUNT_ID}/CIQ_Audit_Event_A00`);
-  assert.match(submit.path, /\/CIQ_Audit_Event_A00\/draft_[A-Za-z0-9]+\/submit$/);
-  const a = create.body;
-  const attId = item.Final_PDF[0].id;
-  assert.deepEqual(
-    { ...a, Event_At: "*", Snapshot_JSON: "*" },
-    {
-      Event_Key: "ZZT-0005-FD-PDF",
-      Case_Code: "ZZT-0005",
-      Cycle_No: 1,
-      Case_Item_Id: CASE_ID,
-      Event_At: "*",
-      Event_Category: "Final PDF",
-      Action_Code: "final.pdf",
-      Actor_Side: "System",
-      Actor_Name: "CIQ final document service",
-      Object_Kind: "Final document",
-      Object_Key: "ZZT-0005-FD",
-      Object_Item_Id: CASE_ID,
-      Object_State: "Filed",
-      New_Value_Text: `${PDF_NAME} · ${pdf.length} bytes · SHA-256 ${sha} · document seal ${EXPECTED.fingerprint} · Final_PDF ${attId}`,
-      Ref_Flow_Id: "CIQ_Case_A00",
-      Ref_Item_Id: CASE_ID,
-      Snapshot_JSON: "*",
-      Notify_Recipient: "katrin.vogel@beiersdorf.example",
-      Notify_Channel: "E-mail",
-    },
-  );
-  assert.match(a.Event_At, /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ$/);
-  const snap = JSON.parse(a.Snapshot_JSON);
-  assert.deepEqual(snap, { audit: [{ at: a.Event_At, by: "system", action: "Generated final document", detail: `Final document generated automatically, sealed and filed on the case (document seal ${EXPECTED.fingerprint}). Sent to the RMM owner. It cannot be changed.` }] });
-  const row = w.db.CIQ_Audit_Event_A00.find((r) => r.Event_Key === "ZZT-0005-FD-PDF");
-  assert.ok(row && !row._id.startsWith("draft_"), "the submitted row exists under its new id");
-  assert.ok(calls.some((c) => c.method === "GET" && c.path.endsWith(`/CIQ_Audit_Event_A00/${row._id}`)), "the row is read back");
+  // the supplier-safe copy on the portal request (admin route, the portal's application id)
+  const portal = writes[2];
+  assert.equal(portal.path, `/process/2/${P.KF_ACCOUNT_ID}/admin/CIQP_Request_A00/${REQ_ID}/Final_PDF/attachment`);
+  assert.match(portal.query, new RegExp(`_application_id=${PORTAL_APP}`));
+  assert.equal(portal.multipart.file.name, PDF_NAME, "the same file name as on the case");
+  const sup = portal.multipart.file.bytes;
+  assert.ok(!sup.equals(pdf), "not the internal PDF");
+  const sSeal = sealOf(sup);
+  assert.ok(/^[0-9a-f]{16}$/.test(sSeal) && sSeal !== EXPECTED.fingerprint, "its own seal in the subject");
+  const supText = pdfLines(sup).join("\n");
+  for (const p of BDF_PEOPLE) assert.ok(!supText.includes(p), `a Beiersdorf name in the portal PDF: ${p}`);
+  assert.ok(!/beiersdorf\.example/i.test(pdfText(sup)), "a Beiersdorf e-mail address in the portal PDF");
+  assert.ok(supText.includes("Elena Márquez"), "the supplier's own people stay");
+  assert.deepEqual(w.request().Final_PDF.map((x) => x.name), [PDF_NAME]);
 
-  // the RMM mail (C-14), with the PDF
-  assert.equal(w.world.mails.length, 1);
-  const m = w.world.mails[0];
-  assert.equal(m.to, "katrin.vogel@beiersdorf.example", "Owner_RMM started the case: BDF_Contact_Email");
-  assert.equal(m.subject, "ZZT-0005: final document ready");
-  assert.equal(m.body, `The supplier gave the final release of CETYL 16 (ZZT-0005) and the case is completed. The final document was generated automatically and sealed (document seal ${EXPECTED.fingerprint}). It holds the released answers, the evidence list, every open-point thread and all confirmations.\n\nThe PDF is attached and filed on the case in Kissflow (Final PDF).`);
-  assert.equal(m.attachments.length, 1);
-  assert.equal(m.attachments[0].name, PDF_NAME);
-  assert.equal(m.attachments[0].type, "application/pdf");
-  assert.ok(m.attachments[0].bytes.equals(pdf), "the mailed PDF is the filed PDF");
+  // the audit row: the supplier seal in New_Value_Text; no Notify_* (the integration's run history is the mail's record)
+  const create = writes[3].body;
+  const caseAtt = w.caseItem().Final_PDF[0].id;
+  const reqAtt = w.request().Final_PDF[0].id;
+  assert.equal(create.New_Value_Text, `${PDF_NAME} · ${pdf.length} bytes · SHA-256 ${sha} · document seal ${EXPECTED.fingerprint} · Final_PDF ${caseAtt} · portal request ${REQ_ID} Final_PDF ${reqAtt} · supplier copy seal ${sSeal}`);
+  assert.equal(create.Notify_Recipient, undefined);
+  assert.equal(create.Notify_Channel, undefined);
+  assert.deepEqual(JSON.parse(create.Snapshot_JSON).audit[0].detail, `Final document generated automatically, sealed and filed on the case (document seal ${EXPECTED.fingerprint}). The supplier portal holds its supplier-safe copy (document seal ${sSeal}). It cannot be changed.`);
+  assert.equal(auditRows(w).length, 1);
 
-  // bookkeeping
-  assert.ok(w.store.get("DONE_IDS").split(",").includes(CASE_ID));
-  assert.ok(w.store.get("DONE_IDS").split(",").includes("AppZZT-0008"), "a filed case is remembered as done");
-  assert.ok(w.store.get("ENDED_IDS").split(",").includes("AppZZT-0007"), "a cancelled case is remembered as ended");
-  assert.equal(w.state(), null, "no state left for a finished case");
+  // the RMM hand-off: one POST to the integration webhook, no access key, the internal seal
+  const hook = writes[5];
+  assert.equal(hook.host, P.KF_DOMAIN);
+  assert.equal(hook.keyHeaders, false, "no access key on the webhook");
+  assert.deepEqual(hook.body, { caseItemId: CASE_ID, caseCode: "ZZT-0005", seal: EXPECTED.fingerprint, idempotencyKey: "ZZT-0005-FD-RMM" });
+  assert.equal(w.world.mails.length, 0, "no mail at all: the integration mails the RMM role");
 
-  // reads: never the portal, RMES, notes or retired flows; always authenticated, on KF_DOMAIN; paced
+  // bookkeeping: queue empty, no state, no trigger left
+  assert.deepEqual(w.queue(), []);
+  assert.equal(w.state(), null);
+  assert.equal(w.drainTriggers().length, 0, "each drain deleted its own trigger");
+  // reads and writes: authenticated on KF_DOMAIN (the webhook without the key); never RMES, notes or retired flows; paced
   for (const c of calls) {
-    assert.ok(c.auth, `${c.method} ${c.path} without the access key`);
     assert.equal(c.host, P.KF_DOMAIN);
-    assert.ok(!/CIQP_|CIQ_RMES_|CIQ_Internal_Note_A00|CIQ_Case_Data_A00|CIQ_Scope_Run_A00/.test(c.path), `never read: ${c.path}`);
+    if (c.write !== "webhook") assert.ok(c.auth, `${c.method} ${c.path} without the access key`);
+    assert.ok(!/CIQ_RMES_|CIQ_Internal_Note_A00|CIQ_Case_Data_A00|CIQ_Scope_Run_A00/.test(c.path), `never read: ${c.path}`);
+    if (/CIQP_/.test(c.path)) assert.ok(c.path.includes(`/CIQP_Request_A00/${REQ_ID}`), `only the case's own request: ${c.path}`);
   }
   for (let i = 1; i < calls.length; i++) assert.ok(calls[i].at - calls[i - 1].at >= 1200, `calls ${i - 1}→${i} only ${calls[i].at - calls[i - 1].at} ms apart`);
   const logs = w.logs().join("\n");
-  for (const step of ["case start", "read", "built", "rendered", "attached", "case fields written", "mail sent", "audit row written", "case done", "tick done"]) assert.ok(logs.includes(`[CIQ-FD] ${step}`), `logged: ${step}`);
+  for (const step of ["doPost queued", "case start", "read", "built", "rendered", "supplier copy rendered", "attached", "case fields written", "portal copy attached", "audit row written", "rmm notified", "case done", "drain done"]) assert.ok(logs.includes(`[CIQ-FD] ${step}`), `logged: ${step}`);
+
+  // a repeated event: the case is read once, nothing is written
+  const n = writes.length;
+  w.event();
+  assert.equal(writesOf(w.kf.calls).length, n);
+  assert.deepEqual(w.queue(), []);
+  // runOnce on a filed case does nothing either
+  assert.equal(w.run("runOnce", CASE_ID).r.status, "already filed");
+  assert.equal(writesOf(w.kf.calls).length, n);
 });
 
-test("a second tick writes nothing, and runOnce on a filed case does nothing", () => {
+test("drain: deletes its own trigger first; re-arms only while the queue has work; a case not completed yet waits", () => {
+  const w = world({ mutate: (db) => Object.assign(db.CIQ_Case_A00.find((x) => x._id === CASE_ID), { _status: "InProgress", Final_Release_At: iso(NOW0) }) });
+  w.post();
+  const t = w.drainTriggers()[0];
+  w.fire();
+  assert.ok(!w.world.triggers.some((x) => x.id === t.id), "the fired trigger is gone");
+  assert.equal(writesOf(w.kf.calls).length, 0);
+  assert.equal(JSON.parse(w.store.get(`Q_${CASE_ID}`)).n, 1);
+  assert.ok(w.pending().length >= 1 && Math.min(...w.pending().map((x) => x.dueAt)) - w.clock.now() <= 2 * 60000, "work left: a drain armed within 2 min (the watchdog may stay armed too)");
+  w.caseItem()._status = "Completed";
+  w.fireAll();
+  assert.ok(w.caseItem().Final_Document_Hash);
+  assert.deepEqual(w.queue(), []);
+  assert.equal(w.pending().length, 0, "an empty queue arms nothing");
+  // a drain by hand on an empty queue: no call, no trigger
+  const n = w.kf.calls.length;
+  w.run("drain");
+  assert.equal(w.kf.calls.length, n);
+  assert.equal(w.world.triggers.length, 0);
+});
+
+test("drain: the lock is held: no call, again in a minute", () => {
   const w = world();
-  w.run("tick");
-  const before = w.kf.calls.length;
-  const mails = w.world.mails.length;
-  w.clock.advance(5 * 60000);
-  w.run("tick");
-  assert.equal(writesOf(w.kf.calls.slice(before)).length, 0);
-  assert.equal(w.world.mails.length, mails);
-  assert.ok(!w.kf.calls.slice(before).some((c) => c.path.endsWith(`/CIQ_Case_A00/${CASE_ID}`)), "a done case is not read again");
-  const mid = w.kf.calls.length;
-  const { r } = w.run("runOnce", CASE_ID);
-  assert.equal(r.status, "already filed");
-  assert.equal(writesOf(w.kf.calls.slice(mid)).length, 0);
-  assert.equal(w.world.mails.length, mails);
+  w.post();
+  w.fire({ lockFree: () => false });
+  assert.equal(w.kf.calls.length, 0);
+  assert.equal(w.pending().length, 1);
+  w.fireAll();
+  assert.ok(w.caseItem().Final_Document_Hash);
 });
 
-test("list rows with the release columns: only released cases are read", () => {
-  const w = world({ listMode: "columns" });
-  w.run("tick");
-  const reads = w.kf.calls.filter((c) => c.method === "GET" && /\/admin\/CIQ_Case_A00\/App/.test(c.path)).map((c) => c.path.split("/").pop());
-  assert.ok(!reads.includes("AppZZT-0001") && !reads.includes("AppZZT-0003") && !reads.includes("AppZZT-0006") && !reads.includes("AppZZT-0008"), `read: ${[...new Set(reads)]}`);
-  assert.ok(w.store.get("DONE_IDS").split(",").includes("AppZZT-0008"), "a list row with a hash is done without a read");
-  assert.equal(writesOf(w.kf.calls).filter((c) => c.write === "put").length, 1);
+test("drain: an event during a running drain is filed by the next drain (no stranded entry)", () => {
+  const w = world({
+    mutate: (db) => {
+      const base = db.CIQ_Case_A00.find((x) => x._id === CASE_ID);
+      db.CIQ_Case_A00.push({ ...clone(base), _id: "AppZZT-0010", Case_Code: "ZZT-0010", Portal_Request_Item_Id: "PkReq10" });
+      db.CIQP_Request_A00.push({ _id: "PkReq10", App_Case_Item_Id: "AppZZT-0010", Case_Code: "ZZT-0010", Cycle_No: 1, _status: "Completed" });
+    },
+  });
+  w.post();
+  let once = true;
+  w.kf.onCall = (c) => {
+    if (once && c.method === "PUT") {
+      once = false;
+      assert.equal(w.post({ caseItemId: "AppZZT-0010", token: P.DOPOST_TOKEN }).status, "queued");
+    }
+  };
+  w.fireAll();
+  assert.ok(w.caseItem().Final_Document_Hash);
+  assert.ok(w.caseItem("AppZZT-0010").Final_Document_Hash);
+  assert.equal(w.db.CIQP_Request_A00.find((r) => r._id === "PkReq10").Final_PDF.length, 1, "each case's copy on its own request");
+  assert.equal(w.request().Final_PDF.length, 1);
+  assert.deepEqual(w.queue(), []);
+  assert.equal(w.pending().length, 0);
+  assert.equal(hooks(w).length, 2);
 });
 
-test("search finds nothing, audit list without snapshots: reviews and points come from the history, rows read in full", () => {
+test("drain: failures outside a case end the chain after 3 drains with one alert", () => {
+  const w = world({ patch: (ctx) => { ctx.requeue_ = () => { throw new Error("boom outside a case"); }; } });
+  w.post();
+  const fired = w.fireAll(12);
+  assert.equal(fired, 3);
+  assert.equal(adminMails(w).filter((m) => /drain failed 3 times/.test(m.body)).length, 1);
+  assert.equal(w.pending().length, 0);
+  assert.equal(w.queue().length, 1, "the case stays queued for a drain by hand");
+});
+
+test("drain: a case that always hits the time limit leaves the queue after MAX_STOPS with one alert (its state kept)", () => {
+  const w = world({ patch: (ctx, clock) => { const orig = ctx.configRows_; ctx.configRows_ = function (c) { clock.advance(4 * 60000); return orig(c); }; } });
+  w.post();
+  const fired = w.fireAll(20);
+  assert.ok(fired <= 7, `${fired} drains`);
+  assert.equal(adminMails(w).length, 1);
+  assert.match(adminMails(w)[0].body, /each one hit the time limit[\s\S]*runOnce/);
+  assert.deepEqual(w.queue(), []);
+  assert.equal(writesOf(w.kf.calls).length, 0);
+});
+
+test("drain: a broken configuration stops before any call, alerts once an hour, schedules nothing", () => {
+  const w = world({ props: { RMM_WEBHOOK_URL: "https://other.example/integration/2/AcZZTsandbox01/webhook/X1234567" } });
+  for (const id of ["PkCase0001", "PkCase0002", "PkCase0003"]) {
+    w.post({ caseItemId: id, token: P.DOPOST_TOKEN });
+    w.fireAll(5);
+  }
+  assert.equal(w.kf.calls.length, 0);
+  assert.equal(adminMails(w).length, 1);
+  assert.equal(w.pending().length, 0);
+  assert.equal(w.queue().length, 3);
+});
+
+test("drain: an event from another code revision is logged (a stale web-app deployment)", () => {
   const w = world();
-  w.kf.searchFindsNothing = true;
-  w.kf.auditListWithoutSnapshot = true;
-  w.run("tick");
-  const put = writesOf(w.kf.calls).find((c) => c.write === "put");
-  assert.ok(put, "filed");
-  assert.equal(put.body.Final_Document_Hash.split(" ")[0], `seal:${EXPECTED.fingerprint}`, "same document seal");
-  assert.ok(w.kf.calls.some((c) => c.method === "GET" && /\/form\/2\/[^/]+\/CIQ_Audit_Event_A00\/Pk/.test(c.path)), "audit rows read in full");
+  w.post();
+  const q = JSON.parse(w.store.get(`Q_${CASE_ID}`));
+  w.store.set(`Q_${CASE_ID}`, JSON.stringify({ ...q, rev: "old" }));
+  w.fireAll();
+  assert.ok(w.logs().some((l) => l.includes("this event came from another code revision")));
+  const w2 = world();
+  w2.event();
+  assert.ok(!w2.logs().some((l) => l.includes("another code revision")));
 });
 
-// ------------------------------------------------------------------ mail switch and recipients
+// ------------------------------------------------------------------ the portal copy: the right request only, idempotent
 
-test("MAIL_ENABLED false: no mail, the audit row records none", () => {
-  const w = world({ props: { MAIL_ENABLED: "false" } });
-  w.run("tick");
+test("the portal copy goes only to the request that names the case: another case's request or none is a skip with one alert", () => {
+  const w = world({ mutate: (db) => { db.CIQP_Request_A00[0].App_Case_Item_Id = "AppZZT-9999"; } });
+  w.event();
+  assert.deepEqual(writesOf(w.kf.calls).map((c) => c.write), ["attach", "put", "form-create", "form-submit", "webhook"], "the filing goes on");
+  assert.equal(w.request().Final_PDF, undefined, "nothing on another case's request");
+  assert.equal(adminMails(w).length, 1);
+  assert.match(adminMails(w)[0].body, /names another case[\s\S]*portalCopy/);
+  assert.match(JSON.parse(writesOf(w.kf.calls)[2].body.Snapshot_JSON).audit[0].detail, /filed on the case \(document seal [0-9a-f]{16}\)\. It cannot be changed\.$/);
+  const w2 = world({ mutate: (db) => { delete db.CIQ_Case_A00.find((x) => x._id === CASE_ID).Portal_Request_Item_Id; } });
+  w2.event();
+  assert.ok(!w2.kf.calls.some((c) => /CIQP_/.test(c.path)), "no portal call without Portal_Request_Item_Id");
+  assert.match(adminMails(w2)[0].body, /names no portal request/);
+  assert.equal(hooks(w2).length, 1);
+});
+
+test("the portal copy is idempotent: a lost answer adopts the landed copy; a same-named file with another seal is never copied over", () => {
+  const w = world();
+  w.kf.lost.push({ match: (c) => c.write === "portal-attach", respond: answer(504, { error_code: "GatewayTimeout" }) });
+  w.event();
+  assert.equal(w.kf.calls.filter((c) => c.write === "portal-attach").length, 1, "one upload: the landed file is adopted by its seal");
+  assert.equal(w.request().Final_PDF.length, 1);
+  assert.equal(auditRows(w).length, 1);
+  assert.equal(hooks(w).length, 1);
+  // a same-named file on the request that carries the INTERNAL seal (not the supplier copy's) is a stop: skipped, alerted
+  const internal = { key: "Final_PDF", id: "Attach-ZZTint", name: PDF_NAME, size: 60, fileExtension: "pdf" };
+  const w2 = world({ mutate: (db) => Object.assign(db.CIQP_Request_A00[0], { Final_PDF: [internal], _attachmentBytes: { [internal.id]: Buffer.from(`%PDF-1.4\n<< /Subject (document seal ${EXPECTED.fingerprint}) >>\n%%EOF\n`) } }) });
+  w2.event();
+  assert.equal(w2.kf.calls.filter((c) => c.write === "portal-attach").length, 0);
+  assert.deepEqual(w2.request().Final_PDF.map((x) => x.id), ["Attach-ZZTint"]);
+  assert.match(adminMails(w2)[0].body, /not on the supplier portal[\s\S]*Attach-ZZTint \(seal [0-9a-f]{16}\)/);
+  assert.ok(w2.caseItem().Final_Document_Hash);
+  assert.equal(hooks(w2).length, 1);
+});
+
+test("portalCopy repairs a skipped portal copy: the rebuilt document must carry the filed seal; a second run adds nothing", () => {
+  const w = world({ mutate: (db) => { db.CIQP_Request_A00[0].App_Case_Item_Id = "AppZZT-9999"; } });
+  w.event();
+  assert.equal(w.request().Final_PDF, undefined);
+  w.request().App_Case_Item_Id = CASE_ID; // a person fixed the request
+  const n = w.kf.calls.length;
+  const r = w.run("portalCopy", CASE_ID).r;
+  assert.equal(r.ok, true, r.status);
+  const later = writesOf(w.kf.calls.slice(n));
+  assert.deepEqual(later.map((c) => c.write), ["portal-attach"], "only the copy: no audit row, no webhook, no case write");
+  const sup = later[0].multipart.file.bytes;
+  const firstSeal = sealOf(sup);
+  assert.notEqual(firstSeal, EXPECTED.fingerprint);
+  assert.ok(!pdfLines(sup).join("\n").includes("Katrin Vogel"));
+  assert.equal(w.run("portalCopy", CASE_ID).r.ok, true);
+  assert.equal(writesOf(w.kf.calls).filter((c) => c.write === "portal-attach").length, 1, "the copy with that seal is there: not added again");
+  // a filed case whose document now builds with another seal: no copy of another document
+  w.request().Final_PDF = [];
+  w.caseItem().Final_Document_Hash = `seal:0123456789abcdef sha256:${"a".repeat(64)}`;
+  const r3 = w.run("portalCopy", CASE_ID).r;
+  assert.equal(r3.ok, false);
+  assert.match(r3.status, /another seal/);
+  assert.equal(writesOf(w.kf.calls).filter((c) => c.write === "portal-attach").length, 1);
+});
+
+test("a resumed filing builds the supplier copy again (its seal unchanged) after a lost case-field answer", () => {
+  const w = world();
+  w.kf.lost.push({ match: (c) => c.method === "PUT", respond: answer(504, { error_code: "GatewayTimeout" }) });
+  w.event();
+  assert.deepEqual(writesOf(w.kf.calls).map((c) => c.write), ["attach", "put", "portal-attach", "form-create", "form-submit", "webhook"], "no second upload or PUT");
+  assert.ok(w.logs().some((l) => l.includes("[CIQ-FD] case fields found written")));
+  const fresh = world();
+  fresh.event();
+  assert.ok(writesOf(w.kf.calls)[2].multipart.file.bytes.equals(writesOf(fresh.kf.calls)[2].multipart.file.bytes), "the rebuilt copy is byte-identical");
+  assert.equal(w.state(), null);
+});
+
+test("PORTAL_COPY_ENABLED false: no portal call at all, no alert; the audit row says 'filed on the case'; the webhook still goes", () => {
+  const w = world({ props: { PORTAL_COPY_ENABLED: "false" } });
+  w.event();
+  assert.ok(!w.kf.calls.some((c) => /CIQP_/.test(c.path)));
+  assert.deepEqual(writesOf(w.kf.calls).map((c) => c.write), ["attach", "put", "form-create", "form-submit", "webhook"]);
   assert.equal(w.world.mails.length, 0);
-  const a = writesOf(w.kf.calls).find((c) => c.write === "form-create").body;
-  assert.equal(a.Notify_Recipient, undefined);
-  assert.equal(a.Notify_Channel, undefined);
-  assert.ok(!JSON.parse(a.Snapshot_JSON).audit[0].detail.includes("Sent to the RMM owner."));
+  const a = writesOf(w.kf.calls)[2].body;
+  assert.ok(!a.New_Value_Text.includes("portal"));
+  assert.match(JSON.parse(a.Snapshot_JSON).audit[0].detail, /filed on the case \(document seal [0-9a-f]{16}\)\. It cannot be changed\.$/);
 });
 
-test("RMM recipient: Owner_RMM e-mail, else the starter's BDF_Contact_Email, else FALLBACK_RMM_EMAIL, else an admin alert", () => {
+// ------------------------------------------------------------------ the RMM webhook: once, never twice
+
+test("the webhook answers 500 once: retried later and sent once more; nothing else written twice", () => {
+  const w = world();
+  w.kf.faults.push({ match: (c) => c.path.includes("/webhook/"), respond: answer(500) });
+  w.post();
+  w.fire();
+  assert.equal(w.state().attempts, 1);
+  assert.ok(!w.state().notifyingAt && !w.state().notifiedAt);
+  w.fireAll();
+  assert.deepEqual(writesOf(w.kf.calls).map((c) => c.write), ["attach", "put", "portal-attach", "form-create", "form-submit", "webhook"], "the refused POST is not a write");
+  assert.equal(w.kf.calls.filter((c) => c.path.includes("/webhook/")).length, 2, "two POSTs: the refused one and the sent one");
+  assert.equal(writesOf(w.kf.calls).filter((c) => c.write !== "webhook").length, 5);
+  assert.equal(w.state(), null);
+});
+
+test("the run ends during the webhook POST: never posted again, the admin is told", () => {
+  const w = world();
+  w.post();
+  const t = w.drainTriggers()[0];
+  w.clock.t = t.dueAt + 30000;
+  t.fired = true;
+  const ex = w.exec({ killWhen: (e) => e.type === "fetch" && e.url.includes("/webhook/") });
+  assert.throws(() => ex.call("drain", { triggerUid: t.id }), /Exceeded maximum execution time/);
+  assert.ok(w.state().notifyingAt);
+  assert.equal(w.queue().length, 1, "still queued");
+  assert.equal(w.pending().length, 1, "the killed drain armed its successor before the work (WATCHDOG_MS)");
+  w.fireAll();
+  assert.equal(w.kf.calls.filter((c) => c.path.includes("/webhook/")).length, 1);
+  assert.deepEqual(w.world.mails.map((m) => m.to), [P.ADMIN_EMAIL]);
+  assert.match(w.world.mails[0].body, /not sent again/);
+  assert.equal(w.state(), null);
+});
+
+test("an HTML answer from the webhook is a failed attempt, not a pause: 3 posts, one alert", () => {
+  const w = world();
+  w.kf.hookRespond = { status: 404, headers: { "Content-Type": "text/html" }, body: "<html>Not found</html>" };
+  w.post();
+  w.fireAll(20);
+  assert.equal(w.store.get("PAUSE_UNTIL"), undefined);
+  assert.equal(hooks(w).length, 3);
+  assert.equal(adminMails(w).length, 1);
+  assert.deepEqual(w.queue(), []);
+  assert.ok(w.state().auditVerified, "the state is kept for runOnce");
+});
+
+test("MAIL_ENABLED false: no webhook POST (and no RMM_WEBHOOK_URL needed); the case is filed", () => {
+  const w = world({ props: { MAIL_ENABLED: "false", RMM_WEBHOOK_URL: undefined } });
+  w.event();
+  assert.equal(hooks(w).length, 0);
+  assert.deepEqual(writesOf(w.kf.calls).map((c) => c.write), ["attach", "put", "portal-attach", "form-create", "form-submit"]);
+  assert.ok(w.logs().some((l) => l.includes("rmm notification not sent") && l.includes("MAIL_ENABLED is off")));
+});
+
+test("rmmWebhookSample: an unfiled case posts seal 'sample' (prod's step tests come before its first filing); a filed case its real code and seal", () => {
+  const w = world();
+  assert.equal(w.run("rmmWebhookSample", CASE_ID).r.ok, true);
+  assert.equal(hooks(w).length, 1);
+  assert.equal(hooks(w)[0].body.seal, "sample");
+  w.event();
+  const n = w.kf.calls.length;
+  assert.equal(w.run("rmmWebhookSample", CASE_ID).r.ok, true);
+  const later = w.kf.calls.slice(n);
+  assert.deepEqual(later.map((c) => [c.method, c.write ?? "", !!c.auth]), [["GET", "", true], ["POST", "webhook", false]]);
+  assert.deepEqual(later[1].body, { caseItemId: CASE_ID, caseCode: "ZZT-0005", seal: EXPECTED.fingerprint, idempotencyKey: "ZZT-0005-FD-RMM-SAMPLE" });
+});
+
+test("MailApp only alerts ADMIN_EMAIL: one sendEmail in Code.gs, in alertAdmin_; no RMM mail in any run", () => {
+  const code = readFileSync(resolve(GS_DIR, "Code.gs"), "utf8");
+  assert.equal(code.split("MailApp.sendEmail").length - 1, 1);
+  const fn = code.slice(code.indexOf("function alertAdmin_("), code.indexOf("\n}\n", code.indexOf("function alertAdmin_(")));
+  assert.ok(fn.includes("MailApp.sendEmail({ to: c.admin"), "only to ADMIN_EMAIL");
+  for (const gone of ["function installTrigger", "RELEASED_AFTER", "DONE_IDS", "FALLBACK_RMM_EMAIL", "everyMinutes"]) assert.ok(!code.includes(gone), `polling left in Code.gs: ${gone}`);
+  for (const w of everything) for (const m of w.world.mails) assert.equal(m.to, P.ADMIN_EMAIL, `a mail to ${m.to}`);
+});
+
+// ------------------------------------------------------------------ eligibility (read from the case, never from the POST)
+
+test("eligibility: completed with the release yes; no release, cancelled, filed, rejected no; released but not completed waits", () => {
   const w = world();
   const ex = w.exec();
-  const c = ex.ctx.cfg_();
-  const base = clone(w.caseItem());
-  const rec = (patch, cfg = c) => clone(ex.ctx.rmmRecipient_(cfg, { ...base, ...patch }));
-  assert.deepEqual(rec({ Owner_RMM: { _id: "UsX", Name: "X", Email: "owner.zzt@example.com" } }), { to: "owner.zzt@example.com", rule: "owner" });
-  assert.deepEqual(rec({}), { to: "katrin.vogel@beiersdorf.example", rule: "starter" });
-  assert.deepEqual(rec({ _created_by: { _id: "UsOther", Name: "Other" } }), { to: P.FALLBACK_RMM_EMAIL, rule: "fallback", ownerName: "Katrin Vogel" });
-  assert.equal(rec({ _created_by: { _id: "UsOther", Name: "Other" } }, { ...c, fallbackRmm: "" }), null);
-
-  const w2 = world({ props: { FALLBACK_RMM_EMAIL: undefined }, mutate: (db) => { db.CIQ_Case_A00.find((x) => x._id === CASE_ID)._created_by = { _id: "UsOther", Name: "Other", Kind: "User" }; } });
-  w2.run("tick");
-  assert.deepEqual(w2.world.mails.map((m) => m.to), [P.ADMIN_EMAIL], "only the admin alert");
-  assert.ok(w2.caseItem().Final_Document_Hash, "the document is still filed");
-  assert.equal(writesOf(w2.kf.calls).find((c) => c.write === "form-create").body.Notify_Recipient, undefined);
-
-  const w3 = world({ mutate: (db) => { db.CIQ_Case_A00.find((x) => x._id === CASE_ID)._created_by = { _id: "UsOther", Name: "Other", Kind: "User" }; } });
-  w3.run("tick");
-  assert.equal(w3.world.mails[0].to, P.FALLBACK_RMM_EMAIL);
-  assert.ok(w3.world.mails[0].body.endsWith("You get this mail as the fallback address for the case owner (RMM), Katrin Vogel."));
+  ex.ctx.begin_();
+  const el = (patch, since) => clone(ex.ctx.eligibility_({ ...clone(w.caseItem()), ...patch }, NOW0, since));
+  assert.deepEqual(el({}), { ok: true });
+  assert.deepEqual(el({ Final_Release_Confirm: undefined }), { ok: false, why: "no final release", wait: false });
+  assert.deepEqual(el({ _status: "InProgress", Final_Release_At: "" }), { ok: false, why: "no final release", wait: true });
+  assert.equal(el({ Case_Phase: "Cancelled" }).why, "cancelled");
+  assert.equal(el({ Cancelled_At: "2026-10-20T19:00:00Z" }).why, "cancelled");
+  assert.equal(el({ Cancelled_At: "2026-10-20T10:00:00Z", Reactivated_At: "2026-10-20T11:00:00Z" }).ok, true, "reactivated after the cancellation");
+  assert.equal(el({ Final_Document_Hash: "seal:x sha256:y" }).why, "already filed");
+  assert.equal(el({ _status: "Rejected" }).ok, false);
+  assert.equal(el({ _status: "Withdrawn" }).ok, false);
+  assert.deepEqual(el({ _status: "InProgress", Final_Release_At: iso(NOW0 - 60000) }), { ok: false, why: "not completed yet", wait: true });
+  assert.equal(el({ _status: "InProgress", Final_Release_At: iso(NOW0 - 16 * 60000) }).ok, true, "released 16 min ago, not completed (a failed Skip and complete)");
+  assert.equal(el({ _status: "InProgress", Final_Release_At: iso(NOW0 - 60000) }, NOW0 - 16 * 60000).ok, true, "queued 16 min ago");
+  assert.equal(el({ Final_Release_At: "not a date" }).stop, true);
 });
 
-// ------------------------------------------------------------------ refusals, resume, pause
+test("events for other cases: not found, filed by someone else, cancelled, never released: no write, off the queue", () => {
+  const w = world();
+  for (const id of ["AppZZT-0404", "AppZZT-0008", "AppZZT-0007", "AppZZT-0006"]) w.post({ caseItemId: id, token: P.DOPOST_TOKEN });
+  w.fireAll(60);
+  assert.equal(writesOf(w.kf.calls).length, 0);
+  assert.deepEqual(w.queue(), []);
+  assert.equal(w.pending().length, 0);
+  assert.ok(w.logs().some((l) => l.includes("queue: gave up waiting") && l.includes("AppZZT-0006")), "an InProgress case without a release waits EVENT_WAIT_MIN, then leaves");
+});
 
-test("attach refused, no DRIVE_FOLDER_ID: nothing written, retried, one admin alert after 3 attempts, then skipped", () => {
+// ------------------------------------------------------------------ failures, resume without duplicates
+
+test("attach refused, no DRIVE_FOLDER_ID: nothing filed, retried by the queue, one admin alert after 3 attempts; runOnce retries", () => {
   const w = world();
   w.kf.refuseAttach = true;
-  for (let i = 1; i <= 3; i++) {
-    w.run("tick");
-    assert.equal(w.state().attempts, i);
-    w.clock.advance(5 * 60000);
-  }
-  const writes = writesOf(w.kf.calls).filter((c) => c.path.includes(CASE_ID));
+  w.event();
+  assert.equal(w.kf.calls.filter(isCaseAttach).length, 3);
   assert.deepEqual([...new Set(writesOf(w.kf.calls).map((c) => c.write))], ["attach"], "only the refused uploads");
-  assert.equal(writes.length, 3);
-  assert.equal(w.caseItem().Final_Document_Hash, undefined, "no hash without a filed PDF");
-  assert.deepEqual(w.world.mails.map((m) => m.to), [P.ADMIN_EMAIL], "one alert, no RMM mail");
-  assert.match(w.world.mails[0].body, /ZZT-0005.*failed 3 times[\s\S]*refused the attachment \(HTTP 400\)/);
-  const before = w.kf.calls.length;
-  w.run("tick");
-  assert.equal(writesOf(w.kf.calls.slice(before)).filter((c) => c.path.includes(CASE_ID)).length, 0, "a stuck case is skipped by the trigger");
-  assert.equal(w.world.mails.length, 1, "the alert goes out once");
+  assert.equal(w.caseItem().Final_Document_Hash, undefined);
+  assert.equal(adminMails(w).length, 1);
+  assert.match(adminMails(w)[0].body, /ZZT-0005.*failed 3 times[\s\S]*refused the attachment \(HTTP 400\)/);
+  assert.deepEqual(w.queue(), [], "the queue gave up");
+  w.event();
+  assert.equal(w.kf.calls.filter(isCaseAttach).length, 3, "a new event skips a stuck case");
   w.kf.refuseAttach = false;
-  const { r } = w.run("runOnce", CASE_ID);
-  assert.equal(r.status, "filed", "runOnce retries a stuck case");
+  assert.equal(w.run("runOnce", CASE_ID).r.status, "filed", "runOnce retries a stuck case");
+  assert.equal(hooks(w).length, 1);
 });
 
-test("attach refused with DRIVE_FOLDER_ID: PDF in Drive, case fields and audit row name it, RMM mail and admin alert", () => {
+test("attach refused with DRIVE_FOLDER_ID: the PDF in Drive (never shared), the hash and the audit row name it; no webhook; admin told", () => {
   const w = world({ props: { DRIVE_FOLDER_ID: "ZZTFolder01" } });
   w.world.drive.folders.push("ZZTFolder01");
-  w.kf.refuseAttach = true;
-  w.run("tick");
+  w.kf.faults.push({ match: isCaseAttach, respond: answer(400, { error_code: "ItemCompleted" }), times: 99 });
+  w.event();
   assert.equal(w.world.drive.files.length, 1);
   const f = w.world.drive.files[0];
-  assert.equal(f.name, PDF_NAME);
-  assert.deepEqual(f.viewers, ["katrin.vogel@beiersdorf.example"]);
-  const sha = createHash("sha256").update(f.buf).digest("hex");
-  assert.equal(w.caseItem().Final_Document_Hash, `seal:${EXPECTED.fingerprint} sha256:${sha}`);
+  assert.deepEqual(f.viewers, []);
+  assert.equal(w.caseItem().Final_Document_Hash, `seal:${EXPECTED.fingerprint} sha256:${createHash("sha256").update(f.buf).digest("hex")}`);
   const a = writesOf(w.kf.calls).find((c) => c.write === "form-create").body;
-  assert.ok(a.New_Value_Text.endsWith(` · Drive ${f.getUrl()}`));
-  assert.ok(JSON.parse(a.Snapshot_JSON).audit[0].detail.includes("saved in Google Drive"));
-  assert.deepEqual(w.world.mails.map((m) => m.to), ["katrin.vogel@beiersdorf.example", P.ADMIN_EMAIL]);
-  assert.ok(w.world.mails[0].body.includes("saved in Google Drive"));
-  assert.ok(w.world.mails[0].attachments[0].bytes.equals(f.buf));
+  assert.ok(a.New_Value_Text.includes(` · Drive ${f.getUrl()}`));
+  assert.equal(hooks(w).length, 0, "the integration mails the case's Final PDF, which is empty");
+  assert.equal(w.request().Final_PDF.length, 1, "the supplier copy is on the portal");
+  assert.equal(adminMails(w).length, 1);
+  assert.match(adminMails(w)[0].body, /saved in Google Drive/);
 });
 
-test("resume: the PUT fails after the attach; the next tick reuses the attached PDF (one upload)", () => {
+test("resume: the PUT fails after the attach; the next drain reuses the attached PDF (one upload)", () => {
   const w = world();
-  w.kf.faults.push({ match: (c) => c.method === "PUT", respond: { status: 500, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ error_code: "Internal", en_message: "server error" }) } });
-  w.run("tick");
+  w.kf.faults.push({ match: (c) => c.method === "PUT", respond: answer(500, { error_code: "Internal", en_message: "server error" }) });
+  w.post();
+  w.fire();
   assert.equal(w.state().attempts, 1);
   assert.ok(w.state().attId);
-  assert.equal(w.world.mails.length, 0);
-  w.clock.advance(5 * 60000);
-  w.run("tick");
-  const writes = writesOf(w.kf.calls);
-  assert.equal(writes.filter((c) => c.write === "attach").length, 1, "one upload");
+  w.fireAll();
+  assert.equal(w.kf.calls.filter(isCaseAttach).length, 1, "one upload");
   assert.equal(w.caseItem().Final_PDF.length, 1);
   assert.ok(w.caseItem().Final_Document_Hash);
-  assert.equal(w.world.mails.length, 1);
+  assert.equal(hooks(w).length, 1);
   assert.equal(w.state(), null);
 });
 
-test("resume: an attached PDF from a lost run is hashed from Kissflow (302 → signed URL on the same host)", () => {
+test("resume: an attached PDF from a lost run is hashed from Kissflow (302 → signed URL on the same host, no further redirect)", () => {
   const w = world();
-  w.kf.faults.push({ match: (c) => c.method === "PUT", respond: { status: 500, headers: { "Content-Type": "application/json" }, body: "{}" } });
-  w.run("tick");
+  w.kf.faults.push({ match: (c) => c.method === "PUT", respond: answer(500) });
+  w.post();
+  w.fire();
   w.store.delete(`FD_${CASE_ID}`); // the run's state is lost
-  w.clock.advance(5 * 60000);
-  w.run("tick");
-  const dl = w.kf.calls.filter((c) => /\/Final_PDF\/attachment\/Attach-/.test(c.path));
+  w.fireAll();
+  const dl = w.kf.calls.filter((c) => /\/CIQ_Case_A00\/[^/]+\/Final_PDF\/attachment\/Attach-/.test(c.path));
   assert.equal(dl.length, 1);
-  assert.equal(dl[0].followRedirects, false, "the 302 is not followed blindly");
-  const hop2 = w.kf.calls.filter((c) => c.path.startsWith("/signed/"));
-  assert.ok(hop2.length === 1 && hop2[0].auth && hop2[0].followRedirects === false, "the signed URL is fetched without following a redirect");
+  assert.equal(dl[0].followRedirects, false);
   const filed = w.caseItem()._attachmentBytes[w.caseItem().Final_PDF[0].id];
   assert.ok(w.caseItem().Final_Document_Hash.endsWith(createHash("sha256").update(filed).digest("hex")));
+  // the signed URL answering a redirect: the key never leaves KF_DOMAIN
+  const w2 = world();
+  w2.kf.faults.push({ match: (c) => c.method === "PUT", respond: answer(500) });
+  w2.post();
+  w2.fire();
+  w2.store.delete(`FD_${CASE_ID}`);
+  w2.kf.signedRedirect = true;
+  w2.fire();
+  assert.ok(!w2.kf.calls.some((c) => c.host !== P.KF_DOMAIN));
+  assert.match(w2.state().lastError, /signed download failed: HTTP 302/);
 });
 
-test("resume: the mail fails after the hash is written; the next tick mails the filed PDF and logs the row, nothing re-rendered", () => {
+test("429 pauses the script 20 min (PAUSE_UNTIL), not an attempt; the queue files the case after the pause", () => {
   const w = world();
-  w.world.mailFailures = 1;
-  w.run("tick");
-  const st = w.state();
-  assert.equal(st.attempts, 1);
-  assert.equal(st.hash, w.caseItem().Final_Document_Hash, "the hash is on the case");
-  assert.equal(w.world.mails.length, 0);
-  assert.equal(writesOf(w.kf.calls).filter((c) => c.write === "form-create").length, 0, "no audit row yet");
-  const n = w.kf.calls.length;
-  w.clock.advance(5 * 60000);
-  w.run("tick");
-  const later = w.kf.calls.slice(n);
-  assert.deepEqual(writesOf(later).map((c) => c.write), ["form-create", "form-submit"], "no second upload or PUT");
-  assert.ok(later.some((c) => c.path.startsWith("/signed/")), "the filed PDF is fetched for the mail");
-  assert.equal(w.world.mails.length, 1);
-  const filed = w.caseItem()._attachmentBytes[w.caseItem().Final_PDF[0].id];
-  assert.ok(w.world.mails[0].attachments[0].bytes.equals(filed));
-  assert.equal(writesOf(later)[0].body.Notify_Recipient, "katrin.vogel@beiersdorf.example");
-  assert.equal(w.state(), null);
-  assert.ok(w.store.get("DONE_IDS").split(",").includes(CASE_ID));
-});
-
-test("429 pauses the script 20 min (PAUSE_UNTIL); no call while paused", () => {
-  const w = world();
-  w.kf.faults.push({ match: (c) => c.path.includes("/CIQ_Review_A00/item"), respond: { status: 429, headers: { "Content-Type": "application/json" }, body: "{}" } });
-  w.run("tick");
+  w.kf.faults.push({ match: (c) => c.path.includes("/CIQ_Review_A00/item"), respond: answer(429) });
+  w.post();
+  w.fire();
   const until = Number(w.store.get("PAUSE_UNTIL"));
-  assert.ok(until - w.clock.now() > 19 * 60000 && until - w.clock.now() <= 20 * 60000, "about 20 min");
+  assert.ok(until - w.clock.now() > 19 * 60000 && until - w.clock.now() <= 20 * 60000);
   assert.equal(writesOf(w.kf.calls).length, 0);
   assert.equal(w.state(), null, "a pause is not a failed attempt");
-  w.clock.advance(5 * 60000);
   const n = w.kf.calls.length;
-  w.run("tick");
-  const r = w.run("runOnce", CASE_ID).r;
+  assert.match(w.run("runOnce", CASE_ID).r.status, /^paused until/);
   assert.equal(w.kf.calls.length, n, "no Kissflow call while paused");
-  assert.match(r.status, /^paused until/);
-  w.clock.advance(16 * 60000);
-  w.run("tick");
-  assert.ok(w.caseItem().Final_Document_Hash, "filed after the pause");
+  assert.ok(w.pending().length >= 1, "a drain stays armed (the watchdog; a drain during the pause arms the next one after it)");
+  w.fireAll();
+  assert.ok(w.caseItem().Final_Document_Hash);
 });
 
-test("an HTML answer (Cloudflare challenge) pauses too", () => {
+test("an HTML answer (Cloudflare challenge) on a REST call pauses too; a second pause within 30 min alerts once", () => {
   const w = world();
-  w.kf.faults.push({ match: (c) => c.path.includes("/CIQ_Case_A00/item"), respond: { status: 200, headers: { "Content-Type": "text/html; charset=UTF-8" }, body: "<!DOCTYPE html><html><head><title>Just a moment...</title></head></html>" } });
-  w.run("tick");
+  w.kf.faults.push({ match: (c) => c.path.includes("/CIQ_Case_A00/"), respond: { status: 200, headers: { "Content-Type": "text/html; charset=UTF-8" }, body: "<!DOCTYPE html><html><head><title>Just a moment...</title></head></html>" } });
+  w.post();
+  w.fire();
   assert.ok(Number(w.store.get("PAUSE_UNTIL")) > w.clock.now());
   assert.equal(w.kf.calls.length, 1);
   assert.ok(w.logs().some((l) => l.includes("pause 20 min") && l.includes('"why":"html"')));
+  w.kf.faults.push({ match: () => true, respond: answer(429), times: 2 });
+  w.fire();
+  w.fire();
+  assert.equal(adminMails(w).filter((m) => /paused again/.test(m.body)).length, 1);
+});
+
+test("the run's time limit right after the PUT: not an attempt; the next drain finishes the copy, the row and the webhook", () => {
+  const w = world();
+  w.kf.onCall = (c) => { if (c.method === "PUT") w.clock.advance(6 * 60000); };
+  w.post();
+  w.fire();
+  const st = w.state();
+  assert.ok(w.caseItem().Final_Document_Hash);
+  assert.ok(st && !st.attempts && st.lastStop, "kept, no attempt counted");
+  assert.equal(hooks(w).length, 0);
+  w.kf.onCall = null;
+  w.fireAll();
+  assert.deepEqual(writesOf(w.kf.calls).map((c) => c.write), ["attach", "put", "portal-attach", "form-create", "form-submit", "webhook"]);
+  assert.equal(w.state(), null);
+});
+
+test("the run ends right after the audit submit: the next drain finds the row by its key, never a second", () => {
+  const w = world();
+  w.post();
+  const t = w.drainTriggers()[0];
+  w.clock.t = t.dueAt + 30000;
+  t.fired = true;
+  const ex = w.exec({ killWhen: (e) => e.type === "fetch" && /\/CIQ_Audit_Event_A00\/draft_[^/]+\/submit$/.test(new URL(e.url).pathname) });
+  assert.throws(() => ex.call("drain", { triggerUid: t.id }), /Exceeded maximum execution time/);
+  assert.equal(auditRows(w).length, 1);
+  w.fireAll();
+  assert.equal(auditRows(w).length, 1);
+  assert.equal(writesOf(w.kf.calls).filter((c) => c.write === "form-create").length, 1);
+  assert.equal(hooks(w).length, 1);
+  assert.equal(w.state(), null);
+});
+
+test("a same-named file without this document's seal on the case's Final_PDF stops the case at once: never filed, copied or posted", () => {
+  const probe = { key: "Final_PDF", id: "Attach-ZZTprobe", name: PDF_NAME, size: 30, fileExtension: "pdf" };
+  const w = world({ mutate: (db) => Object.assign(db.CIQ_Case_A00.find((x) => x._id === CASE_ID), { Final_PDF: [probe], _attachmentBytes: { [probe.id]: Buffer.from("%PDF-1.4\n% K-15 probe\n%%EOF\n") } }) });
+  w.event();
+  assert.equal(writesOf(w.kf.calls).length, 0);
+  assert.equal(adminMails(w).length, 1);
+  assert.match(adminMails(w)[0].body, /ZZT-0005 \(case item AppZZT-0005\) was stopped[\s\S]*Attach-ZZTprobe \(seal none\)/);
+  w.caseItem().Final_PDF = [];
+  assert.equal(w.run("runOnce", CASE_ID).r.status, "filed");
+});
+
+test("attach answers 423 once: tried again in the same run (after a read), attached once", () => {
+  const w = world();
+  w.kf.faults.push({ match: isCaseAttach, respond: answer(423, { error_code: "Locked" }) });
+  w.event();
+  assert.equal(w.kf.calls.filter(isCaseAttach).length, 2);
+  assert.equal(w.caseItem().Final_PDF.length, 1);
+  assert.ok(w.logs().some((l) => l.includes("[CIQ-FD] attach busy, tried again")));
+});
+
+test("the app's builder fails on a completed case: the error names it, not 'not completed'", () => {
+  const w = world({ patch: (ctx) => { ctx.CIQFinal = { ...ctx.CIQFinal, finalDocumentFor: () => ({ phase: "completed", ok: false, warnings: ["ZZT-0005: the final document could not be computed (boom)"] }) }; } });
+  const r = w.run("runOnce", CASE_ID).r;
+  assert.match(r.status, /the app could not build the final document: ZZT-0005: the final document could not be computed/);
+});
+
+test("Bundle.gs and Code.gs as one script (Bundle's strict mode over both) still file the case", () => {
+  const w = world();
+  w.post();
+  const t = w.drainTriggers()[0];
+  w.clock.t = t.dueAt + 30000;
+  t.fired = true;
+  const ex = execution({ fetch: w.kf.handle, store: w.store, world: w.world, clock: w.clock, concat: true });
+  w.runs.push(ex);
+  ex.call("drain", { triggerUid: t.id });
+  assert.ok(w.caseItem().Final_Document_Hash);
+  assert.equal(w.request().Final_PDF.length, 1);
+  assert.equal(hooks(w).length, 1);
+});
+
+// ------------------------------------------------------------------ probe, triggers
+
+test("probe: read-only, never throws without RMM_WEBHOOK_URL; logs field names (never values) and the released cases without a PDF", () => {
+  const w = world({ props: { RMM_WEBHOOK_URL: undefined, RUN_ONCE_CASE_ID: CASE_ID }, listMode: "columns" });
+  const props = JSON.stringify([...w.store]);
+  w.run("probe");
+  assert.equal(writesOf(w.kf.calls).length, 0);
+  assert.equal(JSON.stringify([...w.store]), props, "no Script Property changed");
+  assert.equal(w.world.mails.length, 0);
+  const logs = w.logs().join("\n");
+  assert.ok(logs.includes('"rmmWebhook":{"set":false'));
+  assert.ok(logs.includes('"portalCopy":true'));
+  assert.ok(logs.includes("Final_Release_At") && logs.includes("Case_Code"), "field names are logged");
+  const missed = w.logs().find((l) => l.includes("released without a final document"));
+  assert.ok(missed && missed.includes("ZZT-0005") && !missed.includes("ZZT-0008") && !missed.includes("ZZT-0006"), missed);
+  assert.ok(logs.includes('"linked":true'), "its portal request names the case");
+  for (const value of ["CETYL 16", "Katrin", "Elena", "Solvaro", "katrin.vogel", "Final release by"]) assert.ok(!logs.includes(value), `value in the probe log: ${value}`);
+  const w2 = world();
+  w2.run("probe");
+  assert.ok(w2.logs().some((l) => l.includes("missed events cannot be listed")));
+});
+
+test("tick is retired: an old tick trigger removes itself; removeTriggers clears tick and drain; no installTrigger", () => {
+  const w = world();
+  w.exec().ctx.ScriptApp.newTrigger("tick").timeBased().everyMinutes(5).create();
+  w.run("tick");
+  assert.equal(w.world.triggers.length, 0);
+  assert.equal(w.kf.calls.length, 0);
+  w.exec().ctx.ScriptApp.newTrigger("tick").timeBased().everyMinutes(5).create();
+  w.post();
+  w.run("removeTriggers");
+  assert.equal(w.world.triggers.length, 0);
+  assert.equal(w.queue().length, 1, "queued cases stay queued");
+  assert.equal(typeof w.exec().ctx.installTrigger, "undefined");
+});
+
+test("a run without the lock does nothing", () => {
+  const w = world();
+  const ex = execution({ fetch: w.kf.handle, store: w.store, world: w.world, clock: w.clock, lockFree: () => false });
+  w.runs.push(ex);
+  ex.call("probe");
+  assert.equal(ex.call("runOnce", CASE_ID).status, "busy: another run holds the lock");
+  assert.equal(ex.call("portalCopy", CASE_ID).status, "busy: another run holds the lock");
+  assert.equal(w.kf.calls.length, 0);
 });
 
 // ------------------------------------------------------------------ the PDF's wording
 
 test("the PDF words the document as the app's tab: labels, not codes; part 4 round by round; no internal reason", () => {
   const w = world();
-  w.run("tick");
+  w.event();
   const lines = pdfLines(writesOf(w.kf.calls)[0].multipart.file.bytes);
   const text = lines.join("\n");
   for (const want of [
@@ -584,377 +1017,7 @@ test("a long case through the bundle (long-case.mjs): deterministic, every page 
   assert.ok(lines.join(" ").includes("LIPOFLUID ÖLPHASE 7 – Pflegeöl für Gesichtscremes (Qualität „Süd“)"), "umlauts, the en dash and German quotes in WinAnsi (the title wraps)");
 });
 
-// ------------------------------------------------------------------ lost answers, the time limit, resume without duplicates
-
-test("a lost answer to the case-field PUT: the next tick finds its own hash and only mails and logs the row", () => {
-  const w = world();
-  w.kf.lost.push({ match: (c) => c.method === "PUT", respond: answer(504, { error_code: "GatewayTimeout" }) });
-  w.run("tick");
-  const st = w.state();
-  assert.ok(w.caseItem().Final_Document_Hash, "Kissflow applied the PUT");
-  assert.equal(st.pendingHash, w.caseItem().Final_Document_Hash, "the planned hash was kept before the PUT");
-  assert.equal(st.hash, undefined);
-  assert.equal(st.attempts, 1);
-  assert.equal(w.world.mails.length, 0);
-  const n = w.kf.calls.length;
-  w.clock.advance(5 * 60000);
-  w.run("tick");
-  const later = w.kf.calls.slice(n);
-  assert.deepEqual(writesOf(later).map((c) => c.write), ["form-create", "form-submit"], "no second upload or PUT");
-  assert.equal(rmmMails(w).length, 1);
-  assert.equal(auditRows(w).length, 1);
-  assert.equal(w.state(), null);
-  assert.ok(w.store.get("DONE_IDS").split(",").includes(CASE_ID));
-  assert.ok(w.logs().some((l) => l.includes("[CIQ-FD] case fields found written")));
-});
-
-test("another hash on the case is left alone: no mail, no row, done", () => {
-  const w = world();
-  w.store.set(`FD_${CASE_ID}`, JSON.stringify({ attempts: 1, code: "ZZT-0005", pendingHash: "seal:aaaaaaaaaaaaaaaa sha256:" + "b".repeat(64) }));
-  w.caseItem().Final_Document_Hash = "seal:cccccccccccccccc sha256:" + "d".repeat(64);
-  w.run("tick");
-  assert.equal(writesOf(w.kf.calls).length, 0);
-  assert.equal(w.world.mails.length, 0);
-  assert.equal(w.state(), null);
-});
-
-test("the run's time limit right after the PUT: not an attempt; the next tick finishes the mail and the row", () => {
-  const w = world();
-  w.kf.onCall = (c) => { if (c.method === "PUT") w.clock.advance(6 * 60000); }; // a PUT that took 6 min
-  w.run("tick");
-  const st = w.state();
-  assert.ok(w.caseItem().Final_Document_Hash);
-  assert.ok(st && !st.attempts && st.lastStop, "kept for the next tick, no attempt counted");
-  assert.equal(w.world.mails.length, 0, "no mail past the time limit");
-  assert.ok(w.logs().some((l) => l.includes("[CIQ-FD] tick stopped: time is up")));
-  w.kf.onCall = null;
-  w.clock.advance(5 * 60000);
-  w.run("tick");
-  assert.equal(rmmMails(w).length, 1);
-  assert.equal(auditRows(w).length, 1);
-  assert.equal(writesOf(w.kf.calls).filter((c) => c.write === "put").length, 1);
-  assert.equal(w.state(), null);
-});
-
-test("a case whose reads end near the time limit makes no write; the next tick files it, no attempt counted", () => {
-  const w = world();
-  let slow = true;
-  w.kf.onCall = (c) => {
-    if (slow && c.path.endsWith("/CIQ_Config_Version_A00/list")) {
-      slow = false;
-      w.clock.advance(170 * 1000);
-    }
-  };
-  w.run("tick");
-  assert.equal(writesOf(w.kf.calls).length, 0, "no write with less than 2 min left");
-  const st = w.state();
-  assert.ok(st && !st.attempts && st.lastStop);
-  assert.ok(w.logs().some((l) => l.includes("[CIQ-FD] case stopped: time is up")));
-  w.clock.advance(5 * 60000);
-  w.run("tick");
-  assert.ok(w.caseItem().Final_Document_Hash);
-  assert.equal(rmmMails(w).length, 1);
-  assert.equal(w.state(), null);
-});
-
-test("the run ends right after the RMM mail went out (the 6-min kill): no second mail; the admin is told; the row is logged", () => {
-  const w = world();
-  const ex = execution({ fetch: w.kf.handle, store: w.store, world: w.world, clock: w.clock, killWhen: (e) => e.type === "mail" && e.mail.subject.endsWith(": final document ready") });
-  w.runs.push(ex);
-  assert.throws(() => ex.call("tick"), /Exceeded maximum execution time/);
-  assert.equal(rmmMails(w).length, 1);
-  const st = w.state();
-  assert.ok(st.mailingAt && !st.mailedAt, "the state shows the mail was being sent");
-  w.clock.advance(5 * 60000);
-  w.run("tick");
-  assert.equal(rmmMails(w).length, 1, "not sent twice");
-  const alert = w.world.mails.find((m) => m.to === P.ADMIN_EMAIL);
-  assert.match(alert.body, /stopped while the final-document mail of ZZT-0005[\s\S]*not sent again/);
-  assert.equal(auditRows(w).length, 1);
-  assert.equal(auditRows(w)[0].Notify_Recipient, "katrin.vogel@beiersdorf.example");
-  assert.equal(w.state(), null);
-});
-
-test("the run ends right after the audit submit: the next run finds the kept id and checks that row, never a second", () => {
-  const w = world();
-  const ex = execution({ fetch: w.kf.handle, store: w.store, world: w.world, clock: w.clock, killWhen: (e) => e.type === "fetch" && /\/CIQ_Audit_Event_A00\/draft_[^/]+\/submit$/.test(new URL(e.url).pathname) });
-  w.runs.push(ex);
-  assert.throws(() => ex.call("tick"), /Exceeded maximum execution time/);
-  assert.equal(auditRows(w).length, 1, "the row was submitted");
-  assert.ok(w.state().auditData && !w.state().auditId, "killed before the id was kept");
-  w.clock.advance(5 * 60000);
-  w.run("tick");
-  assert.equal(auditRows(w).length, 1, "found by Event_Key, not written again");
-  assert.equal(writesOf(w.kf.calls).filter((c) => c.write === "form-create").length, 1);
-  assert.equal(w.state(), null);
-});
-
-test("the audit row's read-back fails after the submit: the kept id is checked on the next run, no second row", () => {
-  const w = world();
-  w.kf.faults.push({ match: (c) => c.method === "GET" && /\/CIQ_Audit_Event_A00\/PkZZTAud/.test(c.path), respond: answer(500, { error_code: "Internal" }) });
-  w.run("tick");
-  const st = w.state();
-  assert.ok(st.auditId && !st.auditVerified, "the new id was kept before its read-back");
-  assert.equal(st.attempts, 1);
-  w.kf.auditListWithoutSnapshot = true; // and the list cannot help: the kept id must
-  w.clock.advance(5 * 60000);
-  w.run("tick");
-  assert.equal(writesOf(w.kf.calls).filter((c) => c.write === "form-create").length, 1);
-  assert.equal(auditRows(w).length, 1);
-  assert.ok(w.kf.calls.filter((c) => c.method === "GET" && c.path.endsWith(`/CIQ_Audit_Event_A00/${st.auditId}`)).length >= 2, "read back again");
-  assert.equal(w.state(), null);
-});
-
-// ------------------------------------------------------------------ files already on the case, the signed download
-
-test("a same-named file without this document's seal on Final_PDF (a K-15 probe upload) stops the case: never filed or mailed", () => {
-  const probe = { key: "Final_PDF", id: "Attach-ZZTprobe", name: PDF_NAME, size: 30, fileExtension: "pdf" };
-  const w = world({ mutate: (db) => Object.assign(db.CIQ_Case_A00.find((x) => x._id === CASE_ID), { Final_PDF: [probe], _attachmentBytes: { [probe.id]: Buffer.from("%PDF-1.4\n% K-15 probe\n%%EOF\n") } }) });
-  w.run("tick");
-  assert.equal(writesOf(w.kf.calls).length, 0, "no upload, no hash, no row");
-  assert.deepEqual(w.world.mails.map((m) => m.to), [P.ADMIN_EMAIL], "only the admin alert, at once");
-  assert.match(w.world.mails[0].body, /ZZT-0005 \(case item AppZZT-0005\) was stopped[\s\S]*Attach-ZZTprobe \(seal none\)/);
-  assert.equal(w.state().attempts, 3, "the trigger skips it now");
-  w.clock.advance(5 * 60000);
-  w.run("tick");
-  assert.equal(writesOf(w.kf.calls).length, 0);
-  assert.equal(w.world.mails.length, 1);
-  w.caseItem().Final_PDF = []; // a person removed the probe file
-  assert.equal(w.run("runOnce", CASE_ID).r.status, "filed");
-  assert.equal(rmmMails(w).length, 1);
-});
-
-test("a same-named older render with another seal stops the case too", () => {
-  const old = { key: "Final_PDF", id: "Attach-ZZTold", name: PDF_NAME, size: 60, fileExtension: "pdf" };
-  const w = world({ mutate: (db) => Object.assign(db.CIQ_Case_A00.find((x) => x._id === CASE_ID), { Final_PDF: [old], _attachmentBytes: { [old.id]: Buffer.from("%PDF-1.4\n<< /Subject (document seal 0123456789abcdef) >>\n%%EOF\n") } }) });
-  w.run("tick");
-  assert.equal(writesOf(w.kf.calls).length, 0);
-  assert.match(w.state().lastError, /Attach-ZZTold \(seal 0123456789abcdef\)/);
-});
-
-test("the signed download never follows a further redirect with the key", () => {
-  const w = world();
-  w.kf.faults.push({ match: (c) => c.method === "PUT", respond: answer(500) });
-  w.run("tick");
-  w.store.delete(`FD_${CASE_ID}`); // the run's state is lost: the attached file must be downloaded to be hashed
-  w.kf.signedRedirect = true;
-  w.clock.advance(5 * 60000);
-  w.run("tick");
-  assert.ok(!w.kf.calls.some((c) => c.host !== P.KF_DOMAIN), "no call left KF_DOMAIN (the key never went to storage)");
-  assert.match(w.state().lastError, /signed download failed: HTTP 302/);
-  assert.equal(w.caseItem().Final_Document_Hash, undefined);
-});
-
-// ------------------------------------------------------------------ the attachment: busy, silent failures, Drive
-
-test("attach answers 423 once: tried again in the same run (after a read), attached once", () => {
-  const w = world();
-  w.kf.faults.push({ match: isAttach, respond: answer(423, { error_code: "Locked" }) });
-  w.run("tick");
-  assert.equal(w.kf.calls.filter(isAttach).length, 2);
-  assert.equal(w.caseItem().Final_PDF.length, 1);
-  assert.ok(w.caseItem().Final_Document_Hash);
-  assert.ok(w.logs().some((l) => l.includes("[CIQ-FD] attach busy, tried again")));
-  assert.equal(w.world.drive.files.length, 0);
-});
-
-test("a lost attach answer: the next run adopts the landed file (its seal matches), one upload", () => {
-  const w = world();
-  w.kf.lost.push({ match: isAttach, respond: answer(502) });
-  w.run("tick");
-  assert.equal(w.state().attempts, 1);
-  w.clock.advance(5 * 60000);
-  w.run("tick");
-  assert.equal(writesOf(w.kf.calls).filter((c) => c.write === "attach").length, 1);
-  assert.ok(w.caseItem().Final_Document_Hash);
-  assert.ok(w.logs().some((l) => l.includes("[CIQ-FD] attached PDF reused")));
-});
-
-for (const [what, respond] of [["2xx without the file", answer(200, { Final_PDF: [], _id: CASE_ID })], ["HTTP 500", answer(500, { error_code: "Internal" })]]) {
-  test(`attach answers ${what} three times, DRIVE_FOLDER_ID set: the third attempt files it in Drive`, () => {
-    const w = world({ props: { DRIVE_FOLDER_ID: "ZZTFolder01" } });
-    w.world.drive.folders.push("ZZTFolder01");
-    w.kf.faults.push({ match: isAttach, respond, times: 3 });
-    for (let i = 1; i <= 2; i++) {
-      w.run("tick");
-      assert.equal(w.state().attempts, i);
-      assert.equal(w.world.drive.files.length, 0);
-      w.clock.advance(5 * 60000);
-    }
-    w.run("tick");
-    assert.equal(w.world.drive.files.length, 1);
-    assert.ok(w.caseItem().Final_Document_Hash);
-    assert.deepEqual(w.world.mails.map((m) => m.to), ["katrin.vogel@beiersdorf.example", P.ADMIN_EMAIL], "the RMM mail and the Drive alert, no failure alert");
-    assert.equal(w.state(), null);
-  });
-}
-
-test("Drive fallback: never another case's same-named file; a resumed filing reuses its own; not shared while mail is off", () => {
-  const w = world({ props: { DRIVE_FOLDER_ID: "ZZTFolder01", MAIL_ENABLED: "false" } });
-  w.world.drive.folders.push("ZZTFolder01");
-  const ex = w.exec();
-  const other = ex.ctx.DriveApp.getFolderById("ZZTFolder01").createFile(ex.ctx.Utilities.newBlob(Buffer.from("%PDF-1.4 other"), "application/pdf", PDF_NAME));
-  other.setDescription("CIQ final document of case item AppZZT-00051 · document seal 0123456789abcdef");
-  w.kf.refuseAttach = true;
-  w.kf.faults.push({ match: (c) => c.method === "PUT", respond: answer(500) });
-  w.run("tick");
-  assert.equal(w.world.drive.files.length, 2, "a new file, not the other case's");
-  const mine = w.world.drive.files[1];
-  assert.equal(mine.description, `CIQ final document of case item ${CASE_ID} · document seal ${EXPECTED.fingerprint}`);
-  w.clock.advance(5 * 60000);
-  w.run("tick");
-  assert.equal(w.world.drive.files.length, 2, "the resumed filing reuses its own Drive file");
-  assert.ok(w.caseItem().Final_Document_Hash.endsWith(createHash("sha256").update(mine.buf).digest("hex")));
-  assert.deepEqual(mine.viewers, [], "not shared: sharing sends Google Drive's own mail");
-  assert.deepEqual(w.world.mails.map((m) => m.to), [P.ADMIN_EMAIL]);
-  assert.match(w.world.mails[0].body, /not shared with the RMM owner/);
-});
-
-// ------------------------------------------------------------------ which cases are read again
-
-test("a cancelled case that is not completed is read again: reactivated and released later, it is filed", () => {
-  const w = world({ mutate: (db) => Object.assign(db.CIQ_Case_A00.find((x) => x._id === CASE_ID), { _status: "InProgress", Case_Phase: "Cancelled", Cancelled_At: "2026-10-20T10:00:00Z" }) });
-  w.run("tick");
-  assert.ok(!String(w.store.get("ENDED_IDS") || "").split(",").includes(CASE_ID), "not ended for good");
-  Object.assign(w.caseItem(), { _status: "Completed", Case_Phase: "Completed", Reactivated_At: "2026-10-20T11:00:00Z" });
-  w.clock.advance(5 * 60000);
-  w.run("tick");
-  assert.ok(w.caseItem().Final_Document_Hash);
-});
-
-test("completed cases that never get a document are remembered, so they do not crowd out a new one", () => {
-  const w = world({
-    props: { MAX_GETS_PER_TICK: "3" },
-    mutate: (db) => {
-      const base = db.CIQ_Case_A00.find((x) => x._id === CASE_ID);
-      db.CIQ_Case_A00.unshift(...["ZZT-0010", "ZZT-0011", "ZZT-0012"].map((code) => variant(base, code, { Final_Release_Confirm: undefined, Final_Release_At: undefined })));
-    },
-  });
-  w.run("tick");
-  const ended = w.store.get("ENDED_IDS").split(",");
-  for (const id of ["AppZZT-0010", "AppZZT-0011", "AppZZT-0012"]) assert.ok(ended.includes(id), `${id}: completed without a release, ended`);
-  w.clock.advance(5 * 60000);
-  w.run("tick");
-  assert.ok(w.caseItem().Final_Document_Hash, "ZZT-0005 is reached on the next tick");
-});
-
-test("RELEASED_AFTER: a completed older case is remembered for that cut-off only; runOnce files it anyway", () => {
-  const w = world({ props: { RELEASED_AFTER: "2026-10-21T00:00:00Z" } });
-  w.run("tick");
-  assert.equal(writesOf(w.kf.calls).length, 0);
-  assert.ok(w.store.get("OLD_IDS").split(",").includes(CASE_ID));
-  assert.equal(w.store.get("OLD_IDS_FOR"), "2026-10-21T00:00:00Z");
-  const n = w.kf.calls.length;
-  w.clock.advance(5 * 60000);
-  w.run("tick");
-  assert.ok(!w.kf.calls.slice(n).some((c) => c.path.endsWith(`/CIQ_Case_A00/${CASE_ID}`)), "not read again");
-  w.store.set("RELEASED_AFTER", "2026-10-01T00:00:00Z");
-  w.clock.advance(5 * 60000);
-  w.run("tick");
-  assert.ok(w.caseItem().Final_Document_Hash, "an earlier cut-off: filed");
-  assert.equal(w.store.get("OLD_IDS"), undefined);
-
-  const w2 = world({ props: { RELEASED_AFTER: "2026-10-21T00:00:00Z" } });
-  assert.equal(w2.run("runOnce", CASE_ID).r.status, "filed", "a manual run files a case released before the cut-off");
-});
-
-test("a review list without Case_Item_Id and no q hits: at most 100 reviews are read for a case", () => {
-  const w = world({
-    mutate: (db) => {
-      for (let i = 0; i < 120; i++) db.CIQ_Review_A00.push({ _id: `PkRevZZTX${String(i).padStart(3, "0")}`, _status: "Completed", Case_Item_Id: "AppZZT-9999", Case_Code: "ZZT-9999", Review_Dept: "RMM" });
-      db.CIQ_Audit_Event_A00 = db.CIQ_Audit_Event_A00.filter((r) => !(r.Case_Item_Id === CASE_ID && r.Event_Category === "Review"));
-    },
-  });
-  w.kf.searchFindsNothing = true;
-  w.kf.listWithoutCaseRef = true;
-  w.run("tick");
-  assert.match(w.state().lastError, /items to read for one case \(cap 100\)/);
-  assert.ok(!w.kf.calls.some((c) => /\/admin\/CIQ_Review_A00\/PkRev/.test(c.path)), "no review read one by one");
-  assert.equal(writesOf(w.kf.calls).length, 0);
-});
-
-test("the app's builder fails on a completed case: the error names it, not 'not completed'", () => {
-  const w = world();
-  const ex = w.exec();
-  vm.runInContext('CIQFinal = Object.assign({}, CIQFinal, { finalDocumentFor: function () { return { phase: "completed", ok: false, warnings: ["ZZT-0005: the final document could not be computed (boom)."] }; } });', ex.ctx);
-  ex.call("tick");
-  assert.match(w.state().lastError, /^the app could not build the final document: ZZT-0005: the final document could not be computed \(boom\)\.$/);
-});
-
-test("installTrigger sets an empty RELEASED_AFTER to now: the trigger files no older release; a set one is kept", () => {
-  const w = world();
-  w.run("installTrigger");
-  assert.equal(w.store.get("RELEASED_AFTER"), iso(NOW0));
-  assert.ok(w.logs().some((l) => l.includes('"mailEnabled":true') && l.includes("trigger installed")));
-  w.run("tick");
-  assert.equal(writesOf(w.kf.calls).length, 0, "no backfill: ZZT-0005 was released before");
-  w.store.set("RELEASED_AFTER", "2026-10-01T00:00:00Z");
-  w.run("installTrigger");
-  assert.equal(w.store.get("RELEASED_AFTER"), "2026-10-01T00:00:00Z");
-});
-
-test("Bundle.gs and Code.gs as one script (Bundle's strict mode over both) still file the case", () => {
-  const w = world();
-  const ex = execution({ fetch: w.kf.handle, store: w.store, world: w.world, clock: w.clock, concat: true });
-  w.runs.push(ex);
-  ex.call("tick");
-  assert.ok(w.caseItem().Final_Document_Hash);
-  assert.equal(rmmMails(w).length, 1);
-});
-
-// ------------------------------------------------------------------ doPost, probe, triggers, cache
-
-test("doPost: off without DOPOST_TOKEN, refuses a wrong token or id, files with the right token", () => {
-  const post = (w, body) => JSON.parse(w.run("doPost", { postData: { contents: JSON.stringify(body) } }).r.getContent());
-  const w0 = world();
-  assert.deepEqual(post(w0, { caseItemId: CASE_ID, token: "x" }), { ok: false, status: "disabled" });
-  assert.equal(w0.kf.calls.length, 0);
-  const w = world({ props: { DOPOST_TOKEN: "zzt-dopost-token-77aa" } });
-  assert.deepEqual(post(w, { caseItemId: CASE_ID, token: "zzt-dopost-token-77ab" }), { ok: false, status: "refused" });
-  assert.deepEqual(post(w, { caseItemId: CASE_ID }), { ok: false, status: "refused" });
-  const inUrl = JSON.parse(w.run("doPost", { parameter: { token: "zzt-dopost-token-77aa" }, postData: { contents: JSON.stringify({ caseItemId: CASE_ID }) } }).r.getContent());
-  assert.deepEqual(inUrl, { ok: false, status: "refused" }, "a token in the URL is never taken");
-  assert.deepEqual(post(w, { caseItemId: "../../x", token: "zzt-dopost-token-77aa" }), { ok: false, status: "bad case item id" });
-  assert.equal(w.kf.calls.length, 0, "no Kissflow call before the token and id pass");
-  assert.deepEqual(post(w, { caseItemId: CASE_ID, token: "zzt-dopost-token-77aa" }), { ok: true, status: "filed" });
-  assert.deepEqual(post(w, { caseItemId: CASE_ID, token: "zzt-dopost-token-77aa" }), { ok: true, status: "already filed" });
-  assert.equal(writesOf(w.kf.calls).filter((c) => c.write === "attach").length, 1);
-});
-
-test("probe is read-only and logs field names, never values", () => {
-  const w = world();
-  const props = JSON.stringify([...w.store]);
-  w.run("probe");
-  assert.equal(writesOf(w.kf.calls).length, 0);
-  assert.equal(JSON.stringify([...w.store]), props, "no Script Property changed");
-  assert.equal(w.world.mails.length, 0);
-  const logs = w.logs().join("\n");
-  assert.ok(logs.includes("Final_Release_At") && logs.includes("Case_Code"), "field names are logged");
-  assert.ok(logs.includes('"eligible":[{"caseItemId":"AppZZT-0005","caseCode":"ZZT-0005"}]'), logs.split("\n").find((l) => l.includes("eligible")));
-  for (const value of ["CETYL 16", "Katrin", "Elena", "Solvaro", "katrin.vogel", "Final release by"]) assert.ok(!logs.includes(value), `value in the probe log: ${value}`);
-  // the Drive fallback's folder is checked when it is set (its name is never logged)
-  const w2 = world({ props: { DRIVE_FOLDER_ID: "ZZTFolder01" } });
-  w2.run("probe");
-  assert.ok(w2.logs().some((l) => l.includes('[CIQ-FD] probe: DRIVE_FOLDER_ID {"access":false')));
-  w2.world.drive.folders.push("ZZTFolder01");
-  w2.run("probe");
-  assert.ok(w2.logs().some((l) => l.includes('[CIQ-FD] probe: DRIVE_FOLDER_ID {"access":true}')));
-  assert.ok(!w2.logs().join("\n").includes("ZZT folder"));
-});
-
-test("installTrigger keeps one 5-minute tick trigger; removeTriggers removes it", () => {
-  const w = world();
-  w.run("installTrigger");
-  w.run("installTrigger");
-  assert.equal(w.world.triggers.length, 1);
-  assert.equal(w.world.triggers[0].fn, "tick");
-  assert.equal(w.world.triggers[0].everyMinutes, 5);
-  w.run("removeTriggers");
-  assert.equal(w.world.triggers.length, 0);
-  w.store.set("TICK_MINUTES", "15");
-  w.run("installTrigger");
-  assert.deepEqual(w.world.triggers.map((t) => t.everyMinutes), [15], "TICK_MINUTES");
-});
+// ------------------------------------------------------------------ cache
 
 test("configuration rows: read in full once, cached 30 min in chunks under 100 KB", () => {
   const w = world();
@@ -973,17 +1036,6 @@ test("configuration rows: read in full once, cached 30 min in chunks under 100 K
   ex3.ctx.begin_();
   ex3.ctx.configRows_(ex3.ctx.ctx_());
   assert.ok(w.kf.calls.length > n, "after 30 min Kissflow is read again");
-});
-
-test("a run without the lock does nothing", () => {
-  const w = world();
-  const ex = execution({ fetch: w.kf.handle, store: w.store, world: w.world, clock: w.clock, lockFree: () => false });
-  w.runs.push(ex);
-  ex.call("tick");
-  ex.call("probe");
-  assert.equal(w.kf.calls.length, 0, "tick and probe make no call while another run holds the lock");
-  assert.ok(ex.logs.some((l) => l.includes("[CIQ-FD] probe skipped: another run holds the lock")));
-  assert.equal(ex.call("runOnce", CASE_ID).status, "busy: another run holds the lock");
 });
 
 // ------------------------------------------------------------------ the live harness (live.mjs), offline
@@ -1046,6 +1098,7 @@ test("live harness, dry run: reads only, the PDF and the planned writes, 8 s pac
   const want = [
     ["POST", new RegExp(`/admin/CIQ_Case_A00/${CASE_ID}/Final_PDF/attachment$`)],
     ["PUT", new RegExp(`/admin/CIQ_Case_A00/${CASE_ID}$`)],
+    ["POST", new RegExp(`/admin/CIQP_Request_A00/${REQ_ID}/Final_PDF/attachment$`)],
     ["POST", /^\/form\/2\/[^/]+\/CIQ_Audit_Event_A00$/],
     ["POST", /\/CIQ_Audit_Event_A00\/draft_planned\/submit$/],
   ];
@@ -1055,7 +1108,10 @@ test("live harness, dry run: reads only, the PDF and the planned writes, 8 s pac
   assert.equal(live.pdf().name, PDF_NAME);
   assert.ok(pdfText(live.pdf().bytes).startsWith("%PDF-1.4"));
   assert.equal(live.planned[1].body.Final_Document_Hash, `seal:${EXPECTED.fingerprint} sha256:${createHash("sha256").update(live.pdf().bytes).digest("hex")}`);
-  assert.equal(live.planned[2].body.Notify_Recipient, undefined, "MAIL_ENABLED is false in the harness: no notification recorded");
+  assert.equal(live.planned[3].body.Notify_Recipient, undefined, "MAIL_ENABLED is false in the harness: no notification recorded");
+  assert.equal(live.portalPdf().name, PDF_NAME);
+  assert.notEqual(sealOf(live.portalPdf().bytes), EXPECTED.fingerprint, "the portal gets the supplier copy");
+  assert.ok(!w.kf.calls.some((c) => c.path.includes("/webhook/")), "the harness never posts the webhook");
   assert.equal(w.world.mails.length, 0);
   const calls = w.kf.calls;
   for (let i = 1; i < calls.length; i++) assert.ok(calls[i].at - calls[i - 1].at >= 8000, "8 s between calls");
@@ -1065,7 +1121,7 @@ test("live harness, dry run: reads only, the PDF and the planned writes, 8 s pac
 test("live harness, --apply: the writes reach Kissflow and are read back", () => {
   const { w, r, live } = harnessRun(true);
   assert.equal(r.status, "filed");
-  assert.deepEqual(w.kf.writes().map((c) => c.write), ["attach", "put", "form-create", "form-submit"]);
+  assert.deepEqual(w.kf.writes().map((c) => c.write), ["attach", "put", "portal-attach", "form-create", "form-submit"]);
   assert.equal(live.planned.length, 0);
   assert.ok(w.caseItem().Final_Document_Hash.startsWith(`seal:${EXPECTED.fingerprint} sha256:`));
   assert.equal(w.kf.writes()[0].multipart.file.name, PDF_NAME, "multipart through curl -F");

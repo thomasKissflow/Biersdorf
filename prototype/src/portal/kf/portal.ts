@@ -182,6 +182,10 @@ export function mailHookFor(accountId: string | undefined, host?: string, token:
 export const UPLOADS_TABLE = "CIQP_Request_A00_Uploads";
 /** The header Attachment field holding every supplier file; an upload adds, never replaces (S-2c). */
 export const FILES_FIELD = "Supplier_Files";
+/** The header Attachment field with the supplier's copy of the final document (Thomas, 29 Oct): a supplier-safe PDF
+ *  that Beiersdorf's final-PDF service attaches (admin route) a minute or two after the final release; ReadOnly at every
+ *  step. The released view offers it; nothing in the portal writes it. */
+export const FINAL_PDF_FIELD = "Final_PDF";
 
 export type FlowKey = keyof typeof FLOWS;
 export type PortalRole = "admin" | "supplier" | "none";

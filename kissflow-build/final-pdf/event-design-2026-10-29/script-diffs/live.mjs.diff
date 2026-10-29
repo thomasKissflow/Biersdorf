@@ -1,0 +1,70 @@
+--- /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/kissflow-build/final-pdf/test/live.mjs	2026-10-22 01:48:22
++++ /private/tmp/claude-502/-Users-thomas-Documents-Kissflow-Projects-POC-Beiersdorf/9266c591-0569-4b0c-8f6b-ff391fa10dff/scratchpad/evdesign/script/fp/test/live.mjs	2026-10-29 11:11:25
+@@ -122,24 +122,28 @@
+ export function liveTransport({ domain, apply, call }) {
+   const planned = [];
+   const overlay = { fields: {}, files: {}, rows: {}, draft: null, realPdf: {} };
+-  let pdf = null;
++  const pdfs = {};
+   const json = (status, body) => ({ status, headers: { "Content-Type": "application/json" }, body: Buffer.from(JSON.stringify(body)) });
+   const transport = (url, params) => {
+     const method = String(params.method || "get").toUpperCase();
+     const path = url.replace(/^https:\/\/[^/]+/, "").replace(/\?.*$/, "");
+     const file = params.payload && typeof params.payload === "object" ? params.payload.file : null;
+-    if (file && /\/Final_PDF\/attachment$/.test(path)) pdf = { name: file.getName(), bytes: Buffer.from(file.buf) };
++    const target = /\/admin\/(CIQ_Case_A00|CIQP_Request_A00)\/([A-Za-z0-9_-]+)\/Final_PDF\/attachment$/.exec(path);
++    if (file && target) pdfs[target[1]] = { name: file.getName(), bytes: Buffer.from(file.buf) };
++    // the harness never posts a webhook (MAIL_ENABLED is false here; this is a second guard)
++    if (/^\/integration\//.test(path)) throw new Error("refused: the live harness never posts a webhook");
+     if (apply) return call(url, params);
+     const isRead = method === "GET" || (method === "POST" && path.endsWith("/list"));
+     if (isRead) {
+       const row = /\/form\/2\/[^/]+\/CIQ_Audit_Event_A00\/(planned-[a-z-]+)$/.exec(path);
+       if (row) return overlay.rows[row[1]] ? json(200, overlay.rows[row[1]]) : json(404, { error_code: "NotFound" });
+-      const dl = /\/Final_PDF\/attachment\/(planned-[a-z-]+)$/.exec(path);
++      const dl = /\/(?:CIQ_Case_A00|CIQP_Request_A00)\/[^/]+\/Final_PDF\/attachment\/(planned-[a-z-]+)$/.exec(path);
+       if (dl) return { status: 302, headers: { Location: `https://${domain}/planned-signed/${dl[1]}` }, body: Buffer.alloc(0) };
+       const signed = /^\/planned-signed\/(planned-[a-z-]+)$/.exec(path);
+       if (signed) return { status: 200, headers: { "Content-Type": "application/pdf" }, body: overlay.files[signed[1]] };
+       const r = call(url, params);
+-      const item = /\/admin\/CIQ_Case_A00\/([A-Za-z0-9_-]+)$/.exec(path);
++      const im = /\/admin\/(CIQ_Case_A00|CIQP_Request_A00)\/([A-Za-z0-9_-]+)$/.exec(path);
++      const item = im && [null, `${im[1]}/${im[2]}`];
+       if (!item || r.status !== 200) return r;
+       let real;
+       try {
+@@ -153,16 +157,19 @@
+     // a write: recorded, answered as Kissflow answers it
+     const body = typeof params.payload === "string" ? JSON.parse(params.payload) : undefined;
+     planned.push({ method, path, ...(body !== undefined ? { body } : {}), ...(file ? { file: { part: "file", name: file.getName(), type: file.getContentType(), bytes: file.buf.length, sha256: createHash("sha256").update(file.buf).digest("hex") } } : {}) });
+-    let m = /\/admin\/CIQ_Case_A00\/([A-Za-z0-9_-]+)\/Final_PDF\/attachment$/.exec(path);
++    let m = target;
+     if (m && file) {
+-      const list = [...(overlay.fields[m[1]]?.Final_PDF ?? overlay.realPdf[m[1]] ?? []), { key: "Final_PDF", id: "planned-attachment", name: file.getName(), size: file.buf.length, fileExtension: "pdf" }];
+-      overlay.fields[m[1]] = { ...(overlay.fields[m[1]] ?? {}), Final_PDF: list };
+-      overlay.files["planned-attachment"] = Buffer.from(file.buf);
+-      return json(200, { Final_PDF: list, _id: m[1] });
++      const key = `${m[1]}/${m[2]}`;
++      const pid = m[1] === "CIQ_Case_A00" ? "planned-attachment" : "planned-portal-attachment";
++      const list = [...(overlay.fields[key]?.Final_PDF ?? overlay.realPdf[key] ?? []), { key: "Final_PDF", id: pid, name: file.getName(), size: file.buf.length, fileExtension: "pdf" }];
++      overlay.fields[key] = { ...(overlay.fields[key] ?? {}), Final_PDF: list };
++      overlay.files[pid] = Buffer.from(file.buf);
++      return json(200, { Final_PDF: list, _id: m[2] });
+     }
+     m = /\/admin\/CIQ_Case_A00\/([A-Za-z0-9_-]+)$/.exec(path);
+     if (m && method === "PUT") {
+-      overlay.fields[m[1]] = { ...(overlay.fields[m[1]] ?? {}), ...body };
++      const key = `CIQ_Case_A00/${m[1]}`;
++      overlay.fields[key] = { ...(overlay.fields[key] ?? {}), ...body };
+       return json(200, { ...body, _id: m[1] });
+     }
+     if (/\/form\/2\/[^/]+\/CIQ_Audit_Event_A00$/.test(path) && method === "POST") {
+@@ -181,7 +188,7 @@
+     }
+     return json(400, { error_code: "PlannedWriteUnknown", en_message: `the dry run does not model ${method} ${path}` });
+   };
+-  return { transport, planned, pdf: () => pdf };
++  return { transport, planned, pdf: () => pdfs.CIQ_Case_A00 ?? null, portalPdf: () => pdfs.CIQP_Request_A00 ?? null };
+ }
+ 
+ /** The Script Properties of a harness run: .env's connection, MAIL_ENABLED false, 8 s pacing, plus the saved state.

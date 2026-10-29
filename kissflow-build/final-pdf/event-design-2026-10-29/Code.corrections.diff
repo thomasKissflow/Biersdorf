@@ -1,0 +1,230 @@
+--- /private/tmp/claude-502/-Users-thomas-Documents-Kissflow-Projects-POC-Beiersdorf/9266c591-0569-4b0c-8f6b-ff391fa10dff/scratchpad/evdesign/critic-script/../script/Code.new.gs	2026-10-29 11:12:15
++++ /private/tmp/claude-502/-Users-thomas-Documents-Kissflow-Projects-POC-Beiersdorf/9266c591-0569-4b0c-8f6b-ff391fa10dff/scratchpad/evdesign/critic-script/Code.corrected.gs	2026-10-29 11:35:24
+@@ -59,7 +59,10 @@
+   STALE_MS: 10 * 60 * 1000, // a drain trigger due longer ago than this never ran: it is replaced
+   EVENT_WAIT_MIN: 20, // a queued case still not ready this long after its event leaves the queue (logged)
+   RETRY_DELAYS_MIN: [2, 5], // after failed attempt 1 and 2 (attempt 3 alerts ADMIN_EMAIL and leaves the queue)
+-  MAX_DRAIN_FAILS: 3, // drains in a row that failed outside a case: no further drain is scheduled, ADMIN_EMAIL is told
++  MAX_DRAIN_FAILS: 3,
++  MAX_STOPS: 6, // drains in a row that hit the time limit on the same case: one alert, it leaves the queue (FD_ kept)
++  ALERT_EVERY_MS: 60 * 60 * 1000, // queue full, broken configuration, back-to-back pauses: one alert an hour
++  CODE_REV: 'ev-2026-10-29.1', // doPost (the deployed version) and drain (the trigger) log it: a mismatch means a stale deployment // drains in a row that failed outside a case: no further drain is scheduled, ADMIN_EMAIL is told
+   HOOK_RE: /^https:\/\/([A-Za-z0-9.-]+)\/integration\/2\/([A-Za-z0-9_-]+)\/webhook\/([A-Za-z0-9_-]+)$/
+ };
+ 
+@@ -107,12 +110,15 @@
+       log_('probe: DRIVE_FOLDER_ID', { access: false, error: errShort_(e) });
+     }
+   }
+-  requireCfg_(c);
++  requireCfg_(c, true);
+   if (pausedNow_()) return;
+   var ctx = ctx_();
+   try {
+     var rows = listProcess_(FD_.CASE);
+-    log_('probe: case list', { rows: rows.length, keys: keysOf_(rows) });
++    var lk = keysOf_(rows);
++    log_('probe: case list', { rows: rows.length, keys: lk });
++    if (lk.indexOf('Final_Release_At') >= 0) log_('probe: released without a final document (an event may be lost: runOnce each, never the R1 showcase)', { cases: rows.filter(function (r) { return filled_(r.Final_Release_At) && !filled_(r.Final_Document_Hash) && ['Rejected', 'Withdrawn'].indexOf(String(r._status || '')) < 0; }).map(function (r) { return String(r.Case_Code || r._id); }) });
++    else log_('probe: the case list carries no Final_Release_At: missed events cannot be listed');
+     var audit = listForm_(FD_.AUDIT, FD_.PAGE_SIZE);
+     log_('probe: audit list', { rows: audit.length, keys: keysOf_(audit), withCaseItemId: audit.filter(function (r) { return 'Case_Item_Id' in r; }).length, withSnapshot: audit.filter(function (r) { return 'Snapshot_JSON' in r; }).length });
+     log_('probe: config list', { rows: listForm_(FD_.CONFIG, 200).length });
+@@ -191,9 +197,16 @@
+   if (!h || h.host !== c.domain.toLowerCase() || h.acc !== c.acc) throw new Error('RMM_WEBHOOK_URL is not set, or not a webhook of KF_DOMAIN and KF_ACCOUNT_ID');
+   var id = String(caseItemId || props_().getProperty('RUN_ONCE_CASE_ID') || '').trim();
+   if (!FD_.ID_RE.test(id)) throw new Error('rmmWebhookSample: give a case item id (the argument or RUN_ONCE_CASE_ID)');
+-  var r = hookPost_(c.rmmHook, { caseItemId: id, caseCode: 'SAMPLE', seal: '0000000000000000', idempotencyKey: 'SAMPLE-FD-RMM' });
+-  log_('rmm webhook sample sent', { caseItemId: id, status: r.status });
+-  return r.status;
++  var r = runLocked_(id, function () {
++    var it = getProcess_(FD_.CASE, id);
++    var m = /^seal:([0-9a-f]{16}) sha256:/.exec(String((it && it.Final_Document_Hash) || ''));
++    if (!m) return res_(false, 'not a filed case (no Final_Document_Hash): the integration\'s Search step would find no Final PDF');
++    var code = String(it.Case_Code || id);
++    var h2 = hookPost_(c.rmmHook, { caseItemId: id, caseCode: code, seal: m[1], idempotencyKey: code + '-FD-RMM-SAMPLE' });
++    return res_(h2.status >= 200 && h2.status < 300 && !h2.html, 'HTTP ' + h2.status);
++  });
++  log_('rmm webhook sample sent', { caseItemId: id, ok: r.ok, status: r.status });
++  return r;
+ }
+ 
+ /** Retired 29 Oct: the service no longer polls. An old time trigger that still calls tick removes itself here. */
+@@ -236,7 +249,7 @@
+       log_('doPost refused: no or wrong token');
+       return json_({ ok: false, status: 'refused' });
+     }
+-    var id = String(body.caseItemId || q.caseItemId || '').trim();
++    var id = String(body.caseItemId || body._id || q.caseItemId || '').trim();
+     if (FD_.PLACEHOLDER_RE.test(id)) {
+       log_('doPost: a step test (the sample item), nothing queued', { caseItemId: id });
+       return json_({ ok: false, status: 'test event', caseItemId: id });
+@@ -248,6 +261,7 @@
+     var status = enqueue_(id, c.settleMin * 60000);
+     if (status === 'queue full') {
+       log_('doPost refused: the queue is full', { caseItemId: id, queued: FD_.MAX_QUEUE });
++      alertOnce_('QFULL', c, id, 'The final-document queue is full (' + FD_.MAX_QUEUE + '): the event of case item ' + id + ' was refused. Run drain() and probe(); refused cases need runOnce.');
+       return json_({ ok: false, status: status, caseItemId: id });
+     }
+     var scheduled;
+@@ -258,7 +272,7 @@
+       alertAdmin_(c, id, 'The case item ' + id + ' is queued for its final document, but no trigger could be created (' + errShort_(x) + '). Run drain() by hand, and check the project Triggers page.');
+       return json_({ ok: false, status: 'queued, no drain scheduled', caseItemId: id });
+     }
+-    log_('doPost ' + status, { caseItemId: id, drainScheduled: scheduled, eventStatus: String(body.status || q.status || '').slice(0, 20) });
++    log_('doPost ' + status, { caseItemId: id, rev: FD_.CODE_REV, drainScheduled: scheduled, eventStatus: String(body.status || q.status || '').slice(0, 20) });
+     return json_({ ok: true, status: status, caseItemId: id });
+   } catch (x) {
+     try {
+@@ -285,6 +299,7 @@
+     return log_('drain: another run holds the lock, again in 1 min');
+   }
+   var again = true;
++  var cur = null;
+   var filed = 0;
+   var seen = 0;
+   try {
+@@ -299,13 +314,15 @@
+       again = false;
+       clearDrainTriggers_(); // the successor too: a broken configuration must not run every 7 min
+       log_('drain stopped: ' + errShort_(x), { queued: queue_().length });
+-      alertAdmin_(ctx.c, 'the queue', 'The final-document queue holds ' + queue_().length + ' case(s), but the Script Properties are not complete: ' + errShort_(x) + ' Fix them, then run drain() by hand.');
++      alertOnce_('CFG', ctx.c, 'the queue', 'The final-document queue holds ' + queue_().length + ' case(s), but the Script Properties are not complete: ' + errShort_(x) + ' Fix them, then run drain() by hand.');
+       return;
+     }
+     for (;;) {
+       var due = queue_().filter(function (x) { return x.next <= now_(); });
+       if (!due.length || filed >= ctx.c.maxCases || timeLeft_() < FD_.WRITE_BUDGET_MS) break;
+       var q = due[0];
++      cur = q;
++      if (q.rev && q.rev !== FD_.CODE_REV) log_('drain: this event came from another code revision: update the web app deployment (Manage deployments, Edit, New version)', { eventRev: q.rev, rev: FD_.CODE_REV });
+       seen++;
+       var r = processCase_(ctx, q.id, null, { since: q.at });
+       if (!r.skipped) filed++;
+@@ -315,14 +332,18 @@
+     log_('drain done', { looked: seen, worked: filed, left: queue_().length, calls: CALLS_, ms: now_() - RUN_STARTED_ });
+   } catch (x) {
+     if (isPause_(x)) log_('drain stopped: paused', { until: pauseIso_() });
+-    else if (isDeadline_(x)) log_('drain stopped: time is up, the next drain resumes', { calls: CALLS_, ms: now_() - RUN_STARTED_ });
++    else if (isDeadline_(x)) {
++      log_('drain stopped: time is up, the next drain resumes', { calls: CALLS_, ms: now_() - RUN_STARTED_ });
++      noteStop_(cur);
++    }
+     else {
+       var fails = Number(props_().getProperty('DRAIN_FAILS') || 0) + 1;
+       props_().setProperty('DRAIN_FAILS', String(fails));
+       log_('drain failed', { error: errShort_(x), failsInARow: fails });
+       if (fails >= FD_.MAX_DRAIN_FAILS) {
+         again = false;
+-        alertAdmin_(cfg_(), 'the queue', 'The final-document drain failed ' + fails + ' times in a row (' + errShort_(x) + '). No further drain is scheduled; ' + queue_().length + ' case(s) stay queued. Fix the cause, then run drain() by hand.');
++        clearDrainTriggers_(); // the start-of-drain watchdog too
++        if (fails === FD_.MAX_DRAIN_FAILS) alertAdmin_(cfg_(), 'the queue', 'The final-document drain failed ' + fails + ' times in a row (' + errShort_(x) + '). No further drain is scheduled; ' + queue_().length + ' case(s) stay queued. Fix the cause, then run drain() by hand.');
+       }
+     }
+   } finally {
+@@ -344,10 +365,34 @@
+   if (p.getProperty('Q_' + id)) return 'already queued';
+   if (queue_().length >= FD_.MAX_QUEUE) return 'queue full';
+   var t = now_();
+-  p.setProperty('Q_' + id, JSON.stringify({ at: t, next: t + settleMs, n: 0 }));
++  p.setProperty('Q_' + id, JSON.stringify({ at: t, next: t + settleMs, n: 0, rev: FD_.CODE_REV }));
+   return 'queued';
+ }
+ 
++/** A drain ended at the time limit while working on q: counted on its entry; at MAX_STOPS it leaves the queue with one
++ *  alert (its FD_ state is kept, so runOnce resumes it). */
++function noteStop_(q) {
++  if (!q) return;
++  var k = 'Q_' + q.id;
++  var raw = props_().getProperty(k);
++  if (!raw) return;
++  var o = JSON.parse(raw);
++  o.stops = (Number(o.stops) || 0) + 1;
++  if (o.stops < FD_.MAX_STOPS) return props_().setProperty(k, JSON.stringify(o));
++  props_().deleteProperty(k);
++  log_('queue: gave up, every drain hit the time limit on this case', { caseItemId: q.id, stops: o.stops });
++  alertAdmin_(cfg_(), q.id, 'The final document of case item ' + q.id + ' did not finish in ' + o.stops + ' drains in a row: each one hit the time limit. It left the queue; its progress is kept. Run runOnce for it (RUN_ONCE_CASE_ID ' + q.id + ').');
++}
++
++/** At most one alert per key per ALERT_EVERY_MS (ALERT_<key> holds the last time). */
++function alertOnce_(key, c, code, text) {
++  var p = props_();
++  var last = Number(p.getProperty('ALERT_' + key) || 0);
++  if (now_() - last < FD_.ALERT_EVERY_MS) return false;
++  p.setProperty('ALERT_' + key, String(now_()));
++  return alertAdmin_(c, code, text);
++}
++
+ /** Every queue entry, oldest event first. */
+ function queue_() {
+   var all = props_().getProperties();
+@@ -357,7 +402,7 @@
+     if (!m) return;
+     try {
+       var q = JSON.parse(all[k]);
+-      if (q && isFinite(q.at) && isFinite(q.next)) out.push({ id: m[1], at: Number(q.at), next: Number(q.next), n: Number(q.n) || 0, why: q.why || '' });
++      if (q && isFinite(q.at) && isFinite(q.next)) out.push({ id: m[1], at: Number(q.at), next: Number(q.next), n: Number(q.n) || 0, why: q.why || '', rev: q.rev || '' });
+     } catch (e) {
+       // an unreadable entry is ignored (and stays visible in Script Properties)
+     }
+@@ -728,7 +773,7 @@
+   var r;
+   try {
+     r = hookPost_(c.rmmHook, { caseItemId: id, caseCode: code, seal: st.seal, idempotencyKey: code + '-FD-RMM' });
+-    if (r.status < 200 || r.status >= 300) throw kfError_('RMM webhook', r);
++    if (r.status < 200 || r.status >= 300 || r.html) throw kfError_('RMM webhook', r);
+   } catch (e) {
+     delete st.notifyingAt; // not sent: a pause, the time limit, a fetch error or a refusal
+     saveState_(id, st);
+@@ -1112,7 +1157,9 @@
+   if (status >= 300 && status < 400) return { status: status, location: String(header_(headers, 'Location') || '') };
+   if (opts.binary && status === 200 && !/text\/html/i.test(type)) return { status: status, bytes: res.getBlob().getBytes() };
+   var text = res.getContentText();
+-  if (/text\/html/i.test(type) || /^\s*</.test(text)) pauseNow_('html', method, route);
++  var html = /text\/html/i.test(type) || /^\s*</.test(text);
++  if (html && !opts.hook) pauseNow_('html', method, route);
++  if (html) return { status: status, body: '(an HTML page)', html: true };
+   var body = null;
+   if (text !== '') {
+     try {
+@@ -1135,7 +1182,7 @@
+ /** The RMM webhook POST: JSON, no access key (a webhook needs none), no redirect followed. requireCfg_ has checked that
+  *  the URL is a webhook of KF_DOMAIN and KF_ACCOUNT_ID. */
+ function hookPost_(url, body) {
+-  return fetch_('POST', url, 'webhook RMM_WEBHOOK_URL', { body: body, followRedirects: false });
++  return fetch_('POST', url, 'webhook RMM_WEBHOOK_URL', { body: body, followRedirects: false, hook: true });
+ }
+ 
+ /** RMM_WEBHOOK_URL's parts {host, acc, token}, or null when it is not exactly https://<host>/integration/2/<acc>/webhook/<token>. */
+@@ -1242,7 +1289,9 @@
+ }
+ 
+ function pauseNow_(why, method, route) {
++  var prev = pauseUntil_();
+   var until = now_() + FD_.PAUSE_MS;
++  if (prev && now_() - prev < 30 * 60000) alertOnce_('PAUSE', cfg_(), 'the pause', 'The final-document service was paused again (' + why + ' on ' + method + ' ' + route + ') less than 30 min after its last pause. Queued cases wait; check Kissflow and the Executions log.');
+   props_().setProperty('PAUSE_UNTIL', String(until));
+   log_('pause 20 min', { why: why, call: method + ' ' + route, until: new Date(until).toISOString() });
+   throw pauseError_();
+@@ -1374,18 +1423,18 @@
+   return CFG_;
+ }
+ 
+-function requireCfg_(c) {
++function requireCfg_(c, forProbe) {
+   var missing = [];
+   if (!c.domain) missing.push('KF_DOMAIN');
+   if (!c.acc) missing.push('KF_ACCOUNT_ID');
+   if (!c.keyId) missing.push('KF_ACCESS_KEY_ID');
+   if (!c.keySecret) missing.push('KF_ACCESS_KEY_SECRET');
+-  if (c.mailEnabled && !c.rmmHook) missing.push('RMM_WEBHOOK_URL (or MAIL_ENABLED false)');
++  if (!forProbe && c.mailEnabled && !c.rmmHook) missing.push('RMM_WEBHOOK_URL (or MAIL_ENABLED false)');
+   if (missing.length) throw new Error('Script Properties missing: ' + missing.join(', '));
+   if (!/^[a-z0-9.-]+$/i.test(c.domain)) throw new Error('KF_DOMAIN must be a bare host name (no https://, no slash)');
+   if (!/^[A-Za-z0-9_-]+$/.test(c.acc)) throw new Error('KF_ACCOUNT_ID looks wrong');
+   if (!/^[A-Za-z0-9_]+$/.test(c.app) || !/^[A-Za-z0-9_]+$/.test(c.portalApp)) throw new Error('KF_APP_ID or KF_PORTAL_APP_ID looks wrong');
+-  if (c.mailEnabled) {
++  if (c.mailEnabled && !forProbe) {
+     var h = hookParts_(c);
+     // never the URL in the message
+     if (!h || h.host !== c.domain.toLowerCase() || h.acc !== c.acc) throw new Error('RMM_WEBHOOK_URL must be the webhook URL of the integration "CIQ Case - Send Final Release to RMM": the host KF_DOMAIN, the path /integration/2/<KF_ACCOUNT_ID>/webhook/<token>, nothing else (or set MAIL_ENABLED to false).');

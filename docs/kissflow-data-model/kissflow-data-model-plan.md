@@ -930,7 +930,7 @@ Defaults are built switchable, so most answers change data or a grant, not the s
 | 10 | Blocking vs non-blocking open points and findings | All block (REQ-PROC-036) | `Blocking` flag default; a per-kind setting in Settings | Q-07 |
 | 11 | Test environment: separate tenant or test mode | Test mode inside production | Config-pack export/import if a separate tenant | Q-16 |
 | 12 | Supplier logins (invitation + MFA) and BDF SSO | As stated | Platform setup, no data | Q18, Q-15 |
-| 13 | PDF content; does the supplier get a copy | RMM only | Supplier-safe copy written to `CIQP Request` if yes | Q-12 |
+| 13 | PDF content; does the supplier get a copy | RMM only | **Decided by Thomas, 29 Oct:** a supplier-safe copy goes to `CIQP Request.Final_PDF` (Attachment, ReadOnly for the supplier). It has the same content, but Beiersdorf people are shown as "Beiersdorf" plus their department, with no names or e-mail addresses, and it has its own seal. The app case keeps the internal PDF. The final-PDF script files it, started by the app integration on case completion; the RMM role gets the internal PDF from the app integration "CIQ Case - Send Final Release to RMM". | Q-12 |
 | 14 | Reactivation rules | Same case, new cycle, within 12 months, by RMM | Already modelled (`Cycle_No`) | Q-13 |
 | 15 | Volumes and languages | EN only; tens of cases | Text bundles and definition labels become `{en,de}`; volumes size licences and K-16 | Q8, Q-21, Q-22 |
 | 16 | Is FLM v0.6 the test content | FLM v0.6 fields + placeholders for other sections | Seed content only | Q3, Q-02 |

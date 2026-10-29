@@ -1,20 +1,29 @@
 // CIQ final document service (Google Apps Script, V8). Kissflow-internal.
-// Makes the final PDF of each completed CIQ case once (REQ-PROC-046, AS-12; spec: final-pdf README):
-//   read the case, its reviews, open points, audit rows, supplier and configuration (admin REST routes) →
-//   build the document with the app's own code (Bundle.gs, CIQFinal) and check its seal → render the PDF →
-//   attach it to CIQ_Case_A00.Final_PDF → write Final_Document_Hash / Final_Document_At (and Completion_Trigger when
-//   empty) → mail the RMM owner the PDF → log one 'Final PDF' CIQ Audit Event row.
+// Makes the final PDF of each completed CIQ case once (REQ-PROC-046, AS-12; spec: final-pdf README), on an event, no
+// polling: the app integration "CIQ Case Item exits final step – final release PDF Email" (trigger: "When an item
+// completes its workflow" on CIQ Case) POSTs {"caseItemId": "<_id>", "token": "<DOPOST_TOKEN>"} to this web app
+// (doPost). doPost only queues it (Q_<caseItemId>) and schedules a one-off trigger; drain() then, under the script lock:
+//   reads the case, its reviews, open points, audit rows, supplier and configuration (admin REST routes) →
+//   builds the document with the app's own code (Bundle.gs, CIQFinal) and checks its seal → renders the PDF →
+//   attaches it to CIQ_Case_A00.Final_PDF → writes Final_Document_Hash / Final_Document_At (and Completion_Trigger when
+//   empty) → attaches the SUPPLIER-SAFE copy (CIQFinal.supplierCopy: Beiersdorf people without names or e-mail
+//   addresses, its own seal, the same writer and file name) to the case's portal request CIQP_Request_A00.Final_PDF →
+//   logs one 'Final PDF' CIQ Audit Event row → POSTs {caseItemId, caseCode, seal} to the app integration "CIQ Case -
+//   Send Final Release to RMM" (RMM_WEBHOOK_URL), which mails the case's Final PDF to the RMM role.
+// MailApp only alerts ADMIN_EMAIL; it never mails the RMM.
 // Never regenerates: a case with Final_Document_Hash set is left alone, unless the hash is the one this service planned
-// for it (then only the missing mail or audit row is done). Never submits a step, never reads the portal, RMES records
-// or internal notes. All HTTP goes through kfFetch_ (the file upload through kfUpload_). Logs carry ids, codes, counts
-// and statuses only: no personal data beyond ids, never a key, token or URL.
+// for it (then only the missing portal copy, audit row or RMM notification is done). Whether a case is filed always
+// comes from Kissflow data, never from the POST. Never submits a step; on the portal it reads and writes only the
+// request that names the case (App_Case_Item_Id); never reads RMES records or internal notes. All Kissflow HTTP goes
+// through kfFetch_ (the uploads through kfUpload_), the webhook through hookPost_, both paced by fetch_. Logs carry ids,
+// codes, counts and statuses only: no personal data beyond ids, never a key, token or URL.
 // Every step of a case is recorded in FD_<caseItemId> before or right after it runs, so a lost answer, a failure or the
-// run's time limit resumes where it stopped, with no second upload, mail or audit row.
+// run's time limit resumes where it stopped, with no second upload, notification or audit row.
 //
-// Entry points: probe(), runOnce(caseItemId), tick() (time trigger), installTrigger(), removeTriggers(), doPost(e).
-// Script Properties: README.md "Script Properties". Managed by the script: PAUSE_UNTIL, DONE_IDS, ENDED_IDS, OLD_IDS,
-// OLD_IDS_FOR, RR_CURSOR and FD_<caseItemId> (the resumable state of one case); installTrigger sets RELEASED_AFTER
-// when it is empty.
+// Entry points: doPost(e) (the web app), drain(e) (the one-off trigger; also by hand), probe(), runOnce(caseItemId),
+// portalCopy(caseItemId), rmmWebhookSample(caseItemId), removeTriggers(), tick() (retired: removes an old polling trigger).
+// Script Properties: README.md "Script Properties". Managed by the script: PAUSE_UNTIL, DRAIN_DUE, DRAIN_FAILS,
+// Q_<caseItemId> (the queue) and FD_<caseItemId> (the resumable state of one case).
 
 var FD_ = {
   CASE: 'CIQ_Case_A00',
@@ -23,13 +32,14 @@ var FD_ = {
   AUDIT: 'CIQ_Audit_Event_A00',
   SUPPLIER: 'CIQ_Supplier_A00',
   CONFIG: 'CIQ_Config_Version_A00',
-  PDF_FIELD: 'Final_PDF',
+  REQUEST: 'CIQP_Request_A00', // the portal request (KF_PORTAL_APP_ID); the case names it in Portal_Request_Item_Id
+  PDF_FIELD: 'Final_PDF', // on the case and on the portal request
   SERVICE: 'CIQ final document service',
-  PACE_MS: 1200, // shared-key rule: at least 1.2 s between Kissflow calls
+  PACE_MS: 1200, // shared-key rule: at least 1.2 s between Kissflow calls (the webhook too: same host)
   PAUSE_MS: 20 * 60 * 1000, // a 429 or an HTML (Cloudflare) answer stops the script for 20 min
-  RUN_LIMIT_S: 300, // no Kissflow call and no mail after 5 min (Apps Script stops a run at 6 min); the next run resumes
+  RUN_LIMIT_S: 300, // no Kissflow call after 5 min (Apps Script stops a run at 6 min); the next drain resumes
   WRITE_BUDGET_MS: 2 * 60 * 1000, // a new case, and a case's first write, need 2 min left (so: none after 3 min)
-  SETTLE_FALLBACK_MIN: 15, // a release older than this counts as settled even if the case did not complete
+  SETTLE_FALLBACK_MIN: 15, // released this long ago (or queued this long ago) counts as settled even if not completed
   MAX_ATTEMPTS: 3,
   PAGE_SIZE: 100,
   MAX_PAGES: 50,
@@ -40,11 +50,25 @@ var FD_ = {
   RETRY_WAIT_MS: 3000,
   CACHE_TTL_S: 1800, // configuration rows: 30 min
   CACHE_CHUNK: 30000, // characters per cache value (CacheService takes 100 KB per value)
-  MAX_IDS: 600, // DONE_IDS / ENDED_IDS / OLD_IDS: ~13 characters per id, under the 9 KB Script Property value limit
-  ID_RE: /^[A-Za-z0-9_-]{6,40}$/
+  ID_RE: /^[A-Za-z0-9_-]{6,40}$/,
+  // the event path
+  DRAIN_FN: 'drain',
+  PLACEHOLDER_RE: /^SampleInstance\d*$/i, // the trigger's sample item in the integration builder's step test
+  MAX_QUEUE: 50, // Q_ entries; doPost refuses more (Script Properties hold 500 KB)
+  MIN_DELAY_MS: 60 * 1000, // the shortest one-off trigger delay used
+  BUSY_DELAY_MS: 60 * 1000, // the lock is held: the drain tries again after this
+  WATCHDOG_MS: 7 * 60 * 1000, // a drain with work schedules its successor first: Apps Script may end a run at 6 min
+  STALE_MS: 10 * 60 * 1000, // a drain trigger due longer ago than this never ran: it is replaced
+  EVENT_WAIT_MIN: 20, // a queued case still not ready this long after its event leaves the queue (logged)
+  RETRY_DELAYS_MIN: [2, 5], // after failed attempt 1 and 2 (attempt 3 alerts ADMIN_EMAIL and leaves the queue)
+  MAX_DRAIN_FAILS: 3, // drains in a row that failed outside a case: no further drain is scheduled, ADMIN_EMAIL is told
+  MAX_STOPS: 6, // drains in a row that hit the time limit on the same case: one alert, it leaves the queue (FD_ kept)
+  ALERT_EVERY_MS: 60 * 60 * 1000, // queue full, broken configuration, back-to-back pauses: one alert an hour
+  CODE_REV: 'ev-2026-10-29.2', // doPost (the deployed version) and drain (the trigger) log it: a mismatch means a stale deployment
+  HOOK_RE: /^https:\/\/([A-Za-z0-9.-]+)\/integration\/2\/([A-Za-z0-9_-]+)\/webhook\/([A-Za-z0-9_-]+)$/
 };
 
-var PROPS_SHOWN_ = ['KF_DOMAIN', 'KF_ACCOUNT_ID', 'KF_APP_ID', 'KF_ACCESS_KEY_ID', 'KF_ACCESS_KEY_SECRET', 'TIME_ZONE', 'MAIL_ENABLED', 'MAIL_FROM_NAME', 'FALLBACK_RMM_EMAIL', 'ADMIN_EMAIL', 'DRIVE_FOLDER_ID', 'DOPOST_TOKEN', 'MAX_CASES_PER_TICK', 'MAX_GETS_PER_TICK', 'SETTLE_MINUTES', 'RELEASED_AFTER', 'PACE_MS', 'TICK_MINUTES'];
+var PROPS_SHOWN_ = ['KF_DOMAIN', 'KF_ACCOUNT_ID', 'KF_APP_ID', 'KF_PORTAL_APP_ID', 'KF_ACCESS_KEY_ID', 'KF_ACCESS_KEY_SECRET', 'TIME_ZONE', 'MAIL_ENABLED', 'RMM_WEBHOOK_URL', 'MAIL_FROM_NAME', 'ADMIN_EMAIL', 'DRIVE_FOLDER_ID', 'DOPOST_TOKEN', 'PORTAL_COPY_ENABLED', 'MAX_CASES_PER_RUN', 'SETTLE_MINUTES', 'PACE_MS', 'RUN_ONCE_CASE_ID'];
 
 // Per execution (reset by begin_).
 var CFG_ = null;
@@ -70,11 +94,16 @@ function probe() {
 function probe_() {
   var c = cfg_();
   var all = props_().getProperties();
+  var hook = hookParts_(c);
   log_('probe: Script Properties', {
     set: PROPS_SHOWN_.filter(function (k) { return filled_(all[k]); }),
     notSet: PROPS_SHOWN_.filter(function (k) { return !filled_(all[k]); }),
-    mailEnabled: c.mailEnabled, timeZone: c.timeZone, releasedAfter: c.releasedAfter || '', bundle: CIQFinal.BUILD
+    mailEnabled: c.mailEnabled, portalCopy: c.portalCopy, timeZone: c.timeZone, portalApp: c.portalApp, bundle: CIQFinal.BUILD, rev: FD_.CODE_REV,
+    // never the URL: only whether it is a webhook URL of KF_DOMAIN and KF_ACCOUNT_ID
+    rmmWebhook: { set: filled_(c.rmmHook), shape: !!hook, sameHost: !!hook && hook.host === c.domain.toLowerCase(), sameAccount: !!hook && hook.acc === c.acc }
   });
+  log_('probe: event path', { queued: queue_().length, drainDue: props_().getProperty('DRAIN_DUE') ? new Date(Number(props_().getProperty('DRAIN_DUE'))).toISOString() : '', triggers: { drain: triggersOf_(FD_.DRAIN_FN).length, tick: triggersOf_('tick').length, other: ScriptApp.getProjectTriggers().length - triggersOf_(FD_.DRAIN_FN).length - triggersOf_('tick').length } });
+  if (triggersOf_('tick').length) log_('probe: an old polling trigger (tick) is still installed: run removeTriggers()');
   if (c.driveFolder) {
     try {
       DriveApp.getFolderById(c.driveFolder).getName();
@@ -83,45 +112,29 @@ function probe_() {
       log_('probe: DRIVE_FOLDER_ID', { access: false, error: errShort_(e) });
     }
   }
-  requireCfg_(c);
+  requireCfg_(c, true);
   if (pausedNow_()) return;
   var ctx = ctx_();
   try {
     var rows = listProcess_(FD_.CASE);
-    var keys = keysOf_(rows);
-    log_('probe: case list', { rows: rows.length, keys: keys, carries: { _status: keys.indexOf('_status') >= 0, Case_Phase: keys.indexOf('Case_Phase') >= 0, Final_Release_At: keys.indexOf('Final_Release_At') >= 0, Final_Document_Hash: keys.indexOf('Final_Document_Hash') >= 0 } });
-    if (rows.length) {
-      var one = getProcess_(FD_.CASE, rows[0]._id);
-      log_('probe: one case item', { caseItemId: rows[0]._id, fields: one ? Object.keys(one).length : 0, keys: one ? Object.keys(one).sort() : [] });
-    }
+    var lk = keysOf_(rows);
+    log_('probe: case list', { rows: rows.length, keys: lk });
+    if (lk.indexOf('Final_Release_At') >= 0) log_('probe: released without a final document (an event may be lost: runOnce each, never the R1 showcase)', { cases: rows.filter(function (r) { return filled_(r.Final_Release_At) && !filled_(r.Final_Document_Hash) && ['Rejected', 'Withdrawn'].indexOf(String(r._status || '')) < 0; }).map(function (r) { return String(r.Case_Code || r._id); }) });
+    else log_('probe: the case list carries no Final_Release_At: missed events cannot be listed');
     var audit = listForm_(FD_.AUDIT, FD_.PAGE_SIZE);
     log_('probe: audit list', { rows: audit.length, keys: keysOf_(audit), withCaseItemId: audit.filter(function (r) { return 'Case_Item_Id' in r; }).length, withSnapshot: audit.filter(function (r) { return 'Snapshot_JSON' in r; }).length });
     log_('probe: config list', { rows: listForm_(FD_.CONFIG, 200).length });
     log_('probe: supplier list', { rows: listForm_(FD_.SUPPLIER, 200).length });
-    var done = idSet_('DONE_IDS');
-    var ended = idSet_('ENDED_IDS');
-    var old = oldSet_(c, true);
-    var ids = candidates_(ctx, rows.filter(function (r) { return r && r._id && !done[r._id] && !ended[r._id] && !old[r._id]; }), true);
-    var eligible = [];
-    var reasons = {};
-    for (var i = 0; i < ids.length && i < c.maxGets; i++) {
-      var it = getProcess_(FD_.CASE, ids[i]);
-      var el = eligibility_(it, c, now_(), false);
-      if (el.ok) eligible.push({ caseItemId: ids[i], caseCode: String(it.Case_Code || '') });
-      else reasons[el.why] = (reasons[el.why] || 0) + 1;
-    }
-    log_('probe: eligible cases', { read: Math.min(ids.length, c.maxGets), candidates: ids.length, alreadyDone: Object.keys(done).length, eligible: eligible, notEligible: reasons });
-    if (eligible.length) {
-      var first = getProcess_(FD_.CASE, eligible[0].caseItemId);
-      var rows2 = auditRowsFor_(ctx, first);
-      log_('probe: search on one eligible case', {
-        caseCode: eligible[0].caseCode,
-        reviewHits: listProcess_(FD_.REVIEW, first._id).length,
-        openPointHits: listProcess_(FD_.OP, first._id).length,
-        auditRows: rows2.length,
-        auditNamesReviews: rows2.filter(function (r) { return !!namedObject_(r, FD_.REVIEW); }).length,
-        auditNamesOpenPoints: rows2.filter(function (r) { return !!namedObject_(r, FD_.OP); }).length
-      });
+    // one case in depth: RUN_ONCE_CASE_ID, else the first listed case
+    var id = String(props_().getProperty('RUN_ONCE_CASE_ID') || (rows[0] && rows[0]._id) || '').trim();
+    var it = FD_.ID_RE.test(id) ? getProcess_(FD_.CASE, id) : null;
+    if (it) {
+      var el = eligibility_(it, now_(), 0);
+      log_('probe: one case item', { caseItemId: id, caseCode: String(it.Case_Code || ''), status: String(it._status || ''), eligible: el.ok, why: el.why || '', fields: Object.keys(it).length, keys: Object.keys(it).sort() });
+      log_('probe: its reads', { reviewHits: listProcess_(FD_.REVIEW, id).length, openPointHits: listProcess_(FD_.OP, id).length, auditRows: auditRowsFor_(ctx, it).length });
+      var reqId = String(it.Portal_Request_Item_Id || '').trim();
+      var req = FD_.ID_RE.test(reqId) ? getProcess_(FD_.REQUEST, reqId, c.portalApp) : null;
+      log_('probe: its portal request', { requestItemId: reqId, found: !!req, linked: !!req && req.App_Case_Item_Id === id, status: req ? String(req._status || '') : '', finalPdfKey: !!req && FD_.PDF_FIELD in req, finalPdfFiles: req ? attachments_(req).length : 0 });
     }
     log_('probe: done', { calls: CALLS_ });
   } catch (e) {
@@ -133,140 +146,353 @@ function probe_() {
 }
 
 /** One case, the whole pipeline. caseItemId: the argument, else Script Property RUN_ONCE_CASE_ID. A manual run also
- *  files a case released before RELEASED_AFTER, and retries a case the trigger skips. */
+ *  retries a case the queue gave up on (MAX_ATTEMPTS), and resumes its kept state (FD_<id>). It does not queue. */
 function runOnce(caseItemId) {
   begin_();
   var id = String(caseItemId || props_().getProperty('RUN_ONCE_CASE_ID') || '').trim();
   if (!FD_.ID_RE.test(id)) throw new Error('runOnce: give a case item id (the argument or Script Property RUN_ONCE_CASE_ID)');
-  var r = runLocked_(id, true);
+  var r = runLocked_(id, function (ctx) { return processCase_(ctx, id, null, { manual: true }); });
   log_('runOnce done', { caseItemId: id, ok: r.ok, status: r.status });
   return r;
 }
 
-/** The time trigger: finish interrupted filings, then file the eligible cases (at most MAX_CASES_PER_TICK). */
+/** Repair, by hand: the supplier-safe copy of a filed case onto its portal request, when its filing skipped the portal
+ *  copy (log line 'portal copy skipped'). caseItemId: the argument, else RUN_ONCE_CASE_ID. Stateless (writes no FD_
+ *  state, so a later event still sees the case as filed by someone else and leaves it alone): the document is built
+ *  again from the live items and used only when its seal is the one in Final_Document_Hash (the filed document); its
+ *  supplier copy is rendered and attached as <Case_Code>-final-document.pdf; a request that already holds a file of
+ *  that name with the supplier copy's seal is left as it is. No audit row, no notification. */
+function portalCopy(caseItemId) {
+  begin_();
+  var id = String(caseItemId || props_().getProperty('RUN_ONCE_CASE_ID') || '').trim();
+  if (!FD_.ID_RE.test(id)) throw new Error('portalCopy: give a case item id (the argument or Script Property RUN_ONCE_CASE_ID)');
+  var r = runLocked_(id, function (ctx) {
+    var item = getProcess_(FD_.CASE, id);
+    if (!item) return res_(false, 'case item not found');
+    var m = /^seal:([0-9a-f]{16}) sha256:([0-9a-f]{64})$/.exec(String(item.Final_Document_Hash || ''));
+    if (!m) return res_(false, 'the case has no final document (Final_Document_Hash)');
+    var code = String(item.Case_Code || id);
+    var st = { code: code, name: CIQFinal.pdfName(code), seal: m[1], sha: m[2] };
+    if (!ctx.c.portalCopy) return res_(false, 'PORTAL_COPY_ENABLED is off');
+    portalStep_(ctx, id, item, st, null, function () {});
+    return st.portalAttId ? res_(true, 'portal copy ' + st.portalAttId) : res_(false, 'portal copy skipped: ' + st.portalSkipped);
+  });
+  log_('portalCopy done', { caseItemId: id, ok: r.ok, status: r.status });
+  return r;
+}
+
+/** By hand, once, while the integration "CIQ Case - Send Final Release to RMM" is OFF (a capture on a switched-on
+ *  integration runs it for real, and it would mail the RMM role): posts a sample of the notification to RMM_WEBHOOK_URL
+ *  so the builder can capture its payload. caseItemId: the argument, else RUN_ONCE_CASE_ID: any case (a filed one lets the
+ *  mail step test attach a real Final PDF). The URL never leaves Script Properties. No state. */
+function rmmWebhookSample(caseItemId) {
+  begin_();
+  var c = cfg_();
+  var h = hookParts_(c);
+  if (!h || h.host !== c.domain.toLowerCase() || h.acc !== c.acc) throw new Error('RMM_WEBHOOK_URL is not set, or not a webhook of KF_DOMAIN and KF_ACCOUNT_ID');
+  var id = String(caseItemId || props_().getProperty('RUN_ONCE_CASE_ID') || '').trim();
+  if (!FD_.ID_RE.test(id)) throw new Error('rmmWebhookSample: give a case item id (the argument or RUN_ONCE_CASE_ID)');
+  var r = runLocked_(id, function () {
+    var it = getProcess_(FD_.CASE, id);
+    var m = /^seal:([0-9a-f]{16}) sha256:/.exec(String((it && it.Final_Document_Hash) || ''));
+    if (!it) return res_(false, 'case item not found');
+    // An unfiled case is fine (29 Oct): prod has no filed case before its first release, and integration 2 must pass its
+    // step tests before it can be switched on; its mail script then says the PDF is not attached yet.
+    var code = String(it.Case_Code || id);
+    var h2 = hookPost_(c.rmmHook, { caseItemId: id, caseCode: code, seal: m ? m[1] : 'sample', idempotencyKey: code + '-FD-RMM-SAMPLE' });
+    return res_(h2.status >= 200 && h2.status < 300 && !h2.html, 'HTTP ' + h2.status);
+  });
+  log_('rmm webhook sample sent', { caseItemId: id, ok: r.ok, status: r.status });
+  return r;
+}
+
+/** Retired 29 Oct: the service no longer polls. An old time trigger that still calls tick removes itself here. */
 function tick() {
   begin_();
-  var lock = LockService.getScriptLock();
-  if (!lock.tryLock(5000)) return log_('tick skipped: another run holds the lock');
-  try {
-    if (pausedNow_()) return;
-    var ctx = ctx_();
-    requireCfg_(ctx.c);
-    var done = idSet_('DONE_IDS');
-    var ended = idSet_('ENDED_IDS');
-    var old = oldSet_(ctx.c, false);
-    var states = states_();
-    var processed = 0;
-    var reads = 0;
-    var seen = {};
-    var room = function () { return processed < ctx.c.maxCases && timeLeft_() >= FD_.WRITE_BUDGET_MS; };
-    // 1. filings an earlier run started or was stopped in (attached, hash written, mail or audit row missing)
-    var pending = Object.keys(states);
-    for (var i = 0; i < pending.length && room(); i++) {
-      var pid = pending[i];
-      seen[pid] = true;
-      if (done[pid] || ended[pid] || old[pid] || states[pid].attempts >= FD_.MAX_ATTEMPTS) continue;
-      var r = processCase_(ctx, pid, null, false);
-      reads++;
-      if (!r.skipped) processed++;
-    }
-    // 2. the case list
-    var rows = listProcess_(FD_.CASE).filter(function (x) { return x && x._id && !done[x._id] && !ended[x._id] && !old[x._id] && !seen[x._id]; });
-    var ids = candidates_(ctx, rows, false);
-    for (var j = 0; j < ids.length && room() && reads < ctx.c.maxGets; j++) {
-      var id = ids[j];
-      var st = states[id];
-      if (st && st.attempts >= FD_.MAX_ATTEMPTS) continue;
-      var item = getProcess_(FD_.CASE, id);
-      reads++;
-      var el = eligibility_(item, ctx.c, now_(), false);
-      if (!el.ok) {
-        if (el.done) markId_('DONE_IDS', id);
-        if (el.ended) markId_('ENDED_IDS', id);
-        if (el.old) markOld_(ctx.c, id);
-        continue;
-      }
-      processed++;
-      processCase_(ctx, id, item, false);
-    }
-    log_('tick done', { pending: pending.length, listed: rows.length, candidates: ids.length, read: reads, processed: processed, calls: CALLS_, ms: now_() - RUN_STARTED_ });
-  } catch (e) {
-    if (isPause_(e)) return log_('tick stopped: paused', { until: pauseIso_() });
-    if (isDeadline_(e)) return log_('tick stopped: time is up, the next run resumes', { calls: CALLS_, ms: now_() - RUN_STARTED_ });
-    log_('tick failed', { error: errShort_(e) });
-    throw e;
-  } finally {
-    lock.releaseLock();
-  }
+  log_('tick is retired (filings come from doPost now): old tick trigger removed', { removed: deleteTriggersOf_('tick') });
 }
 
-/** Creates the tick trigger, every TICK_MINUTES (1, 5, 10, 15 or 30; default 5). Older tick triggers are removed. An
- *  empty RELEASED_AFTER is set to now first: the trigger then files new releases only (no backfill, no mails for old
- *  cases); set RELEASED_AFTER earlier before installTrigger to backfill. */
-function installTrigger() {
-  begin_();
-  var c = cfg_();
-  var every = [1, 5, 10, 15, 30].indexOf(c.tickMinutes) >= 0 ? c.tickMinutes : 5;
-  if (!c.releasedAfter) {
-    props_().setProperty('RELEASED_AFTER', nowIso_());
-    log_('RELEASED_AFTER set to now: the trigger files releases from now on; runOnce still files any case', { releasedAfter: nowIso_() });
-  }
-  var removed = deleteTickTriggers_();
-  ScriptApp.newTrigger('tick').timeBased().everyMinutes(every).create();
-  log_('trigger installed', { handler: 'tick', everyMinutes: every, removed: removed, mailEnabled: c.mailEnabled, releasedAfter: props_().getProperty('RELEASED_AFTER') });
-}
-
-/** Removes every tick trigger. */
+/** Removes the old tick trigger and any pending drain trigger. Queued cases stay queued: run drain() to file them. */
 function removeTriggers() {
   begin_();
-  log_('triggers removed', { removed: deleteTickTriggers_() });
+  var n = { tick: deleteTriggersOf_('tick'), drain: deleteTriggersOf_(FD_.DRAIN_FN) };
+  props_().deleteProperty('DRAIN_DUE');
+  log_('triggers removed', { tick: n.tick, drain: n.drain, stillQueued: queue_().length });
 }
 
-/** Optional push (web app): body {caseItemId, token}; runs only when DOPOST_TOKEN is set and the body's token matches
- *  (never a token in the URL: it would land in proxy and step logs). Whether a case is filed always comes from
- *  Kissflow data, never from the payload. */
+/** The web app, for the app integration "CIQ Case Item exits final step – final release PDF Email" (trigger "When an
+ *  item completes its workflow" on CIQ Case; HTTP POST, raw JSON). The body is {"caseItemId": "<the case item's _id>",
+ *  "token": "<DOPOST_TOKEN>"} (`_id` is accepted for caseItemId). The token belongs in the BODY: Apps Script gives doPost
+ *  no request headers, and a query string lands in proxy and step logs; ?token= is only a fallback for a step that
+ *  cannot send a constant in the body (a body token always wins). It answers at once and calls no Kissflow route: the
+ *  id is queued (Q_<id>) and a one-off trigger runs drain() SETTLE_MINUTES later. The builder's step test sends the
+ *  trigger's sample id SampleInstance001: answered ok "test event", nothing queued, no trigger, no write. Apps Script
+ *  cannot set a status: every answer is HTTP 200 (behind Google's 302 to script.googleusercontent.com), so the JSON
+ *  {ok, status} says what happened. Never throws (an uncaught error would answer an HTML page). */
 function doPost(e) {
-  begin_();
-  var c = cfg_();
-  var out = function (o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); };
-  if (!c.token) {
-    log_('doPost refused: DOPOST_TOKEN is not set');
-    return out({ ok: false, status: 'disabled' });
-  }
-  var body = {};
   try {
-    body = JSON.parse((e && e.postData && e.postData.contents) || '{}') || {};
+    begin_();
+    var c = cfg_();
+    if (!c.token) {
+      log_('doPost refused: DOPOST_TOKEN is not set');
+      return json_({ ok: false, status: 'disabled' });
+    }
+    var q = (e && e.parameter) || {};
+    var body = postBody_(e);
+    if (body === null) {
+      log_('doPost refused: the body is not JSON');
+      return json_({ ok: false, status: 'bad request' });
+    }
+    if (!sameText_(String(body.token || q.token || ''), c.token)) {
+      log_('doPost refused: no or wrong token');
+      return json_({ ok: false, status: 'refused' });
+    }
+    var id = String(body.caseItemId || body._id || q.caseItemId || '').trim();
+    if (FD_.PLACEHOLDER_RE.test(id)) {
+      log_('doPost: a step test (the sample item), nothing queued', { caseItemId: id });
+      return json_({ ok: true, status: 'test event', caseItemId: id });
+    }
+    if (!FD_.ID_RE.test(id)) {
+      log_('doPost refused: bad case item id');
+      return json_({ ok: false, status: 'bad case item id' });
+    }
+    var status = enqueue_(id, c.settleMin * 60000);
+    if (status === 'queue full') {
+      log_('doPost refused: the queue is full', { caseItemId: id, queued: FD_.MAX_QUEUE });
+      alertOnce_('QFULL', c, id, 'The final-document queue is full (' + FD_.MAX_QUEUE + '): the event of case item ' + id + ' was refused. Run drain() and probe(); refused cases need runOnce.');
+      return json_({ ok: false, status: status, caseItemId: id });
+    }
+    var scheduled;
+    try {
+      scheduled = scheduleDrain_(c.settleMin * 60000);
+    } catch (x) {
+      log_('doPost: queued, but no drain trigger could be created', { caseItemId: id, error: errShort_(x) });
+      alertAdmin_(c, id, 'The case item ' + id + ' is queued for its final document, but no trigger could be created (' + errShort_(x) + '). Run drain() by hand, and check the project Triggers page.');
+      return json_({ ok: false, status: 'queued, no drain scheduled', caseItemId: id });
+    }
+    log_('doPost ' + status, { caseItemId: id, rev: FD_.CODE_REV, drainScheduled: scheduled, eventStatus: String(body.status || q.status || '').slice(0, 20) });
+    return json_({ ok: true, status: status, caseItemId: id });
   } catch (x) {
-    return out({ ok: false, status: 'bad request' });
+    try {
+      log_('doPost failed', { error: errShort_(x) });
+    } catch (y) {
+      // nothing more can be done; the answer still goes out
+    }
+    return json_({ ok: false, status: 'error' });
   }
-  var token = String(body.token || '');
-  if (!sameText_(token, c.token)) {
-    log_('doPost refused: wrong token');
-    return out({ ok: false, status: 'refused' });
-  }
-  var id = String(body.caseItemId || '');
-  if (!FD_.ID_RE.test(id)) {
-    log_('doPost refused: bad case item id');
-    return out({ ok: false, status: 'bad case item id' });
-  }
-  var r = runLocked_(id, false);
-  log_('doPost done', { caseItemId: id, ok: r.ok, status: r.status });
-  return out({ ok: r.ok, status: r.status });
 }
+
+/** The one-off trigger doPost schedules (also run by hand). Deletes every drain trigger first (fired one-off triggers
+ *  stay listed), then, under the script lock, files the due queue entries oldest first, at most MAX_CASES_PER_RUN and
+ *  while 2 min of the run are left, reading the queue again after each case. A case not ready yet (just exited the
+ *  step, not completed) goes back with a later time; anything left schedules the next drain. Busy lock: again in 1 min.
+ *  Order matters: a doPost that saw a pending drain trigger wrote its Q_ entry before this run deleted that trigger, so
+ *  this run reads it; one that saw none schedules its own. */
+function drain(e) {
+  begin_();
+  clearDrainTriggers_();
+  var lock = LockService.getScriptLock();
+  if (!lock.tryLock(5000)) {
+    scheduleDrain_(FD_.BUSY_DELAY_MS);
+    return log_('drain: another run holds the lock, again in 1 min');
+  }
+  var again = true;
+  var cur = null;
+  var filed = 0;
+  var seen = 0;
+  try {
+    if (pausedNow_()) return;
+    // a successor first, while there is work: if Apps Script ends this run, the queue is not stranded (no successor
+    // for an empty queue, so the chain ends)
+    if (queue_().length) scheduleDrain_(FD_.WATCHDOG_MS);
+    var ctx = ctx_();
+    try {
+      requireCfg_(ctx.c);
+    } catch (x) {
+      again = false;
+      clearDrainTriggers_(); // the successor too: a broken configuration must not run every 7 min
+      log_('drain stopped: ' + errShort_(x), { queued: queue_().length });
+      alertOnce_('CFG', ctx.c, 'the queue', 'The final-document queue holds ' + queue_().length + ' case(s), but the Script Properties are not complete: ' + errShort_(x) + ' Fix them, then run drain() by hand.');
+      return;
+    }
+    for (;;) {
+      var due = queue_().filter(function (x) { return x.next <= now_(); });
+      if (!due.length || filed >= ctx.c.maxCases || timeLeft_() < FD_.WRITE_BUDGET_MS) break;
+      var q = due[0];
+      cur = q;
+      if (q.rev && q.rev !== FD_.CODE_REV) log_('drain: this event came from another code revision: update the web app deployment (Manage deployments, Edit, New version)', { eventRev: q.rev, rev: FD_.CODE_REV });
+      seen++;
+      var r = processCase_(ctx, q.id, null, { since: q.at });
+      if (!r.skipped) filed++;
+      requeue_(q, r);
+    }
+    props_().deleteProperty('DRAIN_FAILS');
+    log_('drain done', { looked: seen, worked: filed, left: queue_().length, calls: CALLS_, ms: now_() - RUN_STARTED_ });
+  } catch (x) {
+    if (isPause_(x)) log_('drain stopped: paused', { until: pauseIso_() });
+    else if (isDeadline_(x)) {
+      log_('drain stopped: time is up, the next drain resumes', { calls: CALLS_, ms: now_() - RUN_STARTED_ });
+      noteStop_(cur);
+    }
+    else {
+      var fails = Number(props_().getProperty('DRAIN_FAILS') || 0) + 1;
+      props_().setProperty('DRAIN_FAILS', String(fails));
+      log_('drain failed', { error: errShort_(x), failsInARow: fails });
+      if (fails >= FD_.MAX_DRAIN_FAILS) {
+        again = false;
+        clearDrainTriggers_(); // the start-of-drain watchdog too
+        if (fails === FD_.MAX_DRAIN_FAILS) alertAdmin_(cfg_(), 'the queue', 'The final-document drain failed ' + fails + ' times in a row (' + errShort_(x) + '). No further drain is scheduled; ' + queue_().length + ' case(s) stay queued. Fix the cause, then run drain() by hand.');
+      }
+    }
+  } finally {
+    try {
+      var next = again ? nextDue_() : null;
+      if (next !== null) scheduleDrain_(next - now_());
+    } finally {
+      lock.releaseLock();
+    }
+  }
+}
+
+// =============================================================================================== the queue
+
+/** Q_<id> = {at: first event (ms), next: due (ms), n: waits so far, why: last reason}. Returns 'queued', 'already
+ *  queued' (the entry is kept as it is) or 'queue full'. One key per case: no shared list to race on. */
+function enqueue_(id, settleMs) {
+  var p = props_();
+  if (p.getProperty('Q_' + id)) return 'already queued';
+  if (queue_().length >= FD_.MAX_QUEUE) return 'queue full';
+  var t = now_();
+  p.setProperty('Q_' + id, JSON.stringify({ at: t, next: t + settleMs, n: 0, rev: FD_.CODE_REV }));
+  return 'queued';
+}
+
+/** A drain ended at the time limit while working on q: counted on its entry; at MAX_STOPS it leaves the queue with one
+ *  alert (its FD_ state is kept, so runOnce resumes it). */
+function noteStop_(q) {
+  if (!q) return;
+  var k = 'Q_' + q.id;
+  var raw = props_().getProperty(k);
+  if (!raw) return;
+  var o = JSON.parse(raw);
+  o.stops = (Number(o.stops) || 0) + 1;
+  if (o.stops < FD_.MAX_STOPS) return props_().setProperty(k, JSON.stringify(o));
+  props_().deleteProperty(k);
+  log_('queue: gave up, every drain hit the time limit on this case', { caseItemId: q.id, stops: o.stops });
+  alertAdmin_(cfg_(), q.id, 'The final document of case item ' + q.id + ' did not finish in ' + o.stops + ' drains in a row: each one hit the time limit. It left the queue; its progress is kept. Run runOnce for it (RUN_ONCE_CASE_ID ' + q.id + ').');
+}
+
+/** At most one alert per key per ALERT_EVERY_MS (ALERT_<key> holds the last time). */
+function alertOnce_(key, c, code, text) {
+  var p = props_();
+  var last = Number(p.getProperty('ALERT_' + key) || 0);
+  if (now_() - last < FD_.ALERT_EVERY_MS) return false;
+  p.setProperty('ALERT_' + key, String(now_()));
+  return alertAdmin_(c, code, text);
+}
+
+/** Every queue entry, oldest event first. */
+function queue_() {
+  var all = props_().getProperties();
+  var out = [];
+  Object.keys(all).forEach(function (k) {
+    var m = /^Q_([A-Za-z0-9_-]{6,40})$/.exec(k);
+    if (!m) return;
+    try {
+      var q = JSON.parse(all[k]);
+      if (q && isFinite(q.at) && isFinite(q.next)) out.push({ id: m[1], at: Number(q.at), next: Number(q.next), n: Number(q.n) || 0, why: q.why || '', rev: q.rev || '' });
+    } catch (e) {
+      // an unreadable entry is ignored (and stays visible in Script Properties)
+    }
+  });
+  return out.sort(function (a, b) { return a.at - b.at || (a.id < b.id ? -1 : 1); });
+}
+
+/** After one case. Off the queue: done, nothing to do (not found, ended, filed by someone else), stuck (attempt 3; the
+ *  admin was told), or still not ready EVENT_WAIT_MIN after its event (logged: e.g. a release reopened). Back on it:
+ *  not ready yet (1, 2, 4, 8, 8 … min), or a failed attempt (RETRY_DELAYS_MIN). The time limit and a pause throw past
+ *  this, so the entry stays as it is and the next drain takes it first. */
+function requeue_(q, r) {
+  var k = 'Q_' + q.id;
+  var put = function (next, why) { props_().setProperty(k, JSON.stringify({ at: q.at, next: next, n: q.n, why: String(why || '').slice(0, 120) })); };
+  if (r.next === 'wait' && now_() - q.at < FD_.EVENT_WAIT_MIN * 60000) {
+    q.n++;
+    return put(now_() + Math.min(8, Math.pow(2, q.n - 1)) * 60000, r.status);
+  }
+  if (r.next === 'retry') return put(now_() + FD_.RETRY_DELAYS_MIN[Math.min(r.attempts || 1, FD_.RETRY_DELAYS_MIN.length) - 1] * 60000, r.status);
+  if (r.next === 'wait') log_('queue: gave up waiting', { caseItemId: q.id, why: r.status, minutes: Math.round((now_() - q.at) / 60000) });
+  props_().deleteProperty(k);
+}
+
+/** When the next drain is needed: the earliest entry's time, not before a running pause ends; null for an empty queue. */
+function nextDue_() {
+  var q = queue_();
+  if (!q.length) return null;
+  var t = Math.min.apply(null, q.map(function (x) { return x.next; }));
+  return Math.max(t, pauseUntil_() + FD_.MIN_DELAY_MS * (pauseUntil_() > now_() ? 1 : 0));
+}
+
+/** Makes sure a drain trigger fires within delayMs (never sooner than MIN_DELAY_MS). A pending one due by then is
+ *  enough (DRAIN_DUE: the earliest pending due time); one due more than STALE_MS ago never ran and is replaced.
+ *  Returns true when it created a trigger. Apps Script runs an after() trigger no sooner than asked, often later. */
+function scheduleDrain_(delayMs) {
+  var p = props_();
+  var at = now_() + Math.max(FD_.MIN_DELAY_MS, delayMs || 0);
+  var mine = triggersOf_(FD_.DRAIN_FN);
+  var due = Number(p.getProperty('DRAIN_DUE') || 0);
+  var fresh = mine.length > 0 && due > now_() - FD_.STALE_MS;
+  if (fresh && due <= at) return false;
+  if (mine.length && !fresh) mine.forEach(function (t) { ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger(FD_.DRAIN_FN).timeBased().after(at - now_()).create();
+  p.setProperty('DRAIN_DUE', String(fresh ? Math.min(due, at) : at));
+  return true;
+}
+
+function clearDrainTriggers_() {
+  var n = deleteTriggersOf_(FD_.DRAIN_FN);
+  props_().deleteProperty('DRAIN_DUE');
+  return n;
+}
+
+function triggersOf_(fn) {
+  return ScriptApp.getProjectTriggers().filter(function (t) { return t.getHandlerFunction() === fn; });
+}
+
+function deleteTriggersOf_(fn) {
+  var list = triggersOf_(fn);
+  list.forEach(function (t) { ScriptApp.deleteTrigger(t); });
+  return list.length;
+}
+
+/** The POST body as an object: {} when it is not a JSON object text (a form body is in e.parameter), null when it
+ *  starts like JSON but does not parse. */
+function postBody_(e) {
+  var text = String((e && e.postData && e.postData.contents) || '');
+  if (!/^\s*\{/.test(text)) return {};
+  try {
+    var o = JSON.parse(text);
+    return o && typeof o === 'object' && !Array.isArray(o) ? o : {};
+  } catch (x) {
+    return null;
+  }
+}
+
+function json_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
 
 // =============================================================================================== the pipeline
 
-function runLocked_(id, manual) {
+/** fn(ctx) under the script lock, with the pause, the configuration check and the error handling of a manual run. */
+function runLocked_(id, fn) {
   var lock = LockService.getScriptLock();
   if (!lock.tryLock(10000)) return res_(false, 'busy: another run holds the lock');
   try {
     if (pausedNow_()) return res_(false, 'paused until ' + pauseIso_());
     var ctx = ctx_();
     requireCfg_(ctx.c);
-    return processCase_(ctx, id, null, manual);
+    return fn(ctx);
   } catch (e) {
     if (isPause_(e)) return res_(false, 'paused until ' + pauseIso_());
-    if (isDeadline_(e)) return res_(false, 'stopped at the time limit; the next run resumes');
+    if (isDeadline_(e)) return res_(false, 'stopped at the time limit; run it again to resume');
     log_('run failed', { caseItemId: id, error: errShort_(e) });
     return res_(false, 'failed: ' + errShort_(e));
   } finally {
@@ -274,18 +500,20 @@ function runLocked_(id, manual) {
   }
 }
 
-/** One case. A failure counts an attempt (after MAX_ATTEMPTS: one ADMIN_EMAIL alert; ticks skip it, runOnce retries).
- *  A stop (a file on the case that is not this document) alerts at once. The time limit is not an attempt. */
-function processCase_(ctx, id, item, manual) {
+/** One case. opts: {manual} (runOnce: also a case past MAX_ATTEMPTS), {since} (the drain: when its event came). A
+ *  failure counts an attempt (after MAX_ATTEMPTS: one ADMIN_EMAIL alert; the queue drops it, runOnce retries it). A stop
+ *  (a check a retry cannot fix) alerts at once. The time limit and a pause are not attempts and are thrown on. */
+function processCase_(ctx, id, item, opts) {
+  opts = opts || {};
   var st = loadState_(id) || { attempts: 0 };
-  if (!manual && st.attempts >= FD_.MAX_ATTEMPTS) return res_(false, 'stuck after ' + st.attempts + ' attempts (runOnce retries it)', true);
+  if (!opts.manual && st.attempts >= FD_.MAX_ATTEMPTS) return res_(false, 'stuck after ' + st.attempts + ' attempts (runOnce retries it)', true, 'drop');
   try {
-    return pipeline_(ctx, id, item, st, manual);
+    return pipeline_(ctx, id, item, st, opts);
   } catch (e) {
     if (isPause_(e)) throw e;
     if (isDeadline_(e)) {
       if (st.code) {
-        st.lastStop = nowIso_(); // kept, so the next tick takes this case first
+        st.lastStop = nowIso_();
         saveState_(id, st);
       }
       log_('case stopped: time is up', { caseItemId: id, caseCode: st.code || '' });
@@ -299,59 +527,52 @@ function processCase_(ctx, id, item, manual) {
     log_(stop ? 'case stopped: needs a person' : 'case failed', { caseItemId: id, caseCode: st.code || '', attempt: st.attempts, error: st.lastError });
     if (st.attempts >= FD_.MAX_ATTEMPTS && !st.alerted) {
       var what = stop ? 'was stopped' : 'failed ' + st.attempts + ' times';
-      if (alertAdmin_(ctx.c, st.code || id, 'The final document of ' + (st.code || id) + ' (case item ' + id + ') ' + what + '. The time trigger skips it now; runOnce retries it.\n\n' + (stop ? 'Reason: ' : 'Last error: ') + st.lastError)) {
+      if (alertAdmin_(ctx.c, st.code || id, 'The final document of ' + (st.code || id) + ' (case item ' + id + ') ' + what + '. New events for it are skipped now; runOnce retries it and resumes where it stopped.\n\n' + (stop ? 'Reason: ' : 'Last error: ') + st.lastError)) {
         st.alerted = true;
         saveState_(id, st);
       }
     }
-    return res_(false, (stop ? 'stopped: ' : 'failed: ') + st.lastError);
+    var r = res_(false, (stop ? 'stopped: ' : 'failed: ') + st.lastError, false, st.attempts >= FD_.MAX_ATTEMPTS ? 'drop' : 'retry');
+    r.attempts = st.attempts;
+    return r;
   }
 }
 
-function pipeline_(ctx, id, item, st, manual) {
+function pipeline_(ctx, id, item, st, opts) {
   var c = ctx.c;
   item = item || getProcess_(FD_.CASE, id);
-  if (!item) return res_(false, 'case item not found', true);
+  if (!item) return res_(false, 'case item not found', true, 'drop');
   var code = String(item.Case_Code || id);
   st.code = code;
   if (filled_(item.Final_Document_Hash)) return filedAlready_(ctx, id, item, st);
-  var el = eligibility_(item, c, now_(), manual);
+  var el = eligibility_(item, now_(), opts.since);
   if (!el.ok) {
-    if (el.ended) markId_('ENDED_IDS', id);
-    if (el.old) markOld_(c, id);
-    log_('case not eligible', { caseItemId: id, caseCode: code, why: el.why });
-    return res_(false, 'not eligible: ' + el.why, true);
+    if (el.stop) throw stopError_('the case cannot be filed: ' + el.why);
+    log_('case not eligible', { caseItemId: id, caseCode: code, why: el.why, status: String(item._status || '') });
+    return res_(false, 'not eligible: ' + el.why, true, el.wait ? 'wait' : 'drop');
   }
   log_('case start', { caseItemId: id, caseCode: code, attempt: (st.attempts || 0) + 1 });
 
-  // 1. the live set
-  var audit = auditRowsFor_(ctx, item);
-  var reviews = caseItems_(ctx, FD_.REVIEW, item, audit);
-  var ops = caseItems_(ctx, FD_.OP, item, audit);
-  var suppliers = supplierRowsFor_(ctx, item);
-  var config = configRows_(ctx);
-  log_('read', { caseCode: code, reviews: reviews.length, openPoints: ops.length, auditRows: audit.length, supplierRows: suppliers.length, configRows: config.length });
-
-  // 2. the document (the app's own mapper and builder) and its seal
-  var built = CIQFinal.finalDocumentFor({ caseItem: item, reviews: reviews, openPoints: ops, auditRows: audit, supplierRows: suppliers, configRows: config, loadedAt: nowIso_() });
-  if (!built.doc) throw new Error(notBuilt_(built));
-  if (!built.ok || !CIQFinal.verifyFinalDocument(built.doc)) throw new Error('the document seal does not verify');
+  // 1.-2. the live set, and the document (the app's own mapper and builder) with its seal
+  var built = buildDoc_(ctx, item);
   var doc = built.doc;
-  log_('built', { caseCode: code, seal: built.seal, sections: doc.sections.length, components: doc.components.length, evidence: doc.evidence.length, openPoints: doc.threads.length, confirmations: doc.confirmations.length, warnings: built.warnings.length, bundle: CIQFinal.BUILD });
 
-  // 3. the PDF
+  // 3. the PDF, and the portal's supplier-safe copy (its own seal, the same writer and file name); both before any write
   var name = CIQFinal.pdfName(code);
   var bytes = CIQFinal.signedBytes(CIQFinal.renderPdf(doc, { formatDateTime: dateFormatter_(c.timeZone) }));
   var sha = sha256Hex_(bytes);
   log_('rendered', { caseCode: code, file: name, bytes: bytes.length, sha256: sha });
+  var supplier = c.portalCopy ? supplierPdf_(ctx, doc, name) : null;
+  if (supplier) log_('supplier copy rendered', { caseCode: code, seal: supplier.seal, bytes: supplier.size, sha256: supplier.sha });
 
   // 4. the writes need time for all of them; read the case again: stop if it was filed meanwhile, reuse our own PDF
   budget_('the writes');
   var fresh = getProcess_(FD_.CASE, id);
   if (!fresh) throw new Error('the case item could not be read again');
   if (filled_(fresh.Final_Document_Hash)) return filedAlready_(ctx, id, fresh, st);
+  var caseT = target_(c, FD_.CASE, id);
   var file = { bytes: bytes, sha: sha, size: bytes.length };
-  var existing = attachedFile_(ctx, id, fresh, name, built.seal, st, sha);
+  var existing = sealedFile_(ctx, caseT, fresh, name, built.seal, st.sha === sha ? st.attId : '');
   if (existing) {
     file.attId = existing.id;
     if (existing.bytes) {
@@ -365,7 +586,7 @@ function pipeline_(ctx, id, item, st, manual) {
     // 5. attach (multipart field "file"; uploads add, never replace). The third failure of any kind counts as a refusal.
     var up;
     try {
-      up = attach_(ctx, id, fresh, name, bytes);
+      up = attach_(ctx, caseT, fresh, name, bytes);
     } catch (e) {
       if (isPause_(e) || isDeadline_(e)) throw e;
       st.attachFails = (st.attachFails || 0) + 1;
@@ -375,14 +596,13 @@ function pipeline_(ctx, id, item, st, manual) {
     if (up.refused) {
       log_('attach refused', { caseCode: code, status: up.status, error: up.error, fails: up.fails || 0 });
       if (!c.driveFolder) throw new Error('Kissflow refused the attachment (HTTP ' + up.status + ') and DRIVE_FOLDER_ID is not set');
-      var d = driveFallback_(ctx, id, item, name, bytes, built.seal, st);
+      var d = driveFallback_(ctx, id, name, bytes, built.seal, st);
       file.driveId = d.id;
       file.driveUrl = d.url;
       file.bytes = d.bytes;
       file.sha = sha256Hex_(d.bytes);
       file.size = d.bytes.length;
-      st.driveShared = d.shared;
-      log_('saved in Drive', { caseCode: code, driveFileId: d.id, shared: d.shared });
+      log_('saved in Drive', { caseCode: code, driveFileId: d.id });
     } else {
       file.attId = up.id;
       log_('attached', { caseCode: code, attachmentId: up.id });
@@ -390,6 +610,7 @@ function pipeline_(ctx, id, item, st, manual) {
   }
   st.name = name;
   st.seal = built.seal;
+  if (supplier) st.sSeal = supplier.seal;
   st.sha = file.sha;
   st.size = file.size;
   if (file.attId) st.attId = file.attId;
@@ -407,12 +628,48 @@ function pipeline_(ctx, id, item, st, manual) {
   saveState_(id, st);
   log_('case fields written', { caseCode: code, hash: hash });
 
-  // 7.–9. mail, audit row, done
-  return finish_(ctx, id, fresh, st, Utilities.newBlob(file.bytes, 'application/pdf', name));
+  // 7.-10. portal copy, audit row, RMM notification, done
+  return finish_(ctx, id, fresh, st, supplier);
 }
 
-/** Final_Document_Hash is set. Our own hash (written, or planned before a PUT whose answer was lost): finish the mail
- *  and the audit row, nothing is rendered or written to the case again. Any other hash: the case is left alone. */
+/** 1.-2. A case's live set (reviews, open points, audit rows, supplier and configuration rows) and its final document
+ *  from the app's own mapper and builder (CIQFinal.finalDocumentFor), its seal checked. */
+function buildDoc_(ctx, item) {
+  var code = String(item.Case_Code || item._id);
+  var audit = auditRowsFor_(ctx, item);
+  var reviews = caseItems_(ctx, FD_.REVIEW, item, audit);
+  var ops = caseItems_(ctx, FD_.OP, item, audit);
+  var suppliers = supplierRowsFor_(ctx, item);
+  var config = configRows_(ctx);
+  log_('read', { caseCode: code, reviews: reviews.length, openPoints: ops.length, auditRows: audit.length, supplierRows: suppliers.length, configRows: config.length });
+  var built = CIQFinal.finalDocumentFor({ caseItem: item, reviews: reviews, openPoints: ops, auditRows: audit, supplierRows: suppliers, configRows: config, loadedAt: nowIso_() });
+  if (!built.doc) throw new Error(notBuilt_(built));
+  if (!built.ok || !CIQFinal.verifyFinalDocument(built.doc)) throw new Error('the document seal does not verify');
+  var doc = built.doc;
+  log_('built', { caseCode: code, seal: built.seal, sections: doc.sections.length, components: doc.components.length, evidence: doc.evidence.length, openPoints: doc.threads.length, confirmations: doc.confirmations.length, warnings: built.warnings.length, bundle: CIQFinal.BUILD });
+  return built;
+}
+
+/** The supplier-safe copy of a document (CIQFinal.supplierCopy: Beiersdorf people as "Beiersdorf" plus their role, no
+ *  names, no e-mail addresses) rendered by the same writer: {seal (its own), sha, size, blob}. Pure, no call. */
+function supplierPdf_(ctx, doc, name) {
+  var copy = CIQFinal.supplierCopy(doc);
+  if (!CIQFinal.verifyFinalDocument(copy)) throw new Error('the supplier copy seal does not verify');
+  var bytes = CIQFinal.signedBytes(CIQFinal.renderPdf(copy, { formatDateTime: dateFormatter_(ctx.c.timeZone) }));
+  return { seal: copy.fingerprint, sha: sha256Hex_(bytes), size: bytes.length, blob: Utilities.newBlob(bytes, 'application/pdf', name) };
+}
+
+/** A resumed or manual portal copy: the document is built again from the live items and its supplier copy rendered,
+ *  only when the rebuilt document has the filed seal (st.seal); otherwise a stop (no copy of another document). */
+function rebuiltSupplier_(ctx, item, st) {
+  var built = buildDoc_(ctx, item);
+  if (built.seal !== st.seal) throw stopError_('the document built again has another seal (' + built.seal + ') than the filed one (' + st.seal + '), so its supplier copy is not made');
+  return supplierPdf_(ctx, built.doc, st.name);
+}
+
+/** Final_Document_Hash is set. Our own hash (written, or planned before a PUT whose answer was lost): finish the portal
+ *  copy, the audit row and the notification; nothing is rendered or written to the case again. Any other hash: the
+ *  case is left alone. */
 function filedAlready_(ctx, id, item, st) {
   var h = String(item.Final_Document_Hash);
   if (ownHash_(st, h)) {
@@ -423,7 +680,6 @@ function filedAlready_(ctx, id, item, st) {
     }
     return finish_(ctx, id, item, st, null);
   }
-  markId_('DONE_IDS', id);
   deleteState_(id);
   return res_(true, 'already filed', true);
 }
@@ -432,93 +688,159 @@ function ownHash_(st, h) {
   return [st.hash, st.pendingHash, st.seal && st.sha ? 'seal:' + st.seal + ' sha256:' + st.sha : ''].some(function (x) { return !!x && x === h; });
 }
 
-/** Mail (once), audit row (once), done. Resumable: each step is recorded in FD_<id> before and after it runs. */
-function finish_(ctx, id, item, st, blob) {
+/** Portal copy (once), audit row (once), RMM notification (once), done. Resumable: each step is recorded in FD_<id>
+ *  before and after it runs. `supplier`: this run's supplier-safe copy (supplierPdf_); null on a resumed run, which
+ *  builds it again (rebuiltSupplier_). */
+function finish_(ctx, id, item, st, supplier) {
   var c = ctx.c;
   var code = st.code;
-  if (!st.mailedAt && !st.mailSkipped) {
-    if (st.mailingAt) {
-      // an earlier run stopped while handing the mail to MailApp: it most likely went out, so it is not sent twice
-      st.mailedAt = st.mailingAt;
-      st.mailUnconfirmed = true;
-      saveState_(id, st);
-      log_('mail not confirmed', { caseCode: code, rule: st.mailRule || '' });
-      alertAdmin_(c, code, 'A run stopped while the final-document mail of ' + code + ' was being handed to Gmail (recipient rule: ' + (st.mailRule || '') + '). It is not sent again. Check with the RMM owner that it arrived; the PDF is on the case (Final PDF).');
-    } else if (!c.mailEnabled) {
-      st.mailSkipped = 'MAIL_ENABLED is off';
-    } else {
-      var to = rmmRecipient_(c, item);
-      if (!to) {
-        st.mailSkipped = 'no RMM address';
-        saveState_(id, st);
-        alertAdmin_(c, code, 'The final document of ' + code + ' is filed, but no RMM e-mail address is known (Owner_RMM carries none, someone else started the case, FALLBACK_RMM_EMAIL is not set). No mail went out.');
-      } else {
-        var pdf = blob || filedBlob_(ctx, id, st);
-        if (timeLeft_() <= 0) throw deadlineError_('the mail');
-        st.mailingAt = nowIso_();
-        st.mailTo = to.to;
-        st.mailRule = to.rule;
-        saveState_(id, st);
-        try {
-          sendRmmMail_(c, item, st, to, pdf);
-        } catch (e) {
-          if (e.mailNotSent) {
-            delete st.mailingAt;
-            saveState_(id, st);
-          }
-          throw e;
-        }
-        st.mailedAt = st.mailingAt;
-      }
-    }
-    saveState_(id, st);
-    log_(st.mailedAt ? 'mail sent' : 'mail not sent', { caseCode: code, rule: st.mailRule || '', reason: st.mailSkipped || '' });
-  }
+  var save = function () { saveState_(id, st); };
+  // 7. the supplier-safe copy on the supplier portal
+  if (!st.portalDone) portalStep_(ctx, id, item, st, supplier, save);
+  // 8. the audit row (its text names the portal copy, so it comes after it)
   if (!st.auditVerified) {
     if (!st.auditId) {
       if (!st.auditData) {
         st.auditData = auditData_(id, item, st); // fixed once: a resumed run writes the same row
-        saveState_(id, st);
+        save();
       }
       var old = auditAll_(ctx).filter(function (r) { return r.Event_Key === st.auditData.Event_Key && r.Case_Item_Id === id; })[0];
       if (old) {
         st.auditId = String(old._id);
         st.auditFound = true;
       } else st.auditId = createAuditRow_(ctx, st.auditData);
-      saveState_(id, st); // the new id is kept before its read-back, so a failed check never writes a second row
+      save(); // the new id is kept before its read-back, so a failed check never writes a second row
     }
     if (!st.auditFound) verifyAuditRow_(ctx, st.auditId, st.auditData);
     st.auditVerified = true;
-    saveState_(id, st);
+    save();
     log_('audit row written', { caseCode: code, auditItemId: st.auditId, found: !!st.auditFound });
   }
+  // 9. the RMM notification, through the Kissflow integration
+  if (!st.notifiedAt && !st.notifySkipped) notifyStep_(ctx, id, st);
   if (st.driveId && !st.driveAlerted) {
-    alertAdmin_(c, code, 'Kissflow refused the final PDF of ' + code + ' on the case, so it was saved in Google Drive (file id ' + st.driveId + ') and the case fields and the audit row name it.' + (st.driveShared ? '' : ' It is not shared with the RMM owner (MAIL_ENABLED is off, and sharing sends Google Drive\'s own mail).') + ' Attach it to the case by hand if Kissflow allows it later.');
+    alertAdmin_(c, code, 'Kissflow refused the final PDF of ' + code + ' on the case, so it was saved in Google Drive (file id ' + st.driveId + ', not shared) and the case fields and the audit row name it. The RMM was not notified: the Kissflow integration mails the case\'s Final PDF, which is empty. Attach the file to the case by hand if Kissflow allows it later, or send it to the RMM.');
     st.driveAlerted = true;
   }
-  markId_('DONE_IDS', id);
   deleteState_(id);
-  log_('case done', { caseItemId: id, caseCode: code, where: st.driveId ? 'Drive' : 'Final_PDF' });
+  log_('case done', { caseItemId: id, caseCode: code, where: st.driveId ? 'Drive' : 'Final_PDF', portal: st.portalAttId ? 'Final_PDF' : 'skipped', rmm: st.notifiedAt ? (st.notifyUnconfirmed ? 'unconfirmed' : 'notified') : 'not notified' });
   return res_(true, st.driveId ? 'filed in Drive (attach refused)' : 'filed');
 }
 
-/** When a case gets its final document (read from the case item). `ended`: never (Rejected or Withdrawn, or a
- *  completed item, which is locked); `old`: a completed case released before RELEASED_AFTER. A cancelled case that is
- *  not completed can still be reactivated, so it is read again. A manual run ignores RELEASED_AFTER. */
-function eligibility_(it, c, nowMs, manual) {
+/** 7. The supplier-safe copy (never the internal PDF) on the supplier portal: CIQP_Request_A00.Final_PDF of the case's
+ *  request (Portal_Request_Item_Id, admin route with KF_PORTAL_APP_ID), only when that request names this case
+ *  (App_Case_Item_Id): never another supplier's request. Same file name as on the case. Once: st.portalAttId
+ *  (attached, or an earlier run's file of that name with the SUPPLIER COPY's seal adopted) or st.portalSkipped
+ *  (PORTAL_COPY_ENABLED off: no call and no alert; no or another case's request, a refusal, a same-named file that is
+ *  not this copy, or the third failure); a skip tells ADMIN_EMAIL and the filing goes on (portalCopy repairs it later).
+ *  Any other failure throws: an attempt, and the next run resumes here. */
+function portalStep_(ctx, id, item, st, supplier, save) {
+  var c = ctx.c;
+  var code = st.code;
+  if (!c.portalCopy) {
+    st.portalSkipped = 'PORTAL_COPY_ENABLED is off';
+    st.portalDone = true;
+    save();
+    return log_('portal copy not made', { caseCode: code, reason: st.portalSkipped });
+  }
+  var skip = function (why) {
+    st.portalSkipped = why;
+    st.portalDone = true;
+    save();
+    log_('portal copy skipped', { caseCode: code, why: why });
+    alertAdmin_(c, code, 'The final PDF of ' + code + ' is filed on the case, but not on the supplier portal: ' + why + '. The audit row and the RMM notification go ahead. To add it later, fix the cause, then run portalCopy with RUN_ONCE_CASE_ID ' + id + '.');
+  };
+  var reqId = String(item.Portal_Request_Item_Id || '').trim();
+  if (!FD_.ID_RE.test(reqId)) return skip('the case names no portal request (Portal_Request_Item_Id)');
+  var t = target_(c, FD_.REQUEST, reqId, c.portalApp);
+  try {
+    var req = getItem_(t);
+    if (!req) return skip('its portal request ' + reqId + ' was not found');
+    if (String(req.App_Case_Item_Id || '') !== id) return skip('the portal request ' + reqId + ' names another case (App_Case_Item_Id)');
+    st.reqId = reqId;
+    var copy = supplier || rebuiltSupplier_(ctx, item, st);
+    st.sSeal = copy.seal;
+    var have = sealedFile_(ctx, t, req, st.name, copy.seal, st.portalAttId);
+    if (!have) {
+      var up = attach_(ctx, t, req, st.name, copy.blob.getBytes());
+      if (up.refused) return skip('Kissflow refused the file (HTTP ' + up.status + (up.error ? ' ' + up.error : '') + ')');
+      have = up;
+    }
+    st.portalAttId = String(have.id);
+  } catch (e) {
+    if (isPause_(e) || isDeadline_(e)) throw e;
+    if (isStop_(e)) return skip(errShort_(e));
+    st.portalFails = (st.portalFails || 0) + 1;
+    if (st.portalFails < FD_.MAX_ATTEMPTS) throw e;
+    return skip('it failed ' + st.portalFails + ' times (last: ' + errShort_(e) + ')');
+  }
+  st.portalDone = true;
+  save();
+  log_('portal copy attached', { caseCode: code, requestItemId: reqId, attachmentId: st.portalAttId, supplierSeal: st.sSeal });
+}
+
+/** 9. One POST to RMM_WEBHOOK_URL, {caseItemId, caseCode, seal, idempotencyKey}: the app integration "CIQ Case - Send
+ *  Final Release to RMM" finds the case and mails its Final PDF to the RMM role. Recorded before (notifyingAt) and after
+ *  (notifiedAt): a run that ended in between never posts again (ADMIN_EMAIL is asked to check the integration's run
+ *  history). A non-2xx answer or a fetch error is not a send: the mark is removed and the attempt counts. Skipped while
+ *  MAIL_ENABLED is off, and when the PDF is in Drive (the case's Final_PDF, which the integration mails, is empty). */
+function notifyStep_(ctx, id, st) {
+  var c = ctx.c;
+  var code = st.code;
+  if (st.notifyingAt) {
+    st.notifiedAt = st.notifyingAt;
+    st.notifyUnconfirmed = true;
+    saveState_(id, st);
+    log_('rmm notification not confirmed', { caseCode: code });
+    alertAdmin_(c, code, 'A run ended while the final document of ' + code + ' was being handed to the Kissflow integration "CIQ Case - Send Final Release to RMM". It is not sent again. Check that integration\'s Run history (Manage, Integrations); the PDF is on the case (Final PDF).');
+    return;
+  }
+  if (!c.mailEnabled) st.notifySkipped = 'MAIL_ENABLED is off';
+  else if (!st.attId) st.notifySkipped = 'the PDF is in Google Drive, not on the case';
+  if (st.notifySkipped) {
+    saveState_(id, st);
+    return log_('rmm notification not sent', { caseCode: code, reason: st.notifySkipped });
+  }
+  if (timeLeft_() <= 0) throw deadlineError_('the RMM notification');
+  st.notifyingAt = nowIso_();
+  saveState_(id, st);
+  var r;
+  try {
+    r = hookPost_(c.rmmHook, { caseItemId: id, caseCode: code, seal: st.seal, idempotencyKey: code + '-FD-RMM' });
+    if (r.status < 200 || r.status >= 300 || r.html) throw kfError_('RMM webhook', r);
+  } catch (e) {
+    delete st.notifyingAt; // not sent: a pause, the time limit, a fetch error or a refusal
+    saveState_(id, st);
+    throw e;
+  }
+  st.notifiedAt = st.notifyingAt;
+  delete st.notifyingAt;
+  st.notifyStatus = r.status;
+  saveState_(id, st);
+  log_('rmm notified', { caseCode: code, status: r.status });
+}
+
+/** Whether a case gets its final document now (read from the case item; the event only says which case to read).
+ *  Only a case that completes its workflow sends an event (integration 1's trigger). A completed case with the final release
+ *  qualifies at once (the drain already waited SETTLE_MINUTES after the event). Released but not completed: `wait`
+ *  (Skip and complete may not have landed yet), until it was released, or queued (`since`), 15 min ago: then it
+ *  qualifies as before (the app's mapper sees a released case as completed). No release: `wait` while not completed
+ *  (e.g. a reopened release; the queue gives up after EVENT_WAIT_MIN), nothing to do when completed. Rejected,
+ *  withdrawn and cancelled cases: nothing to do (a reactivated and released case sends a new event). */
+function eligibility_(it, nowMs, since) {
   if (!it) return { ok: false, why: 'not found' };
-  if (filled_(it.Final_Document_Hash)) return { ok: false, why: 'already filed', done: true };
+  if (filled_(it.Final_Document_Hash)) return { ok: false, why: 'already filed' };
   var status = String(it._status || '');
   var completed = status === 'Completed';
-  if (status === 'Rejected' || status === 'Withdrawn') return { ok: false, why: 'status ' + status, ended: true };
-  if (cancelled_(it)) return { ok: false, why: 'cancelled', ended: completed };
-  if (it.Final_Release_Confirm !== 'Confirmed' || !filled_(it.Final_Release_At)) return { ok: false, why: 'no final release', ended: completed };
+  if (status === 'Rejected' || status === 'Withdrawn') return { ok: false, why: 'status ' + status };
+  if (cancelled_(it)) return { ok: false, why: 'cancelled' };
+  if (it.Final_Release_Confirm !== 'Confirmed' || !filled_(it.Final_Release_At)) return { ok: false, why: 'no final release', wait: !completed };
   var rel = Date.parse(it.Final_Release_At);
-  if (!isFinite(rel)) return { ok: false, why: 'Final_Release_At unreadable' };
-  if (!manual && c.releasedAfter && isFinite(Date.parse(c.releasedAfter)) && rel < Date.parse(c.releasedAfter)) return { ok: false, why: 'released before RELEASED_AFTER', old: completed };
-  var minutes = (nowMs - rel) / 60000;
-  if (!((completed && minutes >= c.settleMin) || minutes >= FD_.SETTLE_FALLBACK_MIN)) return { ok: false, why: 'settling' };
-  return { ok: true };
+  if (!isFinite(rel)) return { ok: false, why: 'Final_Release_At unreadable', stop: true };
+  if (completed) return { ok: true };
+  var waited = Math.max((nowMs - rel) / 60000, since ? (nowMs - since) / 60000 : 0);
+  if (waited >= FD_.SETTLE_FALLBACK_MIN) return { ok: true };
+  return { ok: false, why: 'not completed yet', wait: true };
 }
 
 function cancelled_(it) {
@@ -526,33 +848,6 @@ function cancelled_(it) {
   if (!filled_(it.Cancelled_At)) return false;
   var reactivated = Date.parse(it.Reactivated_At || '');
   return !(isFinite(reactivated) && reactivated > Date.parse(it.Cancelled_At));
-}
-
-/** Case item ids worth an admin GET, from the list rows (sparse: a column the list never carries is not used). */
-function candidates_(ctx, rows, readOnly) {
-  var has = function (k) { return rows.some(function (r) { return k in r; }); };
-  if (has('Final_Document_Hash')) {
-    rows = rows.filter(function (r) {
-      if (!filled_(r.Final_Document_Hash)) return true;
-      if (!readOnly) markId_('DONE_IDS', r._id);
-      return false;
-    });
-  }
-  rows = rows.filter(function (r) { return r.Case_Phase !== 'Cancelled' && ['Rejected', 'Withdrawn', 'Draft'].indexOf(String(r._status || '')) < 0; });
-  if (has('Final_Release_At')) {
-    var after = Date.parse(ctx.c.releasedAfter || '');
-    return rows.filter(function (r) { return filled_(r.Final_Release_At) && !(isFinite(after) && Date.parse(r.Final_Release_At) < after); }).map(function (r) { return r._id; });
-  }
-  // no release column: completed cases first, then round-robin over the rest (RR_CURSOR)
-  var completed = rows.filter(function (r) { return r._status === 'Completed'; }).map(function (r) { return r._id; });
-  var rest = rows.filter(function (r) { return r._status !== 'Completed'; }).map(function (r) { return r._id; }).sort();
-  var cursor = props_().getProperty('RR_CURSOR') || '';
-  var at = 0;
-  while (at < rest.length && rest[at] <= cursor) at++;
-  rest = rest.slice(at).concat(rest.slice(0, at));
-  var take = Math.max(0, ctx.c.maxGets - completed.length);
-  if (!readOnly && rest.length && take > 0) props_().setProperty('RR_CURSOR', rest[Math.min(take, rest.length) - 1]);
-  return completed.concat(rest);
 }
 
 // =============================================================================================== reads
@@ -647,8 +942,8 @@ function configRows_(ctx) {
   return ctx.config;
 }
 
-function attachments_(it) {
-  var v = it && it[FD_.PDF_FIELD];
+function attachments_(it, field) {
+  var v = it && it[field || FD_.PDF_FIELD];
   return Array.isArray(v) ? v : [];
 }
 
@@ -661,56 +956,59 @@ function notBuilt_(built) {
 
 // =============================================================================================== writes
 
-/** POST the PDF to Final_PDF and read it back. 408/409/423 are tried again (after a read: the file may have landed).
- *  Any other 4xx (not 429) is a refusal: { refused, status, error }. */
-function attach_(ctx, id, before, name, bytes) {
+/** An attachment field of one process item, on the admin routes: {flow, app, id, field}. */
+function target_(c, flow, id, app) { return { flow: flow, app: app || c.app, id: id, field: FD_.PDF_FIELD }; }
+function getItem_(t) { return getProcess_(t.flow, t.id, t.app); }
+
+/** POST the PDF to the target's field and read it back. 408/409/423 are tried again (after a read: the file may have
+ *  landed). Any other 4xx (not 429) is a refusal: { refused, status, error }. */
+function attach_(ctx, t, before, name, bytes) {
   var had = {};
-  attachments_(before).forEach(function (a) { if (a) had[a.id] = true; });
+  attachments_(before, t.field).forEach(function (a) { if (a) had[a.id] = true; });
   var added = function (list) { return list.filter(function (a) { return a && !had[a.id] && a.name === name; })[0] || null; };
   var r;
   for (var i = 0; ; i++) {
-    r = kfUpload_(attachPath_(ctx.c, id), bytes, name, 'application/pdf');
+    r = kfUpload_(attachPath_(ctx.c, t), bytes, name, 'application/pdf');
     if (FD_.RETRY_STATUSES.indexOf(r.status) < 0 || i >= FD_.ATTACH_RETRIES) break;
-    log_('attach busy, tried again', { status: r.status, attempt: i + 2 });
+    log_('attach busy, tried again', { flow: t.flow, status: r.status, attempt: i + 2 });
     Utilities.sleep(FD_.RETRY_WAIT_MS);
-    var landed = added(attachments_(getProcess_(FD_.CASE, id)));
+    var landed = added(attachments_(getItem_(t), t.field));
     if (landed) return { id: String(landed.id) };
   }
   if (r.status >= 400 && r.status < 500 && FD_.RETRY_STATUSES.indexOf(r.status) < 0) return { refused: true, status: r.status, error: errBody_(r.body) };
-  if (r.status < 200 || r.status >= 300) throw kfError_('attach', r);
-  var list = (r.body && Array.isArray(r.body[FD_.PDF_FIELD])) ? r.body[FD_.PDF_FIELD] : [];
+  if (r.status < 200 || r.status >= 300) throw kfError_('attach to ' + t.flow, r);
+  var list = (r.body && Array.isArray(r.body[t.field])) ? r.body[t.field] : [];
   var a = added(list) || list.filter(function (x) { return x && !had[x.id]; })[0];
-  if (!a || !a.id) throw new Error('attach: the answer lists no new file');
-  var back = getProcess_(FD_.CASE, id);
-  if (!attachments_(back).some(function (x) { return x && x.id === a.id; })) throw new Error('attach not verified: ' + a.id + ' is not on Final_PDF');
+  if (!a || !a.id) throw new Error('attach to ' + t.flow + ': the answer lists no new file');
+  var back = getItem_(t);
+  if (!attachments_(back, t.field).some(function (x) { return x && x.id === a.id; })) throw new Error('attach not verified: ' + a.id + ' is not on ' + t.flow + '.' + t.field);
   return { id: String(a.id) };
 }
 
-/** A file named `name` already on Final_PDF: ours when this state recorded it and the render is unchanged; else it is
- *  downloaded and adopted only when its PDF names this document's seal. A file without it (a probe upload, an older
- *  render) stops the case for a person: it is never filed, hashed or mailed. Returns {id, bytes} (bytes null: this
- *  render) or null when there is no such file. */
-function attachedFile_(ctx, id, fresh, name, seal, st, sha) {
-  var same = attachments_(fresh).filter(function (a) { return a && a.name === name; });
+/** A file named `name` already on the target's field: `knownId` (this state's own upload, same render) is taken as it
+ *  is; else up to 3 are downloaded and one is adopted only when its PDF names this document's seal. A file of that name
+ *  without it (a probe upload, an older render) is a stop: it is never filed, hashed or copied over. Returns {id, bytes}
+ *  (bytes null: knownId, this render) or null when there is no such file. */
+function sealedFile_(ctx, t, item, name, seal, knownId) {
+  var same = attachments_(item, t.field).filter(function (a) { return a && a.name === name; });
   if (!same.length) return null;
-  var mine = same.filter(function (a) { return a.id === st.attId; })[0];
-  if (mine && st.sha === sha) return { id: String(mine.id), bytes: null };
-  var order = mine ? [mine].concat(same.filter(function (a) { return a !== mine; })) : same;
+  var mine = knownId ? same.filter(function (a) { return a.id === knownId; })[0] : null;
+  if (mine) return { id: String(mine.id), bytes: null };
   var seen = [];
-  for (var i = 0; i < order.length && i < 3; i++) {
-    var b = downloadAttachment_(ctx, id, order[i].id);
+  for (var i = 0; i < same.length && i < 3; i++) {
+    var b = downloadAttachment_(ctx, t, same[i].id);
     var s = pdfSeal_(b);
-    if (s === seal) return { id: String(order[i].id), bytes: b };
-    seen.push(order[i].id + ' (seal ' + (s || 'none') + ')');
+    if (s === seal) return { id: String(same[i].id), bytes: b };
+    seen.push(same[i].id + ' (seal ' + (s || 'none') + ')');
   }
-  throw stopError_('Final_PDF already holds ' + same.length + ' file(s) named ' + name + ' that are not this document (seal ' + seal + '): ' + seen.join(', ') + '. Remove them from the case, then run runOnce.');
+  throw stopError_(t.flow + '.' + t.field + ' already holds ' + same.length + ' file(s) named ' + name + ' that are not this document (seal ' + seal + '): ' + seen.join(', ') + '. Remove them in Kissflow, then run runOnce.');
 }
 
 /** Download an attached file: admin GET → 302 → the signed URL, fetched with the key only on KF_DOMAIN and never
  *  through a further redirect (S-2: redirect "manual" on both hops). */
-function downloadAttachment_(ctx, id, attId) {
+function downloadAttachment_(ctx, t, attId) {
   var c = ctx.c;
-  var r = kfFetch_('GET', '/process/2/' + c.acc + '/admin/' + FD_.CASE + '/' + id + '/' + FD_.PDF_FIELD + '/attachment/' + attId + '?' + appQ_(c), { followRedirects: false });
+  var r = kfFetch_('GET', '/process/2/' + c.acc + '/admin/' + t.flow + '/' + t.id + '/' + t.field + '/attachment/' + attId + '?' + appQ_(c, t.app), { followRedirects: false });
   if (r.status < 300 || r.status >= 400 || !r.location) throw kfError_('download', r);
   var path;
   if (/^\//.test(r.location)) path = r.location;
@@ -739,12 +1037,14 @@ function writeCaseFields_(ctx, id, fresh, hash, trigger) {
   if (bad.length) throw new Error('case fields not verified: ' + bad.join(', '));
 }
 
-/** The 'Final PDF' CIQ Audit Event row's fields. Event_Key '<Case_Code>-FD-PDF' makes it findable again. */
+/** The 'Final PDF' CIQ Audit Event row's fields. Event_Key '<Case_Code>-FD-PDF' makes it findable again;
+ *  New_Value_Text names the supplier copy's seal. Written after the portal copy and before the RMM notification, so Notify_Recipient and Notify_Channel stay empty: the
+ *  integration resolves the RMM role's members, and its Run history is the mail's record. */
 function auditData_(id, item, st) {
   var at = nowIso_();
-  var mailed = !!st.mailedAt;
   var where = st.attId ? 'filed on the case' : 'saved in Google Drive (Kissflow refused the file on the case)';
-  var data = {
+  var portal = st.portalAttId ? ' The supplier portal holds its supplier-safe copy (document seal ' + st.sSeal + ').' : '';
+  return {
     Event_Key: st.code + '-FD-PDF',
     Case_Code: st.code,
     Cycle_No: Number(item.Cycle_No) || 1,
@@ -758,16 +1058,11 @@ function auditData_(id, item, st) {
     Object_Key: st.code + '-FD',
     Object_Item_Id: id,
     Object_State: 'Filed',
-    New_Value_Text: st.name + ' · ' + st.size + ' bytes · SHA-256 ' + st.sha + ' · document seal ' + st.seal + (st.attId ? ' · Final_PDF ' + st.attId : ' · Drive ' + st.driveUrl),
+    New_Value_Text: st.name + ' · ' + st.size + ' bytes · SHA-256 ' + st.sha + ' · document seal ' + st.seal + (st.attId ? ' · Final_PDF ' + st.attId : ' · Drive ' + st.driveUrl) + (st.portalAttId ? ' · portal request ' + st.reqId + ' Final_PDF ' + st.portalAttId + ' · supplier copy seal ' + st.sSeal : ''),
     Ref_Flow_Id: FD_.CASE,
     Ref_Item_Id: id,
-    Snapshot_JSON: JSON.stringify({ audit: [{ at: at, by: 'system', action: 'Generated final document', detail: 'Final document generated automatically, sealed and ' + where + ' (document seal ' + st.seal + ').' + (mailed ? ' Sent to the RMM owner.' : '') + ' It cannot be changed.' }] })
+    Snapshot_JSON: JSON.stringify({ audit: [{ at: at, by: 'system', action: 'Generated final document', detail: 'Final document generated automatically, sealed and ' + where + ' (document seal ' + st.seal + ').' + portal + ' It cannot be changed.' }] })
   };
-  if (mailed) {
-    data.Notify_Recipient = st.mailTo;
-    data.Notify_Channel = 'E-mail';
-  }
-  return data;
 }
 
 /** Create + submit the row; returns its new id. */
@@ -814,8 +1109,9 @@ function differs_(want, got) {
 
 /** Attach refused and DRIVE_FOLDER_ID set: the PDF goes to that folder. A file there is reused only when its
  *  description names this case item and its PDF this document's seal (never another case's or cycle's file of the
- *  same name). Shared view-only with the RMM only while MAIL_ENABLED is on: sharing sends Google Drive's own mail. */
-function driveFallback_(ctx, id, item, name, bytes, seal, st) {
+ *  same name). Never shared: the RMM recipients are a Kissflow role now, which the script does not know (ADMIN_EMAIL
+ *  is told to pass it on). */
+function driveFallback_(ctx, id, name, bytes, seal, st) {
   var c = ctx.c;
   var tag = 'CIQ final document of case item ' + id;
   var folder = DriveApp.getFolderById(c.driveFolder);
@@ -830,17 +1126,7 @@ function driveFallback_(ctx, id, item, name, bytes, seal, st) {
     f = folder.createFile(Utilities.newBlob(bytes, 'application/pdf', name));
     f.setDescription(tag + ' · document seal ' + seal);
   }
-  var shared = false;
-  var to = c.mailEnabled ? rmmRecipient_(c, item) : null;
-  if (to) {
-    try {
-      f.addViewer(to.to);
-      shared = true;
-    } catch (e) {
-      log_('drive share failed', { error: errShort_(e) });
-    }
-  }
-  return { id: f.getId(), url: f.getUrl(), bytes: f.getBlob().getBytes(), shared: shared };
+  return { id: f.getId(), url: f.getUrl(), bytes: f.getBlob().getBytes() };
 }
 
 /** The document seal a PDF of this service names in its Subject ('document seal <16 hex>'), or ''. */
@@ -851,46 +1137,7 @@ function pdfSeal_(bytes) {
   return m ? m[1] : '';
 }
 
-// =============================================================================================== mail
-
-/** The RMM owner's address, first match wins: Owner_RMM.Email; BDF_Contact_Email when the owner started the case
- *  (app-live/map/people.ts); FALLBACK_RMM_EMAIL. */
-function rmmRecipient_(c, item) {
-  var owner = Array.isArray(item.Owner_RMM) ? item.Owner_RMM[0] : item.Owner_RMM;
-  owner = owner || {};
-  var creator = Array.isArray(item._created_by) ? item._created_by[0] : item._created_by;
-  creator = creator || {};
-  if (isEmail_(owner.Email)) return { to: String(owner.Email).trim(), rule: 'owner' };
-  if (owner._id && creator._id && owner._id === creator._id && isEmail_(item.BDF_Contact_Email)) return { to: String(item.BDF_Contact_Email).trim(), rule: 'starter' };
-  if (isEmail_(c.fallbackRmm)) return { to: c.fallbackRmm, rule: 'fallback', ownerName: String(owner.Name || '') };
-  return null;
-}
-
-/** C-14 'Final document ready' (mailTemplateData.ts; domain/actions.ts complete()), with the PDF attached. An error
- *  of MailApp itself is marked mailNotSent (the caller may send again); anything after it is not. */
-function sendRmmMail_(c, item, st, to, blob) {
-  var code = st.code;
-  var trade = String(item.Trade_Name || '').trim() || code;
-  var lines = [
-    'The supplier gave the final release of ' + trade + ' (' + code + ') and the case is completed. The final document was generated automatically and sealed (document seal ' + st.seal + '). It holds the released answers, the evidence list, every open-point thread and all confirmations.',
-    '',
-    st.attId ? 'The PDF is attached and filed on the case in Kissflow (Final PDF).' : 'The PDF is attached. Kissflow did not accept it on the case, so it is saved in Google Drive: ' + st.driveUrl
-  ];
-  if (to.rule === 'fallback') lines.push('', 'You get this mail as the fallback address for the case owner (RMM)' + (to.ownerName ? ', ' + to.ownerName : '') + '.');
-  try {
-    MailApp.sendEmail({ to: to.to, subject: code + ': final document ready', body: lines.join('\n'), name: c.mailFromName, attachments: [blob] });
-  } catch (e) {
-    e.mailNotSent = true;
-    throw e;
-  }
-}
-
-/** The filed PDF again (a resumed mail): from Final_PDF, else from Drive. */
-function filedBlob_(ctx, id, st) {
-  if (st.attId) return Utilities.newBlob(downloadAttachment_(ctx, id, st.attId), 'application/pdf', st.name);
-  if (st.driveId) return DriveApp.getFileById(st.driveId).getBlob().setName(st.name);
-  throw new Error('no filed PDF to mail');
-}
+// =============================================================================================== files and alerts
 
 /** One operational mail to ADMIN_EMAIL (case code and error text; never keys or URLs). */
 function alertAdmin_(c, code, text) {
@@ -905,10 +1152,11 @@ function alertAdmin_(c, code, text) {
 
 // =============================================================================================== HTTP
 
-/** The one HTTP function. opts: body (JSON), payload (multipart object), followRedirects, binary. Paces the calls,
- *  pauses the script on a 429 or an HTML answer (Cloudflare challenge), refuses a call past the run's time limit, and
- *  never logs headers, bodies or URLs. */
-function kfFetch_(method, path, opts) {
+/** The one HTTP function under kfFetch_ and hookPost_. opts: body (JSON), payload (multipart object), headers,
+ *  followRedirects, binary. Paces the calls (one clock for both: same host), pauses the script on a 429 or an HTML
+ *  answer (Cloudflare challenge), refuses a call past the run's time limit, and never logs headers, bodies or URLs
+ *  (`route` is what a log line may name). */
+function fetch_(method, url, route, opts) {
   opts = opts || {};
   var c = cfg_();
   if (pauseUntil_() > now_()) throw pauseError_();
@@ -917,7 +1165,7 @@ function kfFetch_(method, path, opts) {
   if (LAST_CALL_AT_ && wait > 0) Utilities.sleep(wait);
   LAST_CALL_AT_ = now_();
   CALLS_++;
-  var params = { method: String(method).toLowerCase(), muteHttpExceptions: true, followRedirects: opts.followRedirects !== false, headers: { 'X-Access-Key-Id': c.keyId, 'X-Access-Key-Secret': c.keySecret } };
+  var params = { method: String(method).toLowerCase(), muteHttpExceptions: true, followRedirects: opts.followRedirects !== false, headers: opts.headers || {} };
   if (opts.payload !== undefined) params.payload = opts.payload;
   else if (opts.body !== undefined) {
     params.contentType = 'application/json';
@@ -925,18 +1173,20 @@ function kfFetch_(method, path, opts) {
   }
   var res;
   try {
-    res = UrlFetchApp.fetch('https://' + c.domain + path, params);
+    res = UrlFetchApp.fetch(url, params);
   } catch (e) {
-    throw new Error('network error on ' + method + ' ' + route_(path) + ': ' + errShort_(e));
+    throw new Error('network error on ' + method + ' ' + route + ': ' + errShort_(e));
   }
   var status = res.getResponseCode();
   var headers = res.getHeaders() || {};
   var type = String(header_(headers, 'Content-Type') || '');
-  if (status === 429) pauseNow_('429', method, path);
+  if (status === 429) pauseNow_('429', method, route);
   if (status >= 300 && status < 400) return { status: status, location: String(header_(headers, 'Location') || '') };
   if (opts.binary && status === 200 && !/text\/html/i.test(type)) return { status: status, bytes: res.getBlob().getBytes() };
   var text = res.getContentText();
-  if (/text\/html/i.test(type) || /^\s*</.test(text)) pauseNow_('html', method, path);
+  var html = /text\/html/i.test(type) || /^\s*</.test(text);
+  if (html && !opts.hook) pauseNow_('html', method, route);
+  if (html) return { status: status, body: '(an HTML page)', html: true };
   var body = null;
   if (text !== '') {
     try {
@@ -946,6 +1196,26 @@ function kfFetch_(method, path, opts) {
     }
   }
   return { status: status, body: body };
+}
+
+/** A Kissflow REST call on KF_DOMAIN with the access key. */
+function kfFetch_(method, path, opts) {
+  var c = cfg_();
+  opts = opts || {};
+  opts.headers = { 'X-Access-Key-Id': c.keyId, 'X-Access-Key-Secret': c.keySecret };
+  return fetch_(method, 'https://' + c.domain + path, route_(path), opts);
+}
+
+/** The RMM webhook POST: JSON, no access key (a webhook needs none), no redirect followed. requireCfg_ has checked that
+ *  the URL is a webhook of KF_DOMAIN and KF_ACCOUNT_ID. */
+function hookPost_(url, body) {
+  return fetch_('POST', url, 'webhook RMM_WEBHOOK_URL', { body: body, followRedirects: false, hook: true });
+}
+
+/** RMM_WEBHOOK_URL's parts {host, acc, token}, or null when it is not exactly https://<host>/integration/2/<acc>/webhook/<token>. */
+function hookParts_(c) {
+  var m = FD_.HOOK_RE.exec(String(c.rmmHook || ''));
+  return m ? { host: m[1].toLowerCase(), acc: m[2], token: m[3] } : null;
 }
 
 /** Multipart upload: the file as part "file" (UrlFetchApp builds multipart/form-data from a payload object). */
@@ -960,8 +1230,9 @@ function kfJson_(method, path, body, what) {
   return r.body;
 }
 
-function getProcess_(flow, id) {
-  var r = kfFetch_('GET', procItemPath_(cfg_(), flow, id));
+/** An admin process item; `app`: the container (default KF_APP_ID; the portal request: KF_PORTAL_APP_ID). */
+function getProcess_(flow, id, app) {
+  var r = kfFetch_('GET', procItemPath_(cfg_(), flow, id, app));
   if (r.status === 404) return null;
   if (r.status < 200 || r.status >= 300 || !r.body || typeof r.body !== 'object') throw kfError_('read ' + flow, r);
   return r.body;
@@ -1000,10 +1271,10 @@ function listForm_(form, size) {
   return out;
 }
 
-function appQ_(c) { return '_application_id=' + encodeURIComponent(c.app); }
-function procItemPath_(c, flow, id) { return '/process/2/' + c.acc + '/admin/' + flow + '/' + id + '?' + appQ_(c); }
+function appQ_(c, app) { return '_application_id=' + encodeURIComponent(app || c.app); }
+function procItemPath_(c, flow, id, app) { return '/process/2/' + c.acc + '/admin/' + flow + '/' + id + '?' + appQ_(c, app); }
 function formItemPath_(c, form, id) { return '/form/2/' + c.acc + '/' + form + '/' + id + '?' + appQ_(c); }
-function attachPath_(c, id) { return '/process/2/' + c.acc + '/admin/' + FD_.CASE + '/' + id + '/' + FD_.PDF_FIELD + '/attachment?' + appQ_(c); }
+function attachPath_(c, t) { return '/process/2/' + c.acc + '/admin/' + t.flow + '/' + t.id + '/' + t.field + '/attachment?' + appQ_(c, t.app); }
 function route_(path) {
   var acc = cfg_().acc;
   var r = String(path).replace(/\?.*$/, '');
@@ -1044,10 +1315,12 @@ function pausedNow_() {
   return false;
 }
 
-function pauseNow_(why, method, path) {
+function pauseNow_(why, method, route) {
+  var prev = pauseUntil_();
   var until = now_() + FD_.PAUSE_MS;
+  if (prev && now_() - prev < 30 * 60000) alertOnce_('PAUSE', cfg_(), 'the pause', 'The final-document service was paused again (' + why + ' on ' + method + ' ' + route + ') less than 30 min after its last pause. Queued cases wait; check Kissflow and the Executions log.');
   props_().setProperty('PAUSE_UNTIL', String(until));
-  log_('pause 20 min', { why: why, call: method + ' ' + route_(path), until: new Date(until).toISOString() });
+  log_('pause 20 min', { why: why, call: method + ' ' + route, until: new Date(until).toISOString() });
   throw pauseError_();
 }
 
@@ -1059,7 +1332,7 @@ function pauseError_() {
 
 function isPause_(e) { return !!e && e.name === 'CiqPause'; }
 
-/** Milliseconds this execution may still call Kissflow or send mail (RUN_LIMIT_S after begin_). */
+/** Milliseconds this execution may still call Kissflow (RUN_LIMIT_S after begin_). */
 function timeLeft_() { return cfg_().runLimitMs - (now_() - RUN_STARTED_); }
 
 /** Stops before `what` when less than WRITE_BUDGET_MS is left (the next run resumes; not an attempt). */
@@ -1075,7 +1348,7 @@ function deadlineError_(what) {
 
 function isDeadline_(e) { return !!e && e.name === 'CiqDeadline'; }
 
-/** A condition a retry cannot fix (a person has to look): alerts at once, the trigger skips the case. */
+/** A condition a retry cannot fix (a person has to look): alerts at once, new events skip the case. */
 function stopError_(text) {
   var e = new Error(text);
   e.name = 'CiqStop';
@@ -1095,66 +1368,6 @@ function loadState_(id) {
 }
 function saveState_(id, st) { props_().setProperty('FD_' + id, JSON.stringify(st)); }
 function deleteState_(id) { props_().deleteProperty('FD_' + id); }
-
-/** Every FD_<caseItemId> state. */
-function states_() {
-  var out = {};
-  var all = props_().getProperties();
-  Object.keys(all).forEach(function (k) {
-    var m = /^FD_([A-Za-z0-9_-]{6,40})$/.exec(k);
-    if (!m) return;
-    try {
-      out[m[1]] = JSON.parse(all[k]);
-    } catch (e) {
-      // an unreadable state is ignored
-    }
-  });
-  return out;
-}
-
-function idSet_(key) {
-  var out = {};
-  String(props_().getProperty(key) || '').split(',').forEach(function (x) { if (x) out[x] = true; });
-  return out;
-}
-
-function markId_(key, id) {
-  var list = String(props_().getProperty(key) || '').split(',').filter(function (x) { return !!x; });
-  if (list.indexOf(id) >= 0) return;
-  list.push(id);
-  props_().setProperty(key, list.slice(-FD_.MAX_IDS).join(','));
-}
-
-/** OLD_IDS (completed cases released before RELEASED_AFTER) hold for the RELEASED_AFTER they were found with
- *  (OLD_IDS_FOR); a changed RELEASED_AFTER empties them. readOnly: nothing is written (probe). */
-function oldSet_(c, readOnly) {
-  var p = props_();
-  if ((p.getProperty('OLD_IDS_FOR') || '') !== c.releasedAfter) {
-    if (!readOnly) {
-      p.deleteProperty('OLD_IDS');
-      if (c.releasedAfter) p.setProperty('OLD_IDS_FOR', c.releasedAfter);
-      else p.deleteProperty('OLD_IDS_FOR');
-    }
-    return {};
-  }
-  return idSet_('OLD_IDS');
-}
-
-function markOld_(c, id) {
-  oldSet_(c, false);
-  markId_('OLD_IDS', id);
-}
-
-function deleteTickTriggers_() {
-  var n = 0;
-  ScriptApp.getProjectTriggers().forEach(function (t) {
-    if (t.getHandlerFunction() === 'tick') {
-      ScriptApp.deleteTrigger(t);
-      n++;
-    }
-  });
-  return n;
-}
 
 function cacheGet_(key) {
   try {
@@ -1215,37 +1428,46 @@ function cfg_() {
     domain: g('KF_DOMAIN', ''),
     acc: g('KF_ACCOUNT_ID', ''),
     app: g('KF_APP_ID', 'CIQ_Digital_A00'),
+    portalApp: g('KF_PORTAL_APP_ID', 'CIQ_Supplier_Portal_A00'),
     keyId: g('KF_ACCESS_KEY_ID', ''),
     keySecret: g('KF_ACCESS_KEY_SECRET', ''),
     timeZone: g('TIME_ZONE', Session.getScriptTimeZone() || 'Europe/Berlin'),
+    // the RMM mail: sent by the Kissflow integration behind RMM_WEBHOOK_URL; off: no POST
     mailEnabled: !/^(false|no|off|0)$/i.test(g('MAIL_ENABLED', 'true')),
+    rmmHook: g('RMM_WEBHOOK_URL', ''),
     mailFromName: g('MAIL_FROM_NAME', FD_.SERVICE),
-    fallbackRmm: g('FALLBACK_RMM_EMAIL', ''),
     admin: g('ADMIN_EMAIL', ''),
     driveFolder: g('DRIVE_FOLDER_ID', ''),
+    // the supplier-safe copy on the portal request (Thomas, 29 Oct); off: no portal call at all
+    portalCopy: !/^(false|no|off|0)$/i.test(g('PORTAL_COPY_ENABLED', 'true')),
     token: g('DOPOST_TOKEN', ''),
-    maxCases: int('MAX_CASES_PER_TICK', 3, 1, 20),
-    maxGets: int('MAX_GETS_PER_TICK', 25, 1, 200),
-    settleMin: int('SETTLE_MINUTES', 2, 0, 1440),
-    releasedAfter: g('RELEASED_AFTER', ''),
+    maxCases: int('MAX_CASES_PER_RUN', 3, 1, 10),
+    settleMin: int('SETTLE_MINUTES', 2, 1, 30), // the first drain after an event
     paceMs: int('PACE_MS', FD_.PACE_MS, FD_.PACE_MS, 60000),
-    tickMinutes: int('TICK_MINUTES', 5, 1, 30),
     // node harness only (test/live.mjs, 8 s pacing): Apps Script keeps the default
     runLimitMs: int('RUN_LIMIT_S', FD_.RUN_LIMIT_S, 60, 3600) * 1000
   };
-  SECRETS_ = [CFG_.keyId, CFG_.keySecret, CFG_.token].filter(function (s) { return s && s.length >= 4; });
+  var hook = hookParts_(CFG_);
+  SECRETS_ = [CFG_.keyId, CFG_.keySecret, CFG_.token, CFG_.rmmHook, hook ? hook.token : ''].filter(function (s) { return s && s.length >= 4; });
   return CFG_;
 }
 
-function requireCfg_(c) {
+function requireCfg_(c, forProbe) {
   var missing = [];
   if (!c.domain) missing.push('KF_DOMAIN');
   if (!c.acc) missing.push('KF_ACCOUNT_ID');
   if (!c.keyId) missing.push('KF_ACCESS_KEY_ID');
   if (!c.keySecret) missing.push('KF_ACCESS_KEY_SECRET');
+  if (!forProbe && c.mailEnabled && !c.rmmHook) missing.push('RMM_WEBHOOK_URL (or MAIL_ENABLED false)');
   if (missing.length) throw new Error('Script Properties missing: ' + missing.join(', '));
   if (!/^[a-z0-9.-]+$/i.test(c.domain)) throw new Error('KF_DOMAIN must be a bare host name (no https://, no slash)');
   if (!/^[A-Za-z0-9_-]+$/.test(c.acc)) throw new Error('KF_ACCOUNT_ID looks wrong');
+  if (!/^[A-Za-z0-9_]+$/.test(c.app) || !/^[A-Za-z0-9_]+$/.test(c.portalApp)) throw new Error('KF_APP_ID or KF_PORTAL_APP_ID looks wrong');
+  if (c.mailEnabled && !forProbe) {
+    var h = hookParts_(c);
+    // never the URL in the message
+    if (!h || h.host !== c.domain.toLowerCase() || h.acc !== c.acc) throw new Error('RMM_WEBHOOK_URL must be the webhook URL of the integration "CIQ Case - Send Final Release to RMM": the host KF_DOMAIN, the path /integration/2/<KF_ACCOUNT_ID>/webhook/<token>, nothing else (or set MAIL_ENABLED to false).');
+  }
 }
 
 // =============================================================================================== small helpers
@@ -1254,7 +1476,8 @@ function now_() { return Date.now(); }
 function nowIso_() { return new Date(now_()).toISOString().replace(/\.\d{3}Z$/, 'Z'); }
 function filled_(v) { return v !== undefined && v !== null && String(v).trim() !== ''; }
 function isEmail_(v) { return typeof v === 'string' && /^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/.test(v.trim()); }
-function res_(ok, status, skipped) { return { ok: ok, status: status, skipped: !!skipped }; }
+/** next: what the queue does with the case ('done', 'drop', 'wait', 'retry'); default done when ok, else drop. */
+function res_(ok, status, skipped, next) { return { ok: ok, status: status, skipped: !!skipped, next: next || (ok ? 'done' : 'drop') }; }
 
 function keysOf_(rows) {
   var seen = {};

@@ -68,6 +68,10 @@ const STEP_NAME = { [STEP.fill]: "Supplier: fill in the CIQ", [STEP.keep]: "Supp
 //    written there; the screen never submits it, so a submit there is refused (it would show as a refused command)
 //  - UPDATE_FORM on a child-table row (the SDK's TableForm.updateField) changes that row of the item
 //  - FILEPREVIEW_OPEN (Kissflow's file preview) is recorded in window.__kfPreviews
+//  - Final_PDF on CIQP Request (29 Oct) is written by Beiersdorf's final-PDF service (admin attach route), so a scenario
+//    plays it with __kfSet. The fake's field guard at "view the released CIQ" is stricter than Kissflow: live, a
+//    user-route write follows the SECTION permission (21 Oct) and Details is Editable there, so this harness cannot
+//    prove that Final_PDF is protected from the supplier
 //  - the account is production's (no top bar) unless ?env=dev, which plays the Development sandbox (src/shell/env.ts
 //    DEV_ACCOUNT): only there GET_ROLES answers and SWITCH_ROLE moves the user into another role for real (they leave
 //    every current role; recorded in window.__kfSwitches), as scripts/harness-applive.mjs; ?also=supplier adds a
@@ -493,6 +497,8 @@ async function answerText(t, fieldId, value) {
   await input.blur();
 }
 const pdf = (name) => ({ name, mimeType: "application/pdf", buffer: Buffer.from("%PDF-1.4 harness") });
+/** The supplier's copy of the final document on PkReq5, as the fixtures store it (src/portal/data/fixtures.ts). */
+const FINAL_PDF_FILE = (FX.byFlow.CIQP_Request_A00.find((x) => x._id === "PkReq5")?.Final_PDF ?? [])[0] ?? {};
 /** Thomas, 15 Oct (permissions.ts RELEASE_LOCKED_TEXT): the questionnaire is locked while the final release is requested. */
 const RELEASE_LOCKED = "Your questionnaire is locked because Beiersdorf has requested your final release. If something must change, contact Beiersdorf; they can reopen the review.";
 /** Editable data controls in the questionnaire (text inputs and enabled uploads); a locked questionnaire has none. */
@@ -902,7 +908,63 @@ const SCENARIOS = {
       await t.settle();
       await t.see("Your released questionnaire", "after a reload the released request is still listed (held step, plan v6 D-11)");
       await t.see("Your released questionnaire", "the request reads as released while Beiersdorf files it");
+      // 29 Oct: the supplier's copy of the final PDF comes a minute or two after the release (Final_PDF)
+      t.check("no final PDF yet right after the release", (await t.tid("final-pdf").count()) === 0);
+      await t.seeTid("final-pdf-pending", "a muted line says the copy appears once Beiersdorf has filed it");
       await t.shot("released");
+      await t.set("PkReq4", { Final_PDF: [{ ...FINAL_PDF_FILE, id: "Attach-FD-ZZT-0004", key: "CIQP_Request_A00/PkReq4/Attach-FD-ZZT-0004/ZZT-0004-final-document.pdf", name: "ZZT-0004-final-document.pdf" }] });
+      await t.ui.getByRole("button", { name: "Reload" }).click();
+      await t.settle();
+      await t.seeTid("final-pdf", "after Beiersdorf filed it and a reload, the card is there");
+      t.check("… and the 'on its way' line is gone", (await t.tid("final-pdf-pending").count()) === 0);
+      t.check("… naming the request's own file", (await t.tid("final-pdf").first().innerText()).includes("ZZT-0004-final-document.pdf"));
+    }),
+  "final-pdf": () =>
+    scenario("final-pdf", async (t) => {
+      // 29 Oct: Beiersdorf's final-PDF service has attached the supplier's copy to the released request (fixture PkReq5).
+      // Thin list rows (?rows=sparse): the card must come from the full item read (PROCESS_GET_ITEM), not the list.
+      await t.host({ role: "supplier", rows: "sparse" }, "/portal/case/ZZT-0005");
+      await t.seeTid("final-pdf", "the released request offers its final PDF");
+      const card = await t.tid("final-pdf").first().innerText();
+      t.check("the card names the file and its size", card.includes("ZZT-0005-final-document.pdf") && card.includes("47 KB"), card);
+      t.check("no 'on its way' line next to the file", (await t.tid("final-pdf-pending").count()) === 0);
+      const order = await t.frame().evaluate(() => [...document.querySelectorAll('[data-testid="final-pdf"], [data-testid="release-record"]')].map((e) => e.dataset.testid));
+      t.check("it sits above the supplier's confirmations", order.join() === "final-pdf,release-record", order);
+      t.check("the request was read in full through its task", (await t.calls((c) => c.command === "PROCESS_GET_ITEM" && c.instanceId === "PkReq5")).length > 0);
+      await t.tid("final-pdf-download").first().click();
+      await t.page.waitForTimeout(800);
+      const shown = await t.previews();
+      t.check("'Download final PDF' opens Kissflow's file viewer (FILEPREVIEW_OPEN) on the stored file", shown.length === 1 && shown[0].files?.length === 1 && shown[0].files[0].id === FINAL_PDF_FILE.id && shown[0].files[0].key === FINAL_PDF_FILE.key, shown);
+      t.check("opening it writes nothing", (await writes(t)).length === 0, summary(await writes(t)));
+      t.check("Kissflow refused no command", (await t.calls((c) => c.refused)).length === 0, (await t.calls((c) => c.refused)).map((c) => c.command));
+      await t.shot("final-pdf");
+      await t.ui.getByRole("button", { name: "Dark theme" }).click();
+      await t.page.waitForTimeout(300);
+      t.check("dark theme", (await htmlTheme(t)) === "dark");
+      await t.shot("final-pdf-dark");
+      await t.ui.getByRole("button", { name: "Light theme" }).click();
+      // the field emptied: no card
+      await t.set("PkReq5", { Final_PDF: [] });
+      await t.ui.getByRole("button", { name: "Reload" }).click();
+      await t.settle();
+      await t.seeTid("release-record");
+      t.check("a released request without the file shows no card", (await t.tid("final-pdf").count()) === 0);
+      // only the released view offers it
+      await t.host({ role: "supplier" }, "/portal/case/ZZT-0003");
+      await t.seeTid("supplier-request");
+      await t.set("PkReq3", { Final_PDF: [FINAL_PDF_FILE] });
+      await t.ui.getByRole("button", { name: "Reload" }).click();
+      await t.settle();
+      t.check("a request before its release shows no final PDF, even with a file in the field", (await t.tid("supplier-request").first().getAttribute("data-phase")) === "review" && (await t.tid("final-pdf").count()) === 0 && (await t.tid("final-pdf-pending").count()) === 0);
+      // on a phone
+      await t.page.setViewportSize({ width: 375, height: 800 });
+      await t.host({ role: "supplier" }, "/portal/case/ZZT-0005");
+      await t.seeTid("final-pdf", "on a phone too");
+      t.check("no page scrolls sideways at 375 px", await t.frame().evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), await t.frame().evaluate(() => [document.documentElement.scrollWidth, window.innerWidth]));
+      const btn = await t.tid("final-pdf-download").first().boundingBox();
+      t.check("the button is fully in view", !!btn && btn.x >= 0 && btn.x + btn.width <= 375, btn);
+      await t.tid("final-pdf").first().scrollIntoViewIfNeeded();
+      await t.shot("final-pdf-375");
     }),
   "completed-report": () =>
     scenario("completed-report", async (t) => {

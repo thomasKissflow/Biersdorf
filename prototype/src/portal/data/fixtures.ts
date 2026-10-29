@@ -245,6 +245,9 @@ export interface FixtureSet {
   tasks: [string, string, string][];
 }
 
+/** The supplier's copy of the final document on PkReq5 (29 Oct), as Kissflow stores an attached file. */
+export const FINAL_PDF_ZZT_0005 = { id: "Attach-FD-ZZT-0005", key: "CIQP_Request_A00/PkReq5/Attach-FD-ZZT-0005/ZZT-0005-final-document.pdf", name: "ZZT-0005-final-document.pdf", size: 48213, fileExtension: "pdf" };
+
 function build(): FixtureSet {
   const { s, ids } = scenarios();
   const kase = (code: (typeof CODES)[number]) => s.cases.find((c) => c.id === ids[code])!;
@@ -265,7 +268,9 @@ function build(): FixtureSet {
   // Release_Flag "Requested" stays on while it waits there (I-5 writes it): the screen must not move it (21 Oct).
   add("request", { ...requestItem(c4, s, "ZZT-0004", { id: "PkReq4", step: "release", label: "Awaiting your final release", locked: true }), Release_Flag: "Requested", Release_Contacts: assigned([PORTAL_USERS.elena, PORTAL_USERS.ravi]) }, "release");
   // 20 Oct: a released request is held at "view the released CIQ" (plan v6 D-11)
-  add("request", requestItem(kase("ZZT-0005"), s, "ZZT-0005", { id: "PkReq5", step: "released", label: "Completed", locked: true }), "released");
+  // 29 Oct: Beiersdorf's final-PDF service has attached the supplier's copy of the final document (Final_PDF, the
+  // shape of Kissflow's attach answer). requestItem() stays as it is: the other requests have none
+  add("request", { ...requestItem(kase("ZZT-0005"), s, "ZZT-0005", { id: "PkReq5", step: "released", label: "Completed", locked: true }), Final_PDF: [FINAL_PDF_ZZT_0005] }, "released");
   add("request", requestItem(kase("ZZT-0006"), s, "ZZT-0006", { id: "PkReq6", step: "keep", label: "Cancelled", locked: true }), "keep");
   // the builder's own test items for the Diagnostics S-1 tests (assigned to the Portal Admin), and one that is NOT a
   // test item (its case code doesn't start with ZZT-): the tests must never touch it

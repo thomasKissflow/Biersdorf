@@ -1,0 +1,55 @@
+--- /Users/thomas/Documents/Kissflow Projects/POC/Beiersdorf/kissflow-build/final-pdf/test/fake-kissflow.mjs	2026-10-22 01:41:38
++++ /private/tmp/claude-502/-Users-thomas-Documents-Kissflow-Projects-POC-Beiersdorf/9266c591-0569-4b0c-8f6b-ff391fa10dff/scratchpad/evdesign/script/fp/test/fake-kissflow.mjs	2026-10-29 11:09:29
+@@ -22,7 +22,7 @@
+   bare: ["_id", "Name"],
+ };
+ 
+-export function fakeKissflow({ domain, acc, app, keyId, keySecret, db, clock, listMode = "status", user = "UsZZTService" }) {
++export function fakeKissflow({ domain, acc, app, portalApp = "CIQ_Supplier_Portal_A00", hookToken = "", keyId, keySecret, db, clock, listMode = "status", user = "UsZZTService" }) {
+   const calls = [];
+   const signed = new Map();
+   let seq = 0;
+@@ -41,6 +41,8 @@
+     lost: [],
+     /** The signed URL answers 302 to a storage host instead of the file. */
+     signedRedirect: false,
++    /** The webhook's answer (default 200 {status: "Success"}). */
++    hookRespond: null,
+     /** Review and open-point list rows without Case_Item_Id. */
+     listWithoutCaseRef: false,
+     /** Called with each call as it arrives (e.g. to move a fake clock: a slow answer). */
+@@ -99,6 +101,14 @@
+         return f.respond;
+       }
+     }
++    // the integration webhook: no key needed (and none must be sent)
++    let h = new RegExp(`^/integration/2/${acc}/webhook/([A-Za-z0-9_-]+)$`).exec(path);
++    if (h && method === "POST") {
++      call.keyHeaders = !!(headers["X-Access-Key-Id"] || headers["X-Access-Key-Secret"]);
++      if (!hookToken || h[1] !== hookToken) return err(404, "WebhookNotFound", "no such webhook");
++      call.write = "webhook";
++      return kf.hookRespond ?? ok({ status: "Success" });
++    }
+     if (!call.auth) return err(401, "Unauthorized", "invalid access key");
+ 
+     // signed download (same host, S-2)
+@@ -108,7 +118,9 @@
+       if (file && kf.signedRedirect) return { status: 302, headers: { Location: `https://storage.zzt.example/blob/${r[1]}` }, body: "" };
+       return file ? { status: 200, headers: { "Content-Type": "application/pdf" }, body: file } : err(404, "NotFound", "no such file");
+     }
+-    if (q.get("_application_id") !== app) return err(400, "AppId", "_application_id missing or wrong");
++    const appOf = (flow) => (/^CIQP_/.test(flow) ? portalApp : app);
++    const flowInPath = /^\/(?:process|form)\/2\/[^/]+\/(?:admin\/)?([A-Za-z0-9_]+)/.exec(path)?.[1] ?? "";
++    if (q.get("_application_id") !== appOf(flowInPath)) return err(400, "AppId", "_application_id missing or wrong");
+ 
+     // process routes
+     r = new RegExp(`^/process/2/${acc}/admin/([A-Za-z0-9_]+)(?:/([A-Za-z0-9_-]+))?(?:/([A-Za-z0-9_]+)/attachment(?:/([A-Za-z0-9_-]+))?)?$`).exec(path);
+@@ -126,7 +138,7 @@
+       const it = items.find((x) => x._id === id);
+       if (!it) return err(404, "ItemNotFound", "item not found");
+       if (field && !attId && method === "POST") {
+-        call.write = "attach";
++        call.write = flow === "CIQ_Case_A00" ? "attach" : "portal-attach";
+         const file = call.multipart?.file;
+         if (!file || !file.name) return err(400, "NoFile", "multipart part 'file' missing");
+         if (kf.refuseAttach) return err(400, "ItemCompleted", "This item is completed and cannot be changed");

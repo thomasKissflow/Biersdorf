@@ -1,0 +1,3111 @@
+{
+ "Root": "CIQ_Case_Send_Final_Release_to_RMM_A00",
+ "CIQ_Case_Send_Final_Release_to_RMM_A00": {
+  "Id": "CIQ_Case_Send_Final_Release_to_RMM_A00",
+  "Description": "",
+  "Name": "CIQ Case - Send Final Release to RMM",
+  "Kind": "Integration",
+  "FlowType": "Integration",
+  "Integration::Trigger": [
+   "Trigger_CDWGsX1igS"
+  ],
+  "_application_id": "CIQ_Digital_A00",
+  "Integration::Action": [
+   "Action_sJ0xxVDOj4",
+   "Action_t1WholtrmH",
+   "Action_E_z4YCW-sG"
+  ]
+ },
+ "PublishedAt": "2026-10-29T05:05:47Z",
+ "PublishedBy": {
+  "_id": "UsEJUfjYLM8Y",
+  "Name": "Thomas",
+  "Kind": "User"
+ },
+ "_meta_version": "1793250348262495",
+ "Trigger_CDWGsX1igS": {
+  "Id": "Trigger_CDWGsX1igS",
+  "Kind": "Trigger",
+  "Integration": "CIQ_Case_Send_Final_Release_to_RMM_A00",
+  "Type": "Create",
+  "Name": "Catch a webhook (POST)",
+  "IsInternalAuth": true,
+  "Connector": {
+   "_id": "Coowt2xE4WH9S",
+   "Name": "Webhooks by Kissflow",
+   "TriggerId": "WebhookTrigger",
+   "TriggerName": "Catch a webhook (POST)",
+   "Version": "1.0.0",
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com"
+  },
+  "Connection": {}
+ },
+ "Reference_lnGGyuN_Ez": {
+  "Id": "Reference_lnGGyuN_Ez",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Request_Key",
+  "FieldMapping": "FieldMapping_dDQAK9W0Lm"
+ },
+ "Reference_3dSMZBJkmp": {
+  "Id": "Reference_3dSMZBJkmp",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Case_Code",
+  "FieldMapping": "FieldMapping_hZBpRC8NlZ"
+ },
+ "Reference_zIWJqUyMbZ": {
+  "Id": "Reference_zIWJqUyMbZ",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Cycle_No",
+  "FieldMapping": "FieldMapping_9APcXHvgWD"
+ },
+ "Reference_tUF8aH87Uu": {
+  "Id": "Reference_tUF8aH87Uu",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Supplier_Code",
+  "FieldMapping": "FieldMapping_ZhveBA3p2Y"
+ },
+ "Reference_9gN4C-Vr7F": {
+  "Id": "Reference_9gN4C-Vr7F",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "App_Case_Item_Id",
+  "FieldMapping": "FieldMapping_uBvwDXnBFw"
+ },
+ "Reference_UdVKSCl8tb": {
+  "Id": "Reference_UdVKSCl8tb",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Trade_Name",
+  "FieldMapping": "FieldMapping_OJ_W8Pc6ff"
+ },
+ "Reference_JJBkstZAa4": {
+  "Id": "Reference_JJBkstZAa4",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Main_INCI",
+  "FieldMapping": "FieldMapping_mtEqGgyaJR"
+ },
+ "Reference_JeXWAW69vD": {
+  "Id": "Reference_JeXWAW69vD",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "BDF_Material_No",
+  "FieldMapping": "FieldMapping_HVaZqnlgOT"
+ },
+ "Reference_3a2x3_JYOp": {
+  "Id": "Reference_3a2x3_JYOp",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Supplier_Display_Name",
+  "FieldMapping": "FieldMapping_hemwSu69FM"
+ },
+ "Reference_XAqeE7zW0g": {
+  "Id": "Reference_XAqeE7zW0g",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "BDF_Contact_Name",
+  "FieldMapping": "FieldMapping_xYC0CnZVOB"
+ },
+ "Reference_NokowUBU25": {
+  "Id": "Reference_NokowUBU25",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "BDF_Contact_Email",
+  "FieldMapping": "FieldMapping_iMdeIw0EpX"
+ },
+ "Reference_tTJ4WLFmIn": {
+  "Id": "Reference_tTJ4WLFmIn",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Markets_Label",
+  "FieldMapping": "FieldMapping_9KguprGA-l"
+ },
+ "Reference_cILJ_J3hTz": {
+  "Id": "Reference_cILJ_J3hTz",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Template_Label",
+  "FieldMapping": "FieldMapping_c31K661d92"
+ },
+ "Reference_F3_cbpz0AG": {
+  "Id": "Reference_F3_cbpz0AG",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Supplier_Due_Date",
+  "FieldMapping": "FieldMapping_j3OqUUeMYk"
+ },
+ "Reference_CjWZ5un4aR": {
+  "Id": "Reference_CjWZ5un4aR",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Case_Contacts_JSON",
+  "FieldMapping": "FieldMapping_dl9as7q5Yh"
+ },
+ "Reference_TjvdtUqtkw": {
+  "Id": "Reference_TjvdtUqtkw",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "_id",
+  "FieldMapping": "FieldMapping_jjbmP1BJyR"
+ },
+ "Reference_oMF7gTiD2Y": {
+  "Id": "Reference_oMF7gTiD2Y",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Assigned_Contacts",
+  "FieldMapping": "FieldMapping_vPdKo2t3cF"
+ },
+ "Reference_kOUBi0LSfl": {
+  "Id": "Reference_kOUBi0LSfl",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Rule_Set_Version",
+  "FieldMapping": "FieldMapping_98zUdgjNHe"
+ },
+ "Reference_cR-PIB6hNI": {
+  "Id": "Reference_cR-PIB6hNI",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Template_Version",
+  "FieldMapping": "FieldMapping_90_elcvjpA"
+ },
+ "Reference_rPl1tEatBk": {
+  "Id": "Reference_rPl1tEatBk",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Config_Bundle_JSON",
+  "FieldMapping": "FieldMapping_xHJ3Mvkz_j"
+ },
+ "Reference_cXuaxZqGL1": {
+  "Id": "Reference_cXuaxZqGL1",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Config_Bundle_Hash",
+  "FieldMapping": "FieldMapping__tyCC0EPEc"
+ },
+ "Reference_ecrryNo7mJ": {
+  "Id": "Reference_ecrryNo7mJ",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "BDF_Set_JSON",
+  "FieldMapping": "FieldMapping_fx5eZlWVo6"
+ },
+ "Reference_SUER5DAv5w": {
+  "Id": "Reference_SUER5DAv5w",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Config_Answers_JSON",
+  "FieldMapping": "FieldMapping_Sk18PRaYh_"
+ },
+ "Reference_X2PqYMQ50A": {
+  "Id": "Reference_X2PqYMQ50A",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Answers_JSON",
+  "FieldMapping": "FieldMapping_pBid02DIW2"
+ },
+ "Reference_LQz0ObX794": {
+  "Id": "Reference_LQz0ObX794",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Answered_By_JSON",
+  "FieldMapping": "FieldMapping_hsw6dyjkBc"
+ },
+ "Reference_EJZSdt7jdy": {
+  "Id": "Reference_EJZSdt7jdy",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Justifications_JSON",
+  "FieldMapping": "FieldMapping_glM9dVpawY"
+ },
+ "Reference_ZUMGe1D1Gt": {
+  "Id": "Reference_ZUMGe1D1Gt",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Components_JSON",
+  "FieldMapping": "FieldMapping_bpwQPRKXSg"
+ },
+ "Reference_Ez6M4RIIj9": {
+  "Id": "Reference_Ez6M4RIIj9",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Scope_JSON",
+  "FieldMapping": "FieldMapping_YmR7H4BXni"
+ },
+ "Reference_9xBVLb1VzO": {
+  "Id": "Reference_9xBVLb1VzO",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Manual_Scope_JSON",
+  "FieldMapping": "FieldMapping_a6hytO_XSJ"
+ },
+ "Reference_C36r6fAjYA": {
+  "Id": "Reference_C36r6fAjYA",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Requested_Docs_JSON",
+  "FieldMapping": "FieldMapping_5X-ZFoG8an"
+ },
+ "Reference_LU0mUx-jZp": {
+  "Id": "Reference_LU0mUx-jZp",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Answers_Rev",
+  "FieldMapping": "FieldMapping_4XM3CmcDD6"
+ },
+ "Reference_dRKualPL2B": {
+  "Id": "Reference_dRKualPL2B",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Answers_Changed_At",
+  "FieldMapping": "FieldMapping_jSkGT7Uylo"
+ },
+ "Reference_DoxttyXaIB": {
+  "Id": "Reference_DoxttyXaIB",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Answers_Changed_By_Email",
+  "FieldMapping": "FieldMapping_-tNE_rF0MC"
+ },
+ "Reference_BWngtTR06Z": {
+  "Id": "Reference_BWngtTR06Z",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Editing_By",
+  "FieldMapping": "FieldMapping_MyRFTp4QPm"
+ },
+ "Reference_KA4ArK_kNI": {
+  "Id": "Reference_KA4ArK_kNI",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Editing_Since",
+  "FieldMapping": "FieldMapping_EE033e5SaI"
+ },
+ "Reference_aBWARRHJly": {
+  "Id": "Reference_aBWARRHJly",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Completeness_Confirm",
+  "FieldMapping": "FieldMapping_Dt9eJNFwGK"
+ },
+ "Reference__3Lcgk-SL9": {
+  "Id": "Reference__3Lcgk-SL9",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Completeness_By_Name",
+  "FieldMapping": "FieldMapping_peh0Sf7r3x"
+ },
+ "Reference_lcRE1ldlHd": {
+  "Id": "Reference_lcRE1ldlHd",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Completeness_By_Email",
+  "FieldMapping": "FieldMapping_8MGEGShkap"
+ },
+ "Reference_UGBRYFz-_c": {
+  "Id": "Reference_UGBRYFz-_c",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Completeness_By_Role",
+  "FieldMapping": "FieldMapping_KBac_BfLm3"
+ },
+ "Reference_j23yuT9OJL": {
+  "Id": "Reference_j23yuT9OJL",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Completeness_At",
+  "FieldMapping": "FieldMapping_KVQ91bVrDw"
+ },
+ "Reference_6v1-KoMBIy": {
+  "Id": "Reference_6v1-KoMBIy",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Case_Phase_Label",
+  "FieldMapping": "FieldMapping_SbsoJ95Evd"
+ },
+ "Reference_vVB4-XIkhB": {
+  "Id": "Reference_vVB4-XIkhB",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Request_Locked",
+  "FieldMapping": "FieldMapping_iMrMD1ZaY_"
+ },
+ "Reference_4ZBb7cQglu": {
+  "Id": "Reference_4ZBb7cQglu",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Questions_History_JSON",
+  "FieldMapping": "FieldMapping_jyM4H6am3O"
+ },
+ "Reference_Two0NxWGju": {
+  "Id": "Reference_Two0NxWGju",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Release_By_Name",
+  "FieldMapping": "FieldMapping_OqszHOy13p"
+ },
+ "Reference_QuO1oU7cHE": {
+  "Id": "Reference_QuO1oU7cHE",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Release_At",
+  "FieldMapping": "FieldMapping_aPOAIgwDH9"
+ },
+ "Reference_qxdLPUrPTu": {
+  "Id": "Reference_qxdLPUrPTu",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Change_Report_Text",
+  "FieldMapping": "FieldMapping_5XUXHFixU8"
+ },
+ "Reference_69I8LFBLuF": {
+  "Id": "Reference_69I8LFBLuF",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Change_Report_Rev",
+  "FieldMapping": "FieldMapping_S7LCeUQWe8"
+ },
+ "Reference_5BnbkxIeyo": {
+  "Id": "Reference_5BnbkxIeyo",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Change_Report_By_Email",
+  "FieldMapping": "FieldMapping_f5Q-h9mPM1"
+ },
+ "Reference_ZQOf7YXdmE": {
+  "Id": "Reference_ZQOf7YXdmE",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Change_Report_At",
+  "FieldMapping": "FieldMapping_Y0wdEh7jLd"
+ },
+ "Reference_XOza3RQxM3": {
+  "Id": "Reference_XOza3RQxM3",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Change_Reports_JSON",
+  "FieldMapping": "FieldMapping_4EyBOCwIgM"
+ },
+ "Reference_4dyZylBFBx": {
+  "Id": "Reference_4dyZylBFBx",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Keep_Open_Gate",
+  "FieldMapping": "FieldMapping_yWY2Hle96o"
+ },
+ "Reference_u61DH0h7QJ": {
+  "Id": "Reference_u61DH0h7QJ",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Supplier_Files",
+  "FieldMapping": "FieldMapping_Z504J_ErJg"
+ },
+ "Reference_te1r7yDH4e": {
+  "Id": "Reference_te1r7yDH4e",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "_id",
+  "FieldMapping": "FieldMapping_YaWK6KMKZw"
+ },
+ "Reference_T5oOWEblQT": {
+  "Id": "Reference_T5oOWEblQT",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Release_Contacts",
+  "FieldMapping": "FieldMapping_SBReGesoIt"
+ },
+ "Reference_jbQ5b9HE1g": {
+  "Id": "Reference_jbQ5b9HE1g",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Release_Flag",
+  "FieldMapping": "FieldMapping_T5g1BHE-5P"
+ },
+ "Reference_WoJwZgniqJ": {
+  "Id": "Reference_WoJwZgniqJ",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Documents_JSON",
+  "FieldMapping": "FieldMapping_YhAAxsYS8H"
+ },
+ "Reference_ZoZ3GhNVBH": {
+  "Id": "Reference_ZoZ3GhNVBH",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Release_By_Email",
+  "FieldMapping": "FieldMapping_tZd2qV4U6B"
+ },
+ "Reference_tIsIUktv1T": {
+  "Id": "Reference_tIsIUktv1T",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Release_By_Role",
+  "FieldMapping": "FieldMapping_WqCPt7hk1S"
+ },
+ "Reference_QkLRChKKlE": {
+  "Id": "Reference_QkLRChKKlE",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Review_Depts",
+  "FieldMapping": "FieldMapping_xJnjlDa9lF"
+ },
+ "Reference_MUX2yvbFI0": {
+  "Id": "Reference_MUX2yvbFI0",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "TableId": "CIQP_Request_A00_Uploads",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "_id",
+  "FieldMapping": "FieldMapping_IJyHOHbhOL"
+ },
+ "Reference_5u3vD4v1cg": {
+  "Id": "Reference_5u3vD4v1cg",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "TableId": "CIQP_Request_A00_Uploads",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Upload_Id",
+  "FieldMapping": "FieldMapping_xhigGK81M8"
+ },
+ "Reference_RqZc83Y_m0": {
+  "Id": "Reference_RqZc83Y_m0",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "TableId": "CIQP_Request_A00_Uploads",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Upload_Section_Key",
+  "FieldMapping": "FieldMapping_dsxPVegmOE"
+ },
+ "Reference_d2gZzJhJ38": {
+  "Id": "Reference_d2gZzJhJ38",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "TableId": "CIQP_Request_A00_Uploads",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Upload_Field_Key",
+  "FieldMapping": "FieldMapping_-r14v-kVDd"
+ },
+ "Reference_LxA5_2a5Jo": {
+  "Id": "Reference_LxA5_2a5Jo",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "TableId": "CIQP_Request_A00_Uploads",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Upload_Row_Id",
+  "FieldMapping": "FieldMapping_TIhubC_qvW"
+ },
+ "Reference_W0KfpBaM5c": {
+  "Id": "Reference_W0KfpBaM5c",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "TableId": "CIQP_Request_A00_Uploads",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Upload_Doc_Kind",
+  "FieldMapping": "FieldMapping_u05htYUEe8"
+ },
+ "Reference_1xrGeiIYpd": {
+  "Id": "Reference_1xrGeiIYpd",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "TableId": "CIQP_Request_A00_Uploads",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Upload_File",
+  "FieldMapping": "FieldMapping_igxx3DAP-h"
+ },
+ "Reference_8kcc1JyOcp": {
+  "Id": "Reference_8kcc1JyOcp",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "TableId": "CIQP_Request_A00_Uploads",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Upload_File_Name",
+  "FieldMapping": "FieldMapping_K5BWOLxkcp"
+ },
+ "Reference_TE0BFRVnzt": {
+  "Id": "Reference_TE0BFRVnzt",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "TableId": "CIQP_Request_A00_Uploads",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Uploaded_By_Email",
+  "FieldMapping": "FieldMapping_KrGLqR03n0"
+ },
+ "Reference_XhFi4dBZbO": {
+  "Id": "Reference_XhFi4dBZbO",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "TableId": "CIQP_Request_A00_Uploads",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Uploaded_At",
+  "FieldMapping": "FieldMapping_SrJULp0OxE"
+ },
+ "Reference_bGmbPz5t6A": {
+  "Id": "Reference_bGmbPz5t6A",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "TableId": "CIQP_Request_A00_Uploads",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Upload_Attachment_Id",
+  "FieldMapping": "FieldMapping_yqN7h-EVEQ"
+ },
+ "Reference_S8dUvI-Tmo": {
+  "Id": "Reference_S8dUvI-Tmo",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "TableId": "CIQP_Request_A00_Uploads",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Upload_Removed_At",
+  "FieldMapping": "FieldMapping_Cu3tAExMRi"
+ },
+ "Reference_470Yf_FZmd": {
+  "Id": "Reference_470Yf_FZmd",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_MibUuivkDQ",
+  "TableId": "CIQP_Request_A00_Uploads",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_aWKE61WYxC",
+  "FieldId": "Upload_Removed_By_Email",
+  "FieldMapping": "FieldMapping_kd7_14YU4Q"
+ },
+ "Reference_uO2IWdS7eX": {
+  "Id": "Reference_uO2IWdS7eX",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Case_Code",
+  "FieldMapping": "FieldMapping_FuUaso3LyF"
+ },
+ "Reference_HLm7EzpbHd": {
+  "Id": "Reference_HLm7EzpbHd",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Cycle_No",
+  "FieldMapping": "FieldMapping_yVFzsTk9-n"
+ },
+ "Reference_mHCgExK-hu": {
+  "Id": "Reference_mHCgExK-hu",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Case_Title",
+  "FieldMapping": "FieldMapping_n-5dAablrO"
+ },
+ "Reference_nwkvnIytoG": {
+  "Id": "Reference_nwkvnIytoG",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Reactivates_Case_Item",
+  "FieldMapping": "FieldMapping_S-uvnPB77C"
+ },
+ "Reference_tlbGwFsVMi": {
+  "Id": "Reference_tlbGwFsVMi",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Trade_Name",
+  "FieldMapping": "FieldMapping_7hcv2eCd6o"
+ },
+ "Reference_pAUpoSKgZB": {
+  "Id": "Reference_pAUpoSKgZB",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Main_INCI",
+  "FieldMapping": "FieldMapping_smo9-eJo3p"
+ },
+ "Reference_jj-pib1zcj": {
+  "Id": "Reference_jj-pib1zcj",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "BDF_Material_No",
+  "FieldMapping": "FieldMapping_N2u1qMBWJN"
+ },
+ "Reference_TbXHCUI5dw": {
+  "Id": "Reference_TbXHCUI5dw",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "SAP_Material_No",
+  "FieldMapping": "FieldMapping_5Hj014TPWj"
+ },
+ "Reference_CYfRdQLIBi": {
+  "Id": "Reference_CYfRdQLIBi",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "IRMA_Ref",
+  "FieldMapping": "FieldMapping_TpdZfiLK9v"
+ },
+ "Reference_uRiq4AIFiB": {
+  "Id": "Reference_uRiq4AIFiB",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Supplier_Code",
+  "FieldMapping": "FieldMapping_AvZfB3wKKs"
+ },
+ "Reference_vEMII1PY8p": {
+  "Id": "Reference_vEMII1PY8p",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Supplier_Legal_Name",
+  "FieldMapping": "FieldMapping_8cIraPl8dz"
+ },
+ "Reference_yMCuf4jvv9": {
+  "Id": "Reference_yMCuf4jvv9",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "_id",
+  "FieldMapping": "FieldMapping_H63xLbY_3_"
+ },
+ "Reference_JnMh-B62m9": {
+  "Id": "Reference_JnMh-B62m9",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Owner_RMM",
+  "FieldMapping": "FieldMapping_LVGPn3-mID"
+ },
+ "Reference_bkHgt_QBDL": {
+  "Id": "Reference_bkHgt_QBDL",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Target_Markets_Text",
+  "FieldMapping": "FieldMapping_9ZHysRIWhV"
+ },
+ "Reference_Nkqyg2tYNW": {
+  "Id": "Reference_Nkqyg2tYNW",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Origin_Types",
+  "FieldMapping": "FieldMapping_EsNBAwUxhk"
+ },
+ "Reference_2Gj-qRBlo7": {
+  "Id": "Reference_2Gj-qRBlo7",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Case_Test",
+  "FieldMapping": "FieldMapping_CTo4wUTHDa"
+ },
+ "Reference_XYWmkwFKJp": {
+  "Id": "Reference_XYWmkwFKJp",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Request_Key",
+  "FieldMapping": "FieldMapping_XwJjsIAa1I"
+ },
+ "Reference_rKDSvh58yy": {
+  "Id": "Reference_rKDSvh58yy",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "BDF_Contact_Name",
+  "FieldMapping": "FieldMapping_MeeUEXTx38"
+ },
+ "Reference_i9G8FCf9U9": {
+  "Id": "Reference_i9G8FCf9U9",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "BDF_Contact_Email",
+  "FieldMapping": "FieldMapping_Y6Qb-Hra3O"
+ },
+ "Reference_HaJdOutIed": {
+  "Id": "Reference_HaJdOutIed",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Markets_Label",
+  "FieldMapping": "FieldMapping_02gOb5qkmt"
+ },
+ "Reference_eUY4Gcbxrd": {
+  "Id": "Reference_eUY4Gcbxrd",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Template_Label",
+  "FieldMapping": "FieldMapping_TG7p1Umbpg"
+ },
+ "Reference_O3cgt8YLHR": {
+  "Id": "Reference_O3cgt8YLHR",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Supplier_Due_Date",
+  "FieldMapping": "FieldMapping_itFLF75CIa"
+ },
+ "Reference_T6GOKxpwzs": {
+  "Id": "Reference_T6GOKxpwzs",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Case_Contacts_JSON",
+  "FieldMapping": "FieldMapping_TmvaKTcSd2"
+ },
+ "Reference_tqznBiGO_b": {
+  "Id": "Reference_tqznBiGO_b",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Portal_Contact_Ids",
+  "FieldMapping": "FieldMapping_7bnTnuU10q"
+ },
+ "Reference_8h20kWUQsz": {
+  "Id": "Reference_8h20kWUQsz",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Confirm_Contact_Ids",
+  "FieldMapping": "FieldMapping_l9dllfJrr7"
+ },
+ "Reference_XTpmfGWDG2": {
+  "Id": "Reference_XTpmfGWDG2",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Supplier_Contact_Emails",
+  "FieldMapping": "FieldMapping_jD5JdlfVUN"
+ },
+ "Reference_OZDEqtBQ4c": {
+  "Id": "Reference_OZDEqtBQ4c",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Release_Item_Id",
+  "FieldMapping": "FieldMapping_k8ZtQ4FU3w"
+ },
+ "Reference_TXuGej3o3C": {
+  "Id": "Reference_TXuGej3o3C",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Release_Key",
+  "FieldMapping": "FieldMapping_ZUjyoaND45"
+ },
+ "Reference_duarAZUk_h": {
+  "Id": "Reference_duarAZUk_h",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Manifest_Hash",
+  "FieldMapping": "FieldMapping_MtJIKXrGnx"
+ },
+ "Reference_uGg0b9vSnR": {
+  "Id": "Reference_uGg0b9vSnR",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Release_Manifest_JSON",
+  "FieldMapping": "FieldMapping_o1jFJlQY9P"
+ },
+ "Reference_vt1RehRHxc": {
+  "Id": "Reference_vt1RehRHxc",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Rule_Set_Version",
+  "FieldMapping": "FieldMapping_FO7uPPoxrX"
+ },
+ "Reference_b6mIfpF_Yq": {
+  "Id": "Reference_b6mIfpF_Yq",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Overall_Approval_Required",
+  "FieldMapping": "FieldMapping_S0_Q5TVFrs"
+ },
+ "Reference_fy4R_oxP39": {
+  "Id": "Reference_fy4R_oxP39",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Basic_Data_Received",
+  "FieldMapping": "FieldMapping_8baiOSEjY0"
+ },
+ "Reference_VbPVi0g39t": {
+  "Id": "Reference_VbPVi0g39t",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Portal_Request_Item_Id",
+  "FieldMapping": "FieldMapping_D55AI0twre"
+ },
+ "Reference__4jgfOg7Jl": {
+  "Id": "Reference__4jgfOg7Jl",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Dept_REG_Active",
+  "FieldMapping": "FieldMapping_oSWqSR4gB3"
+ },
+ "Reference_QibBBIDtDx": {
+  "Id": "Reference_QibBBIDtDx",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Dept_SAF_Active",
+  "FieldMapping": "FieldMapping_Z30nWZSXoc"
+ },
+ "Reference_La3qYUjLBd": {
+  "Id": "Reference_La3qYUjLBd",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Dept_QM_Active",
+  "FieldMapping": "FieldMapping__6jn4N8Z6G"
+ },
+ "Reference_-IdsYKZZag": {
+  "Id": "Reference_-IdsYKZZag",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Dept_MIC_Active",
+  "FieldMapping": "FieldMapping_hB1XhDtMJi"
+ },
+ "Reference_Q-c8bA1j9B": {
+  "Id": "Reference_Q-c8bA1j9B",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Dept_SUS_Active",
+  "FieldMapping": "FieldMapping_0okkqxQzhc"
+ },
+ "Reference_GLvXw6Lexa": {
+  "Id": "Reference_GLvXw6Lexa",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Dept_RMM_Active",
+  "FieldMapping": "FieldMapping_ScdTskBtJd"
+ },
+ "Reference_RJhrhFModC": {
+  "Id": "Reference_RJhrhFModC",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Initial_Scope_Run_Key",
+  "FieldMapping": "FieldMapping_8tNlxVTC47"
+ },
+ "Reference_V1hPps0qwJ": {
+  "Id": "Reference_V1hPps0qwJ",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Completeness_Request_Key",
+  "FieldMapping": "FieldMapping_0C7Zs9SHXn"
+ },
+ "Reference_nWLgJj1Kqp": {
+  "Id": "Reference_nWLgJj1Kqp",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Completeness_Declaration_Text",
+  "FieldMapping": "FieldMapping_lHIzyBzooQ"
+ },
+ "Reference_fs8RaQ4Vvz": {
+  "Id": "Reference_fs8RaQ4Vvz",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Completeness_Text_Key",
+  "FieldMapping": "FieldMapping_c5zgelgbwh"
+ },
+ "Reference_H7NTXgF6pl": {
+  "Id": "Reference_H7NTXgF6pl",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Completeness_Due_Date",
+  "FieldMapping": "FieldMapping_aloJZtF70F"
+ },
+ "Reference_ox-wpGKlXv": {
+  "Id": "Reference_ox-wpGKlXv",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Completeness_Confirm",
+  "FieldMapping": "FieldMapping_ySSYM2dk7U"
+ },
+ "Reference_Y8dm4NcIJL": {
+  "Id": "Reference_Y8dm4NcIJL",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Completeness_By_Name",
+  "FieldMapping": "FieldMapping_xpNPgn-AkB"
+ },
+ "Reference_VfSAOpKjhw": {
+  "Id": "Reference_VfSAOpKjhw",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Completeness_By_Email",
+  "FieldMapping": "FieldMapping_0ACFz1rdjf"
+ },
+ "Reference_f9vDmmmfYD": {
+  "Id": "Reference_f9vDmmmfYD",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Completeness_By_Role",
+  "FieldMapping": "FieldMapping_vShYO0-bH6"
+ },
+ "Reference_njuP6UcFla": {
+  "Id": "Reference_njuP6UcFla",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Completeness_At",
+  "FieldMapping": "FieldMapping_jiM-VROdUQ"
+ },
+ "Reference_sikf8TeTPA": {
+  "Id": "Reference_sikf8TeTPA",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "RMES_Key",
+  "FieldMapping": "FieldMapping_FudT5XXAdD"
+ },
+ "Reference_7Vz01R4ov6": {
+  "Id": "Reference_7Vz01R4ov6",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "RMES_Created_At",
+  "FieldMapping": "FieldMapping_02PAAJVqgE"
+ },
+ "Reference_mB0yrdQYhX": {
+  "Id": "Reference_mB0yrdQYhX",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Final_Release_Request_Key",
+  "FieldMapping": "FieldMapping_T7Hj5b1fUk"
+ },
+ "Reference_5kPisxhxH5": {
+  "Id": "Reference_5kPisxhxH5",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Final_Release_Declaration_Text",
+  "FieldMapping": "FieldMapping_jf7B9cZO7j"
+ },
+ "Reference_sBMLpPz0Me": {
+  "Id": "Reference_sBMLpPz0Me",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Final_Release_Text_Key",
+  "FieldMapping": "FieldMapping_0Md0Ci-4Ny"
+ },
+ "Reference_vAye7hu5As": {
+  "Id": "Reference_vAye7hu5As",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Final_Release_Due_Date",
+  "FieldMapping": "FieldMapping_Nn_k4pH_GW"
+ },
+ "Reference_VWEBLlNdHT": {
+  "Id": "Reference_VWEBLlNdHT",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Final_Release_Confirm",
+  "FieldMapping": "FieldMapping__XGudorYjR"
+ },
+ "Reference_GxBQO0fYpA": {
+  "Id": "Reference_GxBQO0fYpA",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Final_Release_By_Name",
+  "FieldMapping": "FieldMapping_kBS9R_84_f"
+ },
+ "Reference_l6wqmeItuC": {
+  "Id": "Reference_l6wqmeItuC",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Final_Release_By_Email",
+  "FieldMapping": "FieldMapping_O6zZC7opXv"
+ },
+ "Reference_RdGeemhJCY": {
+  "Id": "Reference_RdGeemhJCY",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Final_Release_By_Role",
+  "FieldMapping": "FieldMapping_w5oWMkaAqF"
+ },
+ "Reference_J4hVl40x77": {
+  "Id": "Reference_J4hVl40x77",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Final_Release_At",
+  "FieldMapping": "FieldMapping_jPvZDzdN-u"
+ },
+ "Reference_kki2nuJVMe": {
+  "Id": "Reference_kki2nuJVMe",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Released_Revs_JSON",
+  "FieldMapping": "FieldMapping_u1awOcOmky"
+ },
+ "Reference_aSIEhSkxqI": {
+  "Id": "Reference_aSIEhSkxqI",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Evidence_List_Text",
+  "FieldMapping": "FieldMapping_oiRd2WuP_O"
+ },
+ "Reference_iJWAAaYmSr": {
+  "Id": "Reference_iJWAAaYmSr",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Completion_Trigger",
+  "FieldMapping": "FieldMapping_f-BMoZCkat"
+ },
+ "Reference_hjKQrZzMay": {
+  "Id": "Reference_hjKQrZzMay",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "REG_Review_Confirm",
+  "FieldMapping": "FieldMapping_SyWS2YVorp"
+ },
+ "Reference_FZRIJE-av7": {
+  "Id": "Reference_FZRIJE-av7",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "_id",
+  "FieldMapping": "FieldMapping_BjaonwYM6D"
+ },
+ "Reference_oxM3WPpTkx": {
+  "Id": "Reference_oxM3WPpTkx",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "REG_Completed_By",
+  "FieldMapping": "FieldMapping_cjvmAZSC-E"
+ },
+ "Reference_NnG4fIaY3A": {
+  "Id": "Reference_NnG4fIaY3A",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "REG_Completed_By_Email",
+  "FieldMapping": "FieldMapping_AePze0DIrQ"
+ },
+ "Reference_FAevI8CA2Y": {
+  "Id": "Reference_FAevI8CA2Y",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "REG_Completed_At",
+  "FieldMapping": "FieldMapping_CCdIDTGbRz"
+ },
+ "Reference_u_yHP2JbDi": {
+  "Id": "Reference_u_yHP2JbDi",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "REG_On_Behalf_Of",
+  "FieldMapping": "FieldMapping_yiHmdxjVre"
+ },
+ "Reference_Bv24-kP9OG": {
+  "Id": "Reference_Bv24-kP9OG",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "REG_RMES_Decision",
+  "FieldMapping": "FieldMapping_TU6Ab8GjOu"
+ },
+ "Reference_Mdl65_DcPE": {
+  "Id": "Reference_Mdl65_DcPE",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "REG_RMES_Decision_Reason",
+  "FieldMapping": "FieldMapping_VHioJY0aOG"
+ },
+ "Reference_oppfWRWPHH": {
+  "Id": "Reference_oppfWRWPHH",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "SAF_Review_Confirm",
+  "FieldMapping": "FieldMapping_g6EpsP9rE2"
+ },
+ "Reference_S7FgXfwu5W": {
+  "Id": "Reference_S7FgXfwu5W",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "_id",
+  "FieldMapping": "FieldMapping_B83RLNzXPh"
+ },
+ "Reference_wm2cICnRhs": {
+  "Id": "Reference_wm2cICnRhs",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "SAF_Completed_By",
+  "FieldMapping": "FieldMapping_a6Sx16oaVi"
+ },
+ "Reference_MCGGV31nal": {
+  "Id": "Reference_MCGGV31nal",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "SAF_Completed_By_Email",
+  "FieldMapping": "FieldMapping_kAJ2EFXAeO"
+ },
+ "Reference_TpWwY49BcE": {
+  "Id": "Reference_TpWwY49BcE",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "SAF_Completed_At",
+  "FieldMapping": "FieldMapping_5eh8C8ulc5"
+ },
+ "Reference_5jUpEw0Teg": {
+  "Id": "Reference_5jUpEw0Teg",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "SAF_On_Behalf_Of",
+  "FieldMapping": "FieldMapping_Cm0kb1h0_I"
+ },
+ "Reference_JB4WZ6JOqW": {
+  "Id": "Reference_JB4WZ6JOqW",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "SAF_RMES_Decision",
+  "FieldMapping": "FieldMapping_VpUEtiAerF"
+ },
+ "Reference_fJBrMwOojR": {
+  "Id": "Reference_fJBrMwOojR",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "SAF_RMES_Decision_Reason",
+  "FieldMapping": "FieldMapping_wjs3VESnjT"
+ },
+ "Reference_A60jvpMw5N": {
+  "Id": "Reference_A60jvpMw5N",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "QM_Review_Confirm",
+  "FieldMapping": "FieldMapping_HIk7T5IOea"
+ },
+ "Reference_1EjQ8IncHg": {
+  "Id": "Reference_1EjQ8IncHg",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "_id",
+  "FieldMapping": "FieldMapping_hUNznpz2aV"
+ },
+ "Reference_bG3KfviEMw": {
+  "Id": "Reference_bG3KfviEMw",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "QM_Completed_By",
+  "FieldMapping": "FieldMapping_4A0q0Zc-9g"
+ },
+ "Reference_P7lKqGQAQk": {
+  "Id": "Reference_P7lKqGQAQk",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "QM_Completed_By_Email",
+  "FieldMapping": "FieldMapping_y8rXd7i9qx"
+ },
+ "Reference_pvSF1n6CmF": {
+  "Id": "Reference_pvSF1n6CmF",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "QM_Completed_At",
+  "FieldMapping": "FieldMapping_LtFVfQgziL"
+ },
+ "Reference_aWfPROTUsP": {
+  "Id": "Reference_aWfPROTUsP",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "QM_On_Behalf_Of",
+  "FieldMapping": "FieldMapping_oPDGi5oQ3f"
+ },
+ "Reference_zysE36Q-fy": {
+  "Id": "Reference_zysE36Q-fy",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "MIC_Review_Confirm",
+  "FieldMapping": "FieldMapping_gZENTbxDKY"
+ },
+ "Reference_I8ged-HDGb": {
+  "Id": "Reference_I8ged-HDGb",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "_id",
+  "FieldMapping": "FieldMapping_I5fYEK-TIB"
+ },
+ "Reference_gUrv2MyPuD": {
+  "Id": "Reference_gUrv2MyPuD",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "MIC_Completed_By",
+  "FieldMapping": "FieldMapping_Rp1q6PJDZN"
+ },
+ "Reference_TEryyFCpgc": {
+  "Id": "Reference_TEryyFCpgc",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "MIC_Completed_By_Email",
+  "FieldMapping": "FieldMapping_YGoAZ0MYz7"
+ },
+ "Reference_E_fxx2XAkg": {
+  "Id": "Reference_E_fxx2XAkg",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "MIC_Completed_At",
+  "FieldMapping": "FieldMapping_K3tVBwKe-1"
+ },
+ "Reference_IvzzlxAppU": {
+  "Id": "Reference_IvzzlxAppU",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "MIC_On_Behalf_Of",
+  "FieldMapping": "FieldMapping_SYYE43NhZl"
+ },
+ "Reference_uECjpTVk82": {
+  "Id": "Reference_uECjpTVk82",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "SUS_Review_Confirm",
+  "FieldMapping": "FieldMapping_BVQv7safQI"
+ },
+ "Reference_ZQbbfWkzlB": {
+  "Id": "Reference_ZQbbfWkzlB",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "_id",
+  "FieldMapping": "FieldMapping_ObFac_RC_g"
+ },
+ "Reference_XxxZu76Lqh": {
+  "Id": "Reference_XxxZu76Lqh",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "SUS_Completed_By",
+  "FieldMapping": "FieldMapping_cFOP5_7O4X"
+ },
+ "Reference_UCOJs5uO50": {
+  "Id": "Reference_UCOJs5uO50",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "SUS_Completed_By_Email",
+  "FieldMapping": "FieldMapping_KQdPOq8bhR"
+ },
+ "Reference_WpIy00J2RG": {
+  "Id": "Reference_WpIy00J2RG",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "SUS_Completed_At",
+  "FieldMapping": "FieldMapping_go8dIvDs18"
+ },
+ "Reference_Qy_dzO5IrB": {
+  "Id": "Reference_Qy_dzO5IrB",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "SUS_On_Behalf_Of",
+  "FieldMapping": "FieldMapping_NDDjZ6t9u4"
+ },
+ "Reference_L8NyQeZHKQ": {
+  "Id": "Reference_L8NyQeZHKQ",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "RMM_Review_Confirm",
+  "FieldMapping": "FieldMapping_CwjOOr9RD_"
+ },
+ "Reference_LPBj_lUpQV": {
+  "Id": "Reference_LPBj_lUpQV",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "_id",
+  "FieldMapping": "FieldMapping_Il0fWfLe1V"
+ },
+ "Reference_W0wTCNvT5G": {
+  "Id": "Reference_W0wTCNvT5G",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "RMM_Completed_By",
+  "FieldMapping": "FieldMapping_XfAw_9FI8J"
+ },
+ "Reference_zwMiZHXgb0": {
+  "Id": "Reference_zwMiZHXgb0",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "RMM_Completed_By_Email",
+  "FieldMapping": "FieldMapping_g2P4Nyo5mv"
+ },
+ "Reference_62Il6tB1G7": {
+  "Id": "Reference_62Il6tB1G7",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "RMM_Completed_At",
+  "FieldMapping": "FieldMapping_6sLzXEZphQ"
+ },
+ "Reference_LQ47bVjFQz": {
+  "Id": "Reference_LQ47bVjFQz",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "RMM_On_Behalf_Of",
+  "FieldMapping": "FieldMapping_OI9RW4tfVH"
+ },
+ "Reference_j1oHFFpDO2": {
+  "Id": "Reference_j1oHFFpDO2",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Open_Items_Count",
+  "FieldMapping": "FieldMapping_vkwBXSUHFq"
+ },
+ "Reference_J3WcTMpVMK": {
+  "Id": "Reference_J3WcTMpVMK",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Open_CR_Count",
+  "FieldMapping": "FieldMapping_vgLTJLhlqK"
+ },
+ "Reference_OwiLzJTOXt": {
+  "Id": "Reference_OwiLzJTOXt",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "REG_Open_Count",
+  "FieldMapping": "FieldMapping_wYkcR_nQ54"
+ },
+ "Reference_z7YjF4AIam": {
+  "Id": "Reference_z7YjF4AIam",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "REG_RMES_Gaps",
+  "FieldMapping": "FieldMapping_0DLx_jqUto"
+ },
+ "Reference_h-OhEdatYf": {
+  "Id": "Reference_h-OhEdatYf",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "SAF_Open_Count",
+  "FieldMapping": "FieldMapping_vJMCtLx-fL"
+ },
+ "Reference_5SKycdEqQS": {
+  "Id": "Reference_5SKycdEqQS",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "SAF_RMES_Gaps",
+  "FieldMapping": "FieldMapping_V-9xXl4NHD"
+ },
+ "Reference_elbnaIdvB6": {
+  "Id": "Reference_elbnaIdvB6",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "QM_Open_Count",
+  "FieldMapping": "FieldMapping_1DV1Z1BCTi"
+ },
+ "Reference_V7Gwq2X6uB": {
+  "Id": "Reference_V7Gwq2X6uB",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "MIC_Open_Count",
+  "FieldMapping": "FieldMapping_1zZbh_DRpI"
+ },
+ "Reference_uW3fprnvQe": {
+  "Id": "Reference_uW3fprnvQe",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "SUS_Open_Count",
+  "FieldMapping": "FieldMapping_1JGJ9jSKVC"
+ },
+ "Reference_Kfu-73_KH3": {
+  "Id": "Reference_Kfu-73_KH3",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "RMM_Open_Count",
+  "FieldMapping": "FieldMapping_V1fcBt1HEc"
+ },
+ "Reference_jin2CaNJTs": {
+  "Id": "Reference_jin2CaNJTs",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Hold_For_Open_Items",
+  "FieldMapping": "FieldMapping_cXMUB_OfTD"
+ },
+ "Reference_FEbMWNqa8z": {
+  "Id": "Reference_FEbMWNqa8z",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Open_Items_Gate_Release",
+  "FieldMapping": "FieldMapping_MnHu4yFsVi"
+ },
+ "Reference_4HggFE6hak": {
+  "Id": "Reference_4HggFE6hak",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Open_Items_Gate_Close",
+  "FieldMapping": "FieldMapping_BSRxo5hXHE"
+ },
+ "Reference_m6mpfM4ZIy": {
+  "Id": "Reference_m6mpfM4ZIy",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Hold_Note",
+  "FieldMapping": "FieldMapping_QQwCPJVMPo"
+ },
+ "Reference_7TIKMAaswY": {
+  "Id": "Reference_7TIKMAaswY",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Hold_Override_Reason_Release",
+  "FieldMapping": "FieldMapping_cjK1Y77Bet"
+ },
+ "Reference_Mc4-6qoRil": {
+  "Id": "Reference_Mc4-6qoRil",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Hold_Override_Reason_Close",
+  "FieldMapping": "FieldMapping_9Mwl3eV3CC"
+ },
+ "Reference_g3G8rF7ZhK": {
+  "Id": "Reference_g3G8rF7ZhK",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "REG_Gate",
+  "FieldMapping": "FieldMapping_fmweXW5vpw"
+ },
+ "Reference_L1lUM8BxMJ": {
+  "Id": "Reference_L1lUM8BxMJ",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "SAF_Gate",
+  "FieldMapping": "FieldMapping_32Qs67VqAm"
+ },
+ "Reference_jP6EfIhqN7": {
+  "Id": "Reference_jP6EfIhqN7",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "QM_Gate",
+  "FieldMapping": "FieldMapping_CwZL7umBf5"
+ },
+ "Reference_ccQd51M4r4": {
+  "Id": "Reference_ccQd51M4r4",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "MIC_Gate",
+  "FieldMapping": "FieldMapping_Wxn3Roknhm"
+ },
+ "Reference_T26BHiHdX2": {
+  "Id": "Reference_T26BHiHdX2",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "SUS_Gate",
+  "FieldMapping": "FieldMapping_oBe2VEopmT"
+ },
+ "Reference_9BfE7Em7HN": {
+  "Id": "Reference_9BfE7Em7HN",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "RMM_Gate",
+  "FieldMapping": "FieldMapping_F1tWhsbvSl"
+ },
+ "Reference_XVf3mIZumd": {
+  "Id": "Reference_XVf3mIZumd",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Late_Completions_Text",
+  "FieldMapping": "FieldMapping_ccuNS6cdoL"
+ },
+ "Reference_GgUxMqY_HP": {
+  "Id": "Reference_GgUxMqY_HP",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Overall_Decision",
+  "FieldMapping": "FieldMapping_0sQLejqPHx"
+ },
+ "Reference_F2Z67hSFBr": {
+  "Id": "Reference_F2Z67hSFBr",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Overall_Reason",
+  "FieldMapping": "FieldMapping_AKVz7MWyha"
+ },
+ "Reference_3aHzDCXZoZ": {
+  "Id": "Reference_3aHzDCXZoZ",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "_id",
+  "FieldMapping": "FieldMapping_lNlzk2AU4e"
+ },
+ "Reference_ISrGYyqwDH": {
+  "Id": "Reference_ISrGYyqwDH",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Overall_Decided_By",
+  "FieldMapping": "FieldMapping_QKE3dpHOdU"
+ },
+ "Reference_sna3cjPVHE": {
+  "Id": "Reference_sna3cjPVHE",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Supplier_Closing_Text",
+  "FieldMapping": "FieldMapping_uzUIu6cGOP"
+ },
+ "Reference_cxL-n9WPLi": {
+  "Id": "Reference_cxL-n9WPLi",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Final_PDF",
+  "FieldMapping": "FieldMapping_zahLOIBIk1"
+ },
+ "Reference_WOEimUvOp7": {
+  "Id": "Reference_WOEimUvOp7",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Template_Version",
+  "FieldMapping": "FieldMapping_joHEqJVPd9"
+ },
+ "Reference_Hpg_nmdYsU": {
+  "Id": "Reference_Hpg_nmdYsU",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Case_Phase",
+  "FieldMapping": "FieldMapping_i6Vj9eGKXD"
+ },
+ "Reference_T3hvnvVCcG": {
+  "Id": "Reference_T3hvnvVCcG",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Priority",
+  "FieldMapping": "FieldMapping_Si0X6CIT7m"
+ },
+ "Reference_vWrdFq1P77": {
+  "Id": "Reference_vWrdFq1P77",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Duplicate_Reason",
+  "FieldMapping": "FieldMapping_dYk8iVp-6h"
+ },
+ "Reference_9RinlMsAse": {
+  "Id": "Reference_9RinlMsAse",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Follow_Up_Of_Case",
+  "FieldMapping": "FieldMapping_95uG-4g0YK"
+ },
+ "Reference_iiP-U_q5go": {
+  "Id": "Reference_iiP-U_q5go",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Follow_Up_Of_Report",
+  "FieldMapping": "FieldMapping_T7hESZbg-h"
+ },
+ "Reference_gspiBpBmsg": {
+  "Id": "Reference_gspiBpBmsg",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Cancel_Reason",
+  "FieldMapping": "FieldMapping_6w9z1BLMqM"
+ },
+ "Reference_h2r_ze4ffd": {
+  "Id": "Reference_h2r_ze4ffd",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Cancelled_By_Name",
+  "FieldMapping": "FieldMapping_BnqfuW7gFS"
+ },
+ "Reference_bo2Hv-8avW": {
+  "Id": "Reference_bo2Hv-8avW",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Cancelled_At",
+  "FieldMapping": "FieldMapping_HPTuungHM-"
+ },
+ "Reference_yMkvSBcXb-": {
+  "Id": "Reference_yMkvSBcXb-",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Cancelled_From_Phase",
+  "FieldMapping": "FieldMapping_ujrxdPn4_0"
+ },
+ "Reference_C70ROEEjiA": {
+  "Id": "Reference_C70ROEEjiA",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Reactivate_Reason",
+  "FieldMapping": "FieldMapping_E7FSUo2MAY"
+ },
+ "Reference_a003JoE6Kq": {
+  "Id": "Reference_a003JoE6Kq",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Reactivated_At",
+  "FieldMapping": "FieldMapping_EnkMgTpB73"
+ },
+ "Reference_ARut89iG8F": {
+  "Id": "Reference_ARut89iG8F",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Release_Requested_At",
+  "FieldMapping": "FieldMapping_HaGVIfvglu"
+ },
+ "Reference_rVoKfrkLT1": {
+  "Id": "Reference_rVoKfrkLT1",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Portal_Release_Item_Id",
+  "FieldMapping": "FieldMapping_riGHrASl8b"
+ },
+ "Reference_VSPDVb0u-z": {
+  "Id": "Reference_VSPDVb0u-z",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Final_Document_Hash",
+  "FieldMapping": "FieldMapping_RWL8vERfQS"
+ },
+ "Reference_6qSYtYEQXg": {
+  "Id": "Reference_6qSYtYEQXg",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Final_Document_At",
+  "FieldMapping": "FieldMapping_79nbF6ukgM"
+ },
+ "Reference_vSAkwKd8LF": {
+  "Id": "Reference_vSAkwKd8LF",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Undefined_Origin",
+  "FieldMapping": "FieldMapping_uipg-5pq-5"
+ },
+ "Reference_1EDdmf3iTZ": {
+  "Id": "Reference_1EDdmf3iTZ",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Case_Data_Item_Id",
+  "FieldMapping": "FieldMapping_FUm6CdP30e"
+ },
+ "Reference_tjGWIfUS9W": {
+  "Id": "Reference_tjGWIfUS9W",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Supplier_Files",
+  "FieldMapping": "FieldMapping_3Ne1dFo1uW"
+ },
+ "Reference_bhgFl39NUa": {
+  "Id": "Reference_bhgFl39NUa",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Config_Bundle_JSON",
+  "FieldMapping": "FieldMapping_o1S772-53n"
+ },
+ "Reference_IRi8kl3TeZ": {
+  "Id": "Reference_IRi8kl3TeZ",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Config_Bundle_Hash",
+  "FieldMapping": "FieldMapping_zC7p5Pu2Nc"
+ },
+ "Reference_SK7YA2CNed": {
+  "Id": "Reference_SK7YA2CNed",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "BDF_Set_JSON",
+  "FieldMapping": "FieldMapping_KoJ4-ZnocF"
+ },
+ "Reference_pr4AdClsyZ": {
+  "Id": "Reference_pr4AdClsyZ",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Portal_Assignees_JSON",
+  "FieldMapping": "FieldMapping_G592aNKeMl"
+ },
+ "Reference_OwiB3RDufw": {
+  "Id": "Reference_OwiB3RDufw",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Release_Assignees_JSON",
+  "FieldMapping": "FieldMapping_Gg2493GXfG"
+ },
+ "Reference_Ze_5QMcbtu": {
+  "Id": "Reference_Ze_5QMcbtu",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Config_Answers_JSON",
+  "FieldMapping": "FieldMapping_8xP7ZGczkY"
+ },
+ "Reference_QdCS7lBwfu": {
+  "Id": "Reference_QdCS7lBwfu",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Answers_JSON",
+  "FieldMapping": "FieldMapping_KRpEvqIGOc"
+ },
+ "Reference_stEIJeI60D": {
+  "Id": "Reference_stEIJeI60D",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Answered_By_JSON",
+  "FieldMapping": "FieldMapping_KlL-3pcge3"
+ },
+ "Reference_QZ_N_D3jvw": {
+  "Id": "Reference_QZ_N_D3jvw",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Justifications_JSON",
+  "FieldMapping": "FieldMapping_miYpvV0PaK"
+ },
+ "Reference_iOnm0w_f-h": {
+  "Id": "Reference_iOnm0w_f-h",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Components_JSON",
+  "FieldMapping": "FieldMapping_0xdso-_etz"
+ },
+ "Reference_gwwTqqwF88": {
+  "Id": "Reference_gwwTqqwF88",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Scope_JSON",
+  "FieldMapping": "FieldMapping_Xti7DIrl-A"
+ },
+ "Reference_uWl_ZFRq0X": {
+  "Id": "Reference_uWl_ZFRq0X",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Requested_Docs_JSON",
+  "FieldMapping": "FieldMapping_0T7QNjGKBt"
+ },
+ "Reference_aT2Abln_Mb": {
+  "Id": "Reference_aT2Abln_Mb",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Documents_JSON",
+  "FieldMapping": "FieldMapping_WEDhas0Dvg"
+ },
+ "Reference_Oyskz4WMV2": {
+  "Id": "Reference_Oyskz4WMV2",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Answers_Rev",
+  "FieldMapping": "FieldMapping_CUFi3gaFM3"
+ },
+ "Reference_x1z-ChRvDf": {
+  "Id": "Reference_x1z-ChRvDf",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Answers_Changed_At",
+  "FieldMapping": "FieldMapping_h3bukXVZmC"
+ },
+ "Reference_1OeHT2mzbl": {
+  "Id": "Reference_1OeHT2mzbl",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Answers_Changed_By_Email",
+  "FieldMapping": "FieldMapping_Y0HB8DXZJN"
+ },
+ "Reference_2mNBG0N36J": {
+  "Id": "Reference_2mNBG0N36J",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Change_Report_Text",
+  "FieldMapping": "FieldMapping_X7YE346dZH"
+ },
+ "Reference_wsoO0Un-ah": {
+  "Id": "Reference_wsoO0Un-ah",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Change_Report_Rev",
+  "FieldMapping": "FieldMapping_aZB5SN3zAc"
+ },
+ "Reference_RI8unb7hpq": {
+  "Id": "Reference_RI8unb7hpq",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Change_Report_By_Email",
+  "FieldMapping": "FieldMapping_gWVs7OlJKd"
+ },
+ "Reference_SCUu6opHnS": {
+  "Id": "Reference_SCUu6opHnS",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Change_Report_At",
+  "FieldMapping": "FieldMapping_PhI8HdijAi"
+ },
+ "Reference_weXcqpONTS": {
+  "Id": "Reference_weXcqpONTS",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_q8mqWVgQb9",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_eky5Zv0Kf9",
+  "FieldId": "Review_Depts",
+  "FieldMapping": "FieldMapping_3eN_aeFENM"
+ },
+ "Reference_c8u7mtMSUu": {
+  "Id": "Reference_c8u7mtMSUu",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Event_Key",
+  "FieldMapping": "FieldMapping_qaEl4EwNwg"
+ },
+ "Reference_2TqrNOw7j6": {
+  "Id": "Reference_2TqrNOw7j6",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Case_Code",
+  "FieldMapping": "FieldMapping_57--e8i1m-"
+ },
+ "Reference_Z576PBmkjR": {
+  "Id": "Reference_Z576PBmkjR",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Cycle_No",
+  "FieldMapping": "FieldMapping_6QlQ6HiAdI"
+ },
+ "Reference_dgynyMVUf_": {
+  "Id": "Reference_dgynyMVUf_",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Case_Item_Id",
+  "FieldMapping": "FieldMapping_bb-VpB0xs9"
+ },
+ "Reference_locjAm9hId": {
+  "Id": "Reference_locjAm9hId",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Event_At",
+  "FieldMapping": "FieldMapping_CX0io9OYpW"
+ },
+ "Reference_7MzEDm34VN": {
+  "Id": "Reference_7MzEDm34VN",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Event_Category",
+  "FieldMapping": "FieldMapping_SZuDXOFxSE"
+ },
+ "Reference_Huac9k74Me": {
+  "Id": "Reference_Huac9k74Me",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Action_Code",
+  "FieldMapping": "FieldMapping_nQIIsS_XYo"
+ },
+ "Reference_fQRJ4DGKfF": {
+  "Id": "Reference_fQRJ4DGKfF",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Actor_Side",
+  "FieldMapping": "FieldMapping_6Bime9sSw5"
+ },
+ "Reference_kmGwvotO76": {
+  "Id": "Reference_kmGwvotO76",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Actor_Name",
+  "FieldMapping": "FieldMapping_VXMSUoiLbN"
+ },
+ "Reference_HQsB50cDsm": {
+  "Id": "Reference_HQsB50cDsm",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Actor_Email",
+  "FieldMapping": "FieldMapping_LYVvCxPiDx"
+ },
+ "Reference_3iD9ZMUE1N": {
+  "Id": "Reference_3iD9ZMUE1N",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Actor_Dept",
+  "FieldMapping": "FieldMapping_QtZ2umG9Lw"
+ },
+ "Reference_cI22uRBTRx": {
+  "Id": "Reference_cI22uRBTRx",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Actor_Role_Id",
+  "FieldMapping": "FieldMapping_8pKTCnNDP8"
+ },
+ "Reference_F71-50bV5L": {
+  "Id": "Reference_F71-50bV5L",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "On_Behalf_Of",
+  "FieldMapping": "FieldMapping_bZMawXU26n"
+ },
+ "Reference_c4C6ovW3o6": {
+  "Id": "Reference_c4C6ovW3o6",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Object_Kind",
+  "FieldMapping": "FieldMapping_X-kp4G6R95"
+ },
+ "Reference_tMiAjSZEaX": {
+  "Id": "Reference_tMiAjSZEaX",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Object_Key",
+  "FieldMapping": "FieldMapping_VkhDN7gPGC"
+ },
+ "Reference_A_7oqhIlbL": {
+  "Id": "Reference_A_7oqhIlbL",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Object_Item_Id",
+  "FieldMapping": "FieldMapping_j-BuyWlRNO"
+ },
+ "Reference_mxbZ6d6r9z": {
+  "Id": "Reference_mxbZ6d6r9z",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Object_State",
+  "FieldMapping": "FieldMapping_XWYfwLELBb"
+ },
+ "Reference_gi91pqi_5M": {
+  "Id": "Reference_gi91pqi_5M",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Old_Value_Text",
+  "FieldMapping": "FieldMapping__tPCP3Z0bT"
+ },
+ "Reference_QvKIGdOa2j": {
+  "Id": "Reference_QvKIGdOa2j",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "New_Value_Text",
+  "FieldMapping": "FieldMapping_SuxBmx-PrC"
+ },
+ "Reference_H6SBvAQzrj": {
+  "Id": "Reference_H6SBvAQzrj",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Source_Doc_File_Name",
+  "FieldMapping": "FieldMapping_IKRYxfwO0N"
+ },
+ "Reference_GfWWbUld2E": {
+  "Id": "Reference_GfWWbUld2E",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Source_Doc_Uploaded_At",
+  "FieldMapping": "FieldMapping_bCDWW38et8"
+ },
+ "Reference_xisliA2iR_": {
+  "Id": "Reference_xisliA2iR_",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Source_Answers_Rev",
+  "FieldMapping": "FieldMapping_JXps-hnQ__"
+ },
+ "Reference_vQGgl4uGPt": {
+  "Id": "Reference_vQGgl4uGPt",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Config_Keys",
+  "FieldMapping": "FieldMapping_j8MqXopjmX"
+ },
+ "Reference_ALOJ_1bf2Z": {
+  "Id": "Reference_ALOJ_1bf2Z",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Event_Reason",
+  "FieldMapping": "FieldMapping_1nCdGx_rjz"
+ },
+ "Reference_aD_KSUVo4x": {
+  "Id": "Reference_aD_KSUVo4x",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Notify_Recipient",
+  "FieldMapping": "FieldMapping_hKB47fwZet"
+ },
+ "Reference_u2hwC7yNq1": {
+  "Id": "Reference_u2hwC7yNq1",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Notify_Channel",
+  "FieldMapping": "FieldMapping_TUQNqJeUkr"
+ },
+ "Reference_pPVq1xLdo3": {
+  "Id": "Reference_pPVq1xLdo3",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Delegation_Valid_From",
+  "FieldMapping": "FieldMapping_h8MBrTsr3c"
+ },
+ "Reference_Z4IQifGvf7": {
+  "Id": "Reference_Z4IQifGvf7",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Delegation_Valid_To",
+  "FieldMapping": "FieldMapping_XOxFU2hmsu"
+ },
+ "Reference_STM_BkVd12": {
+  "Id": "Reference_STM_BkVd12",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Portal_Activity_Ref",
+  "FieldMapping": "FieldMapping_AamjoWWGvF"
+ },
+ "Reference_h4IH5o-cvU": {
+  "Id": "Reference_h4IH5o-cvU",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Snapshot_JSON",
+  "FieldMapping": "FieldMapping_yoz1xpT1uU"
+ },
+ "Reference_zCY3i0Z9n8": {
+  "Id": "Reference_zCY3i0Z9n8",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Event_File",
+  "FieldMapping": "FieldMapping_W9gwwry6a3"
+ },
+ "Reference_0mkWBjZtMy": {
+  "Id": "Reference_0mkWBjZtMy",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Ref_Flow_Id",
+  "FieldMapping": "FieldMapping_jFu81eLp22"
+ },
+ "Reference_1goqezqSpz": {
+  "Id": "Reference_1goqezqSpz",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Ref_Item_Id",
+  "FieldMapping": "FieldMapping_tF8pYxpm4X"
+ },
+ "Reference_sDRZ5eVD3G": {
+  "Id": "Reference_sDRZ5eVD3G",
+  "Kind": "Reference",
+  "Type": "Schema",
+  "StepId": "Action_5KrtAJX2AR",
+  "ReferenceType": "Field",
+  "SourceProperty": "Property_FyqX6_16Kq",
+  "FieldId": "Ref_Activity_Instance_Id",
+  "FieldMapping": "FieldMapping_vj_1pvYm0T"
+ },
+ "Action_E_z4YCW-sG": {
+  "Id": "Action_E_z4YCW-sG",
+  "Kind": "Action",
+  "Integration": "CIQ_Case_Send_Final_Release_to_RMM_A00",
+  "Type": "Create",
+  "Name": "Send an email",
+  "IsInternalAuth": true,
+  "Connector": {
+   "_id": "CoOj46v9fVh37",
+   "Name": "Email",
+   "ActionId": "SendEmail",
+   "ActionName": "Send an email",
+   "Version": "1.0.6",
+   "Status": "Published",
+   "WebsiteURL": "www.email.com"
+  },
+  "Connection": {},
+  "Action::FieldMapping": [
+   "FieldMapping__tYReHG6df",
+   "FieldMapping_ayUERi89Mr",
+   "FieldMapping_snTK8QxFV_",
+   "FieldMapping_la39JaB3fR",
+   "FieldMapping_bRfKuCCB2k",
+   "FieldMapping_-7eEvl9-_3",
+   "FieldMapping_5IWifhojJa",
+   "FieldMapping_6HLn0XRa7D"
+  ]
+ },
+ "Action_sJ0xxVDOj4": {
+  "Id": "Action_sJ0xxVDOj4",
+  "Kind": "Action",
+  "Type": "Create",
+  "Name": "Search an item ",
+  "IsInternalAuth": false,
+  "Connector": {
+   "_id": "ComaBsL8ZTSMM",
+   "Name": "Kissflow Process",
+   "ActionId": "Action_Kh4Jb2AoG",
+   "ActionName": "Search an item ",
+   "Version": "3.7.6",
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com"
+  },
+  "Connection": {
+   "_id": "CnEREosN6dQb",
+   "Name": "Kissflow Process - For Portal Actions"
+  },
+  "Integration": "CIQ_Case_Send_Final_Release_to_RMM_A00"
+ },
+ "Action_t1WholtrmH": {
+  "Id": "Action_t1WholtrmH",
+  "Kind": "Action",
+  "Type": "Search",
+  "Name": "Get user data",
+  "IsInternalAuth": false,
+  "Connector": {
+   "_id": "CoDZUv42Y_PsK",
+   "Name": "User details",
+   "ActionId": "FetchUserData",
+   "ActionName": "Get user data",
+   "Version": "2.0.10",
+   "Status": "Published",
+   "WebsiteURL": "https://kissflow.com",
+   "IsSampleData": true
+  },
+  "Connection": {
+   "_id": "CnESE8R3fMKt",
+   "Name": "User details - Thomas's Access Keys"
+  },
+  "Integration": "CIQ_Case_Send_Final_Release_to_RMM_A00",
+  "Action::FieldMapping": [
+   "FieldMapping_dcYj0axDfC",
+   "FieldMapping_eHElz_sPkE"
+  ],
+  "Output": {
+   "Users": [
+    {
+     "_id": "Text data",
+     "Name": "Text data",
+     "Kind": "User",
+     "Email": "Text data"
+    }
+   ]
+  },
+  "IsTested": true
+ },
+ "FieldMapping_dcYj0axDfC": {
+  "Id": "FieldMapping_dcYj0axDfC",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField001",
+  "Label": "User IDs",
+  "Name": "user_ids",
+  "IsRequired": true,
+  "IsMultiValue": true,
+  "IsDropdown": true,
+  "IsPaginated": true,
+  "HelpText": "Map the user IDs to fetch the relevant user data",
+  "Action": "Action_t1WholtrmH",
+  "FieldMapping::Property": [
+   "Property_TrKjMApcSe"
+  ],
+  "SelectedDropdown": [
+   {
+    "FieldId": "RoEKl83f9jPF",
+    "FieldName": "Raw Material Manager (RMM)"
+   }
+  ]
+ },
+ "FieldMapping_eHElz_sPkE": {
+  "Id": "FieldMapping_eHElz_sPkE",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField002",
+  "Label": "User fields",
+  "Name": "fields",
+  "IsRequired": false,
+  "IsMultiValue": true,
+  "IsDropdown": true,
+  "HelpText": "Select the user fields to fetch the relevant users' data",
+  "Action": "Action_t1WholtrmH",
+  "FieldMapping::Property": [
+   "Property_AOEWqXRPmP"
+  ],
+  "SelectedDropdown": [
+   {
+    "FieldId": "Email",
+    "FieldName": "Email address"
+   }
+  ]
+ },
+ "Property_TrKjMApcSe": {
+  "Id": "Property_TrKjMApcSe",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_dcYj0axDfC",
+  "Type": "Value",
+  "Value": [
+   [
+    "RoEKl83f9jPF"
+   ]
+  ],
+  "Name": "user_ids"
+ },
+ "Property_AOEWqXRPmP": {
+  "Id": "Property_AOEWqXRPmP",
+  "Kind": "Property",
+  "FieldMapping": "FieldMapping_eHElz_sPkE",
+  "Type": "Value",
+  "Value": [
+   [
+    "Email"
+   ]
+  ],
+  "Name": "fields"
+ },
+ "FieldMapping__tYReHG6df": {
+  "Id": "FieldMapping__tYReHG6df",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField001",
+  "Label": "To",
+  "Name": "To",
+  "IsRequired": true,
+  "IsMultiValue": true,
+  "HelpText": "Enter multiple email fields or any text-based email addresses as comma separated values here",
+  "Action": "Action_E_z4YCW-sG"
+ },
+ "FieldMapping_ayUERi89Mr": {
+  "Id": "FieldMapping_ayUERi89Mr",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField002",
+  "Label": "Subject",
+  "Name": "Subject",
+  "IsRequired": true,
+  "Action": "Action_E_z4YCW-sG"
+ },
+ "FieldMapping_snTK8QxFV_": {
+  "Id": "FieldMapping_snTK8QxFV_",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField005",
+  "Label": "Cc",
+  "Name": "CC",
+  "IsMultiValue": true,
+  "HelpText": "Enter multiple email fields or any text-based email addresses as comma separated values here",
+  "Action": "Action_E_z4YCW-sG"
+ },
+ "FieldMapping_la39JaB3fR": {
+  "Id": "FieldMapping_la39JaB3fR",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField006",
+  "Label": "Bcc",
+  "Name": "Bcc",
+  "IsMultiValue": true,
+  "HelpText": "Enter multiple email fields or any text-based email addresses as comma separated values here",
+  "Action": "Action_E_z4YCW-sG"
+ },
+ "FieldMapping_bRfKuCCB2k": {
+  "Id": "FieldMapping_bRfKuCCB2k",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField007",
+  "Label": "Reply To",
+  "Name": "ReplyTo",
+  "IsMultiValue": true,
+  "HelpText": "Enter multiple email fields or any text-based email addresses as comma separated values here",
+  "Action": "Action_E_z4YCW-sG"
+ },
+ "FieldMapping_-7eEvl9-_3": {
+  "Id": "FieldMapping_-7eEvl9-_3",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "ActionField008",
+  "Label": "From",
+  "Name": "From",
+  "HelpText": "The email address and the display label that your recipient will see",
+  "Action": "Action_E_z4YCW-sG"
+ },
+ "FieldMapping_5IWifhojJa": {
+  "Id": "FieldMapping_5IWifhojJa",
+  "Kind": "FieldMapping",
+  "Type": "Attachment",
+  "FieldId": "ActionField009",
+  "Label": "Attachments",
+  "Name": "Attachments",
+  "IsMultiValue": true,
+  "AttachmentLimit": "10485760",
+  "AttachmentType": "Both",
+  "IsDropdown": false,
+  "IsPaginated": false,
+  "HelpText": "Map fields containing attachments or external URLs from your previous steps. The attachment size cannot exceed 10 MB",
+  "AutoRefresh": false,
+  "Action": "Action_E_z4YCW-sG",
+  "FieldMapping::FieldMapping": [
+   "FieldMapping_qYHdrHpzG-"
+  ]
+ },
+ "FieldMapping_qYHdrHpzG-": {
+  "Id": "FieldMapping_qYHdrHpzG-",
+  "Kind": "FieldMapping",
+  "Type": "Attachment",
+  "Name": "Attachment",
+  "Label": "Attachment",
+  "IsMultiValue": true,
+  "AttachmentType": "Both",
+  "FieldMapping": "FieldMapping_5IWifhojJa"
+ },
+ "FieldMapping_6HLn0XRa7D": {
+  "Id": "FieldMapping_6HLn0XRa7D",
+  "Kind": "FieldMapping",
+  "Type": "String",
+  "FieldId": "Field_htDKY9uKu8",
+  "Label": "Body type",
+  "Name": "BodyType",
+  "IsRequired": true,
+  "IsMultiValue": false,
+  "IsDropdown": true,
+  "AutoRefresh": true,
+  "AllowMultiples": false,
+  "DefaultValue": "RichText",
+  "Action": "Action_E_z4YCW-sG"
+ }
+}

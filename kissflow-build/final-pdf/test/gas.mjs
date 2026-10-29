@@ -134,7 +134,8 @@ export function execution({ fetch, store = new Map(), cache = new Map(), world =
     world.mails.push(sent);
     maybeKill({ type: "mail", mail: sent });
   };
-  const trigger = (fn, everyMinutes) => ({ id: `T${world.triggers.length + 1}-${Math.random().toString(36).slice(2, 7)}`, fn, everyMinutes, getHandlerFunction() { return this.fn; }, getUniqueId() { return this.id; } });
+  const trigger = (fn, o) => ({ id: `T${++world.triggerSeq}-${Math.random().toString(36).slice(2, 7)}`, fn, ...o, fired: false, getHandlerFunction() { return this.fn; }, getUniqueId() { return this.id; }, getEventType() { return "CLOCK"; } });
+  const addTrigger = (t) => { alive(); if (world.triggerFailures > 0) { world.triggerFailures--; throw new Error("Service invoked too many times for one day: triggers."); } if (world.triggers.length >= 20) throw new Error("This script has too many triggers. Triggers must be deleted from the script before more can be added."); world.triggers.push(t); return t; };
   const driveFile = (folderId, blob) => {
     const id = `ZZTDrive${world.drive.files.length + 1}`;
     const f = { id, folderId, name: blob.getName(), buf: Buffer.from(blob.buf), viewers: [], description: null, getId: () => id, getUrl: () => `https://drive.google.example/file/d/${id}/view`, getName: () => f.name, getDescription: () => f.description, setDescription: (d) => { f.description = String(d); return f; }, addViewer: (e) => { f.viewers.push(e); return f; }, getBlob: () => new GasBlob(f.buf, "application/pdf", f.name) };
@@ -176,7 +177,7 @@ export function execution({ fetch, store = new Map(), cache = new Map(), world =
     ScriptApp: {
       getProjectTriggers: () => [...world.triggers],
       deleteTrigger: (t) => { world.triggers = world.triggers.filter((x) => x.id !== t.getUniqueId()); },
-      newTrigger: (fn) => ({ timeBased: () => ({ everyMinutes: (n) => ({ create: () => { const t = trigger(fn, n); world.triggers.push(t); return t; } }) }) }),
+      newTrigger: (fn) => ({ timeBased: () => ({ everyMinutes: (n) => ({ create: () => addTrigger(trigger(fn, { everyMinutes: n })) }), after: (ms) => ({ create: () => addTrigger(trigger(fn, { afterMs: ms, dueAt: now() + ms })) }) }) }),
     },
     DriveApp: {
       getFolderById: (id) => {
@@ -223,4 +224,4 @@ export function execution({ fetch, store = new Map(), cache = new Map(), world =
 }
 
 /** What outlives one execution: mails sent, triggers, Drive; `mailFailures` makes the next n sendEmail calls throw. */
-export const newWorld = () => ({ mails: [], triggers: [], drive: { folders: [], files: [] }, mailFailures: 0 });
+export const newWorld = () => ({ mails: [], triggers: [], triggerSeq: 0, triggerFailures: 0, drive: { folders: [], files: [] }, mailFailures: 0 });

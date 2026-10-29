@@ -9,7 +9,7 @@ import { MARKET_LABEL, fieldOf } from "@/domain/catalog";
 import { deriveRequestedDocs } from "@/domain/requestedDocs";
 import { BDF_SET_FIELDS, questionnaireLocked } from "@/domain/selectors";
 import type { AnswerValue, Answers, ChangeReport, CiqCase, ComponentRow, Confirmation, ConfigAnswers, ConfigState, DocKind, DocumentRef, Market, Message, OpenPoint, OpenPointEdit, OpenPointKind, Phase, PhaseStamp, ReviewDept, Supplier, User } from "@/domain/types";
-import { FILES_FIELD, STEPS, UPLOADS_TABLE, type FlowKey, type StepKey } from "../kf/portal";
+import { FILES_FIELD, FINAL_PDF_FIELD, STEPS, UPLOADS_TABLE, type FlowKey, type StepKey } from "../kf/portal";
 import { COMPONENTS_KEY, isClosedRequest, isReopened, isWriteLocked, readDoc, type Stamp, type Who } from "./answers";
 import { configOf, pinOf, type Pin } from "./bundle";
 import { caseKeyOf, childRows, itemState, json, num, str, type RawItem } from "./raw";
@@ -252,6 +252,16 @@ function bdfSetOf(rq: RawItem | undefined): { answers: Answers; markets: Market[
 export function attachmentsOf(rq: RawItem | undefined): Record<string, unknown>[] {
   const v = rq?.[FILES_FIELD];
   return Array.isArray(v) ? (v.filter((x) => x && typeof x === "object") as Record<string, unknown>[]) : [];
+}
+
+/** The supplier's copy of the final document on a released request (Final_PDF, 29 Oct), or undefined while none is
+ *  there. Prefers the service's own file name (`<Case_Code>-final-document.pdf`), else the newest file with an id.
+ *  Attachment values append in upload order, so the last of several same-named files is the service's latest copy. */
+export function finalPdfOf(rq: RawItem | undefined): Record<string, unknown> | undefined {
+  const v = rq?.[FINAL_PDF_FIELD];
+  const files = (Array.isArray(v) ? v : []).filter((f): f is Record<string, unknown> => !!f && typeof f === "object" && typeof (f as { id?: unknown }).id === "string" && (f as { id: string }).id !== "");
+  const named = `${str(rq, "Case_Code")}-final-document.pdf`;
+  return files.filter((f) => f.name === named).at(-1) ?? files.at(-1);
 }
 
 /** The preview metadata of a stored file, as a Documents_JSON entry carries it (27 Oct, Thomas's prod test: the app

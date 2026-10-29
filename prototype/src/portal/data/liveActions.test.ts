@@ -7,11 +7,11 @@ import { DEV_ACCOUNT } from "@/shell/env";
 import { DEV_WEBHOOKS, NO_WEBHOOKS, webhooksFor, STEPS, UPLOADS_TABLE, type FlowKey, type StepKey, type Webhooks } from "../kf/portal";
 import type { KfData } from "../kf/sdk";
 import type { PortalClient } from "./client";
-import { PORTAL_USERS, fixtureSet, loadedFor } from "./fixtures";
+import { FINAL_PDF_ZZT_0005, PORTAL_USERS, fixtureSet, loadedFor } from "./fixtures";
 import { REOPENED_TEXT, liveActions, type LiveData, type Task } from "./liveActions";
 import { SENT_ATTACHMENT_TEXT, emptyNotes, groupBundles, toSupplierSide, type LocalNotes } from "./map";
 import { childRows, type RawItem } from "./raw";
-import { canRemoveUpload, fileOfDocument, loadSupplierData, withSavedRequests } from "./LiveSupplierStore";
+import { canRemoveUpload, fileOfDocument, finalPdfFile, loadSupplierData, withSavedRequests } from "./LiveSupplierStore";
 import { htmlText } from "@/domain/emailHtml";
 
 const who = (u: (typeof PORTAL_USERS)["elena"]) => ({ id: u._id, name: u.Name, email: u.Email });
@@ -362,6 +362,20 @@ describe("fast saves and file previews (Thomas, 16 Oct)", () => {
     const d = { ...dataFor(p), warnings: [] };
     expect(fileOfDocument(d, up.uploadId)).toMatchObject({ id: up.attachmentId, name: "sds.pdf" });
     expect(fileOfDocument(d, "UP-unknown")).toBeUndefined();
+  });
+
+  it("finds the final PDF Beiersdorf attached to a released request (Final_PDF, 29 Oct), and only there", () => {
+    const d = { ...dataFor(portal()), warnings: [] };
+    expect(finalPdfFile(d, "ZZT-0005")).toEqual(FINAL_PDF_ZZT_0005);
+    expect(finalPdfFile(d, "ZZT-0003")).toBeUndefined();
+    expect(finalPdfFile(null, "ZZT-0005")).toBeUndefined();
+  });
+
+  it("a change report on the released request never writes Final_PDF", async () => {
+    const p = portal();
+    await acts(p).reportChange("ZZT-0005", "The antioxidant changes.");
+    expect(p.log).toEqual(["update request PkReq5 Change_Report_At,Change_Report_By_Email,Change_Report_Rev,Change_Report_Text"]);
+    expect(p.items.get("PkReq5")!.Final_PDF).toEqual([FINAL_PDF_ZZT_0005]);
   });
 });
 

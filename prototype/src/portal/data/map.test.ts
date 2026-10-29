@@ -5,7 +5,7 @@ import { completenessBlockers, releaseBlockers, supplierTasks } from "@/domain/s
 import { requestedDocuments } from "@/domain/requestedDocs";
 import { STEPS } from "../kf/portal";
 import { PORTAL_USERS, fixtureSet, loadedFor } from "./fixtures";
-import { caseContactsOf, docFileMetaOf, documentsJsonOf, emptyNotes, groupBundles, phaseOf, pointKeyOf, requestStepOf, sentUploadIds, toSupplierSide, type Loaded } from "./map";
+import { caseContactsOf, docFileMetaOf, documentsJsonOf, emptyNotes, finalPdfOf, groupBundles, phaseOf, pointKeyOf, requestStepOf, sentUploadIds, toSupplierSide, type Loaded } from "./map";
 import type { CiqCase, DocumentRef, Message, OpenPoint } from "@/domain/types";
 import { UPLOADS_TABLE } from "../kf/portal";
 import type { RawItem } from "./raw";
@@ -322,5 +322,36 @@ describe("sentUploadIds (27 Oct): the files sent with an answer, never removable
     expect([...sentUploadIds(kase([point("in-progress", [...thread, msg("supplier", "2026-10-18T11:00:00Z", "UP-a")])], DOCS))].sort()).toEqual(["UP-a", "UP-b"]);
     // still open (my task): nothing was sent
     expect([...sentUploadIds(kase([point("open", thread)], DOCS))]).toEqual([]);
+  });
+});
+
+describe("finalPdfOf (Final_PDF, 29 Oct): the supplier's copy of the final document", () => {
+  const rq = (v: unknown): RawItem => ({ _id: "PkX", Case_Code: "ZZT-0005", Final_PDF: v }) as RawItem;
+  const ours = { id: "Attach-1", name: "ZZT-0005-final-document.pdf", size: 100 };
+  const other = { id: "Attach-2", name: "notes.pdf", size: 5 };
+
+  it("is undefined without a stored file", () => {
+    expect(finalPdfOf(undefined)).toBeUndefined();
+    expect(finalPdfOf({ _id: "PkX", Case_Code: "ZZT-0005" } as RawItem)).toBeUndefined();
+    expect(finalPdfOf(rq([]))).toBeUndefined();
+    expect(finalPdfOf(rq("x"))).toBeUndefined();
+    expect(finalPdfOf(rq([{ name: "ZZT-0005-final-document.pdf" }, { id: "", name: "y.pdf" }, null]))).toBeUndefined();
+  });
+
+  it("prefers the service's own file name, next to another file in either order", () => {
+    expect(finalPdfOf(rq([ours, other]))).toEqual(ours);
+    expect(finalPdfOf(rq([other, ours]))).toEqual(ours);
+  });
+
+  it("takes the newest of several same-named copies, else the newest file", () => {
+    const again = { ...ours, id: "Attach-3" };
+    expect(finalPdfOf(rq([ours, other, again]))?.id).toBe("Attach-3");
+    expect(finalPdfOf(rq([other, { id: "Attach-4", name: "z.pdf" }]))?.id).toBe("Attach-4");
+  });
+
+  it("the released fixture request carries it; the others do not", () => {
+    const b = groupBundles(loadedFor(elena.id));
+    expect(finalPdfOf(b.find((x) => x.code === "ZZT-0005")?.request)).toMatchObject({ id: "Attach-FD-ZZT-0005", name: "ZZT-0005-final-document.pdf", size: 48213 });
+    expect(b.filter((x) => x.code !== "ZZT-0005").every((x) => finalPdfOf(x.request) === undefined)).toBe(true);
   });
 });

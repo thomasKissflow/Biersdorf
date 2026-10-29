@@ -22,7 +22,7 @@ import { AnswerDrawer } from "./AnswerDrawer";
 import { isClosed, isLiveScope, releasedAt, stepKey, submittedAt, supplierStatus, supplierSteps, useSupplierScope } from "./lib";
 import { MetadataStep } from "./MetadataStep";
 import { CaseRef, DueText, StatusPill } from "./parts";
-import { ChangeReports, ClosedBanner, FinalReleaseView, QuestionsForYou, ReleaseRecord, ReportChangeModal, ReviewBanner, ScopeCheckView } from "./PhaseViews";
+import { ChangeReports, ClosedBanner, FinalDocumentCard, FinalReleaseView, QuestionsForYou, ReleaseRecord, ReportChangeModal, ReviewBanner, ScopeCheckView } from "./PhaseViews";
 import { Questionnaire } from "./Questionnaire";
 
 export function SupplierCase() {
@@ -139,6 +139,7 @@ function CaseView({ c }: { c: CiqCase }) {
       {live && c.phase === "completed" && (
         <>
           <ClosedBanner c={c} onReportChange={() => setReporting(true)} />
+          <FinalDocumentCard c={c} />
           <ReleaseRecord c={c} />
           <ChangeReports c={c} />
           <QuestionsForYou c={c} onOpen={openQ} readOnly />

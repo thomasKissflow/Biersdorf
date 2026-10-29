@@ -2,15 +2,48 @@
 
 Kissflow-internal. Not for Beiersdorf.
 
-The service makes the final PDF of every completed CIQ case once, with no RMM click (REQ-PROC-046, AS-12). A time trigger runs every 5 minutes. For each case that the final release I-7 has recorded and that has no final document yet, it does these steps:
+## Event mode: prod set-up
+
+Thomas does these himself. No key, token or URL goes into this file, the repo or a chat. Use one Apps Script project per environment.
+
+1. **Create the project** (script.google.com → New project, e.g. "CIQ final document (prod)"). In Project Settings tick "Show appsscript.json manifest file in editor", then paste:
+   - `apps-script/appsscript.json` into `appsscript.json`;
+   - `apps-script/Bundle.gs` into a new script file `Bundle`: `pbcopy < kissflow-build/final-pdf/apps-script/Bundle.gs`, select all in the file, paste. Check: 4233 lines, the last one `CIQFinal.BUILD = "523d17922200b112";` (`shasum -a 256` of the repo file: `d8594215cb08ba500840d0c4c961de1adb8822e61b98f8e17f0b95361616c719`);
+   - `apps-script/Code.gs` into `Code.gs` (`pbcopy < kissflow-build/final-pdf/apps-script/Code.gs`). Save.
+2. **Script Properties** (Project Settings → Script Properties):
+   - `KF_DOMAIN` `beiersdorf.kissflow.eu` (the bare host);
+   - `KF_ACCOUNT_ID` the prod account id;
+   - `KF_ACCESS_KEY_ID`, `KF_ACCESS_KEY_SECRET`: a prod key with process-admin on CIQ Case, CIQ Review, CIQ Open Point **and the portal's CIQP Request**, plus the forms (CIQ Audit Event, CIQ Supplier, CIQ Config Version);
+   - `DOPOST_TOKEN`: a long random string you make; it goes into integration 1's body (step 5);
+   - `RMM_WEBHOOK_URL`: integration 2's webhook URL (step 6; until then set `MAIL_ENABLED` to `false`);
+   - `ADMIN_EMAIL`: who gets the alerts.
+   - Optional: `KF_APP_ID` (default `CIQ_Digital_A00`), `KF_PORTAL_APP_ID` (default `CIQ_Supplier_Portal_A00`), `PORTAL_COPY_ENABLED` (default true), `MAIL_ENABLED` (default true), `TIME_ZONE`, `DRIVE_FOLDER_ID`.
+3. **Deploy → New deployment → Web app**: Execute as **Me**, Who has access **Anyone**. Copy the `/exec` URL (only into integration 1, step 5). After every later paste of `Code.gs`: **Manage deployments → edit (pencil) → Version: New version → Deploy**, so the URL stays the same. A second "New deployment" makes a new URL and silently breaks integration 1. If "Anyone" is not offered, the Workspace blocks it: stop and tell the team.
+4. **Run `probe`** from the editor (the first run asks you to authorize the scopes; an anonymous POST cannot). It must not throw. Check `bundle` `523d17922200b112`, `rev` `ev-2026-10-29.2`, `triggers.tick` 0 (else run `removeTriggers`), `portalCopy` true, and the list "released without a final document".
+5. **Integration 1** in the prod builder, "CIQ Case Item exits final step – final release PDF Email": trigger "When an item completes its workflow" on CIQ Case; HTTP step: method POST, URL the `/exec` URL with no query, body type raw JSON `{"caseItemId":"<insert the trigger's _id>","token":"<the token>"}`. Never a header token (doPost cannot read headers). Its step test sends `SampleInstance001` and answers `{"ok":true,"status":"test event"}` (behind Google's 302); nothing is queued. If the HTTP step asks for a connection, make one with no authentication. Switch integration 1 ON only after integration 2 is ON (step 6). Its trigger was set over REST in dev; the trigger test stored a sample case, so `_id` is in the field picker.
+6. **Integration 2**, "CIQ Case - Send Final Release to RMM" (steps: Catch a webhook → Find the case → Get user data (RMM role) → RMM mail text → Send the final PDF to the RMMs). Do this BEFORE integration 1 is switched on:
+   1. Copy its webhook URL from the trigger into `RMM_WEBHOOK_URL`; set `MAIL_ENABLED` true (or delete it). Run `probe`: `rmmWebhook` must show `set`, `shape`, `sameHost` and `sameAccount` all true.
+   2. Capture the sample: in the builder click the trigger's **Test trigger** (it listens 60 s). In Apps Script set `RUN_ONCE_CASE_ID` to any prod case item id (`Pk…`; a filed one lets the mail carry a real PDF) and run `rmmWebhookSample`. The builder shows `caseItemId`, `caseCode`, `seal`. Done.
+   3. Test each step in order. "Find the case" finds that case; "Get user data" lists the RMM role's members (if it returns no users, the RMM role has no member in prod); "RMM mail text" gives To, Subject and Body. **"Send the final PDF to the RMMs" really sends** one mail to the RMM role: without a PDF it says the PDF is not attached yet. Check its **Attachments** pill reads "Find the case → … Final PDF"; if it shows as invalid, pick Final PDF from the "Find the case" output again.
+   4. Switch integration 2 ON. Delete `RUN_ONCE_CASE_ID`.
+7. **Check one release:** the Apps Script **Executions** page shows `doPost queued`, then 2–3 min later a `drain` with `portal copy attached`, `audit row written`, `rmm notified` and `case done` (both with the same `rev`); the case's Final PDF in the app's data console; the request's Final PDF in the portal (the supplier-safe copy: no Beiersdorf names or e-mail addresses); integration 2's run history and the RMM mail.
+
+The sections below "Morning setup in Google Apps Script" describe the retired polling set-up (`tick`, `installTrigger`, `RELEASED_AFTER`, the RMM mail from the script). Use this section for prod; the reading of the log lines, the safety rules and the PDF sections still apply.
+
+## What it does
+
+The service makes the final PDF of every completed CIQ case once, with no RMM click (REQ-PROC-046, AS-12). Since 29 Oct it runs on an EVENT, not on a 5-minute timer: the app integration "CIQ Case Item exits final step – final release PDF Email" (trigger "When an item completes its workflow" on CIQ Case) POSTs the case id to the script's web app (`doPost`). `doPost` only queues the case and makes a one-off trigger; about 2–3 min later `drain` files it:
 
 1. Reads the case, its reviews, open points, audit rows, supplier and configuration over the Kissflow admin REST routes.
 2. Builds the document with the app's own code. The content and the document seal are what the app's "Final document" tab shows when the tab names the same people. The tab is rebuilt for each viewer, and the viewer's own Kissflow name always wins there. So when a stored name differs from that person's Kissflow name, the tab shows another name and another seal. Nothing compares the two; the filed seal is the one in `Final_Document_Hash`. Example: the night runner's cases store a fictional BDF contact as the RMM owner's name.
 3. Renders the PDF.
 4. Attaches the PDF to `CIQ_Case_A00.Final_PDF`. Neither the custom screens nor Kissflow's own item view show that field: since 27 Oct the item view shows only the "navigate to the CIQ App" message, because its Details section is hidden. Check it in the app's data console (Admin or Developer role): CIQ Case, then the case's drawer.
 5. Writes `Final_Document_Hash` and `Final_Document_At`, and `Completion_Trigger` when it is empty.
-6. Mails the PDF to the RMM case owner.
-7. Logs one "Final PDF" CIQ Audit Event row.
+6. Attaches the **supplier-safe copy** to the case's portal request (`CIQP_Request_A00.Final_PDF`, the request in the case's `Portal_Request_Item_Id`, only when its `App_Case_Item_Id` is the case). Same content and file name, but every Beiersdorf person shows only as "Beiersdorf" plus their role, with no name and no e-mail address; it has its own seal (`src/entry.ts` `supplierCopy`). A portal failure is a skip with one `ADMIN_EMAIL` alert; `portalCopy(caseItemId)` repairs it later. `PORTAL_COPY_ENABLED` false switches the copy off.
+7. Logs one "Final PDF" CIQ Audit Event row (its `New_Value_Text` names the supplier copy's seal).
+8. POSTs `{caseItemId, caseCode, seal}` once to `RMM_WEBHOOK_URL`, the app integration "CIQ Case - Send Final Release to RMM", which mails the case's Final PDF to the RMM role. The script itself mails only `ADMIN_EMAIL` (alerts).
+
+Nothing polls any more. A lost event shows in `probe()`'s list "released without a final document": file each with `runOnce` (never the R1 showcase `ZZT-N21-R1-SC1-C01`).
 
 ## Files
 

@@ -31,7 +31,7 @@ import { bundleHashMatches } from "./bundle";
 import { caseWithConfig, configPatch } from "./configSave";
 import type { PortalClient } from "./client";
 import { liveActions, moveAtReleaseSteps, type LiveActions, type LiveData, type Task } from "./liveActions";
-import { attachmentsOf, emptyNotes, groupBundles, requestStepOf, sentUploadIds, toSupplierSide, writableAnswer, type CaseExtra, type Loaded, type LocalNotes } from "./map";
+import { attachmentsOf, emptyNotes, finalPdfOf, groupBundles, requestStepOf, sentUploadIds, toSupplierSide, writableAnswer, type CaseExtra, type Loaded, type LocalNotes } from "./map";
 import { childRows, str, type RawItem } from "./raw";
 
 /** The supplier's task lists: one per step, through My tasks' activity filter (plan v5 §3.1–§3.3). */
@@ -145,6 +145,11 @@ export function fileOfDocument(d: LoadedData | null, docId: string): Record<stri
     return attachmentsOf(b.request).find((f) => String(f.id ?? "") === att);
   }
   return undefined;
+}
+
+/** The supplier's copy of the final document on a request (Final_PDF, 29 Oct), from the full read of its task. */
+export function finalPdfFile(d: LoadedData | null, caseId: string): Record<string, unknown> | undefined {
+  return finalPdfOf(d?.bundles.find((b) => b.code === caseId)?.request);
 }
 
 /** The case, the request's task step and the Uploads row of a document (by its Upload_Id). */
@@ -571,6 +576,19 @@ export function LiveSupplierStore({ client, me, children }: { client: PortalClie
         const f = staged.current.get(file);
         if (!f) return notify("warning", "This file can't be previewed yet. It is stored when you send your answer.");
         void client.previewFiles([f]).catch((e) => notify("danger", `The preview could not open: ${errorText(e)}`));
+      },
+      // 29 Oct: the final PDF Beiersdorf's service attached to the request; opened in Kissflow's file viewer like any
+      // stored file (the SDK's only file-view route). It writes nothing.
+      finalPdf: (caseId) => {
+        const f = finalPdfFile(data, caseId);
+        if (!f) return undefined;
+        const kb = typeof f.size === "number" && f.size > 0 ? Math.max(1, Math.round(f.size / 1024)) : undefined;
+        return { name: typeof f.name === "string" && f.name ? f.name : `${caseId}-final-document.pdf`, ...(kb ? { sizeKb: kb } : {}) };
+      },
+      openFinalPdf: (caseId) => {
+        const f = finalPdfFile(data, caseId);
+        if (!f) return notify("warning", "The final PDF is not on this request yet. Reload and try again.");
+        void client.previewFiles([f]).catch((e) => notify("danger", `The final PDF could not open: ${errorText(e)}`));
       },
     };
   }, [cases, client, data, local, me.email, me.id, notify, run, uploading]);

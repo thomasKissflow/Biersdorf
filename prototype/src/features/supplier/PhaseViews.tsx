@@ -1,7 +1,7 @@
 // Phase-specific views of a request: scope check (waiting; live portal old flow only), review (questions for you),
 // final release, the completed view (release record, question history, "Report a change") and the withdrawn state.
 // Never shows department outcomes, RMES or internal content.
-import { AlertCircle, ArrowRight, FilePen, FileQuestion, Hourglass, MessageSquareText, Send, ShieldCheck, Stamp } from "lucide-react";
+import { AlertCircle, ArrowRight, Download, FilePen, FileQuestion, FileText, Hourglass, MessageSquareText, Send, ShieldCheck, Stamp } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Card, CardHeader, Checkbox, EmptyState, Field, KeyValue, Modal, Select, TextArea } from "@/components/ui";
@@ -9,7 +9,7 @@ import { check, raiserOf } from "@/domain/permissions";
 import { deriveScope } from "@/domain/rules";
 import { fmtDate, fmtDateTime, nowIso, userById, userName } from "@/domain/selectors";
 import type { CiqCase, OpenPoint } from "@/domain/types";
-import { usePortalCaps } from "@/store/portalCaps";
+import { useIsLivePortal, usePortalCaps } from "@/store/portalCaps";
 import { useStore } from "@/store/store";
 import { caseLink, closedAt, isLiveScope, ownConfirmations, releasedAt, sectionCode, sectionKind, sectionTitle, submittedAt, supplierKindLabel, supplierReleaseBlockers, supplierSections, useSupplierScope } from "./lib";
 import { Banner, DueText, OnlyOthers, QuestionBadges } from "./parts";
@@ -334,6 +334,42 @@ export function ClosedBanner({ c, onReportChange }: { c: CiqCase; onReportChange
     <Banner tone="neutral" icon={<Send size={18} />} title="Beiersdorf has withdrawn this request">
       Withdrawn on {fmtDate(closedAt(c))}. No further action is needed from you, and open tasks for this request have ended.
     </Banner>
+  );
+}
+
+/** How long after the release the live portal says the supplier's copy is still on its way (29 Oct). */
+const FINAL_PDF_PENDING_MS = 24 * 3600_000;
+
+/** Live portal (29 Oct): the supplier's copy of the final document, once Beiersdorf's service has attached it to the
+ *  released request (Final_PDF). Until then, for a day after the release, one muted line says it is on its way. */
+export function FinalDocumentCard({ c, now = Date.now() }: { c: CiqCase; now?: number }) {
+  const caps = usePortalCaps();
+  const livePortal = useIsLivePortal();
+  if (!livePortal || c.phase !== "completed") return null;
+  const pdf = caps.finalPdf(c.id);
+  if (!pdf) {
+    const at = Date.parse(releasedAt(c) ?? "");
+    if (!Number.isFinite(at) || now - at > FINAL_PDF_PENDING_MS) return null;
+    return (
+      <p className="inline-flex items-center gap-1.5 px-1 text-[12.5px] text-ink-3" role="status" data-testid="final-pdf-pending">
+        <Hourglass size={14} className="shrink-0" aria-hidden="true" /> Your copy of the final PDF appears here once Beiersdorf has filed it. Reload to check.
+      </p>
+    );
+  }
+  return (
+    <Card data-testid="final-pdf">
+      <CardHeader title="Final document" subtitle="Your released questionnaire as Beiersdorf filed it." />
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-2 px-5 py-3 text-[13px]">
+        <FileText size={14} className="shrink-0 text-ink-3" aria-hidden="true" />
+        <span className="min-w-0 font-medium text-ink [overflow-wrap:anywhere]">{pdf.name}</span>
+        {pdf.sizeKb ? <span className="text-xs text-ink-3">{pdf.sizeKb} KB</span> : null}
+        <span className="ml-auto">
+          <Button variant="secondary" size="sm" icon={<Download size={14} />} onClick={() => caps.openFinalPdf(c.id)} data-testid="final-pdf-download" aria-label={`Download final PDF: ${pdf.name}`}>
+            Download final PDF
+          </Button>
+        </span>
+      </div>
+    </Card>
   );
 }
 

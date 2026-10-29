@@ -32,6 +32,11 @@ export interface PortalCaps {
   stageAnswerFile(caseId: string, opId: string, file: File): Promise<boolean>;
   /** Opens Kissflow's preview of a file stored by stageAnswerFile. */
   previewAnswerFile(file: File): void;
+  /** The live portal (29 Oct): the supplier's copy of the final document on this released request (CIQP Request
+   *  Final_PDF), or undefined while Beiersdorf has not filed it there. Undefined in the prototype. */
+  finalPdf(caseId: string): { name: string; sizeKb?: number } | undefined;
+  /** Opens Kissflow's file viewer on that PDF (view and save). */
+  openFinalPdf(caseId: string): void;
 }
 
 const PROTOTYPE: PortalCaps = {
@@ -47,8 +52,14 @@ const PROTOTYPE: PortalCaps = {
   stagesAnswerFiles: false,
   stageAnswerFile: async () => false,
   previewAnswerFile: () => undefined,
+  // the prototype has no filed PDF. The shared supplier screens must never import the internal document builder
+  // (features/rmm/finalPdf, domain/finalDocument) to render one: that would bundle it into the supplier portal
+  finalPdf: () => undefined,
+  openFinalPdf: () => undefined,
 };
 
+/** The prototype's caps (for tests that change one member). */
+export const PROTOTYPE_CAPS = PROTOTYPE;
 export const PortalCapsContext = createContext<PortalCaps>(PROTOTYPE);
 export const usePortalCaps = () => useContext(PortalCapsContext);
 /** True inside the live supplier portal (real Kissflow tasks), false in the clickable prototype. */
