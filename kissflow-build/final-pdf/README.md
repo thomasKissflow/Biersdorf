@@ -5,9 +5,9 @@ Kissflow-internal. Not for Beiersdorf.
 The service makes the final PDF of every completed CIQ case once, with no RMM click (REQ-PROC-046, AS-12). A time trigger runs every 5 minutes. For each case that the final release I-7 has recorded and that has no final document yet, it does these steps:
 
 1. Reads the case, its reviews, open points, audit rows, supplier and configuration over the Kissflow admin REST routes.
-2. Builds the document with the app's own code. The content and the document seal are exactly what the app's "Final document" tab shows.
+2. Builds the document with the app's own code. The content and the document seal are what the app's "Final document" tab shows when the tab names the same people. The tab is rebuilt for each viewer, and the viewer's own Kissflow name always wins there. So when a stored name differs from that person's Kissflow name, the tab shows another name and another seal. Nothing compares the two; the filed seal is the one in `Final_Document_Hash`. Example: the night runner's cases store a fictional BDF contact as the RMM owner's name.
 3. Renders the PDF.
-4. Attaches the PDF to `CIQ_Case_A00.Final_PDF`. You see it there in Kissflow's own item view of the case; the custom screens do not show it.
+4. Attaches the PDF to `CIQ_Case_A00.Final_PDF`. Neither the custom screens nor Kissflow's own item view show that field: since 27 Oct the item view shows only the "navigate to the CIQ App" message, because its Details section is hidden. Check it in the app's data console (Admin or Developer role): CIQ Case, then the case's drawer.
 5. Writes `Final_Document_Hash` and `Final_Document_At`, and `Completion_Trigger` when it is empty.
 6. Mails the PDF to the RMM case owner.
 7. Logs one "Final PDF" CIQ Audit Event row.
@@ -59,33 +59,43 @@ Since that run, `Code.gs` changed in one line: the account-id check also accepts
 - The case had no reviews, no audit rows and no supplier row (its `read` line: `reviews` 0, `auditRows` 0, `supplierRows` 0). So the review, audit-row and supplier reads never ran on real items.
 - Whether Google's servers reach Kissflow without a Cloudflare challenge. `probe()` shows it in step 6.
 
-So the first real Apps Script run in prod is also the first run of UrlFetchApp's multipart upload, of MailApp with the attachment, and of those reads. The rehearsal in dev (see "Morning setup") tries the upload earlier; the dev stage cases have no reviews, so the review reads first run in prod. At the first prod filing, check the `read` counts and the `attached`, `mail sent` and `audit row written` lines of that run.
+**Rehearsed from node on 29 Oct (dry run, reads only, current `Code.gs` and `Bundle.gs`):**
+- ZZT-E2E-25, released on 25 Oct through the current path (E-B, I-7): `read` reviews 2, auditRows 1, supplierRows 0, configRows 13; built, rendered (21.6 KB), and the 4 writes planned.
+- ZZT-N21-R1-SC1-C01, released on 20 Oct: reviews 6, auditRows 14, supplierRows 1, configRows 13; built, rendered (4 pages, 32 KB).
 
-**For prod:** `KF_DOMAIN` is the prod host (`beiersdorf.kissflow.eu`). `KF_ACCOUNT_ID` is the prod account id. Use a prod access key with admin rights, created in prod for this script (step 5 lists the rights). Set the prod project up after the push, the roles, the integrations' connection and ON state, the token check, the seed import and the supplier's portal user link: right before the main run (`TEST-GUIDE-PROD.md`). Run `installTrigger()` BEFORE your first prod release test, otherwise use `runOnce` for that case. The PDF and the RMM mail come about 10 min after the release (up to 20 with `TICK_MINUTES` 15). The PDF is in the case's Final PDF field, in Kissflow's own item view of the case; the custom screens do not show it.
+So the review, audit-row and supplier reads work on real dev items. What is left for the first Apps Script runs: UrlFetchApp's multipart upload and Google's servers reaching Kissflow (the dev rehearsal), and MailApp with the attachment (the first prod filing). At the first prod filing, check the `read` counts and the `attached`, `mail sent` and `audit row written` lines of that run.
+
+**For prod:** `KF_DOMAIN` is the prod host (`beiersdorf.kissflow.eu`). `KF_ACCOUNT_ID` is the prod account id. Use a prod access key with admin rights, created in prod for this script (step 5 lists the rights). Prod has had test cases since the 22 Oct push, so `probe()` shows real rows there. Set the prod project up after prod carries the current screens (`PROD-MORNING-2026-10-26.md` A: app `cfd65e5766`, the build this bundle comes from) and the 28 Oct configuration (B6). Run `installTrigger()` at least 20 min BEFORE your first prod release test (see step 9), otherwise use `runOnce` for that case. The PDF and the RMM mail come about 10 min after the release (up to 20 with `TICK_MINUTES` 15). Check the PDF in the app's data console (see the list at the top), not in Kissflow's own item view.
 
 ## Morning setup in Google Apps Script
 
-**When.** Steps 1 to 4 touch no Kissflow: do them any time. The rehearsal in dev after step 4 is optional. Steps 5 to 9 with the prod values come after the push, the roles, the integrations' connection and ON state, the token check, the seed import and the supplier's portal user link, right before the main run (the order of `TEST-GUIDE-PROD.md`). Run nothing against prod before the push: there is no prod `CIQ_Case_A00` yet, so `probe()` logs `probe failed`.
+**When.** Steps 1 to 4 touch no Kissflow: do them any time. The rehearsal in dev after step 4 is optional. Steps 5 to 9 with the prod values come once prod carries app `cfd65e5766` (`PROD-MORNING-2026-10-26.md` A) and the 28 Oct configuration (B6), before the main run's final release. `probe()` only reads, so it may run on prod earlier.
 
-1. **Build and test** locally with the command above. All tests must pass.
+1. **Check the files** locally. Do not rebuild: the bundle must be the one built from the tree that app `cfd65e5766` came from.
+   - `shasum -a 256 kissflow-build/final-pdf/apps-script/Bundle.gs` prints `1fc6fb787b8eaa339bc61363646403cb0bd4139346f81b4e8b25c8f3dc231fdc` (build `c588c2189401d76c`, 29 Oct).
+   - `node kissflow-build/final-pdf/test/offline.mjs` ends with `pass 53`, `fail 0`. If it says a source changed, stop and ask.
 2. **Create the project.** At script.google.com, choose New project and name it "CIQ final document". Use the Google account that should send the RMM mails: MailApp sends from the script owner.
 3. **Set up the manifest.** In Project Settings, tick "Show appsscript.json manifest file in editor". Replace that file's content with `apps-script/appsscript.json`. Its scopes: external requests (Kissflow), triggers, sending mail, and Google Drive. The Drive scope is the full one: DriveApp has no narrower scope that can open a folder you made in Drive. The script only opens `DRIVE_FOLDER_ID`, and only when Kissflow refuses the attachment. If you never want the Drive fallback, delete that scope line and the comma at the end of the line above it (`script.send_mail`), and leave `DRIVE_FOLDER_ID` empty.
 4. **Add the code files.**
-   1. Add a script file named `Bundle` and paste the whole of `apps-script/Bundle.gs` into it.
-   2. Replace the content of `Code.gs` with `apps-script/Code.gs`.
-   3. Save.
+   1. Add a script file named `Bundle` and paste the whole of `apps-script/Bundle.gs` into it. Copy it with `pbcopy < kissflow-build/final-pdf/apps-script/Bundle.gs`, then select all in the new file and paste. Check: 4137 lines, the last one `CIQFinal.BUILD = "c588c2189401d76c";`. Every string character is plain ASCII (`\u` escapes), so the paste cannot change it.
+   2. Replace the content of `Code.gs` with `apps-script/Code.gs` (1299 lines; `pbcopy` the same way).
+   3. Save. The Run dropdown lists `probe`, `runOnce`, `tick`, `installTrigger`, `removeTriggers` and `doPost`; run nothing yet.
 
 **Rehearsal in dev (optional, 15 min).** One real Apps Script run on a dev case, before prod. It tries what the node run did not cover: UrlFetchApp's upload from Google's servers, and the reads and writes from Apps Script. Not the mail: see below.
 
 - In the same project, set the Script Properties of step 5 with the dev values: `KF_DOMAIN` `dev-beiersdorf.kissflow.eu`, `KF_ACCOUNT_ID` `AcDOSunMEpSA`, and a dev access key of your own, with the rights step 5 lists. The dev key in `.env` is shared with the agent sessions, so a key of your own is better. Set `MAIL_ENABLED` to `false` and set `ADMIN_EMAIL`. The night runner's dev cases name you as RMM owner but carry a fictional BDF contact address, and the script mails that address when the owner started the case (rule `starter`), so a mail would only bounce. The mail is first tried at the prod main run, where you are the RMM owner.
-- Run `probe()` (step 6).
-- Set `RUN_ONCE_CASE_ID` to the case item id (`Pk…`) of the dev test case ZZT-NT2-STAGE6-RELEASED once the night runner has made it (its case item id is in `MORNING-2026-10-22.md` §5), or of any other released dev case without a Final Document Hash. Not ZZT-NT2-N1 or ZZT-NT2-N3: they have their PDF. Do it before the dev clean-up (`MORNING-2026-10-22.md` §6), which deletes the case. Run `runOnce` and check the first three things of step 7 (not the mail). The `read` line shows which reads the run covered.
-- Do not run `installTrigger()` in dev.
+- Run `probe()` (step 6). Its `eligible cases` line lists ZZT-E2E-25, ZZT-E2E-25B and ZZT-N21-R1-SC1-C01.
+- Set `RUN_ONCE_CASE_ID` to `PkEQjP3T6gnx` (ZZT-E2E-25: released on 25 Oct through the current path, no PDF yet, dry-run from node on 29 Oct). Write down the time. Run `runOnce` and check the log, the data console and the audit row of step 7 (not the mail). Expect `read` with reviews 2, auditRows 1 and supplierRows 0 (its supplier row was cleaned up), then `attached`, `case fields written`, `mail not sent` (MAIL_ENABLED is off), `audit row written`, `case done`, and `runOnce done` with `"status":"filed"`.
+  - If it says the case is not eligible, use `PkEQkEMuaneE` (ZZT-E2E-25B) instead.
+  - Never ZZT-N21-R1-SC1-C01 (the R1 showcase, kept on purpose and the RMES probe's data) or ZZT-NT2-N1 (it has its PDF).
+  - The app's Final document tab of these night-runner cases shows you ("Thomas") as the RMM owner, the PDF the fictional BDF contact the runner stored, so the two seals differ (see the list at the top). That comes from the test data, not from the service.
+  - Do it before any dev clean-up of the E2E cases: dev cannot make a new released case now.
+- In dev run only `probe` and `runOnce`: never `tick`, `installTrigger` or `doPost`. With `RELEASED_AFTER` empty, one `tick` files up to `MAX_CASES_PER_TICK` eligible dev cases, the R1 showcase among them.
 - Delete the script's own dev state: `RUN_ONCE_CASE_ID`, `DONE_IDS`, `ENDED_IDS`, `OLD_IDS`, `OLD_IDS_FOR`, `RR_CURSOR` and the dev case's `FD_<caseItemId>`, where they exist. Keep `PAUSE_UNTIL` while a pause is running.
-- Its "Final PDF" audit row stays in dev after the clean-up (the clean-up does not list it); delete it by hand if you want.
+- Its "Final PDF" audit row (`ZZT-E2E-25-FD-PDF`) stays in dev. The data console's case delete ("with everything") removes it with the case; `night-2026-10-21/cleanup.mjs` does not list it.
 - Then switch to prod at the prod set-up (see "When"): step 5 with the prod values, and `MAIL_ENABLED` back to `true`.
 
-The script keeps the configuration rows 30 min in its cache, whatever account they came from. So the first prod filing must come at least 30 min after the rehearsal's `runOnce`.
+The script keeps the configuration rows 30 min in its cache, whatever account they came from, and a Script Property cannot clear it. So the first prod filing must come at least 30 min after the rehearsal's `runOnce`, or use a separate Apps Script project for prod.
 
 5. **Set the Script Properties** in Project Settings → Script Properties. Fill in the values yourself; no value is in this folder.
 
@@ -94,7 +104,7 @@ The script keeps the configuration rows 30 min in its cache, whatever account th
    | `KF_DOMAIN` | The bare host: `dev-beiersdorf.kissflow.eu` in dev, the prod host for prod. No `https://`, no slash. |
    | `KF_ACCOUNT_ID` | `AcDOSunMEpSA` in dev. Prod has its own id. Letters, digits, `_` and `-`. |
    | `KF_APP_ID` | `CIQ_Digital_A00` (the default). |
-   | `KF_ACCESS_KEY_ID`, `KF_ACCESS_KEY_SECRET` | The access key. A key of its own is best, because the dev key is shared with the agent sessions. The key's user needs process-admin rights on CIQ Case, CIQ Review and CIQ Open Point (the script lists and reads them over the admin routes, and writes the case there), create, read-all and edit on the CIQ Audit Event form, and read-all on CIQ Supplier and CIQ Config Version. The simplest choice is a key of an account-admin user. `probe()` on an empty prod does not test the Review and Open Point rights. |
+   | `KF_ACCESS_KEY_ID`, `KF_ACCESS_KEY_SECRET` | The access key. A key of its own is best, because the dev key is shared with the agent sessions. The key's user needs process-admin rights on CIQ Case, CIQ Review and CIQ Open Point (the script lists and reads them over the admin routes, and writes the case there), create, read-all and edit on the CIQ Audit Event form, and read-all on CIQ Supplier and CIQ Config Version. The simplest choice is a key of an account-admin user. `probe()` tests the Review and Open Point rights only while a case is eligible. |
    | `TIME_ZONE` | The zone the PDF's dates are printed in. Default: the project's zone, Europe/Berlin. |
    | `MAIL_ENABLED` | `true` (the default) or `false`. **Mail is on unless you set `false`.** See "Mail on and off". |
    | `FALLBACK_RMM_EMAIL` | Optional. The address used when the RMM's own address is unknown. |
@@ -115,18 +125,20 @@ The script keeps the configuration rows 30 min in its cache, whatever account th
 
    It logs names, counts and case codes only, never values.
 
-   On a fresh prod with no case yet, `probe()` only proves access: the Script Properties, the Drive folder, the case, audit, config and supplier lists, and that Kissflow answers without a 429 or challenge page (no `pause 20 min` or `probe failed` line). `rows: 0` with all-false `carries` says nothing about the columns, so do not retune the tick from it (the dev list carries `_status` and `Final_Release_At`; see "Proven live in dev"). Run `probe()` again after the main run's PDF to see the columns. Its `q` search line appears only while a case waits for its PDF; the filing's `read` line gives the review and open-point counts.
-7. **Run `runOnce` on one completed case.** Set the Script Property `RUN_ONCE_CASE_ID` to the case item id (`Pk…`), then run `runOnce`. In prod no case is completed before the main run: skip this step there (the trigger files the main run's case), or do it in the rehearsal in dev. Check four things:
-   - the log;
-   - the case in Kissflow's own item view (the custom screens do not show the PDF): the file under Final PDF, and Final Document Hash and Final Document At filled;
+   Also check that `probe: Script Properties` shows `bundle` `c588c2189401d76c`. Prod has had test cases since the 22 Oct push, so the case list's `carries` is meaningful there (dev carries `_status`, `Case_Phase`, `Final_Release_At` and `Final_Document_Hash`). Until prod has a released case, `Final_Release_At` may show false, and idle ticks then read up to `MAX_GETS_PER_TICK` cases. The review and open-point rights are tested only while a case is eligible: its `q` search line appears then; the filing's `read` line gives the review and open-point counts.
+7. **Run `runOnce` on one completed case.** Set the Script Property `RUN_ONCE_CASE_ID` to the case item id (`Pk…`), then run `runOnce`. In prod, do it only for an earlier released case that should get its PDF (it mails that case's RMM owner); otherwise the trigger files the main run's case. Check four things:
+   - the log: `attached` and `case fields written` are already read back from Kissflow;
+   - the case in the app's data console (Admin or Developer role: CIQ Case, the case's drawer): the file under Final PDF, and Final Document Hash and Final Document At filled. Kissflow's own item view shows only the "navigate to the CIQ App" message, and the CIQ screens do not show the field. The case's History in the app shows "Generated final document";
    - the new "Final PDF" CIQ Audit Event row;
    - the RMM mail.
+
+   In dev, look with a role you already hold: the dev role switch is a real role change, and it takes you out of Integration service.
 
    Mail is on by default: the RMM owner gets the PDF. For a first run without a mail, set `MAIL_ENABLED` to `false` first.
 
    Do not attach a K-15 probe file named `<Case_Code>-final-document.pdf` to a case: a file of that name that does not carry the document's seal stops the case (see "If Kissflow refuses the attachment"). Name a probe file differently, for example `k15-probe.pdf`.
-8. **Decide the backfill.** With mail on, every case the trigger files mails its RMM owner. `installTrigger()` sets an empty `RELEASED_AFTER` to the install time, so the trigger files only cases released from then on, and no older case gets a PDF or a mail. To give older cases a PDF, set `RELEASED_AFTER` to an earlier ISO time (for example `2026-10-01T00:00:00Z`) before step 9. `runOnce` files any case, whatever `RELEASED_AFTER` says. A fresh prod has no older case: leave `RELEASED_AFTER` empty.
-9. **Run `installTrigger()`.** The log line `trigger installed` shows `mailEnabled` and `releasedAfter`. The Triggers page then shows `tick` every `TICK_MINUTES`. `removeTriggers()` stops it.
+8. **Decide the backfill.** With mail on, every case the trigger files mails its RMM owner. `installTrigger()` sets an empty `RELEASED_AFTER` to the install time, so the trigger files only cases released from then on, and no older case gets a PDF or a mail. To give older cases a PDF, set `RELEASED_AFTER` to an earlier ISO time (for example `2026-10-01T00:00:00Z`) before step 9. `runOnce` files any case, whatever `RELEASED_AFTER` says. For prod, leave `RELEASED_AFTER` empty, and use `runOnce` for an earlier test case that should get its PDF.
+9. **Run `installTrigger()`** at least 30 min after the rehearsal's `runOnce` (the configuration cache) and at least 20 min before the first prod release. `Final_Release_At` is the supplier's screen clock, and the trigger compares it with the install time: from a supplier PC a few minutes slow, a release right after the install would count as older and never get a PDF (only `runOnce` would file it). The log line `trigger installed` shows `mailEnabled` and `releasedAfter`. The Triggers page then shows `tick` every `TICK_MINUTES`. `removeTriggers()` stops it.
 
 **The trigger quota.** Apps Script allows 90 min of trigger runtime a day on a consumer Google account, and 6 h on Workspace. What a tick costs depends on the columns of the case list rows. `probe()` shows them once prod has a case:
 

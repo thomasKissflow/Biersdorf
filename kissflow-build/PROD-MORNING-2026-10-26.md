@@ -63,7 +63,11 @@ Push the app `CIQ_Digital_A00` and the portal `CIQ_Supplier_Portal_A00`. The pus
    - One CIQ role per tester.
    - Supplier test contacts in the portal Supplier role, each linked by Portal User Id on the CIQ Supplier contacts table before the first case (guide §0 step 6).
 8. **Notifications:** your native Kissflow notifications, if they didn't travel with the push.
-9. **Final PDF:** paste the NEW `final-pdf/apps-script/Bundle.gs` (rebuilt 29 Oct, 05:10 IST, with the matrix fixes and the RMES change, SHA-256 93ce7ec1…92c2) into the Apps Script, then with prod Script Properties, then `probe()` and `installTrigger()` (guide §0 step 7). The app's own "Download PDF" button on the Final document tab works without it.
+9. **Final PDF:** set up the Apps Script as in `final-pdf/README.md` "Morning setup" (updated 29 Oct). The app's own "Download PDF" button on the Final document tab works without it.
+   - **Files:** create the project and paste all 3 files: `appsscript.json`, `Code.gs` and the NEW `Bundle.gs`. The bundle was rebuilt on 29 Oct at 10:10 IST, ASCII-only so a paste can't change it: SHA-256 `1fc6fb78…1fdc`, build `c588c2189401d76c`. It has the same code and PDF bytes as 05:10's `93ce7ec1…92c2`.
+   - **Dev rehearsal (optional):** `runOnce` on ZZT-E2E-25 with your own dev key and mail off.
+   - **Prod:** set the prod Script Properties, then run `probe()`; it must show `bundle` `c588c2189401d76c`. Run `installTrigger()` at least 30 min after the dev `runOnce` and at least 20 min before the first prod release.
+   - **Where to check:** the filed PDF is in the app's data console (CIQ Case drawer), not in Kissflow's own item view.
 10. **Documents:** run `python3 night-2026-10-21/docs-for-app-fe-cleanup.py --apply` from `kissflow-build/` (the client workbook and the guide's FE texts).
 
 ## C. Your first test: one case, start to finish (about 30 min)

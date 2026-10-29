@@ -52,7 +52,8 @@ const result = await esbuild.build({
   globalName: "CIQFinal",
   platform: "browser",
   target: "es2017",
-  charset: "utf8",
+  // No `charset: "utf8"`: esbuild's default ASCII output writes \u escapes, so a paste into the Apps Script editor
+  // cannot drop or turn into line breaks the zero-width characters and the WinAnsi ellipsis (U+0085) in the strings.
   legalComments: "none",
   tsconfig: resolve(root, "prototype/tsconfig.json"),
   alias: { "node:crypto": resolve(here, "src/shims/node-crypto.js") },

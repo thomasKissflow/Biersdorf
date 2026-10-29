@@ -68,9 +68,9 @@ Tell us either way: a test that started before the file existed may need stoppin
    - Without it, New case refuses: "None of the active supplier contacts has a portal user yet…".
    - **Link every contact before the first case starts.** A contact linked after a case has started never gets that case's request (only its later questions), because the hand-off that updates a request's contacts isn't built (backlog A-8).
 7. **Final PDF.** Set up the Google Apps Script (`kissflow-build/final-pdf/README.md`): paste the files, fill in the Script Properties with the prod values, run `probe()`, then `installTrigger()`.
-   - Run it after the push (step 1), never before.
-   - On an empty prod, `probe()` only proves access: its "rows: 0" and false "carries" are expected. Don't retune the tick from them.
-   - Run `installTrigger()` before the main run: the trigger files only cases released after the install.
+   - Run it once prod carries app `ciq-app-ui-cfd65e5766` (`PROD-MORNING-2026-10-26.md` A): `Bundle.gs` (build `c588c2189401d76c`) comes from the same tree. `probe()` must show that build.
+   - Prod has had test cases since the 22 Oct push, so `probe()` shows real rows.
+   - Run `installTrigger()` at least 20 min before the main run's final release: the trigger files only cases released after the install, measured by the supplier's screen clock. If you rehearsed in dev in the same project, also wait 30 min after that `runOnce`.
 
 ## 1. The main run: one case from start to finished PDF (about 30 min)
 
@@ -95,7 +95,7 @@ Keep one browser window or profile per user: the RMM, each reviewer, and the por
 | 13 | Supplier · portal | Open the request | "Final release needed" and the action "Give the final release" (name, e-mail, role recorded) | **release.requested** (app) |
 | 14 | Supplier · portal | Give the final release | The request shows "Completed"; the supplier can still view it and "Report a change" | — |
 | 15 | RMM · app | Reload the case | Phase "Completed"; the confirmations show the releaser's name, e-mail, role and time | **final release (I-7)** (portal) |
-| 16 | — · app (the case's History), Kissflow item view, mailbox | About 10 min after step 15 (up to 20, depending on the script's set-up) | The case's History shows "Generated final document". The PDF is in the case's "Final PDF" field, in Kissflow's own item view of the CIQ Case: the CIQ screens don't show that field (their "Final document" tab is drawn by the screen and is there from step 15 on). The RMM owner gets the e-mail with the PDF | Apps Script executions log (README) |
+| 16 | — · app (the case's History; the data console), mailbox | About 10 min after step 15 (up to 20, depending on the script's set-up) | The case's History shows "Generated final document". The PDF is in the case's "Final PDF" field: see it in the app's data console (Admin or Developer role: CIQ Case, the case's drawer), with Final Document Hash and Final Document At. Kissflow's own item view of the CIQ Case shows only the "navigate to the CIQ App" message, and the CIQ screens don't show that field (their "Final document" tab is drawn by the screen and is there from step 15 on). The RMM owner gets the e-mail with the PDF | Apps Script executions log (README) |
 | 17 | Supplier · portal | "Report a change" on the released request | — | — |
 | 18 | RMM · app | Reload the case | The change report on the case | request.changed |
 
