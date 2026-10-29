@@ -1,17 +1,22 @@
 // Supplier detail (/suppliers/:id): company data, the contacts (deactivated, never deleted), the supplier's cases and
 // the history of master-data changes. Only the Business administrator edits, deactivates and reactivates the supplier
 // and its contacts; RMM sees the page read-only; other roles have no access.
+// Phones (< 768 px, Thomas 30 Oct): the shell's back arrow replaces the "Suppliers" link; contacts and cases are cards
+// (the rows' test ids); the page is read-only for everyone, the administrator sees a note that editing needs a larger
+// screen.
 import { ArrowLeft, Building2, Pencil, Plus, Power, UserRoundX } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Avatar, Badge, Button, Card, CardHeader, EmptyState, KeyValue, Mono, Modal, Table, Td, Timeline, Tr } from "@/components/ui";
+import { Avatar, Badge, BreakableEmail, Button, Card, CardHeader, CardList, CardListItem, EmptyState, KeyValue, LargerScreenNote, Modal, Mono, Table, Td, Timeline, Tr, cx } from "@/components/ui";
 import { PhaseBadge } from "@/components/status";
 import { can } from "@/domain/permissions";
 import { fmtDate, fmtDateTime, isClosed, userName } from "@/domain/selectors";
 import { DEMO_SUPPLIER_IDS } from "@/domain/seed";
 import { casesOfSupplier, contactsOf, isActiveSupplier, supplierHistory } from "@/domain/suppliers";
 import type { Supplier, User } from "@/domain/types";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { useStore } from "@/store/store";
+import { PhoneFacts } from "@/features/rmm/phone";
 import { DueCell, NoAccess } from "@/features/rmm/shared";
 import { ContactFormModal, DeactivateContactModal, SupplierFormModal } from "./forms";
 import { MaintainedByAdmin } from "./ReadOnlyNote";
@@ -40,14 +45,16 @@ export function SupplierDetail() {
       </Card>
     );
   }
-  return <SupplierView key={sup.id} sup={sup} manage={can(state, me.id, "supplier.manage")} newCase={can(state, me.id, "case.create")} />;
+  return <SupplierView key={sup.id} sup={sup} admin={can(state, me.id, "supplier.manage")} newCase={can(state, me.id, "case.create")} />;
 }
 
-/** `manage`: the administrator's controls (edit, deactivate, reactivate, contacts); without it the page is read-only.
- *  `newCase`: the viewer may start a case (RMM), so the empty case list links to New case. */
-function SupplierView({ sup, manage, newCase }: { sup: Supplier; manage: boolean; newCase: boolean }) {
+/** `admin`: the administrator's controls (edit, deactivate, reactivate, contacts), on a big screen only; without them
+ *  the page is read-only. `newCase`: the viewer may start a case (RMM), so the empty case list links to New case. */
+function SupplierView({ sup, admin, newCase }: { sup: Supplier; admin: boolean; newCase: boolean }) {
   const { state, setContactActive } = useStore();
   const nav = useNavigate();
+  const phone = useIsPhone();
+  const manage = admin && !phone;
   const [dialog, setDialog] = useState<Dialog>(null);
   const close = () => setDialog(null);
   const contacts = contactsOf(state, sup.id).sort((a, b) => Number(a.active === false) - Number(b.active === false) || a.name.localeCompare(b.name));
@@ -57,14 +64,24 @@ function SupplierView({ sup, manage, newCase }: { sup: Supplier; manage: boolean
   const added = history.find((e) => e.action === "Added supplier");
   const source = added ? `Added in the app by ${userName(state, added.by)} on ${fmtDate(added.at)}` : DEMO_SUPPLIER_IDS.includes(sup.id) ? "Imported from the supplier master" : "Supplier master";
   const openOn = (u: User) => cases.filter((c) => !isClosed(c) && c.supplierContactIds.includes(u.id));
+  const company = [
+    { k: "Legal name", v: sup.name },
+    { k: "DUNS number", v: <Mono>{sup.duns}</Mono> },
+    { k: "Country", v: sup.country },
+    { k: "City", v: sup.city || "—" },
+    { k: "Type", v: sup.type === "manufacturer" ? "Manufacturer" : "Distributor" },
+    { k: "Source", v: source },
+  ];
 
   return (
     <div className="space-y-5">
       <div>
-        <Link to="/suppliers" className="inline-flex items-center gap-1 text-[13px] text-ink-3 hover:text-ink">
-          <ArrowLeft size={14} /> Suppliers
-        </Link>
-        <div className="mt-2 flex flex-wrap items-start justify-between gap-4">
+        {!phone && (
+          <Link to="/suppliers" className="inline-flex items-center gap-1 text-[13px] text-ink-3 hover:text-ink">
+            <ArrowLeft size={14} /> Suppliers
+          </Link>
+        )}
+        <div className={cx(!phone && "mt-2", "flex flex-wrap items-start justify-between gap-4")}>
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2.5">
               <h1 className="text-[22px] leading-tight font-semibold tracking-tight text-ink" data-testid="supplier-title">
@@ -88,11 +105,12 @@ function SupplierView({ sup, manage, newCase }: { sup: Supplier; manage: boolean
                 Edit supplier
               </Button>
             </div>
-          ) : (
+          ) : admin ? null : (
             <MaintainedByAdmin testId="supplier-read-only" />
           )}
         </div>
       </div>
+      {admin && <LargerScreenNote>On a phone you can look up this supplier, its contacts and cases, but not change them.</LargerScreenNote>}
 
       <Card>
         <CardHeader
@@ -108,8 +126,38 @@ function SupplierView({ sup, manage, newCase }: { sup: Supplier; manage: boolean
         />
         {contacts.length === 0 ? (
           <div data-testid="empty-contacts">
-            <EmptyState title="No contact yet">{manage ? "Add a contact before starting a case for this supplier." : "Ask the business administrator to add a contact before starting a case for this supplier."}</EmptyState>
+            <EmptyState title="No contact yet">{admin ? "Add a contact before starting a case for this supplier." : "Ask the business administrator to add a contact before starting a case for this supplier."}</EmptyState>
           </div>
+        ) : phone ? (
+          <CardList label="Contacts" className="p-3">
+            {contacts.map((u) => {
+              const on = u.active !== false;
+              const n = openOn(u).length;
+              return (
+                <CardListItem
+                  key={u.id}
+                  data-testid={`contact-row-${u.id}`}
+                  title={
+                    <span className="inline-flex items-center gap-2">
+                      <Avatar initials={u.initials} side="supplier" size={26} />
+                      {u.name}
+                    </span>
+                  }
+                  badge={
+                    <Badge tone={on ? "ok" : "neutral"} dot>
+                      {on ? "Active" : `Inactive since ${fmtDate(u.deactivatedAt)}`}
+                    </Badge>
+                  }
+                  meta={u.title}
+                  fields={[
+                    { label: "E-mail", value: <BreakableEmail email={u.email} />, wide: true },
+                    { label: "May confirm", value: u.mayConfirm !== false ? "Yes" : <span className="text-ink-3">No</span> },
+                    { label: "Open cases", value: n ? `${n} open` : <span className="text-ink-3">None</span> },
+                  ]}
+                />
+              );
+            })}
+          </CardList>
         ) : (
           <Table head={["Name", "E-mail", "May confirm", "Open cases", "Status", ...(manage ? [""] : [])]}>
             {contacts.map((u) => {
@@ -179,6 +227,23 @@ function SupplierView({ sup, manage, newCase }: { sup: Supplier; manage: boolean
                   )}
                 </EmptyState>
               </div>
+            ) : phone ? (
+              <CardList label="Cases" className="p-3">
+                {cases.map((c) => (
+                  <CardListItem
+                    key={c.id}
+                    data-testid={`supplier-case-${c.id}`}
+                    onClick={() => nav(`/cases/${c.id}`)}
+                    title={c.materialName}
+                    badge={<PhaseBadge phase={c.phase} />}
+                    meta={<Mono className="text-ink-3">{c.id}</Mono>}
+                    fields={[
+                      { label: "Contacts", value: c.supplierContactIds.map((x) => userName(state, x)).join(", ") },
+                      { label: "Due", value: <DueCell c={c} /> },
+                    ]}
+                  />
+                ))}
+              </CardList>
             ) : (
               <Table head={["Case", "Phase", "Contacts", "Due"]}>
                 {cases.map((c) => (
@@ -204,19 +269,7 @@ function SupplierView({ sup, manage, newCase }: { sup: Supplier; manage: boolean
         <div className="space-y-6">
           <Card>
             <CardHeader title="Company" />
-            <div className="p-4">
-              <KeyValue
-                cols={1}
-                items={[
-                  { k: "Legal name", v: sup.name },
-                  { k: "DUNS number", v: <Mono>{sup.duns}</Mono> },
-                  { k: "Country", v: sup.country },
-                  { k: "City", v: sup.city || "—" },
-                  { k: "Type", v: sup.type === "manufacturer" ? "Manufacturer" : "Distributor" },
-                  { k: "Source", v: source },
-                ]}
-              />
-            </div>
+            <div className="p-4">{phone ? <PhoneFacts items={company.map((i) => ({ ...i, wide: i.k === "Legal name" || i.k === "Source" }))} /> : <KeyValue cols={1} items={company} />}</div>
           </Card>
           <Card data-testid="supplier-history">
             <CardHeader title="History" subtitle="Changes to this supplier and its contacts" />

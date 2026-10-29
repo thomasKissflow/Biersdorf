@@ -1,6 +1,7 @@
 // Beiersdorf-only discussion on the case, optionally linked to a section (REQ-PROC-020). The same notes as the case
 // page's Internal notes tab. Reviewers, RMM, Customs and Legal post; Admin, Business owner and Auditor read only.
-// "@" mentions a colleague, who gets an e-mail linking here (?note=<id> scrolls to the note and marks it).
+// "@" mentions a colleague, who gets an e-mail linking here (?note=<id> scrolls to the note and marks it). On a phone
+// (< 768 px) "Link to …" and "Add note" are 44 px targets.
 import { Lock } from "lucide-react";
 import { useId, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -11,11 +12,13 @@ import { mentionableUsers } from "@/domain/mentions";
 import { check } from "@/domain/permissions";
 import { fmtDateTime, isClosed, userById } from "@/domain/selectors";
 import type { CiqCase } from "@/domain/types";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { useStore } from "@/store/store";
 import { secCode } from "./shared";
 
 export function InternalNotes({ c, sectionId, onJump }: { c: CiqCase; sectionId?: string; onJump: (sectionId: string) => void }) {
   const { state, me, addInternalNote } = useStore();
+  const phone = useIsPhone();
   const [text, setText] = useState("");
   const [link, setLink] = useState(true);
   const [sending, setSending] = useState(false);
@@ -65,8 +68,20 @@ export function InternalNotes({ c, sectionId, onJump }: { c: CiqCase; sectionId?
             {MENTION_HINT}
           </p>
           <div className="flex flex-wrap items-center justify-between gap-2">
-            {sectionId ? <Checkbox checked={link} onChange={setLink} label={<span className="text-[12.5px]">Link to {secCode(sectionId, c.templateVersion)}</span>} /> : <span />}
-            <Button size="sm" variant="secondary" onClick={add} disabled={!text.trim() || sending} data-testid="note-add">
+            {sectionId ? (
+              phone ? (
+                // the whole row is the checkbox's label: a 44 px target
+                <label className="flex min-h-11 cursor-pointer items-center gap-2.5 pr-2">
+                  <input type="checkbox" checked={link} onChange={(e) => setLink(e.target.checked)} className="h-4 w-4 shrink-0 accent-[var(--brand)]" />
+                  <span className="text-[13px] text-ink">Link to {secCode(sectionId, c.templateVersion)}</span>
+                </label>
+              ) : (
+                <Checkbox checked={link} onChange={setLink} label={<span className="text-[12.5px]">Link to {secCode(sectionId, c.templateVersion)}</span>} />
+              )
+            ) : (
+              <span />
+            )}
+            <Button size="sm" variant="secondary" onClick={add} disabled={!text.trim() || sending} className={phone ? "min-h-11" : undefined} data-testid="note-add">
               {sending ? "Sending…" : "Add note"}
             </Button>
           </div>
@@ -98,7 +113,7 @@ export function InternalNotes({ c, sectionId, onJump }: { c: CiqCase; sectionId?
                   <NoteText note={n} users={state.users} meId={me.id} className="mt-0.5 text-[13px] whitespace-pre-line text-ink [overflow-wrap:anywhere]" />
                   <NoteNotified state={state} note={n} />
                   {n.sectionId && (
-                    <button onClick={() => onJump(n.sectionId!)} className="mt-1 text-xs font-medium text-brand hover:underline">
+                    <button onClick={() => onJump(n.sectionId!)} className={phone ? "-ml-2 inline-flex min-h-11 min-w-11 items-center px-2 text-xs font-medium text-brand hover:underline" : "mt-1 text-xs font-medium text-brand hover:underline"}>
                       {secCode(n.sectionId, c.templateVersion)}
                     </button>
                   )}

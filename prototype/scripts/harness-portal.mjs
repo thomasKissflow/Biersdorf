@@ -7,13 +7,20 @@
 // current step out of admin lists (CAFM D55), and records every command. Proves the bundle's wiring against the SDK's
 // real protocol, NOT how Kissflow's host actually answers (spike S-1 does that, in the Diagnostics page).
 //   node scripts/harness-portal.mjs [scenario ...]   (default: all)
+// Phones (Thomas, 30 Oct: below 768 px the portal is the phone layout, src/shell/ResponsiveShell.tsx): a scenario passes
+// PHONE (390 x 844, touch, the host page's viewport meta honoured) or PHONE_360 as its context; phoneLayout(t, label)
+// checks the phone shell (no left pane, the header, the tab bar, its 44 px targets, no sideways scroll), openMore(t) opens
+// the More sheet, t.phoneShot(area, tag) writes $PHONE_SHOTS/<area>/<scenario>-<tag>.png (default dist-portal/phone/).
+// The supplier screens on a phone (phone-requests, -questionnaire, -questions, -release, phone-portal-360; shots in
+// <area> "portal") also use smallTargets (under 44 px), stickyOffFoot (the sticky action bar on the tab bar), inBand and
+// reachable (in full between the header and the bars) and sheetSideScroll.
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { createServer } from "node:http";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-import { readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { LEAK_TERMS, appSupplierBundle, leakHits } from "./leak-scan.mjs";
 
 const require = createRequire(import.meta.url);
@@ -21,6 +28,12 @@ const PW = "/Users/thomas/Documents/Kissflow Projects/POC/Promotion Management/a
 const { chromium } = require(PW);
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const out = path.join(root, "dist-portal");
+/** Phones (Thomas, 30 Oct): an iPhone-sized context (the host page's viewport meta honoured, touch) and the narrowest
+ *  phone the layout is made for. Every other scenario runs at 1280 x 900 (desktop). */
+const PHONE = { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 };
+const PHONE_360 = { ...PHONE, viewport: { width: 360, height: 780 } };
+/** Where the phone scenarios' screenshots go: $PHONE_SHOTS/<area>/ (default dist-portal/phone/<area>/). */
+const PHONE_SHOTS = process.env.PHONE_SHOTS || path.join(out, "phone");
 const FX = JSON.parse(execFileSync(path.join(root, "node_modules/.bin/vite-node"), [path.join(root, "scripts/portal-fixtures.ts")], { cwd: root, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 }));
 const UI = readFileSync(path.join(out, "zip", "index.html"), "utf8");
 const sha = (s) => createHash("sha256").update(String(s)).digest("hex");
@@ -88,7 +101,7 @@ const STEP_NAME = { [STEP.fill]: "Supplier: fill in the CIQ", [STEP.keep]: "Supp
 // window.__kfDb (the items), window.__kfSet(id, patch) and window.__kfMove(id, step) let a scenario play Beiersdorf's
 // side (the sync service or the app's integrations).
 function hostPage(uiOrigin) {
-  return `<!doctype html><html><head><meta charset="utf-8"><title>Kissflow (emulated host)</title>
+  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Kissflow (emulated host)</title>
 <style>html,body{margin:0;height:100%}iframe{border:0;width:100%;height:100%;display:block}</style></head><body>
 <iframe id="kf-frame" title="app-custom-ui-CIQ_Supplier_Portal_A00"></iframe>
 <script>
@@ -447,6 +460,8 @@ async function scenario(name, steps, ctxOpts = {}) {
     async settle(ms = 400) { await page.waitForTimeout(ms); await ui.getByText("Saving…").first().waitFor({ state: "detached", timeout: 15000 }).catch(() => {}); await page.waitForTimeout(200); },
     check(label, pass, detail) { checks.push({ label, pass: !!pass, ...(detail !== undefined ? { detail } : {}) }); },
     async shot(tag) { await page.screenshot({ path: path.join(out, `harness-${name}-${tag}.png`), fullPage: false }); },
+    /** A phone screenshot for the reviewers: $PHONE_SHOTS/<area>/<scenario>-<tag>.png. */
+    async phoneShot(area, tag) { mkdirSync(path.join(PHONE_SHOTS, area), { recursive: true }); await page.screenshot({ path: path.join(PHONE_SHOTS, area, `${name}-${tag}.png`), fullPage: false }); },
   };
   try {
     await steps(t);
@@ -483,6 +498,93 @@ const bgLightness = (t) =>
     const n = c.match(/[\d.]+/g).map(Number);
     return c.startsWith("oklch") ? n[0] : (0.2126 * n[0] + 0.7152 * n[1] + 0.0722 * n[2]) / 255;
   });
+
+/** The UI frame scrolls sideways: [scrollWidth, innerWidth] when it does, null when it does not. */
+const sideScroll = (t) => t.frame().evaluate(() => (document.documentElement.scrollWidth > window.innerWidth ? [document.documentElement.scrollWidth, window.innerWidth] : null));
+
+/** The phone shell's checks (src/shell/ResponsiveShell.tsx): no left pane; the header at the top with the page's title;
+ *  the tab bar fixed at the bottom with More last, every entry a 44 px target; nothing scrolls sideways. `title`: the
+ *  header's expected text (optional). Returns the tab bar's test ids. */
+async function phoneLayout(t, label, title) {
+  const vw = t.page.viewportSize();
+  await t.seeTid("tab-bar", `${label}: the tab bar shows`);
+  t.check(`${label}: no left pane`, (await t.tid("side-pane").count()) === 0);
+  const header = await t.tid("phone-header").first().boundingBox();
+  t.check(`${label}: the header sits at the top`, !!header && Math.round(header.y) === 0 && Math.round(header.width) === vw.width, header);
+  if (title !== undefined) {
+    const got = (await t.tid("phone-title").first().textContent().catch(() => null))?.trim();
+    t.check(`${label}: the header says "${title}"`, got === title, got);
+  }
+  const bar = await t.tid("tab-bar").first().boundingBox();
+  t.check(`${label}: the tab bar is fixed at the bottom, full width`, !!bar && Math.round(bar.y + bar.height) === vw.height && Math.round(bar.width) === vw.width, bar);
+  const ids = await t.tid("tab-bar").first().locator("[data-testid]").evaluateAll((els) => els.map((e) => e.getAttribute("data-testid")).filter((id) => /^(nav-|tab-more$)/.test(id)));
+  t.check(`${label}: More is the last tab, after at most 4 entries`, ids.at(-1) === "tab-more" && ids.length <= 5, ids);
+  const small = [];
+  for (const id of ids) {
+    const b = await t.tid("tab-bar").first().getByTestId(id).boundingBox();
+    if (!b || b.width < 44 || b.height < 44 || b.x < 0 || b.x + b.width > vw.width + 0.5) small.push({ id, b });
+  }
+  t.check(`${label}: every tab is a 44 px target in view`, small.length === 0, small);
+  const scroll = await sideScroll(t);
+  t.check(`${label}: nothing scrolls sideways at ${vw.width} px`, scroll === null, scroll);
+  return ids;
+}
+
+/** Opens the phone's More sheet (the tab bar's last tab) and waits for it. */
+async function openMore(t) {
+  await t.tid("tab-more").first().click();
+  await t.seeTid("more-sheet", "More opens", 3000);
+}
+
+// The supplier screens on a phone (Thomas, 30 Oct; src/features/supplier/phone.ts): what the phone-* scenarios share.
+/** Elements matching `sel` in the UI that show but are smaller than a 44 px tap target (in height, and in width unless
+ *  `heightOnly`): [{ id, w, h }]. */
+const smallTargets = (t, sel, heightOnly = false) =>
+  t.frame().evaluate(
+    ([s, ho]) =>
+      [...document.querySelectorAll(s)]
+        .filter((e) => e.getClientRects().length > 0)
+        .map((e) => {
+          const r = e.getBoundingClientRect();
+          return { id: e.getAttribute("data-testid") || e.getAttribute("aria-label") || e.textContent.trim().slice(0, 40), w: Math.round(r.width), h: Math.round(r.height) };
+        })
+        .filter((x) => x.h < 44 || (!ho && x.w < 44)),
+    [sel, heightOnly],
+  );
+/** The sticky action bar: [its bottom, the tab bar's top] unless it sits right on the tab bar (then null). */
+const stickyOffFoot = (t) =>
+  t.frame().evaluate(() => {
+    const a = document.querySelector('[data-testid="sticky-actions"]')?.getBoundingClientRect();
+    const b = document.querySelector('[data-testid="tab-bar"]')?.getBoundingClientRect();
+    return a && b && Math.abs(a.bottom - b.top) <= 1 ? null : [a?.bottom, b?.top];
+  });
+/** Whatever scrolls sideways inside an open sheet: [[class, scrollWidth, clientWidth]]. */
+const sheetSideScroll = (t) =>
+  t.frame().evaluate(() => [...document.querySelectorAll('[role="dialog"], [role="dialog"] *')].filter((e) => e.scrollWidth > e.clientWidth + 1 && /auto|scroll/.test(getComputedStyle(e).overflowX)).map((e) => [String(e.className).slice(0, 48), e.scrollWidth, e.clientWidth]));
+/** The element (CSS selector) in full in the free band: below the header (and the section bar when it is stuck), above
+ *  the tab bar and the sticky action bar, within the width; null when it is, else where it is. `scroll`: centre it first. */
+const inBand = (t, sel, scroll = false) =>
+  t.frame().evaluate(
+    ([s, sc]) => {
+      const el = document.querySelector(s);
+      if (!el) return { missing: s };
+      if (sc) el.scrollIntoView({ block: "center" });
+      const r = el.getBoundingClientRect();
+      let head = document.querySelector('[data-testid="phone-header"]')?.getBoundingClientRect().bottom ?? 0;
+      const sb = document.querySelector('[data-testid="q-section-bar"]');
+      if (sb && !sb.contains(el)) {
+        const b = sb.getBoundingClientRect();
+        if (b.top <= head + 1 && b.bottom > head) head = b.bottom;
+      }
+      const bars = [...document.querySelectorAll('[data-testid="tab-bar"], [data-testid="sticky-actions"]')].filter((b) => !b.contains(el)).map((b) => b.getBoundingClientRect().top);
+      const foot = Math.min(window.innerHeight, ...bars);
+      const ok = r.top >= head - 0.5 && r.bottom <= foot + 0.5 && r.left >= -0.5 && r.right <= window.innerWidth + 0.5;
+      return ok ? null : { top: Math.round(r.top), bottom: Math.round(r.bottom), left: Math.round(r.left), right: Math.round(r.right), head: Math.round(head), foot: Math.round(foot) };
+    },
+    [sel, scroll],
+  );
+/** A page's action (test id) can be brought into the free band: centred, it shows in full (null), else where it is. */
+const reachable = (t, id) => inBand(t, `[data-testid="${id}"]`, true);
 
 /** A metadata question: a list of chips to click (toggles), or Yes/No. */
 async function config(t, q, v) {
@@ -1381,22 +1483,574 @@ const SCENARIOS = {
       await t.host({ role: "admin", envelope: "Data" }, "/admin/flow/request");
       await t.see("ZZT-0001-REQ");
     }),
-  phone: () =>
+  "phone-shell": () =>
     scenario(
-      "phone",
+      "phone-shell",
       async (t) => {
-        await t.host({ role: "supplier" }, "/portal/help");
-        await t.see("How it works");
-        // Thomas, 20 Oct: no top tab bar any more; on a narrow window the left pane starts as its icon rail
-        const pane = t.tid("side-pane").first();
-        t.check("on a phone the menu is the icon rail (64 px)", (await pane.getAttribute("data-collapsed")) === "true" && Math.round((await pane.boundingBox())?.width ?? -1) === 64, await pane.boundingBox());
-        const help = t.tid("nav-portal-help").first();
-        const box = await help.boundingBox();
-        t.check("the current page (Help) is in view and marked current", !!box && box.x >= 0 && box.x + box.width <= 390 && (await help.getAttribute("aria-current")) === "page", box);
-        t.check("no page scrolls sideways", await t.frame().evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), await t.frame().evaluate(() => [document.documentElement.scrollWidth, window.innerWidth]));
-        await t.shot("help");
+        // Thomas, 30 Oct: below 768 px the portal is the phone layout (until then a narrow window had the icon rail): no
+        // left pane; the slim header (the page's title, a back arrow on a request), the bottom tab bar (My requests with
+        // its open-task count, Help, More), More with the status note, Reload and night mode; the admin console the same,
+        // with the note to use a larger screen to edit
+        await t.host({ role: "supplier" }, "/portal");
+        await t.see("OLIVIA Pure 100", "the supplier's requests show");
+        await t.settle(300);
+        const tabs = await phoneLayout(t, "supplier at 390", "My requests");
+        t.check("the tabs: My requests, Help, More", JSON.stringify(tabs) === JSON.stringify(["nav-portal", "nav-portal-help", "tab-more"]), tabs);
+        const badge = await t.tid("nav-portal").first().locator('[aria-label$=" open"]').innerText().catch(() => "");
+        const tasks = await t.ui.locator('[data-testid="portal-tasks"] li').count();
+        t.check("My requests carries the open-task count, and is the current tab", Number(badge) > 0 && Number(badge) === tasks && (await t.tid("nav-portal").first().getAttribute("aria-current")) === "page", { badge, tasks });
+        t.check("production: no dev top bar", (await t.tid("dev-top-bar").count()) === 0);
+        await t.phoneShot("foundation", "home-390");
+        await openMore(t);
+        const more = await t.tid("more-sheet").first().locator("[data-testid]").evaluateAll((els) => els.map((e) => e.getAttribute("data-testid")));
+        t.check("More: Reload with the status note, night mode (no further pages)", ["reload", "more-status", "more-theme"].every((id) => more.includes(id)) && !more.includes("more-nav"), more);
+        t.check("… the status note reads 'Updated …'", /^Updated /.test((await t.tid("more-status").first().innerText()).trim()), await t.tid("more-status").first().innerText());
+        await t.phoneShot("foundation", "more-390");
+        const reads = (await t.calls(() => true)).length;
+        await t.tid("reload").first().click();
+        await t.settle();
+        t.check("Reload closes More and reads again", (await t.tid("more-sheet").count()) === 0 && (await t.calls(() => true)).length > reads);
+        // a request: the back arrow, back to My requests
+        await t.tid("open-request-ZZT-0003").first().click();
+        await t.seeTid("supplier-request", "the request opens");
+        await t.seeTid("phone-back", "a request has the back arrow");
+        t.check("… the header says Request", (await t.tid("phone-title").first().textContent())?.trim() === "Request");
+        t.check("… nothing scrolls sideways on the request", (await sideScroll(t)) === null, await sideScroll(t));
+        await t.phoneShot("foundation", "request-390");
+        await t.tid("phone-back").first().click();
+        await t.page.waitForTimeout(300);
+        t.check("Back returns to My requests", (await t.frame().evaluate(() => location.hash)) === "#/portal", await t.frame().evaluate(() => location.hash));
+        await t.tid("nav-portal-help").first().click();
+        await t.see("How it works", "Help opens from its tab");
+        t.check("… the current tab, the header says Help", (await t.tid("nav-portal-help").first().getAttribute("aria-current")) === "page" && (await t.tid("phone-title").first().textContent())?.trim() === "Help");
+        await t.phoneShot("foundation", "help-390");
+        // night mode from More
+        await openMore(t);
+        await t.tid("more-theme").first().click();
+        await t.page.waitForTimeout(200);
+        t.check("More switches night mode on", (await htmlTheme(t)) === "dark");
+        await t.page.keyboard.press("Escape");
+        await t.page.waitForTimeout(300);
+        await t.phoneShot("foundation", "help-dark-390");
+        await openMore(t);
+        await t.tid("more-theme").first().click();
+        await t.page.keyboard.press("Escape");
+        // a tablet: the desktop layout with the menu collapsed; desktop: expanded
+        await t.page.setViewportSize({ width: 900, height: 1200 });
+        await t.seeTid("side-pane", "a tablet (900 px): the left pane", 3000);
+        t.check("… collapsed to its icon rail (a tablet's default)", (await t.tid("side-pane").first().getAttribute("data-collapsed")) === "true" && (await t.tid("tab-bar").count()) === 0);
+        await t.page.setViewportSize({ width: 1280, height: 900 });
+        await t.page.waitForTimeout(300);
+        t.check("desktop (1280 px): expanded", (await t.tid("side-pane").first().getAttribute("data-collapsed")) === "false");
+        await t.page.setViewportSize({ width: 390, height: 844 });
+        // the admin console on a phone
+        await t.host({ role: "admin" }, "/admin");
+        await t.seeTid("larger-screen-note", "admin: the note to use a larger screen to edit");
+        const adminTabs = await phoneLayout(t, "admin at 390", "Overview");
+        t.check("admin: Overview, Requests, Queries, Final releases, More", JSON.stringify(adminTabs) === JSON.stringify(["nav-admin", "nav-admin-flow-request", "nav-admin-flow-query", "nav-admin-flow-finalRelease", "tab-more"]), adminTabs);
+        await openMore(t);
+        t.check("admin, More: Help articles, Roles & grants (a button), Diagnostics", (await t.ui.locator('[data-testid="more-nav"] [data-testid="nav-admin-help"], [data-testid="more-nav"] button[data-testid="nav-admin-roles"], [data-testid="more-nav"] [data-testid="nav-admin-diagnostics"]').count()) === 3);
+        await t.phoneShot("foundation", "admin-more-390");
+        await t.page.keyboard.press("Escape");
+        await t.phoneShot("foundation", "admin-390");
       },
-      { viewport: { width: 390, height: 800 } },
+      PHONE,
+    ),
+  "phone-shell-360": () =>
+    scenario(
+      "phone-shell-360",
+      async (t) => {
+        // the narrowest phone, in the Development sandbox: the compact dev top bar in the header, its switcher and the
+        // person chip in view; a request fits too
+        await t.host({ role: "supplier", env: "dev" }, "/portal");
+        await t.see("OLIVIA Pure 100", "the supplier's requests show");
+        await t.settle(300);
+        await phoneLayout(t, "dev supplier at 360", "My requests");
+        t.check("the dev top bar is the compact one, inside the header", (await t.ui.locator('[data-testid="phone-header"] [data-testid="dev-top-bar"][data-compact="true"]').count()) === 1);
+        const off = [];
+        for (const id of ["role-switcher", "person-chip"]) {
+          const b = await t.tid(id).first().boundingBox();
+          if (!b || b.x < 0 || b.x + b.width > 360.5) off.push({ id, b });
+        }
+        t.check("the role switcher and the person chip are in view", off.length === 0, off);
+        const sw = await t.tid("role-switcher").first().boundingBox();
+        t.check("… the switcher is a 44 px target", !!sw && sw.height >= 44, sw);
+        await t.phoneShot("foundation", "dev-home-360");
+        await t.tid("open-request-ZZT-0001").first().click();
+        await t.seeTid("supplier-request", "a request opens");
+        t.check("… nothing scrolls sideways at 360 px", (await sideScroll(t)) === null, await sideScroll(t));
+        await t.phoneShot("foundation", "dev-request-360");
+      },
+      PHONE_360,
+    ),
+  "phone-requests": () =>
+    scenario(
+      "phone-requests",
+      async (t) => {
+        // Thomas, 30 Oct: My requests on a phone: the tasks and the request cards stack, every action a 44 px target, a
+        // card's action across its width; a request has the header's back arrow (no second "My requests" link); Help has
+        // no second title; night mode
+        await t.host({ role: "supplier" }, "/portal");
+        await t.see("OLIVIA Pure 100", "the supplier's requests show");
+        await t.settle(300);
+        await phoneLayout(t, "My requests at 390", "My requests");
+        const taskBtns = await smallTargets(t, '[data-testid="portal-tasks"] li button');
+        t.check("the tasks' actions are 44 px targets", taskBtns.length === 0, taskBtns);
+        const cardBtns = await smallTargets(t, '[data-testid^="open-request-"], [data-testid="portal-help-link"]', true);
+        t.check("so are the request cards' actions and the help link", cardBtns.length === 0, cardBtns);
+        const span = await t.frame().evaluate(() => [...document.querySelectorAll('[data-testid^="portal-request-"]')].map((card) => card.getBoundingClientRect().width - card.querySelector('[data-testid^="open-request-"]').getBoundingClientRect().width));
+        t.check("a request card's action spans the card (less its padding)", span.length === 6 && span.every((d) => d <= 34), span);
+        await t.phoneShot("portal", "home-390");
+        t.check("a request card's action is reachable", (await reachable(t, "open-request-ZZT-0003")) === null, await reachable(t, "open-request-ZZT-0003"));
+        await t.phoneShot("portal", "requests-390");
+        await t.tid("open-request-ZZT-0003").first().click();
+        await t.seeTid("supplier-request", "the request opens");
+        t.check("… with the header's back arrow and no second 'My requests' link", (await t.tid("phone-back").count()) === 1 && (await t.tid("supplier-request").first().getByRole("link", { name: "My requests" }).count()) === 0);
+        await t.phoneShot("portal", "request-390");
+        await t.tid("nav-portal-help").first().click();
+        await t.see("How it works", "Help opens");
+        const h1 = await t.frame().evaluate(() => { const h = document.querySelector("main h1"); return h && { text: h.textContent.trim(), h: h.getBoundingClientRect().height }; });
+        t.check("Help: the header says Help; the page's own title is for screen readers only", (await t.tid("phone-title").first().innerText()).trim() === "Help" && h1?.text === "Help" && h1.h <= 1, h1);
+        const faqs = await smallTargets(t, "main summary", true);
+        t.check("… each question opens with a 44 px tap", faqs.length === 0, faqs);
+        await t.phoneShot("portal", "help-390");
+        await t.tid("nav-portal").first().click();
+        await t.see("Your tasks");
+        await openMore(t);
+        await t.tid("more-theme").first().click();
+        await t.page.keyboard.press("Escape");
+        await t.page.waitForTimeout(300);
+        t.check("night mode from More", (await htmlTheme(t)) === "dark" && (await bgLightness(t)) < 0.3);
+        await t.phoneShot("portal", "home-dark-390");
+        await t.tid("open-request-ZZT-0001").first().click();
+        await t.seeTid("q-section-picker");
+        await t.phoneShot("portal", "request-dark-390");
+      },
+      PHONE,
+    ),
+  "phone-questionnaire": () =>
+    scenario(
+      "phone-questionnaire",
+      async (t) => {
+        // Thomas, 30 Oct: the questionnaire on a phone: the section navigator is one bar, sticky under the header, that
+        // opens every section in a sheet; the completeness check and confirmation sit in a sticky bar on the tab bar; the
+        // metadata toggles, the K2.1 component entry and the fields are 44 px targets with 16 px text; a rotate keeps all
+        const go = async (route) => {
+          await t.frame().evaluate((r) => { location.hash = r; }, route);
+          await t.page.waitForTimeout(500);
+        };
+        await t.host({ role: "supplier" }, "/portal/case/ZZT-0001?s=SF");
+        await t.seeTid("q-section-picker", "the section picker shows");
+        await t.settle(300);
+        await phoneLayout(t, "the questionnaire at 390", "Request");
+        t.check("no side navigator and no dropdown on a phone", (await t.ui.locator('[data-testid^="q-nav-"]').count()) === 0 && (await t.ui.getByRole("combobox", { name: "Section" }).count()) === 0);
+        const picker = (await t.tid("q-section-picker").innerText()).replace(/\s+/g, " ");
+        t.check("the picker names the open section, how far it is and its place in the list", /Metadata questions/.test(picker) && /0 of 8 answered/.test(picker) && /\b2 \/ \d+\b/.test(picker), picker);
+        await t.seeTid("sticky-actions", "the sticky action bar shows");
+        t.check("… right on the tab bar", (await stickyOffFoot(t)) === null, await stickyOffFoot(t));
+        const bar = await smallTargets(t, '[data-testid="sticky-actions"] button');
+        t.check("… with Check and Confirm completeness, 44 px each, the only ones on the page", (await t.tid("sticky-actions").getByTestId("check-completeness").count()) === 1 && (await t.tid("sticky-actions").getByTestId("confirm-completeness").count()) === 1 && (await t.tid("confirm-completeness").count()) === 1 && bar.length === 0, bar);
+        const toggles = await smallTargets(t, '[data-testid^="q-config-"] button[aria-pressed]', true);
+        t.check("the metadata toggles are 44 px targets", toggles.length === 0, toggles);
+        await t.phoneShot("portal", "metadata-390");
+        await config(t, "SF01", ["Vegetable (bio mass)"]);
+        await t.settle(1200);
+        t.check("an answer on the phone is saved as on a big screen", (await writes(t, (c) => c.instanceId === "PkReq1" && /Config_Answers_JSON/.test(c.keys))).length >= 1);
+        // the sections sheet
+        await t.tid("q-section-picker").click();
+        await t.seeTid("q-section-sheet", "the picker opens the sections", 3000);
+        await t.seeTid("q-nav-A2", "Vegetable opened Annex 2: it is listed", 3000);
+        const rows = await smallTargets(t, '[data-testid="q-section-sheet"] [data-testid^="q-nav-"]', true);
+        t.check("every section is a 44 px row", rows.length === 0, rows);
+        t.check("the open section is the current one, and has the focus", (await t.tid("q-nav-SF").getAttribute("aria-current")) === "true" && (await t.frame().evaluate(() => document.activeElement?.getAttribute("data-testid"))) === "q-nav-SF");
+        t.check("the sheet does not scroll sideways", (await sheetSideScroll(t)).length === 0, await sheetSideScroll(t));
+        await t.phoneShot("portal", "sections-390");
+        await t.tid("q-nav-K2.1").click();
+        await t.page.waitForTimeout(500);
+        t.check("picking K2.1 closes the sheet and opens the section", (await t.tid("q-section-sheet").count()) === 0 && /[?&]s=K2\.1/.test(await t.frame().evaluate(() => location.hash)) && (await t.tid("q-section-K2.1").count()) === 1);
+        t.check("… the picker says so", /Components and additives/.test(await t.tid("q-section-picker").innerText()));
+        // K2.1 on a phone
+        await t.tid("q-component-add").click();
+        await t.settle(1200);
+        const row = t.tid("q-component-c1");
+        await row.waitFor({ timeout: 3000 }).catch(() => {});
+        const small = await smallTargets(t, '[data-testid="q-component-c1"] input, [data-testid="q-component-c1"] [role="combobox"], [data-testid="q-component-c1"] button[aria-pressed], [data-testid="q-component-remove-c1"], [data-testid="q-component-add"]', true);
+        t.check("a component's fields, its Additive Yes/No, Remove and Add component are 44 px targets", small.length === 0, small);
+        const fonts = await t.frame().evaluate(() => [...document.querySelectorAll('[data-testid="q-component-c1"] input')].map((e) => getComputedStyle(e).fontSize));
+        t.check("… the fields show 16 px text (no zoom on focus)", fonts.length === 6 && fonts.every((f) => f === "16px"), fonts);
+        await row.locator('input[placeholder="e.g. Tocopherol"]').fill("Tocopherol");
+        await row.locator('input[placeholder="e.g. antioxidant"]').click();
+        await row.getByTestId("q-component-additive-c1").getByRole("button", { name: "Yes", exact: true }).click();
+        await t.settle(1500);
+        const saved = (J((await t.item("PkReq1")).Components_JSON) ?? []).find((r) => r.id === "c1");
+        t.check("the row is saved from the phone", saved?.inci === "Tocopherol" && saved?.additive === true, saved);
+        t.check("nothing scrolls sideways on K2.1", (await sideScroll(t)) === null, await sideScroll(t));
+        await t.phoneShot("portal", "k21-390");
+        await t.frame().evaluate(() => window.scrollBy(0, 400));
+        await t.page.waitForTimeout(300);
+        const stuck = await t.frame().evaluate(() => [document.querySelector('[data-testid="q-section-bar"]').getBoundingClientRect().top, document.querySelector('[data-testid="phone-header"]').getBoundingClientRect().bottom]);
+        t.check("scrolled down, the picker stays stuck under the header", Math.abs(stuck[0] - stuck[1]) <= 1, stuck);
+        t.check("… and the action bar on the tab bar", (await stickyOffFoot(t)) === null, await stickyOffFoot(t));
+        await t.phoneShot("portal", "k21-scrolled-390");
+        // at the very end of the page the bar rests at the end of the questionnaire, above the footer: still in full view
+        await t.frame().evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+        await t.page.waitForTimeout(300);
+        const end = await inBand(t, '[data-testid="sticky-actions"]');
+        t.check("… at the page's end it rests above the footer, in full view", end === null, end);
+        // Cannot provide
+        await go("/portal/case/ZZT-0001?s=K1");
+        await t.ui.locator('[data-testid^="q-justify-"]').first().waitFor({ timeout: 3000 }).catch(() => {});
+        const justify = await smallTargets(t, '[data-testid^="q-justify-"]', true);
+        t.check("'Cannot provide? Add a justification' is a 44 px target", (await t.ui.locator('[data-testid^="q-justify-"]').count()) > 0 && justify.length === 0, justify);
+        await t.ui.locator('[data-testid^="q-justify-"]').first().click();
+        const why = t.ui.getByRole("textbox", { name: "Justification" }).first();
+        t.check("… it opens the justification box, 16 px text", (await why.evaluate((e) => getComputedStyle(e).fontSize).catch(() => "")) === "16px");
+        // the completeness check
+        await t.tid("check-completeness").click();
+        await t.seeTid("blocker-sheet", "Check opens the completeness check as a sheet", 3000);
+        const n = Number(await t.tid("blocker-panel").getAttribute("data-count"));
+        t.check("… listing what is missing", n > 0, n);
+        const items = await smallTargets(t, '[data-testid="blocker-sheet"] [data-testid="blocker-item"]', true);
+        t.check("… one 44 px row per item", items.length === 0, items);
+        await t.phoneShot("portal", "check-390");
+        const target = t.ui.locator('[data-testid="blocker-sheet"] [data-testid="blocker-item"][data-field^="FLD-"]').first();
+        const [sec, field] = [await target.getAttribute("data-section"), await target.getAttribute("data-field")];
+        await target.click();
+        await t.page.waitForTimeout(1000);
+        const hash = await t.frame().evaluate(() => location.hash);
+        t.check("an item closes the sheet and opens its question", (await t.tid("blocker-sheet").count()) === 0 && hash.includes(`s=${sec}`) && hash.includes(`f=${field}`), { sec, field, hash });
+        const band = await inBand(t, `#field-${field}`);
+        t.check("… in view between the picker and the action bar", band === null, band);
+        await t.phoneShot("portal", "jumped-390");
+        // a rotate across 768 px rebuilds the chrome, not the page
+        const label = await t.tid("q-section-picker").innerText();
+        await t.page.setViewportSize({ width: 844, height: 390 });
+        await t.page.waitForTimeout(500);
+        t.check("turned (844 px, a tablet): the dropdown instead of the picker, no sticky bars, the same section", (await t.tid("q-section-picker").count()) === 0 && (await t.ui.getByRole("combobox", { name: "Section" }).count()) === 1 && (await t.tid("sticky-actions").count()) === 0 && (await t.tid(`q-section-${sec}`).count()) === 1);
+        await t.page.setViewportSize({ width: 390, height: 844 });
+        await t.page.waitForTimeout(500);
+        t.check("back at 390 px: the picker on the same section, the component still there", (await t.tid("q-section-picker").innerText()) === label && (J((await t.item("PkReq1")).Components_JSON) ?? []).some((r) => r.inci === "Tocopherol"));
+        // a phone held sideways (667 x 375) keeps the phone layout; the section bar scrolls away there, to leave room
+        await t.page.setViewportSize({ width: 667, height: 375 });
+        await t.page.waitForTimeout(400);
+        const low = await t.frame().evaluate(() => getComputedStyle(document.querySelector('[data-testid="q-section-bar"]')).position);
+        t.check("667 x 375 (sideways): still the phone layout, the section bar not sticky", (await t.tid("tab-bar").count()) === 1 && low === "static", low);
+        await t.phoneShot("portal", "sideways-667");
+        await t.page.setViewportSize({ width: 390, height: 844 });
+        await t.page.waitForTimeout(400);
+        // the confirmation
+        await t.host({ role: "supplier" }, "/portal/case/ZZT-0002");
+        await t.seeTid("sticky-actions");
+        await t.tid("confirm-completeness").click();
+        const dlg = t.ui.locator('[role="dialog"][data-sheet="full"]');
+        await dlg.first().waitFor({ timeout: 3000 }).catch(() => {});
+        const box = await dlg.first().boundingBox();
+        t.check("Confirm completeness opens the declaration as a full-screen sheet", !!box && Math.round(box.width) === 390 && Math.round(box.height) === 844, box);
+        const submit = await t.tid("confirm-submit").boundingBox();
+        t.check("… 'Confirm and submit' at its foot, in view, 44 px", !!submit && submit.height >= 44 && submit.y + submit.height <= 844, submit);
+        await t.phoneShot("portal", "confirm-390");
+        await t.tid("confirm-agree").getByRole("checkbox").first().check();
+        await t.tid("confirm-submit").click();
+        await t.see("Completeness confirmed", "success only after the write and the submit", 10000);
+        await t.settle();
+        const w = await writes(t, (c) => c.instanceId === "PkReq2");
+        t.check("the same writes as on a big screen: the Completeness_* fields, then the submit", summary(w).join(" | ") === "UPDATE_ITEM PkReq2 [Completeness_At,Completeness_By_Email,Completeness_By_Name,Completeness_By_Role,Completeness_Confirm,Requested_Docs_JSON,Review_Depts,Scope_JSON] | SUBMIT_ITEM PkReq2", summary(w));
+        await t.see("Beiersdorf is reviewing", "the page moves to the review phase");
+        t.check("no sticky bar while Beiersdorf reviews", (await t.tid("sticky-actions").count()) === 0);
+        await t.phoneShot("portal", "confirmed-390");
+      },
+      PHONE,
+    ),
+  "phone-questions": () =>
+    scenario(
+      "phone-questions",
+      async (t) => {
+        // Thomas, 30 Oct: Beiersdorf's questions on a phone: the answer opens as a full-screen sheet; the response types,
+        // the file box and Send are 44 px targets; "We cannot provide this" and a document answer write what a big
+        // screen writes; a document's Preview and Remove are 44 px too
+        await t.host({ role: "supplier" }, "/portal/case/ZZT-0003");
+        await t.seeTid("questions-for-you");
+        await t.settle(300);
+        await phoneLayout(t, "a request in review at 390", "Request");
+        const qBtns = await smallTargets(t, '[data-testid="questions-for-you"] button');
+        t.check("Answer and View are 44 px targets", qBtns.length === 0, qBtns);
+        t.check("no sticky bar while Beiersdorf reviews", (await t.tid("sticky-actions").count()) === 0);
+        await t.phoneShot("portal", "review-390");
+        await t.tid("answer-OP-0003-01").first().click();
+        await t.seeTid("answer-drawer", "Answer opens the question", 3000);
+        const sheet = await t.ui.locator('[role="dialog"]').filter({ has: t.tid("answer-drawer") }).boundingBox();
+        t.check("… as a full-screen sheet", !!sheet && Math.round(sheet.width) === 390 && Math.round(sheet.height) === 844, sheet);
+        t.check("… that does not scroll sideways", (await sheetSideScroll(t)).length === 0, await sheetSideScroll(t));
+        const modes = await smallTargets(t, '[data-testid^="answer-mode-"], [data-testid="answer-send"], [data-testid="sheet-close"]');
+        t.check("the response types, Send and Close are 44 px targets", modes.length === 0, modes);
+        t.check("the answer box shows 16 px text", (await t.tid("answer-text").evaluate((e) => getComputedStyle(e).fontSize)) === "16px");
+        await t.phoneShot("portal", "answer-390");
+        await t.tid("answer-mode-cannot").click();
+        await t.tid("answer-justification").fill("The shelf-life study belongs to our own supplier and is confidential.");
+        await t.tid("answer-send").scrollIntoViewIfNeeded();
+        await t.phoneShot("portal", "cannot-provide-390");
+        await t.tid("answer-send").click();
+        await t.see("Your response was sent to Beiersdorf", "sent only after the write", 10000);
+        await t.settle();
+        const q1 = await writes(t, (c) => c.flowId === "CIQP_Query_A00");
+        t.check("'We cannot provide this' = Response_* and the responsible e-mail, then the submit, as on a big screen", summary(q1).join(" | ") === "UPDATE_ITEM PkQ3a [Response_Kind,Response_Text,Supplier_Responsible_Email] | SUBMIT_ITEM PkQ3a" && (await t.item("PkQ3a")).Response_Kind === "Cannot provide", [summary(q1), (await t.item("PkQ3a")).Response_Kind]);
+        await t.tid("sheet-close").first().click();
+        await t.page.waitForTimeout(300);
+        const n0 = (await t.calls(() => true)).length;
+        await t.tid("answer-OP-0003-02").first().click();
+        await t.tid("answer-mode-upload").click();
+        const fileBox = await smallTargets(t, '[data-testid="answer-file"] label', true);
+        t.check("the file box is a 44 px target", (await t.tid("answer-file").locator("label").count()) === 1 && fileBox.length === 0, fileBox);
+        await t.tid("answer-file").locator('input[type="file"]').setInputFiles(pdf("plant-address.pdf"));
+        await t.seeTid("answer-file-picked", "the picked file shows", 3000);
+        await t.phoneShot("portal", "upload-390");
+        await t.tid("answer-send").click();
+        await t.see("Your response was sent to Beiersdorf", "sent after the upload and the answer", 12000);
+        await t.settle();
+        const w = (await writes(t)).filter((c) => c.seq >= n0);
+        t.check("a document answer: the upload, its Uploads row and file list, then the answer and the submit", summary(w).join(" | ") === "FILE_UPLOAD | UPDATE_ITEM PkReq3 [Supplier_Files] | INIT_FORM PkReq3 | ADD_TABLE_ROW PkReq3 | UPDATE_ITEM PkReq3 [Documents_JSON] | UPDATE_ITEM PkQ3b [Response_Doc_Refs_JSON,Response_Kind,Response_Text,Supplier_Responsible_Email] | SUBMIT_ITEM PkQ3b", summary(w));
+        await t.tid("sheet-close").first().click();
+        await t.page.waitForTimeout(300);
+        // the documents at an item: Preview and Remove
+        await t.frame().evaluate(() => { location.hash = "/portal/case/ZZT-0003?s=K1"; });
+        await t.seeTid("doc-CIQ-2026-0003-d2");
+        const docBtns = await smallTargets(t, '[data-testid^="doc-preview-"], [data-testid^="doc-remove-"]');
+        t.check("a document's Preview and Remove are 44 px targets", (await t.ui.locator('[data-testid^="doc-remove-"]').count()) > 0 && docBtns.length === 0, docBtns);
+        await t.tid("doc-remove-CIQ-2026-0003-d2").click();
+        const confirmBtns = await smallTargets(t, '[role="group"][aria-label^="Remove "] button');
+        t.check("… and so are 'Yes, remove' and 'No'", confirmBtns.length === 0, confirmBtns);
+        await t.phoneShot("portal", "documents-390");
+        await t.ui.locator('[role="group"][aria-label^="Remove "]').getByRole("button", { name: "No", exact: true }).click();
+        t.check("'No' keeps the file", (await t.tid("doc-remove-CIQ-2026-0003-d2").count()) === 1);
+        await openMore(t);
+        await t.tid("reload").first().click();
+        await t.settle();
+        await t.frame().evaluate(() => { location.hash = "/portal/case/ZZT-0003"; });
+        await t.seeTid("questions-for-you");
+        t.check("after a reload both questions read 'With Beiersdorf'", (await t.ui.locator('[data-testid^="question-OP-"][data-status="in-progress"]').count()) === 2);
+        // a task on My requests opens the same sheet in place
+        await t.host({ role: "supplier" }, "/portal");
+        await t.seeTid("portal-tasks");
+        await t.tid("answer-OP-0003-01").first().click();
+        await t.seeTid("answer-drawer", "a task's Answer opens the question on My requests", 3000);
+        t.check("… as the same full-screen sheet", (await t.ui.locator('[role="dialog"][data-sheet="full"]').count()) === 1);
+      },
+      PHONE,
+    ),
+  "phone-release": () =>
+    scenario(
+      "phone-release",
+      async (t) => {
+        // Thomas, 30 Oct: the final release on a phone: the card explains, "Give final release" sits in the sticky bar on
+        // the tab bar while the locked questionnaire scrolls; the declaration is a full-screen sheet; the released view's
+        // "Download final PDF" spans its card; "Report a change" is a full-screen sheet; a withdrawn request has no bar
+        await t.host({ role: "supplier" }, "/portal/case/ZZT-0004");
+        await t.seeTid("final-release-card");
+        await t.settle(300);
+        await phoneLayout(t, "the final release at 390", "Request");
+        t.check("the card explains; its button sits in the sticky bar", (await t.tid("final-release-card").getByTestId("final-release").count()) === 0 && (await t.tid("sticky-actions").getByTestId("final-release").count()) === 1);
+        const rel = await smallTargets(t, '[data-testid="sticky-actions"] button');
+        t.check("… right on the tab bar, a 44 px target, enabled", (await stickyOffFoot(t)) === null && rel.length === 0 && (await t.tid("final-release").isEnabled()), rel);
+        await t.phoneShot("portal", "release-390");
+        await t.frame().evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight / 2));
+        await t.page.waitForTimeout(300);
+        t.check("halfway down the locked questionnaire the release is still at hand", (await stickyOffFoot(t)) === null && (await t.tid("final-release").isVisible()));
+        await t.phoneShot("portal", "release-scrolled-390");
+        await t.tid("final-release").click();
+        const dlg = await t.ui.locator('[role="dialog"][data-sheet="full"]').first().boundingBox().catch(() => null);
+        t.check("the declaration is a full-screen sheet", !!dlg && Math.round(dlg.width) === 390 && Math.round(dlg.height) === 844, dlg);
+        const submit = await t.tid("final-release-submit").boundingBox();
+        t.check("… 'Give final release' at its foot, in view, 44 px", !!submit && submit.height >= 44 && submit.y + submit.height <= 844, submit);
+        await t.tid("final-release-agree").getByRole("checkbox").first().check();
+        await t.phoneShot("portal", "release-confirm-390");
+        await t.tid("final-release-submit").click();
+        await t.see("Final release recorded", "success only after the writes", 10000);
+        await t.settle();
+        const w = await writes(t);
+        t.check("the same writes as on a big screen: the Release_* fields, then the submit of the release step", summary(w).join(" | ") === "UPDATE_ITEM PkReq4 [Release_At,Release_By_Email,Release_By_Name,Release_By_Role] | SUBMIT_ITEM PkReq4", summary(w));
+        await t.see("Your released questionnaire", "the request reads as released");
+        t.check("no sticky bar on a released request", (await t.tid("sticky-actions").count()) === 0);
+        // the released view
+        await t.host({ role: "supplier" }, "/portal/case/ZZT-0005");
+        await t.seeTid("final-pdf", "the released request offers its final PDF");
+        const card = await t.tid("final-pdf").first().boundingBox();
+        const btn = await t.tid("final-pdf-download").first().boundingBox();
+        t.check("'Download final PDF' spans its card (less its padding), 44 px", !!card && !!btn && btn.height >= 44 && card.width - btn.width <= 42, { card, btn });
+        t.check("… reachable", (await reachable(t, "final-pdf-download")) === null, await reachable(t, "final-pdf-download"));
+        await t.phoneShot("portal", "released-390");
+        await t.tid("final-pdf-download").first().click();
+        await t.page.waitForTimeout(800);
+        t.check("… it opens Kissflow's file viewer", (await t.previews()).length === 1);
+        const rep = await smallTargets(t, '[data-testid="report-change"]', true);
+        t.check("'Report a change' is a 44 px target", rep.length === 0, rep);
+        await t.tid("report-change").click();
+        const rdlg = await t.ui.locator('[role="dialog"][data-sheet="full"]').first().boundingBox().catch(() => null);
+        t.check("… it opens as a full-screen sheet", !!rdlg && Math.round(rdlg.width) === 390, rdlg);
+        t.check("… its boxes show 16 px text", (await t.tid("report-change-what").evaluate((e) => getComputedStyle(e).fontSize)) === "16px");
+        await t.tid("report-change-what").fill("The antioxidant changes to rosemary extract from batch 2611 on.");
+        await t.tid("report-change-why").fill("A new antioxidant supplier from November 2026.");
+        await t.phoneShot("portal", "report-390");
+        await t.tid("report-change-send").click();
+        await t.see("Beiersdorf has been told", "success only after the write", 10000);
+        await t.settle();
+        t.check("the same write as on a big screen", summary(await writes(t)).join(" | ") === "UPDATE_ITEM PkReq5 [Change_Report_At,Change_Report_By_Email,Change_Report_Rev,Change_Report_Text]", summary(await writes(t)));
+        await t.frame().evaluate(() => { location.hash = "/portal/case/ZZT-0005?s=K2.1"; });
+        await t.seeTid("q-components", "the released composition is one card per component");
+        t.check("… no table", (await t.ui.locator('[data-testid="q-section-K2.1"] table').count()) === 0 && (await t.ui.locator('[data-testid^="q-component-card-"]').count()) > 0);
+        await t.phoneShot("portal", "released-k21-390");
+        await t.host({ role: "supplier" }, "/portal/case/ZZT-0006");
+        await t.see("Beiersdorf has withdrawn this request");
+        t.check("withdrawn: no sticky bar, nothing scrolls sideways", (await t.tid("sticky-actions").count()) === 0 && (await sideScroll(t)) === null);
+        await t.phoneShot("portal", "withdrawn-390");
+      },
+      PHONE,
+    ),
+  "phone-turns": () =>
+    scenario(
+      "phone-turns",
+      async (t) => {
+        // Thomas, 30 Oct: a turn (rotate or resize across 768 px) loses nothing the supplier is doing: the answer drawer
+        // becomes a sheet or a drawer again with the typed answer, the chosen response type and its justification, and
+        // a send in flight still shows (Send not offered again); a phone held sideways (740 x 360) leaves the screen to
+        // read (the action bar ends the page, never under the tab bar); the portal's footer stays off a phone; Next
+        // names the section, not only its code
+        const turn = async (w, h) => { await t.page.setViewportSize({ width: w, height: h }); await t.page.waitForTimeout(600); };
+        const TEXT = "Twelve months from the production date (typed on the phone).";
+        await t.host({ role: "supplier" }, "/portal/case/ZZT-0003");
+        await t.seeTid("questions-for-you");
+        await t.settle(300);
+        t.check("a phone shows no portal footer (nothing between the page and the tab bar)", (await t.ui.getByText("Beiersdorf Supplier Portal · Raw material questionnaires").count()) === 0);
+        await t.tid("answer-OP-0003-01").first().click();
+        await t.seeTid("answer-drawer", "the answer sheet", 3000);
+        await t.tid("answer-text").fill(TEXT);
+        await turn(900, 1200);
+        t.check("phone → tablet (900 px): the drawer is still open with the typed answer", (await t.tid("answer-drawer").count()) === 1 && (await t.tid("answer-text").inputValue()) === TEXT && !(await t.tid("answer-send").isDisabled()), await t.tid("answer-text").inputValue().catch(() => null));
+        t.check("… now the side drawer", (await t.ui.locator('[role="dialog"][data-sheet]').count()) === 0 && (await t.ui.locator('aside[role="dialog"]').count()) === 1);
+        await t.phoneShot("flows", "answer-tablet-900");
+        await turn(844, 390);
+        t.check("844 x 390: still the typed answer", (await t.tid("answer-text").inputValue()) === TEXT);
+        await turn(390, 844);
+        t.check("upright again (the sheet): still the typed answer", (await t.tid("answer-text").inputValue()) === TEXT && (await t.ui.locator('[role="dialog"][data-sheet="full"]').count()) === 1);
+        await t.tid("sheet-close").first().click();
+        await t.page.waitForTimeout(300);
+        // the second question: "We cannot provide this" and its justification, turned both ways
+        await t.tid("answer-OP-0003-02").first().click();
+        await t.tid("answer-mode-cannot").click();
+        await t.tid("answer-justification").fill("Confidential to our own supplier.");
+        await turn(900, 1200);
+        t.check("phone → tablet: 'We cannot provide this' and its justification kept", (await t.tid("answer-mode-cannot").getAttribute("aria-pressed")) === "true" && (await t.tid("answer-justification").inputValue()) === "Confidential to our own supplier.");
+        await turn(390, 844);
+        t.check("… and back on the phone", (await t.tid("answer-mode-cannot").getAttribute("aria-pressed")) === "true" && (await t.tid("answer-justification").inputValue()) === "Confidential to our own supplier.");
+        await t.tid("sheet-close").first().click();
+        await t.page.waitForTimeout(300);
+        // typed on a tablet, the window narrows to a phone
+        await turn(900, 1200);
+        await t.tid("answer-OP-0003-01").first().click();
+        await t.seeTid("answer-drawer", "tablet: the answer drawer", 3000);
+        await t.tid("answer-text").fill("Typed on the tablet.");
+        await turn(390, 844);
+        t.check("tablet → phone: the typed answer is kept", (await t.tid("answer-text").inputValue()) === "Typed on the tablet.");
+        await t.tid("sheet-close").first().click();
+        await t.page.waitForTimeout(300);
+        // a slow connection: turned while Send is in flight
+        await t.host({ role: "supplier", lag: "1500" }, "/portal/case/ZZT-0003");
+        await t.seeTid("questions-for-you", "a slow host", 15000);
+        await t.settle(300);
+        await t.tid("answer-OP-0003-01").first().click();
+        await t.seeTid("answer-drawer", "the answer sheet", 5000);
+        await t.tid("answer-text").fill("Sent while turning.");
+        const n0 = (await t.calls(() => true)).length;
+        await t.tid("answer-send").click();
+        await t.page.waitForTimeout(200);
+        await turn(900, 1200);
+        const mid = await t.tid("answer-send").evaluate((b) => ({ disabled: b.disabled, text: b.textContent.trim() })).catch(() => null);
+        t.check("turned while sending: the send still shows as in flight, Send not offered again", !!mid && mid.disabled && /Sending/.test(mid.text) && (await t.tid("answer-text").inputValue()) === "Sent while turning.", mid);
+        await t.phoneShot("flows", "answer-midsend-900");
+        await t.see("Your response was sent to Beiersdorf", "the send finishes", 20000);
+        await t.settle(1000);
+        const w = (await writes(t)).filter((c) => c.seq >= n0);
+        t.check("… one update and one submit", summary(w).join(" | ") === "UPDATE_ITEM PkQ3a [Response_Kind,Response_Text,Supplier_Responsible_Email] | SUBMIT_ITEM PkQ3a", summary(w));
+        t.check("… and the drawer says it was sent", (await t.tid("answer-sent").count()) === 1);
+        await t.page.keyboard.press("Escape");
+        await turn(390, 844);
+
+        // Next names the section; a phone held sideways: the action bar ends the page
+        await t.host({ role: "supplier" }, "/portal/case/ZZT-0001?s=SF");
+        await t.seeTid("q-section-picker", "the questionnaire");
+        await t.settle(300);
+        const next = await t.ui.locator("main button").filter({ hasText: /^Next: / }).first().innerText().catch(() => "");
+        t.check("Next names the section: “Next: <code> · <title>”", /^Next: \S+ · \S/.test(next.trim()), next);
+        await turn(740, 360);
+        t.check("740 x 360 is a phone", (await t.tid("tab-bar").count()) === 1 && (await t.tid("side-pane").count()) === 0);
+        const pos = await t.tid("sticky-actions").first().evaluate((e) => getComputedStyle(e).position);
+        t.check("… the action bar is not sticky on the short screen", pos === "static", pos);
+        await t.frame().evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+        await t.page.waitForTimeout(300);
+        t.check("… at the page's end Check and Confirm completeness are in full view, on the tab bar", (await stickyOffFoot(t)) === null && (await inBand(t, '[data-testid="confirm-completeness"]')) === null, [await stickyOffFoot(t), await inBand(t, '[data-testid="confirm-completeness"]')]);
+        await t.phoneShot("flows", "questionnaire-740x360-end");
+        await turn(390, 844);
+        await t.frame().evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+        await t.page.waitForTimeout(300);
+        t.check("upright, at the page's end: the bar rests flush on the tab bar", (await stickyOffFoot(t)) === null, await stickyOffFoot(t));
+      },
+      PHONE,
+    ),
+  "phone-portal-360": () =>
+    scenario(
+      "phone-portal-360",
+      async (t) => {
+        // the narrowest phone: every supplier page and the admin console fit (no sideways scroll), each page's main action
+        // is reachable (in full between the header and the tab bar or the sticky bar), the sticky labels are not cut
+        const go = async (route) => {
+          await t.frame().evaluate((r) => { location.hash = r; }, route);
+          await t.page.waitForTimeout(600);
+        };
+        await t.host({ role: "supplier" }, "/portal");
+        await t.see("OLIVIA Pure 100", "the supplier's requests show");
+        await t.settle(300);
+        await phoneLayout(t, "My requests at 360", "My requests");
+        const pages = [
+          ["/portal", "open-request-ZZT-0003", "home"],
+          ["/portal/case/ZZT-0001?s=SF", "confirm-completeness", "metadata"],
+          ["/portal/case/ZZT-0001?s=K2.1", "q-component-add", "k21"],
+          ["/portal/case/ZZT-0002", "confirm-completeness", "complete"],
+          ["/portal/case/ZZT-0003", "answer-OP-0003-01", "review"],
+          ["/portal/case/ZZT-0004", "final-release", "release"],
+          ["/portal/case/ZZT-0005", "report-change", "released"],
+          ["/portal/case/ZZT-0005?s=K2.1", "q-components", "released-k21"],
+          ["/portal/case/ZZT-0006", "questionnaire-heading", "withdrawn"],
+          ["/portal/help", "empty-help-contacts", "help"],
+        ];
+        for (const [route, action, tag] of pages) {
+          await go(route);
+          await t.frame().evaluate(() => window.scrollTo(0, 0));
+          t.check(`${tag}: nothing scrolls sideways at 360 px`, (await sideScroll(t)) === null, await sideScroll(t));
+          const r = action === "empty-help-contacts" ? null : await reachable(t, action);
+          t.check(`${tag}: ${action} is reachable`, r === null, r);
+          const cut = await t.frame().evaluate(() => [...document.querySelectorAll('[data-testid="sticky-actions"] button span')].filter((s) => s.scrollWidth > s.clientWidth + 0.5).map((s) => s.textContent));
+          t.check(`${tag}: the sticky labels are not cut short`, cut.length === 0, cut);
+          await t.frame().evaluate(() => window.scrollTo(0, 0));
+          await t.phoneShot("portal", `${tag}-360`);
+        }
+        await go("/portal/case/ZZT-0003");
+        await t.tid("answer-OP-0003-01").first().click();
+        await t.seeTid("answer-drawer");
+        t.check("the answer sheet does not scroll sideways at 360 px", (await sheetSideScroll(t)).length === 0, await sheetSideScroll(t));
+        const send = await t.frame().evaluate(() => { const b = document.querySelector('[data-testid="answer-send"]'); b.scrollIntoView({ block: "center" }); const r = b.getBoundingClientRect(); return r.left >= 0 && r.right <= window.innerWidth && r.bottom <= window.innerHeight ? null : [r.left, r.right, r.bottom]; });
+        t.check("… Send is reachable in it", send === null, send);
+        await t.phoneShot("portal", "answer-360");
+        await t.tid("sheet-close").first().click();
+        await t.host({ role: "admin" }, "/admin");
+        await t.seeTid("larger-screen-note", "the admin console: the note to use a larger screen to edit");
+        for (const route of ["/admin", "/admin/flow/request", "/admin/flow/query", "/admin/flow/finalRelease", "/admin/help", "/admin/diagnostics"]) {
+          await go(route);
+          t.check(`${route}: the larger-screen note at 360 px`, await t.tid("larger-screen-note").first().isVisible().catch(() => false));
+          t.check(`${route}: nothing scrolls sideways at 360 px`, (await sideScroll(t)) === null, await sideScroll(t));
+        }
+        await go("/admin/flow/request");
+        await t.phoneShot("portal", "admin-flow-360");
+      },
+      PHONE_360,
     ),
   "dev-role-switch": () =>
     scenario("dev-role-switch", async (t) => {

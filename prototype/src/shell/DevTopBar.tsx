@@ -3,13 +3,26 @@
 // Also: the role switcher. It lists the UI's roles; a role the user already holds switches the screens only (onHeld),
 // any other role is a REAL Kissflow role switch (devRoles.switchTo → kf.app.switchRole: the user leaves their current
 // role(s) and joins the chosen one), after a one-line confirmation that names the roles they leave.
-// Test ids: dev-top-bar, role-switcher (data-persona), role-menu, switch-role-<key>, switch-role-confirm-box,
-// switch-role-confirm, role-switch-error.
+// On a phone (< 768 px, Thomas 30 Oct) the bar is compact: one 48 px row inside the phone header (PhoneChrome.tsx),
+// "Dev" for the badge, the switcher's label cut shorter, 44 px targets.
+// Test ids: dev-top-bar (data-compact on a phone), role-switcher (data-persona), role-menu, switch-role-<key>,
+// switch-role-confirm-box, switch-role-confirm, role-switch-error.
 import { ArrowLeftRight, Check, ChevronDown } from "lucide-react";
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { cx } from "@/components/ui";
+import { useIsPhone } from "./useLayoutMode";
 
 export function DevTopBar({ children }: { children: ReactNode }) {
+  if (useIsPhone())
+    return (
+      // inside the phone header's sticky block, which carries data-app-header for the toasts
+      <div data-testid="dev-top-bar" data-compact="true" className="flex h-12 items-center gap-2 border-b border-line pr-[max(0.75rem,env(safe-area-inset-right))] pl-[max(0.75rem,env(safe-area-inset-left))]">
+        <span className="shrink-0 rounded-md bg-warn-soft px-2 py-0.5 text-[11.5px] font-semibold text-warn" title="Development sandbox" aria-label="Development sandbox">
+          Dev
+        </span>
+        <div className="ml-auto flex min-w-0 items-center gap-1.5">{children}</div>
+      </div>
+    );
   return (
     <header data-app-header data-testid="dev-top-bar" className="sticky top-0 z-30 border-b border-line bg-surface/90 backdrop-blur">
       <div className="flex h-14 items-center gap-3 px-4 lg:px-8">
@@ -96,6 +109,7 @@ export function RoleSwitcher<K extends string>({
     setConfirm(null);
   }, [busy]);
   const ref = useDismiss(open, close);
+  const phone = useIsPhone();
 
   useEffect(() => {
     if (!open || !devRoles) return;
@@ -139,23 +153,29 @@ export function RoleSwitcher<K extends string>({
   };
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className={cx("relative", phone && "min-w-0")}>
       <button
         type="button"
         onClick={() => (open ? close() : setOpen(true))}
         data-testid="role-switcher"
         data-persona={current}
-        className="flex items-center gap-2 rounded-lg border border-line bg-surface px-2.5 py-1.5 text-[13px] text-ink shadow-card transition-colors hover:bg-surface-2"
+        className={cx("flex items-center gap-2 rounded-lg border border-line bg-surface px-2.5 py-1.5 text-[13px] text-ink shadow-card transition-colors hover:bg-surface-2", phone && "min-h-11 max-w-full")}
         aria-haspopup="menu"
         aria-expanded={open}
       >
-        <ArrowLeftRight size={14} className="text-ink-3" aria-hidden />
+        <ArrowLeftRight size={14} className={phone ? "shrink-0 text-ink-3" : "text-ink-3"} aria-hidden />
         <span className="hidden text-ink-3 sm:inline">Role:</span>
-        <span className="max-w-[200px] truncate font-medium">{currentLabel}</span>
-        <ChevronDown size={14} className={cx("text-ink-3 transition-transform", open && "rotate-180")} />
+        <span className={phone ? "min-w-0 max-w-[150px] truncate font-medium" : "max-w-[200px] truncate font-medium"}>{currentLabel}</span>
+        <ChevronDown size={14} className={cx(phone ? "shrink-0 text-ink-3 transition-transform" : "text-ink-3 transition-transform", open && "rotate-180")} />
       </button>
       {open && (
-        <div role="menu" aria-label="Switch role" data-testid="role-menu" className="absolute right-0 z-50 mt-2 flex max-h-[calc(100dvh-5rem)] w-[min(340px,calc(100vw-1.5rem))] flex-col overflow-hidden rounded-xl border border-line bg-surface shadow-pop">
+        <div
+          role="menu"
+          aria-label="Switch role"
+          data-testid="role-menu"
+          // a phone: the width of the screen, under the bar (the switcher sits left of the person chip there)
+          className={phone ? "fixed inset-x-3 top-[calc(env(safe-area-inset-top,0px)+3.25rem)] z-50 flex max-h-[calc(100dvh-5rem)] flex-col overflow-hidden rounded-xl border border-line bg-surface shadow-pop" : "absolute right-0 z-50 mt-2 flex max-h-[calc(100dvh-5rem)] w-[min(340px,calc(100vw-1.5rem))] flex-col overflow-hidden rounded-xl border border-line bg-surface shadow-pop"}
+        >
           <div className="shrink-0 border-b border-line px-4 py-2.5 text-[12px] text-ink-3">{note}</div>
           <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-2 py-2 scrollbar-thin">
             {options.map((o) => {
@@ -170,7 +190,7 @@ export function RoleSwitcher<K extends string>({
                     disabled={busy}
                     onClick={() => pick(o)}
                     data-testid={`switch-role-${o.key}`}
-                    className={cx("flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-left text-[13px] transition-colors disabled:opacity-60", isCurrent ? "bg-brand-soft font-medium text-ink" : "text-ink-2 hover:bg-surface-2")}
+                    className={cx("flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-left text-[13px] transition-colors disabled:opacity-60", isCurrent ? "bg-brand-soft font-medium text-ink" : "text-ink-2 hover:bg-surface-2", phone && "min-h-11")}
                   >
                     <span className="min-w-0 flex-1 truncate">{o.label}</span>
                     {holds && !isCurrent && <span className="shrink-0 text-[11px] text-ink-3">held</span>}

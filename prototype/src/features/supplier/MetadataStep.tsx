@@ -10,11 +10,13 @@ import { useStore } from "@/store/store";
 import { ConfigQuestionList } from "./ConfigQuestions";
 import { FieldRenderer } from "./FieldRenderer";
 import { REQUIRED_CONFIG, unansweredConfig } from "./lib";
+import { tap, useIsPhone } from "./phone";
 import { ScopePreview } from "./ScopePreview";
 
 export function MetadataStep({ c }: { c: CiqCase }) {
   const { submitMetadata, saveConfig } = useStore();
   const [attempted, setAttempted] = useState(false);
+  const phone = useIsPhone();
   const missing = unansweredConfig(c);
   const answered = REQUIRED_CONFIG.length - missing.length;
 
@@ -60,7 +62,7 @@ export function MetadataStep({ c }: { c: CiqCase }) {
               <p className={cx("text-[12.5px]", missing.length ? (attempted ? "font-medium text-bad" : "text-ink-2") : "text-ok")}>
                 {missing.length ? `${missing.length} required question${missing.length === 1 ? "" : "s"} still open` : "All required questions are answered."}
               </p>
-              <Button variant="primary" className="w-full" icon={<Send size={15} />} onClick={submit}>
+              <Button variant="primary" className={cx("w-full", tap(phone))} icon={<Send size={15} />} onClick={submit}>
                 Submit basic data
               </Button>
               <p className="text-[11.5px] text-ink-3">Beiersdorf checks the scope and then releases your full questionnaire.</p>

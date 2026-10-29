@@ -6,12 +6,15 @@
 // the console client's 2 at a time), kept per item id + status for the session (the drawer's full read gives one too);
 // nothing is read again after a write. Checkboxes and "Delete selected (N)" delete the chosen items strictly one at a
 // time, paced, with Stop (BulkDelete.tsx); chosen CIQ Cases with everything that belongs to them (27 Oct).
+// Phones (< 768 px, Thomas 30 Oct): the rows as cards (the same test ids; a card opens the item drawer, read-only
+// there), without New row, the checkboxes and Delete selected: the shell says to use a larger screen to edit.
 import { RefreshCw, Search, Plus, Trash2, ListChecks } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
-import { Badge, Button, Card, EmptyState, Mono, PageHeader, Select, Table, Td, TextInput, Tr } from "@/components/ui";
+import { Badge, Button, Card, CardList, CardListItem, EmptyState, Mono, PageHeader, Select, Table, Td, TextInput, Tr } from "@/components/ui";
 import { fmtDateTime } from "@/domain/selectors";
 import { itemState, str, type RawItem } from "@/portal/data/raw";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import type { FlowKey } from "../types";
 import { BulkDeleteDialog } from "./BulkDelete";
 import { DATA_PATH, FLOW_LABEL, FLOW_NAME, KEY_FIELD, SUMMARY_FIELDS, isConsoleFlow, isProcess, statusTone } from "./common";
@@ -38,6 +41,7 @@ export function FlowTable() {
   const [bulkOpen, setBulkOpen] = useState(false);
   const [stepNote, setStepNote] = useState<string | null>(null);
   const [readingSteps, setReadingSteps] = useState(false);
+  const phone = useIsPhone();
   /** Scalar business fields seen on any listed item (never-filled fields are absent from an item). */
   const knownFields = useMemo(() => {
     const keys = new Set<string>();
@@ -113,7 +117,8 @@ export function FlowTable() {
         title={FLOW_LABEL[flow]}
         subtitle={`${FLOW_NAME[flow]} · ${q.rows ? `${q.rows.length} ${noun}` : "…"} · key ${KEY_FIELD[flow]}`}
         actions={
-          !proc && (
+          !proc &&
+          !phone && (
             <Button variant="primary" icon={<Plus size={15} />} onClick={() => setOpenId(NEW_ROW)} data-testid="data-new-row">
               New row
             </Button>
@@ -126,7 +131,7 @@ export function FlowTable() {
           <TextInput className="pl-9" placeholder="Search any value…" value={search} onChange={(e) => narrow(() => setSearch(e.target.value))} aria-label="Search" data-testid="data-search" />
         </div>
         {proc && (
-          <div className="w-56">
+          <div className={phone ? "w-full" : "w-56"}>
             <Select value={status} onChange={(e) => narrow(() => setStatus(e.target.value as typeof status))} aria-label="Status" data-testid="data-status">
               <option value="all">All statuses</option>
               <option value="open">Open</option>
@@ -136,7 +141,7 @@ export function FlowTable() {
           </div>
         )}
         {proc && (
-          <Button variant="ghost" icon={<ListChecks size={15} />} onClick={() => void showSteps()} disabled={readingSteps || !stepless.length} title="Reads the current step of the open items on this page" data-testid="data-show-steps" data-count={stepless.length}>
+          <Button variant="ghost" icon={<ListChecks size={15} />} onClick={() => void showSteps()} disabled={readingSteps || !stepless.length} title="Reads the current step of the open items on this page" data-testid="data-show-steps" data-count={stepless.length} className={phone ? "h-11" : undefined}>
             {readingSteps ? "Reading steps…" : stepless.length ? `Show steps (${stepless.length})` : "Show steps"}
           </Button>
         )}
@@ -144,12 +149,12 @@ export function FlowTable() {
           <span className="text-[12.5px] text-ink-3" data-testid="data-read-at">
             {readAtText(q)}
           </span>
-          <Button variant="ghost" icon={<RefreshCw size={15} />} onClick={() => void q.refresh()} disabled={q.loading} data-testid="data-refresh">
+          <Button variant="ghost" icon={<RefreshCw size={15} />} onClick={() => void q.refresh()} disabled={q.loading} data-testid="data-refresh" className={phone ? "h-11" : undefined}>
             Refresh
           </Button>
         </div>
       </div>
-      {chosen.length > 0 && (
+      {chosen.length > 0 && !phone && (
         <div className="flex flex-wrap items-center gap-3 rounded-lg border border-line bg-surface-2 px-4 py-2.5 text-[13px]" data-testid="data-selection" data-count={chosen.length}>
           <span className="text-ink">
             {chosen.length} {chosen.length === 1 ? (proc ? "item" : "row") : noun} selected
@@ -177,44 +182,72 @@ export function FlowTable() {
           Could not read the list again: {q.error} The rows below are the ones read before.
         </p>
       )}
-      <Card>
-        {q.loading && !q.rows ? (
-          <div className="p-6 text-[13px] text-ink-3">Loading…</div>
-        ) : q.error && !q.rows ? (
-          <EmptyState title="Could not load the items" data-testid="data-load-error">
-            {q.error}
-          </EmptyState>
-        ) : rows.length === 0 ? (
-          <EmptyState title={proc ? "No items" : "No rows"}>{search || status !== "all" ? "Nothing matches the filter." : proc ? "This process has no items yet." : "This form has no rows yet. Add one, or import a file."}</EmptyState>
-        ) : (
-          <Table head={head}>
-            {pageRows.map((r) => (
-              <Tr key={r._id} onClick={() => setOpenId(r._id)} data-testid={`data-row-${r._id}`}>
-                <Td className="w-10" onClick={(e) => e.stopPropagation()}>
-                  <input type="checkbox" className="h-4 w-4 accent-[var(--brand)]" aria-label={`Select ${keyOf(r)}`} checked={selected.has(r._id)} onChange={(e) => toggle(r._id, e.target.checked)} data-testid={`data-select-${r._id}`} />
-                </Td>
-                <Td>
-                  <Mono>{keyOf(r)}</Mono>
-                </Td>
-                {summary.map((f) => (
-                  <Td key={f} className="max-w-[260px] truncate">
-                    {valueText(r[f]) || "—"}
+      {phone && rows.length > 0 ? (
+        <CardList label={`${FLOW_LABEL[flow]}: ${noun}`} data-testid="data-cards">
+          {pageRows.map((r) => (
+            <CardListItem
+              key={r._id}
+              data-testid={`data-row-${r._id}`}
+              onClick={() => setOpenId(r._id)}
+              label={`Open ${keyOf(r)}`}
+              title={<Mono>{keyOf(r)}</Mono>}
+              badge={
+                proc && (
+                  <Badge tone={statusTone(str(r, "_status"))} dot>
+                    {str(r, "_status") || "—"}
+                  </Badge>
+                )
+              }
+              // only what the list row carries: a thin row (no business fields, no times) shows no row of dashes;
+              // the drawer reads the item with every field
+              fields={[
+                ...summary.filter((f) => valueText(r[f])).map((f) => ({ label: f, value: valueText(r[f]) })),
+                ...(proc ? [{ label: "Current step", value: <span data-testid={`data-step-${r._id}`}>{stepOf(r) || (session.readingStep(r) ? "…" : <span className="text-ink-3">—</span>)}</span> }] : []),
+                ...(str(r, "_modified_at") ? [{ label: "Modified", value: fmtDateTime(str(r, "_modified_at")) }] : []),
+              ]}
+            />
+          ))}
+        </CardList>
+      ) : (
+        <Card>
+          {q.loading && !q.rows ? (
+            <div className="p-6 text-[13px] text-ink-3">Loading…</div>
+          ) : q.error && !q.rows ? (
+            <EmptyState title="Could not load the items" data-testid="data-load-error">
+              {q.error}
+            </EmptyState>
+          ) : rows.length === 0 ? (
+            <EmptyState title={proc ? "No items" : "No rows"}>{search || status !== "all" ? "Nothing matches the filter." : proc ? "This process has no items yet." : "This form has no rows yet. Add one, or import a file."}</EmptyState>
+          ) : (
+            <Table head={head}>
+              {pageRows.map((r) => (
+                <Tr key={r._id} onClick={() => setOpenId(r._id)} data-testid={`data-row-${r._id}`}>
+                  <Td className="w-10" onClick={(e) => e.stopPropagation()}>
+                    <input type="checkbox" className="h-4 w-4 accent-[var(--brand)]" aria-label={`Select ${keyOf(r)}`} checked={selected.has(r._id)} onChange={(e) => toggle(r._id, e.target.checked)} data-testid={`data-select-${r._id}`} />
                   </Td>
-                ))}
-                {proc && <Td data-testid={`data-step-${r._id}`}>{stepOf(r) || (session.readingStep(r) ? "…" : <span className="text-ink-3">—</span>)}</Td>}
-                {proc && (
                   <Td>
-                    <Badge tone={statusTone(str(r, "_status"))} dot>
-                      {str(r, "_status") || "—"}
-                    </Badge>
+                    <Mono>{keyOf(r)}</Mono>
                   </Td>
-                )}
-                <Td>{fmtDateTime(str(r, "_modified_at"))}</Td>
-              </Tr>
-            ))}
-          </Table>
-        )}
-      </Card>
+                  {summary.map((f) => (
+                    <Td key={f} className="max-w-[260px] truncate">
+                      {valueText(r[f]) || "—"}
+                    </Td>
+                  ))}
+                  {proc && <Td data-testid={`data-step-${r._id}`}>{stepOf(r) || (session.readingStep(r) ? "…" : <span className="text-ink-3">—</span>)}</Td>}
+                  {proc && (
+                    <Td>
+                      <Badge tone={statusTone(str(r, "_status"))} dot>
+                        {str(r, "_status") || "—"}
+                      </Badge>
+                    </Td>
+                  )}
+                  <Td>{fmtDateTime(str(r, "_modified_at"))}</Td>
+                </Tr>
+              ))}
+            </Table>
+          )}
+        </Card>
+      )}
       {rows.length > PAGE_ROWS && (
         <div className="flex flex-wrap items-center justify-between gap-3 text-[12.5px] text-ink-3" data-testid="data-pager" data-page={at + 1} data-pages={pages}>
           <span data-testid="data-page-info">

@@ -1,17 +1,21 @@
 // Right column: the open points this review raised, and the other reviews' points read only. Only the person who
 // raised a point handles it (AS-08): accept, return or close as not accepted once the supplier answered, and edit or
 // close it at any time before it is closed. Every change goes into the point's history and reaches the supplier.
+// On a phone (< 768 px) every action is a 44 px button (Accept and Return side by side, the other decisions below
+// them) and Edit and Close open a full-height sheet (FormWindow).
 import { ChevronDown, ChevronRight, FileText, Pencil, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Badge, Button, Card, CardHeader, Field, Modal, Mono, Select, TextArea, TextInput, TrafficLight, cx } from "@/components/ui";
+import { Badge, Button, Card, CardHeader, Field, Mono, Select, TextArea, TextInput, TrafficLight, cx } from "@/components/ui";
 import { DocName } from "@/components/DocName";
 import { DeptBadge, kindLabel } from "@/components/status";
 import { DEPT_SHORT } from "@/domain/catalog";
 import { raiserOf } from "@/domain/permissions";
 import { MESSAGE_ACTION_LABEL, fmtDate, fmtDateTime, isOverdue, relDays, userName } from "@/domain/selectors";
 import type { CiqCase, OpenPoint, ReviewDept } from "@/domain/types";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { useStore } from "@/store/store";
 import { activeDeptUsers, pointOutcome, pointPermissions } from "./lib";
+import { FormWindow, tap } from "./phone";
 import { fromDateInput, toDateInput, todayInput } from "./shared";
 
 /** The point's full history: every round, edit and closing, with who and when. */
@@ -76,7 +80,7 @@ function EditPointModal({ c, p, onClose }: { c: CiqCase; p: OpenPoint; onClose: 
     if (editOpenPoint(c.id, p.id, patch)) onClose();
   };
   return (
-    <Modal
+    <FormWindow
       open
       onClose={onClose}
       title={`Edit ${p.id}`}
@@ -122,7 +126,7 @@ function EditPointModal({ c, p, onClose }: { c: CiqCase; p: OpenPoint; onClose: 
           The change is kept in the point's history, and the supplier contacts get an e-mail.
         </p>
       </div>
-    </Modal>
+    </FormWindow>
   );
 }
 
@@ -137,7 +141,7 @@ function ClosePointModal({ c, p, onClose }: { c: CiqCase; p: OpenPoint; onClose:
     if (closeOpenPoint(c.id, p.id, reason.trim())) onClose();
   };
   return (
-    <Modal
+    <FormWindow
       open
       onClose={onClose}
       title={`Close ${p.id}`}
@@ -160,7 +164,7 @@ function ClosePointModal({ c, p, onClose }: { c: CiqCase; p: OpenPoint; onClose:
         </Field>
         <p className="text-xs text-ink-3">The supplier sees the point as closed by Beiersdorf with no answer needed, and gets an e-mail. The point stops blocking your review.</p>
       </div>
-    </Modal>
+    </FormWindow>
   );
 }
 
@@ -177,6 +181,10 @@ type DecisionDraft = Decision & { set(patch: Partial<Decision>): void };
 /** The supplier answered: the raiser accepts, returns it with a reason, or closes it as not accepted. */
 function Decide({ c, p, draft, onEdit, onClose }: { c: CiqCase; p: OpenPoint; draft: DecisionDraft; onEdit: () => void; onClose: () => void }) {
   const { reviewResponse } = useStore();
+  const phone = useIsPhone();
+  const tall = phone ? "min-h-11" : undefined;
+  // phones: the text links are 44 px buttons
+  const link = phone ? "inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg px-2.5 hover:bg-surface hover:text-ink" : "underline-offset-2 hover:text-ink hover:underline";
   const { mode, reason } = draft;
   const [tried, setTried] = useState(false);
   const [sending, setSending] = useState(false);
@@ -207,22 +215,22 @@ function Decide({ c, p, draft, onEdit, onClose }: { c: CiqCase; p: OpenPoint; dr
       )}
       {mode === null ? (
         <div className="mt-3">
-          <div className="flex flex-wrap gap-2">
-            <Button size="sm" variant="primary" onClick={() => reviewResponse(c.id, p.id, "accept", "")} data-testid={`op-accept-${p.id}`}>
+          <div className={phone ? "grid grid-cols-2 gap-2" : "flex flex-wrap gap-2"}>
+            <Button size="sm" variant="primary" onClick={() => reviewResponse(c.id, p.id, "accept", "")} className={tall} data-testid={`op-accept-${p.id}`}>
               Accept
             </Button>
-            <Button size="sm" variant="secondary" onClick={() => draft.set({ mode: "return" })} data-testid={`op-return-${p.id}`}>
+            <Button size="sm" variant="secondary" onClick={() => draft.set({ mode: "return" })} className={tall} data-testid={`op-return-${p.id}`}>
               Return to supplier
             </Button>
           </div>
-          <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[12.5px] font-medium text-ink-2">
-            <button type="button" onClick={() => draft.set({ mode: "not-accepted" })} className="underline-offset-2 hover:text-ink hover:underline" data-testid={`op-not-accepted-${p.id}`}>
+          <div className={phone ? "-mx-2.5 mt-1 flex flex-wrap text-[13px] font-medium text-ink-2" : "mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[12.5px] font-medium text-ink-2"}>
+            <button type="button" onClick={() => draft.set({ mode: "not-accepted" })} className={link} data-testid={`op-not-accepted-${p.id}`}>
               Close as not accepted
             </button>
-            <button type="button" onClick={onEdit} className="underline-offset-2 hover:text-ink hover:underline" data-testid={`op-edit-${p.id}`}>
+            <button type="button" onClick={onEdit} className={link} data-testid={`op-edit-${p.id}`}>
               Edit
             </button>
-            <button type="button" onClick={onClose} className="underline-offset-2 hover:text-ink hover:underline" data-testid={`op-close-${p.id}`}>
+            <button type="button" onClick={onClose} className={link} data-testid={`op-close-${p.id}`}>
               Close, no longer needed
             </button>
           </div>
@@ -230,15 +238,16 @@ function Decide({ c, p, draft, onEdit, onClose }: { c: CiqCase; p: OpenPoint; dr
       ) : (
         <div className="mt-3 space-y-2">
           <label className="text-xs font-medium text-ink">{mode === "return" ? "Why does the answer not suffice? The supplier sees this." : "Why do you close it without accepting? Internal record."}</label>
-          <TextArea value={reason} onChange={(e) => draft.set({ reason: e.target.value })} invalid={tried && !reason.trim()} className="min-h-[64px] bg-surface" autoFocus data-testid="op-decide-reason" />
+          <TextArea value={reason} onChange={(e) => draft.set({ reason: e.target.value })} invalid={tried && !reason.trim()} className={phone ? "min-h-[96px] bg-surface" : "min-h-[64px] bg-surface"} autoFocus data-testid="op-decide-reason" />
           {tried && !reason.trim() && <p className="text-xs font-medium text-bad">A short reason is required.</p>}
           <div className="flex gap-2">
-            <Button size="sm" variant={mode === "return" ? "primary" : "danger"} onClick={confirm} disabled={sending} data-testid="op-decide-confirm">
+            <Button size="sm" variant={mode === "return" ? "primary" : "danger"} onClick={confirm} disabled={sending} className={tall} data-testid="op-decide-confirm">
               {sending ? "Sending…" : mode === "return" ? "Return to supplier" : "Close as not accepted"}
             </Button>
             <Button
               size="sm"
               variant="ghost"
+              className={tall}
               onClick={() => {
                 draft.set({ mode: null });
                 setTried(false);
@@ -255,6 +264,7 @@ function Decide({ c, p, draft, onEdit, onClose }: { c: CiqCase; p: OpenPoint; dr
 
 function PointCard({ c, p, trackOpen, highlighted, draft, onJump }: { c: CiqCase; p: OpenPoint; trackOpen: boolean; highlighted: boolean; draft: DecisionDraft; onJump: (sectionId: string) => void }) {
   const { state, me } = useStore();
+  const phone = useIsPhone();
   const [open, setOpen] = useState(false);
   const [modal, setModal] = useState<null | "edit" | "close">(null);
   const ref = useRef<HTMLDivElement>(null);
@@ -274,7 +284,7 @@ function PointCard({ c, p, trackOpen, highlighted, draft, onJump }: { c: CiqCase
       </div>
       <p className="mt-1.5 text-[12.5px]">
         <Mono className="mr-1.5 text-[11.5px] text-ink-3">{p.id}</Mono>
-        <button onClick={() => onJump(p.ref.sectionId)} className="text-left font-medium text-brand hover:underline">
+        <button onClick={() => onJump(p.ref.sectionId)} className={tap(phone, "text-left font-medium text-brand hover:underline")}>
           {p.ref.label}
         </button>
       </p>
@@ -292,12 +302,12 @@ function PointCard({ c, p, trackOpen, highlighted, draft, onJump }: { c: CiqCase
           {(may.edit || may.close) && (
             <span className="flex gap-1">
               {may.edit && (
-                <Button size="sm" variant="ghost" icon={<Pencil size={13} />} onClick={() => setModal("edit")} data-testid={`op-edit-${p.id}`}>
+                <Button size="sm" variant="ghost" icon={<Pencil size={13} />} onClick={() => setModal("edit")} className={phone ? "min-h-11" : undefined} data-testid={`op-edit-${p.id}`}>
                   Edit
                 </Button>
               )}
               {may.close && (
-                <Button size="sm" variant="ghost" icon={<X size={13} />} onClick={() => setModal("close")} data-testid={`op-close-${p.id}`}>
+                <Button size="sm" variant="ghost" icon={<X size={13} />} onClick={() => setModal("close")} className={phone ? "min-h-11" : undefined} data-testid={`op-close-${p.id}`}>
                   Close
                 </Button>
               )}
@@ -307,7 +317,7 @@ function PointCard({ c, p, trackOpen, highlighted, draft, onJump }: { c: CiqCase
       )}
       {p.status === "in-progress" && !may.decide && <p className="mt-2 text-xs text-ink-3">The supplier answered.{isRaiser ? "" : ` Only ${may.raiserName} can decide on or change this point.`}</p>}
 
-      <button onClick={() => setOpen((v) => !v)} className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-ink-2 hover:text-ink" aria-expanded={open} data-testid={`op-history-${p.id}`}>
+      <button onClick={() => setOpen((v) => !v)} className={tap(phone, "mt-2 inline-flex items-center gap-1 text-xs font-medium text-ink-2 hover:text-ink")} aria-expanded={open} data-testid={`op-history-${p.id}`}>
         {open ? <ChevronDown size={13} /> : <ChevronRight size={13} />} History ({p.thread.length})
       </button>
       {open && (
@@ -323,6 +333,7 @@ function PointCard({ c, p, trackOpen, highlighted, draft, onJump }: { c: CiqCase
 
 export function OpenPointsPanel({ c, dept, trackOpen, highlight, onJump }: { c: CiqCase; dept: ReviewDept; trackOpen: boolean; highlight: string | null; onJump: (sectionId: string) => void }) {
   const { state } = useStore();
+  const phone = useIsPhone();
   const [showClosed, setShowClosed] = useState(false);
   const [showOthers, setShowOthers] = useState(false);
   const [decisions, setDecisions] = useState<Record<string, Decision>>({});
@@ -358,7 +369,7 @@ export function OpenPointsPanel({ c, dept, trackOpen, highlight, onJump }: { c: 
         )}
         {closed.length > 0 && (
           <div className="border-t border-line">
-            <button onClick={() => setShowClosed((v) => !v)} className="flex w-full items-center gap-1 px-4 py-2.5 text-left text-xs font-medium text-ink-2 hover:text-ink" aria-expanded={showClosed} data-testid="my-closed-points">
+            <button onClick={() => setShowClosed((v) => !v)} className={tap(phone, "flex w-full items-center gap-1 px-4 py-2.5 text-left text-xs font-medium text-ink-2 hover:text-ink")} aria-expanded={showClosed} data-testid="my-closed-points">
               {showClosed ? <ChevronDown size={13} /> : <ChevronRight size={13} />} Closed ({closed.length})
             </button>
             {showClosed && (
@@ -392,7 +403,7 @@ export function OpenPointsPanel({ c, dept, trackOpen, highlight, onJump }: { c: 
                     <TrafficLight status={p.status} />
                     <Mono className="ml-auto text-ink-3">{p.id}</Mono>
                   </div>
-                  <button onClick={() => onJump(p.ref.sectionId)} className="mt-1 text-left text-[12.5px] font-medium text-brand hover:underline">
+                  <button onClick={() => onJump(p.ref.sectionId)} className={tap(phone, "mt-1 text-left text-[12.5px] font-medium text-brand hover:underline")}>
                     {p.ref.label}
                   </button>
                   <p className="mt-0.5 line-clamp-2 text-[13px] text-ink-2">

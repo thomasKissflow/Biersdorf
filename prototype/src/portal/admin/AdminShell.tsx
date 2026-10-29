@@ -2,13 +2,17 @@
 // flow, help articles, roles & grants and diagnostics; it collapses to an icon rail (which also serves narrow windows)
 // and expands again; the theme switch at its very bottom. Shown only to the portal Admin role (Kissflow builders).
 // Top bar: ONLY in the Development sandbox (PortalTopBar: the real role switcher and the person chip).
+// Phones (< 768 px, Thomas 30 Oct; src/shell/ResponsiveShell.tsx): the tab bar and More over the same menu, and the note
+// "Use a larger screen to edit" above every page (viewing still works).
 import { Activity, Inbox, LayoutDashboard, LifeBuoy, MessagesSquare, ShieldCheck, Stamp, Workflow, type LucideIcon } from "lucide-react";
 import { Outlet, useLocation } from "react-router-dom";
-import { SidePane, type PaneItem } from "@/shell/SidePane";
+import { LargerScreenNote } from "@/components/ui";
+import { phoneHeadOf } from "@/shell/PhoneChrome";
+import { ResponsiveShell } from "@/shell/ResponsiveShell";
+import type { PaneItem } from "@/shell/SidePane";
 import { envOf } from "@/shell/env";
 import { useCollapsed } from "@/shell/useCollapsed";
 import { usePortalMode } from "../mode";
-import { headerOffsetStyle } from "@/shell/DevTopBar";
 import { PortalTopBar } from "../PortalTopBar";
 import { FLOW_LABEL, PROCESS_KEYS } from "./common";
 
@@ -23,11 +27,11 @@ const MANAGE_URL = {
 };
 const ROLES = "/admin/roles";
 
-const NAV: { to: string; label: string; icon: LucideIcon; exact: boolean }[] = [
+const NAV: { to: string; label: string; short?: string; icon: LucideIcon; exact: boolean }[] = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
-  // one icon per flow, so the collapsed rail tells them apart without tooltips
-  ...PROCESS_KEYS.map((k) => ({ to: `/admin/flow/${k}`, label: FLOW_LABEL[k], icon: FLOW_ICON[k] ?? Workflow, exact: false })),
-  { to: "/admin/help", label: "Help articles", icon: LifeBuoy, exact: false },
+  // one icon per flow, so the collapsed rail tells them apart without tooltips; `short`: a phone's tab bar label
+  ...PROCESS_KEYS.map((k) => ({ to: `/admin/flow/${k}`, label: FLOW_LABEL[k], short: k === "finalRelease" ? "Releases" : undefined, icon: FLOW_ICON[k] ?? Workflow, exact: false })),
+  { to: "/admin/help", label: "Help articles", short: "Help", icon: LifeBuoy, exact: false },
   { to: ROLES, label: "Roles & grants", icon: ShieldCheck, exact: false },
   { to: "/admin/diagnostics", label: "Diagnostics", icon: Activity, exact: false },
 ];
@@ -53,18 +57,21 @@ export function AdminShell() {
     const icon = <n.icon size={17} strokeWidth={1.9} />;
     // a button, not a page of this UI: Kissflow's own manage page
     if (n.to === ROLES) return { onClick: openManage, label: n.label, icon, testId: navTestId(n.to) };
-    return { to: n.to, label: n.label, icon, active: isActive(n.to, n.exact), testId: navTestId(n.to) };
+    return { to: n.to, label: n.label, shortLabel: n.short, icon, active: isActive(n.to, n.exact), testId: navTestId(n.to) };
   });
   return (
-    <div className="flex min-h-full" data-env={env} style={headerOffsetStyle(env === "dev" && !!kf)}>
-      {/* Thomas, 16 Oct: the theme switch here, and no Reload: each page reads its own data */}
-      <SidePane title="Supplier portal admin" navLabel="Admin" items={items} collapsed={collapsed} onToggle={toggleCollapsed} />
-      <div className="flex min-w-0 flex-1 flex-col">
-        <PortalTopBar />
-        <main className="flex-1 px-4 py-6 lg:px-8">
-          <Outlet />
-        </main>
-      </div>
-    </div>
+    <ResponsiveShell
+      env={env}
+      hasTopBar={env === "dev" && !!kf}
+      // Thomas, 16 Oct: the theme switch here, and no Reload: each page reads its own data
+      pane={{ title: "Supplier portal admin", navLabel: "Admin", items, collapsed, onToggle: toggleCollapsed }}
+      topBar={<PortalTopBar />}
+      mainClassName="flex-1 px-4 py-6 lg:px-8"
+      // Roles & grants is a menu button (Kissflow's manage page), so its route, from a deep link or a reload, needs its title
+      phone={phoneHeadOf(loc.pathname, items, [[ROLES, "Roles & grants"]], "Supplier portal admin", "/admin")}
+    >
+      <LargerScreenNote>On a phone you can look at the portal's items, but not change them.</LargerScreenNote>
+      <Outlet />
+    </ResponsiveShell>
   );
 }

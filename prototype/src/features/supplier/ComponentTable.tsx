@@ -3,14 +3,16 @@
 // Matrix v0.6 (28 Oct): every row needs its INCI (or IUPAC name), function, an explicit Additive Yes/No and a
 // concentration range; CAS and EC are checked when filled (domain/composition.ts, the same check as the completeness
 // gate). Rows are saved as typed (a blank concentration as empty, never 0); only the gates block.
+// Phones (Thomas, 30 Oct): the read-only table is one card per component; the editable rows are cards already.
 import { AlertTriangle, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { Badge, Button, IconButton, Segmented, Select, Table, Td, TextInput, Tr, cx } from "@/components/ui";
+import { Badge, Button, CardList, CardListItem, IconButton, Segmented, Select, Table, Td, TextInput, Tr, cx } from "@/components/ui";
 import { ORIGIN_LABEL } from "@/domain/catalog";
 import { additiveText, componentRowProblems, concText, type ComponentColumn, type ComponentProblem } from "@/domain/composition";
 import type { CiqCase, ComponentRow, OriginType } from "@/domain/types";
 import { useStore } from "@/store/store";
 import { Attribution, RequestedBadge } from "./parts";
+import { tap, useIsPhone } from "./phone";
 
 type Draft = Omit<ComponentRow, "concMin" | "concMax"> & { concMin: string; concMax: string };
 
@@ -33,6 +35,7 @@ const problemsOf = (d: Draft): ComponentProblem[] => componentRowProblems({ ...d
 
 export function ComponentTable({ c, editable, requestedRows, focusRow, restrictTo }: { c: CiqCase; editable: boolean; requestedRows?: Set<string>; focusRow?: string | null; /** Live portal after submission: only these rows stay editable. */ restrictTo?: Set<string> }) {
   const { setComponents } = useStore();
+  const phone = useIsPhone();
   // A row Beiersdorf still has a question on cannot be removed (EC-OP-06); the domain refuses it as well.
   const askedRows = new Set(c.liveScope ? c.openPoints.filter((p) => p.status !== "closed" && p.ref.rowId).map((p) => p.ref.rowId!) : []);
   const origins: OriginType[] = c.config.SF01?.length ? c.config.SF01 : (Object.keys(ORIGIN_LABEL) as OriginType[]);
@@ -79,6 +82,35 @@ export function ComponentTable({ c, editable, requestedRows, focusRow, restrictT
   const sumMin = rows.reduce((s, r) => s + (num(r.concMin) ?? 0), 0);
   const hint = rows.length === 0 ? null : sumMax < 100 ? `The maximum concentrations add up to ${round(sumMax)} %, less than 100 %. Is a component missing?` : sumMin > 100 ? `The minimum concentrations add up to ${round(sumMin)} %, more than 100 %. Please check the ranges.` : null;
 
+  if (!editable && phone)
+    return (
+      <div className="px-5 py-4">
+        <TableTitle c={c} />
+        {c.components.length ? (
+          <CardList label="Components" className="mt-3" data-testid="q-components">
+            {c.components.map((r, i) => (
+              <CardListItem
+                key={r.id}
+                data-testid={`q-component-card-${r.id}`}
+                title={r.inci || "—"}
+                badge={requestedRows?.has(r.id) ? <RequestedBadge /> : undefined}
+                meta={`Component ${i + 1}`}
+                fields={[
+                  { label: "CAS", value: <span className="font-mono text-[12.5px]">{r.cas ?? "—"}</span> },
+                  { label: "EC / REACH no.", value: <span className="font-mono text-[12.5px]">{r.ec ?? "—"}</span> },
+                  { label: "Function", value: r.fn || "—" },
+                  { label: "Additive", value: additiveText(r.additive) },
+                  { label: "Origin", value: ORIGIN_LABEL[r.origin] ?? r.origin },
+                  { label: "Concentration", value: concText(r) },
+                ]}
+              />
+            ))}
+          </CardList>
+        ) : (
+          <p className="mt-2 text-[13px] text-ink-3">No components entered.</p>
+        )}
+      </div>
+    );
   if (!editable) {
     return (
       <div className="px-5 py-4">
@@ -167,7 +199,7 @@ export function ComponentTable({ c, editable, requestedRows, focusRow, restrictT
                         Asked about
                       </span>
                     ) : (
-                      <IconButton label={`Remove component ${i + 1}`} onClick={() => remove(r.id)} data-testid={`q-component-remove-${r.id}`}>
+                      <IconButton label={`Remove component ${i + 1}`} onClick={() => remove(r.id)} data-testid={`q-component-remove-${r.id}`} className={tap(phone, "min-w-11")}>
                         <Trash2 size={15} />
                       </IconButton>
                     ))}
@@ -186,8 +218,9 @@ export function ComponentTable({ c, editable, requestedRows, focusRow, restrictT
                 <Cell label="CAS number" error={cErr}>
                   <TextInput disabled={off} className="font-mono" value={r.cas} onChange={(e) => patch(r.id, { cas: e.target.value })} placeholder={off ? "—" : "59-02-9"} invalid={!!cErr} />
                 </Cell>
-                <Cell label="EC number (EINECS/ELINCS/NLP) or REACH registration no." error={eErr}>
-                  <TextInput disabled={off} className="font-mono" value={r.ec} onChange={(e) => patch(r.id, { ec: e.target.value })} placeholder={off ? "—" : "200-412-2 or 01-2119457892-27-0000"} invalid={!!eErr} />
+                {/* a phone: a placeholder that fits, both forms in the note under the field */}
+                <Cell label="EC number (EINECS/ELINCS/NLP) or REACH registration no." error={eErr} note={phone && !off ? "For example 200-412-2, or a REACH no. such as 01-2119457892-27-0000." : undefined}>
+                  <TextInput disabled={off} className="font-mono" value={r.ec} onChange={(e) => patch(r.id, { ec: e.target.value })} placeholder={off ? "—" : phone ? "e.g. 200-412-2" : "200-412-2 or 01-2119457892-27-0000"} invalid={!!eErr} />
                 </Cell>
                 <Cell label="Function" required error={err("fn")}>
                   <TextInput disabled={off} value={r.fn} onChange={(e) => patch(r.id, { fn: e.target.value })} placeholder={off ? "—" : "e.g. antioxidant"} />
@@ -219,7 +252,7 @@ export function ComponentTable({ c, editable, requestedRows, focusRow, restrictT
         {restrictTo ? (
           <span className="text-[12.5px] text-ink-3">Only the component Beiersdorf asks about can be changed.</span>
         ) : (
-          <Button size="sm" variant="secondary" icon={<Plus size={15} />} onClick={add} data-testid="q-component-add">
+          <Button size="sm" variant="secondary" icon={<Plus size={15} />} onClick={add} data-testid="q-component-add" className={tap(phone)}>
             Add component
           </Button>
         )}

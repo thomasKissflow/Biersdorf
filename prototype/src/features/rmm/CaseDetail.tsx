@@ -1,20 +1,27 @@
 // The case page (/cases/:id): everything about a CIQ case. RMM acts here (open its review, cancel, reactivate, edit
 // the case contacts); every other internal role reads, with a jump to its own review where it has one. Customs and
 // Legal open it on their section (K7, K8). The final document tab appears once the case is completed.
+// Phones (< 768 px, Thomas 30 Oct): the shell's header has the back arrow, so the "Cases" link goes; the header is
+// compact (the title and its badges, two lines of facts: the material no. and the owner are in Overview; the stepper
+// one line, its "since …" sentence at the top of Overview), so the tabs come early; they scroll sideways and stay
+// stuck under the phone header; the main action (open my review, reactivate, and Download PDF on the final document)
+// sits in a bar above the tab bar, while Cancel case and the read-only note stay under the case's facts.
 import { ArrowLeft, ArrowUpRight, Ban, CircleCheck, ClipboardCheck, Eye, FileCheck2, FolderX, RotateCcw, TriangleAlert } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { Badge, Button, Card, EmptyState, Mono, Stepper, Tabs, cx } from "@/components/ui";
+import { Badge, Button, Card, EmptyState, Mono, StickyActionBar, Stepper, Tabs, cx } from "@/components/ui";
 import { PhaseBadge, WaitingBadge } from "@/components/status";
 import { DEPT_LABEL, DEPT_SHORT } from "@/domain/catalog";
 import { can } from "@/domain/permissions";
 import { PHASE_LABEL, PHASE_STEPS, canReactivate, fmtDate, fmtDateTime, isClosed, isOverdue, rejectionNeedsRmmChoice, relDays, supplierName, userName, waitingOn } from "@/domain/selectors";
-import type { CiqCase, Phase } from "@/domain/types";
+import type { CiqCase, Persona, Phase } from "@/domain/types";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { useCase, useStore } from "@/store/store";
 import { CaseActionDialogs, phaseBeforeCancel, reactivationDeadline, type CaseAction } from "./CaseActions";
+import { usePhoneTabs } from "./phone";
 import { INFORMED_SECTION, OriginFlag, PHASE_SHORT, canManage, isReviewDept, phaseSince, unresolvedPoints } from "./shared";
 import { DocumentsTab } from "./tabs/DocumentsTab";
-import { FinalDocumentTab } from "./tabs/FinalDocumentTab";
+import { DownloadPdf, FinalDocumentTab } from "./tabs/FinalDocumentTab";
 import { HistoryTab } from "./tabs/HistoryTab";
 import { NotesTab } from "./tabs/NotesTab";
 import { OpenPointsTab } from "./tabs/OpenPointsTab";
@@ -58,6 +65,8 @@ function CaseView({ c }: { c: CiqCase }) {
   const hasDocument = c.phase === "completed" && !!c.finalDocument;
   const tab: CaseTab = asked === "final-document" && !hasDocument ? "overview" : (asked ?? "overview");
   const setTab = (t: CaseTab) => setParams(t === "overview" ? {} : { tab: t }, { replace: true });
+  const phone = useIsPhone();
+  const tabsUi = usePhoneTabs(phone, tab);
 
   const sup = state.suppliers.find((s) => s.id === c.supplierId);
   const late = !isClosed(c) && isOverdue(c.dueDate);
@@ -74,61 +83,100 @@ function CaseView({ c }: { c: CiqCase }) {
     ...(hasDocument ? [{ value: "final-document" as const, label: "Final document" }] : []),
   ];
 
-  return (
-    <div className="space-y-5">
-      <div>
-        <Link to="/cases" className="inline-flex items-center gap-1 text-[13px] text-ink-3 hover:text-ink">
-          <ArrowLeft size={14} /> Cases
+  // the supplier and the due date, in the header's meta lines
+  const supplierLine = (
+    <span>
+      {supplierLink && sup ? (
+        <Link to={`/suppliers/${sup.id}`} className="hover:text-brand hover:underline" data-testid="case-supplier-link">
+          {sup.name}
         </Link>
-        <div className="mt-2 flex flex-wrap items-start justify-between gap-4" data-testid="case-header" data-phase={c.phase}>
+      ) : (
+        supplierName(state, c.supplierId)
+      )}
+      {sup ? <span className="text-ink-3"> · DUNS {sup.duns}</span> : null}
+    </span>
+  );
+  const dueLine = (
+    <span>
+      Due <span className={late ? "font-medium text-bad" : "text-ink-2"}>{fmtDate(c.dueDate)}</span>
+      {!isClosed(c) && <span className={late ? "text-bad" : ""}> ({late ? `overdue, ${relDays(c.dueDate)}` : relDays(c.dueDate)})</span>}
+    </span>
+  );
+
+  return (
+    <div className={phone ? "space-y-3" : "space-y-5"}>
+      <div>
+        {!phone && (
+          <Link to="/cases" className="inline-flex items-center gap-1 text-[13px] text-ink-3 hover:text-ink">
+            <ArrowLeft size={14} /> Cases
+          </Link>
+        )}
+        <div className={cx(!phone && "mt-2", "flex flex-wrap items-start justify-between", phone ? "gap-x-4 gap-y-1" : "gap-4")} data-testid="case-header" data-phase={c.phase}>
           <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-2.5">
-              <h1 className="text-[22px] leading-tight font-semibold tracking-tight text-ink">{c.materialName}</h1>
+            <div className={cx("flex flex-wrap items-center", phone ? "gap-x-2 gap-y-1" : "gap-2.5")}>
+              <h1 className={cx(phone ? "text-[19px]" : "text-[22px]", "leading-tight font-semibold tracking-tight text-ink")}>{c.materialName}</h1>
               <PhaseBadge phase={c.phase} />
               <WaitingBadge on={waitingOn(c)} />
               <OriginFlag c={c} />
               {c.priority === "high" && <Badge tone="warn">High priority</Badge>}
             </div>
-            <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ink-2">
-              <Mono className="text-ink">{c.id}</Mono>
-              <Sep />
-              <span>{c.inci}</span>
-              <Sep />
-              <span>
-                BDF material no. <Mono className="text-ink">{c.materialNo}</Mono>
-              </span>
-              <Sep />
-              <span>
-                {supplierLink && sup ? (
-                  <Link to={`/suppliers/${sup.id}`} className="hover:text-brand hover:underline" data-testid="case-supplier-link">
-                    {sup.name}
-                  </Link>
-                ) : (
-                  supplierName(state, c.supplierId)
-                )}
-                {sup ? <span className="text-ink-3"> · DUNS {sup.duns}</span> : null}
-              </span>
-            </div>
-            <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ink-3">
-              <span>
-                Owner <span className="text-ink-2">{userName(state, c.ownerId)}</span>
-              </span>
-              <Sep />
-              <span>
-                Due <span className={late ? "font-medium text-bad" : "text-ink-2"}>{fmtDate(c.dueDate)}</span>
-                {!isClosed(c) && <span className={late ? "text-bad" : ""}> ({late ? `overdue, ${relDays(c.dueDate)}` : relDays(c.dueDate)})</span>}
-              </span>
-            </div>
+            {phone ? (
+              // a phone: two lines, the case and its supplier, then the due date (the INCI, the DUNS, the material no.
+              // and the owner are in Overview's case facts)
+              <div className="mt-1 space-y-0.5 text-[13px] text-ink-2" data-testid="case-meta">
+                <p className="truncate">
+                  <Mono className="text-ink">{c.id}</Mono> ·{" "}
+                  {supplierLink && sup ? (
+                    <Link to={`/suppliers/${sup.id}`} className="hover:text-brand hover:underline" data-testid="case-supplier-link">
+                      {sup.name}
+                    </Link>
+                  ) : (
+                    supplierName(state, c.supplierId)
+                  )}
+                </p>
+                <p>{dueLine}</p>
+              </div>
+            ) : (
+              <>
+                <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ink-2">
+                  <Mono className="text-ink">{c.id}</Mono>
+                  <Sep />
+                  <span>{c.inci}</span>
+                  <Sep />
+                  <span>
+                    BDF material no. <Mono className="text-ink">{c.materialNo}</Mono>
+                  </span>
+                  <Sep />
+                  {supplierLine}
+                </div>
+                <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ink-3">
+                  <span>
+                    Owner <span className="text-ink-2">{userName(state, c.ownerId)}</span>
+                  </span>
+                  <Sep />
+                  {dueLine}
+                </div>
+              </>
+            )}
           </div>
-          <ActionBar c={c} onAction={setAction} />
+          <ActionBar c={c} onAction={setAction} part={phone ? "secondary" : "all"} />
         </div>
       </div>
 
       <StatusStrip c={c} onOpenDocument={() => setTab("final-document")} />
       <RejectionBanner c={c} onCancel={() => setAction("cancel")} />
 
-      <Tabs tabs={tabs.map((t) => ({ ...t, label: <span data-testid={`case-tab-${t.value}`}>{t.label}</span> }))} value={tab} onChange={setTab} />
+      {phone ? (
+        // stuck under the phone header, so the tabs stay at hand while a tab's content scrolls (not on a short screen, a
+        // phone held sideways, as the action bar)
+        <div ref={tabsUi.ref} data-testid="case-tabs" className="sticky top-[var(--app-header-h,0px)] z-20 -mx-4 bg-bg/95 px-4 backdrop-blur [@media(max-height:560px)]:static">
+          <Tabs tabs={tabs.map((t) => ({ ...t, label: <span data-testid={`case-tab-${t.value}`}>{t.label}</span> }))} value={tab} onChange={setTab} className={tabsUi.className} />
+        </div>
+      ) : (
+        <Tabs tabs={tabs.map((t) => ({ ...t, label: <span data-testid={`case-tab-${t.value}`}>{t.label}</span> }))} value={tab} onChange={setTab} />
+      )}
 
+      {phone && tab === "overview" && !isClosed(c) && <PhaseSince c={c} />}
       {tab === "overview" && <OverviewTab c={c} goTo={setTab} />}
       {tab === "questionnaire" && <QuestionnaireTab c={c} />}
       {tab === "points" && <OpenPointsTab c={c} />}
@@ -138,7 +186,27 @@ function CaseView({ c }: { c: CiqCase }) {
       {tab === "final-document" && hasDocument && <FinalDocumentTab c={c} />}
 
       <CaseActionDialogs c={c} action={action} onClose={() => setAction(null)} />
+      {phone && <PhoneActions c={c} onAction={setAction} document={tab === "final-document" && hasDocument} />}
     </div>
+  );
+}
+
+/** A phone's bar above the tab bar: the case's main action, or on the final document's tab its Download PDF. Nothing
+ *  when the viewer has neither. */
+function PhoneActions({ c, onAction, document }: { c: CiqCase; onAction: (a: CaseAction) => void; document: boolean }) {
+  const { persona } = useStore();
+  const main = primaryActions(c, persona);
+  if (document && c.finalDocument)
+    return (
+      <StickyActionBar>
+        <DownloadPdf d={c.finalDocument} bar />
+      </StickyActionBar>
+    );
+  if (!main.review && !main.reactivate) return null;
+  return (
+    <StickyActionBar>
+      <ActionBar c={c} onAction={onAction} part="primary" />
+    </StickyActionBar>
   );
 }
 
@@ -148,28 +216,50 @@ const Sep = () => (
   </span>
 );
 
-function ActionBar({ c, onAction }: { c: CiqCase; onAction: (a: CaseAction) => void }) {
+/** What the viewer can do on the case beside reading it: open its own review, reactivate a cancelled case (RMM). */
+function primaryActions(c: CiqCase, persona: Persona) {
+  // RMM's own review of the whole CIQ (created at the completeness confirmation, assigned to the case owner), or the
+  // department's review track.
+  const review = isReviewDept(persona.dept) ? c.reviews.find((r) => r.dept === persona.dept) : undefined;
+  return { review, reactivate: canManage(persona) && canReactivate(c) };
+}
+
+/** The case's actions. `part` (phones): "secondary" is what stays in the header (Cancel case, the read-only note),
+ *  "primary" what goes into the bar above the tab bar (the review, Reactivate); "all" (a big screen) both, as one row. */
+function ActionBar({ c, onAction, part = "all" }: { c: CiqCase; onAction: (a: CaseAction) => void; part?: "all" | "primary" | "secondary" }) {
   const { persona } = useStore();
   const nav = useNavigate();
   const myDept = persona.dept;
-  // RMM's own review of the whole CIQ (created at the completeness confirmation, assigned to the case owner), or the
-  // department's review track.
-  const myReview = isReviewDept(myDept) ? c.reviews.find((r) => r.dept === myDept) : undefined;
-  const reviewButton = myReview && (
+  const myReview = primaryActions(c, persona).review;
+  const primary = part !== "secondary";
+  const secondary = part !== "primary";
+  const reviewButton = primary && myReview && (
     <Button variant={myReview.status === "completed" || isClosed(c) ? "secondary" : "primary"} icon={<ClipboardCheck size={15} />} onClick={() => nav(`/review/${c.id}`)} data-testid="case-open-review">
       {myReview.status === "completed" ? "My review · completed" : isClosed(c) ? "My review" : "Open my review"}
     </Button>
   );
   if (canManage(persona)) {
+    if (part === "secondary" && isClosed(c)) return null;
+    if (part === "primary")
+      return (
+        <>
+          {reviewButton}
+          {canReactivate(c) && (
+            <Button variant="primary" icon={<RotateCcw size={15} />} onClick={() => onAction("reactivate")} data-testid="case-reactivate">
+              Reactivate
+            </Button>
+          )}
+        </>
+      );
     return (
-      <div className="flex flex-wrap items-center gap-2">
+      <div className={cx("flex flex-wrap items-center gap-2", part === "secondary" && "-ml-3.5")}>
         {!isClosed(c) && (
-          <Button variant="ghost" icon={<Ban size={15} />} onClick={() => onAction("cancel")} data-testid="case-cancel">
+          <Button variant="ghost" icon={<Ban size={15} />} onClick={() => onAction("cancel")} data-testid="case-cancel" className={part === "secondary" ? "h-11" : undefined}>
             Cancel case
           </Button>
         )}
         {reviewButton}
-        {canReactivate(c) && (
+        {primary && canReactivate(c) && (
           <Button variant="primary" icon={<RotateCcw size={15} />} onClick={() => onAction("reactivate")} data-testid="case-reactivate">
             Reactivate
           </Button>
@@ -178,11 +268,14 @@ function ActionBar({ c, onAction }: { c: CiqCase; onAction: (a: CaseAction) => v
     );
   }
   const informed = myDept ? INFORMED_SECTION[myDept] : undefined;
+  if (part === "primary") return <>{reviewButton}</>;
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <Badge tone="neutral">
-        <Eye size={12} aria-hidden /> {informed ? `${DEPT_SHORT[myDept!]} · informed, read-only` : "Read-only"}
-      </Badge>
+      {secondary && (
+        <Badge tone="neutral">
+          <Eye size={12} aria-hidden /> {informed ? `${DEPT_SHORT[myDept!]} · informed, read-only` : "Read-only"}
+        </Badge>
+      )}
       {reviewButton}
     </div>
   );
@@ -194,6 +287,7 @@ const stepOf = (p: Phase): Phase => (p === "metadata" || p === "scope-check" ? "
 /** Stepper for running cases; a clear banner for cancelled and completed ones. */
 function StatusStrip({ c, onOpenDocument }: { c: CiqCase; onOpenDocument: () => void }) {
   const { state } = useStore();
+  const phone = useIsPhone();
   const steps = PHASE_STEPS;
   const current: Phase = stepOf(c.phase === "cancelled" ? phaseBeforeCancel(c) : c.phase);
   const stepper = (
@@ -204,6 +298,13 @@ function StatusStrip({ c, onOpenDocument }: { c: CiqCase; onOpenDocument: () => 
       </div>
     </>
   );
+  // a phone, a running case: one line and the bar, no card (the "since …" sentence opens Overview)
+  if (phone && c.phase !== "cancelled" && c.phase !== "completed")
+    return (
+      <div data-testid="case-steps">
+        <CompactSteps steps={steps} current={current} done={false} phone />
+      </div>
+    );
 
   if (c.phase === "cancelled" && c.cancelled) {
     const deadline = reactivationDeadline(c);
@@ -219,21 +320,23 @@ function StatusStrip({ c, onOpenDocument }: { c: CiqCase; onOpenDocument: () => 
             <p className="mt-0.5 text-[12.5px] text-ink-3">{canReactivate(c) ? `RMM can reactivate it until ${fmtDate(deadline)}. It stopped at: ${PHASE_LABEL[phaseBeforeCancel(c)]}.` : "The 12-month reactivation window has ended. Start a new case if the CIQ is needed again."}</p>
           </div>
         </div>
-        <div className="px-4 py-3 opacity-60">{stepper}</div>
+        {/* a phone: the banner says where it stopped */}
+        {!phone && <div className="px-4 py-3 opacity-60">{stepper}</div>}
       </Card>
     );
   }
   return (
     <Card className="overflow-hidden">
-      <div className="px-4 py-3.5">{stepper}</div>
+      {/* a phone: the completed banner alone ("All steps done" says nothing more) */}
+      {!(phone && c.phase === "completed") && <div className="px-4 py-3.5">{stepper}</div>}
       {c.phase === "completed" ? (
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-line bg-ok-soft px-4 py-2.5 text-[13px] text-ink" data-testid="case-completed-banner">
-          <CircleCheck size={16} className="shrink-0 text-ok" aria-hidden />
-          <span className="min-w-0 flex-1">
+        <div className={cx("flex flex-wrap", phone ? "items-start" : "items-center", "gap-x-3 gap-y-2", !phone && "border-t border-line", "bg-ok-soft px-4 py-2.5 text-[13px] text-ink")} data-testid="case-completed-banner">
+          <CircleCheck size={16} className={cx("shrink-0 text-ok", phone && "mt-0.5")} aria-hidden />
+          <span className={cx("min-w-0 flex-1", phone && "basis-[calc(100%-28px)]")}>
             Completed {fmtDateTime(phaseSince(c))}. The final document was created automatically at the supplier's final release and sent to {userName(state, c.ownerId)}.
           </span>
           {c.finalDocument && (
-            <Button size="sm" variant="secondary" icon={<FileCheck2 size={14} />} onClick={onOpenDocument} data-testid="final-document-open">
+            <Button size="sm" variant="secondary" icon={<FileCheck2 size={14} />} onClick={onOpenDocument} data-testid="final-document-open" className={phone ? "ml-7 h-11" : undefined}>
               Open final document
             </Button>
           )}
@@ -254,6 +357,7 @@ function StatusStrip({ c, onOpenDocument }: { c: CiqCase; onOpenDocument: () => 
 function RejectionBanner({ c, onCancel }: { c: CiqCase; onCancel: () => void }) {
   const { persona } = useStore();
   const nav = useNavigate();
+  const tap = useIsPhone() ? "h-11" : undefined;
   const pending = isClosed(c) ? [] : rejectionNeedsRmmChoice(c);
   if (!pending.length) return null;
   const rmm = canManage(persona);
@@ -282,11 +386,11 @@ function RejectionBanner({ c, onCancel }: { c: CiqCase; onCancel: () => void }) 
         {rmm && (
           <div className="flex flex-wrap gap-2">
             {inReview && (
-              <Button size="sm" variant="secondary" iconRight={<ArrowUpRight size={14} />} onClick={() => nav(`/review/${c.id}`)} data-testid="rejection-review">
+              <Button size="sm" variant="secondary" iconRight={<ArrowUpRight size={14} />} onClick={() => nav(`/review/${c.id}`)} data-testid="rejection-review" className={tap}>
                 Decide in my review
               </Button>
             )}
-            <Button size="sm" variant="danger" icon={<Ban size={14} />} onClick={onCancel} data-testid="rejection-cancel">
+            <Button size="sm" variant="danger" icon={<Ban size={14} />} onClick={onCancel} data-testid="rejection-cancel" className={tap}>
               Cancel the case
             </Button>
           </div>
@@ -296,9 +400,33 @@ function RejectionBanner({ c, onCancel }: { c: CiqCase; onCancel: () => void }) 
   );
 }
 
-/** Below 1280px the full stepper would truncate its labels, so show "Step n of m" and a segment bar. */
-function CompactSteps({ steps, current, done }: { steps: Phase[]; current: Phase; done: boolean }) {
+/** A phone: where the case stands since when, and with whom (the stepper's sentence on a big screen), at the top of
+ *  Overview. */
+function PhaseSince({ c }: { c: CiqCase }) {
+  return (
+    <p className="text-[12.5px] text-ink-3" data-testid="case-phase-since">
+      In “{PHASE_LABEL[c.phase]}” since {fmtDateTime(phaseSince(c))} · {waitingOn(c) === "supplier" ? "the next step is with the supplier" : "the next step is with Beiersdorf"}
+    </p>
+  );
+}
+
+/** Below 1280px the full stepper would truncate its labels, so show "Step n of m" and a segment bar; `phone`: the
+ *  line alone (no "next: …"), at every width. */
+function CompactSteps({ steps, current, done, phone }: { steps: Phase[]; current: Phase; done: boolean; phone?: boolean }) {
   const idx = Math.max(0, steps.indexOf(current));
+  if (phone)
+    return (
+      <div>
+        <p className="text-[13px] text-ink-2">
+          <span className="font-semibold text-ink">{`Step ${idx + 1} of ${steps.length}`}</span> · {PHASE_SHORT[current]}
+        </p>
+        <div className="mt-1.5 flex gap-1" aria-hidden>
+          {steps.map((s, i) => (
+            <span key={s} className={cx("h-1.5 flex-1 rounded-full", i < idx ? "bg-ok" : i === idx ? "bg-brand" : "bg-surface-3")} />
+          ))}
+        </div>
+      </div>
+    );
   return (
     <div className="xl:hidden">
       <p className="text-[13px] text-ink-2">

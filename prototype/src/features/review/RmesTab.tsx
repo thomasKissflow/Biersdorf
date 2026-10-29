@@ -4,6 +4,7 @@
 // and the composition, each with its CIQ source reference (REQ-PROC-022); a source opens its section in the
 // Questionnaire tab. Nothing here is editable: the Safety / Regulatory decision is on the Questionnaire tab
 // (DecisionCard). A case the role could not read (live: the shell's case banner) shows one notice instead of the fields.
+// On a phone (< 768 px) the composition is one stacked row per component instead of the 7-column table.
 import { ArrowUpRight, Lock, TriangleAlert } from "lucide-react";
 import { useAppExtras } from "@/app-live/extras";
 import { useLiveFeatures } from "@/components/liveFeatures";
@@ -11,12 +12,15 @@ import { Card, CardHeader, Mono, cx } from "@/components/ui";
 import { RMES_RECORD_NO_TIME, type RmesSheet, type RmesSource, type RmesValue, rmesSheet } from "@/domain/rmesSheet";
 import { fmtDateTime } from "@/domain/selectors";
 import type { AppState, CiqCase } from "@/domain/types";
+import { useIsPhone } from "@/shell/useLayoutMode";
+import { tap } from "./phone";
 import { Notice, rmesRecordPending, secCode } from "./shared";
 
 type Readable = Extract<RmesSheet, { readable: true }>;
 
 /** "GEN · FLD-GEN-004 Manufacturer (name and address)": where the value comes from; opens its section when it can. */
 function SourceRef({ c, source, onJump }: { c: CiqCase; source: RmesSource; onJump?: (sectionId: string) => void }) {
+  const phone = useIsPhone();
   const code = secCode(source.sectionId, c.templateVersion);
   const text = (
     <>
@@ -35,7 +39,7 @@ function SourceRef({ c, source, onJump }: { c: CiqCase; source: RmesSource; onJu
     <button
       type="button"
       onClick={() => onJump(source.sectionId)}
-      className="inline-flex flex-wrap items-center gap-x-1 rounded text-left text-[11.5px] text-ink-3 hover:text-brand"
+      className={phone ? "inline-flex min-h-7 flex-wrap items-center gap-x-1 rounded py-1 text-left text-[11.5px] text-ink-3 hover:text-brand" : "inline-flex flex-wrap items-center gap-x-1 rounded text-left text-[11.5px] text-ink-3 hover:text-brand"}
       title={`Open ${code} in the questionnaire`}
       data-testid={`rmes-source-${source.fieldId}`}
     >
@@ -68,7 +72,73 @@ function HeaderBlock({ c, sheet, onJump }: { c: CiqCase; sheet: Readable; onJump
   );
 }
 
+/** Phones: one component of the composition as a stacked row: its INCI, then the other columns as labelled values (each
+ *  label with its CIQ field), then the free text per origin type with its sources. */
+function PhoneRow({ c, sheet, r, i, shared, onJump }: { c: CiqCase; sheet: Readable; r: Readable["rows"][number]; i: number; shared: Set<string>; onJump: (sectionId: string) => void }) {
+  const col = (key: string) => sheet.columns.find((x) => x.key === key);
+  const head = (key: string) => {
+    const x = col(key);
+    return (
+      <dt className="text-[11.5px] text-ink-3">
+        {x?.label} <Mono className="text-[11px]">{x?.sources[0]?.fieldId}</Mono>
+      </dt>
+    );
+  };
+  return (
+    <li className="px-4 py-3" data-testid={`rmes-row-${r.rowId}`}>
+      <p className="text-[14px] font-medium break-words text-ink">
+        <span className="mr-1.5 font-normal text-ink-3">{i + 1}.</span>
+        {r.inci}
+      </p>
+      <p className="mt-0.5 text-[11.5px] text-ink-3">
+        {col("inci")?.label} <Mono className="text-[11px]">{col("inci")?.sources[0]?.fieldId}</Mono>
+      </p>
+      <dl className="mt-2 grid grid-cols-2 gap-x-4 gap-y-2 text-[13px]">
+        <div className="min-w-0">
+          {head("conc")}
+          <dd className="mt-0.5 text-ink">{r.conc}</dd>
+        </div>
+        <div className="min-w-0">
+          {head("cas")}
+          <dd className="mt-0.5">
+            <Mono className="text-ink">{r.cas}</Mono>
+          </dd>
+        </div>
+        <div className="min-w-0">
+          {head("ec")}
+          <dd className="mt-0.5">
+            <Mono className="text-ink">{r.ec}</Mono>
+          </dd>
+        </div>
+        <div className="min-w-0">
+          {head("origin")}
+          <dd className="mt-0.5 text-ink-2">{r.originLabel}</dd>
+        </div>
+        <div className="col-span-2 min-w-0">
+          <dt className="text-[11.5px] text-ink-3">{col("freeText")?.label} · per origin type (K2.3)</dt>
+          <dd className="mt-0.5 space-y-1.5">
+            {r.freeText.map((t) => (
+              <div key={t.source.fieldId}>
+                <ValueText v={t} />
+                {shared.has(r.origin) && (
+                  <sup className="ml-0.5 text-ink-3" aria-hidden>
+                    *
+                  </sup>
+                )}
+                <div>
+                  <SourceRef c={c} source={t.source} onJump={onJump} />
+                </div>
+              </div>
+            ))}
+          </dd>
+        </div>
+      </dl>
+    </li>
+  );
+}
+
 function Composition({ c, sheet, onJump }: { c: CiqCase; sheet: Readable; onJump: (sectionId: string) => void }) {
+  const phone = useIsPhone();
   const shared = new Set(sheet.sharedOrigins);
   const k21 = sheet.columns.find((x) => x.key === "inci")!.sources[0];
   return (
@@ -77,13 +147,19 @@ function Composition({ c, sheet, onJump }: { c: CiqCase; sheet: Readable; onJump
         title="Composition"
         subtitle="One row per component, in the order of the supplier's K2.1 table, with the origin information of each component."
         action={
-          <button type="button" onClick={() => onJump(k21.sectionId)} className="inline-flex items-center gap-1 text-[12.5px] font-medium text-brand hover:underline" data-testid="rmes-open-composition">
+          <button type="button" onClick={() => onJump(k21.sectionId)} className={tap(phone, "inline-flex items-center gap-1 text-[12.5px] font-medium text-brand hover:underline")} data-testid="rmes-open-composition">
             Open {secCode(k21.sectionId, c.templateVersion)} <ArrowUpRight size={13} />
           </button>
         }
       />
       {sheet.rows.length === 0 ? (
         <p className="px-4 py-6 text-center text-[13px] text-ink-3">The supplier has not entered any component yet.</p>
+      ) : phone ? (
+        <ul className="divide-y divide-line" aria-label="Components">
+          {sheet.rows.map((r, i) => (
+            <PhoneRow key={r.rowId} c={c} sheet={sheet} r={r} i={i} shared={shared} onJump={onJump} />
+          ))}
+        </ul>
       ) : (
         <div className="relative overflow-x-auto scrollbar-thin">
           <table className="w-full border-collapse text-left text-[13px]">

@@ -5,6 +5,7 @@
 import { Pencil, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Badge, Button, Drawer, Field, Mono, Modal, TextArea, TextInput } from "@/components/ui";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import type { FlowKey } from "../kf/portal";
 import { errorText } from "../kf/sdk";
 import { str, type RawItem } from "../data/raw";
@@ -20,6 +21,8 @@ export function ItemDrawer({ flow, id, knownFields = [], onClose, onChanged }: {
   const [item, setItem] = useState<RawItem | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
+  // a phone views the item only (AdminShell: "Use a larger screen to edit"): no Edit fields, no Delete
+  const phone = useIsPhone();
   const [draft, setDraft] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
@@ -124,7 +127,8 @@ export function ItemDrawer({ flow, id, knownFields = [], onClose, onChanged }: {
         title={item ? str(item, KEY_FIELD[flow]) || item._id : "Item"}
         subtitle={item ? `${str(item, "_current_step") || "—"} · ${item._id}` : undefined}
         footer={
-          item && (
+          item &&
+          !phone && (
             <div className="flex w-full flex-wrap items-center gap-2">
               {editing ? (
                 <>

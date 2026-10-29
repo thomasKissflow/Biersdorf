@@ -1,9 +1,10 @@
 // Modals that create supplier-facing open points: a query or document request on an exact object and an additional
-// section (a department adds a section during the review).
+// section (a department adds a section during the review). On a phone (< 768 px) each is a full-height sheet
+// (FormWindow) with 44 px controls; its actions stay at the bottom.
 import { Link2, Lock, Mail } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useLiveFeatures } from "@/components/liveFeatures";
-import { Button, Field, Modal, Segmented, Select, TextArea, TextInput } from "@/components/ui";
+import { Button, Field, Segmented, Select, TextArea, TextInput } from "@/components/ui";
 import { DEPT_SHORT, codeTitle, sectionOf } from "@/domain/catalog";
 import { triggerText } from "@/domain/rules";
 import { caseContactIds } from "@/domain/mail";
@@ -12,6 +13,7 @@ import { userName } from "@/domain/selectors";
 import type { AppState, CiqCase, ReviewDept, SectionDef } from "@/domain/types";
 import { useStore } from "@/store/store";
 import { activeDeptUsers, joinNames } from "./lib";
+import { FormWindow } from "./phone";
 import { type AskTarget, fromDateInput, Notice, plusDaysIso, toDateInput, todayInput } from "./shared";
 
 function RefBox({ label }: { label: string }) {
@@ -95,7 +97,7 @@ export function RaiseQueryModal({ c, dept, target, onClose }: { c: CiqCase; dept
   };
 
   return (
-    <Modal
+    <FormWindow
       open
       onClose={onClose}
       title="Ask the supplier"
@@ -171,7 +173,7 @@ export function RaiseQueryModal({ c, dept, target, onClose }: { c: CiqCase; dept
         </div>
         <SupplierSees state={state} c={c} />
       </div>
-    </Modal>
+    </FormWindow>
   );
 }
 
@@ -202,7 +204,7 @@ export function ActivateSectionModal({ c, dept, onClose, onDone }: { c: CiqCase;
   };
 
   return (
-    <Modal
+    <FormWindow
       open
       onClose={onClose}
       title="Add a section"
@@ -270,6 +272,6 @@ export function ActivateSectionModal({ c, dept, onClose, onDone }: { c: CiqCase;
           <SupplierSees state={state} c={c} />
         </div>
       )}
-    </Modal>
+    </FormWindow>
   );
 }

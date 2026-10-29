@@ -5,11 +5,15 @@
 // it is in scope, then its answers as question | answer | answered by and when, its documents, requested documents
 // and open points. ?s=<sectionId> opens one section (Customs K7 and Legal K8 get their card with the note box);
 // ?s=scope the scope and evidence, ?s=SF the metadata answers. Changes after the completeness confirmation are marked.
+// Phones (< 768 px, Thomas 30 Oct): as below 1280 px (the section picker instead of the navigator), with 44 px filters,
+// picker and "All sections".
 import { ArrowLeft, ChevronLeft, ChevronRight, LayoutList, Lock, Route } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Button, Card, EmptyState, Mono, ProgressBar, Select, cx } from "@/components/ui";
 import type { CiqCase } from "@/domain/types";
+import { useIsPhone } from "@/shell/useLayoutMode";
+import { PHONE_FIELDS } from "../phone";
 import { INFORMED_SECTION } from "../shared";
 import { DocsOnlyList, FocusSection, MetadataPanel, NaSection, NotApplicableCard, ScopeCard, SectionNotes, SectionPanel, StatusIcon, shortCode, titleOf } from "./QuestionnaireSections";
 import { GROUPS, GROUP_LABEL, METADATA_ID, SCOPE_ID, buildOutline, matchesFilter, navOrder, type Outline, type OutlineFilter, type OutlineItem } from "./questionnaireOutline";
@@ -103,6 +107,7 @@ function SummaryBar({ c, outline, filter, onFilter }: { c: CiqCase; outline: Out
   const complete = counted.filter((i) => i.status === "complete").length;
   const docsOnly = sections.filter((i) => i.status === "docs").length;
   const optional = sections.filter((i) => i.status === "optional").length;
+  const phone = useIsPhone();
   return (
     <Card className="overflow-hidden" data-testid="q-summary">
       <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-3 sm:px-5">
@@ -141,6 +146,7 @@ function SummaryBar({ c, outline, filter, onFilter }: { c: CiqCase; outline: Out
                 data-count={n}
                 className={cx(
                   "inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-[13px] whitespace-nowrap transition-colors disabled:cursor-default disabled:opacity-45",
+                  phone && "min-h-11",
                   on ? "border-brand/40 bg-brand-soft font-medium text-brand" : "border-line-strong bg-surface text-ink-2 enabled:hover:bg-surface-2 enabled:hover:text-ink",
                 )}
               >
@@ -299,7 +305,7 @@ function Navigator({ c, outline, filter, sel, onSelect, naOpen, setNaOpen }: { c
 function MobilePicker({ c, outline, sel, onSelect }: { c: CiqCase; outline: Outline; sel: string | null; onSelect: (id: string | null) => void }) {
   const STATUS_WORD = { complete: "complete", missing: "missing items", optional: "optional", docs: "documents only" } as const;
   return (
-    <div className="xl:hidden" data-testid="q-picker">
+    <div className={cx("xl:hidden", useIsPhone() && PHONE_FIELDS)} data-testid="q-picker">
       <Select value={sel ?? ""} onChange={(e) => onSelect(e.target.value || null)} aria-label="Section" data-testid="q-section-select">
         <option value="">All sections · {outline.counts.all}</option>
         <option value={SCOPE_ID}>Scope and evidence</option>
@@ -393,7 +399,7 @@ function FocusView({ c, outline, filter, sel, onSelect, onOpenPoints }: { c: Ciq
   return (
     <>
       <div className="flex flex-wrap items-center justify-between gap-2" data-testid="q-focus-bar">
-        <Button variant="ghost" size="sm" icon={<ArrowLeft size={14} />} onClick={() => onSelect(null)} data-testid="q-show-all">
+        <Button variant="ghost" size="sm" icon={<ArrowLeft size={14} />} onClick={() => onSelect(null)} data-testid="q-show-all" className={useIsPhone() ? "h-11" : undefined}>
           All sections
         </Button>
       </div>

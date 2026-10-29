@@ -6,12 +6,14 @@
 // first. The write is a Table::Contacts delta with only {_id, Contacts_Portal_User_Id}, then a read of the item that
 // must hold it. Like every console write it leaves no history row (the CIQ supplier screens' editor writes one:
 // write/actions.ts setContactPortalUser). Running cases keep the portal users they started with.
+// Phones (< 768 px, Thomas 30 Oct): the portal users only, without Set / Change / Remove (a larger screen edits).
 import { Link2, Unlink } from "lucide-react";
 import { useState } from "react";
 import { Badge, Button, Mono, TextInput } from "@/components/ui";
 import { CLEAR_PORTAL_USER, portalUserIdProblem } from "@/components/portalUser";
 import { str, type RawItem } from "@/portal/data/raw";
 import { errorText } from "@/portal/kf/sdk";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { TABLES } from "../ids";
 import type { AppClient } from "../types";
 import { tableRows } from "./fields";
@@ -49,6 +51,7 @@ export function PortalUsersPanel({ client, item, onSaved }: { client: AppClient;
   const [confirm, setConfirm] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
+  const phone = useIsPhone();
   if (!rows.length) return null;
   const start = (rowId: string, cur: string) => {
     setEditing(rowId);
@@ -87,7 +90,7 @@ export function PortalUsersPanel({ client, item, onSaved }: { client: AppClient;
         {rows.map((r) => {
           const id = String(r._id ?? "");
           const cur = str(r, FIELD);
-          const open = editing === id;
+          const open = editing === id && !phone;
           const problem = open ? portalProblemIn(rows, id, text) : undefined;
           return (
             <li key={id} className="px-3 py-2.5" data-testid={`data-portal-row-${id}`} data-portal={cur}>
@@ -97,7 +100,7 @@ export function PortalUsersPanel({ client, item, onSaved }: { client: AppClient;
                   <p className="truncate text-[12px] text-ink-3">{str(r, "Contacts_Email")}</p>
                 </div>
                 {cur ? <Mono>{cur}</Mono> : <Badge tone="warn">No portal user</Badge>}
-                {!open && (
+                {!open && !phone && (
                   <Button size="sm" variant="ghost" icon={<Link2 size={14} />} onClick={() => start(id, cur)} data-testid={`data-portal-edit-${id}`}>
                     {cur ? "Change" : "Set portal user"}
                   </Button>

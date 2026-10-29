@@ -1,3 +1,4 @@
+// Internal notes tab of the case page. Phones (< 768 px, Thomas 30 Oct): "Add a note" comes first, above the notes.
 import { Lock, MessageSquareText } from "lucide-react";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -8,7 +9,9 @@ import { mentionableUsers } from "@/domain/mentions";
 import { check } from "@/domain/permissions";
 import { activeSections, fmtDateTime, isClosed, userById } from "@/domain/selectors";
 import type { CiqCase } from "@/domain/types";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { useStore } from "@/store/store";
+import { PHONE_FIELDS } from "../phone";
 import { ResponsiveCardHeader, sectionOptionGroups } from "../shared";
 
 export function NotesTab({ c }: { c: CiqCase }) {
@@ -23,6 +26,7 @@ export function NotesTab({ c }: { c: CiqCase }) {
   // A mention mail opens ?tab=notes&note=<id>: that note is scrolled to and marked.
   const [params] = useSearchParams();
   const linked = useLinkedNote(params.get("note"));
+  const phone = useIsPhone();
 
   const add = () => {
     const body = text.trim();
@@ -101,10 +105,10 @@ export function NotesTab({ c }: { c: CiqCase }) {
         )}
       </Card>
 
-      <Card className="self-start">
+      <Card className={cx("self-start", phone && "order-first")}>
         <CardHeader title="Add a note" subtitle={canWrite ? "Visible to all Beiersdorf roles on this case" : undefined} />
         {canWrite ? (
-          <div className="space-y-3 p-4">
+          <div className={cx("space-y-3 p-4", phone && PHONE_FIELDS)}>
             <Field label="Note" hint={MENTION_HINT}>
               <MentionTextArea
                 value={text}
@@ -123,7 +127,7 @@ export function NotesTab({ c }: { c: CiqCase }) {
               </Select>
             </Field>
             <div className="flex justify-end">
-              <Button variant="primary" onClick={add} disabled={!text.trim() || sending} data-testid="note-add">
+              <Button variant="primary" onClick={add} disabled={!text.trim() || sending} data-testid="note-add" className={phone ? "h-11" : undefined}>
                 {sending ? "Sending…" : "Add note"}
               </Button>
             </div>

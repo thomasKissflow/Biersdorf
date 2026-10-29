@@ -8,6 +8,7 @@ import type { CiqCase, DocumentRef, OpenPoint } from "@/domain/types";
 import { usePortalCaps } from "@/store/portalCaps";
 import { useStore } from "@/store/store";
 import { changedAt, dueParts, isEmptyDelta, isWithdrawn, sectionCode, sectionTitle, wasReturned, type SectionDelta, type SupplierStatus } from "./lib";
+import { tap, useIsPhone } from "./phone";
 
 export function StatusPill({ status }: { status: Pick<SupplierStatus, "label" | "tone"> }) {
   return (
@@ -145,6 +146,7 @@ export const docRef = (d: Pick<DocumentRef, "name" | "uploadedAt">) => `${d.name
 export function DocumentList({ docs, className }: { docs: DocumentRef[]; className?: string }) {
   const { state, me } = useStore();
   const caps = usePortalCaps();
+  const phone = useIsPhone();
   if (!docs.length) return null;
   return (
     <ul className={cx("space-y-1.5", className)}>
@@ -155,9 +157,10 @@ export function DocumentList({ docs, className }: { docs: DocumentRef[]; classNa
           <span className="text-xs text-ink-3">
             {[`uploaded ${fmtDateTime(d.uploadedAt)}`, `by ${userName(state, d.uploadedBy)}${d.uploadedBy === me.id ? " (you)" : ""}`, d.sizeKb ? `${d.sizeKb} KB` : ""].filter(Boolean).join(" · ")}
           </span>
-          <span className="ml-auto flex shrink-0 items-center gap-1">
+          {/* a phone: the actions get their own line, and wrap (Remove asks on the same line when it fits) */}
+          <span className={phone ? "flex w-full flex-wrap items-center justify-end gap-1" : "ml-auto flex shrink-0 items-center gap-1"}>
             {caps.canPreview(d.id) && (
-              <button type="button" onClick={() => caps.preview(d.id)} data-testid={`doc-preview-${d.id}`} className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[12.5px] font-medium text-brand hover:bg-brand-soft focus-visible:outline-2 focus-visible:outline-brand" aria-label={`Preview ${d.name}`}>
+              <button type="button" onClick={() => caps.preview(d.id)} data-testid={`doc-preview-${d.id}`} className={cx("inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[12.5px] font-medium text-brand hover:bg-brand-soft focus-visible:outline-2 focus-visible:outline-brand", tap(phone, "min-w-11"))} aria-label={`Preview ${d.name}`}>
                 <Eye size={14} aria-hidden="true" /> Preview
               </button>
             )}
@@ -173,20 +176,21 @@ export function DocumentList({ docs, className }: { docs: DocumentRef[]; classNa
 function RemoveDoc({ docId, name, onRemove }: { docId: string; name: string; onRemove: (docId: string) => Promise<boolean> }) {
   const [asking, setAsking] = useState(false);
   const [busy, setBusy] = useState(false);
+  const phone = useIsPhone();
   if (busy) return <span className="px-1.5 text-[12.5px] text-ink-3" data-testid={`doc-removing-${docId}`}>Removing…</span>;
   if (!asking)
     return (
-      <button type="button" onClick={() => setAsking(true)} data-testid={`doc-remove-${docId}`} className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[12.5px] font-medium text-ink-3 hover:bg-bad-soft hover:text-bad focus-visible:outline-2 focus-visible:outline-brand" aria-label={`Remove ${name}`}>
+      <button type="button" onClick={() => setAsking(true)} data-testid={`doc-remove-${docId}`} className={cx("inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[12.5px] font-medium text-ink-3 hover:bg-bad-soft hover:text-bad focus-visible:outline-2 focus-visible:outline-brand", tap(phone, "min-w-11"))} aria-label={`Remove ${name}`}>
         <Trash2 size={14} aria-hidden="true" /> Remove
       </button>
     );
   return (
     <span role="group" aria-label={`Remove ${name}?`} className="inline-flex items-center gap-1.5 text-[12.5px]">
       <span className="text-ink-2">Remove this file?</span>
-      <button type="button" data-testid={`doc-remove-yes-${docId}`} className="rounded-md px-1.5 py-0.5 font-semibold text-bad hover:bg-bad-soft" onClick={() => { setBusy(true); void onRemove(docId).finally(() => { setBusy(false); setAsking(false); }); }}>
+      <button type="button" data-testid={`doc-remove-yes-${docId}`} className={cx("rounded-md px-1.5 py-0.5 font-semibold text-bad hover:bg-bad-soft", tap(phone, "min-w-11"))} onClick={() => { setBusy(true); void onRemove(docId).finally(() => { setBusy(false); setAsking(false); }); }}>
         Yes, remove
       </button>
-      <button type="button" className="rounded-md px-1.5 py-0.5 text-ink-3 hover:bg-surface-2" onClick={() => setAsking(false)}>
+      <button type="button" className={cx("rounded-md px-1.5 py-0.5 text-ink-3 hover:bg-surface-2", tap(phone, "min-w-11"))} onClick={() => setAsking(false)}>
         No
       </button>
     </span>

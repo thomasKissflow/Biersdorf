@@ -10,6 +10,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import { PERSONA_BY_ID } from "@/domain/catalog";
 import type { AppState, InternalPersonaId, User } from "@/domain/types";
+import { LayoutModeContext, type LayoutMode } from "@/shell/useLayoutMode";
 import { StoreContext, type StoreApi } from "@/store/store";
 import { ConnectFailed, NoRolePage, StartBoundary } from "./AppLiveApp";
 import { AppEnvContext, type AppEnvValue } from "./appEnv";
@@ -64,23 +65,28 @@ function extrasFor(personaId: InternalPersonaId, patch: Partial<LiveAppExtras> =
   };
 }
 
-function render(pathname: string, personaId: InternalPersonaId, extras: Partial<LiveAppExtras> = {}, page: ReactNode = <div data-testid="the-page">PAGE</div>, env: AppEnvValue = { env: "dev" }): string {
+function render(pathname: string, personaId: InternalPersonaId, extras: Partial<LiveAppExtras> = {}, page: ReactNode = <div data-testid="the-page">PAGE</div>, env: AppEnvValue = { env: "dev" }, mode: LayoutMode | null = null): string {
   return flat(renderToString(
-    <AppEnvContext.Provider value={env}>
-      <StoreContext.Provider value={storeFor(personaId)}>
-        <AppExtrasContext.Provider value={extrasFor(personaId, extras)}>
-          <MemoryRouter initialEntries={[pathname]}>
-            <Routes>
-              <Route element={<AppLiveShell />}>
-                <Route path="*" element={page} />
-              </Route>
-            </Routes>
-          </MemoryRouter>
-        </AppExtrasContext.Provider>
-      </StoreContext.Provider>
-    </AppEnvContext.Provider>,
+    <LayoutModeContext.Provider value={mode}>
+      <AppEnvContext.Provider value={env}>
+        <StoreContext.Provider value={storeFor(personaId)}>
+          <AppExtrasContext.Provider value={extrasFor(personaId, extras)}>
+            <MemoryRouter initialEntries={[pathname]}>
+              <Routes>
+                <Route element={<AppLiveShell />}>
+                  <Route path="*" element={page} />
+                </Route>
+              </Routes>
+            </MemoryRouter>
+          </AppExtrasContext.Provider>
+        </StoreContext.Provider>
+      </AppEnvContext.Provider>
+    </LayoutModeContext.Provider>,
   ));
 }
+
+/** The test ids in the tab bar, in order (the phone layout). */
+const tabIds = (html: string) => [...html.slice(html.indexOf('data-testid="tab-bar"')).matchAll(/data-testid="(nav-[^"]+|tab-more)"/g)].map((m) => m[1]);
 
 describe("AppLiveShell", () => {
   it("builds the sidebar from the persona's menu, with no logo, no inbox and no demo menu", () => {
@@ -175,6 +181,58 @@ describe("AppLiveShell", () => {
     expect(blocked).not.toContain('data-testid="the-page"');
     expect(render(DIAGNOSTICS_PATH, "qm")).toContain('data-testid="the-page"');
     expect(render("/cases/ZZT-0001", "cus")).toContain('data-testid="the-page"');
+  });
+});
+
+describe("AppLiveShell on a phone (Thomas, 30 Oct: < 768 px)", () => {
+  const phone = (path: string, persona: InternalPersonaId, env: AppEnvValue = { env: "prod" }, extras: Partial<LiveAppExtras> = {}) => render(path, persona, extras, undefined, env, "phone");
+
+  it("no left pane; the tab bar: the persona's first four entries, then More (RMM: Dashboard, My reviews, Cases, Suppliers)", () => {
+    const html = phone("/rmm", "rmm");
+    expect(html).not.toContain('data-testid="side-pane"');
+    expect(html).not.toContain('data-testid="side-footer"');
+    expect(tabIds(html)).toEqual(["nav-rmm", "nav-review", "nav-cases", "nav-suppliers", "tab-more"]);
+    expect(tabIds(phone("/review", "saf"))).toEqual(["nav-review", "nav-cases", "nav-admin-rules", "nav-admin-templates", "tab-more"]);
+    expect(tabIds(phone("/cases", "cus"))).toEqual(["nav-cases", "nav-admin-rules", "nav-admin-templates", "nav-admin-ownership", "tab-more"]);
+    expect(html).toContain('data-testid="the-page"');
+  });
+
+  it("the header names the page; a case or a review page has the back arrow", () => {
+    expect(phone("/rmm", "rmm")).toContain('data-testid="phone-title" class="min-w-0 flex-1 truncate text-[15px] font-semibold text-ink">Dashboard</p>');
+    expect(phone("/rmm", "rmm")).not.toContain('data-testid="phone-back"');
+    for (const [path, title] of [["/cases/ZZT-0003", "Case"], ["/review/ZZT-0003", "Review"], ["/cases/new", "New case"], ["/suppliers/S1", "Supplier"], ["/diagnostics", "Diagnostics"]]) {
+      const html = phone(path, "rmm");
+      expect(html).toContain(`>${title}</p>`);
+      expect(html).toContain('data-testid="phone-back"');
+    }
+  });
+
+  it("prod: no dev top bar; dev: the compact one inside the header, with the role switcher and the person chip", () => {
+    const prod = phone("/rmm", "rmm");
+    expect(prod).not.toContain('data-testid="dev-top-bar"');
+    expect(prod).not.toContain('data-testid="role-switcher"');
+    const dev = phone("/rmm", "rmm", { env: "dev" });
+    const header = dev.slice(dev.indexOf('data-testid="phone-header"'), dev.indexOf("</header>"));
+    expect(header).toContain('data-testid="dev-top-bar" data-compact="true"');
+    expect(header).toContain('data-testid="role-switcher"');
+    expect(header).toContain('data-testid="person-chip"');
+    expect(header).toContain(">Dev</span>");
+  });
+
+  it("the status note is in the header (Saving… shown while a write runs); the banners and the page stay in <main>", () => {
+    const idle = phone("/rmm", "rmm");
+    expect(idle).toMatch(/data-testid="load-status" aria-live="polite" class="sr-only">Updated [^<]+</);
+    const busy = phone("/rmm", "rmm", { env: "prod" }, { busy: true, saving: true });
+    expect(busy).toMatch(/data-testid="load-status" aria-live="polite" class="shrink-0 text-\[12px\] text-ink-3">Saving…</);
+    const why = phone("/cases/ZZT-0003", "rmm", { env: "prod" }, { caseBanner: () => "no permission", loadError: "boom" });
+    const main = why.slice(why.indexOf("<main"), why.indexOf("</main>"));
+    for (const id of ["case-banner", "load-error-banner", "the-page"]) expect(main).toContain(`data-testid="${id}"`);
+  });
+
+  it("a tablet is the desktop layout (the left pane)", () => {
+    const html = render("/rmm", "rmm", {}, undefined, { env: "prod" }, "tablet");
+    expect(html).toContain('data-testid="side-pane"');
+    expect(html).not.toContain('data-testid="tab-bar"');
   });
 });
 
@@ -332,6 +390,10 @@ describe("FE-CLEANUP: the shell in production and in dev", () => {
     expect(textOf(render("/rmm", "rmm", { drafts: two }))).toContain("You have 2 unsent items: Open point OP-0003-09 on ZZT-0003; New case ZZT-0009 · OLIVIA Pure 100. They reached Kissflow but were not sent on.");
     expect(render(DIAGNOSTICS_PATH, "rmm", { drafts: two })).not.toContain('data-testid="unsent-banner"');
     expect(render("/rmm", "rmm")).not.toContain('data-testid="unsent-banner"');
+    // a phone: the count only, so the banner does not fill the screen on every page (Diagnostics lists the items)
+    const phone = textOf(render("/rmm", "rmm", { drafts: two }, undefined, { env: "dev" }, "phone"));
+    expect(phone).toContain("You have 2 unsent items. They reached Kissflow but were not sent on. Send or discard");
+    expect(phone).not.toContain("OLIVIA Pure 100");
   });
 
   it("B1: a pin problem is one calm banner (the mapper's text), never a load warning", () => {

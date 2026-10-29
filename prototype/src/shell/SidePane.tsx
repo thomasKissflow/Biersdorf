@@ -14,6 +14,9 @@ export interface PaneItem {
   to?: string;
   onClick?: () => void;
   label: string;
+  /** A phone's tab bar label when `label` does not fit its slot ("Questions" for Questionnaire); the full label stays
+   *  its accessible name and the More sheet's. */
+  shortLabel?: string;
   icon: ReactNode;
   active?: boolean;
   /** A small count after the label (and a dot on the rail). */

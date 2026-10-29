@@ -6,6 +6,7 @@ import { Database, RefreshCw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button, PageHeader, SectionTitle, StatCard } from "@/components/ui";
 import { itemState } from "@/portal/data/raw";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import type { FlowKey } from "../types";
 import { CONSOLE_FLOWS, CONSOLE_FORMS, CONSOLE_PROCESSES, FLOW_LABEL, FLOW_NAME, flowPath, isProcess } from "./common";
 import { useDataConsole } from "./ConsoleContext";
@@ -39,18 +40,20 @@ export function DataOverview() {
   const busy = states.some((s) => s.loading);
   // the oldest read: what Refresh would bring up to date
   const oldest = states.map((s) => s.readAt).filter((x): x is string => !!x).sort()[0];
+  // a phone: viewing only (LargerScreenNote above), so the subtitle offers no change or delete
+  const phone = useIsPhone();
   return (
     <div className="space-y-6" data-testid="data-overview">
       <PageHeader
         eyebrow="CIQ Digital"
         title="Data console"
-        subtitle="Every process and form of the app, read with your Kissflow rights once this session. Open one to search its items, look at every field and change or delete them."
+        subtitle={phone ? "Every process and form of the app, read with your Kissflow rights once this session. Open one to search its items and look at every field." : "Every process and form of the app, read with your Kissflow rights once this session. Open one to search its items, look at every field and change or delete them."}
         actions={
           <div className="flex items-center gap-2">
             <span className="text-[12.5px] text-ink-3" data-testid="data-overview-read-at">
               {busy ? "Reading…" : oldest ? readAtText({ loading: false, readAt: oldest }) : ""}
             </span>
-            <Button variant="ghost" icon={<RefreshCw size={15} />} disabled={busy} onClick={() => void Promise.all(CONSOLE_FLOWS.map((f) => session.refresh(f)))} data-testid="data-overview-refresh">
+            <Button variant="ghost" icon={<RefreshCw size={15} />} disabled={busy} onClick={() => void Promise.all(CONSOLE_FLOWS.map((f) => session.refresh(f)))} data-testid="data-overview-refresh" className={phone ? "h-11" : undefined}>
               Refresh
             </Button>
           </div>

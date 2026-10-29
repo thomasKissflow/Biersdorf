@@ -1,5 +1,7 @@
-// Read-only view of the portal's roles (with member counts) and which role holds which grant on each flow.
-import { Badge, Card, CardHeader, EmptyState, Mono, PageHeader, Table, Td, Tr } from "@/components/ui";
+// Read-only view of the portal's roles (with member counts) and which role holds which grant on each flow. On a phone
+// (Thomas, 30 Oct) both tables are cards: a role with its members and id; a flow with each role's grant.
+import { Badge, Card, CardHeader, CardList, CardListItem, EmptyState, Mono, PageHeader, Table, Td, Tr } from "@/components/ui";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { FLOWS, PORTAL_ID, type FlowKey } from "../kf/portal";
 import { rowsOf } from "../kf/sdk";
 import { usePortalMode } from "../mode";
@@ -38,6 +40,8 @@ export function RolesGrants() {
     }
     return { roles, grants };
   }, [client]);
+  const phone = useIsPhone();
+  const grantBadge = (g: Grant) => <Badge tone={g.level === "Admin" ? "violet" : "info"}>{`${g.level}${g.permission.length ? ` · ${g.permission.join(", ")}` : ""}`}</Badge>;
 
   return (
     <div className="space-y-5">
@@ -53,6 +57,13 @@ export function RolesGrants() {
           <>
             <Card>
               <CardHeader title="Roles" subtitle={`${q.data.roles.length} roles in the portal`} />
+              {phone ? (
+                <CardList label="Roles" className="p-3" data-testid="roles-cards">
+                  {q.data.roles.map((r) => (
+                    <CardListItem key={r.id} title={r.name} fields={[{ label: "Members", value: r.users ?? "—" }, { label: "Id", value: <Mono>{r.id}</Mono>, wide: true }]} />
+                  ))}
+                </CardList>
+              ) : (
               <Table head={["Role", "Members", "Id"]}>
                 {q.data.roles.map((r) => (
                   <Tr key={r.id}>
@@ -64,20 +75,36 @@ export function RolesGrants() {
                   </Tr>
                 ))}
               </Table>
+              )}
             </Card>
             <Card>
               <CardHeader title="Grants per flow" />
+              {phone ? (
+                <CardList label="Grants per flow" className="p-3" data-testid="grants-cards">
+                  {(Object.keys(FLOWS) as FlowKey[]).map((k) => (
+                    <CardListItem
+                      key={k}
+                      title={FLOW_LABEL[k]}
+                      fields={q.data!.roles.map((r) => {
+                        const g = q.data!.grants[k]?.find((x) => x.role === r.id);
+                        return { label: r.name, value: g ? grantBadge(g) : <span className="text-ink-3">—</span>, wide: true };
+                      })}
+                    />
+                  ))}
+                </CardList>
+              ) : (
               <Table head={["Flow", ...q.data.roles.map((r) => r.name)]}>
                 {(Object.keys(FLOWS) as FlowKey[]).map((k) => (
                   <Tr key={k}>
                     <Td className="font-medium">{FLOW_LABEL[k]}</Td>
                     {q.data!.roles.map((r) => {
                       const g = q.data!.grants[k]?.find((x) => x.role === r.id);
-                      return <Td key={r.id}>{g ? <Badge tone={g.level === "Admin" ? "violet" : "info"}>{`${g.level}${g.permission.length ? ` · ${g.permission.join(", ")}` : ""}`}</Badge> : <span className="text-ink-3">—</span>}</Td>;
+                      return <Td key={r.id}>{g ? grantBadge(g) : <span className="text-ink-3">—</span>}</Td>;
                     })}
                   </Tr>
                 ))}
               </Table>
+              )}
             </Card>
           </>
         )

@@ -2,9 +2,10 @@
 import { Info, Lock, ShieldCheck, TriangleAlert } from "lucide-react";
 import type { ReactNode } from "react";
 import { useLiveFeatures } from "@/components/liveFeatures";
-import { Card, EmptyState, cx } from "@/components/ui";
+import { Card, EmptyState, LargerScreenNote, cx } from "@/components/ui";
 import { SECTION_BY_ID } from "@/domain/catalog";
 import { can } from "@/domain/permissions";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { useStore } from "@/store/store";
 
 export * from "./config";
@@ -13,12 +14,16 @@ export * from "./config";
  *  since 14 Oct, RMM and the departments since 29 Oct). `canEdit` is the role (the
  *  pages, the Test rules tab); `canChange` also needs configuration changes to work here: the live app of this version
  *  shows the configuration read-only to the business administrator too (FE-CLEANUP A7, A16), so the edit controls
- *  follow `canChange` only. */
+ *  follow `canChange` only.
+ *  Phones (< 768 px, Thomas 30 Oct): nobody changes the configuration there, so `canChange` is false and the business
+ *  administrator gets "Use a larger screen to edit" instead (`largerScreen`); viewing works as for every other role.
+ *  `phone`: the pages' own phone layout (cards instead of tables; no Test rules, no Run reminders now). */
 export function useAdminAccess() {
   const { state, me, persona } = useStore();
   const { configEdit } = useLiveFeatures();
+  const phone = useIsPhone();
   const canEdit = can(state, me.id, "config.manage");
-  return { canEdit, canChange: canEdit && configEdit, canRead: canEdit || persona.side === "internal", isAuditor: persona.id === "auditor", persona };
+  return { canEdit, canChange: canEdit && configEdit && !phone, largerScreen: canEdit && configEdit && phone, phone, canRead: canEdit || persona.side === "internal", isAuditor: persona.id === "auditor", persona };
 }
 
 /** Page guard: the configuration pages are for the business administrator (edit) and the other internal roles (read-only). */
@@ -59,9 +64,11 @@ export function Callout({ tone = "info", icon, title, children, action, classNam
   );
 }
 
-/** Shown to the auditor: the configuration is visible, but only the business administrator changes it. */
-export function ReadOnlyNote({ what, extra }: { what: string; extra?: ReactNode }) {
-  const { canEdit } = useAdminAccess();
+/** Shown to the auditor: the configuration is visible, but only the business administrator changes it. To the business
+ *  administrator on a phone: "Use a larger screen to edit", then `onPhone` (what can still be done there). */
+export function ReadOnlyNote({ what, extra, onPhone }: { what: string; extra?: ReactNode; onPhone?: ReactNode }) {
+  const { canEdit, largerScreen } = useAdminAccess();
+  if (largerScreen) return <LargerScreenNote>{onPhone}</LargerScreenNote>;
   if (canEdit) return null;
   return (
     <div data-testid="admin-read-only">

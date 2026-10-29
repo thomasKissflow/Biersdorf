@@ -101,6 +101,10 @@
 // Texts (FE-CLEANUP, 22 Oct): the prod-* text scenarios play production (env=prod) and check that the main screens, the
 // banners and the toasts carry no technical token (TECH: a Kissflow code, a flow, field or item id, "(SDK)", "[unverified]",
 // "Diagnostics"), and what the D2 features say live; the dev scenarios still see the raw texts.
+// Phones (Thomas, 30 Oct: below 768 px the shell is the phone layout, src/shell/ResponsiveShell.tsx): a scenario passes
+// PHONE (390 x 844, touch, the host page's viewport meta honoured) or PHONE_360 as its context; phoneLayout(t, label)
+// checks the phone shell (no left pane, the header, the tab bar, its 44 px targets, no sideways scroll), openMore(t) opens
+// the More sheet, t.phoneShot(area, tag) writes $PHONE_SHOTS/<area>/<scenario>-<tag>.png (default dist-applive/phone/).
 // Scenarios (DESIGN §7.2): the raiser scenarios run as Microbiology (mic-raise-accept, mic-return-edit-close), because
 // Quality Management's review of the fixture case ZZT-0003 is already completed, so QM can't raise there. Scenarios
 // that write on a case's answers use byid=1 (the viewer route, R-1); read-refusals shows the same screens without it.
@@ -109,7 +113,7 @@ import { createServer } from "node:http";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-import { readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { LEAK_TERMS, RETIRED_TERMS, leakHits } from "./leak-scan.mjs";
 
@@ -135,6 +139,12 @@ const SEED_JSON = path.join(root, "../kissflow-build/night-2026-10-21/prod-seed/
 const SEED_XLSX = path.join(root, "../kissflow-build/CIQ-prod-seed-config-version-INTERNAL.xlsx");
 /** The UI's own origin (routed). */
 const UI_ORIGIN = "https://ciq-ui.harness.test";
+/** Phones (Thomas, 30 Oct): an iPhone-sized context (the host page's viewport meta honoured, touch) and the narrowest
+ *  phone the layout is made for. Every other scenario runs at 1280 x 900 (desktop). */
+const PHONE = { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 };
+const PHONE_360 = { ...PHONE, viewport: { width: 360, height: 780 } };
+/** Where the phone scenarios' screenshots go: $PHONE_SHOTS/<area>/ (default dist-applive/phone/<area>/). */
+const PHONE_SHOTS = process.env.PHONE_SHOTS || path.join(out, "phone");
 /** The webhook token of each code in the emulated SET:current (the live ones are [A-Za-z0-9_-] too), and back. */
 const TOKEN = Object.fromEntries(HANDOFF_CODES.map((c) => [c, `ZZTtok_${c.replace(".", "_")}`]));
 const CODE_OF = { ...Object.fromEntries(Object.entries(TOKEN).map(([c, k]) => [k, c])), ZZTtok_mail: "mail" };
@@ -158,7 +168,7 @@ const STORED_HOOKS = {
 };
 
 function hostPage(uiOrigin) {
-  return `<!doctype html><html><head><meta charset="utf-8"><title>Kissflow (emulated host)</title>
+  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Kissflow (emulated host)</title>
 <style>html,body{margin:0;height:100%}iframe{border:0;width:100%;height:100%;display:block}</style></head><body>
 <iframe id="kf-frame" title="app-custom-ui-CIQ_Digital_A00"></iframe>
 <script>
@@ -706,6 +716,8 @@ async function scenario(name, steps, ctxOpts = {}, opts = {}) {
     /** A check the rest of the scenario depends on: a failure stops it (reported as not run to the end). */
     must(label, pass, detail) { if (!t.check(label, pass, detail)) throw new Error(`stopped: ${label}`); },
     async shot(tag) { await page.screenshot({ path: path.join(out, `harness-${name}-${tag}.png`), fullPage: false }); },
+    /** A phone screenshot for the reviewers: $PHONE_SHOTS/<area>/<scenario>-<tag>.png. */
+    async phoneShot(area, tag) { mkdirSync(path.join(PHONE_SHOTS, area), { recursive: true }); await page.screenshot({ path: path.join(PHONE_SHOTS, area, `${name}-${tag}.png`), fullPage: false }); },
     /** Every toast the UI showed since the first call (a MutationObserver in the UI frame; toasts vanish after 3.5–8 s). */
     async toastLog() {
       return t.frame().evaluate(() => {
@@ -997,6 +1009,73 @@ async function open(t, params, route = "/") {
   await t.toastLog();
 }
 
+/** The UI frame scrolls sideways: [scrollWidth, innerWidth] when it does, null when it does not. */
+const sideScroll = (t) => t.frame().evaluate(() => (document.documentElement.scrollWidth > window.innerWidth ? [document.documentElement.scrollWidth, window.innerWidth] : null));
+
+/** The phone shell's checks (src/shell/ResponsiveShell.tsx): no left pane; the header at the top with the page's title;
+ *  the tab bar fixed at the bottom with More last, every entry a 44 px target; nothing scrolls sideways. `title`: the
+ *  header's expected text (optional). Returns the tab bar's test ids. */
+async function phoneLayout(t, label, title) {
+  const vw = t.page.viewportSize();
+  await t.seeTid("tab-bar", `${label}: the tab bar shows`);
+  t.check(`${label}: no left pane`, (await t.tid("side-pane").count()) === 0);
+  const header = await t.tid("phone-header").first().boundingBox();
+  t.check(`${label}: the header sits at the top`, !!header && Math.round(header.y) === 0 && Math.round(header.width) === vw.width, header);
+  if (title !== undefined) {
+    const got = (await t.tid("phone-title").first().textContent().catch(() => null))?.trim();
+    t.check(`${label}: the header says "${title}"`, got === title, got);
+  }
+  const bar = await t.tid("tab-bar").first().boundingBox();
+  t.check(`${label}: the tab bar is fixed at the bottom, full width`, !!bar && Math.round(bar.y + bar.height) === vw.height && Math.round(bar.width) === vw.width, bar);
+  const ids = await t.tid("tab-bar").first().locator("[data-testid]").evaluateAll((els) => els.map((e) => e.getAttribute("data-testid")).filter((id) => /^(nav-|tab-more$)/.test(id)));
+  t.check(`${label}: More is the last tab, after at most 4 entries`, ids.at(-1) === "tab-more" && ids.length <= 5, ids);
+  const small = [];
+  for (const id of ids) {
+    const b = await t.tid("tab-bar").first().getByTestId(id).boundingBox();
+    if (!b || b.width < 44 || b.height < 44 || b.x < 0 || b.x + b.width > vw.width + 0.5) small.push({ id, b });
+  }
+  t.check(`${label}: every tab is a 44 px target in view`, small.length === 0, small);
+  const scroll = await sideScroll(t);
+  t.check(`${label}: nothing scrolls sideways at ${vw.width} px`, scroll === null, scroll);
+  return ids;
+}
+
+/** Opens the phone's More sheet (the tab bar's last tab) and waits for it. */
+async function openMore(t) {
+  await t.tid("tab-more").first().click();
+  await t.seeTid("more-sheet", "More opens", 3000);
+}
+
+/** A phone page of the RMM, case, supplier, report and audit screens: nothing scrolls sideways; no table in <main>
+ *  (`noTable`: the tables are cards; default true; with false, a table left must fit its box without scrolling); each
+ *  test id in `taps` is a 44 px target in view (a tab's label: its tab). */
+async function phonePage(t, label, { noTable = true, taps = [] } = {}) {
+  const vw = t.page.viewportSize().width;
+  const scroll = await sideScroll(t);
+  t.check(`${label}: nothing scrolls sideways at ${vw} px`, scroll === null, scroll);
+  if (noTable) {
+    const n = await t.ui.locator("main table").count();
+    t.check(`${label}: no table (cards instead)`, n === 0, n);
+  } else {
+    const wide = await t.ui.locator("main table").evaluateAll((ts) => ts.filter((x) => x.scrollWidth > (x.parentElement?.clientWidth ?? 0) + 1).map((x) => [x.closest("[data-testid]")?.getAttribute("data-testid"), x.scrollWidth, x.parentElement?.clientWidth]));
+    t.check(`${label}: every table left fits its box`, wide.length === 0, wide);
+  }
+  for (const id of taps) {
+    const b = await t.tid(id).first().evaluate((e) => { const r = (e.closest('[role="tab"]') ?? e).getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height }; }, null, { timeout: 3000 }).catch(() => null);
+    t.check(`${label}: ${id} is a 44 px target in view`, !!b && b.height >= 43.5 && b.x >= 0 && b.x + b.width <= vw + 0.5, b);
+  }
+}
+
+/** The element's tag name by test id ("LI": a phone card), or null. */
+const tagOf = (t, id) => t.tid(id).first().evaluate((e) => e.tagName, null, { timeout: 3000 }).catch(() => null);
+
+/** The phone's action bar (sticky-actions) holds `id` and sits right above the tab bar, in view. */
+async function stickyAbove(t, label, id) {
+  const [bar, tabs] = await Promise.all([t.tid("sticky-actions").first().boundingBox().catch(() => null), t.tid("tab-bar").first().boundingBox().catch(() => null)]);
+  const inBar = await t.ui.locator(`[data-testid="sticky-actions"] [data-testid="${id}"]`).count();
+  t.check(`${label}: ${id} is in the bar right above the tab bar`, inBar === 1 && !!bar && !!tabs && Math.abs(bar.y + bar.height - tabs.y) <= 1.5, { inBar, bar, tabs });
+}
+
 /** Switches to a persona the user holds (the dev role switcher; a held role switches the screens, no SWITCH_ROLE). */
 async function asPersona(t, persona) {
   if ((await t.tid("role-switcher").getAttribute("data-persona")) === persona) return;
@@ -1104,6 +1183,44 @@ async function raiseOn(t, caseCode, section, question) {
 /** I-4: the supplier answered the open point in the portal (Response_* set, OP_Progress "In progress"). */
 async function playAnswer(t, opItemId, text) {
   await t.set(opItemId, { OP_Progress: "In progress", Response_Kind: "Answered", Response_Text: text, Response_Doc_Refs_JSON: "[]", Supplier_Responsible_Email: FX.contacts.elena.Email });
+}
+
+// ---- the review screens on a phone (Thomas, 30 Oct; src/features/review/phone.tsx): the review-phone-* scenarios
+/** The first element of a test id that is not a 44 px target inside the viewport's width: { id, box }, else null. */
+async function notTappable(t, id) {
+  const b = await t.tid(id).first().boundingBox().catch(() => null);
+  const vw = t.page.viewportSize().width;
+  return b && b.width >= 43.5 && b.height >= 43.5 && b.x >= -0.5 && b.x + b.width <= vw + 0.5 ? null : { id, b };
+}
+/** The test ids that are not 44 px targets in view (an empty list when all are). */
+async function untappable(t, ids) {
+  const bad = [];
+  for (const id of ids) {
+    const x = await notTappable(t, id);
+    if (x) bad.push(x);
+  }
+  return bad;
+}
+/** The open full-height sheet (a phone's form window): it covers the viewport, and its footer's buttons are in view. */
+async function fullSheet(t) {
+  const sheet = t.ui.locator('[role="dialog"][data-sheet="full"]').last();
+  await sheet.waitFor({ timeout: 4000 }).catch(() => {});
+  const b = await sheet.boundingBox().catch(() => null);
+  const vp = t.page.viewportSize();
+  const buttons = await sheet.locator("button").evaluateAll((els) => els.map((e) => e.getBoundingClientRect()).map((r) => ({ y: r.y, h: r.height, x: r.x, w: r.width })));
+  const outside = buttons.filter((r) => r.y < -0.5 || r.y + r.h > vp.height + 0.5 || r.x < -0.5 || r.x + r.w > vp.width + 0.5);
+  return { full: !!b && Math.round(b.x) === 0 && Math.round(b.y) === 0 && Math.round(b.width) === vp.width && Math.round(b.height) === vp.height, outside, box: b };
+}
+/** On a phone Reload is in More. */
+async function phoneReload(t) {
+  await openMore(t);
+  await t.reload();
+}
+/** The element of a test id is at least partly between the phone header and the sticky bars below (on screen). */
+async function onScreen(t, id) {
+  const b = await t.tid(id).first().boundingBox().catch(() => null);
+  const top = (await t.tid("phone-header").first().boundingBox())?.height ?? 0;
+  return !!b && b.y + b.height > top && b.y < t.page.viewportSize().height - 57;
 }
 
 const SCENARIOS = {
@@ -1912,6 +2029,327 @@ const SCENARIOS = {
       const retired = leakHits(UI, { terms: RETIRED_TERMS });
       t.check(`the built app (index.html) holds none of the ${RETIRED_TERMS.length} texts of the retired criteria RMES`, retired.length === 0, retired);
     }),
+  "review-phone-queue": () =>
+    scenario(
+      "review-phone-queue",
+      async (t) => {
+        // Thomas, 30 Oct: My reviews on a phone (production, 390 px): the lane and the search above the tabs, the three
+        // tabs in view, the rows as stacked cards (each card one button with the row's test id); a card opens its review,
+        // whose header names the case and goes back to My reviews
+        await open(t, { roles: "saf", byid: "1", env: "prod" }, "/review");
+        await t.seeTid("review-queue", "Safety's reviews");
+        await phoneLayout(t, "Safety's reviews at 390", "My reviews");
+        t.check("the page's own title is for screen readers only (the header names the page)", (await t.ui.locator('[data-testid="review-queue"] h1.sr-only').count()) === 1);
+        t.check("the search fills the width and is a 44 px target", !(await notTappable(t, "review-search")) && Math.round((await t.tid("review-search").boundingBox()).width) === 390 - 32, await t.tid("review-search").boundingBox());
+        t.check("the three tabs are 44 px targets in view (no tab cut off)", (await untappable(t, ["tab-todo", "tab-waiting", "tab-done"])).length === 0, await untappable(t, ["tab-todo", "tab-waiting", "tab-done"]));
+        t.check("… the waiting tab shows “Waiting”, “for supplier” for screen readers", (await t.tid("review-tab-waiting").textContent()) === "Waiting for supplier" && (await t.tid("review-tab-waiting").locator(".sr-only").textContent()) === " for supplier", await t.tid("review-tab-waiting").textContent());
+        await t.tid("tab-waiting").click();
+        await t.seeTid("review-row-ZZT-0003", "ZZT-0003 waits for the supplier");
+        t.check("no table: the rows are cards", (await t.ui.locator('[data-testid="review-queue"] table').count()) === 0 && (await t.tid("review-cards").count()) === 1);
+        const card = t.tid("review-row-ZZT-0003").first();
+        t.check("… the card is a list item whose whole face is one button", (await card.evaluate((e) => e.tagName)) === "LI" && (await card.locator(":scope > button").count()) === 1);
+        const cb = await card.boundingBox();
+        t.check("… full width, at least 44 px tall", !!cb && Math.round(cb.width) === 390 - 32 && cb.height >= 44, cb);
+        const face = (await card.innerText()).replace(/\s+/g, " ");
+        t.check("… with the material, the case, the supplier, my review, my open points, the case due date and every review", ["Tocopherol T-70", "ZZT-0003", "Solvaro", "My review", "My open points", "Case due", "All reviews"].every((x) => face.includes(x)), face);
+        t.check("nothing scrolls sideways", (await sideScroll(t)) === null, await sideScroll(t));
+        await t.phoneShot("review", "queue-390");
+        await t.fillText("review-search", "Tocopherol");
+        await t.page.waitForTimeout(150);
+        t.check("the search finds it", await t.tid("review-row-ZZT-0003").first().isVisible());
+        await t.fillText("review-search", "no such material");
+        await t.see("No case matches your search", "… and says so when nothing matches");
+        await t.fillText("review-search", "");
+        await t.tid("review-row-ZZT-0003").first().click();
+        await t.seeTid("review-workspace", "the card opens the review");
+        t.check("… its header says “Review · ZZT-0003”, with the back arrow", (await t.tid("phone-title").textContent())?.trim() === "Review · ZZT-0003" && (await t.tid("phone-back").count()) === 1, await t.tid("phone-title").textContent());
+        t.check("… and no back link of its own on the page", (await t.ui.locator('main a[href$="#/review"]').count()) === 0);
+        await t.tid("phone-back").first().click();
+        await t.page.waitForTimeout(300);
+        t.check("Back returns to My reviews", (await t.hash()).replace(/\?.*/, "") === "#/review", await t.hash());
+      },
+      PHONE,
+    ),
+  "review-phone-raise": () =>
+    scenario(
+      "review-phone-raise",
+      async (t) => {
+        // Thomas, 30 Oct: Microbiology reviews ZZT-0003 on a phone (390 px): the section picker and its sheet (my sections
+        // first), the jumps to the cards below, "Ask" beside each answer, the K2.1 composition as stacked rows; raising an
+        // open point in a full-height sheet; on the supplier's answer Return, then Edit and Close (each in a full-height
+        // sheet), a second point accepted; an internal note. Every write reaches Kissflow as on a big screen.
+        await open(t, { roles: "mic", byid: "1" }, "/review/ZZT-0003?s=K1");
+        await t.seeTid("review-workspace", "Microbiology's review of ZZT-0003");
+        await phoneLayout(t, "Microbiology's review at 390", "Review · ZZT-0003");
+        t.check("no left column: the section picker instead", (await t.tid("section-nav").count()) === 0 && (await t.tid("section-picker").count()) === 1);
+        t.check("the picker, its arrows and the jumps are 44 px targets", (await untappable(t, ["section-prev", "section-picker-open", "section-next", "jump-my-open-points", "jump-internal-notes"])).length === 0, await untappable(t, ["section-prev", "section-picker-open", "section-next", "jump-my-open-points", "jump-internal-notes"]));
+        t.check("… the jumps fit one row", await t.tid("workspace-jumps").evaluate((e) => e.getBoundingClientRect().height < 50));
+        t.check("“Ask” beside each answer, a 44 px target", (await untappable(t, ["ask-section-K1", "ask-field-FLD-K1-001"])).length === 0 && (await t.tid("ask-field-FLD-K1-001").innerText()).trim() === "Ask", await untappable(t, ["ask-section-K1", "ask-field-FLD-K1-001"]));
+        await t.phoneShot("review", "workspace-390");
+        // the section sheet: my sections first, each row 44 px; a pick closes it and shows that section
+        await t.tid("section-picker-open").click();
+        await t.seeTid("section-sheet", "the picker opens the section sheet");
+        const groups = await t.tid("section-sheet").locator("nav > div > div:first-child > span:first-child").allInnerTexts();
+        t.check("… “My sections” first, then “Other sections”", groups.map((x) => x.trim().toLowerCase()).join() === "my sections,other sections", groups);
+        const rows = await t.tid("section-sheet").locator('[data-testid^="section-nav-"]').evaluateAll((els) => els.map((e) => ({ id: e.getAttribute("data-testid"), h: e.getBoundingClientRect().height, current: e.getAttribute("aria-current") })));
+        t.check("… every row a 44 px target, K1 marked current", rows.length > 3 && rows.every((r) => r.h >= 44) && rows.find((r) => r.current === "true")?.id === "section-nav-K1", rows);
+        await t.phoneShot("review", "section-sheet-390");
+        await t.tid("section-sheet").getByTestId("section-nav-K2.1").click();
+        await t.page.waitForTimeout(300);
+        t.check("picking K2.1 closes the sheet and shows K2.1", (await t.tid("section-sheet").count()) === 0 && /[?&]s=K2\.1\b/.test(await t.hash()) && (await t.tid("section-content-K2.1").count()) === 1, await t.hash());
+        await t.seeTid("component-table", "K2.1: the composition");
+        t.check("… as stacked rows, no table", (await t.ui.locator('[data-testid="component-table"] table').count()) === 0 && (await t.ui.locator('[data-testid^="component-row-"]').count()) > 0);
+        const askRow = await t.ui.locator('[data-testid^="ask-row-"]').first().getAttribute("data-testid");
+        t.check("… each with its 44 px “Ask”", !!askRow && !(await notTappable(t, askRow)), askRow);
+        t.check("… nothing scrolls sideways", (await sideScroll(t)) === null, await sideScroll(t));
+        await t.tid("component-table").first().scrollIntoViewIfNeeded();
+        await t.phoneShot("review", "k21-390");
+        const k21 = await t.hash();
+        await t.tid("section-next").click();
+        await t.page.waitForTimeout(200);
+        const nextHash = await t.hash();
+        t.check("the next arrow shows the next section", nextHash !== k21 && /[?&]s=/.test(nextHash), [k21, nextHash]);
+        await t.tid("section-prev").click();
+        await t.page.waitForTimeout(200);
+        t.check("… and the previous arrow comes back", (await t.hash()) === k21, await t.hash());
+        // raise on K1 in a full-height sheet
+        await t.go("/review/ZZT-0003?s=K1");
+        const before = (await t.rows(F.op)).map((x) => x._id);
+        await t.tid("ask-section-K1").first().click();
+        await t.seeTid("ask-question", "Ask the supplier opens");
+        let sheet = await fullSheet(t);
+        t.check("… as a full-height sheet, its buttons in view", sheet.full && sheet.outside.length === 0, sheet);
+        t.check("… Send to supplier and Close are 44 px targets", (await untappable(t, ["ask-send", "sheet-close"])).length === 0, await untappable(t, ["ask-send", "sheet-close"]));
+        await t.fillText("ask-question", "Please send the stability study.");
+        await t.fillText("ask-justification", "Needed for the assessment.");
+        await t.phoneShot("review", "ask-sheet-390");
+        await t.act("ask-send");
+        const op = (await t.rows(F.op)).find((x) => !before.includes(x._id));
+        t.must("the open point reached Kissflow", !!op);
+        t.check("… and the sheet closed", (await t.ui.locator('[role="dialog"][data-sheet="full"]').count()) === 0);
+        // the supplier answers; the mail's deep link shows the point
+        await playAnswer(t, op._id, "The study is in preparation.");
+        await phoneReload(t);
+        await t.go(`/review/ZZT-0003?op=${op.OP_Key}`);
+        await t.seeTid(`op-decide-${op.OP_Key}`, "the answer: Microbiology decides");
+        await t.page.waitForTimeout(900);
+        t.check("the deep link scrolls the point onto the screen", await onScreen(t, `op-decide-${op.OP_Key}`));
+        const decideIds = ["accept", "return", "not-accepted", "edit", "close"].map((a) => `op-${a}-${op.OP_Key}`);
+        t.check("Accept, Return and the other decisions are 44 px targets in view", (await untappable(t, decideIds)).length === 0, await untappable(t, decideIds));
+        const [acc, ret] = [await t.tid(decideIds[0]).boundingBox(), await t.tid(decideIds[1]).boundingBox()];
+        t.check("… Accept and Return side by side", !!acc && !!ret && Math.abs(acc.y - ret.y) < 1 && acc.x < ret.x, [acc, ret]);
+        await t.tid(`op-card-${op.OP_Key}`).first().scrollIntoViewIfNeeded();
+        await t.phoneShot("review", "decide-390");
+        await t.tid(`op-card-${op.OP_Key}`).first().getByRole("button", { name: /^K1 › / }).click();
+        await t.page.waitForTimeout(800);
+        t.check("the point's reference goes back up to the section picker, its answers below", (await onScreen(t, "section-picker")) && /[?&]s=K1\b/.test(await t.hash()), await t.hash());
+        let n = (await t.calls()).length;
+        await t.tid(decideIds[1]).click();
+        await t.fillText("op-decide-reason", "Please send the signed study report.");
+        t.check("Return's confirm is a 44 px target", !(await notTappable(t, "op-decide-confirm")));
+        await t.act("op-decide-confirm");
+        let it = (await t.rows(F.op)).find((x) => x._id === op._id);
+        t.check("return: round 2 in Kissflow", it.Round_No === 2 && it.Query_Key === `${op.OP_Key}-R2`, [it.Round_No, it.Query_Key]);
+        // edit in a full-height sheet
+        await t.go(`/review/ZZT-0003?op=${op.OP_Key}`);
+        await t.seeTid(`op-edit-${op.OP_Key}`, "the returned point can be edited");
+        t.check("Edit and Close are 44 px targets", (await untappable(t, [`op-edit-${op.OP_Key}`, `op-close-${op.OP_Key}`])).length === 0, await untappable(t, [`op-edit-${op.OP_Key}`, `op-close-${op.OP_Key}`]));
+        await t.tid(`op-edit-${op.OP_Key}`).first().click();
+        await t.seeTid("op-edit-question", "Edit opens");
+        sheet = await fullSheet(t);
+        t.check("… as a full-height sheet, its buttons in view", sheet.full && sheet.outside.length === 0, sheet);
+        await t.fillText("op-edit-question", "Please send the signed stability study report.");
+        await t.phoneShot("review", "edit-sheet-390");
+        n = (await t.calls()).length;
+        await t.act("op-edit-save");
+        it = (await t.rows(F.op)).find((x) => x._id === op._id);
+        t.check("edit: the question is updated in Kissflow", it.Question_Text === "Please send the signed stability study report." && (await writeSeq(t, "op", n)).join(" ") === "UPDATE_ITEM", [it.Question_Text, await writeSeq(t, "op", n)]);
+        // close in a full-height sheet
+        await t.go(`/review/ZZT-0003?op=${op.OP_Key}`);
+        await t.tid(`op-close-${op.OP_Key}`).first().click();
+        await t.seeTid("op-close-reason", "Close opens");
+        sheet = await fullSheet(t);
+        t.check("… as a full-height sheet, its buttons in view", sheet.full && sheet.outside.length === 0, sheet);
+        await t.fillText("op-close-reason", "Not needed any more.");
+        await t.act("op-close-confirm");
+        it = (await t.rows(F.op)).find((x) => x._id === op._id);
+        t.check("close: Withdrawn and at End in Kissflow", it.OP_Outcome === "Withdrawn" && it._status === "Completed", [it.OP_Outcome, it._status]);
+        // a second point, accepted
+        const op2 = await raiseOn(t, "ZZT-0003", "K1", "Please confirm the shelf life of the material.");
+        t.must("a second point reached Kissflow", !!op2);
+        await playAnswer(t, op2._id, "24 months from the production date.");
+        await phoneReload(t);
+        await t.go(`/review/ZZT-0003?op=${op2.OP_Key}`);
+        await t.seeTid(`op-accept-${op2.OP_Key}`, "the second answer");
+        await t.act(`op-accept-${op2.OP_Key}`);
+        it = (await t.rows(F.op)).find((x) => x._id === op2._id);
+        t.check("accept: Accepted and at End in Kissflow", it.OP_Outcome === "Accepted" && it._status === "Completed", [it.OP_Outcome, it._status]);
+        // an internal note, from the jump
+        await t.tid("jump-internal-notes").click();
+        await t.page.waitForTimeout(700);
+        t.check("the Notes jump scrolls to the internal notes", await onScreen(t, "note-input"));
+        await t.fillText("note-input", "Stability study asked for again; see K1.");
+        t.check("Add note is a 44 px target", !(await notTappable(t, "note-add")));
+        await t.act("note-add");
+        t.check("the note reached Kissflow", (await t.rows(F.note)).some((x) => x.Note_Text === "Stability study asked for again; see K1."));
+        t.check("nothing scrolls sideways", (await sideScroll(t)) === null, await sideScroll(t));
+        await t.phoneShot("review", "notes-390");
+        // night mode
+        await openMore(t);
+        await t.tid("more-theme").first().click();
+        await t.page.keyboard.press("Escape");
+        await t.go("/review/ZZT-0003?s=K1");
+        await t.page.waitForTimeout(400);
+        await t.phoneShot("review", "workspace-dark-390");
+        t.check("no write refused", (await refusedCalls(t)).length === 0, await refusedCalls(t));
+      },
+      PHONE,
+    ),
+  "review-phone-complete-360": () =>
+    scenario(
+      "review-phone-complete-360",
+      async (t) => {
+        // Thomas, 30 Oct: Safety completes its review of ZZT-0001 on the narrowest phone (360 px, the dev sandbox): the
+        // completion bar sticks above the tab bar in one row; opened, its blockers and the decision line; the decision
+        // card from the bar; the RMES as stacked rows; the decision and the completion reach Kissflow; Reopen (only
+        // RMM restarts a review in this version) says so at once
+        await open(t, { roles: "rmm,saf", byid: "1" });
+        await playCompleteness(t, CASE1);
+        await phoneReload(t);
+        await asPersona(t, "saf");
+        await t.go("/review");
+        await t.seeTid("review-queue", "Safety's reviews at 360");
+        await phoneLayout(t, "Safety's reviews at 360", "My reviews");
+        t.check("the three tabs are 44 px targets in view at 360", (await untappable(t, ["tab-todo", "tab-waiting", "tab-done"])).length === 0, await untappable(t, ["tab-todo", "tab-waiting", "tab-done"]));
+        await t.seeTid("review-row-ZZT-0001", "ZZT-0001 is to review");
+        await t.phoneShot("review", "queue-360");
+        await t.tid("review-row-ZZT-0001").first().click();
+        await t.seeTid("complete-bar", "the review of ZZT-0001 with its completion bar");
+        await phoneLayout(t, "Safety's review at 360", "Review · ZZT-0001");
+        const bar = await t.tid("complete-bar").first().boundingBox();
+        const tabs = await t.tid("tab-bar").first().boundingBox();
+        t.check("the bar sits on the tab bar, edge to edge", !!bar && !!tabs && Math.abs(bar.y + bar.height - tabs.y) <= 1 && Math.round(bar.width) === 360 && bar.x === 0, [bar, tabs]);
+        t.check("… one row, at most 72 px tall", !!bar && bar.height <= 72, bar);
+        t.check("… Complete my review is disabled while something blocks", (await t.button("complete-review")).disabled);
+        t.check("… the toggle and the button are 44 px targets", (await untappable(t, ["blockers-toggle", "complete-review"])).length === 0, await untappable(t, ["blockers-toggle", "complete-review"]));
+        await t.phoneShot("review", "bar-360");
+        await t.tid("blockers-toggle").click();
+        await t.seeTid("blocker-list", "the toggle opens the blockers");
+        t.check("… with the decision line", (await t.ui.locator('[data-testid="complete-bar"] [data-testid="complete-decision"]').count()) === 1);
+        t.check("… its links are 44 px targets", (await untappable(t, ["decision-go"])).length === 0 && (await t.tid("blocker-list").locator("button").evaluateAll((els) => els.every((e) => e.getBoundingClientRect().height >= 44))), await untappable(t, ["decision-go"]));
+        await t.phoneShot("review", "blockers-360");
+        await t.tid("decision-go").click();
+        await t.page.waitForTimeout(800);
+        t.check("“Record the decision” shows the decision card and folds the list away", (await t.tid("blocker-list").count()) === 0 && (await onScreen(t, "decision-card")) && (await t.frame().evaluate(() => document.activeElement?.getAttribute("data-testid"))) === "decision-card", await t.frame().evaluate(() => document.activeElement?.getAttribute("data-testid")));
+        // the RMES as stacked rows
+        await t.tid("workspace-tab-rmes").click();
+        await t.seeTid("rmes-composition", "the RMES tab");
+        t.check("the composition: stacked rows, no table", (await t.ui.locator('[data-testid="rmes-composition"] table').count()) === 0 && (await t.ui.locator('[data-testid^="rmes-row-"]').count()) > 0);
+        t.check("… nothing scrolls sideways", (await sideScroll(t)) === null, await sideScroll(t));
+        await t.tid("rmes-composition").first().scrollIntoViewIfNeeded();
+        await t.phoneShot("review", "rmes-360");
+        await t.tid("workspace-tab-ciq").click();
+        await t.seeTid("decision-card", "back on the Questionnaire tab");
+        const approved = t.tid("decision-choice").getByRole("button", { name: "Approved", exact: true });
+        const ab = await approved.boundingBox();
+        t.check("the decision's choice and Record are 44 px targets", !!ab && ab.height >= 44 && !(await notTappable(t, "decision-record")), ab);
+        await approved.click();
+        await t.act("decision-record");
+        const saf = (await t.rows(F.review)).find((x) => x.Case_Item_Id === CASE1 && x.Review_Dept === "SAF");
+        t.check("the decision reached Kissflow", saf?.RMES_Decision === "Approved", saf?.RMES_Decision);
+        await t.seeTid("complete-review", "nothing blocks now");
+        const ready = await t.tid("complete-bar").first().boundingBox();
+        const readyLabel = (await t.tid("ready-toggle").first().innerText()).trim();
+        t.check("… the bar stays one row (at most 72 px): “Approved” and Complete my review", !!ready && ready.height <= 72 && /^Approved/.test(readyLabel), [ready, readyLabel]);
+        t.check("… and Complete my review is enabled", !(await t.button("complete-review")).disabled);
+        t.check("… the toggle is a 44 px target", (await untappable(t, ["ready-toggle", "complete-review"])).length === 0, await untappable(t, ["ready-toggle", "complete-review"]));
+        await t.phoneShot("review", "ready-360");
+        await t.tid("ready-toggle").click();
+        await t.seeTid("complete-ready-details", "the toggle opens what completing means");
+        const details = await t.tid("complete-ready-details").first().innerText();
+        t.check("… the decision, “Nothing blocks your review” and “not a raw-material approval”", /Safety decision: Approved/.test((await t.tid("complete-decision").first().innerText()).replace(/\s+/g, " ")) && /Nothing blocks your review/.test(details) && /not a raw-material approval/.test(details), details);
+        await t.phoneShot("review", "ready-details-360");
+        await t.tid("ready-toggle").click();
+        await t.page.waitForTimeout(200);
+        await t.act("complete-review");
+        const done = (await t.rows(F.review)).find((x) => x._id === saf._id);
+        t.check("the completion reached Kissflow", done._status === "Completed", done._status);
+        await t.seeTid("reopen-review", "the bar: completed, with Reopen");
+        t.check("… “Safety review completed”, Reopen a 44 px target", /Safety review completed/.test(await t.tid("complete-bar").innerText()) && !(await notTappable(t, "reopen-review")), await t.tid("complete-bar").innerText());
+        await t.phoneShot("review", "completed-360");
+        const toasts = (await t.toastLog()).length;
+        await t.tid("reopen-review").click();
+        t.check("a department's Reopen says at once that only RMM restarts a review", !!(await t.waitToast(/^Ask RMM: only RMM can restart a review in this version\.$/, toasts)) && (await t.tid("reopen-reason").count()) === 0, (await t.toastLog()).slice(toasts));
+        const toastAt = await t.frame().evaluate(() => {
+          const item = document.querySelector('[data-testid="toaster"]')?.firstElementChild?.getBoundingClientRect();
+          const bar = document.querySelector('[data-testid="complete-bar"]')?.getBoundingClientRect();
+          const head = document.querySelector('[data-testid="phone-header"]')?.getBoundingClientRect();
+          return item && bar && head ? { top: item.top, bottom: item.bottom, barTop: bar.top, headBottom: head.bottom } : null;
+        });
+        t.check("… the toast sits at the bottom, just above the bar and the tab bar, clear of the header", !!toastAt && toastAt.bottom <= toastAt.barTop + 1 && toastAt.top > toastAt.headBottom, toastAt);
+        await t.phoneShot("review", "toast-360");
+        t.check("nothing scrolls sideways", (await sideScroll(t)) === null, await sideScroll(t));
+        t.check("no write refused", (await refusedCalls(t)).length === 0, await refusedCalls(t));
+      },
+      PHONE_360,
+    ),
+  "review-phone-rmm": () =>
+    scenario(
+      "review-phone-rmm",
+      async (t) => {
+        // Thomas, 30 Oct: one user holding RMM and Product Safety, on a phone (390 px, the dev sandbox): Safety records
+        // Rejected on ZZT-0003, so RMM's bar asks how the case goes on, in a full-height sheet; then, its review completed
+        // (played), RMM reopens it with a reason in a full-height sheet: a new RMM review round reaches Kissflow
+        await open(t, { roles: "rmm,saf", byid: "1" });
+        await asPersona(t, "saf");
+        await t.go("/review/ZZT-0003");
+        await t.seeTid("decision-card", "Safety's decision card");
+        await t.tid("decision-choice").getByRole("button", { name: "Rejected", exact: true }).click();
+        await t.fillText("decision-reason", "The arsenic evidence covers one batch only.");
+        await t.act("decision-record");
+        const saf = await t.item("PkRevZZT0003SAF1");
+        t.check("Safety's rejection, recorded on the phone, reached Kissflow", saf?.RMES_Decision === "Rejected", saf?.RMES_Decision);
+        await asPersona(t, "rmm");
+        await t.go("/review/ZZT-0003");
+        await t.seeTid("rejection-flag", "RMM: Safety recorded Rejected");
+        await phoneLayout(t, "RMM's review at 390", "Review · ZZT-0003");
+        t.check("“Choose how to go on” is a 44 px target in the bar", !(await notTappable(t, "rejection-choose")) && (await t.ui.locator('[data-testid="complete-bar"] [data-testid="rejection-choose"]').count()) === 1);
+        await t.phoneShot("review", "rmm-rejected-390");
+        await t.tid("rejection-choose").click();
+        await t.seeTid("rejection-options", "the choice opens");
+        let sheet = await fullSheet(t);
+        t.check("… as a full-height sheet, its buttons in view", sheet.full && sheet.outside.length === 0, sheet);
+        t.check("… continue or cancel, with the note", (await t.tid("rejection-text").count()) === 1 && (await t.tid("rejection-options").getByRole("button").count()) >= 1);
+        await t.phoneShot("review", "rmm-choice-390");
+        await t.tid("sheet-close").last().click();
+        await t.page.waitForTimeout(200);
+        t.check("Close closes it", (await t.tid("rejection-options").count()) === 0);
+        // RMM's review completed (played), then reopened on the phone
+        const rmm = (await t.rows(F.review)).find((x) => x.Case_Item_Id === CASE3 && x.Review_Dept === "RMM");
+        await playCompleted(t, rmm._id, "RMM", FX.users.rmm);
+        await phoneReload(t);
+        await t.go("/review/ZZT-0003");
+        await t.seeTid("reopen-review", "RMM's completed review offers Reopen");
+        t.check("… a 44 px target in the bar", !(await notTappable(t, "reopen-review")));
+        await t.tid("reopen-review").click();
+        await t.seeTid("reopen-reason", "Reopen asks why");
+        sheet = await fullSheet(t);
+        t.check("… in a full-height sheet, its buttons in view", sheet.full && sheet.outside.length === 0, sheet);
+        t.check("… Reopen review waits for the reason", (await t.button("reopen-confirm")).disabled);
+        await t.fillText("reopen-reason", "The supplier must update the composition.");
+        await t.phoneShot("review", "rmm-reopen-390");
+        const audits = (await t.rows(F.audit)).length;
+        const reviews = (await t.rows(F.review)).length;
+        await t.act("reopen-confirm");
+        const again = (await t.rows(F.review)).slice(reviews).find((x) => x.Case_Item_Id === CASE3 && x.Review_Dept === "RMM");
+        t.check("a new RMM review round reached Kissflow", !!again, (await t.rows(F.review)).slice(reviews).map((x) => [x.Review_Dept, x.Case_Item_Id]));
+        t.check("… with its review.reopened row", codes(await auditSince(t, audits)).includes("review.reopened"), codes(await auditSince(t, audits)));
+        t.check("… and the sheet closed", (await t.ui.locator('[role="dialog"][data-sheet="full"]').count()) === 0);
+        t.check("nothing scrolls sideways", (await sideScroll(t)) === null, await sideScroll(t));
+        t.check("no write refused", (await refusedCalls(t)).length === 0, await refusedCalls(t));
+      },
+      PHONE,
+    ),
   "mic-raise-accept": () =>
     scenario("mic-raise-accept", async (t) => {
       await open(t, { roles: "mic", byid: "1" });
@@ -3559,6 +3997,689 @@ const SCENARIOS = {
       t.check("RMM: no 'could not be read' warning any more", !/could not be read/i.test(warn1), warn1);
       t.check("… and no ZZT-0005", (await t.tid("case-row-ZZT-0005").count()) === 0);
     }),
+  "phone-shell": () =>
+    scenario(
+      "phone-shell",
+      async (t) => {
+        // Thomas, 30 Oct: below 768 px the app is the phone layout: no left pane; the slim header (the page's title, a back
+        // arrow on a detail page), the bottom tab bar (the persona's first four entries, then More), More with the rest,
+        // the status note, Reload and night mode; live on rotate and resize, without rebuilding the page (state kept).
+        // Production RMM at 390 px:
+        await open(t, { roles: "rmm", env: "prod" }, "/rmm");
+        await t.seeTid("tile-my-open", "the RMM dashboard shows");
+        const tabs = await phoneLayout(t, "RMM at 390", "Dashboard");
+        t.check("the tabs: Dashboard, My reviews, Cases, Suppliers, More", JSON.stringify(tabs) === JSON.stringify(["nav-rmm", "nav-review", "nav-cases", "nav-suppliers", "tab-more"]), tabs);
+        t.check("Dashboard is the current tab", (await t.tid("nav-rmm").first().getAttribute("aria-current")) === "page");
+        t.check("no back arrow on a menu page", (await t.tid("phone-back").count()) === 0);
+        t.check("production: no dev top bar", (await t.tid("dev-top-bar").count()) === 0);
+        const status = (await t.tid("load-status").first().textContent())?.trim();
+        t.check("the status note is in the header (for screen readers), 'Updated …' once loaded", /^Updated /.test(status ?? ""), status);
+        await t.phoneShot("foundation", "rmm-390");
+        await openMore(t);
+        const more = await t.tid("more-sheet").first().locator("[data-testid]").evaluateAll((els) => els.map((e) => e.getAttribute("data-testid")));
+        t.check("More: Rules, Questionnaire, Section owners; Reload with the status; night mode", ["nav-admin-rules", "nav-admin-templates", "nav-admin-ownership", "reload", "more-status", "more-theme"].every((id) => more.includes(id)), more);
+        const sheet = await t.tid("more-sheet").first().boundingBox();
+        t.check("More rises from the bottom, full width", !!sheet && Math.round(sheet.y + sheet.height) === 844 && Math.round(sheet.width) === 390, sheet);
+        await t.phoneShot("foundation", "more-390");
+        await t.page.keyboard.press("Escape");
+        await t.page.waitForTimeout(200);
+        t.check("Escape closes More", (await t.tid("more-sheet").count()) === 0 && (await t.tid("tab-more").getAttribute("aria-expanded")) === "false");
+        await openMore(t);
+        await t.tid("nav-admin-ownership").first().click();
+        await t.seeTid("owner-cell-K1-SUS", "Section owners opens from More", 8000);
+        t.check("… More closes, the header says Section owners, More is lit", (await t.tid("more-sheet").count()) === 0 && (await t.tid("phone-title").textContent())?.trim() === "Section owners" && (await t.tid("tab-more").getAttribute("data-active")) === "true", await t.tid("phone-title").textContent());
+        // a detail page: the back arrow; Back returns where the user came from (the UI's own history)
+        await t.tid("nav-cases").first().click();
+        await t.seeTid("case-row-ZZT-0003", "the cases list");
+        await t.tid("case-row-ZZT-0003").first().click();
+        await t.page.waitForTimeout(400);
+        await t.seeTid("phone-back", "a case has the back arrow");
+        t.check("… and the header says Case", (await t.tid("phone-title").textContent())?.trim() === "Case", await t.tid("phone-title").textContent());
+        const backBox = await t.tid("phone-back").first().boundingBox();
+        t.check("… Back is a 44 px target", !!backBox && backBox.width >= 44 && backBox.height >= 44, backBox);
+        t.check("… nothing scrolls sideways on the case page's frame", (await sideScroll(t)) === null, await sideScroll(t));
+        await t.phoneShot("foundation", "case-390");
+        await t.tid("phone-back").first().click();
+        await t.page.waitForTimeout(300);
+        t.check("Back returns to the cases list", (await t.hash()).startsWith("#/cases") && !(await t.hash()).startsWith("#/cases/"), await t.hash());
+        // night mode from More
+        await openMore(t);
+        await t.tid("more-theme").first().click();
+        await t.page.waitForTimeout(200);
+        t.check("More switches night mode on", (await t.frame().evaluate(() => document.documentElement.dataset.theme)) === "dark");
+        await t.page.keyboard.press("Escape");
+        await t.phoneShot("foundation", "cases-dark-390");
+        await openMore(t);
+        await t.tid("more-theme").first().click();
+        await t.page.keyboard.press("Escape");
+        // rotate: 844 px wide is a tablet (the desktop layout, the menu collapsed); the page is not rebuilt; back to 390
+        await t.frame().evaluate(() => { document.querySelector("main").__kept = 1; });
+        await t.page.setViewportSize({ width: 844, height: 390 });
+        await t.seeTid("side-pane", "turned sideways (844 px): the left pane is back", 3000);
+        const pane = t.tid("side-pane").first();
+        t.check("… as its icon rail (a tablet's default)", (await pane.getAttribute("data-collapsed")) === "true" && Math.round((await pane.boundingBox())?.width ?? -1) === 64, await pane.boundingBox());
+        t.check("… no tab bar, no phone header", (await t.tid("tab-bar").count()) === 0 && (await t.tid("phone-header").count()) === 0);
+        t.check("… the page was not rebuilt (the same <main>)", await t.frame().evaluate(() => document.querySelector("main").__kept === 1));
+        await t.page.waitForTimeout(300); // the theme's colour transitions
+        await t.phoneShot("foundation", "tablet-844");
+        await t.page.setViewportSize({ width: 390, height: 844 });
+        await t.seeTid("tab-bar", "upright again: the tab bar is back", 3000);
+        t.check("… the same page and the same <main>", (await t.hash()).startsWith("#/cases") && (await t.frame().evaluate(() => document.querySelector("main").__kept === 1)), await t.hash());
+        await t.page.setViewportSize({ width: 1280, height: 900 });
+        await t.seeTid("side-pane", "desktop (1280 px): the left pane", 3000);
+        t.check("… expanded (desktop's default, nothing chosen)", (await t.tid("side-pane").first().getAttribute("data-collapsed")) === "false");
+      },
+      PHONE,
+    ),
+  "phone-shell-360": () =>
+    scenario(
+      "phone-shell-360",
+      async (t) => {
+        // the narrowest phone, in the Development sandbox: the compact dev top bar sits in the header with the role
+        // switcher and the person chip, all in view; the role menu fits the screen; a reviewer's tabs
+        await open(t, { roles: "rmm,saf" }, "/rmm");
+        await t.seeTid("tile-my-open", "the RMM dashboard shows");
+        await phoneLayout(t, "dev RMM at 360", "Dashboard");
+        const bar = t.tid("dev-top-bar").first();
+        t.check("the dev top bar is the compact one, inside the header", (await bar.getAttribute("data-compact")) === "true" && (await t.ui.locator('[data-testid="phone-header"] [data-testid="dev-top-bar"]').count()) === 1);
+        const off = [];
+        for (const id of ["role-switcher", "person-chip"]) {
+          const b = await t.tid(id).first().boundingBox();
+          if (!b || b.x < 0 || b.x + b.width > 360.5 || b.height < 44) off.push({ id, b });
+        }
+        t.check("the role switcher and the person chip are 44 px targets in view", off.length === 0, off);
+        await t.phoneShot("foundation", "dev-rmm-360");
+        await t.tid("role-switcher").click();
+        await t.seeTid("role-menu");
+        const menu = await t.tid("role-menu").first().boundingBox();
+        t.check("the role menu fits the screen", !!menu && menu.x >= 0 && menu.x + menu.width <= 360.5, menu);
+        await t.phoneShot("foundation", "role-menu-360");
+        await t.page.keyboard.press("Escape");
+        await asPersona(t, "saf");
+        await t.seeTid("review-queue", "Safety's reviews", 8000);
+        const tabs = await phoneLayout(t, "dev Safety at 360", "My reviews");
+        t.check("a reviewer's tabs: My reviews, Cases, Rules, Questionnaire, More (Section owners in More)", JSON.stringify(tabs) === JSON.stringify(["nav-review", "nav-cases", "nav-admin-rules", "nav-admin-templates", "tab-more"]), tabs);
+        const cut = await t.tid("tab-bar").first().locator("a span:last-child, button span:last-child").evaluateAll((ss) => ss.filter((x) => x.scrollWidth > x.clientWidth + 0.5).map((x) => x.textContent));
+        t.check("… no tab label is cut off at 360 (Questionnaire is “Questions” there)", cut.length === 0 && (await t.tid("nav-admin-templates").first().innerText()).trim() === "Questions" && (await t.tid("nav-admin-templates").first().getAttribute("aria-label")) === "Questionnaire", cut);
+        await t.phoneShot("foundation", "dev-saf-360");
+      },
+      PHONE_360,
+    ),
+  "phone-rmm": () =>
+    scenario(
+      "phone-rmm",
+      async (t) => {
+        // Thomas, 30 Oct: RMM's screens on a phone (production RMM at 390 px; features/rmm/phone.tsx): the dashboard, the
+        // Cases register (cards, the search on the page, the other filters in a sheet), a case with its tabs (the main
+        // action above the tab bar, open points as cards, the thread a full-height sheet), the final document with
+        // Download PDF, and New case (Create in the bar above the tab bar). Nothing scrolls sideways; targets are 44 px.
+        await open(t, { roles: "rmm", byid: "1", env: "prod" }, "/rmm");
+        await t.seeTid("tile-my-open", "the RMM dashboard shows");
+        await phoneLayout(t, "dashboard", "Dashboard");
+        await phonePage(t, "dashboard", { taps: ["new-case", "attention-filter-all"] });
+        t.check("dashboard: My cases are cards (the rows' test ids on list items)", (await tagOf(t, "dashboard-case-ZZT-0003")) === "LI", await tagOf(t, "dashboard-case-ZZT-0003"));
+        await t.phoneShot("rmm-cases", "dashboard");
+        await t.tid("dashboard-case-ZZT-0003").first().click();
+        await t.page.waitForTimeout(300);
+        t.check("dashboard: a card opens its case", (await t.hash()).startsWith("#/cases/ZZT-0003"), await t.hash());
+
+        // the Cases register
+        await t.tid("nav-cases").first().click();
+        await t.seeTid("case-row-ZZT-0003", "Cases: the open cases");
+        await phoneLayout(t, "cases", "Cases");
+        await phonePage(t, "cases", { taps: ["cases-search", "cases-filters-open", "cases-tab-open", "new-case"] });
+        const casesTabs = await t.ui.locator('[role="tablist"]').first().getAttribute("data-more");
+        t.check("cases: the tab row cut off at the edge fades out there", casesTabs === "right", casesTabs);
+        const holder = await t.tid("cases-search").first().getAttribute("placeholder");
+        t.check("cases: a placeholder that fits (“Search cases”)", holder === "Search cases", holder);
+        t.check("cases: each case is a card", (await tagOf(t, "case-row-ZZT-0003")) === "LI" && (await tagOf(t, "case-row-ZZT-0001")) === "LI");
+        t.check("cases: the filters are not on the page (only the search)", (await t.tid("cases-overdue").count()) === 0 && (await t.tid("cases-search").first().isVisible()));
+        await t.phoneShot("rmm-cases", "cases");
+        await t.tid("cases-filters-open").first().click();
+        await t.seeTid("cases-filters", "Filters opens a sheet", 3000);
+        const sheet = await t.tid("cases-filters").first().boundingBox();
+        t.check("… rising from the bottom, full width", !!sheet && Math.round(sheet.y + sheet.height) === 844 && Math.round(sheet.width) === 390, sheet);
+        const switches = await Promise.all(["cases-overdue", "cases-filters-done"].map((id) => t.tid(id).first().boundingBox()));
+        t.check("… Overdue only and the close button in it", switches.every(Boolean), switches);
+        await t.phoneShot("rmm-cases", "cases-filters");
+        await t.tid("cases-overdue").first().click();
+        await t.page.waitForTimeout(200);
+        t.check("… Overdue only applies at once (the URL keeps it)", (await t.hash()).includes("overdue=1"), await t.hash());
+        const done = ((await t.tid("cases-filters-done").first().textContent()) ?? "").trim();
+        t.check("… the close button says how many cases match", /^Show \d+ cases?$/.test(done), done);
+        await t.tid("cases-filters-done").first().click();
+        await t.page.waitForTimeout(200);
+        t.check("… it closes; Filters shows 1 set; ZZT-0003 (an overdue open point) stays, ZZT-0001 goes", (await t.tid("cases-filters").count()) === 0 && /Filters\s*1/.test((await t.tid("cases-filters-open").first().textContent()) ?? "") && (await t.tid("case-row-ZZT-0003").count()) === 1 && (await t.tid("case-row-ZZT-0001").count()) === 0, (await t.tid("cases-filters-open").first().textContent()));
+        await t.tid("cases-filters-open").first().click();
+        await t.seeTid("cases-clear", "… Clear all in the sheet once a filter is set", 3000);
+        await t.tid("cases-clear").first().click();
+        await t.page.waitForTimeout(200);
+        await t.page.keyboard.press("Escape");
+        await t.page.waitForTimeout(200);
+        t.check("… Clear all removes it", !(await t.hash()).includes("overdue") && (await t.tid("case-row-ZZT-0001").count()) === 1 && (await t.tid("cases-filters").count()) === 0, await t.hash());
+        await t.tid("cases-tab-completed").first().click();
+        await t.seeTid("case-row-ZZT-0005", "cases: the Completed tab");
+        const tabBox = await t.tid("cases-tab-completed").first().boundingBox();
+        t.check("… the tab row keeps the tapped tab in view", !!tabBox && tabBox.x >= 0 && tabBox.x + tabBox.width <= 390.5, tabBox);
+        await t.fillText("cases-search", "cetyl");
+        await t.page.waitForTimeout(200);
+        t.check("… the search works on the page", (await t.tid("case-row-ZZT-0005").count()) === 1 && Number(await t.tid("cases-count").first().getAttribute("data-count")) === 1);
+        await t.fillText("cases-search", "");
+        // night mode (More): the cards and the case page in the dark theme
+        await openMore(t);
+        await t.tid("more-theme").first().click();
+        await t.page.keyboard.press("Escape");
+        await t.page.waitForTimeout(400);
+        t.check("night mode on", (await t.frame().evaluate(() => document.documentElement.dataset.theme)) === "dark");
+        await t.phoneShot("rmm-cases", "cases-dark");
+        await t.go("/cases/ZZT-0003?tab=points");
+        await t.seeTid("op-row-OP-0003-01");
+        await t.page.waitForTimeout(300);
+        await t.phoneShot("rmm-cases", "case-points-dark");
+        await openMore(t);
+        await t.tid("more-theme").first().click();
+        await t.page.keyboard.press("Escape");
+        await t.page.waitForTimeout(300);
+
+        // a case
+        await t.go("/cases/ZZT-0003");
+        await t.seeTid("case-header", "the case page");
+        await phoneLayout(t, "case", "Case");
+        await phonePage(t, "case overview", { taps: ["case-cancel", "case-open-review", "phone-back", "case-tab-overview", "case-tab-points", "scope-sections-link"] });
+        const tabsTop = await t.tid("case-tabs").first().boundingBox();
+        t.check("case: a compact header, the tabs within the screen's top 40 %", !!tabsTop && tabsTop.y <= 844 * 0.4, tabsTop);
+        t.check("case: the stepper one line, its “since …” sentence at the top of Overview", (await t.tid("case-steps").count()) === 1 && (await t.tid("case-phase-since").count()) === 1);
+        await t.frame().evaluate(() => window.scrollTo(0, 700));
+        await t.page.waitForTimeout(300);
+        const stuckTabs = await t.frame().evaluate(() => [document.querySelector('[data-testid="case-tabs"]').getBoundingClientRect().top, document.querySelector('[data-testid="phone-header"]').getBoundingClientRect().bottom]);
+        t.check("case: scrolled down, the tabs stay stuck under the header", Math.abs(stuckTabs[0] - stuckTabs[1]) <= 1, stuckTabs);
+        await t.phoneShot("rmm-cases", "case-overview-scrolled");
+        await t.frame().evaluate(() => window.scrollTo(0, 0));
+        await t.page.waitForTimeout(200);
+        t.check("case: no second back link (the header has the arrow)", (await t.ui.locator('main a[href="#/cases"]').count()) === 0);
+        await stickyAbove(t, "case", "case-open-review");
+        t.check("case: Cancel case stays in the page, not in the bar", (await t.ui.locator('[data-testid="sticky-actions"] [data-testid="case-cancel"]').count()) === 0);
+        await t.phoneShot("rmm-cases", "case-overview");
+        for (const tab of ["questionnaire", "points", "documents", "notes", "history"]) {
+          await t.tid(`case-tab-${tab}`).first().click();
+          await t.page.waitForTimeout(250);
+          const box = await t.tid(`case-tab-${tab}`).first().boundingBox();
+          t.check(`case ${tab}: its tab is scrolled into view`, !!box && box.x >= 0 && box.x + box.width <= 390.5, box);
+          await phonePage(t, `case ${tab}`, { noTable: tab !== "questionnaire" });
+          await t.phoneShot("rmm-cases", `case-${tab}`);
+          if (tab === "points") {
+            t.check("case points: each point is a card", (await tagOf(t, "op-row-OP-0003-01")) === "LI", await tagOf(t, "op-row-OP-0003-01"));
+            await t.tid("op-row-OP-0003-01").first().click();
+            await t.seeTid("op-thread-OP-0003-01", "case points: a point opens its thread", 3000);
+            const full = await t.ui.locator('[data-sheet="full"]').first().boundingBox();
+            t.check("… as a full-height sheet", !!full && Math.round(full.width) === 390 && Math.round(full.height) === 844, full);
+            const close = await t.tid("sheet-close").first().boundingBox();
+            t.check("… its Close is a 44 px target", !!close && close.width >= 44 && close.height >= 44, close);
+            await t.phoneShot("rmm-cases", "case-point-thread");
+            await t.tid("sheet-close").first().click();
+            await t.page.waitForTimeout(200);
+            t.check("… Close returns to the list", (await t.tid("op-thread-OP-0003-01").count()) === 0 && (await t.tid("op-row-OP-0003-01").count()) === 1);
+          }
+          if (tab === "documents") {
+            const docs = t.ui.locator('[data-testid^="doc-row-"]');
+            if ((await docs.count()) > 0) t.check("case documents: each document is a card", (await docs.first().evaluate((e) => e.tagName)) === "LI");
+          }
+          if (tab === "notes") {
+            const [add, list] = await Promise.all([t.tid("note-text").first().boundingBox(), t.tid("case-notes").first().boundingBox()]);
+            t.check("case notes: Add a note comes first", !!add && !!list && add.y < list.y, { add, list });
+          }
+        }
+
+        // the final document of a completed case: Download PDF above the tab bar
+        await t.go("/cases/ZZT-0005?tab=final-document");
+        await t.seeTid("final-document", "the final document");
+        await phonePage(t, "final document");
+        await stickyAbove(t, "final document", "fd-download-pdf");
+        t.check("final document: one Download PDF (in the bar, not in the header), alone there", (await t.tid("fd-download-pdf").count()) === 1 && (await t.ui.locator('[data-testid="sticky-actions"] [data-testid="fd-download-pdf"]').count()) === 1 && (await t.ui.locator('[data-testid="sticky-actions"] button').count()) === 1);
+        await t.phoneShot("rmm-cases", "final-document");
+        const [dl] = await Promise.all([t.page.waitForEvent("download", { timeout: 10000 }), t.tid("fd-download-pdf").first().click()]);
+        t.check("final document: Download PDF saves ZZT-0005-final-document.pdf", dl.suggestedFilename() === "ZZT-0005-final-document.pdf", dl.suggestedFilename());
+        await t.frame().evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+        await t.page.waitForTimeout(300);
+        await t.phoneShot("rmm-cases", "final-document-end");
+
+        // New case: a stacked form, Create above the tab bar
+        await t.go("/cases/new");
+        await t.seeTid("newcase-form", "New case");
+        await phoneLayout(t, "new case", "New case");
+        await phonePage(t, "new case", { taps: ["newcase-material", "newcase-market-EU", "newcase-submit"] });
+        await stickyAbove(t, "new case", "newcase-submit");
+        await t.phoneShot("rmm-cases", "new-case");
+        const writes0 = (await writes(t)).length;
+        await t.tid("newcase-submit").first().click();
+        await t.seeTid("newcase-errors", "… Create with nothing filled in lists what is missing", 3000);
+        await t.page.waitForTimeout(300);
+        const errs = await t.tid("newcase-errors").first().boundingBox();
+        const bar = await t.tid("sticky-actions").first().boundingBox();
+        t.check("… scrolled into view above the bar (Create is at the bottom wherever the form is)", !!errs && !!bar && errs.y >= 0 && errs.y + errs.height <= bar.y + 1, { errs, bar });
+        t.check("… and writes nothing", (await writes(t)).length === writes0);
+        await t.phoneShot("rmm-cases", "new-case-errors");
+      },
+      PHONE,
+    ),
+  "phone-rmm-360": () =>
+    scenario(
+      "phone-rmm-360",
+      async (t) => {
+        // the narrowest phone, in the Development sandbox: every RMM screen fits 360 px (nothing scrolls sideways), the
+        // bars above the tab bar stay in view
+        await open(t, { roles: "rmm", byid: "1" }, "/rmm");
+        await t.seeTid("tile-my-open", "the RMM dashboard shows");
+        for (const [route, id, tag] of [
+          ["/rmm", "tile-my-open", "dashboard"],
+          ["/cases", "case-row-ZZT-0003", "cases"],
+          ["/cases/ZZT-0003", "case-header", "case"],
+          ["/cases/ZZT-0003?tab=questionnaire", "q-tab", "case-questionnaire"],
+          ["/cases/ZZT-0003?tab=points", "op-row-OP-0003-01", "case-points"],
+          ["/cases/ZZT-0003?tab=documents", "case-tab-documents", "case-documents"],
+          ["/cases/ZZT-0003?tab=notes", "case-notes", "case-notes"],
+          ["/cases/ZZT-0003?tab=history", "history-events", "case-history"],
+          ["/cases/ZZT-0005?tab=final-document", "final-document", "final-document"],
+          ["/cases/new", "newcase-form", "new-case"],
+          ["/suppliers", "supplier-row-SUP-ZZT-SOLVARO", "suppliers"],
+          ["/suppliers/SUP-ZZT-SOLVARO", "supplier-title", "supplier"],
+        ]) {
+          await t.go(route);
+          await t.seeTid(id, `${tag} at 360`);
+          await phonePage(t, `${tag} at 360`, { noTable: tag !== "case-questionnaire" });
+          if (tag === "cases") await phoneLayout(t, "cases at 360", "Cases");
+          if (tag === "case") await stickyAbove(t, "case at 360", "case-open-review");
+          if (tag === "new-case") await stickyAbove(t, "new case at 360", "newcase-submit");
+          if (tag === "final-document") await stickyAbove(t, "final document at 360", "fd-download-pdf");
+          await t.phoneShot("rmm-cases", `${tag}-360`);
+        }
+        await t.go("/cases");
+        await t.seeTid("case-row-ZZT-0003");
+        await t.tid("cases-filters-open").first().click();
+        await t.seeTid("cases-filters", "Filters at 360", 3000);
+        t.check("… the sheet's dropdowns fit the screen", (await sideScroll(t)) === null && (await t.tid("cases-filters").first().boundingBox())?.width === 360, await t.tid("cases-filters").first().boundingBox());
+        await t.phoneShot("rmm-cases", "cases-filters-360");
+      },
+      PHONE_360,
+    ),
+  "phone-suppliers-reports-audit": () =>
+    scenario(
+      "phone-suppliers-reports-audit",
+      async (t) => {
+        // Thomas, 30 Oct: the suppliers are read-only for RMM and, on a phone, for the administrator too (a note says
+        // editing needs a larger screen); the reports and the audit trail read on a phone (cards, the audit filters in
+        // a sheet). Production at 390 px.
+        await open(t, { roles: "rmm", env: "prod" }, "/suppliers");
+        await t.seeTid("supplier-row-SUP-ZZT-SOLVARO", "RMM: the suppliers");
+        await phonePage(t, "RMM suppliers", { taps: ["supplier-search"] });
+        t.check("RMM suppliers: cards; read-only, no larger-screen note", (await tagOf(t, "supplier-row-SUP-ZZT-SOLVARO")) === "LI" && (await t.tid("suppliers-read-only").count()) === 1 && (await t.tid("larger-screen-note").count()) === 0);
+        await t.tid("supplier-row-SUP-ZZT-SOLVARO").first().click();
+        await t.seeTid("supplier-title", "… a card opens the supplier");
+        await phoneLayout(t, "RMM supplier", "Supplier");
+        await phonePage(t, "RMM supplier");
+        t.check("RMM supplier: contacts and cases are cards", (await t.ui.locator('li[data-testid^="contact-row-"]').count()) >= 1 && (await t.ui.locator('li[data-testid^="supplier-case-"]').count()) >= 1);
+        const mails = await t.ui.locator('li[data-testid^="contact-row-"] dd').evaluateAll((ds) => ds.filter((d) => d.textContent.includes("@")).map((d) => ({ text: d.textContent, lines: Math.round(d.getBoundingClientRect().height / parseFloat(getComputedStyle(d).lineHeight)) })));
+        t.check("RMM supplier: each contact's e-mail on one line of its own (the card's whole row)", mails.length >= 1 && mails.every((m) => m.lines === 1), mails);
+        await t.phoneShot("rmm-cases", "supplier-rmm");
+
+        await open(t, { roles: "admin", env: "prod" }, "/suppliers");
+        await t.seeTid("supplier-row-SUP-ZZT-SOLVARO", "administrator: the suppliers");
+        await t.seeTid("larger-screen-note", "administrator: a note that editing needs a larger screen");
+        t.check("… and no Add supplier", (await t.tid("supplier-add").count()) === 0);
+        await phonePage(t, "admin suppliers");
+        await t.phoneShot("rmm-cases", "suppliers-admin");
+        await t.go("/suppliers/SUP-ZZT-SOLVARO");
+        await t.seeTid("supplier-title", "administrator: the supplier");
+        await t.seeTid("larger-screen-note", "… the note on the supplier too");
+        t.check("… no edit, deactivate or contact controls", (await t.ui.locator('[data-testid="supplier-edit"], [data-testid="supplier-deactivate"], [data-testid="contact-add"], [data-testid^="contact-edit-"], [data-testid^="contact-deactivate-"]').count()) === 0);
+        await t.phoneShot("rmm-cases", "supplier-admin");
+        await t.page.setViewportSize({ width: 1280, height: 900 });
+        await t.seeTid("supplier-edit", "… turned into a desktop (1280 px): the administrator edits again", 3000);
+        t.check("… and the note is gone", (await t.tid("larger-screen-note").count()) === 0);
+        await t.page.setViewportSize({ width: 390, height: 844 });
+        await t.page.waitForTimeout(300);
+
+        await open(t, { roles: "owner", env: "prod" }, "/reports");
+        await t.seeTid("report-suppliers", "the business owner's reports");
+        await phoneLayout(t, "reports", "Reports");
+        await phonePage(t, "reports", { noTable: false, taps: ["supplier-perf-sort", "supplier-perf-dir", "reports-dept-filter"] });
+        const filterBox = await t.tid("reports-dept-filter").first().boundingBox();
+        t.check("reports: the review filter takes the row (its choice not cut off)", !!filterBox && filterBox.width >= 390 - 32 - 40, filterBox);
+        t.check("reports: supplier performance as cards", (await t.ui.locator('li[data-testid^="supplier-perf-row-"]').count()) >= 1);
+        const toggle = t.tid("report-workload").first().getByRole("button", { name: "Show as table" });
+        const tb = await toggle.boundingBox();
+        t.check("reports: Chart / Table are 44 px targets", !!tb && tb.width >= 44 && tb.height >= 44, tb);
+        await toggle.click();
+        await t.page.waitForTimeout(200);
+        t.check("reports: the workload table is one card per review", (await t.tid("report-workload").first().locator("li").count()) >= 2 && (await t.tid("report-workload").first().locator("table").count()) <= 1);
+        t.check("… nothing scrolls sideways", (await sideScroll(t)) === null, await sideScroll(t));
+        await t.tid("report-workload").first().scrollIntoViewIfNeeded();
+        await t.phoneShot("rmm-cases", "reports-workload-table");
+        // every chart as its table: each fits the phone (no table scrolls sideways in its card)
+        for (const b of await t.ui.getByRole("button", { name: "Show as table" }).all()) await b.click();
+        await t.page.waitForTimeout(300);
+        await phonePage(t, "reports as tables", { noTable: false });
+        await t.frame().evaluate(() => window.scrollTo(0, 0));
+        await t.phoneShot("rmm-cases", "reports");
+
+        await open(t, { roles: "auditor", env: "prod" }, "/audit");
+        await t.seeTid("audit-trail", "the auditor's audit trail");
+        await phoneLayout(t, "audit", "Audit trail");
+        await phonePage(t, "audit", { taps: ["audit-search", "audit-filters-open"] });
+        t.check("audit: a placeholder that fits (“Search events”)", (await t.tid("audit-search").first().getAttribute("placeholder")) === "Search events");
+        t.check("audit: the event cards straight on the page, not boxed twice", (await t.ui.locator('main .rounded-card ul[aria-label="Events"]').count()) === 0);
+        if ((await t.tid("load-warnings").count()) > 0) await phonePage(t, "audit's load notice", { taps: ["load-warnings-reload", "load-warnings-details"] });
+        const rows = t.ui.locator('[data-testid^="audit-row-"]');
+        t.check("audit: each event is a card", (await rows.count()) > 0 && (await rows.first().evaluate((e) => e.tagName)) === "LI");
+        const all = Number(await t.tid("audit-count").first().getAttribute("data-count"));
+        await t.phoneShot("rmm-cases", "audit");
+        await t.tid("audit-filters-open").first().click();
+        await t.seeTid("audit-filters", "audit: Filters opens a sheet", 3000);
+        const sup = t.tid("audit-filters").first().getByRole("button", { name: "Supplier", exact: true });
+        const sb = await sup.boundingBox();
+        t.check("… its switches are 44 px targets", !!sb && sb.height >= 44, sb);
+        await sup.click();
+        await t.page.waitForTimeout(200);
+        await t.phoneShot("rmm-cases", "audit-filters");
+        await t.tid("audit-filters-done").first().click();
+        await t.page.waitForTimeout(200);
+        const some = Number(await t.tid("audit-count").first().getAttribute("data-count"));
+        t.check("… the supplier's events only; Filters shows 1 set", some > 0 && some < all && /Filters\s*1/.test((await t.tid("audit-filters-open").first().textContent()) ?? ""), { all, some });
+        await t.tid("audit-filters-open").first().click();
+        await t.tid("audit-clear").first().click();
+        await t.page.keyboard.press("Escape");
+        await t.page.waitForTimeout(200);
+        t.check("… Clear all shows every event again", Number(await t.tid("audit-count").first().getAttribute("data-count")) === all);
+        await t.page.setViewportSize({ width: 360, height: 780 });
+        await t.page.waitForTimeout(300);
+        await phonePage(t, "audit at 360");
+        await t.go("/cases/ZZT-0003?tab=history");
+        await t.seeTid("history-events", "the auditor's case history at 360");
+        await phonePage(t, "case history at 360");
+        await t.phoneShot("rmm-cases", "audit-case-history-360");
+        // a page outside the role's menu: its own header title, back to the role's landing page, a 44 px way home
+        await t.page.setViewportSize({ width: 390, height: 844 });
+        await open(t, { roles: "rmm", env: "prod" }, "/reports");
+        await t.seeTid("no-access", "RMM on /reports: not part of the role");
+        t.check("no access: the header says “Not available”, with the back arrow", (await t.tid("phone-title").first().innerText()).trim() === "Not available" && (await t.tid("phone-back").count()) === 1, await t.tid("phone-title").first().innerText());
+        await phonePage(t, "no access", { taps: ["no-access-home", "phone-back"] });
+        await t.phoneShot("rmm-cases", "no-access");
+      },
+      PHONE,
+    ),
+  "phone-config": () =>
+    scenario(
+      "phone-config",
+      async (t) => {
+        // Thomas, 30 Oct: the read-only Rules, Questionnaire and Section owners pages on a phone (production RMM at 390 px):
+        // tables become cards (the rows' test ids kept), the section view a full-height sheet, the history a list that
+        // selects a version; the read-only note as on a big screen; nothing scrolls sideways; looking writes nothing
+        const pageOk = async (label, title) => {
+          await phoneLayout(t, label, title);
+          t.check(`${label}: no table on the page`, (await t.ui.locator("main table").count()) === 0, await t.ui.locator("main table").count());
+          t.check(`${label}: the read-only note, no larger-screen note`, (await t.tid("admin-read-only").count()) === 1 && (await t.tid("larger-screen-note").count()) === 0);
+        };
+        await open(t, { roles: "rmm", env: "prod" }, "/admin/rules");
+        await t.seeTid("rule-list-phone", "Rules: the phone rule list");
+        await pageOk("Rules at 390", "Rules");
+        const card = t.tid("rule-row-R-12").first();
+        t.check("a rule is a card (a list item) with its condition and outcome", (await card.evaluate((e) => e.tagName)) === "LI" && /Origin includes Animal/.test(await card.innerText()) && /Mandatory/.test(await card.innerText()), await card.innerText());
+        t.check("… and its evidence and departments", /BSE\/TSE certificate/.test(await card.innerText()) && /Regulatory/.test(await card.innerText()));
+        const cardBox = await card.boundingBox();
+        t.check("… inside the screen", !!cardBox && cardBox.x >= 0 && cardBox.x + cardBox.width <= 390.5, cardBox);
+        await t.phoneShot("admin", "rules-390");
+        await card.scrollIntoViewIfNeeded();
+        await t.phoneShot("admin", "rule-cards-390");
+        // the version history: folded to one line (the rules come next); opened, a row selects a published version
+        const toggle = t.tid("config-history-toggle").first();
+        const toggleBox = await toggle.boundingBox();
+        t.check("the history is folded, its toggle a 44 px target", (await toggle.getAttribute("aria-expanded")) === "false" && (await t.tid("ruleset-card-RS-2026.1").count()) === 0 && !!toggleBox && toggleBox.height >= 44, toggleBox);
+        await toggle.click();
+        const pub = t.tid("ruleset-card-RS-2026.1").first();
+        await pub.scrollIntoViewIfNeeded();
+        const pubBox = await pub.boundingBox();
+        t.check("the history: a version is a full-width row, a 44 px target", !!pubBox && pubBox.height >= 44 && pubBox.width >= 300, pubBox);
+        await pub.click();
+        await t.page.waitForTimeout(200);
+        t.check("… selecting it shows its rules", (await pub.getAttribute("aria-pressed")) === "true" && (await t.tid("rule-list-title").innerText()).includes("RS-2026.1"), await t.tid("rule-list-title").innerText());
+        await t.phoneShot("admin", "rules-history-390");
+        // search narrows the cards
+        const all = await t.ui.locator('li[data-testid^="rule-row-"]').count();
+        await t.ui.getByLabel("Search rules by id, section or department").fill("Animal");
+        await t.page.waitForTimeout(200);
+        const found = await t.ui.locator('li[data-testid^="rule-row-"]').count();
+        t.check("searching narrows the cards", found > 0 && found < all && (await t.tid("rule-row-R-12").count()) === 1, [found, all]);
+        // Questionnaire: section cards; one opens the section's read-only view as a full-height sheet
+        await t.go("/admin/templates");
+        await t.seeTid("sections-phone", "Questionnaire: the phone section list");
+        await pageOk("Questionnaire at 390", "Questionnaire");
+        await phonePage(t, "Questionnaire at 390", { taps: ["tab-all", "tab-chapter", "tab-annex", "tab-fields"] });
+        await t.page.setViewportSize({ width: 360, height: 780 });
+        await t.page.waitForTimeout(300);
+        await phonePage(t, "Questionnaire at 360", { taps: ["tab-all", "tab-fields"] });
+        await t.page.setViewportSize({ width: 390, height: 844 });
+        await t.page.waitForTimeout(300);
+        await t.phoneShot("admin", "questionnaire-390");
+        await t.tid("section-row-K1").first().scrollIntoViewIfNeeded();
+        await t.phoneShot("admin", "section-cards-390");
+        const k1Btn = await t.tid("section-row-K1").first().locator("button").boundingBox();
+        t.check("a section card is one button, a 44 px target", !!k1Btn && k1Btn.height >= 44, k1Btn);
+        await t.tid("section-row-K1").first().click();
+        await t.seeTid("section-view", "a section card opens its view", 3000);
+        const sheet = await t.tid("section-view").first().boundingBox();
+        t.check("… a full-height sheet", (await t.tid("section-view").getAttribute("data-sheet")) === "full" && !!sheet && Math.round(sheet.x) === 0 && Math.round(sheet.y) === 0 && Math.round(sheet.width) === 390 && Math.round(sheet.height) === 844, sheet);
+        const close = await t.tid("sheet-close").first().boundingBox();
+        t.check("… Close is a 44 px target", !!close && close.width >= 44 && close.height >= 44, close);
+        t.check("… nothing scrolls sideways under it", (await sideScroll(t)) === null, await sideScroll(t));
+        await t.phoneShot("admin", "section-sheet-390");
+        await t.tid("sheet-close").first().click();
+        await t.page.waitForTimeout(200);
+        t.check("Close closes the sheet", (await t.tid("section-view").count()) === 0);
+        // Section owners: a card per section names lead, co-reviewers and the departments not involved
+        await t.go("/admin/ownership");
+        await t.seeTid("owners-phone", "Section owners: the phone cards");
+        await pageOk("Section owners at 390", "Section owners");
+        const k1 = t.tid("owner-row-K1").first();
+        t.check("K1: every department's cell, read-only (no button)", (await k1.locator('[data-testid^="owner-cell-K1-"]').count()) === 8 && (await t.ui.locator('button[data-testid^="owner-cell-"]').count()) === 0);
+        t.check("… K1 · Sustainability not involved", (await t.tid("owner-cell-K1-SUS").getAttribute("data-status")) === "none" && (await t.tid("owner-cell-K1-SUS").isVisible()));
+        await t.phoneShot("admin", "owners-390");
+        await k1.scrollIntoViewIfNeeded();
+        await t.phoneShot("admin", "owner-cards-390");
+        await t.tid("owner-totals").first().scrollIntoViewIfNeeded();
+        t.check("the sections per department, in view", await t.tid("owner-totals").first().isVisible());
+        await t.phoneShot("admin", "owner-totals-390");
+        // night mode
+        await openMore(t);
+        await t.tid("more-theme").first().click();
+        await t.page.keyboard.press("Escape");
+        await t.page.waitForTimeout(400);
+        t.check("night mode on", (await t.frame().evaluate(() => document.documentElement.dataset.theme)) === "dark");
+        await t.phoneShot("admin", "owners-dark-390");
+        await t.go("/admin/rules");
+        await t.seeTid("rule-list-phone");
+        await t.page.waitForTimeout(300);
+        await t.phoneShot("admin", "rules-dark-390");
+        await openMore(t);
+        await t.tid("more-theme").first().click();
+        await t.page.keyboard.press("Escape");
+        t.check("looking writes nothing", (await writes(t)).length === 0, summary(await writes(t)));
+      },
+      PHONE,
+    ),
+  "phone-config-ba": () =>
+    scenario(
+      "phone-config-ba",
+      async (t) => {
+        // Thomas, 30 Oct: the Business administrator on a phone (dev, 360 px): the configuration EDITOR is for a larger
+        // screen. Each page says "Use a larger screen to edit" instead of its edit controls (Test rules and Run reminders
+        // now included); viewing works (cards, the history, a section's view). Turned to a desktop width the editor is
+        // back, unchanged; back on the phone, the note again. Nothing is written
+        const EDIT = '[data-testid="config-discard-draft"], [data-testid="config-check-publish"], [data-testid="config-create-version"], [data-testid="rule-add"], [data-testid^="rule-edit-"], [data-testid^="rule-delete-"], [data-testid="view-draft"], [data-testid="section-add"], [data-testid^="section-edit-"], [data-testid^="section-retire-"], [data-testid^="section-restore-"], [data-testid^="owner-restore-"], button[data-testid^="owner-cell-"], [data-testid^="reminder-toggle-"], input[data-testid^="reminder-after-"], [data-testid="run-reminders"], [data-testid="rules-tab"]';
+        const noted = async (label) => {
+          await t.seeTid("larger-screen-note", `${label}: the note to use a larger screen`, 5000);
+          t.check(`${label}: it says so`, (await t.tid("larger-screen-note").first().innerText()).includes("Use a larger screen to edit."), await t.tid("larger-screen-note").first().innerText());
+          t.check(`${label}: no edit control`, (await t.ui.locator(EDIT).count()) === 0, await t.ui.locator(EDIT).evaluateAll((els) => els.map((e) => e.getAttribute("data-testid"))));
+          t.check(`${label}: no table, nothing sideways`, (await t.ui.locator("main table").count()) === 0 && (await sideScroll(t)) === null, await sideScroll(t));
+        };
+        await open(t, { roles: "admin" }, "/admin/rules");
+        await t.seeTid("rule-list-phone", "Rules: the phone rule list");
+        const tabs = await phoneLayout(t, "BA Rules at 360", "Rules");
+        t.check("the tabs: Rules, Questionnaire, Section owners, Suppliers, More", JSON.stringify(tabs) === JSON.stringify(["nav-admin-rules", "nav-admin-templates", "nav-admin-ownership", "nav-suppliers", "tab-more"]), tabs);
+        await noted("Rules");
+        t.check("Rules: the draft bar still says what the draft holds", (await t.tid("config-draft-bar").getAttribute("data-draft")) === "true" && (await t.tid("config-draft-label").count()) === 1);
+        await t.phoneShot("admin", "ba-rules-360");
+        await t.tid("config-history-toggle").first().click();
+        await t.tid("ruleset-card-RS-2026.1").first().click();
+        await t.page.waitForTimeout(200);
+        t.check("Rules: a published version can be looked at", (await t.tid("rule-list-title").innerText()).includes("RS-2026.1"), await t.tid("rule-list-title").innerText());
+        await t.go("/admin/rules?tab=test&view=try");
+        await t.page.waitForTimeout(300);
+        t.check("an old Test rules link shows the rules on a phone", (await t.tid("test-rules").count()) === 0 && (await t.tid("rule-list-phone").count()) === 1);
+        await t.go("/admin/templates");
+        await t.seeTid("sections-phone", "Questionnaire: the phone section list");
+        await noted("Questionnaire");
+        await t.phoneShot("admin", "ba-questionnaire-360");
+        await t.tid("section-row-K1").first().click();
+        await t.seeTid("section-view", "a section card opens the read-only view, not the editor", 3000);
+        t.check("… no section editor", (await t.tid("section-editor").count()) === 0);
+        await t.phoneShot("admin", "ba-section-sheet-360");
+        await t.tid("sheet-close").first().click();
+        await t.go("/admin/ownership");
+        await t.seeTid("owners-phone", "Section owners: the phone cards");
+        await noted("Section owners");
+        await t.phoneShot("admin", "ba-owners-360");
+        await t.go("/admin/notifications");
+        await t.seeTid("reminder-row-rem-1", "Reminders (hidden page): the rules as cards");
+        await noted("Reminders");
+        t.check("Reminders: no Run reminders now", (await t.tid("run-reminders-as-of").count()) === 0);
+        await t.phoneShot("admin", "ba-reminders-360");
+        // a desktop width: the editor as before; a phone again: the note
+        await t.go("/admin/rules");
+        await t.seeTid("rule-list-phone");
+        await t.page.setViewportSize({ width: 1280, height: 900 });
+        await t.seeTid("config-check-publish", "turned to 1280 px: Check & publish is back", 3000);
+        t.check("… the rule table, its edit buttons and Test rules; no note", (await t.ui.locator('[data-testid^="rule-edit-"]').count()) > 0 && (await t.tid("rules-tab").count()) === 1 && (await t.tid("larger-screen-note").count()) === 0 && (await t.ui.locator("main table").count()) > 0);
+        await t.page.setViewportSize({ width: 360, height: 780 });
+        await t.seeTid("larger-screen-note", "back to 360 px: the note again", 3000);
+        t.check("… and no edit control", (await t.ui.locator(EDIT).count()) === 0);
+        t.check("looking writes nothing", (await writes(t)).length === 0, summary(await writes(t)));
+      },
+      PHONE_360,
+    ),
+  "phone-console": () =>
+    scenario(
+      "phone-console",
+      async (t) => {
+        // Thomas, 30 Oct: the app's data console on a phone (production Admin / Developer at 360 px): "Use a larger screen
+        // to edit" above every page; the items as cards; an item's drawer a full-height sheet with its fields and no Edit
+        // or Delete; no New row, checkboxes, import or orphan delete. Nothing is written
+        await t.host({ roles: "developer", admin: "1", env: "prod" }, "/");
+        await t.seeTid("data-overview", "the console's overview", 15000);
+        await t.settle(400);
+        await phoneLayout(t, "console at 360", "Overview");
+        await t.seeTid("larger-screen-note", "the note to use a larger screen");
+        await phonePage(t, "console overview", { noTable: false, taps: ["data-overview-refresh"] });
+        const sub = await t.tid("data-overview").first().innerText();
+        t.check("… its subtitle offers no change or delete on a phone", !/change or delete/.test(sub), sub.slice(0, 220));
+        await t.phoneShot("admin", "console-overview-360");
+        await t.go("/data/flow/case");
+        await t.seeTid(`data-row-${CASE3}`, "Cases: ZZT-0003 listed");
+        await phoneLayout(t, "console Cases at 360", "Cases");
+        const row = t.tid(`data-row-${CASE3}`).first();
+        t.check("an item is a card (a list item), no table, no checkboxes", (await row.evaluate((e) => e.tagName)) === "LI" && (await t.ui.locator("main table").count()) === 0 && (await t.ui.locator('main input[type="checkbox"]').count()) === 0);
+        t.check("… the reads stay: search, Refresh, Show steps", (await t.tid("data-search").count()) === 1 && (await t.tid("data-refresh").count()) === 1 && (await t.tid("data-show-steps").count()) === 1);
+        await phonePage(t, "console Cases", { taps: ["data-refresh", "data-show-steps"] });
+        const dashes = await row.locator("dd").evaluateAll((ds) => ds.filter((d) => d.textContent.trim() === "—").length);
+        t.check("… a card shows only what the list row carries (no field of dashes but the unread step)", dashes <= 1, dashes);
+        await t.phoneShot("admin", "console-cases-360");
+        await row.click();
+        await t.seeTid("data-view-Case_Code", "the card opens the item's fields");
+        const sheet = await t.tid("data-drawer").first().boundingBox();
+        t.check("… in a full-height sheet", (await t.tid("data-drawer").getAttribute("data-sheet")) === "full" && !!sheet && Math.round(sheet.width) === 360 && Math.round(sheet.height) === 780, sheet);
+        t.check("… without Edit or Delete, with the note", (await t.tid("data-edit").count()) === 0 && (await t.tid("data-delete").count()) === 0 && (await t.tid("data-drawer").first().getByTestId("larger-screen-note").count()) === 1);
+        t.check("… nothing sideways", (await sideScroll(t)) === null, await sideScroll(t));
+        await t.phoneShot("admin", "console-item-360");
+        await t.tid("sheet-close").first().click();
+        await t.go("/data/flow/supplier");
+        await t.seeTid("data-row-PkSupSolvaro", "Suppliers: the form's rows");
+        t.check("a form: no New row", (await t.tid("data-new-row").count()) === 0);
+        await t.tid("data-row-PkSupSolvaro").first().click();
+        await t.seeTid("data-portal-users", "a supplier's portal users show");
+        t.check("… without Set, Change or Remove", (await t.ui.locator('[data-testid^="data-portal-edit-"], [data-testid^="data-portal-clear-"]').count()) === 0);
+        await t.phoneShot("admin", "console-supplier-360");
+        await t.tid("sheet-close").first().click();
+        await t.go("/data/import");
+        await t.seeTid("import-larger-screen", "the import says to use a larger screen");
+        t.check("… no file to choose", (await t.tid("import-file").count()) === 0 && (await sideScroll(t)) === null);
+        await t.go("/data/orphans");
+        await t.page.waitForTimeout(800);
+        t.check("Orphans: no delete", (await t.ui.locator('[data-testid^="orphan-delete-"]').count()) === 0 && (await sideScroll(t)) === null);
+        await phonePage(t, "console Orphans", { noTable: false, taps: ["orphans-reload"] });
+        t.check("looking writes nothing", (await writes(t)).length === 0, summary(await writes(t)));
+      },
+      PHONE_360,
+    ),
+  "phone-turns": () =>
+    scenario(
+      "phone-turns",
+      async (t) => {
+        // Thomas, 30 Oct: a turn (rotate or resize across 768 px) keeps what the user is doing: a form window keeps its
+        // fields and the field being typed in (the focus stays there); a phone held sideways (740 x 360, still a phone)
+        // and a tablet held sideways (780 x 360) leave the screen to read: the sticky bars end the page instead
+        const turn = async (w, h) => { await t.page.setViewportSize({ width: w, height: h }); await t.page.waitForTimeout(600); };
+        const focused = () => t.frame().evaluate(() => document.activeElement?.getAttribute("data-testid") ?? document.activeElement?.tagName);
+        await open(t, { roles: "mic", byid: "1" }, "/review/ZZT-0003?s=K1");
+        await t.seeTid("review-workspace", "Microbiology's review at 390");
+        await t.tid("ask-section-K1").first().click();
+        await t.seeTid("ask-justification", "Ask opens");
+        await t.tid("ask-justification").click();
+        await t.tid("ask-justification").pressSequentially("Typing the justifi");
+        t.check("typing in Ask's justification", (await focused()) === "ask-justification", await focused());
+        await turn(844, 390);
+        t.check("turned sideways (a tablet, the dialog): the field keeps the focus and the text", (await focused()) === "ask-justification" && (await t.tid("ask-justification").inputValue()) === "Typing the justifi", [await focused(), await t.tid("ask-justification").inputValue()]);
+        await t.tid("ask-justification").pressSequentially("cation");
+        await turn(390, 844);
+        t.check("upright again (the sheet): still the focus and the whole text", (await focused()) === "ask-justification" && (await t.tid("ask-justification").inputValue()) === "Typing the justification", [await focused(), await t.tid("ask-justification").inputValue()]);
+        t.check("… as a full-height sheet", (await fullSheet(t)).full);
+        await t.tid("sheet-close").last().click();
+        await t.page.waitForTimeout(300);
+        t.check("Close closes it", (await t.tid("ask-justification").count()) === 0);
+
+        // a phone held sideways (740 x 360): the case page's action bar ends the page, never under the tab bar
+        await open(t, { roles: "rmm", byid: "1", env: "prod" }, "/cases/ZZT-0003");
+        await t.seeTid("case-header", "RMM's case page");
+        await turn(740, 360);
+        t.check("740 x 360 is a phone", (await t.tid("tab-bar").count()) === 1 && (await t.tid("side-pane").count()) === 0);
+        const pos = await t.tid("sticky-actions").first().evaluate((e) => getComputedStyle(e).position);
+        t.check("… the action bar is not sticky on the short screen", pos === "static", pos);
+        await t.frame().evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+        await t.page.waitForTimeout(300);
+        const [bar, tabs] = await Promise.all([t.tid("sticky-actions").first().boundingBox(), t.tid("tab-bar").first().boundingBox()]);
+        t.check("… at the page's end it rests flush on the tab bar, in full view", !!bar && !!tabs && Math.abs(bar.y + bar.height - tabs.y) <= 1.5 && bar.y >= 0, [bar, tabs]);
+        await t.phoneShot("flows", "case-740x360-end");
+        await turn(390, 844);
+        const back = await t.tid("sticky-actions").first().evaluate((e) => getComputedStyle(e).position);
+        t.check("upright again: sticky again", back === "sticky", back);
+
+        // a tablet held sideways (780 x 360, the desktop layout): the completion bar ends the workspace
+        await open(t, { roles: "rmm,saf", byid: "1" }, "/rmm");
+        await playCompleteness(t, CASE1);
+        await phoneReload(t);
+        await asPersona(t, "saf");
+        await turn(780, 360);
+        await t.go("/review/ZZT-0001");
+        await t.seeTid("complete-bar", "Safety's review sideways");
+        const cpos = await t.tid("complete-bar").first().evaluate((e) => getComputedStyle(e).position);
+        t.check("780 x 360 (a tablet): the completion bar is not sticky", cpos === "static" && (await t.tid("side-pane").count()) === 1, cpos);
+        const field = await t.ui.locator("main input:not([type=checkbox]):not([type=radio]):not([type=file]), main textarea").first().evaluate((e) => getComputedStyle(e).fontSize).catch(() => null);
+        t.check("… a touch tablet's fields show 16 px text (no zoom on focus)", field === null || field === "16px", field);
+        await t.phoneShot("flows", "review-780x360");
+        await turn(1280, 900);
+        const dpos = await t.tid("complete-bar").first().evaluate((e) => getComputedStyle(e).position);
+        t.check("desktop (1280 x 900): sticky as before", dpos === "sticky", dpos);
+      },
+      PHONE,
+    ),
   "boot-timing": () =>
     scenario("boot-timing", async (t) => {
       // The first load as the user waits for it: every SDK call answered after BOOT_LAG ms (the host's ?lag=, default

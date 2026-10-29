@@ -1,10 +1,12 @@
 // /admin/notifications: reminder and escalation settings, "Run reminders now", and the e-mail templates of every mail
 // event (REQ-CTL-010, REQ-RMES-019, spec §1.13 and §2).
+// Phones (< 768 px, Thomas 30 Oct): the rules and the mails sent as cards, read-only; no "Run reminders now" (the
+// business administrator gets "Use a larger screen to edit").
 import { BellRing, Play, Send } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useLiveFeatures } from "@/components/liveFeatures";
-import { Badge, Button, Card, CardHeader, EmptyState, Mono, PageHeader, SectionTitle, Select, Table, Td, TextInput, Toggle, Tr, cx } from "@/components/ui";
+import { Badge, Button, Card, CardHeader, CardList, CardListItem, EmptyState, Mono, PageHeader, SectionTitle, Select, Table, Td, TextInput, Toggle, Tr, cx } from "@/components/ui";
 import { DAY, fmtDate, fmtDateTime, isClosed, nowIso, userName } from "@/domain/selectors";
 import type { ReminderSetting } from "@/domain/types";
 import { useStore } from "@/store/store";
@@ -111,12 +113,42 @@ function ReminderRow({ r, canEdit }: { r: ReminderSetting; canEdit: boolean }) {
   );
 }
 
+/** A rule on a phone: what it reminds of, to whom and when, read-only. */
+function PhoneReminder({ r }: { r: ReminderSetting }) {
+  const beforeExpiry = r.afterDays < 0;
+  const order = !beforeExpiry && r.escalateAfterDays <= r.afterDays;
+  return (
+    <CardListItem
+      data-testid={`reminder-row-${r.id}`}
+      title={<span className={r.enabled ? "text-ink" : "text-ink-3"}>{r.event}</span>}
+      badge={
+        <Badge tone={r.enabled ? "ok" : "neutral"} dot>
+          {r.enabled ? "On" : "Off"}
+        </Badge>
+      }
+      meta={
+        <>
+          {COUNTED_FROM[r.id]}
+          {order && r.enabled && <span className="block font-medium text-bad">The escalation should come after the reminder.</span>}
+        </>
+      }
+      fields={[
+        { label: "Reminder to", value: r.recipient },
+        { label: "Remind after", value: <span data-testid={`reminder-after-${r.id}`}>{`${Math.abs(r.afterDays)} ${beforeExpiry ? "days before" : "days"}`}</span> },
+        { label: "Escalate to", value: r.escalateTo },
+        { label: "Escalate after", value: <span data-testid={`reminder-escalate-${r.id}`}>{`${r.escalateAfterDays} ${beforeExpiry ? "days after" : "days"}`}</span> },
+      ]}
+    />
+  );
+}
+
 /** The demo action of spec §1.13 plus the reminder and escalation mails sent so far. The live app of this version runs
  *  no reminders (its store refuses with "not available in this version yet"): no demo badge there, and no "Nothing
  *  due" after the refused run, which would claim a check that never ran (FE-CLEANUP A6). */
 function RunReminders({ canEdit }: { canEdit: boolean }) {
   const { state, runReminders } = useStore();
   const { reminders: works } = useLiveFeatures();
+  const { phone } = useAdminAccess();
   const [days, setDays] = useState(0);
   const [last, setLast] = useState<{ sent: number; asOf: string } | null>(null);
   const sent = useMemo(() => state.mails.filter((m) => m.event === "reminder" || m.event === "escalation").sort((a, b) => b.at.localeCompare(a.at) || b.id.localeCompare(a.id)), [state.mails]);
@@ -171,6 +203,38 @@ function RunReminders({ canEdit }: { canEdit: boolean }) {
         <EmptyState data-testid="empty-reminder-mails" icon={<BellRing size={20} />} title="No reminder sent yet">
           Reminder and escalation e-mails appear here, and in the recipient's inbox, once a task passes its reminder days.
         </EmptyState>
+      ) : phone ? (
+        <div className="p-3">
+          <CardList label="Reminder and escalation e-mails sent">
+            {shown.map((m) => (
+              <CardListItem
+                key={m.id}
+                data-testid={`reminder-mail-${m.id}`}
+                title={m.subject}
+                badge={m.event === "escalation" ? <Badge tone="warn">Escalation</Badge> : <Badge tone="neutral">Reminder</Badge>}
+                meta={fmtDateTime(m.at)}
+                fields={[
+                  { label: "To", value: m.to.map((id) => userName(state, id)).join(", ") },
+                  {
+                    label: "Case",
+                    value: m.caseId ? (
+                      <Link to={`/cases/${m.caseId}`} className="inline-flex min-h-11 items-center text-brand hover:underline">
+                        <Mono>{m.caseId}</Mono>
+                      </Link>
+                    ) : (
+                      <span className="text-ink-3">—</span>
+                    ),
+                  },
+                ]}
+              />
+            ))}
+          </CardList>
+          {sent.length > shown.length && (
+            <p className="px-1 pt-2.5 text-xs text-ink-3">
+              The {shown.length} latest of {sent.length} reminder and escalation e-mails.
+            </p>
+          )}
+        </div>
       ) : (
         <>
           <Table dense head={["Sent", "Type", "To", "Subject", "Case"]}>
@@ -213,7 +277,7 @@ export function ReminderSettings() {
 
 function RemindersPage() {
   const { state } = useStore();
-  const { canEdit, canChange } = useAdminAccess();
+  const { canEdit, canChange, phone } = useAdminAccess();
   const active = state.reminders.filter((r) => r.enabled).length;
 
   return (
@@ -224,7 +288,7 @@ function RemindersPage() {
         subtitle="Due-date reminders and escalation for suppliers and reviewers, and the e-mail CIQ sends for each event. Maintained by the business, without IT."
       />
 
-      <ReadOnlyNote what="reminders and escalation" />
+      <ReadOnlyNote what="reminders and escalation" onPhone="On a phone you can look at the reminders and the e-mail templates, but not change them or run the reminders." />
 
       <Card>
         <CardHeader
@@ -236,11 +300,21 @@ function RemindersPage() {
           }
           subtitle={`${active} of ${state.reminders.length} rules active.`}
         />
-        <Table head={["Event", "Reminder to", "Remind after", "Escalate to", "Escalate after", "Active"]}>
-          {state.reminders.map((r) => (
-            <ReminderRow key={r.id} r={r} canEdit={canChange} />
-          ))}
-        </Table>
+        {phone ? (
+          <div className="p-3">
+            <CardList label="Reminders and escalation">
+              {state.reminders.map((r) => (
+                <PhoneReminder key={r.id} r={r} />
+              ))}
+            </CardList>
+          </div>
+        ) : (
+          <Table head={["Event", "Reminder to", "Remind after", "Escalate to", "Escalate after", "Active"]}>
+            {state.reminders.map((r) => (
+              <ReminderRow key={r.id} r={r} canEdit={canChange} />
+            ))}
+          </Table>
+        )}
         {/* where nobody changes them (live), neither line applies: the shell's read-only banner says it */}
         {(canChange || !canEdit) && (
           <div className="border-t border-line px-4 py-2.5 text-xs text-ink-3">
@@ -250,7 +324,7 @@ function RemindersPage() {
       </Card>
 
       <div className="mt-6">
-        <RunReminders canEdit={canEdit} />
+        <RunReminders canEdit={canEdit && !phone} />
       </div>
 
       <div className="mt-8">

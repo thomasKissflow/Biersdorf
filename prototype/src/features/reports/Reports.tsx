@@ -1,5 +1,6 @@
 // /reports (Business owner): Pipeline now · Lead time · Intake and workload · Clarifications and supplier performance.
 // Measured data only, calculated live from the cases; every metric without data shows "—".
+// Phones (< 768 px, Thomas 30 Oct): the cards stack; the review filter is a 44 px target; the wide tables are cards.
 import { BarChart3, Download, Filter, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Button, Card, EmptyState, PageHeader, Select, StatCard, cx } from "@/components/ui";
@@ -7,6 +8,8 @@ import { DEPT_LABEL, DEPT_SHORT, REVIEW_TRACK_DEPTS } from "@/domain/catalog";
 import { fmtMetric, monthlyFlow } from "@/domain/metrics";
 import { fmtDate } from "@/domain/selectors";
 import type { ReviewDept } from "@/domain/types";
+import { PHONE_FIELDS } from "@/features/rmm/phone";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { useStore } from "@/store/store";
 import { FlowCard, OriginCard, WorkloadCard } from "./IntakeCards";
 import { LeadTimeCard, WaitSplitCard } from "./LeadTimeCards";
@@ -65,6 +68,7 @@ const SHOW_CSV_EXPORT = false;
 export function Reports() {
   const { state, notify } = useStore();
   const [dept, setDept] = useState<ReviewDept | "">("");
+  const phone = useIsPhone();
 
   const scoped = useMemo(() => scopeToDept(state, dept), [state, dept]);
   const all = useMemo(() => kpis(state), [state]);
@@ -82,6 +86,36 @@ export function Reports() {
   const deptOnly = dept ? `${DEPT_SHORT[dept]} only` : undefined;
   const empty = state.cases.length === 0;
 
+  // the review filter and Download CSV: the header's actions on a big screen, under the title on a phone
+  const tools = (
+    <div className="flex w-full max-w-[calc(100vw-2rem)] flex-wrap items-start gap-2 sm:w-auto">
+      <label className={cx("flex min-w-0 basis-full items-center gap-2 text-[13px] text-ink-2 sm:basis-auto", phone && PHONE_FIELDS)}>
+        <Filter size={15} className="text-ink-3" />
+        <span className="sr-only sm:not-sr-only">Review</span>
+        <Select data-testid="reports-dept-filter" value={dept} onChange={(e) => setDept(e.target.value as ReviewDept | "")} className="w-full sm:w-52" aria-label="Filter by review (RMM or department)">
+          <option value="">RMM and all departments</option>
+          {REVIEW_TRACK_DEPTS.map((d) => (
+            <option key={d} value={d}>
+              {DEPT_LABEL[d]}
+            </option>
+          ))}
+        </Select>
+      </label>
+      {SHOW_CSV_EXPORT && (
+        <Button
+          data-testid="reports-export"
+          icon={<Download size={15} />}
+          onClick={() => {
+            const name = downloadCsv(reportCsv({ all, pipe, work: workloadView(state, "").rows, dept }));
+            notify("success", `${name} downloaded: the report numbers as a CSV file (opens in Excel).`);
+          }}
+        >
+          Download CSV
+        </Button>
+      )}
+    </div>
+  );
+
   return (
     <div className="space-y-8" data-testid="reports">
       <div>
@@ -93,35 +127,11 @@ export function Reports() {
               ? "Pipeline, lead time, workload and supplier performance, calculated live from the CIQ cases."
               : `${plural(period.cases, "CIQ case")} since ${fmtDate(period.since)}, calculated live. Every chart can be switched to a table with the same numbers.`
           }
-          actions={
-            <div className="flex w-full max-w-[calc(100vw-2rem)] flex-wrap items-start gap-2 sm:w-auto">
-              <label className="flex min-w-0 basis-full items-center gap-2 text-[13px] text-ink-2 sm:basis-auto">
-                <Filter size={15} className="text-ink-3" />
-                <span className="sr-only sm:not-sr-only">Review</span>
-                <Select data-testid="reports-dept-filter" value={dept} onChange={(e) => setDept(e.target.value as ReviewDept | "")} className="w-full sm:w-52" aria-label="Filter by review (RMM or department)">
-                  <option value="">RMM and all departments</option>
-                  {REVIEW_TRACK_DEPTS.map((d) => (
-                    <option key={d} value={d}>
-                      {DEPT_LABEL[d]}
-                    </option>
-                  ))}
-                </Select>
-              </label>
-              {SHOW_CSV_EXPORT && (
-                <Button
-                  data-testid="reports-export"
-                  icon={<Download size={15} />}
-                  onClick={() => {
-                    const name = downloadCsv(reportCsv({ all, pipe, work: workloadView(state, "").rows, dept }));
-                    notify("success", `${name} downloaded: the report numbers as a CSV file (opens in Excel).`);
-                  }}
-                >
-                  Download CSV
-                </Button>
-              )}
-            </div>
-          }
-        />
+          actions={phone ? undefined : tools}
+        >
+          {/* a phone: the filter under the title, the whole width (the header's actions column is only as wide as its content) */}
+          {phone && <div className="mt-3">{tools}</div>}
+        </PageHeader>
         {/* Below the header row, so the filter stays beside the title instead of being pushed under the banner. */}
         {dept && (
           <div role="status" data-testid="reports-filter-banner" className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-lg border border-line bg-surface px-3 py-2 text-[13px] text-ink-2">

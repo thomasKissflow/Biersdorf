@@ -1,6 +1,8 @@
 // Help: how the portal works, FAQs (including which e-mails come) and the Beiersdorf contact per request. No video.
 // The app always explains the current flow (one questionnaire step); the live portal keeps the old flow's steps and
 // passes its own help articles as the FAQs.
+// Phones (Thomas, 30 Oct): the header already says "Help", so the page's own title is for screen readers only; each
+// question's whole row (not only its text) opens it.
 import { ChevronDown, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -15,6 +17,7 @@ import { userById } from "@/domain/selectors";
 import { useIsLivePortal } from "@/store/portalCaps";
 import { useStore } from "@/store/store";
 import { caseLink, isClosed, isLiveScope, useSupplierScope } from "./lib";
+import { useIsPhone } from "./phone";
 
 /** Live portal (old flow): a separate basic-data step, then the questionnaire Beiersdorf releases. */
 const STEPS = [
@@ -132,6 +135,7 @@ export function SupplierHelp({
 }) {
   const { state } = useStore();
   const production = useProduction();
+  const phone = useIsPhone();
   const { cases } = useSupplierScope();
   const active = cases.filter((c) => !isClosed(c));
   // The app always explains the current flow, also before the contact has a request (the demo's empty start). The
@@ -143,7 +147,7 @@ export function SupplierHelp({
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Help"
+        title={phone ? <span className="sr-only">Help</span> : "Help"}
         subtitle="How the Beiersdorf supplier portal works, answers to common questions and who to contact."
       />
 
@@ -172,15 +176,16 @@ export function SupplierHelp({
           <CardHeader title="Frequently asked questions" />
           <div className="divide-y divide-line">
             {shownFaqs.map((f) => (
-              <details key={f.q} className="group px-5 py-3.5">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-[14px] font-medium text-ink [&::-webkit-details-marker]:hidden">
+              // a phone: the row's padding moves into the summary, so the whole row is its tap target
+              <details key={f.q} className={phone ? "group px-5" : "group px-5 py-3.5"}>
+                <summary className={cx("flex cursor-pointer list-none items-center justify-between gap-3 text-[14px] font-medium text-ink [&::-webkit-details-marker]:hidden", phone && "py-3.5")}>
                   {f.q}
                   <ChevronDown
                     size={16}
                     className="shrink-0 text-ink-3 transition-transform group-open:rotate-180"
                   />
                 </summary>
-                <p className="mt-2 max-w-3xl text-[13.5px] whitespace-pre-line text-ink-2">{f.a}</p>
+                <p className={cx(phone ? "-mt-1.5 pb-3.5" : "mt-2", "max-w-3xl text-[13.5px] whitespace-pre-line text-ink-2")}>{f.a}</p>
               </details>
             ))}
           </div>

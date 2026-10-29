@@ -178,6 +178,15 @@ body {
   }
 }
 
+/* A phone's on-screen keyboard is open (src/shell/ResponsiveShell.tsx, useKeyboardOpen): the tab bar and the page's
+   sticky action bar give the screen back, so neither rides above the keyboard over the field being typed in. */
+[data-keyboard="open"] [data-testid="tab-bar"] {
+  display: none;
+}
+[data-keyboard="open"] [data-sticky-actions] {
+  position: static;
+}
+
 .scrollbar-thin {
   scrollbar-width: thin;
   scrollbar-color: var(--line-strong) transparent;

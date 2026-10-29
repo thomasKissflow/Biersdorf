@@ -7,9 +7,11 @@
 // case, CaseCascadeDialog.tsx) is cleaned up. The page reads when it is opened and
 // when Read again is clicked, never otherwise: after a grouped delete the deleted items leave the groups here and the
 // session's lists (session.ts) without a read.
+// Phones (< 768 px, Thomas 30 Oct): the groups without their Delete button (the shell says to use a larger screen).
 import { Ghost, RefreshCw, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Badge, Button, Card, EmptyState, Mono, PageHeader } from "@/components/ui";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { useDataConsole } from "./ConsoleContext";
 import { CaseDeleteDialog } from "./CaseDeleteDialog";
 import { FLOW_OF_PART, PART_LABEL, countsOf, findOrphans, type CaseTarget, type OrphanGroup } from "./cascade";
@@ -20,6 +22,7 @@ export const groupKey = (t: CaseTarget) => t.id || `code-${t.code}`;
 
 function GroupCard({ g, onDelete }: { g: OrphanGroup; onDelete: () => void }) {
   const key = groupKey(g.target);
+  const phone = useIsPhone();
   return (
     <Card className="p-4" data-testid={`orphan-group-${key}`} data-items={g.items.length} data-state={g.state}>
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -45,7 +48,7 @@ function GroupCard({ g, onDelete }: { g: OrphanGroup; onDelete: () => void }) {
               Not confirmed
             </Badge>
           )}
-          {g.state === "gone" && (
+          {g.state === "gone" && !phone && (
             <Button variant="danger" size="sm" icon={<Trash2 size={14} />} onClick={onDelete} data-testid={`orphan-delete-${key}`}>
               Delete these {g.items.length} item{g.items.length === 1 ? "" : "s"}
             </Button>
@@ -72,6 +75,7 @@ export function OrphansPage() {
   const [removed, setRemoved] = useState<{ scan: unknown; ids: Set<string> }>({ scan: undefined, ids: new Set() });
   const gone = removed.scan === q.data ? removed.ids : new Set<string>();
   const groups = (q.data?.groups ?? []).map((g) => ({ ...g, items: g.items.filter((x) => !gone.has(`${x.part}|${x.id}`)) })).filter((g) => g.items.length > 0);
+  const phone = useIsPhone();
   return (
     <div className="space-y-5" data-testid="data-orphans">
       <PageHeader
@@ -79,7 +83,7 @@ export function OrphansPage() {
         title="Orphans"
         subtitle="Rows and items that name a CIQ Case item that no longer exists: the CIQ screens still find such a case by them, and can't read it. Each group is one deleted case."
         actions={
-          <Button variant="ghost" icon={<RefreshCw size={15} />} onClick={() => void q.reload()} disabled={q.loading} data-testid="orphans-reload">
+          <Button variant="ghost" icon={<RefreshCw size={15} />} onClick={() => void q.reload()} disabled={q.loading} data-testid="orphans-reload" className={phone ? "h-11" : undefined}>
             {q.loading ? "Reading…" : "Read again"}
           </Button>
         }

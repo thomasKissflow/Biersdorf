@@ -1,6 +1,7 @@
 // Centre column: the selected section's answers, attribution and documents, with "Ask supplier" on every field,
 // component row and document (REQ-PROC-019, -029). Beiersdorf never changes answers. Answers and uploads the
-// supplier changed after the reviewer's reference point are marked "Changed <date> by <name>".
+// supplier changed after the reviewer's reference point are marked "Changed <date> by <name>". On a phone (< 768 px)
+// "Ask supplier" is a 44 px "Ask" button beside each answer, so the answer keeps the width.
 import { DocName } from "@/components/DocName";
 import { RequestedDocsList, SectionUploadRow } from "@/components/RequestedDocs";
 import { FileText, Info, MessageSquarePlus } from "lucide-react";
@@ -11,11 +12,23 @@ import { DEPT_SHORT, HEAVY_METAL_LIMITS, LIMIT_SET_VERSION, codeTitle, fieldOf, 
 import { isSlotKey, sectionUploadRequired, slotsIn } from "@/domain/requestedDocs";
 import { answerOf, answeredByOf, fmtDate, fmtDateTime, formatValue, hasValue, isSetByBdf, isVisible, scopeOf, userById, userName } from "@/domain/selectors";
 import type { AppState, CiqCase, DocumentRef, FieldDef, OpenPoint } from "@/domain/types";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { ComponentTable } from "./ComponentTable";
 import { changedAfter } from "./lib";
 import { type AskTarget, docLabel, docTarget, fieldTarget, Notice, secCode, sectionTarget } from "./shared";
 
 export function AskButton({ onClick, label, testId }: { onClick: () => void; label: string; testId: string }) {
+  if (useIsPhone())
+    return (
+      <button
+        onClick={onClick}
+        aria-label={label}
+        data-testid={testId}
+        className="inline-flex min-h-11 min-w-11 items-center justify-center gap-1 rounded-lg px-2 text-[13px] font-medium whitespace-nowrap text-brand transition-colors hover:bg-brand-soft"
+      >
+        <MessageSquarePlus size={16} /> Ask
+      </button>
+    );
   return (
     <button
       onClick={onClick}
@@ -29,11 +42,12 @@ export function AskButton({ onClick, label, testId }: { onClick: () => void; lab
 }
 
 function OpChips({ ops, onFocusOp }: { ops: OpenPoint[]; onFocusOp: (id: string) => void }) {
+  const phone = useIsPhone();
   if (!ops.length) return null;
   return (
     <span className="flex flex-wrap gap-2">
       {ops.map((p) => (
-        <button key={p.id} onClick={() => onFocusOp(p.id)} className="rounded-md hover:bg-surface-3" title="Show this open point">
+        <button key={p.id} onClick={() => onFocusOp(p.id)} className={phone ? "inline-flex min-h-11 items-center rounded-md hover:bg-surface-3" : "rounded-md hover:bg-surface-3"} title="Show this open point">
           <TrafficLight status={p.status} label={`${p.id} · ${DEPT_SHORT[p.dept]}`} />
         </button>
       ))}

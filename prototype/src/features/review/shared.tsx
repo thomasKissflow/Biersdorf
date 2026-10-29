@@ -2,7 +2,7 @@
 import { Check, Clock, RotateCcw, X } from "lucide-react";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { Badge, Card, EmptyState, cx, type Tone } from "@/components/ui";
+import { Badge, Card, EmptyState, cx, toneDot, type Tone } from "@/components/ui";
 import { DEPT_LABEL, DEPT_SHORT, REVIEW_TRACK_DEPTS, sectionOf } from "@/domain/catalog";
 import { DAY, fmtDate, nowIso, rmmFlags, trackView, type TrackView } from "@/domain/selectors";
 import type { CiqCase, Dept, DocumentRef, FieldDef, ObjectRef, ReviewDept, ReviewTrack, TrackStatus } from "@/domain/types";
@@ -161,6 +161,20 @@ export function DeptTrackChip({ c, track }: { c: CiqCase; track: ReviewTrack }) 
         {TRACK_TEXT[v]}
       </Badge>
       {track.decision && <Badge tone={track.decision === "approved" ? "ok" : "bad"}>{track.decision === "approved" ? "Approved" : "Rejected"}</Badge>}
+    </span>
+  );
+}
+
+/** Phones: a review's name and track status (and Safety / Regulatory decision) as one short line of text with its
+ *  status dot, where DeptTrackChip would take a row of its own. */
+export function DeptTrackText({ c, track }: { c: CiqCase; track: ReviewTrack }) {
+  const v = trackView(c, track);
+  return (
+    <span className="inline-flex items-center gap-1.5 text-[12.5px] whitespace-nowrap">
+      <span aria-hidden className={cx("h-1.5 w-1.5 shrink-0 rounded-full", toneDot[TRACK_TONE[v]])} />
+      <span className="font-medium text-ink">{DEPT_SHORT[track.dept]}</span>
+      <span className="text-ink-3">{TRACK_TEXT[v].toLowerCase()}</span>
+      {track.decision && <span className={track.decision === "approved" ? "text-ok" : "text-bad"}>· {track.decision === "approved" ? "approved" : "rejected"}</span>}
     </span>
   );
 }

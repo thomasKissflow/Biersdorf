@@ -1,5 +1,7 @@
 // /admin/rules: the versioned rules, the rule editor of the draft (spec §8.3) and "Test rules" (comparison plus
 // one-material simulator) (REQ-CFG-003). The business administrator edits the draft; the auditor reads every version.
+// Phones (< 768 px, Thomas 30 Oct): every role reads the rules and their versions as cards; the business administrator
+// gets "Use a larger screen to edit" instead of the edit controls and Test rules (shared.tsx useAdminAccess).
 import { Pencil, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -28,7 +30,7 @@ export function RuleTable() {
 
 function RulesPage() {
   const { state, deleteRule } = useStore();
-  const { canEdit, canChange } = useAdminAccess();
+  const { canEdit, canChange, phone } = useAdminAccess();
   const [params, setParams] = useSearchParams();
   const sets = useMemo(() => ruleSetsOf(state.config), [state.config]);
   const current = currentRuleSet(sets);
@@ -39,7 +41,8 @@ function RulesPage() {
   // Testing is the administrator's tool; the auditor reads the rule versions. The old ?tab=simulator / ?tab=regression
   // links land on the matching view of Test rules.
   const raw = params.get("tab");
-  const tab: Tab = canEdit && (raw === "test" || raw === "simulator" || raw === "regression") ? "test" : "rules";
+  const testing = canEdit && !phone; // Test rules belongs to the editor: not on a phone
+  const tab: Tab = testing && (raw === "test" || raw === "simulator" || raw === "regression") ? "test" : "rules";
   const view: TestView = params.get("view") === "try" || raw === "simulator" ? "try" : "compare";
   const material = params.get("material") ?? undefined;
   const go = (next: { tab: Tab; view?: TestView; material?: string }) => {
@@ -105,11 +108,11 @@ function RulesPage() {
         subtitle="The metadata answers SF-01 to SF-12 decide which chapters, annexes and evidence each supplier gets. The business changes these rules in a new version, tests it and publishes it; running cases keep the version they started with."
       />
 
-      <ReadOnlyNote what="the rules and publishes their versions" extra="Every version is kept permanently, with its publish date and change note." />
+      <ReadOnlyNote what="the rules and publishes their versions" extra="Every version is kept permanently, with its publish date and change note." onPhone="On a phone you can look at the rules and every version, but not change or test them." />
 
       <VersionsPanel page="rules" viewing={row.key} onView={setPicked} onCheckPublish={() => setPublishOpen(true)} />
 
-      {canEdit ? (
+      {testing ? (
         <Tabs<Tab>
           data-testid="rules-tab"
           className="mt-6 mb-4"

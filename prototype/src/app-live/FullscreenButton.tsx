@@ -5,6 +5,7 @@
 // The frame may not be allowed to move the page around it (sandbox); then the full-screen page opens in a new tab.
 import { Maximize2 } from "lucide-react";
 import { IconButton } from "@/components/ui";
+import { MoreRow } from "@/shell/PhoneChrome";
 import { hookHostOf, type PageLike } from "./env";
 import { APP_ID } from "./ids";
 
@@ -26,9 +27,11 @@ export function openTop(url: string, win: Pick<Window, "top" | "open"> = window)
   }
 }
 
-export function FullscreenButton({ page }: { page?: PageLike }) {
+/** `row`: the labelled row of the phone's More sheet (Thomas, 30 Oct) instead of the side pane's icon button. */
+export function FullscreenButton({ page, row }: { page?: PageLike; row?: boolean }) {
   const url = fullscreenUrl(page);
   if (!url) return null;
+  if (row) return <MoreRow icon={<Maximize2 />} label="Full screen" title="Open CIQ Digital in full screen" onClick={() => openTop(url)} data-testid="fullscreen" />;
   return (
     <IconButton label="Full screen" title="Open CIQ Digital in full screen" onClick={() => openTop(url)} data-testid="fullscreen">
       <Maximize2 size={16} />

@@ -6,6 +6,7 @@ import { renderToString } from "react-dom/server";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { AppState, User } from "@/domain/types";
+import { LayoutModeContext, type LayoutMode } from "@/shell/useLayoutMode";
 import { StoreContext, type StoreApi } from "@/store/store";
 import { AdminShell } from "./admin/AdminShell";
 import type { LiveExtras } from "./data/LiveSupplierStore";
@@ -71,44 +72,51 @@ const liveExtras = (patch: Partial<LiveExtras> = {}): LiveExtras => ({
   ...patch,
 });
 
-function supplier(mode: PortalMode, opts: { demo?: boolean; path?: string } = {}): string {
+function supplier(mode: PortalMode, opts: { demo?: boolean; path?: string; layout?: LayoutMode } = {}): string {
   return flat(
     renderToString(
-      <ThemeProvider>
-        <PortalModeContext.Provider value={mode}>
-          <StoreContext.Provider value={store}>
-            <MemoryRouter initialEntries={[opts.path ?? "/portal"]}>
-              <Routes>
-                <Route element={<PortalSupplierShell demo={!!opts.demo} />}>
-                  <Route path="*" element={<div data-testid="the-page">PAGE</div>} />
-                </Route>
-              </Routes>
-            </MemoryRouter>
-          </StoreContext.Provider>
-        </PortalModeContext.Provider>
-      </ThemeProvider>,
+      <LayoutModeContext.Provider value={opts.layout ?? null}>
+        <ThemeProvider>
+          <PortalModeContext.Provider value={mode}>
+            <StoreContext.Provider value={store}>
+              <MemoryRouter initialEntries={[opts.path ?? "/portal"]}>
+                <Routes>
+                  <Route element={<PortalSupplierShell demo={!!opts.demo} />}>
+                    <Route path="*" element={<div data-testid="the-page">PAGE</div>} />
+                  </Route>
+                </Routes>
+              </MemoryRouter>
+            </StoreContext.Provider>
+          </PortalModeContext.Provider>
+        </ThemeProvider>
+      </LayoutModeContext.Provider>,
     ),
   );
 }
 
-function admin(mode: PortalMode, path = "/admin"): string {
+function admin(mode: PortalMode, path = "/admin", layout: LayoutMode | null = null): string {
   return flat(
     renderToString(
-      <ThemeProvider>
-        <PortalModeContext.Provider value={mode}>
-          <MemoryRouter initialEntries={[path]}>
-            <Routes>
-              <Route path="/admin" element={<AdminShell />}>
-                <Route path="*" element={<div data-testid="the-page">PAGE</div>} />
-                <Route index element={<div data-testid="the-page">PAGE</div>} />
-              </Route>
-            </Routes>
-          </MemoryRouter>
-        </PortalModeContext.Provider>
-      </ThemeProvider>,
+      <LayoutModeContext.Provider value={layout}>
+        <ThemeProvider>
+          <PortalModeContext.Provider value={mode}>
+            <MemoryRouter initialEntries={[path]}>
+              <Routes>
+                <Route path="/admin" element={<AdminShell />}>
+                  <Route path="*" element={<div data-testid="the-page">PAGE</div>} />
+                  <Route index element={<div data-testid="the-page">PAGE</div>} />
+                </Route>
+              </Routes>
+            </MemoryRouter>
+          </PortalModeContext.Provider>
+        </ThemeProvider>
+      </LayoutModeContext.Provider>,
     ),
   );
 }
+
+/** The test ids in the tab bar, in order (the phone layout). */
+const tabIds = (html: string) => [...html.slice(html.indexOf('data-testid="tab-bar"')).matchAll(/data-testid="(nav-[^"]+|tab-more)"/g)].map((m) => m[1]);
 
 /** The left pane's footer (from its test id to the end of the pane). */
 const footerOf = (html: string) => html.slice(html.indexOf('data-testid="side-footer"'), html.indexOf("</aside>"));
@@ -212,5 +220,50 @@ describe("AdminShell", () => {
     expect(dev).toContain('data-testid="dev-top-bar"');
     expect(dev).toMatch(/data-testid="role-switcher" data-persona="admin"/);
     expect(dev).toContain("Portal admin");
+  });
+});
+
+describe("the portal on a phone (Thomas, 30 Oct: < 768 px)", () => {
+  it("supplier: no left pane; the tab bar with My requests (its open-task count), Help and More", () => {
+    const html = supplier(modeFor("prod", "supplier"), { layout: "phone" });
+    expect(html).not.toContain('data-testid="side-pane"');
+    expect(tabIds(html)).toEqual(["nav-portal", "nav-portal-help", "tab-more"]);
+    const tab = html.slice(html.indexOf('data-testid="nav-portal"'), html.indexOf('data-testid="nav-portal-help"'));
+    expect(tab).toContain('aria-current="page"');
+    expect(tab).toContain('aria-label="2 open">2</span>');
+    expect(html).toContain(">My requests</p>");
+    expect(html).not.toContain('data-testid="phone-back"');
+  });
+
+  it("supplier: a request has the back arrow to My requests; the banners and the page stay, the footer goes; prod has no dev bar", () => {
+    extras = liveExtras({ loadError: "boom", presence: () => ({ email: "ravi@solvaro.example", name: "Ravi", since: "2026-10-20T10:00:00Z" }) });
+    const html = supplier(modeFor("prod", "supplier"), { layout: "phone", path: "/portal/case/ZZT-0003" });
+    expect(html).toContain(">Request</p>");
+    expect(html).toContain('data-testid="phone-back"');
+    const main = html.slice(html.indexOf("<main"), html.indexOf("</main>"));
+    for (const t of ['role="alert"', 'data-testid="presence-hint"', 'data-testid="the-page"']) expect(main).toContain(t);
+    // nothing between the page's sticky action bar and the tab bar
+    expect(html).not.toContain("Beiersdorf Supplier Portal · Raw material questionnaires");
+    expect(html).not.toContain('data-testid="dev-top-bar"');
+  });
+
+  it("supplier, dev: the compact top bar inside the header; the demo preview keeps its bar under the header", () => {
+    const dev = supplier(modeFor("dev", "supplier"), { layout: "phone" });
+    expect(dev.slice(dev.indexOf('data-testid="phone-header"'), dev.indexOf("</header>"))).toContain('data-testid="dev-top-bar" data-compact="true"');
+    extras = null;
+    const demo = supplier(modeFor("offline", "none"), { layout: "phone", demo: true });
+    expect(demo.indexOf("</header>")).toBeLessThan(demo.indexOf('data-testid="demo-bar"'));
+    expect(demo).not.toContain('data-testid="load-status"'); // nothing to reload in the demo
+  });
+
+  it("admin console: the tab bar and More over its menu, and the note to use a larger screen to edit", () => {
+    const html = admin(modeFor("prod", "admin"), "/admin", "phone");
+    expect(html).not.toContain('data-testid="side-pane"');
+    expect(tabIds(html).at(-1)).toBe("tab-more");
+    expect(tabIds(html)).toHaveLength(5);
+    expect(html).toContain('data-testid="larger-screen-note"');
+    expect(html).toContain(">Overview</p>");
+    // a big screen: no note
+    expect(admin(modeFor("prod", "admin"))).not.toContain('data-testid="larger-screen-note"');
   });
 });

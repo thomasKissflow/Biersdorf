@@ -14,6 +14,7 @@ import { ComponentTable } from "./ComponentTable";
 import { FieldRenderer, Justification } from "./FieldRenderer";
 import { isLiveScope, navProgress, sectionCode, sectionCodeShown, sectionMeta, sectionTitle, type RequestedRefs, type SupplierSection, WAIVER_FIELD } from "./lib";
 import { Attribution, DocumentList, LockedNote, RequestedBadge } from "./parts";
+import { tap, useIsPhone } from "./phone";
 import { RequestedDocuments } from "./RequestedDocuments";
 
 export interface SectionPanelProps {
@@ -41,6 +42,7 @@ export function SectionPanel({ c, sec, locked, requested, focusField, focusRow, 
   // A field Beiersdorf asks about stays shown even when a later answer hides it (EC-LC-07).
   const fields = sec.waived ? fieldsOf("K5.1", tv).filter((f) => f.id === WAIVER_FIELD) : fieldsOf(sec.sectionId, tv).filter((f) => isVisible(f, c) || (live && requested.fields.has(f.id)));
   const k21Editable = !locked || (sec.sectionId === "K2.1" && (requested.rows.size > 0 || requested.wholeSections.has("K2.1")));
+  const phone = useIsPhone();
 
   useEffect(() => {
     const id = focusField ? `field-${focusField}` : focusRow ? `row-${focusRow}` : null;
@@ -142,17 +144,18 @@ export function SectionPanel({ c, sec, locked, requested, focusField, focusRow, 
       {(prev || next) && (
         <div className="flex items-center justify-between gap-2 border-t border-line px-5 py-3">
           {prev ? (
-            <Button variant="ghost" size="sm" icon={<ArrowLeft size={14} />} onClick={() => onSelect(prev.sectionId)}>
+            <Button variant="ghost" size="sm" icon={<ArrowLeft size={14} />} onClick={() => onSelect(prev.sectionId)} className={tap(phone)}>
               {sectionCode(prev.sectionId, tv)}
             </Button>
           ) : (
             <span />
           )}
           {next && (
-            <Button variant="secondary" size="sm" className="min-w-0" title={`${sectionCode(next.sectionId, tv)} · ${sectionTitle(next.sectionId, tv)}`} iconRight={<ArrowRight size={14} className="shrink-0" />} onClick={() => onSelect(next.sectionId)}>
+            <Button variant="secondary" size="sm" className={cx("min-w-0", tap(phone))} title={`${sectionCode(next.sectionId, tv)} · ${sectionTitle(next.sectionId, tv)}`} iconRight={<ArrowRight size={14} className="shrink-0" />} onClick={() => onSelect(next.sectionId)}>
               <span className="truncate">
                 Next: {sectionCode(next.sectionId, tv)}
-                <span className="hidden sm:inline"> · {sectionTitle(next.sectionId, tv)}</span>
+                {/* a phone has no side nav to decode the code: its title too, cut to fit */}
+                <span className={phone ? undefined : "hidden sm:inline"}> · {sectionTitle(next.sectionId, tv)}</span>
               </span>
             </Button>
           )}
@@ -181,6 +184,7 @@ function TemplateChapter({ c, sectionId, kind, editable, focused }: { c: CiqCase
   const key = sectionUploadKey(sectionId);
   const just = c.justifications[key];
   const [jOpen, setJOpen] = useState(!!just);
+  const phone = useIsPhone();
   return (
     <div id={`field-${key}`} data-testid={`q-documents-${sectionId}`} data-required={required ? "true" : "false"} data-status={sectionUploadStatus(c, sectionId)} className={cx("scroll-mt-40 space-y-4 px-5 py-5 transition-colors", focused && "bg-brand-soft/50")}>
       <div className="rounded-lg border border-line bg-surface-2 px-4 py-4" data-testid={`q-documents-only-${sectionId}`}>
@@ -230,7 +234,7 @@ function TemplateChapter({ c, sectionId, kind, editable, focused }: { c: CiqCase
             <div className="flex flex-wrap items-center justify-between gap-2">
               {just && !docs.length ? <Attribution c={c} keyId={key} verb="Justified" /> : <span />}
               {required && editable && !jOpen && !docs.length && (
-                <button type="button" onClick={() => setJOpen(true)} className="inline-flex items-center gap-1 text-[12px] font-medium text-ink-3 hover:text-brand" data-testid={`q-justify-${key}`}>
+                <button type="button" onClick={() => setJOpen(true)} className={cx("inline-flex items-center gap-1 text-[12px] font-medium text-ink-3 hover:text-brand", tap(phone))} data-testid={`q-justify-${key}`}>
                   <MessageSquareWarning size={13} /> Cannot provide? Add a justification
                 </button>
               )}

@@ -19,11 +19,14 @@
 // says whether Kissflow holds what was sent, or names what differs, and the read-back replaces the row in the list (the
 // list is not read again). A CIQ Supplier row (26 Oct) also shows its contacts' portal users, each with Set / Change /
 // Remove (PortalUsers.tsx).
+// Phones (< 768 px, Thomas 30 Oct): the drawer is a full-height sheet that shows the item only: no Edit, no Delete, a
+// note to use a larger screen (an edit begun on a larger screen comes back, unchanged, when the screen widens again).
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Badge, Button, Drawer, Field, Modal, Mono, TextInput } from "@/components/ui";
+import { Badge, Button, Drawer, Field, LargerScreenNote, Modal, Mono, TextInput } from "@/components/ui";
 import { errorText, type KfData } from "@/portal/kf/sdk";
 import { str, type RawItem } from "@/portal/data/raw";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import type { FlowKey, FormKey } from "../types";
 import { childRowId } from "../write/encode";
 import { CHILD_MODELS, FLOW_LABEL, KEY_FIELD, formulasOf, isProcess, need, statusTone } from "./common";
@@ -50,6 +53,9 @@ export function ItemDrawer({ flow, id, knownFields = [], onClose, onCreated }: {
   const [item, setItem] = useState<RawItem | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
+  const phone = useIsPhone();
+  /** The editor on screen: never on a phone (the edit itself is kept for a larger screen). */
+  const edit = editing && !phone;
   const [draft, setDraft] = useState<Record<string, string>>({});
   const [tables, setTables] = useState<Record<string, RowDraft[]>>({});
   const [extra, setExtra] = useState<string[]>([]);
@@ -233,7 +239,8 @@ export function ItemDrawer({ flow, id, knownFields = [], onClose, onCreated }: {
         subtitle={subtitle}
         data-testid="data-drawer"
         footer={
-          item && (
+          item &&
+          !phone && (
             <div className="flex w-full flex-wrap items-center gap-2">
               {editing ? (
                 <>
@@ -265,6 +272,7 @@ export function ItemDrawer({ flow, id, knownFields = [], onClose, onCreated }: {
           )
         }
       >
+        <LargerScreenNote>On a phone you can look at this {proc ? "item" : "row"}, but not change or delete it.</LargerScreenNote>
         {error && <p className="text-[13px] text-bad">{error}</p>}
         {!item && !error && <p className="text-[13px] text-ink-3">Loading…</p>}
         {item && (
@@ -285,8 +293,8 @@ export function ItemDrawer({ flow, id, knownFields = [], onClose, onCreated }: {
                 {message.text}
               </p>
             )}
-            {editing && proc && <p className="rounded-md bg-warn-soft px-3 py-2 text-[12.5px] text-ink-2">The admin update writes any field at any step, read-only ones too. Steps do not move.</p>}
-            {flow === "supplier" && !editing && !creating && (
+            {edit && proc && <p className="rounded-md bg-warn-soft px-3 py-2 text-[12.5px] text-ink-2">The admin update writes any field at any step, read-only ones too. Steps do not move.</p>}
+            {flow === "supplier" && !edit && !creating && (
               <PortalUsersPanel
                 client={client}
                 item={item}
@@ -298,9 +306,9 @@ export function ItemDrawer({ flow, id, knownFields = [], onClose, onCreated }: {
               />
             )}
             <div className="space-y-3">
-              {fields.map((f) => (editing ? <FieldEditor key={f.id} id={f.id} value={f.value} kind={f.kind} text={draft[f.id] ?? ""} onChange={(t) => setDraft((d) => ({ ...d, [f.id]: t }))} /> : <FieldView key={f.id} id={f.id} value={f.value} kind={f.kind} />))}
+              {fields.map((f) => (edit ? <FieldEditor key={f.id} id={f.id} value={f.value} kind={f.kind} text={draft[f.id] ?? ""} onChange={(t) => setDraft((d) => ({ ...d, [f.id]: t }))} /> : <FieldView key={f.id} id={f.id} value={f.value} kind={f.kind} />))}
             </div>
-            {editing && (
+            {edit && (
               <Field label="Add a field" hint="Its field id, as Kissflow names it (e.g. Change_Note)." error={newFieldProblem || undefined}>
                 <div className="flex gap-2">
                   <TextInput value={newField} onChange={(e) => setNewField(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addField()} placeholder="Field_Id" data-testid="data-add-field" />
@@ -311,7 +319,7 @@ export function ItemDrawer({ flow, id, knownFields = [], onClose, onCreated }: {
               </Field>
             )}
             {tableModels.map((m) =>
-              !editing ? (
+              !edit ? (
                 <TableView key={m} model={m} rows={tableRows(item, m)} columns={columnsOf(m)} />
               ) : columnsOf(m).length ? (
                 <TableEditor key={m} model={m} columns={columnsOf(m)} drafts={tables[m] ?? []} formulas={formulasOf(m)} onChange={(d) => setTables((t) => ({ ...t, [m]: d }))} />

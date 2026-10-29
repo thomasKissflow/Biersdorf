@@ -2,17 +2,21 @@
 // one or two of its active contacts, the owner, the target markets (SF-11) and the due date. Warns about an open case
 // for the same supplier and material number. Every missing item is listed at once. RMM never adds suppliers or contacts
 // here: the Business administrator maintains the supplier master, so a missing one is asked for there.
+// Phones (< 768 px, Thomas 30 Oct): one column of cards; Cancel and "Create case" sit in the bar above the tab bar (a
+// refused Create scrolls the list of what is missing into view); fields, market chips and the priority switch are 44 px.
 import { Building2, CircleAlert, Search, Send, TriangleAlert } from "lucide-react";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Badge, Button, Card, CardHeader, Checkbox, Field, Mono, PageHeader, Segmented, Select, TextArea, TextInput, cx } from "@/components/ui";
+import { Badge, Button, Card, CardHeader, Checkbox, Field, Mono, PageHeader, Segmented, Select, StickyActionBar, TextArea, TextInput, cx } from "@/components/ui";
 import { MARKET_LABEL, sectionLabel } from "@/domain/catalog";
 import { currentPair } from "@/domain/configActions";
 import { ruleSet, sectionsInTemplate } from "@/domain/rules";
 import { DAY, duplicateOpenCases, nowIso, userName } from "@/domain/selectors";
 import { activeSuppliers, contactsOf, validateCaseContacts } from "@/domain/suppliers";
 import type { Market, Supplier } from "@/domain/types";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { useStore } from "@/store/store";
+import { PHONE_CHIP, PHONE_FIELDS, PHONE_TAPS } from "./phone";
 import { NoAccess, canManage } from "./shared";
 
 const MARKETS = Object.keys(MARKET_LABEL) as Market[];
@@ -38,6 +42,8 @@ type ErrKey = keyof Form;
 export function NewCase() {
   const { state, persona, me, createCase } = useStore();
   const nav = useNavigate();
+  const phone = useIsPhone();
+  const formId = useId();
   // ?from=<caseId>: the follow-up of a change the supplier reported after the release (spec §1.12).
   const [params] = useSearchParams();
   const from = state.cases.find((x) => x.id === params.get("from") && x.phase === "completed");
@@ -55,6 +61,13 @@ export function NewCase() {
     duplicateNote: "",
   }));
   const [tried, setTried] = useState(false);
+  // a phone's Create sits in the bar at the bottom, wherever the page is scrolled: a refused Create scrolls the list of
+  // what is missing into view
+  const [refused, setRefused] = useState(0);
+  const errorsRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (refused && phone) errorsRef.current?.scrollIntoView({ block: "center" });
+  }, [refused, phone]);
   const [find, setFind] = useState("");
   const [findContact, setFindContact] = useState("");
   /** While the case is being created (the live app waits for Kissflow): the case ids at the click. The new case shows
@@ -109,6 +122,7 @@ export function NewCase() {
   const submit = (e: FormEvent) => {
     e.preventDefault();
     setTried(true);
+    if (missing.length) setRefused((n) => n + 1);
     if (missing.length || sending) return;
     const input = {
       materialName: f.materialName.trim(),
@@ -152,7 +166,7 @@ export function NewCase() {
         </div>
       )}
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-        <form onSubmit={submit} noValidate className="space-y-6 xl:col-span-2" data-testid="newcase-form">
+        <form id={phone ? formId : undefined} onSubmit={submit} noValidate className={cx("space-y-6 xl:col-span-2", phone && PHONE_FIELDS)} data-testid="newcase-form">
           <Card>
             <CardHeader title="Raw material" subtitle="Pre-filled for the supplier, who sees but cannot change it" />
             <div className="grid gap-4 p-4 sm:grid-cols-2">
@@ -295,7 +309,7 @@ export function NewCase() {
                         aria-pressed={on}
                         data-testid={`newcase-market-${m}`}
                         onClick={() => setF((p) => ({ ...p, markets: on ? p.markets.filter((x) => x !== m) : [...p.markets, m] }))}
-                        className={cx("rounded-full border px-3 py-1 text-[13px] transition-colors", on ? "border-brand bg-brand-soft font-medium text-brand" : "border-line-strong bg-surface text-ink-2 hover:border-ink-3")}
+                        className={cx("rounded-full border px-3 py-1 text-[13px] transition-colors", phone && PHONE_CHIP, on ? "border-brand bg-brand-soft font-medium text-brand" : "border-line-strong bg-surface text-ink-2 hover:border-ink-3")}
                       >
                         {MARKET_LABEL[m]}
                       </button>
@@ -317,7 +331,7 @@ export function NewCase() {
                   <TextInput type="date" min={today} value={f.dueDate} onChange={(e) => setF({ ...f, dueDate: e.target.value })} invalid={!!err("dueDate")} data-testid="newcase-due" />
                 </Field>
                 <Field label="Priority">
-                  <div data-testid="newcase-priority">
+                  <div data-testid="newcase-priority" className={phone ? PHONE_TAPS : undefined}>
                     <Segmented<"normal" | "high">
                       value={f.priority}
                       onChange={(v) => setF({ ...f, priority: v })}
@@ -333,7 +347,7 @@ export function NewCase() {
           </Card>
 
           {tried && missing.length > 0 && (
-            <div role="alert" data-testid="newcase-errors" data-count={missing.length} className="flex items-start gap-2.5 rounded-lg border border-bad/40 bg-bad-soft px-4 py-3 text-[13px] text-ink">
+            <div ref={errorsRef} role="alert" data-testid="newcase-errors" data-count={missing.length} className="flex items-start gap-2.5 rounded-lg border border-bad/40 bg-bad-soft px-4 py-3 text-[13px] text-ink">
               <CircleAlert size={16} className="mt-px shrink-0 text-bad" aria-hidden />
               <div>
                 <p className="font-medium">
@@ -348,14 +362,16 @@ export function NewCase() {
             </div>
           )}
 
-          <div className="flex flex-wrap items-center justify-end gap-2">
-            <Button type="button" variant="ghost" onClick={() => nav(-1)}>
-              Cancel
-            </Button>
-            <Button type="submit" variant="primary" icon={<Send size={15} />} disabled={!!sending} data-testid="newcase-submit">
-              {sending ? "Sending…" : "Create case and invite supplier"}
-            </Button>
-          </div>
+          {!phone && (
+            <div className="flex flex-wrap items-center justify-end gap-2">
+              <Button type="button" variant="ghost" onClick={() => nav(-1)}>
+                Cancel
+              </Button>
+              <Button type="submit" variant="primary" icon={<Send size={15} />} disabled={!!sending} data-testid="newcase-submit">
+                {sending ? "Sending…" : "Create case and invite supplier"}
+              </Button>
+            </div>
+          )}
         </form>
 
         <aside className="space-y-4">
@@ -391,6 +407,15 @@ export function NewCase() {
           </Card>
         </aside>
       </div>
+      {/* a phone: the page's actions above the tab bar, for the form by its id */}
+      <StickyActionBar>
+        <Button type="button" variant="ghost" onClick={() => nav(-1)}>
+          Cancel
+        </Button>
+        <Button type="submit" form={formId} variant="primary" icon={<Send size={15} />} disabled={!!sending} data-testid="newcase-submit" className="min-w-0 flex-1">
+          {sending ? "Sending…" : "Create case and invite supplier"}
+        </Button>
+      </StickyActionBar>
     </div>
   );
 }

@@ -2,15 +2,18 @@
 // Selection lives in the URL (?s=K2.1&f=FLD-…) so tasks and the completeness check can deep-link.
 // Live-scope cases (D-1): the metadata questions are the second General entry (?s=SF), and the sections follow the
 // answers live; sections that just opened carry a "New" marker until the supplier opens them.
-import { CheckCircle2, Circle, CircleDot, FileText, Info, Lock } from "lucide-react";
+// Phones (Thomas, 30 Oct): the navigator is one sticky bar under the header (SectionPicker) that opens every section in
+// a sheet; the completeness check and confirmation sit in a sticky bar above the tab bar (CompletenessActions).
+import { CheckCircle2, ChevronsUpDown, Circle, CircleDot, FileText, Info, Lock } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Badge, Select, cx } from "@/components/ui";
+import { Badge, Select, Sheet, cx } from "@/components/ui";
 import { sectionUploadRequired, sectionUploadStatus, sectionUploads } from "@/domain/requestedDocs";
 import type { CiqCase } from "@/domain/types";
-import { CompletenessHeader } from "./Completeness";
+import { CompletenessActions, CompletenessHeader, useCompletenessUi } from "./Completeness";
 import { METADATA_SECTION, firstOpenEntry, isLiveScope, navEntries, navProgress, requestedRefs, sectionCode, sectionCodeShown, sectionKind, sectionLabelOf, sectionMeta, sectionTitle, supplierSections, type SupplierSection } from "./lib";
 import { MetadataQuestions } from "./MetadataQuestions";
+import { useIsPhone } from "./phone";
 import { SectionPanel } from "./SectionPanel";
 
 /** v2 (BRM v2 REQ-PROC-016): answers stay editable until the final release is requested (locked from then on, Thomas
@@ -23,6 +26,8 @@ export function Questionnaire({ c, locked, confirmable = !locked }: { c: CiqCase
   const requested = requestedRefs(c);
   const topRef = useRef<HTMLDivElement>(null);
   const fresh = useFreshSections(c, sections);
+  const phone = useIsPhone();
+  const ui = useCompletenessUi();
 
   const fallback = locked ? (entries.find((s) => requested.sections.has(s.sectionId)) ?? entries[0]) : (firstOpenEntry(c) ?? entries[0]);
   const wanted = params.get("s");
@@ -84,50 +89,56 @@ export function Questionnaire({ c, locked, confirmable = !locked }: { c: CiqCase
 
   return (
     <div className="space-y-5" data-testid="q-root" data-template-version={c.templateVersion}>
-      {confirmable && <CompletenessHeader c={c} onJump={select} />}
+      {confirmable && <CompletenessHeader c={c} onJump={select} ui={ui} />}
+      {/* Phone: outside the grid, so it stays stuck while the whole questionnaire scrolls */}
+      {phone && <SectionPicker c={c} sel={sel} index={idx} count={entries.length} groups={groups} sections={sections.length} locked={locked} requested={requested.sections} fresh={fresh.has} onSelect={(id) => select(id)} />}
       <div ref={topRef} className="grid grid-cols-1 gap-6 lg:grid-cols-[272px_minmax(0,1fr)]">
-        {/* Mobile: compact selector, grouped like the desktop navigator */}
-        <div className="lg:hidden">
-          <Select value={sel.sectionId} onChange={(e) => select(e.target.value)} aria-label="Section">
-            {groups.map((g) => (
-              <optgroup key={g.title} label={g.title}>
-                {g.items.map((s) => (
-                  <option key={s.sectionId} value={s.sectionId}>
-                    {sectionLabelOf(s.sectionId, tv)}
-                    {fresh.has(s.sectionId) ? " (new)" : ""}
-                  </option>
-                ))}
-              </optgroup>
-            ))}
-          </Select>
-        </div>
-        {/* The card itself is the scroll box, so its border and rounded corners stay visible while the list scrolls. */}
-        <nav
-          ref={navRef}
-          aria-label="Questionnaire sections"
-          className="hidden rounded-card border border-line bg-surface shadow-card scrollbar-thin lg:sticky lg:top-[calc(var(--app-header-h,108px)_+_16px)] lg:block lg:max-h-[calc(100vh_-_var(--app-header-h,108px)_-_32px)] lg:self-start lg:overflow-y-auto"
-        >
-          <div className="p-2">
-            <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 px-2 pt-1.5 pb-1 text-[12px] text-ink-3">
-              <span>{sections.length === 1 ? "1 section applies" : `${sections.length} sections apply`} to this material</span>
-              {locked && (
-                <span className="inline-flex items-center gap-1">
-                  <Lock size={11} /> read-only
-                </span>
-              )}
-            </p>
-            {groups.map((g) => (
-              <div key={g.title} className="mt-1.5">
-                <p className="px-2 pt-1.5 pb-1 text-[11px] font-semibold tracking-wide text-ink-3 uppercase">{g.title}</p>
-                <ul className="space-y-0.5">
+        {/* Tablet: compact selector, grouped like the desktop navigator */}
+        {!phone && (
+          <div className="lg:hidden">
+            <Select value={sel.sectionId} onChange={(e) => select(e.target.value)} aria-label="Section">
+              {groups.map((g) => (
+                <optgroup key={g.title} label={g.title}>
                   {g.items.map((s) => (
-                    <NavItem key={s.sectionId} c={c} s={s} active={s.sectionId === sel.sectionId} requested={requested.sections.has(s.sectionId)} fresh={fresh.has(s.sectionId)} onClick={() => select(s.sectionId)} />
+                    <option key={s.sectionId} value={s.sectionId}>
+                      {sectionLabelOf(s.sectionId, tv)}
+                      {fresh.has(s.sectionId) ? " (new)" : ""}
+                    </option>
                   ))}
-                </ul>
-              </div>
-            ))}
+                </optgroup>
+              ))}
+            </Select>
           </div>
-        </nav>
+        )}
+        {/* The card itself is the scroll box, so its border and rounded corners stay visible while the list scrolls. */}
+        {!phone && (
+          <nav
+            ref={navRef}
+            aria-label="Questionnaire sections"
+            className="hidden rounded-card border border-line bg-surface shadow-card scrollbar-thin lg:sticky lg:top-[calc(var(--app-header-h,108px)_+_16px)] lg:block lg:max-h-[calc(100vh_-_var(--app-header-h,108px)_-_32px)] lg:self-start lg:overflow-y-auto"
+          >
+            <div className="p-2">
+              <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 px-2 pt-1.5 pb-1 text-[12px] text-ink-3">
+                <span>{sections.length === 1 ? "1 section applies" : `${sections.length} sections apply`} to this material</span>
+                {locked && (
+                  <span className="inline-flex items-center gap-1">
+                    <Lock size={11} /> read-only
+                  </span>
+                )}
+              </p>
+              {groups.map((g) => (
+                <div key={g.title} className="mt-1.5">
+                  <p className="px-2 pt-1.5 pb-1 text-[11px] font-semibold tracking-wide text-ink-3 uppercase">{g.title}</p>
+                  <ul className="space-y-0.5">
+                    {g.items.map((s) => (
+                      <NavItem key={s.sectionId} c={c} s={s} active={s.sectionId === sel.sectionId} requested={requested.sections.has(s.sectionId)} fresh={fresh.has(s.sectionId)} onClick={() => select(s.sectionId)} />
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </nav>
+        )}
         <div className="min-w-0 space-y-3">
           {gone && (
             <p className="flex items-start gap-2 rounded-lg border border-line bg-surface-2 px-3 py-2 text-[12.5px] text-ink-2" role="status" data-testid="section-no-longer-applies">
@@ -144,6 +155,86 @@ export function Questionnaire({ c, locked, confirmable = !locked }: { c: CiqCase
           )}
         </div>
       </div>
+      {confirmable && <CompletenessActions c={c} ui={ui} />}
+    </div>
+  );
+}
+
+/**
+ * Phones: the navigator as one bar, sticky under the header while the questionnaire scrolls (not on a short screen): the
+ * open section, its kind and how far it is, and its place in the list. A tap opens every section in a sheet, grouped as on a big screen, with
+ * the same entries (q-nav-…); picking one closes it. Test hooks: q-section-picker (the bar's button), q-section-sheet.
+ */
+function SectionPicker({ c, sel, index, count, groups, sections, locked, requested, fresh, onSelect }: { c: CiqCase; sel: SupplierSection; index: number; count: number; groups: { title: string; items: SupplierSection[] }[]; sections: number; locked: boolean; requested: Set<string>; fresh: (id: string) => boolean; onSelect: (id: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const list = useRef<HTMLElement>(null);
+  const tv = c.templateVersion;
+  const info = navInfo(c, sel);
+  // the open section takes the focus, in view, once the sheet is open (a long list scrolls)
+  useEffect(() => {
+    if (!open) return;
+    const t = setTimeout(() => {
+      const item = list.current?.querySelector<HTMLElement>('[aria-current="true"]');
+      item?.focus({ preventScroll: true });
+      item?.scrollIntoView({ block: "center" });
+    }, 0);
+    return () => clearTimeout(t);
+  }, [open]);
+  return (
+    // a short screen (a phone held sideways) lets it scroll away: the header, the action bar and the tab bar are enough
+    <div data-testid="q-section-bar" className="sticky top-[var(--app-header-h,0px)] z-20 -mx-4 border-b border-line bg-bg/95 px-4 py-2 backdrop-blur [@media(max-height:560px)]:static">
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        data-testid="q-section-picker"
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        aria-label={`Section ${index + 1} of ${count}: ${sectionLabelOf(sel.sectionId, tv)}, ${info.kind}, ${info.detail}. Choose a section`}
+        className="flex min-h-12 w-full items-center gap-2.5 rounded-lg border border-line-strong bg-surface px-3 py-1.5 text-left shadow-card transition-colors hover:bg-surface-2"
+      >
+        <span className="shrink-0" aria-hidden>
+          <NavIcon {...info} />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="flex items-baseline gap-1.5">
+            {sectionCodeShown(sel.sectionId, tv) && <span className="shrink-0 font-mono text-[11.5px] text-ink-3">{info.def.code}</span>}
+            <span className="truncate text-[14px] font-semibold text-ink">{info.def.title}</span>
+          </span>
+          <span className="block truncate text-[12px] text-ink-3">
+            {info.kind} · {info.detail}
+          </span>
+        </span>
+        <span className="shrink-0 text-[12px] text-ink-3 tabular-nums">
+          {index + 1} / {count}
+        </span>
+        <ChevronsUpDown size={16} className="shrink-0 text-ink-3" aria-hidden />
+      </button>
+      <Sheet open={open} onClose={() => setOpen(false)} title="Sections" subtitle={`${sections === 1 ? "1 section applies" : `${sections} sections apply`} to this material${locked ? " · read-only" : ""}`} autoFocus data-testid="q-section-sheet">
+        <nav ref={list} aria-label="Questionnaire sections" className="-mx-1">
+          {groups.map((g) => (
+            <div key={g.title} className="mt-3 first:mt-0">
+              <p className="px-2 pb-1 text-[11px] font-semibold tracking-wide text-ink-3 uppercase">{g.title}</p>
+              <ul className="space-y-0.5">
+                {g.items.map((s) => (
+                  <NavItem
+                    key={s.sectionId}
+                    c={c}
+                    s={s}
+                    active={s.sectionId === sel.sectionId}
+                    requested={requested.has(s.sectionId)}
+                    fresh={fresh(s.sectionId)}
+                    className="min-h-11"
+                    onClick={() => {
+                      setOpen(false);
+                      onSelect(s.sectionId);
+                    }}
+                  />
+                ))}
+              </ul>
+            </div>
+          ))}
+        </nav>
+      </Sheet>
     </div>
   );
 }
@@ -174,7 +265,8 @@ function useFreshSections(c: CiqCase, sections: SupplierSection[]) {
   return { has: (id: string) => fresh.has(id), seen };
 }
 
-function NavItem({ c, s, active, requested, fresh, onClick }: { c: CiqCase; s: SupplierSection; active: boolean; requested: boolean; fresh: boolean; onClick: () => void }) {
+/** What the navigator says about a section: its kind, how far it is, and done, in progress or not started. */
+function navInfo(c: CiqCase, s: SupplierSection) {
   const tv = c.templateVersion;
   const def = sectionMeta(s.sectionId, tv);
   const meta = s.sectionId === METADATA_SECTION;
@@ -214,6 +306,26 @@ function NavItem({ c, s, active, requested, fresh, onClick }: { c: CiqCase; s: S
           ? "complete"
           : `${p.done} of ${p.total}`;
   const addedLater = isLiveScope(c) && !!s.addedLater;
+  return { def, p, complete, template, kind, detail, addedLater };
+}
+
+/** The navigator's status icon of a section. */
+function NavIcon({ complete, template, p }: Pick<ReturnType<typeof navInfo>, "complete" | "template" | "p">) {
+  return complete ? (
+    <CheckCircle2 size={15} className="text-ok" aria-label="Complete" />
+  ) : template ? (
+    <FileText size={15} className="text-ink-3" aria-label="Documents only" />
+  ) : p.done > 0 ? (
+    <CircleDot size={15} className="text-brand" aria-label="In progress" />
+  ) : (
+    <Circle size={15} className="text-ink-3" aria-label="Not started" />
+  );
+}
+
+/** One navigator entry; `className` adds to the button's own (the phone's sheet: 44 px rows). */
+function NavItem({ c, s, active, requested, fresh, onClick, className }: { c: CiqCase; s: SupplierSection; active: boolean; requested: boolean; fresh: boolean; onClick: () => void; className?: string }) {
+  const tv = c.templateVersion;
+  const { def, complete, template, p, kind, detail, addedLater } = navInfo(c, s);
   return (
     <li>
       <button
@@ -221,18 +333,10 @@ function NavItem({ c, s, active, requested, fresh, onClick }: { c: CiqCase; s: S
         data-testid={`q-nav-${s.sectionId}`}
         title={`${sectionLabelOf(s.sectionId, tv)}${addedLater ? " · added after your completeness confirmation" : ""}`}
         aria-current={active ? "true" : undefined}
-        className={cx("flex w-full items-start gap-2.5 rounded-lg px-2 py-1.5 text-left transition-colors", active ? "bg-brand-soft" : "hover:bg-surface-2")}
+        className={cx("flex w-full items-start gap-2.5 rounded-lg px-2 py-1.5 text-left transition-colors", active ? "bg-brand-soft" : "hover:bg-surface-2", className)}
       >
         <span className="mt-0.5 shrink-0">
-          {complete ? (
-            <CheckCircle2 size={15} className="text-ok" aria-label="Complete" />
-          ) : template ? (
-            <FileText size={15} className="text-ink-3" aria-label="Documents only" />
-          ) : p.done > 0 ? (
-            <CircleDot size={15} className="text-brand" aria-label="In progress" />
-          ) : (
-            <Circle size={15} className="text-ink-3" aria-label="Not started" />
-          )}
+          <NavIcon complete={complete} template={template} p={p} />
         </span>
         <span className="min-w-0 flex-1">
           <span className="flex items-baseline gap-1.5">

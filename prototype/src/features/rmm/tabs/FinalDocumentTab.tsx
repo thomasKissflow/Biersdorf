@@ -3,19 +3,24 @@
 // components, the evidence list, every open-point thread round by round, and all confirmations, with a fingerprint
 // over its content. It holds no RMES decision, finding or internal note. Internal only. "Download PDF" (Thomas, 22 Oct)
 // saves exactly the PDF the final-document service attaches to the case (../finalPdf.ts), once the case is completed.
+// Phones (< 768 px, Thomas 30 Oct): Download PDF moves into the case page's bar above the tab bar (CaseDetail.tsx), the
+// header's case ID and seal sit under the title, and the tables (composition, evidence) become one card per row.
 import { Download, FileCheck2, Paperclip, ShieldAlert, ShieldCheck } from "lucide-react";
 import { Fragment, useState, type ReactNode } from "react";
-import { Badge, Button, Card, Mono, Table, Td, Tr, cx } from "@/components/ui";
+import { Badge, Button, Card, CardList, CardListItem, Mono, Table, Td, Tr, cx } from "@/components/ui";
 import { kindLabel } from "@/components/status";
 import { MARKET_LABEL, ORIGIN_LABEL, shownCode } from "@/domain/catalog";
 import { additiveText, concText } from "@/domain/composition";
 import { verifyFinalDocument } from "@/domain/finalDocument";
 import { MESSAGE_ACTION_LABEL, fmtDate, fmtDateTime } from "@/domain/selectors";
 import type { CiqCase, FinalDocument } from "@/domain/types";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { finalPdfOf } from "../finalPdf";
+import { ComponentCards } from "../phone";
 
-/** Saves the document's PDF (<Case_Code>-final-document.pdf); a failure is said under the button, nothing else changes. */
-function DownloadPdf({ d }: { d: FinalDocument }) {
+/** Saves the document's PDF (<Case_Code>-final-document.pdf); a failure is said under the button, nothing else changes.
+ *  `bar`: the phone's action bar holds it (a 44 px primary button, the failure beside it). */
+export function DownloadPdf({ d, bar }: { d: FinalDocument; bar?: boolean }) {
   const [failed, setFailed] = useState(false);
   const save = () => {
     try {
@@ -33,6 +38,15 @@ function DownloadPdf({ d }: { d: FinalDocument }) {
       setFailed(true);
     }
   };
+  if (bar)
+    return (
+      <>
+        {failed && <span className="mr-auto min-w-0 flex-1 text-[11.5px] text-bad">The PDF could not be made. Please try again.</span>}
+        <Button variant="primary" icon={<Download size={15} aria-hidden />} onClick={save} data-testid="fd-download-pdf">
+          Download PDF
+        </Button>
+      </>
+    );
   return (
     <span className="mt-2 flex flex-col items-end gap-1">
       <Button size="sm" icon={<Download size={14} aria-hidden />} onClick={save} data-testid="fd-download-pdf">
@@ -78,10 +92,11 @@ export function FinalDocumentTab({ c }: { c: CiqCase }) {
   if (!d) return null;
   const ok = verifyFinalDocument(d);
   const h = d.header;
+  const phone = useIsPhone();
   return (
     <div className="mx-auto max-w-[900px]">
       <Card className="overflow-hidden" data-testid="final-document">
-        <header className="border-b border-line px-6 py-6 sm:px-10 sm:py-8">
+        <header className={cx("border-b border-line", phone ? "px-4 py-5" : "px-6 py-6 sm:px-10 sm:py-8")}>
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="min-w-0">
               <p className="flex items-center gap-1.5 text-[12px] font-semibold tracking-wide text-brand uppercase">
@@ -90,14 +105,14 @@ export function FinalDocumentTab({ c }: { c: CiqCase }) {
               <h2 className="mt-1.5 text-[22px] leading-tight font-semibold tracking-tight text-ink">{h.materialName}</h2>
               <p className="mt-1 text-[13.5px] text-ink-2">{h.inci}</p>
             </div>
-            <div className="text-right">
+            <div className={phone ? "text-left" : "text-right"}>
               <Mono className="block text-[15px] font-semibold text-ink">{h.caseId}</Mono>
               <span className="mt-1 inline-flex" data-testid="fd-fingerprint" data-verified={ok ? "true" : "false"}>
                 <Badge tone={ok ? "ok" : "bad"}>
                   {ok ? <ShieldCheck size={12} aria-hidden /> : <ShieldAlert size={12} aria-hidden />} {ok ? "Document seal: unchanged" : "Document seal broken"}
                 </Badge>
               </span>
-              {c.phase === "completed" && <DownloadPdf d={d} />}
+              {c.phase === "completed" && !phone && <DownloadPdf d={d} />}
             </div>
           </div>
           <dl className="mt-5 grid grid-cols-1 gap-x-8 gap-y-2.5 text-[13px] sm:grid-cols-2">
@@ -186,6 +201,8 @@ export function FinalDocumentTab({ c }: { c: CiqCase }) {
         <Part n={2} title="Composition (K2.1)" testId="fd-components">
           {d.components.length === 0 ? (
             <p className="text-[13px] text-ink-3">No components.</p>
+          ) : phone ? (
+            <ComponentCards rows={d.components} />
           ) : (
             <Table dense head={["#", "INCI / IUPAC", "CAS", "EC / REACH no.", "Function", "Origin", "Additive", "Concentration"]}>
               {d.components.map((r, i) => (
@@ -211,6 +228,37 @@ export function FinalDocumentTab({ c }: { c: CiqCase }) {
         <Part n={3} title="Evidence" testId="fd-evidence">
           {d.evidence.length === 0 ? (
             <p className="text-[13px] text-ink-3">No documents were uploaded.</p>
+          ) : phone ? (
+            <CardList label="Evidence">
+              {d.evidence.map((e) => (
+                <CardListItem
+                  key={e.documentId}
+                  data-testid={e.requested ? `fd-requested-${e.documentId}` : undefined}
+                  title={
+                    e.justification !== undefined ? (
+                      <span className="text-ink-2 [overflow-wrap:anywhere]">Not provided</span>
+                    ) : (
+                      <span className="inline-flex items-start gap-1.5">
+                        <Paperclip size={13} className="mt-1 shrink-0 text-ink-3" aria-hidden />
+                        <span className="[overflow-wrap:anywhere]">{e.name}</span>
+                      </span>
+                    )
+                  }
+                  meta={
+                    <>
+                      <Mono>{e.sectionCode}</Mono>
+                      {e.fieldLabel && <> · {e.fieldLabel}</>}
+                    </>
+                  }
+                  fields={[
+                    { label: e.justification !== undefined ? "Justified by" : "Uploaded by", value: e.uploadedBy },
+                    { label: "Upload date", value: fmtDateTime(e.uploadedAt) },
+                  ]}
+                >
+                  {e.justification !== undefined && <span className="italic">Justification: {e.justification}</span>}
+                </CardListItem>
+              ))}
+            </CardList>
           ) : (
             <Table dense head={["Document", "Section / question", "Uploaded by", "Upload date"]}>
               {d.evidence.map((e) => (
@@ -271,7 +319,7 @@ export function FinalDocumentTab({ c }: { c: CiqCase }) {
           <p className="mt-3 text-[12px] text-ink-3">None of these confirmations is a raw-material approval.</p>
         </Part>
 
-        <footer className="flex flex-wrap items-center justify-between gap-2 border-t border-line bg-surface-2 px-6 py-3 text-[12px] text-ink-3 sm:px-10">
+        <footer className={cx("flex flex-wrap items-center justify-between gap-2 border-t border-line bg-surface-2", phone ? "px-4" : "px-6", "py-3 text-[12px] text-ink-3", !phone && "sm:px-10")}>
           <span>
             {d.id} · generated {fmtDateTime(d.generatedAt)}
           </span>
@@ -297,8 +345,9 @@ function Meta({ k, v }: { k: string; v: ReactNode }) {
 }
 
 function Part({ n, title, testId, children }: { n: number; title: string; testId: string; children: ReactNode }) {
+  const phone = useIsPhone();
   return (
-    <section className="border-b border-line px-6 py-6 last:border-b-0 sm:px-10" data-testid={testId}>
+    <section className={cx("border-b border-line", phone ? "px-4 py-5" : "px-6 py-6", "last:border-b-0", !phone && "sm:px-10")} data-testid={testId}>
       <h3 className="mb-3 text-[15px] font-semibold text-ink">
         <span className="text-ink-3">{n}.</span> {title}
       </h3>

@@ -1,14 +1,26 @@
 // Left column of the workspace: my sections and every other active section. In RMM's lane every active section is
 // its own ("Whole CIQ"). A department may ask on any section too; its own ones come first. Sections the supplier
-// changed since the reviewer's reference point carry a "Changed" marker.
-import { Plus } from "lucide-react";
+// changed since the reviewer's reference point carry a "Changed" marker. On a phone (PhoneSectionPicker) the section
+// in view is a button with the previous and next section beside it; it opens the same list in a bottom sheet.
+import { ChevronDown, ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { useState } from "react";
-import { Button, Select, cx } from "@/components/ui";
+import { Button, IconButton, Select, Sheet, cx } from "@/components/ui";
 import { sectionOf } from "@/domain/catalog";
 import { scopeOf } from "@/domain/selectors";
 import type { AppState, CiqCase, ReviewDept } from "@/domain/types";
 
-function Item({ c, id, active, onSelect, role, changed, sinceLabel }: { c: CiqCase; id: string; active: boolean; onSelect: (id: string) => void; role?: "Lead" | "Co"; changed: boolean; sinceLabel: string }) {
+/** Lead or Co-review where the department owns the section. RMM reads every section: Lead / Co only where RMM really
+ *  owns it (e.g. GEN, K2.3). */
+function roleIn(c: CiqCase, ownership: AppState["ownership"], dept: ReviewDept, id: string): "Lead" | "Co" | undefined {
+  const sec = sectionOf(id, c.templateVersion);
+  const own = ownership[id] ?? { lead: sec?.lead, co: sec?.co ?? [] };
+  if (own.lead === dept) return "Lead";
+  if (dept !== "RMM" || own.co.includes(dept)) return "Co";
+  return undefined;
+}
+
+/** `tall`: a 44 px row (the phone's sheet). */
+function Item({ c, id, active, onSelect, role, changed, sinceLabel, tall }: { c: CiqCase; id: string; active: boolean; onSelect: (id: string) => void; role?: "Lead" | "Co"; changed: boolean; sinceLabel: string; tall?: boolean }) {
   const sec = sectionOf(id, c.templateVersion); // as the case's questionnaire version defines it (spec §8.1)
   const sc = scopeOf(c, id);
   const ops = c.openPoints.filter((p) => p.ref.sectionId === id && p.status !== "closed");
@@ -17,7 +29,7 @@ function Item({ c, id, active, onSelect, role, changed, sinceLabel }: { c: CiqCa
       onClick={() => onSelect(id)}
       aria-current={active ? "true" : undefined}
       data-testid={`section-nav-${id}`}
-      className={cx("flex w-full items-start gap-2 rounded-lg px-2.5 py-1.5 text-left transition-colors", active ? "bg-brand-soft" : "hover:bg-surface-2")}
+      className={cx("flex w-full items-start gap-2 rounded-lg px-2.5 py-1.5 text-left transition-colors", active ? "bg-brand-soft" : "hover:bg-surface-2", tall && "min-h-11 py-2.5")}
     >
       <span className={cx("w-[52px] shrink-0 pt-px font-mono text-[11.5px]", active ? "font-medium text-brand" : "text-ink-3")}>{sec?.code.replace("Annex ", "A")}</span>
       <span className="min-w-0 flex-1">
@@ -109,14 +121,7 @@ export function SectionNav({
 }) {
   const [showOthers, setShowOthers] = useState(true);
   const rmm = dept === "RMM";
-  // RMM reads every section: show Lead / Co only where RMM really owns the section (e.g. GEN, K2.3).
-  const roleOf = (id: string): "Lead" | "Co" | undefined => {
-    const sec = sectionOf(id, c.templateVersion);
-    const own = ownership[id] ?? { lead: sec?.lead, co: sec?.co ?? [] };
-    if (own.lead === dept) return "Lead";
-    if (!rmm || own.co.includes(dept)) return "Co";
-    return undefined;
-  };
+  const roleOf = (id: string) => roleIn(c, ownership, dept, id);
   const changedOthers = others.filter((id) => changed.includes(id)).length;
   return (
     <nav aria-label="CIQ sections" data-testid="section-nav" className="hidden space-y-4 lg:sticky lg:block lg:top-[calc(var(--app-header-h,56px)_+_24px)] lg:max-h-[calc(100vh_-_var(--app-header-h,56px)_-_24px_-_var(--complete-bar,1rem))] lg:overflow-y-auto lg:pr-1 scrollbar-thin">
@@ -159,5 +164,130 @@ export function SectionNav({
         </div>
       )}
     </nav>
+  );
+}
+
+/** A group heading of the phone's section sheet. */
+function GroupHead({ label, count }: { label: string; count: number }) {
+  return (
+    <div className="mb-1 flex items-baseline justify-between px-2.5">
+      <span className="text-[11px] font-semibold tracking-wide text-ink-3 uppercase">{label}</span>
+      <span className="text-[11px] text-ink-3">{count}</span>
+    </div>
+  );
+}
+
+/**
+ * Phones: the section in view as a 44 px button (code and title, a dot when the supplier changed it) between the
+ * previous and the next section; the button opens the section list in a bottom sheet, my sections first ("Whole CIQ"
+ * for RMM), then the others, with the left column's markers and "Add a section". Test ids: section-picker,
+ * section-picker-open, section-prev, section-next, section-sheet; the rows keep section-nav-<id>, the add button
+ * add-section-mobile (the big screen's small-screen picker had it).
+ */
+export function PhoneSectionPicker({
+  c,
+  dept,
+  ownership,
+  mine,
+  others,
+  changed,
+  sinceLabel,
+  selected,
+  onSelect,
+  canActivate,
+  onActivate,
+}: {
+  c: CiqCase;
+  dept: ReviewDept;
+  ownership: AppState["ownership"];
+  mine: string[];
+  others: string[];
+  changed: string[];
+  sinceLabel: string;
+  selected: string;
+  onSelect: (id: string) => void;
+  canActivate: boolean;
+  onActivate: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const order = [...mine, ...others];
+  const at = order.indexOf(selected);
+  const sec = sectionOf(selected, c.templateVersion);
+  const pick = (id: string) => {
+    setOpen(false);
+    onSelect(id);
+  };
+  const step = (by: -1 | 1) => order[at + by] && onSelect(order[at + by]);
+  const label = (id?: string) => {
+    const s = id ? sectionOf(id, c.templateVersion) : undefined;
+    return s ? `${s.code} · ${s.title}` : "";
+  };
+  const arrow = "h-11 min-h-11 w-11 min-w-11 shrink-0 border border-line-strong bg-surface shadow-card disabled:cursor-not-allowed disabled:opacity-40";
+  return (
+    <div className="flex min-w-0 items-center gap-1.5" data-testid="section-picker">
+      <IconButton label={at > 0 ? `Previous section: ${label(order[at - 1])}` : "Previous section"} onClick={() => step(-1)} disabled={at <= 0} className={arrow} data-testid="section-prev">
+        <ChevronLeft size={18} />
+      </IconButton>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        aria-label={`Section ${label(selected)}${changed.includes(selected) ? ", changed" : ""}. Choose another section`}
+        data-testid="section-picker-open"
+        className="flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-lg border border-line-strong bg-surface px-3 text-left shadow-card transition-colors hover:bg-surface-2"
+      >
+        <span className="shrink-0 font-mono text-[12px] font-medium text-brand">{sec?.code.replace("Annex ", "A")}</span>
+        <span className="min-w-0 flex-1 truncate text-[14px] font-medium text-ink">{sec?.title ?? "Choose a section"}</span>
+        {changed.includes(selected) && <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-warn" />}
+        <ChevronDown size={16} className="shrink-0 text-ink-3" />
+      </button>
+      <IconButton label={at >= 0 && at < order.length - 1 ? `Next section: ${label(order[at + 1])}` : "Next section"} onClick={() => step(1)} disabled={at < 0 || at >= order.length - 1} className={arrow} data-testid="section-next">
+        <ChevronRight size={18} />
+      </IconButton>
+      <Sheet variant="bottom" open={open} onClose={() => setOpen(false)} title="Sections" subtitle={at >= 0 ? `${at + 1} of ${order.length} · ${dept === "RMM" ? "the whole CIQ" : "your sections first"}` : undefined} autoFocus data-testid="section-sheet">
+        <nav aria-label="CIQ sections" className="-mx-1 space-y-4">
+          <div>
+            <GroupHead label={dept === "RMM" ? "Whole CIQ" : "My sections"} count={mine.length} />
+            {mine.length === 0 ? (
+              <p className="px-2.5 text-[12.5px] text-ink-3">No section of this case is assigned to your department.</p>
+            ) : (
+              <div className="space-y-0.5">
+                {mine.map((id) => (
+                  <Item key={id} c={c} id={id} active={id === selected} onSelect={pick} role={roleIn(c, ownership, dept, id)} changed={changed.includes(id)} sinceLabel={sinceLabel} tall />
+                ))}
+              </div>
+            )}
+          </div>
+          {others.length > 0 && (
+            <div>
+              <GroupHead label="Other sections" count={others.length} />
+              <div className="space-y-0.5">
+                {others.map((id) => (
+                  <Item key={id} c={c} id={id} active={id === selected} onSelect={pick} changed={changed.includes(id)} sinceLabel={sinceLabel} tall />
+                ))}
+              </div>
+            </div>
+          )}
+          {canActivate && (
+            <div className="border-t border-line px-1 pt-3">
+              <Button
+                variant="secondary"
+                icon={<Plus size={14} />}
+                onClick={() => {
+                  setOpen(false);
+                  onActivate();
+                }}
+                className="min-h-11 w-full"
+                data-testid="add-section-mobile"
+              >
+                Add a section
+              </Button>
+              <p className="mt-1.5 px-1.5 text-[12px] text-ink-3">For a section that does not apply yet. You give a justification and the supplier gets a task.</p>
+            </div>
+          )}
+        </nav>
+      </Sheet>
+    </div>
   );
 }

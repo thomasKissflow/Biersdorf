@@ -6,13 +6,18 @@
 // role switches the screens; any other role is a real Kissflow role switch, appEnv.tsx) and who is signed in.
 // Production has no top bar. A page outside CIQ Digital gets a banner: Kissflow refuses every write there. While the
 // console's client waits for a rate-limited call (26 Oct, its longer backoff), a line says so.
+// Phones (< 768 px, Thomas 30 Oct; src/shell/ResponsiveShell.tsx): the tab bar and More over the same menu, and the note
+// "Use a larger screen to edit" above every page (viewing still works).
 import { AlertTriangle, ArrowLeft, Building2, ClipboardCheck, Clock, FolderKanban, Ghost, GitBranch, LayoutDashboard, MessagesSquare, Scale, ScrollText, ShieldCheck, SlidersHorizontal, StickyNote, Upload, type LucideIcon } from "lucide-react";
 import { useContext, useEffect, useMemo, useRef } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { LargerScreenNote } from "@/components/ui";
 import { PERSONA_BY_ID } from "@/domain/catalog";
 import type { InternalPersonaId } from "@/domain/types";
-import { DevTopBar, RoleSwitcher, headerOffsetStyle, type SwitchOption } from "@/shell/DevTopBar";
-import { SidePane, type PaneItem } from "@/shell/SidePane";
+import { DevTopBar, RoleSwitcher, type SwitchOption } from "@/shell/DevTopBar";
+import { phoneHeadOf } from "@/shell/PhoneChrome";
+import { ResponsiveShell } from "@/shell/ResponsiveShell";
+import type { PaneItem } from "@/shell/SidePane";
 import { useCollapsed } from "@/shell/useCollapsed";
 import { StoreContext } from "@/store/store";
 import { useAppEnv } from "../appEnv";
@@ -79,28 +84,33 @@ export function DataShell() {
   if (besideCiq) items.push({ onClick: () => nav("/"), label: "Back to CIQ Digital", icon: <ArrowLeft size={17} strokeWidth={1.9} />, testId: "nav-data-back" });
   const dev = env === "dev";
   return (
-    <div className="flex min-h-full" data-env={env} data-testid="data-console" style={headerOffsetStyle(dev)}>
-      <SidePane title="CIQ Digital data" subtitle="Admin / Developer" navLabel="Data console" items={items} collapsed={collapsed} onToggle={toggleCollapsed} />
-      <div className="flex min-w-0 flex-1 flex-col">
-        {dev && (
+    <ResponsiveShell
+      env={env}
+      testId="data-console"
+      hasTopBar={dev}
+      pane={{ title: "CIQ Digital data", subtitle: "Admin / Developer", navLabel: "Data console", items, collapsed, onToggle: toggleCollapsed }}
+      topBar={
+        dev ? (
           <DevTopBar>
             <ConsoleRoleSwitcher />
           </DevTopBar>
-        )}
-        <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-6 lg:px-8">
-          {client.appId !== APP_ID && (
-            <div role="alert" data-testid="data-container-banner" className="mb-5 flex items-center gap-3 rounded-lg border border-bad/30 bg-bad-soft px-4 py-3 text-[13px] text-ink">
-              <AlertTriangle size={16} className="shrink-0 text-bad" />
-              <span className="min-w-0 flex-1">This page is not running in the CIQ Digital app. You can look at the data, but every change is refused.</span>
-            </div>
-          )}
-          <RateLimitNote />
-          <PageBoundary key={loc.pathname} env={env}>
-            <Outlet />
-          </PageBoundary>
-        </main>
-      </div>
-    </div>
+        ) : null
+      }
+      mainClassName="mx-auto w-full max-w-[1400px] flex-1 px-4 py-6 lg:px-8"
+      phone={phoneHeadOf(loc.pathname, items, [], "Data console", DATA_PATH)}
+    >
+      <LargerScreenNote>On a phone you can look at the data, but not change it.</LargerScreenNote>
+      {client.appId !== APP_ID && (
+        <div role="alert" data-testid="data-container-banner" className="mb-5 flex items-center gap-3 rounded-lg border border-bad/30 bg-bad-soft px-4 py-3 text-[13px] text-ink">
+          <AlertTriangle size={16} className="shrink-0 text-bad" />
+          <span className="min-w-0 flex-1">This page is not running in the CIQ Digital app. You can look at the data, but every change is refused.</span>
+        </div>
+      )}
+      <RateLimitNote />
+      <PageBoundary key={loc.pathname} env={env}>
+        <Outlet />
+      </PageBoundary>
+    </ResponsiveShell>
   );
 }
 

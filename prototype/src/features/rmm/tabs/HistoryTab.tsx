@@ -1,6 +1,6 @@
 // History tab of the case page (formerly the audit trail tab and the auditor's "Reconstruct a case"): who assessed
 // what, when, against which rule set and source, the phase history and the append-only event timeline. E-mails live in
-// each person's inbox, not here.
+// each person's inbox, not here. Phones (< 768 px, Thomas 30 Oct): the same timeline; the filters are 44 px targets.
 import { Search } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Card, CardHeader, Mono, Segmented, TextInput, Timeline, cx } from "@/components/ui";
@@ -8,7 +8,9 @@ import { DEPT_SHORT, sectionOf } from "@/domain/catalog";
 import { ruleSet } from "@/domain/rules";
 import { PHASE_LABEL, fmtDateTime, userById, userName } from "@/domain/selectors";
 import type { AppState, CiqCase } from "@/domain/types";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { useStore } from "@/store/store";
+import { PHONE_FIELDS, PHONE_TAPS } from "../phone";
 import { ResponsiveCardHeader, auditTone } from "../shared";
 
 type Who = "all" | "bdf" | "supplier" | "system";
@@ -143,10 +145,26 @@ function Summary({ state, c }: { state: AppState; c: CiqCase }) {
   );
 }
 
+function WhoSwitch({ who, setWho }: { who: Who; setWho: (w: Who) => void }) {
+  return (
+    <Segmented<Who>
+      value={who}
+      onChange={setWho}
+      options={[
+        { value: "all", label: "All" },
+        { value: "bdf", label: "Beiersdorf" },
+        { value: "supplier", label: "Supplier" },
+        { value: "system", label: "System" },
+      ]}
+    />
+  );
+}
+
 function Events({ c }: { c: CiqCase }) {
   const { state } = useStore();
   const [who, setWho] = useState<Who>("all");
   const [q, setQ] = useState("");
+  const phone = useIsPhone();
   const needle = q.trim().toLowerCase();
   const side = (by: string) => (by === "system" ? "system" : userById(state, by)?.side === "supplier" ? "supplier" : "bdf");
   const events = [...c.audit]
@@ -160,19 +178,16 @@ function Events({ c }: { c: CiqCase }) {
         title="Events"
         subtitle={`${c.audit.length} entries · newest first · append-only. Every change is recorded with name and time.`}
         action={
-          <Segmented<Who>
-            value={who}
-            onChange={setWho}
-            options={[
-              { value: "all", label: "All" },
-              { value: "bdf", label: "Beiersdorf" },
-              { value: "supplier", label: "Supplier" },
-              { value: "system", label: "System" },
-            ]}
-          />
+          phone ? (
+            <div className={PHONE_TAPS}>
+              <WhoSwitch who={who} setWho={setWho} />
+            </div>
+          ) : (
+            <WhoSwitch who={who} setWho={setWho} />
+          )
         }
       />
-      <div className="border-b border-line px-4 py-2.5">
+      <div className={cx("border-b border-line px-4 py-2.5", phone && PHONE_FIELDS)}>
         <div className="relative max-w-sm">
           <Search size={15} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-ink-3" aria-hidden />
           <TextInput aria-label="Search the history" placeholder="Search action, detail or person…" value={q} onChange={(e) => setQ(e.target.value)} className="pl-9" data-testid="history-search" />

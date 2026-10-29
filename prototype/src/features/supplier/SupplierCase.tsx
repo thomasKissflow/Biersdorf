@@ -9,10 +9,12 @@
 // - cancelled: a neutral banner and the questionnaire read-only.
 // The live portal (old flow) adds the basic questions (phase metadata) and the wait for Beiersdorf's scope release
 // (phase scope-check) before the questionnaire, and keeps its closed view.
+// Phones (Thomas, 30 Oct): the header's back arrow replaces the "My requests" link; the questionnaire's section picker
+// and the sticky completeness and release actions are the questionnaire's and ReleaseActions' (the page's last child).
 import { ArrowLeft, Mail, SearchX } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { Button, Card, EmptyState, Stepper } from "@/components/ui";
+import { Button, Card, EmptyState, Stepper, cx } from "@/components/ui";
 import { RELEASE_LOCKED_TEXT } from "@/domain/permissions";
 import { fmtDate, questionnaireLocked, userById } from "@/domain/selectors";
 import type { CiqCase } from "@/domain/types";
@@ -22,7 +24,8 @@ import { AnswerDrawer } from "./AnswerDrawer";
 import { isClosed, isLiveScope, releasedAt, stepKey, submittedAt, supplierStatus, supplierSteps, useSupplierScope } from "./lib";
 import { MetadataStep } from "./MetadataStep";
 import { CaseRef, DueText, StatusPill } from "./parts";
-import { ChangeReports, ClosedBanner, FinalDocumentCard, FinalReleaseView, QuestionsForYou, ReleaseRecord, ReportChangeModal, ReviewBanner, ScopeCheckView } from "./PhaseViews";
+import { ChangeReports, ClosedBanner, FinalDocumentCard, FinalReleaseView, QuestionsForYou, ReleaseActions, ReleaseRecord, ReportChangeModal, ReviewBanner, ScopeCheckView } from "./PhaseViews";
+import { useIsPhone } from "./phone";
 import { Questionnaire } from "./Questionnaire";
 
 export function SupplierCase() {
@@ -54,6 +57,15 @@ function CaseView({ c }: { c: CiqCase }) {
   const { state } = useStore();
   const [params, setParams] = useSearchParams();
   const [reporting, setReporting] = useState(false);
+  // the final-release declaration: the card opens it, and on a phone the sticky bar does
+  const releasing = useState(false);
+  // closed again when the request leaves the final release (a live reload, a reopened review), so it never opens by
+  // itself when the request comes back to it
+  const setReleasing = releasing[1];
+  useEffect(() => {
+    if (c.phase !== "final-release") setReleasing(false);
+  }, [c.phase, setReleasing]);
+  const phone = useIsPhone();
   const status = supplierStatus(c);
   const live = isLiveScope(c);
   // ?q= from the portal's own links, ?op= from the e-mail links (spec §2): both open the question.
@@ -82,10 +94,13 @@ function CaseView({ c }: { c: CiqCase }) {
   return (
     <div className="space-y-6" data-testid="supplier-request" data-phase={c.phase}>
       <div>
-        <Link to="/portal" className="inline-flex items-center gap-1 text-[13px] text-ink-3 hover:text-ink">
-          <ArrowLeft size={14} /> My requests
-        </Link>
-        <div className="mt-2 flex flex-wrap items-start justify-between gap-4">
+        {/* phone: the header's back arrow */}
+        {!phone && (
+          <Link to="/portal" className="inline-flex items-center gap-1 text-[13px] text-ink-3 hover:text-ink">
+            <ArrowLeft size={14} /> My requests
+          </Link>
+        )}
+        <div className={cx(!phone && "mt-2", "flex flex-wrap items-start justify-between gap-4")}>
           <div className="min-w-0">
             <h1 className="text-[22px] leading-tight font-semibold tracking-tight text-ink">{c.materialName}</h1>
             {c.inci && <p className="mt-0.5 text-[13.5px] text-ink-2">INCI: {c.inci}</p>}
@@ -95,7 +110,7 @@ function CaseView({ c }: { c: CiqCase }) {
                 <Mail size={12} className="shrink-0" />
                 <span>Your Beiersdorf contact:</span>
                 <span className="font-medium text-ink-2">{owner.name}</span>
-                {owner.email && <span className="select-all">· {owner.email}</span>}
+                {owner.email && (phone ? <span className="basis-full pl-[18px] select-all">{owner.email}</span> : <span className="select-all">· {owner.email}</span>)}
               </p>
             )}
           </div>
@@ -128,7 +143,7 @@ function CaseView({ c }: { c: CiqCase }) {
       {/* Locked while Beiersdorf waits for the final release (Thomas, 15 Oct): read-only, giving the release stays possible. */}
       {c.phase === "final-release" && (
         <>
-          <FinalReleaseView c={c} onOpen={openQ} />
+          <FinalReleaseView c={c} onOpen={openQ} release={releasing} />
           <QuestionsForYou c={c} onOpen={openQ} />
           {live ? <QuestionnaireHeading c={c} /> : <LegacyHeading locked />}
           <Questionnaire c={c} locked confirmable={false} />
@@ -179,6 +194,7 @@ function CaseView({ c }: { c: CiqCase }) {
       )}
 
       <AnswerDrawer caseId={c.id} opId={q} onClose={closeQ} />
+      {c.phase === "final-release" && <ReleaseActions c={c} onRelease={() => releasing[1](true)} />}
     </div>
   );
 }

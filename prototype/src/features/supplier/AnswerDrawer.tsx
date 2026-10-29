@@ -5,6 +5,8 @@
 // to; the reply only references it.
 // 27 Oct: in the live portal a picked file is stored in Kissflow at once, so the contact can open Kissflow's preview
 // before sending (PortalCaps stageAnswerFile / previewAnswerFile); until Send it can still be taken off the answer.
+// Phones (Thomas, 30 Oct): the drawer is a full-screen sheet (components/ui Drawer); the response follows the
+// conversation edge to edge of its 16 px gutter, and the response types, Send and Close are 44 px targets.
 import { ArrowUpRight, CheckCircle2, Eye, FileText, Info, MessageSquareText, Paperclip, Upload, XCircle } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +18,7 @@ import { usePortalCaps } from "@/store/portalCaps";
 import { useStore } from "@/store/store";
 import { caseLink, documentsAt, editsOf, isLiveScope, isWithdrawn, navProgress, refLink, sectionCode, sectionTitle, supplierBlockers, supplierJustification, supplierKindLabel, supplierSections, visibleThread, wasReturned } from "./lib";
 import { DocumentList, DueText, QuestionBadges, docRef } from "./parts";
+import { tap, useIsPhone } from "./phone";
 
 type Mode = "answer" | "upload" | "cannot";
 
@@ -61,6 +64,7 @@ function DrawerBody({ c, op, onClose }: { c: CiqCase; op: OpenPoint; onClose: ()
   const [seenQuestion, setSeenQuestion] = useState(op.question);
   const [staleShown, setStaleShown] = useState(false);
   const caps = usePortalCaps();
+  const phone = useIsPhone();
   const canStore = caps.canUpload(c.id, op.ref.sectionId);
   const thread = visibleThread(op);
   // "Asked by": the reviewer who raised it (the live portal's old flow keeps its responsible person).
@@ -175,7 +179,7 @@ function DrawerBody({ c, op, onClose }: { c: CiqCase; op: OpenPoint; onClose: ()
                 ? "The section is complete. Tell Beiersdorf with “Section completed”."
                 : "This section has no required questions in the portal yet. Add a supporting document there if you have one, then tell Beiersdorf with “Section completed”."}
           </p>
-          <Button size="sm" variant="secondary" iconRight={<ArrowUpRight size={14} />} onClick={() => goTo(caseLink(c.id, { s: sec.sectionId }))}>
+          <Button size="sm" variant="secondary" iconRight={<ArrowUpRight size={14} />} onClick={() => goTo(caseLink(c.id, { s: sec.sectionId }))} className={tap(phone)}>
             Go to {sectionCode(sec.sectionId, c.templateVersion)}
           </Button>
         </section>
@@ -207,7 +211,8 @@ function DrawerBody({ c, op, onClose }: { c: CiqCase; op: OpenPoint; onClose: ()
       {/* Respond: sits at the bottom of the drawer like a composer. From sm up it stays pinned while a long
           conversation scrolls above it; on phones it flows after the conversation so the thread stays readable. */}
       {op.status === "open" && !sent && (
-        <section className="-mx-5 mt-auto -mb-4 space-y-3 border-t border-line bg-surface px-5 pt-4 pb-4 sm:sticky sm:-bottom-4">
+        // a phone's sheet has a 16 px gutter, the drawer 20 px
+        <section className={phone ? "-mx-4 mt-auto -mb-4 space-y-3 border-t border-line bg-surface px-4 pt-4 pb-4 sm:sticky sm:-bottom-4" : "-mx-5 mt-auto -mb-4 space-y-3 border-t border-line bg-surface px-5 pt-4 pb-4 sm:sticky sm:-bottom-4"}>
           <h3 className="text-[13px] font-semibold text-ink">Your response</h3>
           <ModePicker value={mode} onChange={switchMode} />
           {mode === "answer" && (
@@ -250,10 +255,10 @@ function DrawerBody({ c, op, onClose }: { c: CiqCase; op: OpenPoint; onClose: ()
             </Field>
           )}
           <div className="flex items-center justify-end gap-2 pt-1">
-            <Button variant="ghost" onClick={onClose}>
+            <Button variant="ghost" onClick={onClose} className={tap(phone)}>
               Cancel
             </Button>
-            <Button variant="primary" disabled={!valid || sending} onClick={send} icon={mode === "upload" ? <Upload size={15} /> : mode === "cannot" ? <XCircle size={15} /> : <FileText size={15} />} data-testid="answer-send">
+            <Button variant="primary" disabled={!valid || sending} onClick={send} icon={mode === "upload" ? <Upload size={15} /> : mode === "cannot" ? <XCircle size={15} /> : <FileText size={15} />} data-testid="answer-send" className={tap(phone, "flex-1")}>
               {sending ? "Sending…" : "Send to Beiersdorf"}
             </Button>
           </div>
@@ -266,7 +271,7 @@ function DrawerBody({ c, op, onClose }: { c: CiqCase; op: OpenPoint; onClose: ()
           <div className="text-[13px]">
             <p className="font-semibold text-ink">With Beiersdorf</p>
             <p className="mt-0.5 text-ink-2">{sent ? "Your answer has been sent." : "An answer has been sent."} Beiersdorf reviews it; if anything else is needed you will get a new task and an e-mail.</p>
-            <Button size="sm" variant="secondary" className="mt-2.5" onClick={onClose}>
+            <Button size="sm" variant="secondary" className={cx("mt-2.5", tap(phone, "min-w-24"))} onClick={onClose}>
               Close
             </Button>
           </div>

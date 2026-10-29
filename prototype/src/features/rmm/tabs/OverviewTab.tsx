@@ -1,15 +1,18 @@
 // Overview tab of the case page: the case facts, the review tracks (with the Safety / Regulatory decisions), the
 // confirmations and a scope summary. Once completed it links to the final document. The RMES is not shown here: it is
 // the Safety and Regulatory reviewers' sheet in their review workspace (BDF's RMES scope, 28 Oct).
+// Phones (< 768 px, Thomas 30 Oct): the columns stack (as below 1280 px), the case facts in two columns.
 import { ArrowRight, FileCheck2, FilePlus2, Info, TriangleAlert } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Avatar, Badge, Button, Card, CardHeader, KeyValue, Mono } from "@/components/ui";
+import { Avatar, Badge, BreakableEmail, Button, Card, CardHeader, KeyValue, Mono, cx } from "@/components/ui";
 import { DecisionBadge, TrackBadge } from "@/components/status";
 import { DEPT_LABEL } from "@/domain/catalog";
 import { REQUIRED_CONFIG, departmentsForScope, fmtDate, fmtDateTime, isClosed, isConfigAnswered, manufacturerOf, siteOf, trackView, userById, userName } from "@/domain/selectors";
 import type { CiqCase } from "@/domain/types";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { useStore } from "@/store/store";
 import type { CaseTab } from "../CaseDetail";
+import { PhoneFacts } from "../phone";
 import { canManage, confirmationLabel, undefinedOriginLabels } from "../shared";
 
 const n = (k: number, one: string) => `${k} ${k === 1 ? one : `${one}s`}`;
@@ -36,6 +39,7 @@ export function OverviewTab({ c, goTo }: { c: CiqCase; goTo: (t: CaseTab) => voi
 function ChangeReports({ c }: { c: CiqCase }) {
   const { state, persona } = useStore();
   const nav = useNavigate();
+  const phone = useIsPhone();
   const reports = state.changeReports.filter((r) => r.caseId === c.id).sort((a, b) => b.at.localeCompare(a.at));
   if (c.phase !== "completed" || !reports.length) return null;
   return (
@@ -53,7 +57,7 @@ function ChangeReports({ c }: { c: CiqCase }) {
       </ul>
       {canManage(persona) && (
         <div className="border-t border-line px-4 py-3">
-          <Button size="sm" variant="primary" icon={<FilePlus2 size={14} />} onClick={() => nav(`/cases/new?from=${c.id}`)} data-testid="change-report-new-case">
+          <Button size="sm" variant="primary" icon={<FilePlus2 size={14} />} onClick={() => nav(`/cases/new?from=${c.id}`)} data-testid="change-report-new-case" className={phone ? "h-11" : undefined}>
             Start a new case
           </Button>
           <p className="mt-1.5 text-[11.5px] text-ink-3">Pre-filled with the supplier, its contacts, the trade name, INCI, material no. and target markets.</p>
@@ -65,35 +69,35 @@ function ChangeReports({ c }: { c: CiqCase }) {
 
 function Facts({ c }: { c: CiqCase }) {
   const { state } = useStore();
+  const phone = useIsPhone();
   const sup = state.suppliers.find((s) => s.id === c.supplierId);
+  const items = [
+    { k: "Trade name", v: c.materialName },
+    { k: "Main INCI", v: c.inci },
+    { k: "BDF material no.", v: <Mono>{c.materialNo}</Mono> },
+    { k: "Supplier", v: sup ? <>{sup.name}<span className="block text-[11.5px] text-ink-3">DUNS <Mono>{sup.duns}</Mono> · {sup.country} · {sup.type === "manufacturer" ? "Manufacturer" : "Distributor"}</span></> : "—" },
+    { k: "Manufacturer", v: <span className="whitespace-pre-line">{manufacturerOf(c) || "—"}</span> },
+    { k: "Production site", v: siteOf(c) ? <span className="whitespace-pre-line">{siteOf(c)}</span> : <span className="text-ink-3">Entered by the supplier</span> },
+    { k: "Case owner (RMM)", v: userName(state, c.ownerId) },
+    { k: "Priority", v: c.priority === "high" ? <Badge tone="warn">High</Badge> : "Normal" },
+    { k: "Created", v: fmtDate(c.createdAt) },
+    { k: "Due", v: fmtDate(c.dueDate) },
+    { k: "Questionnaire", v: <span data-testid="case-template-version"><Mono>{c.templateVersion}</Mono></span> },
+    { k: "Rule set", v: <span data-testid="case-rule-set"><Mono>{c.ruleSetVersion}</Mono></span> },
+  ];
+  // on a phone the supplier, manufacturer and site take the whole row
+  const wide = ["Supplier", "Manufacturer", "Production site"];
   return (
     <Card data-testid="case-facts">
       <CardHeader title="Case facts" />
-      <div className="p-4">
-        <KeyValue
-          cols={3}
-          items={[
-            { k: "Trade name", v: c.materialName },
-            { k: "Main INCI", v: c.inci },
-            { k: "BDF material no.", v: <Mono>{c.materialNo}</Mono> },
-            { k: "Supplier", v: sup ? <>{sup.name}<span className="block text-[11.5px] text-ink-3">DUNS <Mono>{sup.duns}</Mono> · {sup.country} · {sup.type === "manufacturer" ? "Manufacturer" : "Distributor"}</span></> : "—" },
-            { k: "Manufacturer", v: <span className="whitespace-pre-line">{manufacturerOf(c) || "—"}</span> },
-            { k: "Production site", v: siteOf(c) ? <span className="whitespace-pre-line">{siteOf(c)}</span> : <span className="text-ink-3">Entered by the supplier</span> },
-            { k: "Case owner (RMM)", v: userName(state, c.ownerId) },
-            { k: "Priority", v: c.priority === "high" ? <Badge tone="warn">High</Badge> : "Normal" },
-            { k: "Created", v: fmtDate(c.createdAt) },
-            { k: "Due", v: fmtDate(c.dueDate) },
-            { k: "Questionnaire", v: <span data-testid="case-template-version"><Mono>{c.templateVersion}</Mono></span> },
-            { k: "Rule set", v: <span data-testid="case-rule-set"><Mono>{c.ruleSetVersion}</Mono></span> },
-          ]}
-        />
-      </div>
+      <div className="p-4">{phone ? <PhoneFacts items={items.map((i) => ({ ...i, wide: wide.includes(i.k) }))} /> : <KeyValue cols={3} items={items} />}</div>
     </Card>
   );
 }
 
 function Contacts({ c }: { c: CiqCase }) {
   const { state } = useStore();
+  const phone = useIsPhone();
   return (
     <Card data-testid="case-contacts">
       <CardHeader
@@ -115,12 +119,29 @@ function Contacts({ c }: { c: CiqCase }) {
                     </Badge>
                   )}
                 </p>
-                <p className="truncate text-[11.5px] text-ink-3">
-                  {u?.title}
-                  {u?.email ? ` · ${u.email}` : ""}
-                </p>
+                {phone ? (
+                  // a phone: the title, then the e-mail on a line of its own (whole, breaking at @ or a dot), then the flag
+                  <>
+                    {u?.title && <p className="truncate text-[11.5px] text-ink-3">{u.title}</p>}
+                    {u?.email && (
+                      <p className="text-[12.5px] text-ink-2">
+                        <BreakableEmail email={u.email} />
+                      </p>
+                    )}
+                    {u?.mayConfirm === false && (
+                      <Badge tone="neutral" className="mt-1">
+                        May not confirm
+                      </Badge>
+                    )}
+                  </>
+                ) : (
+                  <p className="truncate text-[11.5px] text-ink-3">
+                    {u?.title}
+                    {u?.email ? ` · ${u.email}` : ""}
+                  </p>
+                )}
               </div>
-              {u?.mayConfirm === false && <span className="shrink-0 text-[11.5px] text-ink-3">May not confirm</span>}
+              {!phone && u?.mayConfirm === false && <span className="shrink-0 text-[11.5px] text-ink-3">May not confirm</span>}
             </li>
           );
         })}
@@ -135,6 +156,7 @@ function ScopeSummary({ c, goTo }: { c: CiqCase; goTo: (t: CaseTab) => void }) {
   const later = c.scope.filter((s) => s.addedLater).length;
   const origins = undefinedOriginLabels(c);
   const part1 = c.phase === "supplier-input";
+  const phone = useIsPhone();
   return (
     <Card data-testid="case-scope-summary">
       <CardHeader title="Scope" subtitle={part1 ? "Follows the supplier's metadata answers until completeness" : "Fixed at completeness; it can only grow"} />
@@ -165,7 +187,7 @@ function ScopeSummary({ c, goTo }: { c: CiqCase; goTo: (t: CaseTab) => void }) {
             Origin without rules: {origins.join(", ")}. Flagged for RMM's review.
           </p>
         )}
-        <button type="button" onClick={() => goTo("questionnaire")} className="inline-flex items-center gap-1 text-[13px] font-medium text-brand hover:underline">
+        <button type="button" onClick={() => goTo("questionnaire")} data-testid={phone ? "scope-sections-link" : undefined} className={cx("inline-flex items-center gap-1 text-[13px] font-medium text-brand hover:underline", phone && "min-h-11")}>
           Sections and answers <ArrowRight size={13} />
         </button>
       </div>
@@ -175,6 +197,7 @@ function ScopeSummary({ c, goTo }: { c: CiqCase; goTo: (t: CaseTab) => void }) {
 
 function FinalDocumentCard({ c, goTo }: { c: CiqCase; goTo: (t: CaseTab) => void }) {
   const d = c.finalDocument!;
+  const phone = useIsPhone();
   return (
     <Card data-testid="case-final-document-card">
       <CardHeader title="Final document" subtitle={`Created automatically ${fmtDateTime(d.generatedAt)}`} />
@@ -182,7 +205,7 @@ function FinalDocumentCard({ c, goTo }: { c: CiqCase; goTo: (t: CaseTab) => void
         <p>
           {n(d.sections.length, "section")}, {n(d.evidence.length, "document")}, {n(d.threads.length, "open-point thread")} and {n(d.confirmations.length, "confirmation")}. Sealed at the final release.
         </p>
-        <Button size="sm" variant="secondary" icon={<FileCheck2 size={14} />} onClick={() => goTo("final-document")}>
+        <Button size="sm" variant="secondary" icon={<FileCheck2 size={14} />} onClick={() => goTo("final-document")} className={phone ? "h-11" : undefined}>
           Open final document
         </Button>
       </div>

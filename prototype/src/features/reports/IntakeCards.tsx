@@ -1,22 +1,34 @@
+// The intake and workload reports. Phones (< 768 px, Thomas 30 Oct): the tables of the flow per month and of the
+// workload are one card per month and per review.
 import { Inbox, PieChart, Users } from "lucide-react";
-import { DonutChart, EmptyState, Legendary, Table, Td, Tr } from "@/components/ui";
+import { CardList, CardListItem, DonutChart, EmptyState, Legendary, Table, Td, Tr } from "@/components/ui";
 import { DEPT_LABEL } from "@/domain/catalog";
 import type { DeptLoad } from "@/domain/metrics";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { ChartCard, WrappedBars } from "./charts";
 import { SIDE_COLOR, fmtDayNum, fmtDays, fmtPct, pct, type flowView, type originView, type workloadView } from "./reportData";
 
 const R = ({ children }: { children: React.ReactNode }) => <span className="block text-right">{children}</span>;
 const num = "text-right tabular-nums";
 
+const signed = (n: number) => (n > 0 ? `+${n}` : String(n));
+
 /** Card 3 — cases started vs completed per month. */
 export function FlowCard({ v }: { v: ReturnType<typeof flowView> }) {
+  const phone = useIsPhone();
   return (
     <ChartCard
       data-testid="report-flow"
       title="Flow per month"
       takeaway={v.takeaway}
       table={
-        v.empty ? undefined : (
+        v.empty ? undefined : phone ? (
+          <CardList label="Flow per month">
+            {[...v.rows.map((r) => ({ key: r.month, label: `${r.month} 2026`, created: r.created, completed: r.completed })), { key: "ytd", label: "Year to date", created: v.created, completed: v.completed }].map((r) => (
+              <CardListItem key={r.key} title={r.label} meta={`${r.created} started · ${r.completed} completed · pipeline ${signed(r.created - r.completed)}`} />
+            ))}
+          </CardList>
+        ) : (
           <Table dense head={["Month", <R key="c">Started</R>, <R key="d">Completed</R>, <R key="n">Pipeline change</R>]}>
             {v.rows.map((r) => (
               <Tr key={r.month}>
@@ -89,6 +101,25 @@ export function OriginCard({ v }: { v: ReturnType<typeof originView> }) {
 }
 
 function WorkloadTable({ rows }: { rows: DeptLoad[] }) {
+  if (useIsPhone())
+    return (
+      <CardList label="Review workload">
+        {rows.map((d) => (
+          <CardListItem
+            key={d.dept}
+            title={DEPT_LABEL[d.dept]}
+            fields={[
+              { label: "Active", value: d.active },
+              { label: "Waiting for supplier", value: d.waitingSupplier },
+              { label: "Open points", value: d.openPoints },
+              { label: "Overdue", value: d.overdue > 0 ? <span className="font-semibold text-bad">{d.overdue}</span> : 0 },
+              { label: "Completed", value: d.completed },
+              { label: "Avg review (d)", value: d.avgReviewDays === null ? "—" : fmtDayNum(d.avgReviewDays) },
+            ]}
+          />
+        ))}
+      </CardList>
+    );
   return (
     <Table dense head={["Review", <R key="a">Active</R>, <R key="w">Waiting for supplier</R>, <R key="o">Open points</R>, <R key="v">Overdue</R>, <R key="c">Completed</R>, <R key="d">Avg review (d)</R>]}>
       {rows.map((d) => (

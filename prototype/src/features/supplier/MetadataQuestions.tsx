@@ -13,6 +13,7 @@ import { ConfigQuestionList } from "./ConfigQuestions";
 import { FieldRenderer } from "./FieldRenderer";
 import { METADATA_SECTION, WAIVER_FIELD, isPart2, metadataProgress, sectionCode, sectionDelta, sectionMeta, sectionTitle, supplierSections, type SectionDelta, type SupplierSection } from "./lib";
 import { LockedNote, SectionDeltaNote, UndefinedOriginNote } from "./parts";
+import { tap, useIsPhone } from "./phone";
 import { ScopePreview, UNDEFINED_ORIGIN_NOTE } from "./ScopePreview";
 
 export function MetadataQuestions({
@@ -37,6 +38,7 @@ export function MetadataQuestions({
   const part2 = isPart2(c);
   const pending = useRef<{ q: ConfigQuestionId; before: SupplierSection[]; predicted: SupplierSection[] } | null>(null);
   const [note, setNote] = useState<{ q: ConfigQuestionId; d: SectionDelta } | null>(null);
+  const phone = useIsPhone();
 
   const answer = (q: ConfigQuestionId, patch: ConfigAnswers) => {
     const config = { ...c.config, ...patch, SF11: c.config.SF11 };
@@ -120,17 +122,18 @@ export function MetadataQuestions({
         {(prev || next) && (
           <div className="flex items-center justify-between gap-2 border-t border-line px-5 py-3">
             {prev ? (
-              <Button variant="ghost" size="sm" icon={<ArrowLeft size={14} />} onClick={() => onSelect(prev.sectionId)}>
+              <Button variant="ghost" size="sm" icon={<ArrowLeft size={14} />} onClick={() => onSelect(prev.sectionId)} className={tap(phone)}>
                 {sectionCode(prev.sectionId, c.templateVersion)}
               </Button>
             ) : (
               <span />
             )}
             {next && (
-              <Button variant="secondary" size="sm" className="min-w-0" title={`${sectionCode(next.sectionId, c.templateVersion)} · ${sectionTitle(next.sectionId, c.templateVersion)}`} iconRight={<ArrowRight size={14} className="shrink-0" />} onClick={() => onSelect(next.sectionId)}>
+              <Button variant="secondary" size="sm" className={cx("min-w-0", tap(phone))} title={`${sectionCode(next.sectionId, c.templateVersion)} · ${sectionTitle(next.sectionId, c.templateVersion)}`} iconRight={<ArrowRight size={14} className="shrink-0" />} onClick={() => onSelect(next.sectionId)}>
                 <span className="truncate">
                   Next: {sectionCode(next.sectionId, c.templateVersion)}
-                  <span className="hidden sm:inline"> · {sectionTitle(next.sectionId, c.templateVersion)}</span>
+                  {/* a phone has no side nav to decode the code: its title too, cut to fit */}
+                <span className={phone ? undefined : "hidden sm:inline"}> · {sectionTitle(next.sectionId, c.templateVersion)}</span>
                 </span>
               </Button>
             )}

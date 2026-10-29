@@ -33,6 +33,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
 
+/** The theme and its switch, for a control of one's own (the phone's More sheet); null outside a ThemeProvider. */
+export const useThemeToggle = () => useContext(ThemeContext);
+
 export function ThemeToggle({ round }: { round?: boolean } = {}) {
   const ctx = useContext(ThemeContext);
   if (!ctx) return null;

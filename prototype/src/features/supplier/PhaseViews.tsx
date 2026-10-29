@@ -1,10 +1,12 @@
 // Phase-specific views of a request: scope check (waiting; live portal old flow only), review (questions for you),
 // final release, the completed view (release record, question history, "Report a change") and the withdrawn state.
 // Never shows department outcomes, RMES or internal content.
+// Phones (Thomas, 30 Oct): "Give final release" sits in a sticky bar above the tab bar (ReleaseActions, the request
+// page's last child); the declarations and "Report a change" are full-screen sheets; every action is a 44 px target.
 import { AlertCircle, ArrowRight, Download, FilePen, FileQuestion, FileText, Hourglass, MessageSquareText, Send, ShieldCheck, Stamp } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Card, CardHeader, Checkbox, EmptyState, Field, KeyValue, Modal, Select, TextArea } from "@/components/ui";
+import { Button, Card, CardHeader, Checkbox, EmptyState, Field, KeyValue, Modal, Select, StickyActionBar, TextArea, cx } from "@/components/ui";
 import { check, raiserOf } from "@/domain/permissions";
 import { deriveScope } from "@/domain/rules";
 import { fmtDate, fmtDateTime, nowIso, userById, userName } from "@/domain/selectors";
@@ -13,6 +15,7 @@ import { useIsLivePortal, usePortalCaps } from "@/store/portalCaps";
 import { useStore } from "@/store/store";
 import { caseLink, closedAt, isLiveScope, ownConfirmations, releasedAt, sectionCode, sectionKind, sectionTitle, submittedAt, supplierKindLabel, supplierReleaseBlockers, supplierSections, useSupplierScope } from "./lib";
 import { Banner, DueText, OnlyOthers, QuestionBadges } from "./parts";
+import { tap, useIsPhone } from "./phone";
 
 /** Live portal only (old flow): phase scope-check comes from the portal's mapping (map.ts derivePhase). The prototype
  *  store never produces it: the sections follow the supplier's metadata answers live (D-1). */
@@ -112,6 +115,7 @@ export function QuestionsForYou({ c, onOpen, readOnly = false }: { c: CiqCase; o
 }
 
 function QuestionRow({ op, asker, readOnly, onOpen }: { op: OpenPoint; asker?: string; readOnly: boolean; onOpen: () => void }) {
+  const phone = useIsPhone();
   const isOpen = op.status === "open" && !readOnly;
   return (
     <li className="flex flex-col gap-3 px-5 py-3.5 sm:flex-row sm:items-center" data-testid={`question-${op.id}`} data-status={op.status} data-outcome={op.outcome}>
@@ -131,7 +135,7 @@ function QuestionRow({ op, asker, readOnly, onOpen }: { op: OpenPoint; asker?: s
       </div>
       <div className="flex shrink-0 items-center gap-3">
         {isOpen && <DueText due={op.dueDate} compact />}
-        <Button size="sm" variant={isOpen ? "primary" : "secondary"} onClick={onOpen} data-testid={isOpen ? `answer-${op.id}` : `view-${op.id}`}>
+        <Button size="sm" variant={isOpen ? "primary" : "secondary"} onClick={onOpen} data-testid={isOpen ? `answer-${op.id}` : `view-${op.id}`} className={tap(phone, "min-w-24")}>
           {isOpen ? "Answer" : "View"}
         </Button>
       </div>
@@ -163,20 +167,38 @@ function confirmerNames(state: ReturnType<typeof useStore>["state"], c: CiqCase,
     .map((u) => u!.name);
 }
 
-export function FinalReleaseView({ c, onOpen }: { c: CiqCase; onOpen?: (opId: string) => void }) {
+/** Whether this contact may give the final release, and what still blocks it. */
+function useReleaseGate(c: CiqCase) {
+  const { state, me } = useStore();
+  const caps = usePortalCaps();
+  const live = isLiveScope(c);
+  // Live-scope requests (spec §1.9): refused while a question is open or with Beiersdorf, or something mandatory is missing.
+  const blockers = live ? supplierReleaseBlockers(c) : [];
+  const denied = live ? check(state, me.id, "ciq.release", c) : null;
+  return { live, blockers, denied, mayAct: caps.canAct(c.id, "final-release") && !denied };
+}
+
+export function FinalReleaseView({
+  c,
+  onOpen,
+  release,
+}: {
+  c: CiqCase;
+  onOpen?: (opId: string) => void;
+  /** The declaration's open state when the page holds it (a phone opens it from the sticky bar, ReleaseActions). */
+  release?: [open: boolean, setOpen: (open: boolean) => void];
+}) {
   const { state, me, finalRelease } = useStore();
   const caps = usePortalCaps();
   const nav = useNavigate();
   const { supplier } = useSupplierScope();
-  const [open, setOpen] = useState(false);
+  const phone = useIsPhone();
+  const own = useState(false);
+  const [open, setOpen] = release ?? own;
   const [agree, setAgree] = useState(false);
-  const live = isLiveScope(c);
   const sections = supplierSections(c);
   const completeness = [...c.confirmations].reverse().find((x) => x.type === "completeness");
-  // Live-scope requests (spec §1.9): refused while a question is open or with Beiersdorf, or something mandatory is missing.
-  const blockers = live ? supplierReleaseBlockers(c) : [];
-  const denied = live ? check(state, me.id, "ciq.release", c) : null;
-  const mayAct = caps.canAct(c.id, "final-release") && !denied;
+  const { live, blockers, denied, mayAct } = useReleaseGate(c);
   const close = () => {
     setOpen(false);
     setAgree(false);
@@ -191,10 +213,17 @@ export function FinalReleaseView({ c, onOpen }: { c: CiqCase; onOpen?: (opId: st
           <h2 className="text-[17px] font-semibold text-ink">All Beiersdorf reviews are complete. Please give the final release.</h2>
           <p className="mt-0.5 text-[13px] text-ink-2">With the final release you confirm that the information and evidence are correct and complete. The CIQ is then frozen and filed by Beiersdorf.</p>
         </div>
+        {/* Phone: the button sits in the sticky bar (ReleaseActions); who else may release stays here */}
         {mayAct ? (
-          <Button variant="primary" icon={<ShieldCheck size={15} />} disabled={blockers.length > 0} onClick={() => setOpen(true)} data-testid="final-release">
-            Give final release
-          </Button>
+          !phone && (
+            <Button variant="primary" icon={<ShieldCheck size={15} />} disabled={blockers.length > 0} onClick={() => setOpen(true)} data-testid="final-release">
+              Give final release
+            </Button>
+          )
+        ) : phone ? (
+          <div>
+            <OnlyOthers names={denied ? confirmerNames(state, c, me.id) : caps.whoCanAct(c.id, "final-release")} what="give the final release" nobody={denied ? (userById(state, c.ownerId)?.name ?? "your contact") : undefined} />
+          </div>
         ) : (
           <OnlyOthers names={denied ? confirmerNames(state, c, me.id) : caps.whoCanAct(c.id, "final-release")} what="give the final release" nobody={denied ? (userById(state, c.ownerId)?.name ?? "your contact") : undefined} />
         )}
@@ -253,14 +282,17 @@ export function FinalReleaseView({ c, onOpen }: { c: CiqCase; onOpen?: (opId: st
         onClose={close}
         title="Give the final release"
         subtitle={`${c.materialName} · ${c.id}`}
+        // a phone: a full-screen sheet, the actions at its foot
+        wide={phone}
         footer={
           <>
-            <Button variant="ghost" onClick={close}>
+            <Button variant="ghost" onClick={close} className={tap(phone, "flex-1")}>
               Cancel
             </Button>
             <Button
               variant="primary"
               disabled={!agree || blockers.length > 0}
+              className={tap(phone, "flex-1")}
               data-testid="final-release-submit"
               onClick={() => {
                 finalRelease(c.id);
@@ -297,8 +329,25 @@ export function FinalReleaseView({ c, onOpen }: { c: CiqCase; onOpen?: (opId: st
   );
 }
 
+/**
+ * Phones: "Give final release", sticky above the tab bar while the request is in view (the page's last child), and
+ * disabled while something blocks it, as on the card. Nothing for a contact who may not release, nor on a big screen.
+ */
+export function ReleaseActions({ c, onRelease }: { c: CiqCase; onRelease: () => void }) {
+  const { blockers, mayAct } = useReleaseGate(c);
+  if (!mayAct) return null;
+  return (
+    <StickyActionBar>
+      <Button variant="primary" icon={<ShieldCheck size={15} />} disabled={blockers.length > 0} onClick={onRelease} data-testid="final-release" className="flex-1">
+        Give final release
+      </Button>
+    </StickyActionBar>
+  );
+}
+
 export function ClosedBanner({ c, onReportChange }: { c: CiqCase; onReportChange?: () => void }) {
   const { state } = useStore();
+  const phone = useIsPhone();
   // Live portal: the previous report has no receipt from Beiersdorf yet, so a second one waits (it would overwrite it).
   const reportPending = usePortalCaps().changeReportPending(c.id);
   if (c.phase === "completed") {
@@ -320,7 +369,7 @@ export function ClosedBanner({ c, onReportChange }: { c: CiqCase; onReportChange
               <Hourglass size={14} /> Sending your report…
             </span>
           ) : (
-            <Button variant="secondary" size="sm" icon={<FilePen size={14} />} onClick={onReportChange} data-testid="report-change">
+            <Button variant="secondary" size="sm" icon={<FilePen size={14} />} onClick={onReportChange} data-testid="report-change" className={tap(phone)}>
               Report a change
             </Button>
           ))
@@ -345,6 +394,7 @@ const FINAL_PDF_PENDING_MS = 24 * 3600_000;
 export function FinalDocumentCard({ c, now = Date.now() }: { c: CiqCase; now?: number }) {
   const caps = usePortalCaps();
   const livePortal = useIsLivePortal();
+  const phone = useIsPhone();
   if (!livePortal || c.phase !== "completed") return null;
   const pdf = caps.finalPdf(c.id);
   if (!pdf) {
@@ -363,8 +413,9 @@ export function FinalDocumentCard({ c, now = Date.now() }: { c: CiqCase; now?: n
         <FileText size={14} className="shrink-0 text-ink-3" aria-hidden="true" />
         <span className="min-w-0 font-medium text-ink [overflow-wrap:anywhere]">{pdf.name}</span>
         {pdf.sizeKb ? <span className="text-xs text-ink-3">{pdf.sizeKb} KB</span> : null}
-        <span className="ml-auto">
-          <Button variant="secondary" size="sm" icon={<Download size={14} />} onClick={() => caps.openFinalPdf(c.id)} data-testid="final-pdf-download" aria-label={`Download final PDF: ${pdf.name}`}>
+        {/* a phone: the whole width, under the file's name */}
+        <span className={cx("ml-auto", phone && "w-full")}>
+          <Button variant="secondary" size="sm" icon={<Download size={14} />} onClick={() => caps.openFinalPdf(c.id)} data-testid="final-pdf-download" aria-label={`Download final PDF: ${pdf.name}`} className={tap(phone, "w-full")}>
             Download final PDF
           </Button>
         </span>
@@ -433,6 +484,7 @@ export function ChangeReports({ c }: { c: CiqCase }) {
 /** "Report a change" after the release (spec §1.12): what changed and why, optionally the section. Mails RMM. */
 export function ReportChangeModal({ c, open, onClose }: { c: CiqCase; open: boolean; onClose: () => void }) {
   const { reportChange } = useStore();
+  const phone = useIsPhone();
   const [what, setWhat] = useState("");
   const [why, setWhy] = useState("");
   const [section, setSection] = useState("");
@@ -455,12 +507,14 @@ export function ReportChangeModal({ c, open, onClose }: { c: CiqCase; open: bool
       onClose={close}
       title="Report a change"
       subtitle={`${c.materialName} · ${c.id}`}
+      // a phone: a full-screen sheet, the actions at its foot
+      wide={phone}
       footer={
         <>
-          <Button variant="ghost" onClick={close}>
+          <Button variant="ghost" onClick={close} className={tap(phone, "flex-1")}>
             Cancel
           </Button>
-          <Button variant="primary" icon={<Send size={15} />} disabled={!valid} onClick={send} data-testid="report-change-send">
+          <Button variant="primary" icon={<Send size={15} />} disabled={!valid} onClick={send} data-testid="report-change-send" className={tap(phone, "flex-1")}>
             Send to Beiersdorf
           </Button>
         </>

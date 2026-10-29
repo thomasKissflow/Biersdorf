@@ -1,18 +1,21 @@
 // Documents tab of the case page: every upload by file name and upload date (BRM v2: no versions). A new upload is
 // added next to the earlier ones; suppliers never delete uploads. 27 Oct (Thomas): no size column (Kissflow's attachment
 // size is not shown anywhere in the app).
+// Phones (< 768 px, Thomas 30 Oct): one card per document, with the row's test id.
 import { DocName } from "@/components/DocName";
 import { FileText } from "lucide-react";
-import { Badge, Card, CardHeader, EmptyState, Mono, Table, Td, Tr } from "@/components/ui";
+import { Badge, Card, CardHeader, CardList, CardListItem, EmptyState, Mono, Table, Td, Tr } from "@/components/ui";
 import { sectionOf } from "@/domain/catalog";
 import { docSectionId } from "@/domain/requestedDocs";
 import { fmtDateTime, placeLabel } from "@/domain/selectors";
 import type { CiqCase } from "@/domain/types";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { useStore } from "@/store/store";
 import { PersonCell } from "../shared";
 
 export function DocumentsTab({ c }: { c: CiqCase }) {
   const { state } = useStore();
+  const phone = useIsPhone();
   const docs = [...c.documents].sort((a, b) => b.uploadedAt.localeCompare(a.uploadedAt));
   if (!docs.length) {
     return (
@@ -24,37 +27,71 @@ export function DocumentsTab({ c }: { c: CiqCase }) {
     );
   }
   const at = (id: string) => c.openPoints.find((p) => p.thread.some((m) => m.documentId === id));
+  const sectionCodeOf = (d: (typeof docs)[number]) => sectionOf(docSectionId(c, d, state.config), c.templateVersion)?.code ?? docSectionId(c, d, state.config);
   return (
     <Card data-testid="case-documents">
       <CardHeader title="Documents" subtitle={`${docs.length} file${docs.length === 1 ? "" : "s"} · newest first. A new upload is added next to the earlier ones; suppliers cannot delete uploads.`} />
-      <Table head={["Document", "Type", "Section / question", "Uploaded by", "Upload date"]}>
-        {docs.map((d) => {
-          const u = state.users.find((x) => x.id === d.uploadedBy);
-          const op = at(d.id);
-          return (
-            <Tr key={d.id} data-testid={`doc-row-${d.id}`}>
-              <Td className="max-w-[320px] min-w-[220px]">
-                <span className="flex items-center gap-2">
-                  <FileText size={15} className="shrink-0 text-ink-3" aria-hidden />
-                  <DocName id={d.id} name={d.name} className="truncate font-medium" />
-                </span>
-                {op && <span className="mt-0.5 block truncate pl-[23px] text-[12px] text-ink-3">Referenced in {op.id}</span>}
-              </Td>
-              <Td>
-                <Badge tone="neutral">{d.kind}</Badge>
-              </Td>
-              <Td className="max-w-[260px] min-w-[160px]">
-                <Mono className="text-ink">{sectionOf(docSectionId(c, d, state.config), c.templateVersion)?.code ?? docSectionId(c, d, state.config)}</Mono>
-                {d.fieldId && <span className="block truncate text-[12px] text-ink-3">{placeLabel(c, d.fieldId)}</span>}
-              </Td>
-              <Td>
-                <PersonCell state={state} id={d.uploadedBy} sub={u?.side === "supplier" ? "Supplier" : "Beiersdorf"} />
-              </Td>
-              <Td className="whitespace-nowrap text-ink-2">{fmtDateTime(d.uploadedAt)}</Td>
-            </Tr>
-          );
-        })}
-      </Table>
+      {phone ? (
+        <CardList label="Documents" className="p-3">
+          {docs.map((d) => {
+            const u = state.users.find((x) => x.id === d.uploadedBy);
+            const op = at(d.id);
+            return (
+              <CardListItem
+                key={d.id}
+                data-testid={`doc-row-${d.id}`}
+                title={
+                  <span className="flex items-start gap-2">
+                    <FileText size={15} className="mt-0.5 shrink-0 text-ink-3" aria-hidden />
+                    <DocName id={d.id} name={d.name} className="font-medium [overflow-wrap:anywhere]" />
+                  </span>
+                }
+                badge={<Badge tone="neutral">{d.kind}</Badge>}
+                meta={
+                  <>
+                    <Mono className="text-ink-2">{sectionCodeOf(d)}</Mono>
+                    {d.fieldId && <> · {placeLabel(c, d.fieldId)}</>}
+                    {op && <> · referenced in {op.id}</>}
+                  </>
+                }
+                fields={[
+                  { label: "Uploaded by", value: <>{u?.name ?? d.uploadedBy}<span className="block text-[11.5px] text-ink-3">{u?.side === "supplier" ? "Supplier" : "Beiersdorf"}</span></> },
+                  { label: "Upload date", value: fmtDateTime(d.uploadedAt) },
+                ]}
+              />
+            );
+          })}
+        </CardList>
+      ) : (
+        <Table head={["Document", "Type", "Section / question", "Uploaded by", "Upload date"]}>
+          {docs.map((d) => {
+            const u = state.users.find((x) => x.id === d.uploadedBy);
+            const op = at(d.id);
+            return (
+              <Tr key={d.id} data-testid={`doc-row-${d.id}`}>
+                <Td className="max-w-[320px] min-w-[220px]">
+                  <span className="flex items-center gap-2">
+                    <FileText size={15} className="shrink-0 text-ink-3" aria-hidden />
+                    <DocName id={d.id} name={d.name} className="truncate font-medium" />
+                  </span>
+                  {op && <span className="mt-0.5 block truncate pl-[23px] text-[12px] text-ink-3">Referenced in {op.id}</span>}
+                </Td>
+                <Td>
+                  <Badge tone="neutral">{d.kind}</Badge>
+                </Td>
+                <Td className="max-w-[260px] min-w-[160px]">
+                  <Mono className="text-ink">{sectionCodeOf(d)}</Mono>
+                  {d.fieldId && <span className="block truncate text-[12px] text-ink-3">{placeLabel(c, d.fieldId)}</span>}
+                </Td>
+                <Td>
+                  <PersonCell state={state} id={d.uploadedBy} sub={u?.side === "supplier" ? "Supplier" : "Beiersdorf"} />
+                </Td>
+                <Td className="whitespace-nowrap text-ink-2">{fmtDateTime(d.uploadedAt)}</Td>
+              </Tr>
+            );
+          })}
+        </Table>
+      )}
     </Card>
   );
 }

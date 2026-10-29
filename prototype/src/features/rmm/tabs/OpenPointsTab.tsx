@@ -1,16 +1,19 @@
 // Open points tab of the case page: every query, document request and additional section (a legacy finding question
 // shows as a query) with its full history. Only the person who raised a point can edit or close it (AS-08); every change reaches the supplier.
+// Phones (< 768 px, Thomas 30 Oct): one card per point (the row's test id); its thread opens as a full-height sheet.
 import { ArrowUpRight, MessagesSquare, Paperclip, Pencil, XCircle } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Avatar, Badge, Button, Card, Drawer, EmptyState, Field, KeyValue, Modal, Mono, Segmented, Select, Table, Td, TextArea, TextInput, TrafficLight, Tr, cx } from "@/components/ui";
+import { Avatar, Badge, Button, Card, CardList, CardListItem, Drawer, EmptyState, Field, KeyValue, Modal, Mono, Segmented, Select, Table, Td, TextArea, TextInput, TrafficLight, Tr, cx } from "@/components/ui";
 import { DocName } from "@/components/DocName";
 import { DeptBadge, kindLabel } from "@/components/status";
 import { DEPT_LABEL } from "@/domain/catalog";
 import { can, raiserOf } from "@/domain/permissions";
 import { MESSAGE_ACTION_LABEL, closedByCancellation, fmtDate, fmtDateTime, isClosed, isOverdue, nowIso, relDays, userById, userName } from "@/domain/selectors";
 import type { CiqCase, OpenPoint } from "@/domain/types";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { useStore } from "@/store/store";
+import { PHONE_TAPS } from "../phone";
 import { ResponsiveCardHeader } from "../shared";
 
 type View = "unresolved" | "all" | "closed";
@@ -26,6 +29,19 @@ export function OpenPointsTab({ c }: { c: CiqCase }) {
   const [sel, setSel] = useState<string | null>(null);
   const rows = c.openPoints.filter((p) => (view === "all" ? true : view === "closed" ? p.status === "closed" : p.status !== "closed")).sort((a, b) => a.dueDate.localeCompare(b.dueDate));
   const selected = c.openPoints.find((p) => p.id === sel);
+  const phone = useIsPhone();
+  const statusLabel = (p: OpenPoint) => (p.status === "closed" && p.outcome ? outcomeOf(p) : p.status === "open" ? "With supplier" : p.status === "in-progress" ? "Answered, to check" : undefined);
+  const viewSwitch = (
+    <Segmented<View>
+      value={view}
+      onChange={setView}
+      options={[
+        { value: "unresolved", label: `Unresolved · ${unresolved.length}` },
+        { value: "all", label: "All" },
+        { value: "closed", label: "Closed" },
+      ]}
+    />
+  );
 
   if (!c.openPoints.length) {
     return (
@@ -44,20 +60,43 @@ export function OpenPointsTab({ c }: { c: CiqCase }) {
       <ResponsiveCardHeader
         title="Open points"
         subtitle={`${unresolved.length} unresolved of ${c.openPoints.length}. Every open point blocks the review that raised it. Only the person who raised it can edit or close it, and every change reaches the supplier.`}
-        action={
-          <Segmented<View>
-            value={view}
-            onChange={setView}
-            options={[
-              { value: "unresolved", label: `Unresolved · ${unresolved.length}` },
-              { value: "all", label: "All" },
-              { value: "closed", label: "Closed" },
-            ]}
-          />
-        }
+        action={phone ? <div className={PHONE_TAPS}>{viewSwitch}</div> : viewSwitch}
       />
       {rows.length === 0 ? (
         <p className="px-4 py-6 text-center text-[13px] text-ink-3">No open points in this view.</p>
+      ) : phone ? (
+        <CardList label="Open points" className="p-3">
+          {rows.map((p) => {
+            const late = p.status === "open" && isOverdue(p.dueDate);
+            return (
+              <CardListItem
+                key={p.id}
+                data-testid={`op-row-${p.id}`}
+                onClick={() => setSel(p.id)}
+                title={
+                  <>
+                    <Mono>{p.id}</Mono> <span className="font-normal text-ink-2">· {kindLabel(p.kind)}</span>
+                  </>
+                }
+                badge={<DeptBadge dept={p.dept} />}
+                meta={p.ref.label}
+                fields={[
+                  { label: "Status", value: <TrafficLight status={p.status} label={statusLabel(p)} /> },
+                  {
+                    label: "Due",
+                    value: p.status === "closed" ? <span className="text-ink-3">{fmtDate(p.dueDate)}</span> : <span className={late ? "font-medium text-bad" : undefined}>{late ? `Overdue ${relDays(p.dueDate).replace(" ago", "")}` : `${relDays(p.dueDate)} · ${fmtDate(p.dueDate)}`}</span>,
+                  },
+                  { label: "Raised by", value: userName(state, raiserOf(p)) },
+                  { label: "Responsible", value: userName(state, p.responsibleId) },
+                  { label: "Rounds", value: p.rounds },
+                ]}
+              >
+                <span className="line-clamp-2">{p.question}</span>
+                {(p.edits?.length ?? 0) > 0 && <span className="mt-0.5 block text-[11.5px] text-ink-3">Edited</span>}
+              </CardListItem>
+            );
+          })}
+        </CardList>
       ) : (
         <Table head={["ID", "Raised by", "Type", "Reference", "Status", "Rounds", "Due", "Responsible"]}>
           {rows.map((p) => {
@@ -81,7 +120,7 @@ export function OpenPointsTab({ c }: { c: CiqCase }) {
                   </span>
                 </Td>
                 <Td className="whitespace-nowrap">
-                  <TrafficLight status={p.status} label={p.status === "closed" && p.outcome ? outcomeOf(p) : p.status === "open" ? "With supplier" : p.status === "in-progress" ? "Answered, to check" : undefined} />
+                  <TrafficLight status={p.status} label={statusLabel(p)} />
                   {(p.edits?.length ?? 0) > 0 && <span className="mt-0.5 block pl-[42px] text-[11.5px] text-ink-3">Edited</span>}
                 </Td>
                 <Td className="text-center">{p.rounds}</Td>
@@ -116,6 +155,7 @@ function ThreadDrawer({ c, p, onClose }: { c: CiqCase; p: OpenPoint; onClose: ()
   const mayEdit = open && can(state, me.id, "op.edit", c, { opId: p.id });
   const mayClose = open && can(state, me.id, "op.close", c, { opId: p.id });
   const hasTrack = c.reviews.some((r) => r.dept === p.dept) && me.dept === p.dept;
+  const tap = useIsPhone() ? "h-11" : undefined;
   return (
     <Drawer
       open
@@ -131,17 +171,17 @@ function ThreadDrawer({ c, p, onClose }: { c: CiqCase; p: OpenPoint; onClose: ()
         mayEdit || mayClose ? (
           <>
             {mayClose && (
-              <Button variant="ghost" icon={<XCircle size={15} />} onClick={() => setDialog("close")} data-testid={`op-withdraw-${p.id}`}>
+              <Button variant="ghost" icon={<XCircle size={15} />} onClick={() => setDialog("close")} data-testid={`op-withdraw-${p.id}`} className={tap}>
                 Close point
               </Button>
             )}
             {mayEdit && (
-              <Button variant="secondary" icon={<Pencil size={14} />} onClick={() => setDialog("edit")} data-testid={`op-edit-${p.id}`}>
+              <Button variant="secondary" icon={<Pencil size={14} />} onClick={() => setDialog("edit")} data-testid={`op-edit-${p.id}`} className={tap}>
                 Edit
               </Button>
             )}
             {hasTrack && c.phase === "review" && (
-              <Button variant="primary" iconRight={<ArrowUpRight size={15} />} onClick={() => nav(`/review/${c.id}?op=${p.id}`)}>
+              <Button variant="primary" iconRight={<ArrowUpRight size={15} />} onClick={() => nav(`/review/${c.id}?op=${p.id}`)} className={tap}>
                 Open in my review
               </Button>
             )}

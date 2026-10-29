@@ -1,5 +1,6 @@
-/* Portal-only styles: the branded loader. Plain CSS (not utilities) so portal.html's static loader, painted before
-   the bundle runs, uses the very same rules. Colours come from the theme tokens in styles.css. */
+/* Portal-only styles: the branded loader, and the phone's form-field sizes (below). Plain CSS (not utilities) so
+   portal.html's static loader, painted before the bundle runs, uses the very same rules. Colours come from the theme
+   tokens in styles.css. */
 .brand-loader {
   display: flex;
   min-height: 100vh;
@@ -41,6 +42,24 @@
   }
   to {
     transform: translateX(250%);
+  }
+}
+/* Phones (< 768 px, Thomas 30 Oct; the media query is src/shell/useLayoutMode.ts PHONE_QUERY), and touch screens
+   below 1024 px (a phone held sideways or a tablet, which get the tablet layout): every form field shows 16 px text,
+   so iOS does not zoom into it on focus, and is at least 44 px tall; so are the Yes/No and chip toggles (aria-pressed)
+   and a file box's picker (the whole box is the tap target). Overlays render outside the shell, so the rules hang on
+   the media query, not on [data-layout]; :root lifts them above the utilities' single class. Nothing here applies at
+   1024 px and up, nor with a mouse at 768 px and up. */
+@media (max-width: 767.98px), (pointer: coarse) and (max-width: 1023.98px) {
+  :root input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]),
+  :root textarea {
+    font-size: 16px;
+  }
+  :root input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]),
+  :root [role="combobox"],
+  :root button[aria-pressed],
+  :root label:has(> input[type="file"]) {
+    min-height: 44px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

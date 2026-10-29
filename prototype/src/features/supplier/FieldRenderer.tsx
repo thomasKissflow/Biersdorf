@@ -12,6 +12,7 @@ import { usePortalCaps } from "@/store/portalCaps";
 import { useStore } from "@/store/store";
 import { documentsAt, inferDocKind, isLiveScope } from "./lib";
 import { Attribution, DocumentList, RequestedBadge } from "./parts";
+import { tap, useIsPhone } from "./phone";
 
 /** Local draft that follows the stored value when it changes elsewhere (e.g. a colleague's edit). */
 function useDraft(stored: string) {
@@ -55,6 +56,7 @@ export function FieldRenderer({ c, f, editable: editableProp, requested, focused
   const just = asJustification || f.noJustification || f.derivedFrom ? undefined : c.justifications[f.id];
   const [touched, setTouched] = useState(false);
   const [jOpen, setJOpen] = useState(!!just);
+  const phone = useIsPhone();
   const required = f.required !== "optional";
   const canJustify = required && f.sectionId !== "GEN" && f.type !== "longtext" && !f.noJustification && !f.derivedFrom;
 
@@ -291,7 +293,7 @@ export function FieldRenderer({ c, f, editable: editableProp, requested, focused
       <div className="mt-1.5 flex flex-wrap items-center justify-between gap-2">
         <Attribution c={c} keyId={f.derivedFrom ?? f.id} verb={just && !hasValue(stored ?? null) ? "Justified" : f.type === "file" ? "Uploaded" : "Answered"} fallback={f.sectionId === "GEN" && hasValue(stored ?? null) ? "Pre-filled by Beiersdorf" : undefined} />
         {canJustify && editable && !jOpen && !hasValue(stored ?? null) && (
-          <button type="button" onClick={() => setJOpen(true)} className="inline-flex items-center gap-1 text-[12px] font-medium text-ink-3 hover:text-brand" data-testid={`q-justify-${f.id}`}>
+          <button type="button" onClick={() => setJOpen(true)} className={cx("inline-flex items-center gap-1 text-[12px] font-medium text-ink-3 hover:text-brand", tap(phone))} data-testid={`q-justify-${f.id}`}>
             <MessageSquareWarning size={13} /> Cannot provide? Add a justification
           </button>
         )}
@@ -314,12 +316,13 @@ export function FieldRenderer({ c, f, editable: editableProp, requested, focused
 /** The cannot-provide justification under a question or a requested document. */
 export function Justification({ value, editable, onSave, onRemove, testId }: { value: string; editable: boolean; onSave: (t: string) => void; onRemove: () => void; testId?: string }) {
   const [draft, setDraft] = useDraft(value);
+  const phone = useIsPhone();
   return (
     <div className="mt-2.5 rounded-lg border border-line bg-surface-2 px-3 py-2.5" data-testid={testId}>
       <div className="flex items-center justify-between gap-2">
         <span className="text-[12.5px] font-medium text-ink">Why can't you provide this?</span>
         {editable && (
-          <button type="button" onClick={onRemove} className="text-[12px] text-ink-3 hover:text-ink">
+          <button type="button" onClick={onRemove} className={cx("text-[12px] text-ink-3 hover:text-ink", tap(phone, "-my-2"))}>
             Remove justification
           </button>
         )}

@@ -1,7 +1,8 @@
 // The building blocks of the case Questionnaire tab (read-only): the scope and evidence card, the metadata answers, a
 // section with its answers list (question | answer | answered by and when), its documents, requested documents and
 // open points, the documents-only sections, the focus card Customs (K7) and Legal (K8) open, and the not-applicable
-// sections with their rule reasons (internal only).
+// sections with their rule reasons (internal only). Phones (< 768 px, Thomas 30 Oct): the composition is one card per
+// component.
 import { Building2, ChevronRight, CircleCheck, CircleDashed, CircleDot, CircleSlash, FileText, Lock, Paperclip, TriangleAlert } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { DocName } from "@/components/DocName";
@@ -16,7 +17,9 @@ import { evidenceFieldIds, isSlotKey, requestedDocStatus, requestedDocuments, se
 import { requiredEvidence } from "@/domain/rules";
 import { REQUIRED_CONFIG, answerOf, answeredByOf, fmtDate, formatValue, hasValue, isClosed, isVisible, requiredFields, unansweredConfig, userName } from "@/domain/selectors";
 import type { AppState, CiqCase, ConfigQuestionId, FieldDef, Market, OpenPoint, OriginType, ScopeItem } from "@/domain/types";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { useStore } from "@/store/store";
+import { ComponentCards } from "../phone";
 import { sectionCode, sectionTitleIn, undefinedOriginLabels } from "../shared";
 import { Attribution, SourceNote } from "./Attribution";
 import { METADATA_ID, type OutlineItem, type OutlineStatus } from "./questionnaireOutline";
@@ -451,6 +454,7 @@ function FieldAnswer({ c, f, since, onOpenPoints }: { c: CiqCase; f: FieldDef; s
 
 function Composition({ c, since }: { c: CiqCase; since?: string }) {
   const { state } = useStore();
+  const phone = useIsPhone();
   const by = c.answeredBy["K2.1:components"];
   if (!c.components.length) return <p className="border-b border-line px-4 py-3 text-[13px] text-ink-3 italic sm:px-5">{isClosed(c) ? "No components were entered." : "No components entered yet."}</p>;
   const changedLater = !!since && !!by && Date.parse(by.at) > Date.parse(since);
@@ -467,24 +471,30 @@ function Composition({ c, since }: { c: CiqCase; since?: string }) {
         </span>
         {by && <Attribution state={state} by={by.by} at={by.at} />}
       </div>
-      <Table dense head={["#", "INCI / IUPAC", "CAS", "EC / REACH no.", "Function", "Origin", "Additive", "Concentration"]}>
-        {c.components.map((r, i) => (
-          <Tr key={r.id}>
-            <Td className="text-ink-3">{i + 1}</Td>
-            <Td className="font-medium">{r.inci}</Td>
-            <Td className="whitespace-nowrap">
-              <Mono>{r.cas ?? "—"}</Mono>
-            </Td>
-            <Td className="whitespace-nowrap">
-              <Mono>{r.ec ?? "—"}</Mono>
-            </Td>
-            <Td className="text-ink-2">{r.fn}</Td>
-            <Td className="text-ink-2">{ORIGIN_LABEL[r.origin].split(" (")[0]}</Td>
-            <Td className="text-ink-2">{additiveText(r.additive)}</Td>
-            <Td className="whitespace-nowrap">{concText(r)}</Td>
-          </Tr>
-        ))}
-      </Table>
+      {phone ? (
+        <div className="px-3 pt-1 pb-3">
+          <ComponentCards rows={c.components} />
+        </div>
+      ) : (
+        <Table dense head={["#", "INCI / IUPAC", "CAS", "EC / REACH no.", "Function", "Origin", "Additive", "Concentration"]}>
+          {c.components.map((r, i) => (
+            <Tr key={r.id}>
+              <Td className="text-ink-3">{i + 1}</Td>
+              <Td className="font-medium">{r.inci}</Td>
+              <Td className="whitespace-nowrap">
+                <Mono>{r.cas ?? "—"}</Mono>
+              </Td>
+              <Td className="whitespace-nowrap">
+                <Mono>{r.ec ?? "—"}</Mono>
+              </Td>
+              <Td className="text-ink-2">{r.fn}</Td>
+              <Td className="text-ink-2">{ORIGIN_LABEL[r.origin].split(" (")[0]}</Td>
+              <Td className="text-ink-2">{additiveText(r.additive)}</Td>
+              <Td className="whitespace-nowrap">{concText(r)}</Td>
+            </Tr>
+          ))}
+        </Table>
+      )}
     </div>
   );
 }

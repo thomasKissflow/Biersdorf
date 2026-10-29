@@ -1,9 +1,11 @@
 // All items of one portal process (admin listing), with search and a status filter. Rows open the item drawer.
+// Phones (Thomas, 30 Oct): one card per item; the drawer opens read-only (AdminShell's "Use a larger screen to edit").
 import { Search } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
-import { Badge, Card, EmptyState, Mono, PageHeader, Select, Table, Td, TextInput, Tr } from "@/components/ui";
+import { Badge, Card, CardList, CardListItem, EmptyState, Mono, PageHeader, Select, Table, Td, TextInput, Tr } from "@/components/ui";
 import { fmtDateTime } from "@/domain/selectors";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import type { FlowKey } from "../kf/portal";
 import { itemState, str, type RawItem } from "../data/raw";
 import { usePortalMode } from "../mode";
@@ -50,6 +52,7 @@ export function FlowTable() {
   const [status, setStatus] = useState<"all" | "open" | "completed" | "ended">("all");
   const [openId, setOpenId] = useState<string | null>(null);
   const { steps, keyOf, capped } = useCurrentSteps(flow, q.data);
+  const phone = useIsPhone();
   /** Scalar business fields seen on any item of this process (never-filled fields are absent from an item). */
   const knownFields = useMemo(() => {
     const keys = new Set<string>();
@@ -83,34 +86,58 @@ export function FlowTable() {
           </Select>
         </div>
       </div>
-      <Card>
-        {q.loading && !q.data ? (
-          <div className="p-6 text-[13px] text-ink-3">Loading…</div>
-        ) : q.error ? (
-          <EmptyState title="Could not load the items">{q.error}</EmptyState>
-        ) : rows.length === 0 ? (
-          <EmptyState title="No items">{search || status !== "all" ? "Nothing matches the filter." : "This process has no items yet."}</EmptyState>
-        ) : (
-          <Table head={["Key", "Case", "Supplier", "Current step", "Status", "Modified"]}>
-            {rows.map((r) => (
-              <Tr key={r._id} onClick={() => setOpenId(r._id)}>
-                <Td>
-                  <Mono>{str(r, KEY_FIELD[flow]) || r._id}</Mono>
-                </Td>
-                <Td>{str(r, "Case_Code") || "—"}</Td>
-                <Td>{str(r, "Supplier_Code") || "—"}</Td>
-                <Td>{str(r, "_current_step") || steps.get(keyOf(r)) || (itemState(r) === "open" ? "…" : "—")}</Td>
-                <Td>
-                  <Badge tone={statusTone(str(r, "_status"))} dot>
-                    {str(r, "_status") || "—"}
-                  </Badge>
-                </Td>
-                <Td>{fmtDateTime(str(r, "_modified_at"))}</Td>
-              </Tr>
-            ))}
-          </Table>
-        )}
-      </Card>
+      {phone && !q.error && rows.length > 0 ? (
+        <CardList label={FLOW_LABEL[flow]} data-testid="flow-cards">
+          {rows.map((r) => (
+            <CardListItem
+              key={r._id}
+              data-testid={`flow-item-${r._id}`}
+              title={<Mono>{str(r, KEY_FIELD[flow]) || r._id}</Mono>}
+              badge={
+                <Badge tone={statusTone(str(r, "_status"))} dot>
+                  {str(r, "_status") || "—"}
+                </Badge>
+              }
+              meta={`Modified ${fmtDateTime(str(r, "_modified_at"))}`}
+              fields={[
+                { label: "Case", value: str(r, "Case_Code") || "—" },
+                { label: "Supplier", value: str(r, "Supplier_Code") || "—" },
+                { label: "Current step", value: str(r, "_current_step") || steps.get(keyOf(r)) || (itemState(r) === "open" ? "…" : "—") },
+              ]}
+              onClick={() => setOpenId(r._id)}
+            />
+          ))}
+        </CardList>
+      ) : (
+        <Card>
+          {q.loading && !q.data ? (
+            <div className="p-6 text-[13px] text-ink-3">Loading…</div>
+          ) : q.error ? (
+            <EmptyState title="Could not load the items">{q.error}</EmptyState>
+          ) : rows.length === 0 ? (
+            <EmptyState title="No items">{search || status !== "all" ? "Nothing matches the filter." : "This process has no items yet."}</EmptyState>
+          ) : (
+            <Table head={["Key", "Case", "Supplier", "Current step", "Status", "Modified"]}>
+              {rows.map((r) => (
+                <Tr key={r._id} onClick={() => setOpenId(r._id)}>
+                  <Td>
+                    <Mono>{str(r, KEY_FIELD[flow]) || r._id}</Mono>
+                  </Td>
+                  <Td>{str(r, "Case_Code") || "—"}</Td>
+                  <Td>{str(r, "Supplier_Code") || "—"}</Td>
+                  <Td>{str(r, "_current_step") || steps.get(keyOf(r)) || (itemState(r) === "open" ? "…" : "—")}</Td>
+                  <Td>
+                    <Badge tone={statusTone(str(r, "_status"))} dot>
+                      {str(r, "_status") || "—"}
+                    </Badge>
+                  </Td>
+                  <Td>{fmtDateTime(str(r, "_modified_at"))}</Td>
+                </Tr>
+              ))}
+            </Table>
+          )}
+        </Card>
+      )}
       {capped > 0 && <p className="text-[12.5px] text-ink-3">Current step is read for {STEP_READS} open items at a time; {capped} more show "…". Open an item to see its step.</p>}
       <ItemDrawer flow={flow} id={openId} knownFields={knownFields} onClose={() => setOpenId(null)} onChanged={() => void q.reload()} />
     </div>

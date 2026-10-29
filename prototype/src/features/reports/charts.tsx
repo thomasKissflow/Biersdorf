@@ -5,6 +5,7 @@ import { BarChart3, Table2 } from "lucide-react";
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { Bar, BarChart, CartesianGrid, Cell, LabelList, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Card, CardHeader, cx } from "@/components/ui";
+import { useIsPhone } from "@/shell/useLayoutMode";
 
 const axis = { stroke: "var(--ink-3)", fontSize: 12, tickLine: false, axisLine: false } as const;
 const tooltipStyle = {
@@ -236,7 +237,9 @@ export function SplitMeter({ parts }: { parts: { label: string; value: number; d
   );
 }
 
+/** Chart or table; on a phone (< 768 px) each option is a 44 px icon button. */
 function ViewToggle({ value, onChange }: { value: "chart" | "table"; onChange: (v: "chart" | "table") => void }) {
+  const phone = useIsPhone();
   const opts = [
     { v: "chart" as const, label: "Chart", icon: <BarChart3 size={14} /> },
     { v: "table" as const, label: "Table", icon: <Table2 size={14} /> },
@@ -250,7 +253,8 @@ function ViewToggle({ value, onChange }: { value: "chart" | "table"; onChange: (
           aria-pressed={value === o.v}
           title={`Show as ${o.label.toLowerCase()}`}
           onClick={() => onChange(o.v)}
-          className={cx("inline-flex h-7 items-center gap-1 rounded-md px-2 text-[12px] font-medium transition-colors", value === o.v ? "bg-surface text-ink shadow-card" : "text-ink-3 hover:text-ink")}
+          aria-label={phone ? `Show as ${o.label.toLowerCase()}` : undefined}
+          className={cx("inline-flex", phone ? "h-11 w-11 justify-center" : "h-7", "items-center gap-1 rounded-md px-2 text-[12px] font-medium transition-colors", value === o.v ? "bg-surface text-ink shadow-card" : "text-ink-3 hover:text-ink")}
         >
           {o.icon}
           <span className="hidden sm:inline">{o.label}</span>

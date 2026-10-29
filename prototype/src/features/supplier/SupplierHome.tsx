@@ -2,10 +2,11 @@
 // (fill in the CIQ with % done, each question with the answer drawer, the final release), then one card per request,
 // grouped: needs action · with Beiersdorf · closed. No department names, review statuses or decisions.
 // The live portal (old flow) keeps its own Tasks tab, so its requests show the count tiles and the cards only.
+// Phones (Thomas, 30 Oct): each request card ends with its action across the card's width; every action is 44 px.
 import { ArrowRight, CheckCircle2, Inbox, LifeBuoy } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Button, Card, EmptyState, PageHeader, ProgressBar } from "@/components/ui";
+import { Button, Card, EmptyState, PageHeader, ProgressBar, cx } from "@/components/ui";
 import { fmtDate, isOverdue } from "@/domain/selectors";
 import type { CiqCase } from "@/domain/types";
 import { useIsLivePortal } from "@/store/portalCaps";
@@ -13,12 +14,14 @@ import { useStore } from "@/store/store";
 import { AnswerDrawer } from "./AnswerDrawer";
 import { firstName, isClosed, isLiveScope, releasedAt, closedAt, supplierStatus, useSupplierScope, useSupplierTasks } from "./lib";
 import { CaseRef, CountTile, DueText, StatusPill } from "./parts";
+import { tap, useIsPhone } from "./phone";
 import { TaskRow } from "./TaskList";
 
 export function SupplierHome() {
   const { me } = useStore();
   const { supplier, cases } = useSupplierScope();
   const [drawer, setDrawer] = useState<{ caseId: string; opId: string } | null>(null);
+  const phone = useIsPhone();
   const byId = new Map(cases.map((c) => [c.id, c]));
   const tasks = useSupplierTasks().filter((t) => byId.has(t.caseId));
   const overdue = tasks.filter((t) => isOverdue(t.due)).length;
@@ -48,7 +51,7 @@ export function SupplierHome() {
             : "Beiersdorf asks you here for information about the raw materials you supply, one Cosmetic Ingredient Questionnaire (CIQ) per material."
         }
         actions={
-          <Link to="/portal/help" className="inline-flex items-center gap-1.5 text-[13px] font-medium text-brand hover:underline" data-testid="portal-help-link">
+          <Link to="/portal/help" className={cx("inline-flex items-center gap-1.5 text-[13px] font-medium text-brand hover:underline", tap(phone))} data-testid="portal-help-link">
             <LifeBuoy size={15} /> How the portal works
           </Link>
         }
@@ -162,6 +165,7 @@ function Group({ title, hint, children, testId }: { title: string; hint?: string
 
 function RequestCard({ c }: { c: CiqCase }) {
   const nav = useNavigate();
+  const phone = useIsPhone();
   const s = supplierStatus(c);
   const closed = isClosed(c);
   return (
@@ -185,7 +189,7 @@ function RequestCard({ c }: { c: CiqCase }) {
           ) : (
             <span className="text-[12.5px] text-ink-3">{c.phase === "completed" ? `Released ${fmtDate(releasedAt(c))}` : `Withdrawn ${fmtDate(closedAt(c))}`}</span>
           )}
-          <Button variant={s.action ? "primary" : "secondary"} size="sm" iconRight={<ArrowRight size={14} />} onClick={() => nav(s.to)} data-testid={`open-request-${c.id}`}>
+          <Button variant={s.action ? "primary" : "secondary"} size="sm" iconRight={<ArrowRight size={14} />} onClick={() => nav(s.to)} data-testid={`open-request-${c.id}`} className={tap(phone, "w-full")}>
             {s.cta}
           </Button>
         </div>

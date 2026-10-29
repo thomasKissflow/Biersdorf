@@ -4,10 +4,12 @@
 // form's rows are read again right before the first create, so a row added meanwhile is skipped too. 26 Oct: the form's
 // rows are the session's list (session.ts: read once, shared with the overview and the form's page); that fresh read
 // and each created row's read-back go into it, so nothing is read again after the import.
+// Phones (< 768 px, Thomas 30 Oct): an import changes the data, so the page only says to use a larger screen.
 import { FileUp, Square, Upload } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Badge, Button, Card, CardHeader, EmptyState, Field, Mono, PageHeader, Select, Table, Td, Tr, cx, type Tone } from "@/components/ui";
 import { errorText } from "@/portal/kf/sdk";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import type { FormKey } from "../types";
 import { CONSOLE_FORMS, FLOW_LABEL, FLOW_NAME, KEY_FIELD } from "./common";
 import { useDataConsole } from "./ConsoleContext";
@@ -47,6 +49,7 @@ export function ImportPage() {
   const [running, setRunning] = useState(false);
   const [total, setTotal] = useState(0);
   const stop = useRef(false);
+  const phone = useIsPhone();
   const keyField = KEY_FIELD[form];
   // a run's rows show below the preview: bring them into view when it starts
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -105,9 +108,21 @@ export function ImportPage() {
 
   const done = results?.filter((r) => r.outcome !== "skipped").length ?? 0;
   const newRows = count("new");
+  const header = <PageHeader eyebrow="Data console" title="Import a file" subtitle="Rows of a .json or .xlsx file into one form, created one at a time; each is read back and compared field by field." />;
+  if (phone && !running)
+    return (
+      <div className="space-y-5" data-testid="data-import">
+        {header}
+        <Card>
+          <EmptyState icon={<Upload size={20} />} title="Import on a larger screen" data-testid="import-larger-screen">
+            Choosing a file, checking how its columns and rows map and importing them needs a larger screen.
+          </EmptyState>
+        </Card>
+      </div>
+    );
   return (
     <div className="space-y-5" data-testid="data-import">
-      <PageHeader eyebrow="Data console" title="Import a file" subtitle="Rows of a .json or .xlsx file into one form, created one at a time; each is read back and compared field by field." />
+      {header}
       <Card>
         <CardHeader title="1. The form" subtitle={`Rows are matched by ${keyField}: a row whose ${keyField} the form already holds is skipped.`} />
         <div className="grid gap-4 px-5 pb-5 sm:grid-cols-[minmax(0,320px)_1fr] sm:items-end">

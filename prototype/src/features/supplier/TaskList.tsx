@@ -10,6 +10,7 @@ import type { CiqCase } from "@/domain/types";
 import { useStore } from "@/store/store";
 import { caseLink, isLiveScope, metadataProgress, overallProgress, REQUIRED_CONFIG, supplierBlockers, supplierKindLabel, unansweredConfig, wasReturned } from "./lib";
 import { DueText, QuestionBadges } from "./parts";
+import { tap, useIsPhone } from "./phone";
 
 const ICON: Record<SupplierTask["kind"], ReactNode> = {
   metadata: <ClipboardList size={16} />,
@@ -23,6 +24,7 @@ const taskTestId = (t: SupplierTask) => (t.openPointId ? `task-${t.openPointId}`
 export function TaskRow({ t, c, onAnswer }: { t: SupplierTask; c: CiqCase; onAnswer: () => void }) {
   const nav = useNavigate();
   const { state } = useStore();
+  const phone = useIsPhone();
   const op = t.openPointId ? c.openPoints.find((p) => p.id === t.openPointId) : undefined;
   const live = isLiveScope(c);
   let where = "";
@@ -78,7 +80,7 @@ export function TaskRow({ t, c, onAnswer }: { t: SupplierTask; c: CiqCase; onAns
         </div>
       }
       action={
-        <Button size="sm" variant="primary" onClick={go} data-testid={testId}>
+        <Button size="sm" variant="primary" onClick={go} data-testid={testId} className={tap(phone, "min-w-24")}>
           {cta}
         </Button>
       }

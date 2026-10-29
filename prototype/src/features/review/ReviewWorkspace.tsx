@@ -3,37 +3,69 @@
 // review. Safety and Regulatory also have the RMES tab: the read-only sheet filled from the CIQ (BDF's scope of 28 Oct;
 // the decision is not part of it and sits on the Questionnaire tab). RMM reviews the whole CIQ (RMM lane) and never adds
 // sections; a department may add a missing one. Deep links: ?s=<section>, ?tab=rmes, ?op=<open point> (from the mails).
-import { Info, Lock, TriangleAlert } from "lucide-react";
+// On a phone (< 768 px) the columns stack: the section picker (PhoneSectionPicker) and a row of jumps to the cards
+// below, the section's answers with "Next section" under them, then the decision, the open points and the notes; the
+// completion bar sticks above the tab bar, and the phone header names the case.
+import { ChevronRight, Info, Lock, TriangleAlert } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import { Card, EmptyState, Tabs } from "@/components/ui";
+import { Button, Card, EmptyState, Tabs } from "@/components/ui";
 import { DEPT_LABEL, ORIGIN_LABEL, sectionOf } from "@/domain/catalog";
 import { can } from "@/domain/permissions";
 import { undefinedOrigins } from "@/domain/rules";
 import { PHASE_LABEL, activeSections, isClosed, rmmFlags, sectionsOwnedBy } from "@/domain/selectors";
+import { usePhoneHeader } from "@/shell/PhoneChrome";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { useCase, useStore } from "@/store/store";
 import { ActivateSectionModal, RaiseQueryModal } from "./AskModals";
 import { CompletePanel } from "./CompletePanel";
 import { InternalNotes } from "./InternalNotes";
 import { changeMarkers, joinNames } from "./lib";
 import { OpenPointsPanel } from "./OpenPointsPanel";
+import { jumpTo } from "./phone";
 import { DecisionCard } from "./RmesSide";
 import { RmesTab } from "./RmesTab";
 import { SectionContent } from "./SectionContent";
-import { SectionNav, SectionPicker } from "./SectionNav";
+import { PhoneSectionPicker, SectionNav, SectionPicker } from "./SectionNav";
 import { type AskTarget, NotReviewer, Notice, isRmesDept, isRmmLane, secCode, useReviewer } from "./shared";
 import { WorkspaceHeader } from "./WorkspaceHeader";
 
 function Missing({ title, testId, children }: { title: string; testId: string; children: React.ReactNode }) {
+  // on a phone the header's back arrow goes to My reviews
+  const phone = useIsPhone();
   return (
     <div data-testid={testId}>
-      <Link to="/review" className="mb-4 inline-flex text-[13px] text-ink-3 hover:text-ink">
-        ← My reviews
-      </Link>
+      {!phone && (
+        <Link to="/review" className="mb-4 inline-flex text-[13px] text-ink-3 hover:text-ink">
+          ← My reviews
+        </Link>
+      )}
       <Card>
         <EmptyState title={title}>{children}</EmptyState>
       </Card>
     </div>
+  );
+}
+
+/** Phones: jumps from the top of the questionnaire to the cards below the section's answers (my open points with
+ *  how many are unresolved, the notes with how many there are). */
+function PhoneJumps({ decision, open, notes }: { decision: boolean; open: number; notes: number }) {
+  const jumps: [testId: string, label: string, count?: number][] = [...(decision ? [["decision-card", "Decision"] as [string, string]] : []), ["my-open-points", "Open points", open], ["internal-notes", "Notes", notes]];
+  return (
+    <nav aria-label="On this page" className="flex flex-wrap gap-1.5" data-testid="workspace-jumps">
+      {jumps.map(([id, label, count]) => (
+        <button
+          key={id}
+          type="button"
+          onClick={() => jumpTo(id)}
+          data-testid={`jump-${id}`}
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-line bg-surface px-3 text-[13px] font-medium text-ink-2 shadow-card transition-colors hover:bg-surface-2 hover:text-ink"
+        >
+          {label}
+          {!!count && <span className="rounded-full bg-brand-soft px-1.5 text-[11px] font-semibold text-brand">{count}</span>}
+        </button>
+      ))}
+    </nav>
   );
 }
 
@@ -42,6 +74,8 @@ export function ReviewWorkspace() {
   const c = useCase(caseId);
   const { state, me } = useStore();
   const { dept } = useReviewer();
+  const phone = useIsPhone();
+  usePhoneHeader({ title: c ? `Review · ${c.id}` : undefined });
   const [params, setParams] = useSearchParams();
   const [ask, setAsk] = useState<AskTarget | null>(null);
   const [activate, setActivate] = useState(false);
@@ -166,7 +200,9 @@ export function ReviewWorkspace() {
       },
       { replace: true },
     );
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    // a phone's single column: to the section picker, with the section's answers below it
+    if (phone) jumpTo("section-picker");
+    else window.scrollTo({ top: 0, behavior: "smooth" });
   };
   // the decision card is on the Questionnaire tab: switch to it, then the effect above scrolls there
   const showDecision = () => {
@@ -174,6 +210,9 @@ export function ReviewWorkspace() {
     setToDecision((n) => n + 1);
   };
   const myOpen = c.openPoints.filter((p) => p.dept === dept && p.status !== "closed").length;
+  // phones: the section after this one, my sections first (as the picker orders them)
+  const order = [...mine, ...others];
+  const next = order[order.indexOf(selected) + 1];
   const origins = undefinedOrigins(c.config).map((o) => ORIGIN_LABEL[o]);
 
   return (
@@ -216,7 +255,7 @@ export function ReviewWorkspace() {
 
       {hasRmes && (
         <Tabs
-          className="mb-5"
+          className={phone ? "mb-5 [&>button]:min-h-11" : "mb-5"}
           value={tab}
           onChange={(v) => setParam("tab", v === "rmes" ? "rmes" : null)}
           tabs={[
@@ -228,8 +267,17 @@ export function ReviewWorkspace() {
 
       {tab === "ciq" ? (
         <div className="grid items-start gap-5 lg:grid-cols-[212px_minmax(0,1fr)] xl:grid-cols-[212px_minmax(0,1fr)_330px]">
-          <SectionNav c={c} dept={dept} ownership={state.ownership} mine={mine} others={others} changed={changed} sinceLabel={markers.sinceLabel} selected={selected} onSelect={(id) => setParam("s", id)} canActivate={canActivate} onActivate={() => setActivate(true)} />
-          <SectionPicker lane={rmm ? "rmm" : "dept"} templateVersion={c.templateVersion} mine={mine} others={others} changed={changed} selected={selected} onSelect={(id) => setParam("s", id)} canActivate={canActivate} onActivate={() => setActivate(true)} />
+          {phone ? (
+            <div className="min-w-0 space-y-2.5">
+              <PhoneSectionPicker c={c} dept={dept} ownership={state.ownership} mine={mine} others={others} changed={changed} sinceLabel={markers.sinceLabel} selected={selected} onSelect={(id) => setParam("s", id)} canActivate={canActivate} onActivate={() => setActivate(true)} />
+              <PhoneJumps decision={isRmesDept(dept)} open={myOpen} notes={c.internalNotes.length} />
+            </div>
+          ) : (
+            <>
+              <SectionNav c={c} dept={dept} ownership={state.ownership} mine={mine} others={others} changed={changed} sinceLabel={markers.sinceLabel} selected={selected} onSelect={(id) => setParam("s", id)} canActivate={canActivate} onActivate={() => setActivate(true)} />
+              <SectionPicker lane={rmm ? "rmm" : "dept"} templateVersion={c.templateVersion} mine={mine} others={others} changed={changed} selected={selected} onSelect={(id) => setParam("s", id)} canActivate={canActivate} onActivate={() => setActivate(true)} />
+            </>
+          )}
           <div className="min-w-0">
             {selected ? (
               <SectionContent c={c} state={state} sectionId={selected} mine={mine.includes(selected)} canAsk={canAsk} since={markers.since} onAsk={setAsk} onFocusOp={focusOp} />
@@ -237,6 +285,22 @@ export function ReviewWorkspace() {
               <Card>
                 <EmptyState title="No section in scope">The case has no section that applies yet.</EmptyState>
               </Card>
+            )}
+            {phone && next && (
+              <Button
+                variant="secondary"
+                iconRight={<ChevronRight size={16} />}
+                onClick={() => {
+                  setParam("s", next);
+                  jumpTo("section-picker");
+                }}
+                className="mt-3 min-h-11 w-full justify-between"
+                data-testid="section-next-end"
+              >
+                <span className="min-w-0 truncate">
+                  Next: {secCode(next, c.templateVersion)} · {sectionOf(next, c.templateVersion)?.title}
+                </span>
+              </Button>
             )}
           </div>
           <div className="min-w-0 space-y-5 lg:col-span-2 xl:col-span-1">

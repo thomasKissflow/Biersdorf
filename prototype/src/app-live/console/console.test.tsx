@@ -8,6 +8,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import { PERSONA_BY_ID } from "@/domain/catalog";
 import type { AppState, User } from "@/domain/types";
+import { LayoutModeContext, type LayoutMode } from "@/shell/useLayoutMode";
 import { StoreContext, type StoreApi } from "@/store/store";
 import { AppEnvContext, type AppEnvValue } from "../appEnv";
 import { AppLiveShell } from "../AppLiveShell";
@@ -72,16 +73,18 @@ function ciqShell(identity: Identity): string {
   ));
 }
 
-function console_(path: string, identity: Identity, env: AppEnvValue, besideCiq: boolean): string {
+function console_(path: string, identity: Identity, env: AppEnvValue, besideCiq: boolean, layout: LayoutMode | null = null): string {
   const client = createFakeClient({ items: {}, me: { _id: user.kfUserId, Name: user.name } }, { admin: true });
   return flat(renderToString(
-    <AppEnvContext.Provider value={env}>
-      <DataConsoleProvider client={client} identity={identity} besideCiq={besideCiq}>
-        <MemoryRouter initialEntries={[path]}>
-          <Routes>{dataConsoleRoutes()}</Routes>
-        </MemoryRouter>
-      </DataConsoleProvider>
-    </AppEnvContext.Provider>,
+    <LayoutModeContext.Provider value={layout}>
+      <AppEnvContext.Provider value={env}>
+        <DataConsoleProvider client={client} identity={identity} besideCiq={besideCiq}>
+          <MemoryRouter initialEntries={[path]}>
+            <Routes>{dataConsoleRoutes()}</Routes>
+          </MemoryRouter>
+        </DataConsoleProvider>
+      </AppEnvContext.Provider>
+    </LayoutModeContext.Provider>,
   ));
 }
 
@@ -113,6 +116,16 @@ describe("the shells", () => {
     expect(html).toContain('data-testid="dev-top-bar"');
     expect(html).toContain('data-testid="role-switcher"');
     expect(html).toContain("Admin / Developer");
+  });
+
+  it("a phone (Thomas, 30 Oct): the tab bar and More over the console's menu, the note to use a larger screen to edit", () => {
+    const html = console_("/data/flow/case", withRoles(user, [DEV]), { env: "prod" }, false, "phone");
+    expect(html).not.toContain('data-testid="side-pane"');
+    expect(html).toContain('data-testid="tab-bar"');
+    expect(html).toContain('data-testid="tab-more"');
+    expect(html).toContain('data-testid="larger-screen-note"');
+    expect(html).toContain('data-testid="data-flow-case"'); // viewing still works
+    expect(console_("/data", withRoles(user, [DEV]), { env: "prod" }, false)).not.toContain('data-testid="larger-screen-note"');
   });
 
   it("a flow's page and the import page render", () => {

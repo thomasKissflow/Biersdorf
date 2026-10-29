@@ -1,17 +1,20 @@
 // Case header of the review workspace: material, case, supplier, phase, the completeness confirmation, my review
-// track (with "Reassign" to another member of the department) and every other review's track.
+// track (with "Reassign" to another member of the department) and every other review's track. On a phone the back
+// link is the phone header's arrow, the other reviews are compact chips and the buttons are 44 px targets.
 import { ArrowLeft, ExternalLink, UserRoundCog } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Badge, Button, Field, Modal, Mono, Select, TextArea } from "@/components/ui";
+import { Badge, Button, Field, Mono, Select, TextArea } from "@/components/ui";
 import { DecisionBadge, PhaseBadge, TrackBadge } from "@/components/status";
 import { DEPT_LABEL, DEPT_SHORT } from "@/domain/catalog";
 import { can } from "@/domain/permissions";
 import { fmtDate, isClosed, supplierName, trackView, userName } from "@/domain/selectors";
 import type { AppState, CiqCase, ReviewDept, ReviewTrack } from "@/domain/types";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { useStore } from "@/store/store";
 import { reassignCandidates } from "./lib";
-import { DeptTrackChip, OriginFlag, completenessOf, isRmesDept, isRmmLane } from "./shared";
+import { FormWindow } from "./phone";
+import { DeptTrackChip, DeptTrackText, OriginFlag, completenessOf, isRmesDept, isRmmLane } from "./shared";
 
 function ReassignModal({ c, dept, track, onClose }: { c: CiqCase; dept: ReviewDept; track: ReviewTrack; onClose: () => void }) {
   const { state, reassignReview } = useStore();
@@ -26,7 +29,7 @@ function ReassignModal({ c, dept, track, onClose }: { c: CiqCase; dept: ReviewDe
   };
   const lane = isRmmLane(dept) ? "the RMM review" : `the ${DEPT_SHORT[dept]} review`;
   return (
-    <Modal
+    <FormWindow
       open
       onClose={onClose}
       title="Reassign this review"
@@ -71,7 +74,7 @@ function ReassignModal({ c, dept, track, onClose }: { c: CiqCase; dept: ReviewDe
           <p className="text-xs text-ink-3">Open points you raised stay with you. Points the system raised for this review move to the new reviewer.</p>
         </div>
       )}
-    </Modal>
+    </FormWindow>
   );
 }
 
@@ -80,16 +83,19 @@ const releasedAt = (c: CiqCase) => c.confirmations.find((x) => x.type === "final
 export function WorkspaceHeader({ c, state, dept, track }: { c: CiqCase; state: AppState; dept: ReviewDept; track: ReviewTrack }) {
   const nav = useNavigate();
   const { me } = useStore();
+  const phone = useIsPhone();
   const [reassign, setReassign] = useState(false);
   const conf = completenessOf(c);
   const others = c.reviews.filter((r) => r.dept !== dept);
   const mayReassign = !isClosed(c) && track.status !== "completed" && can(state, me.id, "review.reassign", c, { dept });
   return (
     <div className="mb-5" data-testid="workspace-header">
-      <Link to="/review" className="inline-flex items-center gap-1 text-[13px] text-ink-3 hover:text-ink">
-        <ArrowLeft size={14} /> My reviews
-      </Link>
-      <div className="mt-3 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between lg:gap-x-6">
+      {!phone && (
+        <Link to="/review" className="inline-flex items-center gap-1 text-[13px] text-ink-3 hover:text-ink">
+          <ArrowLeft size={14} /> My reviews
+        </Link>
+      )}
+      <div className={phone ? "flex flex-col gap-4" : "mt-3 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between lg:gap-x-6"}>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] text-ink-3">
             <Mono className="text-ink-2">{c.id}</Mono>
@@ -126,17 +132,28 @@ export function WorkspaceHeader({ c, state, dept, track }: { c: CiqCase; state: 
           </span>
           <div className="flex flex-wrap gap-2">
             {mayReassign && (
-              <Button size="sm" variant="ghost" icon={<UserRoundCog size={14} />} onClick={() => setReassign(true)} data-testid="reassign-review">
+              <Button size="sm" variant="ghost" icon={<UserRoundCog size={14} />} onClick={() => setReassign(true)} className={phone ? "min-h-11" : undefined} data-testid="reassign-review">
                 Reassign
               </Button>
             )}
-            <Button size="sm" variant="secondary" icon={<ExternalLink size={14} />} onClick={() => nav(`/cases/${c.id}`)} data-testid="open-case-overview">
+            <Button size="sm" variant="secondary" icon={<ExternalLink size={14} />} onClick={() => nav(`/cases/${c.id}`)} className={phone ? "min-h-11" : undefined} data-testid="open-case-overview">
               Case overview
             </Button>
           </div>
         </div>
       </div>
-      {others.length > 0 && (
+      {others.length > 0 && phone && (
+        // a short line of text each, where the chips would take a row each
+        <div className="mt-4" data-testid="workspace-other-reviews">
+          <p className="text-xs font-medium text-ink-3">Other reviews</p>
+          <p className="mt-1 flex flex-wrap gap-x-3 gap-y-1">
+            {others.map((r) => (
+              <DeptTrackText key={r.dept} c={c} track={r} />
+            ))}
+          </p>
+        </div>
+      )}
+      {others.length > 0 && !phone && (
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <span className="mr-1 text-xs font-medium text-ink-3">Other reviews</span>
           {others.map((r) => (

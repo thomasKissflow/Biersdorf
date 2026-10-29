@@ -13,6 +13,7 @@ import { useStore } from "@/store/store";
 import { Justification } from "./FieldRenderer";
 import { isLiveScope, type RequestedRefs } from "./lib";
 import { Attribution, DocumentList, RequestedBadge } from "./parts";
+import { tap, useIsPhone } from "./phone";
 
 /** The block's lead-in: what the supplier must do, or may do, with the documents listed. */
 function introOf(slots: RequestedDocSlot[]): string {
@@ -50,6 +51,7 @@ function SlotRow({ c, slot, editable, asked, focused }: { c: CiqCase; slot: Requ
   const just = c.justifications[slot.key];
   const status = requestedDocStatus(c, slot);
   const [jOpen, setJOpen] = useState(!!just);
+  const phone = useIsPhone();
   return (
     <div id={`field-${slot.key}`} data-testid={`q-reqdoc-${slot.key}`} data-status={status} data-optional={slot.optional ? "true" : "false"} className={cx("scroll-mt-40 px-5 py-4 transition-colors", focused && "bg-brand-soft/50")}>
       <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1">
@@ -99,7 +101,7 @@ function SlotRow({ c, slot, editable, asked, focused }: { c: CiqCase; slot: Requ
       <div className="mt-1.5 flex flex-wrap items-center justify-between gap-2">
         {just && !docs.length ? <Attribution c={c} keyId={slot.key} verb="Justified" /> : <span />}
         {editable && !jOpen && !docs.length && !slot.optional && (
-          <button type="button" onClick={() => setJOpen(true)} className="inline-flex items-center gap-1 text-[12px] font-medium text-ink-3 hover:text-brand" data-testid={`q-justify-${slot.key}`}>
+          <button type="button" onClick={() => setJOpen(true)} className={cx("inline-flex items-center gap-1 text-[12px] font-medium text-ink-3 hover:text-brand", tap(phone))} data-testid={`q-justify-${slot.key}`}>
             <MessageSquareWarning size={13} /> Cannot provide? Add a justification
           </button>
         )}

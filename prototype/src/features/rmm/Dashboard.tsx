@@ -1,18 +1,22 @@
 // RMM Dashboard (/rmm), the case owner's landing page. With no case yet it is one start card; once cases run it shows
 // the four operational tiles, what waits on RMM, its own cases, the review bottlenecks and the latest activity.
 // Lead time and first-time-right live on Reports only.
+// Phones (< 768 px, Thomas 30 Oct): the cards stack (as below 1280 px), "My cases" is one card per case (the row's test
+// id), and the buttons and filter chips are 44 px targets.
 import { ArrowRight, Building2, CircleCheck, FilePlus2, Send, TriangleAlert, UserRoundCheck } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Badge, BarsChart, Button, Card, CardHeader, EmptyState, Mono, PageHeader, Segmented, StatCard, Table, Td, Timeline, Tr, cx } from "@/components/ui";
+import { Badge, BarsChart, Button, Card, CardHeader, CardList, CardListItem, EmptyState, Mono, PageHeader, Segmented, StatCard, Table, Td, Timeline, Tr, cx } from "@/components/ui";
 import { TrackBadge } from "@/components/status";
 import { DEPT_LABEL, DEPT_SHORT } from "@/domain/catalog";
 import { deptWorkload } from "@/domain/metrics";
 import { fmtDate, fmtDateTime, isClosed, isOverdue, nowIso, supplierName, userName, waitingOn } from "@/domain/selectors";
 import { activeSuppliers } from "@/domain/suppliers";
 import type { CiqCase } from "@/domain/types";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { useStore } from "@/store/store";
 import { ATTENTION_LABEL, attentionItems, recentActivity, type AttentionKind } from "./attention";
+import { PHONE_CHIP, PHONE_TAPS } from "./phone";
 import { CaseCell, DueCell, NoAccess, OpenPointsCell, PHASE_SHORT, ResponsiveCardHeader, STARTS_AT_COMPLETENESS, auditTone, canManage, overduePoints } from "./shared";
 
 function greeting(): string {
@@ -25,6 +29,7 @@ const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? o
 export function RmmDashboard() {
   const { state, me, persona } = useStore();
   const nav = useNavigate();
+  const phone = useIsPhone();
   if (!canManage(persona)) return <NoAccess />;
 
   const today = `${new Date(nowIso()).toLocaleDateString("en-GB", { weekday: "long" })}, ${fmtDate(nowIso())}`;
@@ -40,7 +45,7 @@ export function RmmDashboard() {
       subtitle={`${today} · ${subtitle}`}
       actions={
         state.cases.length > 0 && (
-          <Button variant="primary" icon={<FilePlus2 size={16} />} onClick={() => nav("/cases/new")} data-testid="new-case">
+          <Button variant="primary" icon={<FilePlus2 size={16} />} onClick={() => nav("/cases/new")} data-testid="new-case" className={phone ? "h-11" : undefined}>
             New case
           </Button>
         )
@@ -111,6 +116,7 @@ export function RmmDashboard() {
 
 function StartCard({ suppliers }: { suppliers: number }) {
   const nav = useNavigate();
+  const tap = useIsPhone() ? "h-11" : undefined;
   const steps: [ReactNode, string, string][] = [
     [<FilePlus2 key="i" size={16} />, "You start the case", "Trade name, main INCI, BDF material no., the supplier and its contacts, the target markets and the due date."],
     [<Send key="i" size={16} />, "The supplier fills in the CIQ", "The contacts get an e-mail. Their answers open the sections that apply, and they confirm completeness."],
@@ -125,10 +131,10 @@ function StartCard({ suppliers }: { suppliers: number }) {
             There is no case yet. Choose a supplier from the supplier master and the raw material, and the supplier contacts are invited to fill in the Cosmetic Ingredient Questionnaire.
           </p>
           <div className="mt-6 flex flex-wrap gap-2">
-            <Button variant="primary" icon={<FilePlus2 size={16} />} onClick={() => nav("/cases/new")} data-testid="new-case">
+            <Button variant="primary" icon={<FilePlus2 size={16} />} onClick={() => nav("/cases/new")} data-testid="new-case" className={tap}>
               New case
             </Button>
-            <Button variant="secondary" icon={<Building2 size={16} />} onClick={() => nav("/suppliers")} data-testid="dashboard-suppliers">
+            <Button variant="secondary" icon={<Building2 size={16} />} onClick={() => nav("/suppliers")} data-testid="dashboard-suppliers" className={tap}>
               Suppliers ({suppliers})
             </Button>
           </div>
@@ -171,6 +177,20 @@ function NeedsAction() {
   const open = cases.filter((c) => !isClosed(c));
   const withSupplier = open.filter((c) => waitingOn(c) === "supplier").length;
   const others = state.cases.some((c) => c.ownerId !== me.id);
+  const phone = useIsPhone();
+  const scopeSwitch = (
+    <Segmented<Scope>
+      value={scope}
+      onChange={(v) => {
+        setScope(v);
+        setKind("all");
+      }}
+      options={[
+        { value: "mine", label: "My cases" },
+        { value: "all", label: "All owners" },
+      ]}
+    />
+  );
 
   return (
     <Card data-testid="needs-action" data-count={all.length}>
@@ -182,21 +202,7 @@ function NeedsAction() {
           </span>
         }
         subtitle="Most urgent first: rejections, overdue supplier answers, your reviews, release requests, idle cases."
-        action={
-          others ? (
-            <Segmented<Scope>
-              value={scope}
-              onChange={(v) => {
-                setScope(v);
-                setKind("all");
-              }}
-              options={[
-                { value: "mine", label: "My cases" },
-                { value: "all", label: "All owners" },
-              ]}
-            />
-          ) : undefined
-        }
+        action={others ? phone ? <div className={PHONE_TAPS}>{scopeSwitch}</div> : scopeSwitch : undefined}
       />
       {all.length > 0 && (
         <div className="flex flex-wrap gap-1.5 border-b border-line px-4 py-2.5">
@@ -244,7 +250,7 @@ function NeedsAction() {
                   </p>
                 )}
               </div>
-              <Button size="sm" variant="secondary" iconRight={<ArrowRight size={14} />} onClick={() => nav(i.to)} className="self-start" data-testid={`attention-open-${i.key}`}>
+              <Button size="sm" variant="secondary" iconRight={<ArrowRight size={14} />} onClick={() => nav(i.to)} className={cx("self-start", phone && "h-11")} data-testid={`attention-open-${i.key}`}>
                 {i.cta}
               </Button>
             </li>
@@ -253,7 +259,7 @@ function NeedsAction() {
       )}
       {list.length > 6 && (
         <div className="border-t border-line px-4 py-2.5">
-          <button onClick={() => setExpanded((e) => !e)} className="text-[13px] font-medium text-brand hover:underline">
+          <button onClick={() => setExpanded((e) => !e)} className={cx("text-[13px] font-medium text-brand hover:underline", phone && "min-h-11")}>
             {expanded ? "Show fewer" : `Show all ${list.length}`}
           </button>
         </div>
@@ -264,7 +270,7 @@ function NeedsAction() {
 
 function FilterChip({ active, onClick, children, testId }: { active: boolean; onClick: () => void; children: ReactNode; testId: string }) {
   return (
-    <button type="button" aria-pressed={active} onClick={onClick} data-testid={testId} className={cx("rounded-full border px-2.5 py-0.5 text-[12.5px] transition-colors", active ? "border-brand bg-brand-soft font-medium text-brand" : "border-line bg-surface text-ink-2 hover:border-line-strong hover:text-ink")}>
+    <button type="button" aria-pressed={active} onClick={onClick} data-testid={testId} className={cx("rounded-full border px-2.5 py-0.5 text-[12.5px] transition-colors", useIsPhone() && PHONE_CHIP, active ? "border-brand bg-brand-soft font-medium text-brand" : "border-line bg-surface text-ink-2 hover:border-line-strong hover:text-ink")}>
       {children}
     </button>
   );
@@ -335,6 +341,7 @@ function BottleneckCard() {
 
 function MyCases({ cases }: { cases: CiqCase[] }) {
   const nav = useNavigate();
+  const phone = useIsPhone();
   const open = cases.filter((c) => !isClosed(c)).sort((a, b) => a.dueDate.localeCompare(b.dueDate));
   const shown = open.slice(0, 8);
   return (
@@ -360,6 +367,31 @@ function MyCases({ cases }: { cases: CiqCase[] }) {
             stay in Cases.
           </EmptyState>
         </div>
+      ) : phone ? (
+        <CardList label="My cases" className="p-3">
+          {shown.map((c) => {
+            const mine = c.reviews.find((r) => r.dept === "RMM");
+            return (
+              <CardListItem
+                key={c.id}
+                data-testid={`dashboard-case-${c.id}`}
+                onClick={() => nav(`/cases/${c.id}`)}
+                title={c.materialName}
+                badge={c.priority === "high" ? <span className="rounded bg-warn-soft px-1 text-[10.5px] font-semibold text-ink-2 uppercase">High</span> : undefined}
+                meta={
+                  <>
+                    <Mono className="text-ink-2">{c.id}</Mono> · {PHASE_SHORT[c.phase]} · {waitingOn(c) === "supplier" ? "with supplier" : "with Beiersdorf"}
+                  </>
+                }
+                fields={[
+                  { label: "My review", value: mine ? <TrackBadge status={mine.status} /> : <span className="text-xs text-ink-3">{STARTS_AT_COMPLETENESS}</span> },
+                  { label: "Open points", value: <OpenPointsCell c={c} /> },
+                  { label: "Due", value: <DueCell c={c} /> },
+                ]}
+              />
+            );
+          })}
+        </CardList>
       ) : (
         <Table head={["Case", "Phase", "My review", "Open points", "Due"]}>
           {shown.map((c) => {

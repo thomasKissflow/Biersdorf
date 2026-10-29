@@ -2,6 +2,7 @@
 // at the step). Since BDF's RMES scope of 28 Oct it is the review's decision, OUTSIDE the RMES sheet: the card sits in
 // the Questionnaire tab's right column (id "decision-card": the completion bar scrolls to it). It needs the case's
 // RMES record (created with the review task; live, on the reviewer's next load). No criteria or findings any more.
+// On a phone (< 768 px) its choice and buttons are 44 px targets.
 import { ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { useLiveFeatures } from "@/components/liveFeatures";
@@ -10,12 +11,14 @@ import { DecisionBadge } from "@/components/status";
 import { DEPT_LABEL, DEPT_SHORT } from "@/domain/catalog";
 import { fmtDateTime, userName } from "@/domain/selectors";
 import type { CiqCase, ReviewTrack } from "@/domain/types";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { useStore } from "@/store/store";
 import { Notice, decisionEvent, rmesRecordPending } from "./shared";
 
 export function DecisionCard({ c, dept, track, canAct }: { c: CiqCase; dept: "SAF" | "REG"; track: ReviewTrack; canAct: boolean }) {
   const { state, rmesDecision } = useStore();
   const { instantRmes } = useLiveFeatures();
+  const phone = useIsPhone();
   const [editing, setEditing] = useState(false);
   const [dec, setDec] = useState<"approved" | "rejected">(track.decision ?? "approved");
   const [reason, setReason] = useState(track.decisionReason ?? "");
@@ -51,7 +54,7 @@ export function DecisionCard({ c, dept, track, canAct }: { c: CiqCase; dept: "SA
               </p>
             )}
             {canAct && (
-              <Button size="sm" variant="ghost" className="mt-2 -ml-2" data-testid="decision-change" onClick={() => {
+              <Button size="sm" variant="ghost" className={phone ? "mt-2 -ml-2 min-h-11" : "mt-2 -ml-2"} data-testid="decision-change" onClick={() => {
                   setEditing(true);
                   setDec(track.decision!);
                   setReason(track.decisionReason ?? "");
@@ -64,7 +67,7 @@ export function DecisionCard({ c, dept, track, canAct }: { c: CiqCase; dept: "SA
         {!track.decision && !canAct && <p className="text-[13px] text-ink-3">No decision recorded.</p>}
         {open && (
           <div className="space-y-3">
-            <div data-testid="decision-choice">
+            <div data-testid="decision-choice" className={phone ? "[&_button]:min-h-11" : undefined}>
             <Segmented
               value={dec}
               onChange={(v) => {
@@ -85,7 +88,7 @@ export function DecisionCard({ c, dept, track, canAct }: { c: CiqCase; dept: "SA
                 The decision is recorded once the case's RMES record exists. {rmesRecordPending(instantRmes)}
               </Notice>
             )}
-            <div className="flex gap-2">
+            <div className={phone ? "flex gap-2 [&_button]:min-h-11" : "flex gap-2"}>
               <Button size="sm" variant={dec === "rejected" ? "danger" : "primary"} onClick={record} disabled={noRecord} data-testid="decision-record">
                 Record {dec === "approved" ? "approval" : "rejection"}
               </Button>

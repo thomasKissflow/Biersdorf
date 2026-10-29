@@ -1,13 +1,17 @@
 // Suppliers (/suppliers): the supplier master, an imported data master with no onboarding flow. Only the Business
 // administrator adds, edits, deactivates and reactivates suppliers and contacts; RMM looks them up read-only; other
 // roles have no access.
+// Phones (< 768 px, Thomas 30 Oct): one card per supplier (the row's test id). The administrator's editing needs a larger
+// screen: on a phone the master is read-only for everyone, with a note instead of "Add supplier".
 import { Building2, Plus, Search } from "lucide-react";
-import { useState } from "react";
+import { useState, type ElementType } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Badge, Button, Card, EmptyState, Mono, PageHeader, Table, Td, TextInput, Tr } from "@/components/ui";
+import { Badge, Button, Card, CardList, CardListItem, EmptyState, LargerScreenNote, Mono, PageHeader, Table, Td, TextInput, Tr } from "@/components/ui";
 import { can } from "@/domain/permissions";
 import { supplierRows } from "@/domain/suppliers";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { useStore } from "@/store/store";
+import { PHONE_FIELDS } from "@/features/rmm/phone";
 import { NoAccess } from "@/features/rmm/shared";
 import { SupplierFormModal } from "./forms";
 import { MaintainedByAdmin } from "./ReadOnlyNote";
@@ -17,7 +21,12 @@ export function SupplierList() {
   const nav = useNavigate();
   const [params] = useSearchParams();
   const [q, setQ] = useState("");
-  const manage = can(state, me.id, "supplier.manage");
+  const phone = useIsPhone();
+  const ListBox: ElementType = phone ? "div" : Card;
+  const EmptyBox: ElementType = phone ? Card : "div";
+  // the administrator edits on a big screen only
+  const manage = can(state, me.id, "supplier.manage") && !phone;
+  const admin = can(state, me.id, "supplier.manage");
   // "?add=1" opens the add form directly for the administrator (a link from elsewhere); after saving, the new
   // supplier's page opens.
   const [adding, setAdding] = useState(() => params.get("add") === "1");
@@ -38,24 +47,56 @@ export function SupplierList() {
             <Button variant="primary" icon={<Plus size={16} />} onClick={() => setAdding(true)} data-testid="supplier-add">
               Add supplier
             </Button>
-          ) : (
+          ) : admin ? undefined : (
             <MaintainedByAdmin testId="suppliers-read-only" />
           )
         }
       />
-      <Card>
-        <div className="border-b border-line p-3">
+      {admin && <LargerScreenNote>On a phone you can look up the suppliers and their contacts, but not add or change them.</LargerScreenNote>}
+      {/* a phone: the search and the supplier cards straight on the page, not boxed twice */}
+      <ListBox className={phone ? "space-y-3" : undefined}>
+        <div className={phone ? PHONE_FIELDS : "border-b border-line p-3"}>
           <div className="relative max-w-md">
             <Search size={15} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-ink-3" aria-hidden />
             <TextInput aria-label="Search suppliers" placeholder="Search name, DUNS or country…" value={q} onChange={(e) => setQ(e.target.value)} className="pl-9" data-testid="supplier-search" />
           </div>
         </div>
         {rows.length === 0 ? (
-          <div data-testid="empty-suppliers">
+          <EmptyBox data-testid="empty-suppliers">
             <EmptyState icon={<Building2 size={28} />} title={all.length ? "No supplier matches" : "No supplier yet"}>
-              {all.length ? "Try another name or DUNS number." : manage ? "Add the first supplier with at least one contact." : "The business administrator adds the suppliers."}
+              {all.length ? "Try another name or DUNS number." : admin ? "Add the first supplier with at least one contact." : "The business administrator adds the suppliers."}
             </EmptyState>
-          </div>
+          </EmptyBox>
+        ) : phone ? (
+          <CardList label="Suppliers">
+            {rows.map((r) => (
+              <CardListItem
+                key={r.supplier.id}
+                data-testid={`supplier-row-${r.supplier.id}`}
+                onClick={() => nav(`/suppliers/${r.supplier.id}`)}
+                title={r.supplier.name}
+                badge={
+                  <Badge tone={r.status === "active" ? "ok" : "neutral"} dot>
+                    {r.status === "active" ? "Active" : "Inactive"}
+                  </Badge>
+                }
+                meta={`${r.supplier.city ? `${r.supplier.city}, ` : ""}${r.supplier.country} · ${r.supplier.type === "manufacturer" ? "Manufacturer" : "Distributor"}`}
+                fields={[
+                  { label: "DUNS", value: <Mono>{r.supplier.duns}</Mono> },
+                  {
+                    label: "Contacts",
+                    value: (
+                      <>
+                        <span className={r.activeContacts ? "text-ink" : "font-medium text-bad"}>{r.activeContacts} active</span>
+                        {r.contacts > r.activeContacts && <span className="text-ink-3"> · {r.contacts - r.activeContacts} inactive</span>}
+                      </>
+                    ),
+                  },
+                  { label: "Cases", value: r.cases ? `${r.openCases} open${r.cases > r.openCases ? ` · ${r.cases - r.openCases} closed` : ""}` : <span className="text-ink-3">None</span> },
+                ]}
+              />
+            ))}
+          </CardList>
         ) : (
           <Table head={["Supplier", "DUNS", "Country", "Type", "Contacts", "Open cases", "Status"]}>
             {rows.map((r) => (
@@ -92,7 +133,7 @@ export function SupplierList() {
             ))}
           </Table>
         )}
-      </Card>
+      </ListBox>
       {manage && <SupplierFormModal open={adding} onClose={() => setAdding(false)} onSaved={(id) => nav(`/suppliers/${id}`)} />}
     </div>
   );

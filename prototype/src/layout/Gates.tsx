@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Card, EmptyState } from "@/components/ui";
 import type { Persona } from "@/domain/types";
+import { useIsPhone } from "@/shell/useLayoutMode";
 import { useStore } from "@/store/store";
 
 /** Admin screens: the Business administrator maintains them; the Auditor reads the rules (its menu's "Rules"). */
@@ -44,6 +45,7 @@ export function NoAccess() {
   const { persona } = useStore();
   const nav = useNavigate();
   const home = persona.nav.find((n) => n.to === persona.landing) ?? persona.nav[0];
+  const phone = useIsPhone();
   return (
     <Card>
       <EmptyState
@@ -52,7 +54,7 @@ export function NoAccess() {
         title="This page is not part of your role"
         action={
           home && (
-            <Button variant="primary" onClick={() => nav(home.to)} data-testid="no-access-home">
+            <Button variant="primary" onClick={() => nav(home.to)} data-testid="no-access-home" className={phone ? "h-11" : undefined}>
               Go to {home.label}
             </Button>
           )
