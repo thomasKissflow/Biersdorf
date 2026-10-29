@@ -1,5 +1,6 @@
 // Plain labels of question types and requiredness, shared by the questionnaire editor and its read-only views.
-import type { FieldType, Requiredness } from "@/domain/types";
+import { uploadsMandatory } from "@/domain/requestedDocs";
+import type { FieldType, Requiredness, SectionData } from "@/domain/types";
 
 export const FIELD_TYPE_LABEL: Record<FieldType, string> = {
   text: "Short text",
@@ -36,3 +37,13 @@ export const REQUIRED_LABEL: Record<Requiredness, string> = {
   optional: "Optional",
   conditional: "Mandatory if shown",
 };
+
+/** A section's content in the catalogue and its views: a documents-only section says when its upload is mandatory
+ *  ("Upload required?", 29 Oct). */
+export const documentsContent = (x: Pick<SectionData, "documentsOnly" | "uploads">) => (uploadsMandatory(x) ? "Documents only · mandatory upload" : "Documents only");
+
+/** What "Upload required?" means, for the section form and the read-only views. */
+export const UPLOADS_HINT = {
+  mandatory: "When the section is mandatory for a case, the supplier must upload at least one document here, or say why they cannot. Until then it blocks the completeness confirmation and the final release.",
+  optional: "The supplier may upload the documents this section asks for; the upload itself does not block the completeness confirmation (a document a rule requests here still can).",
+} as const;

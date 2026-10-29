@@ -8,6 +8,7 @@ import { CONFIG_QUESTIONS, DEPT_LABEL, DEPT_SHORT, SECTION_BY_ID } from "@/domai
 import { draftSideNames } from "@/domain/configActions";
 import { RULE_SETS, deriveScope, hasUndefinedOrigin, pairedTemplate, requiredEvidence, ruleSet, sectionsInTemplate } from "@/domain/rules";
 import { REFERENCE_MATERIALS } from "@/domain/referenceMaterials";
+import { isOptionalEvidence } from "@/domain/requestedDocs";
 import { departmentsForScope } from "@/domain/selectors";
 import type { ConfigAnswers, Dept, ScopeItem } from "@/domain/types";
 import { useStore } from "@/store/store";
@@ -71,7 +72,9 @@ export function ScopeSimulator({ initial }: { initial?: string }) {
     const mandatory = scope.filter((s) => s.applicability === "mandatory");
     const optional = scope.filter((s) => s.applicability === "optional");
     const na = scope.filter((s) => s.applicability === "na");
-    const evidence = requiredEvidence(config, rs);
+    // a document the rule lets the supplier leave out (optionalEvidence) is marked as such
+    const rules = new Map(ruleSet(rs).rules.map((r) => [r.id, r]));
+    const evidence = requiredEvidence(config, rs).map((e) => ({ ...e, optional: isOptionalEvidence(rules.get(e.ruleId) ?? {}, e.doc) }));
     const manual = hasUndefinedOrigin(config);
     const depts = departmentsForScope(scope, state.ownership);
     const informed = (["CUS", "LEG"] as Dept[]).filter((d) => scope.some((s) => s.applicability !== "na" && state.ownership[s.sectionId]?.lead === d));
@@ -266,7 +269,10 @@ export function ScopeSimulator({ initial }: { initial?: string }) {
               {result.evidence.map((e) => (
                 <li key={`${e.ruleId}-${e.doc}`} className="flex items-baseline gap-2 text-[13px]">
                   <Mono className="w-12 shrink-0 text-ink-3">{e.ruleId}</Mono>
-                  <span className="text-ink">{e.doc}</span>
+                  <span className="text-ink">
+                    {e.doc}
+                    {e.optional && <span className="text-ink-3"> (optional)</span>}
+                  </span>
                 </li>
               ))}
             </ul>

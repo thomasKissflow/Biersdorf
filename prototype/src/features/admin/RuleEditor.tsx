@@ -1,6 +1,7 @@
 // The rule form (spec §8.3): it reads as a sentence. When [question] [is Yes / includes any of …] → then [sections]
-// become [Mandatory / Optional / Not applicable], ask for evidence, reviewed by [departments], basis and note. A live
-// preview writes the rule in plain words and shows which example materials it applies to.
+// become [Mandatory / Optional / Not applicable], ask for evidence (each document Mandatory or Optional), reviewed by
+// [departments], basis and note. A live preview writes the rule in plain words and shows which example materials it
+// applies to.
 import { Check, FileText, FileUp, Plus, Search, X } from "lucide-react";
 import { useMemo, useState, type KeyboardEvent } from "react";
 import { Button, Drawer, Field, Select, TextArea, TextInput, cx } from "@/components/ui";
@@ -8,12 +9,13 @@ import { CONFIG_BY_ID, CONFIG_QUESTIONS, DEPT_SHORT } from "@/domain/catalog";
 import { BASIS_LABEL, OUTCOME_LABEL, evaluateCondition, optionShort, ruleSentence } from "@/domain/conditions";
 import { draftPair, draftSideNames, pairLabel, shortTemplate } from "@/domain/configActions";
 import { REFERENCE_MATERIALS } from "@/domain/referenceMaterials";
-import { alwaysOnSections, uncollectedEvidence, uncollectedText, type UncollectedEvidence } from "@/domain/requestedDocs";
+import { alwaysOnSections, evidenceFieldIds, isOptionalEvidence, uncollectedEvidence, uncollectedText, type UncollectedEvidence } from "@/domain/requestedDocs";
 import { EVIDENCE_FIELDS } from "@/domain/rules";
 import type { Applicability, ConfigQuestionId, Dept, RuleBasis, SectionData } from "@/domain/types";
 import { useStore } from "@/store/store";
 import { Choice, DEPT_ORDER, DeptChips, FormBlock, InlineError } from "./controls";
-import { CONDITION_MODE_LABEL, addEvidence, conditionOf, emptyRuleForm, hasProblems, modesFor, ruleFormOf, ruleFormProblems, ruleInputOf, withQuestion, type ConditionMode, type RuleForm } from "./editorModel";
+import { CONDITION_MODE_LABEL, addEvidence, conditionOf, emptyRuleForm, hasProblems, modesFor, ruleFormOf, ruleFormProblems, ruleInputOf, withEvidence, withEvidenceOptional, withQuestion, type ConditionMode, type RuleForm } from "./editorModel";
+import { REQUIRED_LABEL } from "./fieldTypes";
 
 const KIND_LABEL = { basic: "Basic data", chapter: "Chapter", annex: "Annex" } as const;
 
@@ -82,13 +84,36 @@ function SectionPicker({ sections, value, onChange, invalid, codeOf }: { section
   );
 }
 
-/** Evidence the supplier uploads: chips plus an input with suggestions from the other rules. */
-function EvidenceChips({ value, onChange, suggestions, uncollected }: { value: string[]; onChange: (v: string[]) => void; suggestions: string[]; uncollected: UncollectedEvidence[] }) {
+/**
+ * Evidence the supplier uploads: chips plus an input with suggestions from the other rules, and below them every
+ * document asked for. One that becomes (or may become) an upload slot has its own Mandatory | Optional (Thomas, 29 Oct;
+ * default Mandatory, as before); one a question collects shows that question's setting instead (`followsOf`).
+ */
+function EvidenceChips({
+  value,
+  optional,
+  onChange,
+  onOptional,
+  suggestions,
+  uncollected,
+  followsOf,
+}: {
+  value: string[];
+  optional: string[];
+  onChange: (v: string[]) => void;
+  onOptional: (doc: string, optional: boolean) => void;
+  suggestions: string[];
+  uncollected: UncollectedEvidence[];
+  /** The requiredness of the question that collects a document, in words ("Mandatory if shown"). */
+  followsOf: (doc: string) => string | undefined;
+}) {
   // Known documents (each collected by an upload question) are offered as chips to tick; anything else can be typed.
   // A document no question collects is handled too: the supplier gets an upload slot for it under "Requested
-  // documents" (spec §8.5), so the form only says where.
+  // documents" (spec §8.5), so the form only says where. Its Mandatory | Optional decides whether the slot blocks; a
+  // document a question collects follows that question's own setting, so it has no toggle.
   const known = suggestions;
-  const other = value.filter((e) => !known.includes(e));
+  const slots = new Set(uncollected.map((u) => u.doc.toLowerCase()));
+  const anyToggle = value.some((e) => slots.has(e.toLowerCase()));
   const [text, setText] = useState("");
   const toggle = (doc: string) => onChange(value.includes(doc) ? value.filter((x) => x !== doc) : [...value, doc]);
   const add = () => {
@@ -104,7 +129,7 @@ function EvidenceChips({ value, onChange, suggestions, uncollected }: { value: s
   return (
     <div className="space-y-3">
       <div>
-        <div className="mb-1.5 text-[12.5px] text-ink-3">{value.length ? `${value.length} selected · tick or untick` : "Tick the documents the supplier must upload"}</div>
+        <div className="mb-1.5 text-[12.5px] text-ink-3">{value.length ? `${value.length} selected · tick or untick` : "Tick the documents the supplier uploads. Each one is mandatory unless you set it to Optional."}</div>
         <div className="flex flex-wrap gap-1.5" data-testid="rule-evidence-options">
           {known.map((doc, i) => {
             const on = value.includes(doc);
@@ -125,18 +150,45 @@ function EvidenceChips({ value, onChange, suggestions, uncollected }: { value: s
           })}
         </div>
       </div>
-      {other.length > 0 && (
-        <ul className="flex flex-wrap gap-1.5" data-testid="rule-evidence-list">
-          {other.map((e) => (
-            <li key={e} className="inline-flex items-center gap-1.5 rounded-full border border-line-strong bg-surface-2 py-0.5 pr-1 pl-2.5 text-[12.5px] text-ink">
-              <FileText size={12} className="text-ink-3" />
-              {e}
-              <button type="button" data-testid={`rule-evidence-remove-${value.indexOf(e)}`} aria-label={`Remove ${e}`} onClick={() => onChange(value.filter((x) => x !== e))} className="rounded-full p-0.5 text-ink-3 hover:bg-surface-3 hover:text-ink">
-                <X size={12} />
-              </button>
-            </li>
-          ))}
+      {value.length > 0 && (
+        <ul className="divide-y divide-line rounded-lg border border-line" data-testid="rule-evidence-list" aria-label="Documents asked for">
+          {value.map((e, i) => {
+            const collected = !slots.has(e.toLowerCase());
+            const opt = !collected && isOptionalEvidence({ optionalEvidence: optional }, e);
+            return (
+              <li key={e} className="flex flex-wrap items-center gap-x-3 gap-y-1.5 px-3 py-2" data-testid="rule-evidence-doc" data-doc={e} data-optional={opt ? "true" : "false"} data-collected={collected ? "true" : "false"}>
+                <span className="inline-flex min-w-0 flex-1 basis-48 items-start gap-1.5 text-[13px] text-ink">
+                  <FileText size={13} className="mt-0.5 shrink-0 text-ink-3" aria-hidden />
+                  <span className="min-w-0">{e}</span>
+                </span>
+                {collected ? (
+                  <span data-testid={`rule-evidence-follows-${i}`} className="text-[12px] text-ink-3">
+                    Follows the question: <span className="font-medium text-ink-2">{followsOf(e) ?? REQUIRED_LABEL.mandatory}</span>
+                  </span>
+                ) : (
+                  <Choice<"mandatory" | "optional">
+                    data-testid={`rule-evidence-required-${i}`}
+                    aria-label={`${e}: mandatory or optional`}
+                    value={opt ? "optional" : "mandatory"}
+                    onChange={(v) => onOptional(e, v === "optional")}
+                    options={[
+                      { value: "mandatory", label: REQUIRED_LABEL.mandatory, hint: "Blocks the completeness confirmation until uploaded or justified" },
+                      { value: "optional", label: REQUIRED_LABEL.optional, hint: "The supplier may leave it out" },
+                    ]}
+                  />
+                )}
+                <button type="button" data-testid={`rule-evidence-remove-${i}`} aria-label={`Remove ${e}`} onClick={() => onChange(value.filter((x) => x !== e))} className="rounded-md p-1 text-ink-3 hover:bg-surface-3 hover:text-ink">
+                  <X size={14} />
+                </button>
+              </li>
+            );
+          })}
         </ul>
+      )}
+      {anyToggle && (
+        <p className="text-[12px] text-ink-3" data-testid="rule-evidence-required-hint">
+          Mandatory: it blocks the completeness confirmation until the supplier uploads it or says why they cannot. Optional: the supplier may leave it out.
+        </p>
       )}
       <div>
         <div className="mb-1.5 text-[12.5px] text-ink-3">Not in the list?</div>
@@ -214,12 +266,23 @@ export function RuleEditorDrawer({ target, onClose, onSaved }: { target: RuleEdi
     return (id: string) => m.get(id) ?? id;
   }, [sections]);
   const suggestions = useMemo(() => [...new Set([...Object.keys(EVIDENCE_FIELDS), ...(draft?.ruleSet.rules ?? []).flatMap((r) => r.evidence ?? [])])].sort((a, b) => a.localeCompare(b)), [draft]);
+  // The requiredness of the question that collects a document in the draft ("Follows the question: …").
+  const followsOf = (doc: string) => {
+    const ids = evidenceFieldIds(doc) ?? [];
+    const labels = [...new Set(sections.filter((x) => !x.retired).flatMap((x) => x.fields.filter((fd) => ids.includes(fd.id)).map((fd) => REQUIRED_LABEL[fd.required])))];
+    return labels.length ? labels.join(" or ") : undefined;
+  };
 
   if (!draft) return null;
   const problems = ruleFormProblems(f, liveIds);
   const show = tried ? problems : {};
   const cond = conditionOf(f);
-  const sentence = cond && !problems.answer ? ruleSentence({ condition: cond, activates: f.activates.filter((id) => liveIds.has(id)), outcome: f.outcome, evidence: f.evidence, departments: f.departments, flagsCase: f.flagsCase }, codeOf, (id) => sections.find((x) => x.id === id)?.title) : null;
+  const uncollected = uncollectedEvidence(f.evidence, f.activates, draft.template, { outcome: f.outcome, alwaysOn: alwaysOnSections(draft.ruleSet.rules.filter((r) => r.id !== target.ruleId)), optional: f.optionalEvidence });
+  // Optional counts only for a document that becomes (or may become) an upload slot: one a question collects for every
+  // case follows that question, so its name stays out of optionalEvidence (and of "(optional)" in the sentence). The
+  // form keeps the choice, should the document become a slot again with other sections.
+  const optionalEvidence = f.optionalEvidence.filter((o) => uncollected.some((u) => isOptionalEvidence({ optionalEvidence: [o] }, u.doc)));
+  const sentence = cond && !problems.answer ? ruleSentence({ condition: cond, activates: f.activates.filter((id) => liveIds.has(id)), outcome: f.outcome, evidence: f.evidence, optionalEvidence, departments: f.departments, flagsCase: f.flagsCase }, codeOf, (id) => sections.find((x) => x.id === id)?.title) : null;
   const applies = cond && !problems.answer ? REFERENCE_MATERIALS.filter((m) => evaluateCondition(cond, m.config)) : [];
   const set = (patch: Partial<RuleForm>) => setF((x) => ({ ...x, ...patch }));
   const modes = modesFor(f.question);
@@ -232,7 +295,7 @@ export function RuleEditorDrawer({ target, onClose, onSaved }: { target: RuleEdi
   const save = () => {
     setTried(true);
     if (hasProblems(problems)) return;
-    const id = upsertRule(ruleInputOf(f));
+    const id = upsertRule(ruleInputOf({ ...f, optionalEvidence }));
     if (id) {
       onSaved?.(id);
       onClose();
@@ -341,8 +404,16 @@ export function RuleEditorDrawer({ target, onClose, onSaved }: { target: RuleEdi
           </p>
         )}
 
-        <FormBlock label="Ask for evidence" hint="Optional. Documents the supplier uploads when the rule applies.">
-          <EvidenceChips value={f.evidence} onChange={(evidence) => set({ evidence })} suggestions={suggestions} uncollected={uncollectedEvidence(f.evidence, f.activates, draft.template, { outcome: f.outcome, alwaysOn: alwaysOnSections(draft.ruleSet.rules.filter((r) => r.id !== target.ruleId)) })} />
+        <FormBlock label="Ask for evidence" hint="Documents the supplier uploads when the rule applies (leave empty if none).">
+          <EvidenceChips
+            value={f.evidence}
+            optional={f.optionalEvidence}
+            onChange={(evidence) => setF((x) => withEvidence(x, evidence))}
+            onOptional={(doc, optional) => setF((x) => withEvidenceOptional(x, doc, optional))}
+            suggestions={suggestions}
+            uncollected={uncollected}
+            followsOf={followsOf}
+          />
         </FormBlock>
 
         <FormBlock label="Reviewed by" hint="The departments that review what this rule asks for. Review tasks go to each section's lead department, set on the Questionnaire page.">

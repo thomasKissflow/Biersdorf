@@ -251,9 +251,11 @@ export function sectionsText(ids: string[], codeOf: (id: string) => string = (id
  * mandatory. The supplier uploads Pesticide and mycotoxin analysis and Sustainability certificates. Reviewed by
  * Sustainability, Regulatory and Safety."
  */
-export function ruleSentence(r: Pick<RuleData, "condition" | "activates" | "outcome" | "evidence" | "departments" | "flagsCase">, codeOf?: (id: string) => string, titleOf?: (id: string) => string | undefined): string {
+export function ruleSentence(r: Pick<RuleData, "condition" | "activates" | "outcome" | "evidence" | "optionalEvidence" | "departments" | "flagsCase">, codeOf?: (id: string) => string, titleOf?: (id: string) => string | undefined): string {
   const clause = conditionClause(r.condition);
-  const evidence = (r.evidence ?? []).filter((e) => e.trim());
+  // A document the supplier may leave out (optionalEvidence, stored in the evidence's own spelling) says so.
+  const optional = new Set((r.optionalEvidence ?? []).map((e) => e.trim().toLowerCase()));
+  const evidence = (r.evidence ?? []).filter((e) => e.trim()).map((e) => (optional.has(e.trim().toLowerCase()) ? `${e} (optional)` : e));
   const out: string[] = [];
   if (r.activates.length) {
     // One section: its title too ("K6.18 Microplastics declaration becomes mandatory"), when the caller knows it.

@@ -5,10 +5,11 @@ import { Badge, Drawer, EmptyState, KeyValue } from "@/components/ui";
 import { ApplicabilityBadge } from "@/components/status";
 import { DEPT_LABEL, DEPT_SHORT, fieldOf, isChoiceType, templateData, templateHasSection } from "@/domain/catalog";
 import { configVersions } from "@/domain/configActions";
+import { uploadsMandatory } from "@/domain/requestedDocs";
 import { ruleSet } from "@/domain/rules";
 import type { Requiredness } from "@/domain/types";
 import { useStore } from "@/store/store";
-import { FIELD_TYPE_LABEL, REQUIRED_LABEL } from "./fieldTypes";
+import { FIELD_TYPE_LABEL, REQUIRED_LABEL, UPLOADS_HINT, documentsContent } from "./fieldTypes";
 import { KIND_LABEL } from "./QuestionnaireEditor";
 import { shortVersion } from "./shared";
 
@@ -54,6 +55,7 @@ export function SectionDrawer({ sectionId, templateVersion, ruleSetVersion, onCl
             { k: "Lead department", v: DEPT_LABEL[own.lead] },
             { k: "Co-reviewers", v: own.co.length ? own.co.map((d) => DEPT_SHORT[d]).join(", ") : "None" },
             { k: "Content", v: sec.documentsOnly ? "Documents only" : `${sec.fields.length} ${sec.fields.length === 1 ? "question" : "questions"}${sec.id === "K2.1" ? " + composition table" : ""}` },
+            ...(sec.documentsOnly ? [{ k: "Upload required?", v: <span data-testid="section-view-uploads">{uploadsMandatory(sec) ? REQUIRED_LABEL.mandatory : REQUIRED_LABEL.optional}</span> }] : []),
           ]}
         />
 
@@ -85,7 +87,7 @@ export function SectionDrawer({ sectionId, templateVersion, ruleSetVersion, onCl
           {sec.id === "K2.1" && <p className="mb-2 text-[12.5px] text-ink-3">Plus the repeatable composition table: INCI, CAS, EC, function, additive, origin and concentration range per component.</p>}
           {sec.documentsOnly || sec.fields.length === 0 ? (
             <div className="rounded-lg border border-dashed border-line-strong">
-              <EmptyState title={sec.documentsOnly ? "Documents only" : "No questions"}>{sec.documentsOnly ? "The supplier uploads the documents this section asks for, following the CIQ 2026 template." : "This section has no questions in this version."}</EmptyState>
+              <EmptyState title={sec.documentsOnly ? documentsContent(sec) : "No questions"}>{sec.documentsOnly ? `${UPLOADS_HINT[uploadsMandatory(sec) ? "mandatory" : "optional"]} The documents follow the CIQ 2026 template.` : "This section has no questions in this version."}</EmptyState>
             </div>
           ) : (
             <ul className="divide-y divide-line rounded-lg border border-line">

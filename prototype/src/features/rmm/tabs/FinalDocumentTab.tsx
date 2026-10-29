@@ -155,7 +155,7 @@ export function FinalDocumentTab({ c }: { c: CiqCase }) {
             {d.sections.some((s) => !hasAnswers(s)) && (
               <section data-testid="fd-sections-other">
                 <h4 className="border-b border-line pb-1.5 text-[14px] font-semibold text-ink">Further sections in scope</h4>
-                <p className="mt-2 text-[12.5px] text-ink-2">Answered with documents only (the CIQ template document, statements or certificates); the upload is optional. Each section shows the files uploaded to it, which are also listed under Evidence (part 3).</p>
+                <p className="mt-2 text-[12.5px] text-ink-2">Answered with documents (the CIQ template document, statements or certificates). Each section shows the files uploaded to it, which are also listed under Evidence (part 3).</p>
                 <ul className="mt-2 grid grid-cols-1 gap-x-6 gap-y-1 text-[12.5px] text-ink-2 sm:grid-cols-2">
                   {d.sections
                     .filter((s) => !hasAnswers(s))

@@ -1,7 +1,7 @@
 // The outline of the case Questionnaire tab: every section in scope (plus the metadata block) with its group, status
 // and markers, and the filters of the summary bar. Pure: the tab renders it, the unit test checks it.
 import { CONFIG_QUESTIONS, fieldOf, fieldsOf, sectionOf } from "@/domain/catalog";
-import { slotsIn } from "@/domain/requestedDocs";
+import { sectionUploadRequired, slotsIn } from "@/domain/requestedDocs";
 import { REQUIRED_CONFIG, activeSections, isConfigAnswered, sectionProgress, sectionsChangedSince } from "@/domain/selectors";
 import type { CiqCase, OpenPoint, ScopeItem } from "@/domain/types";
 
@@ -16,7 +16,8 @@ export const GROUPS: OutlineGroup[] = ["basic", "metadata", "chapter", "annex"];
 
 /**
  * complete: every required answer and requested document is there; missing: some are not; optional: nothing is
- * required (an optional section, or only optional questions apply); docs: documents only, never blocking.
+ * required (an optional section, or only optional questions apply); docs: documents only, never blocking (a
+ * documents-only section whose upload is mandatory for the case is complete or missing instead).
  */
 export type OutlineStatus = "complete" | "missing" | "optional" | "docs";
 
@@ -50,9 +51,9 @@ export interface Outline {
 
 const isMetadataKey = (k: string) => /^SF\d\d$/.test(k);
 
-/** Whether a section has questions in the case's questionnaire version (spec §8.1) or requested documents; otherwise it
- *  is answered with documents only. */
-export const hasContent = (c: CiqCase, sectionId: string) => fieldsOf(sectionId, c.templateVersion).length > 0 || sectionId === "K2.1" || slotsIn(c, sectionId).length > 0;
+/** Whether a section has questions in the case's questionnaire version (spec §8.1), requested documents, or an upload
+ *  the case requires ("Upload required? Mandatory"); otherwise it is answered with documents only. */
+export const hasContent = (c: CiqCase, sectionId: string) => fieldsOf(sectionId, c.templateVersion).length > 0 || sectionId === "K2.1" || slotsIn(c, sectionId).length > 0 || sectionUploadRequired(c, sectionId);
 
 export function groupOf(c: CiqCase, sectionId: string): OutlineGroup {
   if (sectionId === METADATA_ID) return "metadata";

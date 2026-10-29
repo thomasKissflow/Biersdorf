@@ -7,6 +7,8 @@
 // canonical JSON on CIQ Case Data). The patch gives it the app's document seal: the page footer
 // "<Case_Code>-FD · document seal <seal>", the closing note (the PDF's SHA-256 is filed on the case), and the PDF's
 // producer and subject ("document seal <seal>", which Code.gs reads back to recognise its own file).
+// The intro of "Further sections in scope" drops "the upload is optional", as the tab does (29 Oct): a documents-only
+// section can require its upload ("Upload required? Mandatory").
 // The labels themselves (markets, origins, kinds, actions, applicability) come from entry.ts displayCopy.
 const L = (...lines) => lines.join("\n");
 
@@ -29,5 +31,10 @@ export const pdfPatches = [
       "  subject: (seal) => `document seal ${seal}`,",
       "};",
     ),
+  },
+  {
+    what: "the intro of the further sections in scope: no \"the upload is optional\" (a documents-only section can require its upload, 29 Oct)",
+    from: '"Answered with documents only (the CIQ template document, statements or certificates); the upload is optional. Each section shows the files uploaded to it, which are also listed under Evidence (part 3)."',
+    to: '"Answered with documents (the CIQ template document, statements or certificates). Each section shows the files uploaded to it, which are also listed under Evidence (part 3)."',
   },
 ];

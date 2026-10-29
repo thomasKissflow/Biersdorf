@@ -4,6 +4,7 @@
 import { FileCheck2, Layers, UserCheck } from "lucide-react";
 import { useMemo, type ReactNode } from "react";
 import { Card, cx, useProduction } from "@/components/ui";
+import { requestedDocuments, slotKey } from "@/domain/requestedDocs";
 import { deriveScope, hasUndefinedOrigin, requiredEvidence } from "@/domain/rules";
 import type { CiqCase, ScopeItem } from "@/domain/types";
 import { isLiveScope, sectionMeta } from "./lib";
@@ -25,6 +26,8 @@ export function ScopePreview({ c, footer, scope: given, embedded = false }: { c:
   // Sections that apply for an empty answer set are the baseline; everything beyond it was added by an answer.
   const baseline = useMemo(() => new Set(deriveScope({}, c.ruleSetVersion, c.templateVersion).filter((s) => s.applicability !== "na").map((s) => s.sectionId)), [c.ruleSetVersion, c.templateVersion]);
   const evidence = useMemo(() => [...new Set(requiredEvidence(c.config, c.ruleSetVersion).map((e) => e.doc))], [c.config, c.ruleSetVersion]);
+  // a requested document Beiersdorf's rules let the supplier leave out (29 Oct) says so
+  const optionalDocs = useMemo(() => new Set(isLiveScope(c) ? requestedDocuments(c).filter((x) => x.optional).map((x) => x.key) : []), [c]);
   const mandatory = scope.filter((s) => s.applicability === "mandatory").length;
   const optional = scope.filter((s) => s.applicability === "optional").length;
   const added = scope.filter((s) => s.applicability !== "na" && !baseline.has(s.sectionId));
@@ -71,6 +74,7 @@ export function ScopePreview({ c, footer, scope: given, embedded = false }: { c:
             {evidence.map((e) => (
               <li key={e} className="rounded-md border border-line bg-surface px-2 py-0.5 text-[12px] text-ink-2">
                 {e}
+                {optionalDocs.has(slotKey(e)) && <span className="text-ink-3"> (optional)</span>}
               </li>
             ))}
           </ul>

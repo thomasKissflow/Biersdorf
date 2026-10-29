@@ -44,6 +44,18 @@ describe("the request's JSON documents (plan v5 §3.1)", () => {
     expect(missingKeys(next, { just: { "FLD-1": "" } })).toEqual([]);
   });
 
+  it("stores a documents-only section's “Cannot provide” (DOC:<section id>, 29 Oct) in Justifications_JSON like every other key", () => {
+    const doc = readDoc({ _id: "x", Justifications_JSON: '{"FLD-1":"old","EV:coc":"published online"}' });
+    const patch = { just: { "DOC:K3": "No storage statement per raw material." } };
+    const next = applyPatch(doc, patch, elena, "2026-10-29T09:00:00Z");
+    expect(next.justifications).toEqual({ "FLD-1": "old", "EV:coc": "published online", "DOC:K3": "No storage statement per raw material." });
+    expect(next.answeredBy["DOC:K3"]).toMatchObject({ by: "UsElena" });
+    const fields = docFields(next, patch);
+    expect(Object.keys(fields).sort()).toEqual(["Answered_By_JSON", "Justifications_JSON"]);
+    expect(readDoc({ _id: "x", ...fields }).justifications["DOC:K3"]).toBe("No storage statement per raw material.");
+    expect(missingKeys(readDoc({ _id: "x", ...fields }), patch)).toEqual([]);
+  });
+
   it("reads unreadable JSON as empty instead of failing", () => {
     expect(readDoc({ _id: "x", Answers_JSON: "{oops", Components_JSON: '"not rows"' })).toMatchObject({ answers: {}, components: undefined });
   });

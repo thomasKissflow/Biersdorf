@@ -3,6 +3,7 @@
 import { CONFIG_BY_ID, isChoiceType, isNumberType } from "@/domain/catalog";
 import { conditionProblem } from "@/domain/conditions";
 import { normalizeSectionCode, sectionCodeDuplicate, sectionCodeProblem, type FieldInput, type RuleInput, type SectionInput } from "@/domain/configActions";
+import { isOptionalEvidence, uploadsMandatory } from "@/domain/requestedDocs";
 import type { Applicability, ConfigQuestionId, ConfigState, Dept, FieldData, FieldType, Requiredness, RuleBasis, RuleCondition, RuleData, SectionData, SectionKind } from "@/domain/types";
 
 // ---------------------------------------------------------------------------------- rule form
@@ -29,6 +30,8 @@ export interface RuleForm {
   activates: string[];
   outcome: Applicability;
   evidence: string[];
+  /** The documents of `evidence` the supplier may leave out ("Optional" next to the document; default Mandatory). */
+  optionalEvidence: string[];
   departments: Dept[];
   basis: RuleBasis;
   note: string;
@@ -48,13 +51,14 @@ export function modesFor(question: RuleForm["question"]): ConditionMode[] {
  * not counted as coming from the requirements document unless the administrator says so.
  */
 export function emptyRuleForm(activates: string[] = [], departments: Dept[] = []): RuleForm {
-  return { question: "", mode: "is-yes", values: [], activates, outcome: "mandatory", evidence: [], departments, basis: "agreed", note: "" };
+  return { question: "", mode: "is-yes", values: [], activates, outcome: "mandatory", evidence: [], optionalEvidence: [], departments, basis: "agreed", note: "" };
 }
 
 /** The form of an existing rule. */
 export function ruleFormOf(r: RuleData): RuleForm {
   const c = r.condition;
-  const base = { id: r.id, activates: [...r.activates], outcome: r.outcome, evidence: [...(r.evidence ?? [])], departments: [...r.departments], basis: r.basis, note: r.note ?? "", ...(r.flagsCase ? { flagsCase: true } : {}) };
+  const evidence = [...(r.evidence ?? [])];
+  const base = { id: r.id, activates: [...r.activates], outcome: r.outcome, evidence, optionalEvidence: evidence.filter((e) => isOptionalEvidence(r, e)), departments: [...r.departments], basis: r.basis, note: r.note ?? "", ...(r.flagsCase ? { flagsCase: true } : {}) };
   switch (c.kind) {
     case "always":
       return { ...base, question: "ALWAYS", mode: "always", values: [] };
@@ -120,14 +124,18 @@ export function ruleFormProblems(f: RuleForm, liveSectionIds?: ReadonlySet<strin
 
 export const hasProblems = (p: object) => Object.keys(p).length > 0;
 
-/** The rule as the store's upsertRule takes it. Call only when ruleFormProblems is empty. */
+/** The rule as the store's upsertRule takes it. Call only when ruleFormProblems is empty. The optional documents are
+ *  sent only when there are any, and only those still asked for (optionalEvidence ⊆ evidence). */
 export function ruleInputOf(f: RuleForm): RuleInput {
+  const evidence = f.evidence.map((e) => e.trim()).filter(Boolean);
+  const optionalEvidence = evidence.filter((e) => isOptionalEvidence(f, e));
   return {
     ...(f.id ? { id: f.id } : {}),
     condition: conditionOf(f) ?? { kind: "always" },
     activates: [...f.activates],
     outcome: f.outcome,
-    evidence: f.evidence.map((e) => e.trim()).filter(Boolean),
+    evidence,
+    ...(optionalEvidence.length ? { optionalEvidence } : {}),
     departments: [...f.departments],
     basis: f.basis,
     note: f.note.trim(),
@@ -142,6 +150,18 @@ export function addEvidence(list: string[], name: string): string[] {
   return [...list, n];
 }
 
+/** The form with another evidence list: a document no longer asked for drops out of the optional ones too. A new
+ *  document starts as Mandatory. */
+export function withEvidence(f: RuleForm, evidence: string[]): RuleForm {
+  return { ...f, evidence, optionalEvidence: f.optionalEvidence.filter((o) => evidence.some((e) => isOptionalEvidence({ optionalEvidence: [o] }, e))) };
+}
+
+/** The form with one document set Mandatory (`optional` false) or Optional. */
+export function withEvidenceOptional(f: RuleForm, doc: string, optional: boolean): RuleForm {
+  const others = f.optionalEvidence.filter((o) => !isOptionalEvidence({ optionalEvidence: [o] }, doc));
+  return { ...f, optionalEvidence: optional && f.evidence.includes(doc) ? [...others, doc] : others };
+}
+
 // ---------------------------------------------------------------------------------- section form
 
 export interface SectionForm {
@@ -153,15 +173,17 @@ export interface SectionForm {
   lead: Dept;
   co: Dept[];
   documentsOnly: boolean;
+  /** Documents only, "Upload required?" (default Optional, as before 29 Oct). */
+  uploads: "mandatory" | "optional";
 }
 
 /** A new section: a chapter with questions, led by Regulatory. */
 export function emptySectionForm(): SectionForm {
-  return { code: "", title: "", kind: "chapter", meaning: "", lead: "REG", co: [], documentsOnly: false };
+  return { code: "", title: "", kind: "chapter", meaning: "", lead: "REG", co: [], documentsOnly: false, uploads: "optional" };
 }
 
 export function sectionFormOf(x: SectionData): SectionForm {
-  return { id: x.id, code: x.code, title: x.title, kind: x.kind, meaning: x.meaning, lead: x.lead, co: [...x.co], documentsOnly: x.documentsOnly };
+  return { id: x.id, code: x.code, title: x.title, kind: x.kind, meaning: x.meaning, lead: x.lead, co: [...x.co], documentsOnly: x.documentsOnly, uploads: uploadsMandatory(x) ? "mandatory" : "optional" };
 }
 
 /** The kind a code suggests: "Annex 14", "A14" or "A 14" → annex, anything else → chapter. */
@@ -199,8 +221,9 @@ export function sectionFormProblems(f: SectionForm, cfg: ConfigState): SectionFo
   return out;
 }
 
+/** The section as upsertSection takes it; "Upload required?" only for a documents-only section. */
 export function sectionInputOf(f: SectionForm): SectionInput {
-  return { ...(f.id ? { id: f.id } : {}), code: normalizeSectionCode(f.code), title: f.title.trim(), kind: f.kind, meaning: f.meaning.trim(), lead: f.lead, co: f.co.filter((d) => d !== f.lead), documentsOnly: f.documentsOnly };
+  return { ...(f.id ? { id: f.id } : {}), code: normalizeSectionCode(f.code), title: f.title.trim(), kind: f.kind, meaning: f.meaning.trim(), lead: f.lead, co: f.co.filter((d) => d !== f.lead), documentsOnly: f.documentsOnly, ...(f.documentsOnly ? { uploads: f.uploads } : {}) };
 }
 
 // ---------------------------------------------------------------------------------- question (field) form

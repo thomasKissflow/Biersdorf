@@ -10,7 +10,7 @@ import { buildFinalDocument } from "./finalDocument";
 import { answeredMail, caseLink, dataChangedMail, deptUserIds, internalMail, noteMentionMails, reviewAssignedMail, reviewLink, supplierMail } from "./mail";
 import { joinPeople, mentionRecipients, parseMentions } from "./mentions";
 import { RELEASE_LOCKED_TEXT, check, isActiveUser, userOf } from "./permissions";
-import { isSlotKey, requestedDocuments, slotName, slotSection, storableSlots } from "./requestedDocs";
+import { isSectionUploadKey, isSlotKey, requestedDocuments, sectionUploadName, slotName, slotSection, storableSlots, uploadKeySection } from "./requestedDocs";
 import { deriveScope, diffScope, growScope, undefinedOrigins } from "./rules";
 import {
   PHASE_LABEL,
@@ -55,6 +55,7 @@ import type {
   OpenPointEdit,
   OpenPointKind,
   ReminderSetting,
+  RequestedDocSlot,
   ReviewDept,
   ReviewTrack,
   ScopeItem,
@@ -346,13 +347,18 @@ export function saveConfig(s: AppState, by: string, caseId: string, patch: Confi
   const grown = [...g.added, ...g.upgraded];
   const newOrigins = undefinedOrigins(config).filter((o) => !undefinedOrigins(cur.config).includes(o));
   const what = changed.map((k) => `${CONFIG_BY_ID[k].code}: ${showConfig(k, cur.config[k])} → ${showConfig(k, config[k])}`).join("; ");
-  const slotsBefore = new Set(requestedDocuments(cur, s.config).map((x) => x.key));
+  const slotsBefore = new Map(requestedDocuments(cur, s.config).map((x) => [x.key, x]));
   const slotsAfter = requestedDocuments({ ...cur, config, scope: g.scope }, s.config);
   const newSlots = slotsAfter.filter((x) => !slotsBefore.has(x.key));
-  const docsLine = newSlots.length ? ` Documents now requested: ${newSlots.map((x) => `${x.doc} (${codeOf(x.sectionId, cur, s)})`).join(", ")}.` : "";
+  // An optional document a newly firing rule needs is now mandatory: told like a new one, and stored, so it never
+  // becomes optional again (requestedDocs.ts).
+  const nowMandatory = slotsAfter.filter((x) => !x.optional && slotsBefore.get(x.key)?.optional);
+  const docNames = (xs: RequestedDocSlot[], withCode: boolean) => xs.map((x) => (withCode ? `${x.doc} (${codeOf(x.sectionId, cur, s)})` : x.doc)).join(", ");
+  const docParts = (withCode: boolean) => [newSlots.length ? `Documents now requested: ${docNames(newSlots, withCode)}` : "", nowMandatory.length ? `Documents now mandatory: ${docNames(nowMandatory, withCode)}` : ""].filter(Boolean);
+  const docsLine = docParts(true).map((x) => ` ${x}.`).join("");
   let next = mapCase(s, caseId, (x) =>
     audit(
-      withPrefills({ ...x, config, scope: g.scope, answeredBy, ...(newSlots.length ? { requestedDocs: storableSlots(slotsAfter) } : {}) }, s, at),
+      withPrefills({ ...x, config, scope: g.scope, answeredBy, ...(newSlots.length || nowMandatory.length ? { requestedDocs: storableSlots(slotsAfter) } : {}) }, s, at),
       by,
       at,
       "Changed metadata answer after completeness",
@@ -373,7 +379,7 @@ export function saveConfig(s: AppState, by: string, caseId: string, patch: Confi
     next = mapCase(next, caseId, (y) => audit(y, "system", at, "Flagged for RMM", flagDetail(config)));
     next = activateTracks(next, caseId, ["RMM"], at, "An origin without rules was added after the completeness confirmation");
   }
-  next = dataChangedMail(next, getCase(next, caseId)!, by, at, "GEN", `${grown.length ? `${what}. Sections added: ${codesOf(grown, cur, s)}` : what}${newSlots.length ? `. Documents now requested: ${newSlots.map((x) => x.doc).join(", ")}` : ""}`);
+  next = dataChangedMail(next, getCase(next, caseId)!, by, at, "GEN", `${grown.length ? `${what}. Sections added: ${codesOf(grown, cur, s)}` : what}${docParts(false).map((x) => `. ${x}`).join("")}`);
   for (const [d, ids] of openLeads) {
     const c2 = getCase(next, caseId)!;
     const tr = c2.reviews.find((r) => r.dept === d);
@@ -539,7 +545,9 @@ export function setComponents(s: AppState, by: string, caseId: string, rows: Com
 export function setJustification(s: AppState, by: string, caseId: string, key: string, text: string, at = nowIso()): AppState {
   const c = getCase(s, caseId);
   const slot = isSlotKey(key) && c ? slotName(c, key, s.config) : undefined;
-  const label = slot ?? fieldIn(s, c, key)?.label ?? codeOf(key, c, s);
+  // "DOC:K3": why a documents-only section that requires an upload has none (requestedDocs.ts sectionUploadKey)
+  const upload = isSectionUploadKey(key) && c ? sectionUploadName(c, uploadKeySection(key), s.config) : undefined;
+  const label = slot ?? upload ?? fieldIn(s, c, key)?.label ?? codeOf(key, c, s);
   const blocked = supplierWriteGuard(s, by, c, at, `the justification for “${label}”`);
   if (blocked) return blocked;
   const prev = c!.justifications[key] ?? "";
@@ -551,7 +559,7 @@ export function setJustification(s: AppState, by: string, caseId: string, key: s
     return { ...x, justifications: j, answeredBy: { ...x.answeredBy, [key]: { by, at } } };
   });
   if (!isPart2(c!)) return next;
-  const sectionId = isSlotKey(key) ? (slotSection(c!, key, s.config) ?? "GEN") : (fieldIn(s, c, key)?.sectionId ?? key);
+  const sectionId = isSlotKey(key) ? (slotSection(c!, key, s.config) ?? "GEN") : isSectionUploadKey(key) ? uploadKeySection(key) : (fieldIn(s, c, key)?.sectionId ?? key);
   return part2Change(next, by, caseId, at, sectionId, "Changed justification after completeness", `Justification for ${label}${slot ? " (requested document)" : ""}: “${short(prev || "—")}” → “${short(text || "—")}”`);
 }
 

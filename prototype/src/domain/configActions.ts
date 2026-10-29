@@ -14,7 +14,7 @@ import { RS1, RS2, copyRule } from "./builtinRules";
 import { conditionProblem, conditionQuestion, ruleSentence } from "./conditions";
 import { logEvent, refuse, toast } from "./core";
 import { check } from "./permissions";
-import { alwaysOnSections, uncollectedEvidence, uncollectedText } from "./requestedDocs";
+import { alwaysOnSections, isOptionalEvidence, uncollectedEvidence, uncollectedText, uploadsMandatory } from "./requestedDocs";
 import { FIRST_RULE_SET, currentStoredPair, draftStoredPair, ownsRuleSet, ruleSetPairOf } from "./rules";
 import { isClosed, nowIso, userName } from "./selectors";
 import type { AppState, ConfigPair, ConfigState, Dept, FieldData, RuleData, SectionData, SectionKind, TemplateData, TemplateVersion } from "./types";
@@ -339,9 +339,10 @@ export interface DraftChanges {
  *  sections and departments are sorted (ticking a chip off and on again is no change), as in Test rules (config.ts). */
 const ruleKey = (r: RuleData) => {
   const c = r.condition;
-  return JSON.stringify([c.kind, "question" in c ? c.question : "", "values" in c ? [...c.values].sort() : "value" in c ? c.value : "", [...r.activates].sort(), r.outcome, r.evidence ?? [], [...r.departments].sort(), r.basis, r.note ?? "", !!r.flagsCase]);
+  return JSON.stringify([c.kind, "question" in c ? c.question : "", "values" in c ? [...c.values].sort() : "value" in c ? c.value : "", [...r.activates].sort(), r.outcome, r.evidence ?? [], r.optionalEvidence ?? [], [...r.departments].sort(), r.basis, r.note ?? "", !!r.flagsCase]);
 };
-const sectionKey = (x: SectionData) => JSON.stringify({ code: x.code, title: x.title, kind: x.kind, meaning: x.meaning, documentsOnly: x.documentsOnly });
+/** A section's own settings. "Upload required?" counts for documents only, and absent is "optional". */
+const sectionKey = (x: SectionData) => JSON.stringify({ code: x.code, title: x.title, kind: x.kind, meaning: x.meaning, documentsOnly: x.documentsOnly, uploads: uploadsMandatory(x) ? "mandatory" : "optional" });
 const ownersKey = (lead: Dept, co: Dept[]) => `${lead}|${[...co].sort().join(",")}`;
 
 const changesMemo = new WeakMap<ConfigState, { ownership: AppState["ownership"]; result: DraftChanges | undefined }>();
@@ -521,7 +522,7 @@ function computeValidation(s: Pick<AppState, "config" | "ownership">): DraftVali
       warnings.push({ ruleId: r.id, sectionId: id, text: sec ? `${r.id} still points at ${secName(sec)}, which is retired in this version: it no longer opens for new cases.` : `${r.id} points at ${id}, which is not in this version.` });
     }
     // Evidence no question collects is handled, not a problem: the supplier gets an upload slot (requestedDocs.ts).
-    for (const u of uncollectedEvidence(evidence, r.activates, d.template, { outcome: r.outcome, alwaysOn })) infos.push({ ruleId: r.id, sectionId: u.sectionId, text: `${r.id}: ${uncollectedText(u)}` });
+    for (const u of uncollectedEvidence(evidence, r.activates, d.template, { outcome: r.outcome, alwaysOn, optional: r.optionalEvidence })) infos.push({ ruleId: r.id, sectionId: u.sectionId, text: `${r.id}: ${uncollectedText(u)}` });
   }
 
   for (const x of live) {
@@ -644,6 +645,10 @@ export function nextRuleId(s: AppState): string {
 
 const cleanList = (xs: string[] | undefined) => [...new Set((xs ?? []).map((x) => x.trim()).filter(Boolean))];
 
+/** The optional documents of a rule as stored: the names of `evidence` (its spelling) that `optional` names by slot key;
+ *  a name no longer asked for drops out. */
+const optionalOf = (evidence: string[], optional: string[] | undefined) => evidence.filter((e) => isOptionalEvidence({ optionalEvidence: optional }, e));
+
 /** Adds or changes a rule in the draft. Returns the rule id ("" when refused). */
 export function upsertRule(s: AppState, by: string, input: RuleInput, at = nowIso()): { state: AppState; id: string } {
   const denied = guard(s, by);
@@ -661,6 +666,9 @@ export function upsertRule(s: AppState, by: string, input: RuleInput, at = nowIs
   if (input.id && !existing) return { state: refuse(s, `${input.id} is not in the draft.`), id: "" };
   const id = existing?.id ?? nextRuleId(s);
   const evidence = cleanList(input.evidence);
+  // optionalEvidence ⊆ evidence (Thomas, 29 Oct): written only when one document may be left out, so a rule without
+  // optional documents stays exactly as before.
+  const optionalEvidence = optionalOf(evidence, input.optionalEvidence);
   const rule: RuleData = {
     id,
     question: conditionQuestion(input.condition),
@@ -668,6 +676,7 @@ export function upsertRule(s: AppState, by: string, input: RuleInput, at = nowIs
     activates: [...new Set(input.activates)],
     outcome: input.outcome,
     ...(evidence.length ? { evidence } : {}),
+    ...(optionalEvidence.length ? { optionalEvidence } : {}),
     departments,
     basis: input.basis,
     ...(input.note?.trim() ? { note: input.note.trim() } : {}),
@@ -703,6 +712,8 @@ export interface SectionInput {
   lead: Dept;
   co: Dept[];
   documentsOnly: boolean;
+  /** Documents only, "Upload required?": absent is "optional" (today's behaviour). Ignored for a section with questions. */
+  uploads?: "mandatory" | "optional";
 }
 
 /** A section code as it is stored and shown: trimmed, "k 6.20" → "K6.20", "annex  14", "A 14" and "a14" → "Annex 14",
@@ -864,7 +875,10 @@ export function upsertSection(s: AppState, by: string, input: SectionInput, at =
     lead: input.lead,
     co,
     documentsOnly: input.documentsOnly,
+    uploads: "mandatory",
   };
+  // "Upload required? Mandatory" is stored for a documents-only section only, and only then (absent: optional).
+  if (!input.documentsOnly || input.uploads !== "mandatory") delete next.uploads;
   if (existing && JSON.stringify(existing) === JSON.stringify(next)) return { state: s, id };
   let out = withDraft(s, (p) => {
     if (existing) return { ...p, template: { ...p.template, sections: p.template.sections.map((x) => (x.id === id ? next : x)) } };
@@ -872,7 +886,7 @@ export function upsertSection(s: AppState, by: string, input: SectionInput, at =
     sections.splice(insertAt(sections, next), 0, next);
     return { ...p, template: { ...p.template, sections } };
   });
-  out = logEvent(out, { at, by, kind: "config", action: existing ? `Changed section ${code}` : `Added section ${code}`, detail: `${draftTag(d)}: ${code} · ${next.title || "(no title)"}, ${next.kind}, lead ${next.lead}${co.length ? `, co-reviewers ${co.join(", ")}` : ""}, ${next.documentsOnly ? "documents only" : "questions"}.${existing ? "" : " A new section needs a rule that switches it on."}` });
+  out = logEvent(out, { at, by, kind: "config", action: existing ? `Changed section ${code}` : `Added section ${code}`, detail: `${draftTag(d)}: ${code} · ${next.title || "(no title)"}, ${next.kind}, lead ${next.lead}${co.length ? `, co-reviewers ${co.join(", ")}` : ""}, ${next.documentsOnly ? `documents only, upload ${uploadsMandatory(next) ? "mandatory" : "optional"}` : "questions"}.${existing ? "" : " A new section needs a rule that switches it on."}` });
   return { state: out, id };
 }
 

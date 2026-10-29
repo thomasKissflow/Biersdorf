@@ -5,7 +5,7 @@
 // internal notes or internal reasons (a withdrawal reason, a "not accepted" note). Internal only.
 
 import { CONFIG_QUESTIONS, DEPT_SHORT, fieldOf, sectionOf } from "./catalog";
-import { isSlotKey, requestedDocStatus, requestedDocuments, slotDocuments } from "./requestedDocs";
+import { isSlotKey, requestedDocStatus, requestedDocuments, sectionUploadKey, sectionUploadStatus, slotDocuments } from "./requestedDocs";
 import { answerOf, answeredByOf, caseFields, caseSupplierName, closedByCancellation, formatValue, hasValue, isConfigAnswered, isVisible, manufacturerOf, siteOf, userName } from "./selectors";
 import type { AnswerValue, AppState, CiqCase, ConfirmationType, DocumentRef, FieldDef, FinalDocAnswer, FinalDocEvidence, FinalDocMetadataAnswer, FinalDocThread, FinalDocThreadEntry, FinalDocument, OpenPoint } from "./types";
 
@@ -107,7 +107,9 @@ export function buildFinalDocument(s: AppState, c: CiqCase, at: string, trigger:
           return { fieldId: f.id, label: f.label, value: hasValue(v) ? value : "—", by: who ? userName(s, who.by) : undefined, at: who?.at, justification: c.justifications[f.id] };
         })
         .concat(slots.filter((x) => x.sectionId === sc.sectionId && requestedDocStatus(c, x) !== "missing").map(slotAnswer));
-      return { sectionId: sc.sectionId, code: def?.code ?? sc.sectionId, title: def?.title ?? "", applicability: sc.applicability, addedLater: sc.addedLater, answers, justification: c.justifications[sc.sectionId] };
+      // A documents-only section left without a file carries the supplier's "Cannot provide" reason (DOC:<id>), if any.
+      const justification = c.justifications[sc.sectionId] ?? (sectionUploadStatus(c, sc.sectionId) === "justified" ? c.justifications[sectionUploadKey(sc.sectionId)] : undefined);
+      return { sectionId: sc.sectionId, code: def?.code ?? sc.sectionId, title: def?.title ?? "", applicability: sc.applicability, addedLater: sc.addedLater, answers, justification };
     });
   const owner = s.users.find((u) => u.id === c.ownerId);
   // Evidence of the sections the document holds only (a section that closed in Part 1 keeps its uploads on the case).

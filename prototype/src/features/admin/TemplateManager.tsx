@@ -6,12 +6,14 @@ import { useSearchParams } from "react-router-dom";
 import { Badge, Button, Card, IconButton, PageHeader, Table, Tabs, Td, Tr, cx } from "@/components/ui";
 import { DEPT_LABEL, DEPT_SHORT, SHARED_SECTIONS, templateData } from "@/domain/catalog";
 import { configVersions, draftPair, publishPlan, sectionMark } from "@/domain/configActions";
+import { uploadsMandatory } from "@/domain/requestedDocs";
 import { ruleSetsOf, sectionsInTemplate, triggerText } from "@/domain/rules";
 import type { SectionData, SectionKind } from "@/domain/types";
 import { useStore } from "@/store/store";
 import { VersionsPanel, defaultVersion } from "./ConfigBar";
 import { MarkBadge } from "./controls";
 import { DraftChangesList } from "./DraftChanges";
+import { documentsContent } from "./fieldTypes";
 import { PublishModal } from "./PublishModal";
 import { KIND_LABEL, SectionEditorDrawer, SectionFormModal } from "./QuestionnaireEditor";
 import { RuleEditorDrawer } from "./RuleEditor";
@@ -195,7 +197,9 @@ function QuestionnairePage() {
                       <Td className={cx("max-w-[280px] min-w-[180px] text-[12.5px]", trigger.startsWith("No rule") && !x.retired ? "font-medium text-[color-mix(in_oklch,var(--warn)_75%,var(--ink))]" : "text-ink-2")}>{trigger}</Td>
                       <Td className="whitespace-nowrap text-[12.5px]">
                         {x.documentsOnly ? (
-                          <span className="text-ink-3">Documents only</span>
+                          <span className={uploadsMandatory(x) ? "text-ink" : "text-ink-3"} data-testid={`section-row-content-${x.id}`}>
+                            {documentsContent(x)}
+                          </span>
                         ) : (
                           <span className={x.fields.length ? "text-ink" : "text-bad"}>
                             {x.fields.length === 1 ? "1 question" : `${x.fields.length} questions`}

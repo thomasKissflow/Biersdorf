@@ -462,6 +462,7 @@ export function sectionData(sec: SectionDef, fields: readonly FieldDef[], owners
     lead: owners?.lead ?? sec.lead,
     co: [...(owners?.co ?? sec.co)],
     documentsOnly: sec.documentsOnly,
+    ...(sec.documentsOnly && sec.uploads === "mandatory" ? { uploads: "mandatory" as const } : {}),
     fields: sec.documentsOnly ? [] : fields.map(fieldData),
     ...(sec.retired ? { retired: true } : {}),
     trigger: sec.trigger,
@@ -562,6 +563,8 @@ function hydrateSection(d: SectionData): SectionDef {
     trigger: d.trigger ?? BUILTIN_SECTION_BY_ID[d.id]?.trigger ?? "Switched on by the rules",
     hasFields: !d.documentsOnly,
     documentsOnly: d.documentsOnly,
+    // "Upload required?" counts for a documents-only section only; anything but "mandatory" is today's optional upload.
+    ...(d.documentsOnly && d.uploads === "mandatory" ? { uploads: "mandatory" as const } : {}),
     ...(d.retired ? { retired: true } : {}),
   };
 }

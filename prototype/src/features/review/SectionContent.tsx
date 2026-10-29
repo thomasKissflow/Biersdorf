@@ -2,13 +2,13 @@
 // component row and document (REQ-PROC-019, -029). Beiersdorf never changes answers. Answers and uploads the
 // supplier changed after the reviewer's reference point are marked "Changed <date> by <name>".
 import { DocName } from "@/components/DocName";
-import { RequestedDocsList } from "@/components/RequestedDocs";
+import { RequestedDocsList, SectionUploadRow } from "@/components/RequestedDocs";
 import { FileText, Info, MessageSquarePlus } from "lucide-react";
 import type { ReactNode } from "react";
 import { Badge, Card, CardHeader, DemoNote, TrafficLight } from "@/components/ui";
 import { ApplicabilityBadge } from "@/components/status";
 import { DEPT_SHORT, HEAVY_METAL_LIMITS, LIMIT_SET_VERSION, codeTitle, fieldOf, fieldsOf, sectionOf } from "@/domain/catalog";
-import { isSlotKey } from "@/domain/requestedDocs";
+import { isSlotKey, sectionUploadRequired, slotsIn } from "@/domain/requestedDocs";
 import { answerOf, answeredByOf, fmtDate, fmtDateTime, formatValue, hasValue, isSetByBdf, isVisible, scopeOf, userById, userName } from "@/domain/selectors";
 import type { AppState, CiqCase, DocumentRef, FieldDef, OpenPoint } from "@/domain/types";
 import { ComponentTable } from "./ComponentTable";
@@ -161,6 +161,10 @@ export function SectionContent({ c, state, sectionId, mine, canAsk, since, onAsk
   const extraDocs = c.documents.filter((d) => d.sectionId === sectionId && !isSlotKey(d.fieldId) && (!d.fieldId || !fieldIds.has(d.fieldId))).sort((a, b) => b.uploadedAt.localeCompare(a.uploadedAt));
   const sectionOps = c.openPoints.filter((p) => p.ref.sectionId === sectionId && !p.ref.fieldId && !p.ref.rowId && !p.ref.documentId && p.status !== "closed");
   const newest = (d: DocumentRef) => !d.fieldId || !c.documents.some((x) => x.fieldId === d.fieldId && x.uploadedAt > d.uploadedAt);
+  // A documents-only section whose version requires the upload, mandatory for this case (29 Oct); or one where the rules
+  // ask for a mandatory requested document (it blocks on its own, so the section is not "optional" then).
+  const uploadRequired = !sec.hasFields && sectionUploadRequired(c, sectionId);
+  const requestedHere = !sec.hasFields && sc.applicability !== "na" && slotsIn(c, sectionId).some((x) => !x.optional);
 
   return (
     <Card className="min-w-0" data-testid={`section-content-${sectionId}`}>
@@ -168,7 +172,15 @@ export function SectionContent({ c, state, sectionId, mine, canAsk, since, onAsk
         title={
           <span className="flex flex-wrap items-center gap-2">
             <span>{codeTitle(sec.code, sec.title)}</span>
-            {sec.hasFields ? <ApplicabilityBadge a={sc.applicability} manual={!!sc.manual} /> : <Badge tone="neutral">Documents only · optional</Badge>}
+            {sec.hasFields ? (
+              <ApplicabilityBadge a={sc.applicability} manual={!!sc.manual} />
+            ) : uploadRequired ? (
+              <Badge tone="brand">Documents · mandatory upload</Badge>
+            ) : requestedHere ? (
+              <Badge tone="brand">Documents · requested documents</Badge>
+            ) : (
+              <Badge tone="neutral">Documents only · optional</Badge>
+            )}
             {sc.addedLater && <Badge tone="brand">Added during the review</Badge>}
           </span>
         }
@@ -216,13 +228,22 @@ export function SectionContent({ c, state, sectionId, mine, canAsk, since, onAsk
         <div className="px-4 py-4">
           <div className="rounded-lg border border-dashed border-line-strong px-4 py-5 text-center">
             <p className="text-[13.5px] font-medium text-ink">Documents only</p>
-            <p className="mx-auto mt-1 max-w-md text-[13px] text-ink-3">The supplier may answer this section with the CIQ template document, a statement or a certificate; the upload is optional and does not block completeness. {extraDocs.length ? "Its documents are listed below." : "No document uploaded."} Questions to the supplier work as usual.</p>
+            <p className="mx-auto mt-1 max-w-md text-[13px] text-ink-3">
+              {uploadRequired
+                ? "The supplier answers this section with the CIQ template document, a statement or a certificate; the upload is mandatory: at least one document, or a justification why they cannot provide one, before the completeness confirmation."
+                : requestedHere
+                  ? "The supplier may answer this section with the CIQ template document, a statement or a certificate; that upload is optional. The requested documents below block completeness until each is uploaded or justified."
+                  : "The supplier may answer this section with the CIQ template document, a statement or a certificate; the upload is optional and does not block completeness."}{" "}
+              {extraDocs.length ? "Its documents are listed below." : "No document uploaded."} Questions to the supplier work as usual.
+            </p>
             <div className="mt-2">
               <DemoNote>answers of this section not modelled</DemoNote>
             </div>
           </div>
         </div>
       )}
+
+      <SectionUploadRow c={c} state={state} sectionId={sectionId} />
 
       <RequestedDocsList
         c={c}

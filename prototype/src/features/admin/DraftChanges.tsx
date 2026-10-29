@@ -4,8 +4,10 @@ import { ArrowRight, GitBranch } from "lucide-react";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { Badge, cx } from "@/components/ui";
+import { templateData } from "@/domain/catalog";
 import { changesText, draftChanges, draftPair, pairLabel, type DraftChanges } from "@/domain/configActions";
 import { ruleSentence } from "@/domain/conditions";
+import { uploadsMandatory } from "@/domain/requestedDocs";
 import { ruleSet } from "@/domain/rules";
 import type { RuleData } from "@/domain/types";
 import { useStore } from "@/store/store";
@@ -58,6 +60,14 @@ export function DraftChangesList({ focus, onOpenRule, onOpenSection, className, 
   const draftRules = new Map(draft.ruleSet.rules.map((r) => [r.id, r]));
   const baseRules = new Map(ruleSet(ch.base.ruleSetVersion, state.config).rules.map((r) => [r.id, r as RuleData]));
   const sentence = (r: RuleData | undefined) => (r ? ruleSentence(r, codeOf, (id) => sections.get(id)?.title) : "");
+  // A documents-only section whose "Upload required?" changed says so (the other section settings show in the editor).
+  const baseSections = new Map((templateData(ch.base.templateVersion, state.config)?.sections ?? []).map((x) => [x.id, x]));
+  const uploadsChange = (id: string) => {
+    const x = sections.get(id);
+    const b = baseSections.get(id);
+    if (!x?.documentsOnly || !b || uploadsMandatory(x) === uploadsMandatory(b)) return "";
+    return uploadsMandatory(x) ? "upload now mandatory" : "upload now optional";
+  };
 
   const showRules = focus !== "questionnaire";
   const showTpl = focus !== "rules";
@@ -74,9 +84,13 @@ export function DraftChangesList({ focus, onOpenRule, onOpenSection, className, 
   if (showTpl) {
     for (const id of ch.sections.added) {
       const n = sections.get(id)?.fields.length ?? 0;
-      lines.push(<Line key={`sa-${id}`} testId={`change-section-${id}`} tone={TONE.added} tag="Section added" onOpen={onOpenSection && (() => onOpenSection(id))}>{secName(id)}<span className="text-ink-3"> · {sections.get(id)?.documentsOnly ? "documents only" : n === 1 ? "1 question" : `${n} questions`}</span></Line>);
+      const x = sections.get(id);
+      lines.push(<Line key={`sa-${id}`} testId={`change-section-${id}`} tone={TONE.added} tag="Section added" onOpen={onOpenSection && (() => onOpenSection(id))}>{secName(id)}<span className="text-ink-3"> · {x?.documentsOnly ? (uploadsMandatory(x) ? "documents only, mandatory upload" : "documents only") : n === 1 ? "1 question" : `${n} questions`}</span></Line>);
     }
-    for (const id of [...ch.sections.changed, ...ch.sections.restored]) lines.push(<Line key={`sc-${id}`} testId={`change-section-${id}`} tone={TONE.changed} tag={ch.sections.restored.includes(id) ? "Section restored" : "Section changed"} onOpen={onOpenSection && (() => onOpenSection(id))}>{secName(id)}</Line>);
+    for (const id of [...ch.sections.changed, ...ch.sections.restored]) {
+      const detail = uploadsChange(id);
+      lines.push(<Line key={`sc-${id}`} testId={`change-section-${id}`} tone={TONE.changed} tag={ch.sections.restored.includes(id) ? "Section restored" : "Section changed"} onOpen={onOpenSection && (() => onOpenSection(id))}>{secName(id)}{detail && <span className="text-ink-3"> · {detail}</span>}</Line>);
+    }
     for (const id of ch.sections.retired) lines.push(<Line key={`sr-${id}`} testId={`change-section-${id}`} tone={TONE.removed} tag="Section retired" onOpen={onOpenSection && (() => onOpenSection(id))}>{secName(id)}<span className="text-ink-3"> · hidden for new cases on this version</span></Line>);
     for (const f of ch.fields.added) lines.push(<Line key={`fa-${f.fieldId}`} testId={`change-field-${f.fieldId}`} tone={TONE.added} tag="Question added" onOpen={onOpenSection && (() => onOpenSection(f.sectionId))}>“{f.label || "(no label)"}” <span className="text-ink-3">in {codeOf(f.sectionId)}</span></Line>);
     for (const f of ch.fields.changed) lines.push(<Line key={`fc-${f.fieldId}`} testId={`change-field-${f.fieldId}`} tone={TONE.changed} tag="Question changed" onOpen={onOpenSection && (() => onOpenSection(f.sectionId))}>“{f.label || "(no label)"}” <span className="text-ink-3">in {codeOf(f.sectionId)}</span></Line>);

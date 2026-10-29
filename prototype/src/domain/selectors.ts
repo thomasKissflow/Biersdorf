@@ -2,7 +2,7 @@
 
 import { CONFIG_BY_ID, DEPT_SHORT, ORIGIN_LABEL, REVIEW_DEPTS, fieldOf, fieldsOf, sectionOf } from "./catalog";
 import { componentRowProblems } from "./composition";
-import { docSectionId, isSlotKey, requestedByText, requestedDocStatus, requestedDocuments, slotName, slotSection, slotsIn } from "./requestedDocs";
+import { docSectionId, isSectionUploadKey, isSlotKey, requestedByText, requestedDocStatus, requestedDocuments, sectionUploadKey, sectionUploadName, sectionUploadRequired, sectionUploadStatus, slotBlocks, slotName, slotSection, slotsIn, uploadKeySection } from "./requestedDocs";
 import { undefinedOrigins } from "./rules";
 import type {
   AnswerValue,
@@ -110,8 +110,8 @@ export const fieldAnswered = (c: Pick<CiqCase, "answers" | "justifications">, f:
 
 export interface Blocker {
   sectionId: string;
-  /** A field id, a metadata question id (SF01…SF12, in section GEN) for an unanswered metadata question, or a
-   *  requested-document key ("EV:…", requestedDocs.ts). */
+  /** A field id, a metadata question id (SF01…SF12, in section GEN) for an unanswered metadata question, a
+   *  requested-document key ("EV:…", requestedDocs.ts), or a documents-only section's upload ("DOC:<section id>"). */
   fieldId?: string;
   /** A K2.1 component row (its id): the jump opens that row. */
   rowId?: string;
@@ -197,7 +197,8 @@ export function compositionBlockers(c: Pick<CiqCase, "components" | "config">): 
 }
 
 /** Required answers of a section: its mandatory fields, the K2.1 composition (done when it has rows and none of them
- *  blocks), and its requested documents (each one mandatory, done when uploaded or justified). */
+ *  blocks), the upload of a documents-only section that requires one (done when a file is there or justified), and
+ *  its mandatory requested documents (done when uploaded or justified; an optional one is not counted). */
 export function sectionProgress(c: CiqCase, sectionId: string, cfg?: ConfigState): { done: number; total: number } {
   const req = sectionId === "K2.1" ? [...requiredFields(c, sectionId, cfg), null] : requiredFields(c, sectionId, cfg);
   let done = 0;
@@ -205,9 +206,11 @@ export function sectionProgress(c: CiqCase, sectionId: string, cfg?: ConfigState
     if (f === null) done += c.components.length > 0 && compositionBlockers(c).length === 0 ? 1 : 0;
     else if (fieldAnswered(c, f)) done += 1;
   }
-  const slots = scopeOf(c, sectionId)?.applicability === "na" ? [] : slotsIn(c, sectionId, cfg);
+  const upload = sectionUploadRequired(c, sectionId, cfg) ? 1 : 0;
+  if (upload && sectionUploadStatus(c, sectionId) !== "missing") done += 1;
+  const slots = scopeOf(c, sectionId)?.applicability === "na" ? [] : slotsIn(c, sectionId, cfg).filter((x) => !x.optional);
   for (const slot of slots) if (requestedDocStatus(c, slot) !== "missing") done += 1;
-  return { done, total: req.length + slots.length };
+  return { done, total: req.length + upload + slots.length };
 }
 
 /** A requested document that is neither uploaded nor justified, as a completeness blocker in its section. */
@@ -224,8 +227,9 @@ export function completenessBlockers(c: CiqCase, cfg?: ConfigState): Blocker[] {
   const out: Blocker[] = [];
   // The metadata questions are part of the CIQ (liveScope); the live portal's old flow asks them in its own step.
   if (c.liveScope) for (const k of unansweredConfig(c)) out.push({ sectionId: "GEN", fieldId: k, label: `${CONFIG_BY_ID[k].code} · ${CONFIG_BY_ID[k].label}` });
-  // Requested documents (live-scope cases): each one is mandatory, in the section it sits in, after its questions.
-  const missingSlots = requestedDocuments(c, cfg).filter((x) => requestedDocStatus(c, x) === "missing");
+  // Requested documents (live-scope cases): each mandatory one, in the section it sits in, after its questions. An
+  // optional one (every rule asking for it lets the supplier leave it out) never blocks.
+  const missingSlots = requestedDocuments(c, cfg).filter((x) => slotBlocks(c, x));
   const placed = new Set<string>();
   const slotsOf = (sectionId: string) => {
     placed.add(sectionId);
@@ -251,6 +255,8 @@ export function completenessBlockers(c: CiqCase, cfg?: ConfigState): Blocker[] {
       if (c.components.length === 0) out.push({ sectionId: "K2.1", label: "At least one component in the composition table" });
       else out.push(...compositionBlockers(c));
     }
+    // A documents-only section whose version requires the upload: a file in the section, or a "Cannot provide" reason.
+    if (sectionUploadRequired(c, sc.sectionId, cfg) && sectionUploadStatus(c, sc.sectionId) === "missing") out.push({ sectionId: sc.sectionId, fieldId: sectionUploadKey(sc.sectionId), label: sectionUploadName(c, sc.sectionId, cfg) });
     out.push(...slotsOf(sc.sectionId));
   }
   // A kept slot whose section is not in the scope list any more (never expected): still listed, never lost.
@@ -364,8 +370,10 @@ export function reviewQueue(state: AppState, dept: ReviewDept): CiqCase[] {
 }
 
 /** A field's label; with the case's version (and config) its label in that version. A requested-document key gives
- *  "Requested document"; with the case, the document's name (requestedDocLabel). */
-export const fieldLabel = (id: string, templateVersion?: string, cfg?: ConfigState) => fieldOf(id, templateVersion, cfg)?.label ?? (isSlotKey(id) ? "Requested document" : id);
+ *  "Requested document"; with the case, the document's name (requestedDocLabel). A section-upload key ("DOC:K3"):
+ *  "Documents for K3 · …". */
+export const fieldLabel = (id: string, templateVersion?: string, cfg?: ConfigState) =>
+  fieldOf(id, templateVersion, cfg)?.label ?? (isSlotKey(id) ? "Requested document" : isSectionUploadKey(id) ? sectionUploadName({ templateVersion: templateVersion ?? "" }, uploadKeySection(id), cfg) : id);
 
 /** Where a document or a justification sits: the field's label, or "Requested document: <name>" for a slot key. */
 export const placeLabel = (c: CiqCase, id: string, cfg?: ConfigState) => (isSlotKey(id) ? `Requested document: ${slotName(c, id, cfg)}` : fieldLabel(id, c.templateVersion, cfg));
@@ -551,6 +559,7 @@ export function sectionsChangedSince(c: CiqCase, since?: string, cfg?: ConfigSta
       // metadata answers, and the values Beiersdorf sets (B-05), which are no supplier change
       if (metadata) out.add("GEN");
     } else if (isSlotKey(key)) out.add(slotSection(c, key, cfg) ?? "GEN"); // a requested document's justification
+    else if (isSectionUploadKey(key)) out.add(uploadKeySection(key)); // why a documents-only section has no upload
     else out.add(fieldOf(key, c.templateVersion, cfg)?.sectionId ?? (sectionOf(key, c.templateVersion, cfg) ? key : "GEN"));
   }
   for (const d of c.documents) if (Date.parse(d.uploadedAt) > t) out.add(docSectionId(c, d, cfg)); // a slot's file: its slot's section

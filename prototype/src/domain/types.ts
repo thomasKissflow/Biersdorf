@@ -65,6 +65,9 @@ export interface SectionDef {
   hasFields: boolean;
   /** "Documents only": no questions, the supplier uploads documents for the section (spec §8.1). */
   documentsOnly: boolean;
+  /** Documents only: "mandatory" when the supplier must upload at least one document (or say why not) while the section
+   *  is mandatory for the case (SectionData.uploads). Absent: the upload is optional. */
+  uploads?: "mandatory";
   /** Retired in this questionnaire version: new cases on the version never get it. Sections are never deleted. */
   retired?: boolean;
 }
@@ -172,6 +175,9 @@ export interface RuleData {
   activates: string[]; // section ids
   outcome: Applicability; // usually "mandatory"
   evidence?: string[];
+  /** The documents of `evidence` (matched by slot key) the supplier may leave out (Thomas, 29 Oct). Absent or empty:
+   *  every one is mandatory, as before; a bundle older than the field ignores it, the safe way round. */
+  optionalEvidence?: string[];
   departments: Dept[];
   basis: RuleBasis;
   note?: string;
@@ -485,6 +491,10 @@ export interface RequestedDocSlot {
   addedLater?: boolean;
   /** No longer derived from the answers, kept because the scope only grows after the completeness confirmation. */
   kept?: boolean;
+  /** Every rule that asks for it lets the supplier leave it out (RuleData.optionalEvidence; the stricter rule wins):
+   *  it never blocks. Derived from the rules before the completeness confirmation; stored with the fixed list (and in
+   *  Requested_Docs_JSON) after it, where it only tightens (requestedDocs.ts). Absent: mandatory. */
+  optional?: true;
 }
 
 // ---------------------------------------------------------------------------------- final document (AS-12, R-2)
@@ -791,6 +801,10 @@ export interface SectionData {
   lead: Dept;
   co: Dept[];
   documentsOnly: boolean;
+  /** Documents only, "Upload required?" (Thomas, 29 Oct): "mandatory" when the supplier must upload at least one
+   *  document, or give a "Cannot provide" justification, while the section is mandatory for the case. Absent (every
+   *  version stored before) or "optional": the upload never blocks. Written only as "mandatory". */
+  uploads?: "mandatory" | "optional";
   fields: FieldData[];
   /** Retired in this version: hidden for new cases on it; never deleted. */
   retired?: boolean;

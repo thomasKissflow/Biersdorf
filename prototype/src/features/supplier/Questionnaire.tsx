@@ -6,6 +6,7 @@ import { CheckCircle2, Circle, CircleDot, FileText, Info, Lock } from "lucide-re
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Badge, Select, cx } from "@/components/ui";
+import { sectionUploadRequired, sectionUploadStatus, sectionUploads } from "@/domain/requestedDocs";
 import type { CiqCase } from "@/domain/types";
 import { CompletenessHeader } from "./Completeness";
 import { METADATA_SECTION, firstOpenEntry, isLiveScope, navEntries, navProgress, requestedRefs, sectionCode, sectionCodeShown, sectionKind, sectionLabelOf, sectionMeta, sectionTitle, supplierSections, type SupplierSection } from "./lib";
@@ -180,10 +181,17 @@ function NavItem({ c, s, active, requested, fresh, onClick }: { c: CiqCase; s: S
   const p = navProgress(c, s);
   const complete = p.total > 0 && p.done >= p.total;
   // Chapters answered with documents only (the CIQ template document, a statement or a certificate): never blocking,
-  // unless the rules ask for a requested document there (then counted like a question).
+  // unless the questionnaire version requires the upload for a mandatory section ("Documents · mandatory upload") or
+  // the rules ask for a requested document there (then counted like a question).
+  const upload = !def.hasFields && !s.waived && sectionUploadRequired(c, s.sectionId);
   const template = !def.hasFields && !s.waived && p.total === 0;
-  const docCount = template ? c.documents.filter((d) => d.sectionId === s.sectionId && !d.fieldId).length : 0;
-  const kind = s.waived ? "Waived" : template ? "Documents only" : s.applicability === "mandatory" ? "Mandatory" : "Optional";
+  const docCount = template || upload ? sectionUploads(c, s.sectionId).length : 0;
+  const uploadDetail = () => {
+    if (p.total > 1) return complete ? "complete" : `${p.done} of ${p.total}`;
+    const st = sectionUploadStatus(c, s.sectionId);
+    return st === "received" ? `${docCount} document${docCount === 1 ? "" : "s"} added` : st === "justified" ? "justification given" : "mandatory upload";
+  };
+  const kind = s.waived ? "Waived" : template ? "Documents only" : upload ? "Documents" : s.applicability === "mandatory" ? "Mandatory" : "Optional";
   const detail = meta
     ? complete
       ? "all answered"
@@ -196,7 +204,9 @@ function NavItem({ c, s, active, requested, fresh, onClick }: { c: CiqCase; s: S
         ? docCount
           ? `${docCount} document${docCount === 1 ? "" : "s"} added`
           : "optional upload"
-        : p.total === 0
+        : upload
+          ? uploadDetail()
+          : p.total === 0
           ? c.config.SF01?.length
             ? "nothing to answer"
             : "opens with your origin answer"

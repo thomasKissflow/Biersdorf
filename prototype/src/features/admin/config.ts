@@ -33,6 +33,7 @@ export function ruleKey(r: RuleData): string {
     [...r.activates].sort(),
     r.outcome,
     r.evidence ?? [],
+    r.optionalEvidence ?? [],
     [...r.departments].sort(),
     r.basis,
     r.note ?? "",

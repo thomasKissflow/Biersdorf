@@ -172,3 +172,29 @@ describe("the round trip: configFromRows(serialised rows) gives the same configu
     expect(read.reminders).toEqual(rem);
   });
 });
+
+describe("the document settings of 29 Oct round-trip with no writer or reader change", () => {
+  it("a documents-only section's “Upload required?” and a rule's optional documents come back as written", async () => {
+    const s0 = baseState([{ id: "u-admin", name: "Nina Hoffmann", email: "", side: "internal", title: "Business administrator", initials: "NH" }], []);
+    const s1 = A.publishDraft(s0, "u-admin", "Turkey REACH for the Turkey market.", "2026-10-29T08:00:00.000Z");
+    const s2 = A.createDraft(s1, "u-admin", "Document requiredness", "2026-10-29T08:01:00.000Z");
+    const k3 = s2.config.pairs[1]!.template.sections.find((x) => x.id === "K3")!;
+    const s3 = A.upsertSection(s2, "u-admin", { id: "K3", code: k3.code, title: k3.title, kind: k3.kind, meaning: k3.meaning, lead: k3.lead, co: k3.co, documentsOnly: true, uploads: "mandatory" }, "2026-10-29T08:02:00.000Z").state;
+    const s4 = A.upsertRule(s3, "u-admin", { condition: { kind: "always" }, activates: [], outcome: "mandatory", evidence: ["Supplier code of conduct", "Additional site certificate"], optionalEvidence: ["Supplier code of conduct"], departments: ["QM"], basis: "agreed" }, "2026-10-29T08:03:00.000Z").state;
+    const p = s4.config.pairs[0]!;
+    const d = s4.config.pairs[1]!;
+    expect(d.template.sections.find((x) => x.id === "K3")).toMatchObject({ documentsOnly: true, uploads: "mandatory" });
+    expect(d.ruleSet.rules.at(-1)).toMatchObject({ id: "R-122", optionalEvidence: ["Supplier code of conduct"] });
+    const pub = await pairRows({ ruleSet: p.ruleSet, template: p.template, state: "Published", publishedAt: p.publishedAt, publishedBy: p.publishedBy, changeNote: p.changeNote, basedOn: p.basedOn, note: p.note, createdAt: p.createdAt, createdBy: p.createdBy, undefinedOrigins: [...UNDEFINED_ORIGINS] });
+    const draft = await pairRows({ ...draftInput(d), createdBy: d.createdBy });
+    // the payloads carry the keys as they are
+    expect(JSON.parse(String(draft.tpl.Payload_JSON)).sections.find((x: { id: string }) => x.id === "K3").uploads).toBe("mandatory");
+    expect(JSON.parse(String(draft.rs.Payload_JSON)).rules.at(-1).optionalEvidence).toEqual(["Supplier code of conduct"]);
+    const read = configFromRows(asItems([pub.rs, pub.tpl, pub.rel, draft.rs, draft.tpl, draft.rel] as Record<string, unknown>[]));
+    expect(read.cfg).toEqual({ pairs: [asRead(p), d] });
+    expect(await verifyConfig(asItems([pub.rs, pub.tpl, pub.rel, draft.rs, draft.tpl, draft.rel] as Record<string, unknown>[]))).toEqual([]);
+    // the published pair (no setting at all) is byte-for-byte what it was: no key appears on its own
+    expect(String(pub.tpl.Payload_JSON)).not.toContain('"uploads"');
+    expect(String(pub.rs.Payload_JSON)).not.toContain('"optionalEvidence"');
+  });
+});

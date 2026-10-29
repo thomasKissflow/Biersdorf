@@ -1,7 +1,12 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { bundleHashMatches, parseBundle } from "@/portal/data/bundle";
+import * as A from "@/domain/actions";
+import { deriveRequestedDocs, sectionUploadRequired } from "@/domain/requestedDocs";
+import { UNDEFINED_ORIGINS, deriveScope } from "@/domain/rules";
+import { baseState } from "@/domain/seed";
+import { bundleHashMatches, configOf, parseBundle, pinOf } from "@/portal/data/bundle";
+import { pairRows } from "../write/configRows";
 import { CASE_START_FIELDS, caseStartPayload, supplierBundle } from "./caseStartPayload";
 
 // the live Release row, exactly as the config seed wrote it (kissflow-build/config-seed/rows)
@@ -49,5 +54,38 @@ describe("caseStartPayload (the CIQ Case Start fields I-1 copies to the portal)"
     await expect(caseStartPayload({ release: REL1, contacts: [{ name: "x", email: "x@y.z", mayConfirm: true }], bdfAnswers: {}, markets: [] })).rejects.toThrow(/portal user/);
     expect(() => supplierBundle({ Release_Bundle_JSON: "{not json" })).toThrow(/not valid JSON/);
     expect(() => supplierBundle({ Release_Bundle_JSON: { ruleSet: { version: "RS-X" }, template: { version: "v9", sections: [] } } })).toThrow(/no sections/);
+  });
+});
+
+describe("the document settings of 29 Oct reach the portal (Config_Bundle_JSON)", () => {
+  it("sections pass unchanged and rules lose only basis and note, so the portal's own gates see both settings", async () => {
+    // a published release with K3 "Upload required? Mandatory" and a rule whose code of conduct is optional
+    let s = A.publishDraft(baseState([{ id: "u-admin", name: "Nina Hoffmann", email: "", side: "internal", title: "Business administrator", initials: "NH" }], []), "u-admin", "Turkey REACH.", "2026-10-29T08:00:00.000Z");
+    s = A.createDraft(s, "u-admin", "Document requiredness", "2026-10-29T08:01:00.000Z");
+    const k3 = s.config.pairs[1]!.template.sections.find((x) => x.id === "K3")!;
+    s = A.upsertSection(s, "u-admin", { id: "K3", code: k3.code, title: k3.title, kind: k3.kind, meaning: k3.meaning, lead: k3.lead, co: k3.co, documentsOnly: true, uploads: "mandatory" }, "2026-10-29T08:02:00.000Z").state;
+    s = A.upsertRule(s, "u-admin", { condition: { kind: "always" }, activates: [], outcome: "mandatory", evidence: ["Supplier code of conduct", "Additional site certificate"], optionalEvidence: ["Supplier code of conduct"], departments: ["QM"], basis: "agreed", note: "Internal note." }, "2026-10-29T08:03:00.000Z").state;
+    s = A.publishDraft(s, "u-admin", "Mandatory K3 upload; optional code of conduct.", "2026-10-29T08:04:00.000Z");
+    const p = s.config.pairs.at(-1)!;
+    const rows = await pairRows({ ruleSet: p.ruleSet, template: p.template, state: "Published", publishedAt: p.publishedAt, publishedBy: p.publishedBy, changeNote: p.changeNote, basedOn: p.basedOn, note: p.note, createdAt: p.createdAt, createdBy: p.createdBy, undefinedOrigins: [...UNDEFINED_ORIGINS] });
+    const f = await caseStartPayload({ release: rows.rel as unknown as Parameters<typeof supplierBundle>[0], contacts, bdfAnswers: {}, markets: ["EU"] });
+    const { bundle, problem } = parseBundle(f[CASE_START_FIELDS.configBundle]);
+    expect(problem).toBeUndefined();
+    expect(bundle!.template.sections.find((x) => x.id === "K3")).toEqual(p.template.sections.find((x) => x.id === "K3"));
+    const { basis: _b, note: _n, ...r122 } = p.ruleSet.rules.find((r) => r.id === "R-122")!;
+    void _b, void _n;
+    expect(bundle!.ruleSet.rules.find((r) => r.id === "R-122")).toEqual(r122);
+    expect(r122).toMatchObject({ optionalEvidence: ["Supplier code of conduct"] });
+    // the portal's engine on the pinned bundle: K3 needs an upload, the code of conduct is optional
+    const pin = pinOf({ _id: "PkReq1", Config_Bundle_JSON: f[CASE_START_FIELDS.configBundle] });
+    const cfg = configOf([pin]);
+    const config = { SF01: ["vegetable" as const], SF03: false, SF04: false, SF05: [], SF06: false, SF07: false, SF09: false, SF10: false, SF11: ["EU" as const], SF12: true };
+    const scope = deriveScope(config, pin.ruleSetVersion, pin.templateVersion, cfg);
+    const c = { config, ruleSetVersion: pin.ruleSetVersion, templateVersion: pin.templateVersion, scope, liveScope: true as const };
+    expect(sectionUploadRequired(c, "K3", cfg)).toBe(true);
+    expect(deriveRequestedDocs(c, cfg).map((x) => [x.key, !!x.optional])).toEqual([
+      ["EV:supplier-code-of-conduct", true],
+      ["EV:additional-site-certificate", false],
+    ]);
   });
 });

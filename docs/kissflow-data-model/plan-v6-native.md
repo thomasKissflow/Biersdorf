@@ -128,6 +128,12 @@ The webhook URLs go into the Settings row (`SET:current` → `webhooks`) once Th
 - `Answers_Rev`, `Answers_Changed_At`, `Answers_Changed_By_Email`;
 - `Change_Report_Text`, `Change_Report_Rev`, `Change_Report_By_Email`, `Change_Report_At`.
 
+**Documents Mandatory/Optional (Thomas, 29 Oct; additive JSON keys, no Kissflow field or integration change):**
+- in the questionnaire's section data, `uploads: "mandatory"` on a "Documents only" section (absent = optional);
+- in a rule, `optionalEvidence: [<document names>]`, a subset of `evidence` (absent = all mandatory);
+- `Requested_Docs_JSON` rows get `optional: true` when every rule asking for that document marks it optional, written only when true (a row without it stays mandatory);
+- `Justifications_JSON` takes the key `DOC:<sectionId>` for a mandatory documents-only section the supplier cannot provide.
+
 `Documents_JSON` is new on the portal request too. The supplier's screen keeps it current on every upload and removal: `[{uploadId, attachmentId, fileName, docKind, sectionKey, fieldKey, rowId, uploadedByEmail, uploadedAt}]`, with removed files left out. An integration can't copy child rows, so the file list has to travel as a text field.
 
 **How they get there:**

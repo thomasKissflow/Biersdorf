@@ -2905,6 +2905,174 @@ def("S16", "duplicate section codes are refused while typing; rules or questionn
   await t.step("auditor: history and log");
 });
 
+def("S18", "the administrator sets documents mandatory or optional: a documents-only upload and a rule's document (Thomas, 29 Oct)", async (t) => {
+  await t.load("/");
+  const COC = "Supplier code of conduct";
+  const SITE = "Additional site certificate";
+  const K_COC = "EV:supplier-code-of-conduct";
+  const K_SITE = "EV:additional-site-certificate";
+  const K3 = "DOC:K3";
+  const JUST = "We issue no separate storage statement per raw material; storage is in section 7 of the SDS.";
+  const blocker = (k) => t.page.locator(`[data-testid="blocker-item"][data-field="${k}"]`);
+  const blockers = async () => Number(await t.attr("completeness-bar", "data-blockers"));
+
+  // 1. As admin: publish the prepared v2; a case starts on it (step 6 looks at it again)
+  await t.viewAs(P.admin);
+  await t.click("config-check-publish");
+  await t.seeMust("publish-modal");
+  await t.click("publish-submit");
+  t.must("RS-2026.2 + v2 is published", (await t.state()).activeRuleSet === "RS-2026.2");
+  const idOld = await createCase(t, { material: "Solvasoft 518", no: "RM-410518" });
+  t.check(`${idOld} starts on v2`, (await t.kase(idOld)).templateVersion === "CIQ-2026 v2");
+
+  // 2. A new version: K3 (documents only, mandatory for every case) gets "Upload required? Mandatory"
+  await t.viewAs(P.admin);
+  await t.click("config-create-version");
+  await t.seeMust("config-create-modal");
+  await t.fill("config-create-note", "Mandatory and optional documents");
+  await t.click("config-create-confirm");
+  t.must("a draft is open", (await t.attr("config-draft-bar", "data-draft")) === "true");
+  await t.click("nav-admin-templates");
+  await t.click("section-row-K3");
+  await t.seeMust("section-editor");
+  t.check("the editor shows K3's upload as optional", (await t.text("section-editor-uploads")) === "Optional", await t.text("section-editor-uploads"));
+  await t.click("section-edit-settings");
+  await t.seeMust("section-form");
+  t.check("documents only: the form asks “Upload required?”, Optional as before", (await t.attr("section-content", "data-value")) === "documents" && (await t.attr("section-uploads", "data-value")) === "optional");
+  await t.click("section-uploads-mandatory");
+  t.check("the form says what Mandatory means", (await t.text("section-uploads-hint")).includes("must upload at least one document here, or say why they cannot"), await t.text("section-uploads-hint"));
+  await t.step("K3: Upload required? Mandatory");
+  await t.click("section-save");
+  let draft = (await t.state()).config.pairs.find((p) => p.status === "draft");
+  t.check("the draft stores K3's upload as mandatory", draft.template.sections.find((x) => x.id === "K3")?.uploads === "mandatory");
+  t.check("the editor shows it", (await t.text("section-editor-uploads")) === "Mandatory");
+  await t.click("section-editor-close");
+  t.check("the catalogue says “Documents only · mandatory upload”", (await t.text("section-row-content-K3")) === "Documents only · mandatory upload", await t.text("section-row-content-K3"));
+  t.check("K3 is changed in draft, and the change list says how", (await t.attr("section-row-K3", "data-mark")) === "changed" && (await t.text("change-section-K3")).includes("upload now mandatory"), await t.text("change-section-K3").catch(() => ""));
+  await t.step("K3 changed in draft");
+
+  // 3. A rule for every case asks for two documents no question collects: the code of conduct Optional
+  await t.click("nav-admin-rules");
+  await t.click("rule-add");
+  await t.seeMust("rule-form");
+  await t.click("rule-question");
+  await t.click("rule-question-option-ALWAYS");
+  for (const doc of [COC, SITE]) {
+    await t.fill("rule-evidence-input", doc);
+    await t.click("rule-evidence-add");
+  }
+  t.check("each document starts as Mandatory", (await t.attr("rule-evidence-required-0", "data-value")) === "mandatory" && (await t.attr("rule-evidence-required-1", "data-value")) === "mandatory");
+  await t.click("rule-evidence-required-0-optional");
+  t.check("the code of conduct is now Optional", (await t.attr("rule-evidence-required-0", "data-value")) === "optional");
+  const slotLine = await t.page.locator(`[data-testid="rule-evidence-slot"][data-doc="${COC}"]`).first().innerText();
+  t.check("the information line says the slot is optional", slotLine.includes("gets an optional upload slot for it"), slotLine);
+  t.check("the preview names it optional", (await t.text("rule-preview-sentence")).includes(`${COC} (optional) and ${SITE}`), await t.text("rule-preview-sentence"));
+  t.check("the form says what Mandatory and Optional mean", (await t.text("rule-evidence-required-hint")).includes("blocks the completeness confirmation until the supplier uploads it"), await t.text("rule-evidence-required-hint").catch(() => ""));
+  // A document a question collects (SDS: FLD-K1-001, in K1, which every case gets) has no toggle: it follows the question
+  const sdsChip = t.page.locator('[data-testid^="rule-evidence-option-"][data-doc="SDS"]').first();
+  await sdsChip.click();
+  await t.settle(40);
+  t.check("SDS follows its question's own setting, with no Mandatory | Optional", (await t.text("rule-evidence-follows-2")).includes("Follows the question: Mandatory") && !(await t.isVisible("rule-evidence-required-2")), await t.text("rule-evidence-follows-2").catch(() => ""));
+  await sdsChip.click();
+  await t.settle(40);
+  await t.click("rule-dept-QM");
+  await t.step("rule form: one document optional");
+  await t.click("rule-save");
+  t.check("the rule form closes", !(await t.isVisible("rule-form")), await t.text("rule-error").catch(() => ""));
+  draft = (await t.state()).config.pairs.find((p) => p.status === "draft");
+  const rule = draft.ruleSet.rules.find((r) => (r.evidence ?? []).includes(COC));
+  t.must("the draft has the rule", !!rule);
+  t.check(`${rule.id}: optionalEvidence holds the code of conduct only`, JSON.stringify(rule.optionalEvidence) === JSON.stringify([COC]) && same(rule.evidence, [COC, SITE]), rule);
+  const ruleRow = await t.page.locator("tr", { has: t.tid(`rule-row-${rule.id}`) }).first().innerText();
+  t.check("the rule list marks it optional", ruleRow.includes(`${COC} (optional)`) && !ruleRow.includes(`${SITE} (optional)`), ruleRow);
+  await t.click("config-check-publish");
+  await t.seeMust("publish-modal");
+  t.check("every check passes", (await t.attr("publish-checklist", "data-ok")) === "true");
+  await t.fill("publish-note", "K3 needs an upload; the code of conduct is optional, the site certificate mandatory.");
+  await t.click("publish-submit");
+  t.must("RS-2026.3 + v3 is published", (await t.state()).activeRuleSet === "RS-2026.3");
+  await t.step("v3 published");
+
+  // 4. A new case: Elena fills the CIQ; K3's upload and the site certificate block, the optional code of conduct does not
+  const id = await createCase(t, { material: "Solvasoft 519", no: "RM-410519" });
+  t.check(`${id} runs on v3`, (await t.kase(id)).templateVersion === "CIQ-2026 v3");
+  await t.viewAs(P.elena);
+  await fillCiq(t, id);
+  t.check("the navigator: K3 “Documents · mandatory upload”", (await t.text("q-nav-K3")).includes("Documents · mandatory upload"), await t.text("q-nav-K3"));
+  await t.click("check-completeness");
+  await t.seeMust("blocker-panel");
+  t.check("K3's upload blocks, named in plain words", (await blocker(K3).count()) === 1 && (await blocker(K3).innerText()).includes("Documents for K3 · Storage conditions and handling"), await t.text("blocker-panel"));
+  t.check("the mandatory site certificate blocks; the optional code of conduct does not", (await blocker(K_SITE).count()) === 1 && (await blocker(K_COC).count()) === 0);
+  t.check("… only those two", (await blockers()) === 2, await blockers());
+  await t.step("completeness blocked by K3 and the site certificate");
+  await blocker(K3).click();
+  await t.settle(80);
+  t.check("the blocker jumps to K3's upload", (await t.hash()).includes("s=K3") && (await t.isVisible("q-documents-K3")), await t.hash());
+  t.check("K3 says the upload is required, with the Cannot provide path", (await t.attr("q-section-K3", "data-applicability")) === "mandatory" && (await t.attr("q-documents-K3", "data-required")) === "true" && (await t.text("q-section-K3")).includes("Documents · mandatory upload") && !(await t.text("q-section-K3")).includes("does not block"));
+  await t.click(`q-justify-${K3}`);
+  await t.fill("q-documents-justification-K3-text", JUST);
+  await t.tid("q-documents-justification-K3-text").blur();
+  await t.settle(60);
+  let c = await t.kase(id);
+  t.check("a justification answers it", c.justifications[K3] === JUST && (await t.attr("q-documents-K3", "data-status")) === "justified" && (await blockers()) === 1, { just: c.justifications[K3], blockers: await blockers() });
+  await t.step("K3 justified");
+  await t.tid("q-documents-justification-K3").getByRole("button", { name: "Remove justification" }).click();
+  await t.settle(60);
+  t.check("without it, K3 blocks again", !(await t.kase(id)).justifications[K3] && (await blockers()) === 2, await blockers());
+  await upload(t, "K3", "Storage_statement_Solvasoft519.pdf");
+  c = await t.kase(id);
+  t.check("a file in K3 answers it too", c.documents.some((d) => d.sectionId === "K3" && !d.fieldId) && (await t.attr("q-documents-K3", "data-status")) === "received" && (await blockers()) === 1);
+  t.check("the navigator says so", (await t.text("q-nav-K3")).includes("Documents · 1 document added"), await t.text("q-nav-K3"));
+  await t.step("K3 uploaded");
+  await navSection(t, "K1");
+  t.check("K1: the code of conduct is optional (no asterisk, no Cannot provide), the site certificate mandatory", (await t.attr(`q-reqdoc-${K_COC}`, "data-optional")) === "true" && !(await t.isVisible(`q-justify-${K_COC}`)) && (await t.attr(`q-reqdoc-${K_SITE}`, "data-optional")) === "false" && (await t.isVisible(`q-justify-${K_SITE}`)));
+  await upload(t, K_SITE, "Site_certificate_Solvasoft519.pdf");
+  t.check("nothing blocks: the optional code of conduct is left out", (await blockers()) === 0, await blockers());
+  await t.step("only the optional document is left out");
+  await confirmCompleteness(t, id);
+
+  // 5. Beiersdorf reads the same: K3's upload received, the code of conduct optional and not provided
+  await t.viewAs(P.qm);
+  await t.go(`/review/${id}?s=K3`);
+  await t.seeMust("section-content-K3");
+  t.check("QM: K3 is “Documents · mandatory upload”, its upload received", (await t.text("section-content-K3")).includes("Documents · mandatory upload") && (await t.attr("section-upload-K3", "data-status")) === "received");
+  await t.go(`/review/${id}?s=K1`);
+  await t.seeMust(`reqdoc-${K_COC}`);
+  t.check("QM: the code of conduct reads “Not provided (optional)”, never a red Missing", (await t.attr(`reqdoc-${K_COC}`, "data-optional")) === "true" && (await t.text(`reqdoc-${K_COC}`)).includes("Not provided (optional)") && !(await t.text(`reqdoc-${K_COC}`)).includes("Missing"), await t.text(`reqdoc-${K_COC}`));
+  await t.step("QM: the review workspace");
+  await t.viewAs(P.rmm);
+  await t.go(`/cases/${id}?tab=questionnaire`);
+  await t.seeMust("q-evidence");
+  t.check("RMM: the code of conduct's chip is optional, not missing", (await t.attr(`q-evidence-${rule.id}-Supplier-code-of-conduct`, "data-state")) === "optional" && (await t.attr(`q-evidence-${rule.id}-Additional-site-certificate`, "data-state")) === "received");
+  t.check("RMM: K3 counts its upload", (await t.text("q-status-K3")).includes("Complete · 1 of 1"), await t.text("q-status-K3"));
+  await t.go("/admin/templates");
+  await t.click("section-row-K3");
+  await t.seeMust("section-view", "RMM: K3 opens read-only");
+  t.check("RMM: the read-only view says the upload is mandatory", (await t.text("section-view-uploads")) === "Mandatory", await t.text("section-view-uploads"));
+  await t.closeOverlays();
+  await t.step("RMM: Questionnaire tab and the read-only questionnaire");
+
+  // 6. The case started on v2 keeps today's behaviour: K3's upload is optional and never blocks
+  await t.viewAs(P.elena);
+  await fillCiq(t, idOld);
+  t.check(`${idOld}: K3 is “Documents only · optional upload”`, (await t.text("q-nav-K3")).includes("Documents only") && (await t.text("q-nav-K3")).includes("optional upload"), await t.text("q-nav-K3"));
+  await navSection(t, "K3");
+  t.check(`${idOld}: no requirement, no Cannot provide`, (await t.attr("q-documents-K3", "data-required")) === "false" && !(await t.isVisible(`q-justify-${K3}`)) && (await t.text("q-section-K3")).includes("does not block"));
+  t.check(`${idOld}: nothing blocks`, (await blockers()) === 0, await blockers());
+  await confirmCompleteness(t, idOld);
+  await t.step("the v2 case keeps an optional upload");
+
+  // 7. The release: the optional document never blocks; the final document leaves it out
+  await completeAll(t, id);
+  await t.viewAs(P.elena);
+  await release(t, id);
+  const fd = (await t.kase(id)).finalDocument;
+  const k1 = fd.sections.find((x) => x.sectionId === "K1").answers.map((a) => a.fieldId);
+  t.check("FD: the site certificate is listed, the optional code of conduct left out", k1.includes(K_SITE) && !k1.includes(K_COC) && !fd.evidence.some((e) => e.requested === COC), k1);
+  t.check("FD: K3's file is in the evidence", fd.evidence.some((e) => e.sectionId === "K3" && e.name === "Storage_statement_Solvasoft519.pdf"));
+  await t.step("released with the optional document left out");
+});
+
 // ------------------------------------------------------------------------------------------------- run
 
 const todo = wantedIds.length ? SCENARIOS.filter((s) => wantedIds.includes(s.id)) : SCENARIOS;

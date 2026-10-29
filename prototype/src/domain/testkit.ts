@@ -5,7 +5,7 @@
 import * as A from "./actions";
 import { fieldOf } from "./catalog";
 import { wasRefused } from "./core";
-import { isSlotKey } from "./requestedDocs";
+import { isSectionUploadKey, isSlotKey, uploadKeySection } from "./requestedDocs";
 import { checkInvariants } from "./invariants";
 import { buildSeed, makeUser } from "./seed";
 import { DAY, completenessBlockers } from "./selectors";
@@ -147,6 +147,13 @@ export class Scenario {
         if (isSlotKey(b.fieldId) && !tried.has(b.fieldId)) {
           tried.add(b.fieldId);
           this.step(`upload ${b.fieldId}`, (s, at) => A.uploadDocument(s, who, this.id, { name: `${b.fieldId!.slice(3)}.pdf`, kind: "Analysis", sectionId: b.sectionId, fieldId: b.fieldId }, at).state);
+          return;
+        }
+        // A documents-only section that requires an upload: a file in the section itself (no question).
+        if (isSectionUploadKey(b.fieldId) && !tried.has(b.fieldId)) {
+          tried.add(b.fieldId);
+          const sectionId = uploadKeySection(b.fieldId);
+          this.step(`upload ${b.fieldId}`, (s, at) => A.uploadDocument(s, who, this.id, { name: `${sectionId}_template.pdf`, kind: "Statement", sectionId }, at).state);
           return;
         }
         const f = fieldOf(b.fieldId, this.c.templateVersion, this.s.config);

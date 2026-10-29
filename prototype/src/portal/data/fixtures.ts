@@ -14,7 +14,6 @@ import * as A from "@/domain/actions";
 import { RS1 } from "@/domain/builtinRules";
 import { DEPT_LABEL, builtinTemplateData, fieldOf } from "@/domain/catalog";
 import { UNDEFINED_ORIGINS } from "@/domain/rules";
-import { requestedDocuments } from "@/domain/requestedDocs";
 import { BDF_SET_FIELDS, SUPPLIER_MESSAGE_TEXT, closedByCancellation } from "@/domain/selectors";
 import { DAY } from "@/domain/selectors";
 import { Scenario } from "@/domain/testkit";
@@ -23,7 +22,7 @@ import { STEPS, UPLOADS_TABLE, type FlowKey, type StepKey } from "../kf/portal";
 import { canonicalJson, type ConfigBundle } from "./bundle";
 import type { Loaded } from "./map";
 import type { RawItem } from "./raw";
-import { scopeRows } from "./scope";
+import { requestedDocRows, scopeRows } from "./scope";
 
 export const SUPPLIER_CODE = "SUP-ZZT-SOLVARO";
 export const SUPPLIER_NAME = "Solvaro Oleochemicals S.A.";
@@ -180,7 +179,7 @@ export function requestItem(c: CiqCase, s: AppState, code: string, opts: { id: s
           Justifications_JSON: JSON.stringify(c.justifications),
           Components_JSON: JSON.stringify(c.components),
           Scope_JSON: JSON.stringify(scopeRows(c.scope)),
-          Requested_Docs_JSON: JSON.stringify(requestedDocuments(c, cfg).map((x) => ({ key: x.key, doc: x.doc, sectionId: x.sectionId, why: x.why, ...(x.addedLater ? { addedLater: true } : {}) }))),
+          Requested_Docs_JSON: JSON.stringify(requestedDocRows(c, cfg)),
           Answers_Changed_At: isoNoMs(lastAt!),
           Answers_Changed_By_Email: PORTAL_USERS.elena.Email,
         }

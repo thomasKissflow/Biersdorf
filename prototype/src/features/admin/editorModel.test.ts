@@ -23,8 +23,11 @@ import {
   ruleFormProblems,
   ruleInputOf,
   sectionCodeDuplicateOf,
+  sectionFormOf,
   sectionFormProblems,
   sectionInputOf,
+  withEvidence,
+  withEvidenceOptional,
   withQuestion,
   withType,
   type RuleForm,
@@ -88,6 +91,30 @@ describe("rule form", () => {
     expect(addEvidence(["SDS"], "  ")).toEqual(["SDS"]);
     expect(addEvidence(["SDS"], "Microplastics test report")).toEqual(["SDS", "Microplastics test report"]);
   });
+
+  it("each document asked for is Mandatory unless set to Optional (29 Oct); an unticked one drops out of the optional ones", () => {
+    const REPORT = "Microplastics test report";
+    const COC = "Supplier code of conduct";
+    const f: RuleForm = { ...withQuestion(emptyRuleForm(), "ALWAYS"), departments: ["QM"], evidence: [REPORT, COC] };
+    expect(f.optionalEvidence).toEqual([]);
+    expect(ruleInputOf(f)).not.toHaveProperty("optionalEvidence");
+    const g = withEvidenceOptional(f, COC, true);
+    expect(g.optionalEvidence).toEqual([COC]);
+    expect(ruleInputOf(g)).toMatchObject({ evidence: [REPORT, COC], optionalEvidence: [COC] });
+    // a document not asked for cannot be optional; Mandatory again takes it out
+    expect(withEvidenceOptional(g, "Not asked for", true).optionalEvidence).toEqual([COC]);
+    expect(withEvidenceOptional(g, COC, false).optionalEvidence).toEqual([]);
+    // unticking the document drops it; ticking it again starts Mandatory
+    const h = withEvidence(g, [REPORT]);
+    expect(h).toMatchObject({ evidence: [REPORT], optionalEvidence: [] });
+    expect(withEvidence(h, [REPORT, COC]).optionalEvidence).toEqual([]);
+    // a stale name in the form is never sent
+    expect(ruleInputOf({ ...f, evidence: [REPORT], optionalEvidence: [COC] })).not.toHaveProperty("optionalEvidence");
+    // an existing rule opens with its optional documents, in the evidence's own spelling
+    expect(ruleFormOf({ id: "R-122", question: "ALWAYS", condition: { kind: "always" }, activates: [], outcome: "mandatory", evidence: [REPORT, COC], optionalEvidence: [" supplier code of CONDUCT"], departments: ["QM"], basis: "agreed" }).optionalEvidence).toEqual([COC]);
+    // the built-in rules have none
+    for (const r of currentRuleSet(ruleSetsOf(buildSeed().config)).rules) expect(ruleFormOf(r).optionalEvidence, r.id).toEqual([]);
+  });
 });
 
 describe("section form", () => {
@@ -121,6 +148,16 @@ describe("section form", () => {
   it("keeps questions before switching a section to documents only", () => {
     const k21 = draft().find((x) => x.id === "K2.1")!;
     expect(sectionFormProblems({ ...emptySectionForm(), id: "K2.1", code: k21.code, title: k21.title, documentsOnly: true }, cfg()).content).toMatch(/still has/);
+  });
+
+  it("“Upload required?” of a documents-only section: Optional by default, sent only for documents only (29 Oct)", () => {
+    expect(emptySectionForm().uploads).toBe("optional");
+    const k3 = draft().find((x) => x.id === "K3")!;
+    expect(sectionFormOf(k3)).toMatchObject({ documentsOnly: true, uploads: "optional" });
+    expect(sectionFormOf({ ...k3, uploads: "mandatory" }).uploads).toBe("mandatory");
+    expect(sectionInputOf({ ...sectionFormOf(k3), uploads: "mandatory" })).toMatchObject({ id: "K3", documentsOnly: true, uploads: "mandatory" });
+    const asQuestions = sectionInputOf({ ...sectionFormOf(k3), documentsOnly: false, uploads: "mandatory" });
+    expect(asQuestions).not.toHaveProperty("uploads");
   });
 
   it("sends the lead outside the co-reviewers", () => {
@@ -205,5 +242,14 @@ describe("rule changes between versions", () => {
     expect(d.removed).toEqual([rs1.rules[0].id]);
     expect(d.changed).toEqual([rs1.rules[1].id]);
     expect(ruleMarksBetween(rs1.rules, rs2.rules).get("R-111")).toBe("new");
+  });
+
+  it("an optional document alone is a change (29 Oct), as in the domain's own comparison", () => {
+    const [rs1] = ruleSetsOf(buildSeed().config);
+    const r00 = rs1.rules.find((r) => r.id === "R-00")!;
+    const toggled = rs1.rules.map((r) => (r.id === "R-00" ? { ...r, optionalEvidence: ["Statements"] } : r));
+    expect(r00.evidence).toContain("Statements");
+    expect(ruleDiff(rs1.rules, toggled)).toEqual({ added: [], changed: ["R-00"], removed: [] });
+    expect(ruleDiff(rs1.rules, rs1.rules.map((r) => ({ ...r })))).toEqual({ added: [], changed: [], removed: [] });
   });
 });

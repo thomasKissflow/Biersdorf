@@ -6,15 +6,15 @@ import { Building2, ChevronRight, CircleCheck, CircleDashed, CircleDot, CircleSl
 import { useState, type ReactNode } from "react";
 import { DocName } from "@/components/DocName";
 import { MENTION_HINT, MentionTextArea, MentionsYou, NoteNotified, NoteText } from "@/components/mentions";
-import { RequestedDocsList } from "@/components/RequestedDocs";
+import { RequestedDocsList, SectionUploadRow } from "@/components/RequestedDocs";
 import { Badge, Button, Card, Mono, Table, Td, TrafficLight, Tr, cx, type Tone } from "@/components/ui";
 import { CONFIG_QUESTIONS, DEPT_SHORT, MARKET_LABEL, ORIGIN_LABEL, fieldOf, fieldsOf, sectionOf } from "@/domain/catalog";
 import { additiveText, concText } from "@/domain/composition";
 import { mentionableUsers } from "@/domain/mentions";
 import { check } from "@/domain/permissions";
-import { evidenceFieldIds, isSlotKey, requestedDocStatus, requestedDocuments, slotKey } from "@/domain/requestedDocs";
+import { evidenceFieldIds, isSlotKey, requestedDocStatus, requestedDocuments, sectionUploadRequired, slotKey } from "@/domain/requestedDocs";
 import { requiredEvidence } from "@/domain/rules";
-import { REQUIRED_CONFIG, answerOf, answeredByOf, fmtDate, formatValue, hasValue, isClosed, isVisible, unansweredConfig, userName } from "@/domain/selectors";
+import { REQUIRED_CONFIG, answerOf, answeredByOf, fmtDate, formatValue, hasValue, isClosed, isVisible, requiredFields, unansweredConfig, userName } from "@/domain/selectors";
 import type { AppState, CiqCase, ConfigQuestionId, FieldDef, Market, OpenPoint, OriginType, ScopeItem } from "@/domain/types";
 import { useStore } from "@/store/store";
 import { sectionCode, sectionTitleIn, undefinedOriginLabels } from "../shared";
@@ -186,17 +186,36 @@ function AnswerRow({ label, sub, value, by, testId, changed }: { label: ReactNod
 
 // ------------------------------------------------------------------------------------------------ scope and evidence
 
+type EvidenceState = "received" | "justified" | "missing" | "optional";
+
 /** Whether the supplier provided an evidence item of the rules: at its requested-document slot (evidence no question
- *  collects, spec §8.5), else at the question that collects it (EVIDENCE_FIELDS). */
-function evidenceState(c: CiqCase, doc: string): "received" | "justified" | "missing" | undefined {
+ *  collects, spec §8.5), else at the question that collects it (EVIDENCE_FIELDS). Not provided is "missing" only where
+ *  it blocks: a mandatory slot, or a question the case requires (mandatory, in a section mandatory for the case); an
+ *  optional slot or an optional question left empty is "optional". */
+function evidenceState(c: CiqCase, doc: string): EvidenceState | undefined {
   const slot = requestedDocuments(c).find((x) => x.key === slotKey(doc));
-  if (slot) return requestedDocStatus(c, slot);
+  if (slot) {
+    const st = requestedDocStatus(c, slot);
+    return st === "missing" && slot.optional ? "optional" : st;
+  }
   const ids = evidenceFieldIds(doc);
   if (!ids?.length) return undefined;
   if (ids.some((id) => hasValue(c.answers[id]))) return "received";
   if (ids.some((id) => !!c.justifications[id])) return "justified";
-  return "missing";
+  const required = ids.some((id) => {
+    const f = fieldOf(id, c.templateVersion);
+    return !!f && requiredFields(c, f.sectionId).some((x) => x.id === id);
+  });
+  return required ? "missing" : "optional";
 }
+
+const EVIDENCE_DOT: Record<EvidenceState, string> = { received: "bg-ok", justified: "bg-ink-3", missing: "bg-warn", optional: "bg-line-strong" };
+const EVIDENCE_TEXT: Record<EvidenceState, { cls: string; text: string }> = {
+  received: { cls: "text-ok", text: "· received" },
+  justified: { cls: "text-ink-2", text: "· justified" },
+  missing: { cls: "text-warn", text: "· missing" },
+  optional: { cls: "text-ink-3", text: "· optional, not provided" },
+};
 
 const releaseOf = (c: CiqCase) => c.confirmations.find((x) => x.type === "final-release")?.at;
 
@@ -261,9 +280,9 @@ export function ScopeCard({ c }: { c: CiqCase }) {
                   data-state={st ?? ""}
                   className="inline-flex max-w-full flex-wrap items-center gap-x-1.5 rounded-md border border-line bg-surface-2 px-2 py-0.5 text-[12.5px] text-ink-2"
                 >
-                  {st && <span aria-hidden className={cx("h-1.5 w-1.5 shrink-0 rounded-full", st === "received" ? "bg-ok" : st === "justified" ? "bg-ink-3" : "bg-warn")} />}
+                  {st && <span aria-hidden className={cx("h-1.5 w-1.5 shrink-0 rounded-full", EVIDENCE_DOT[st])} />}
                   <span className="min-w-0">{e.doc}</span> <Mono className="text-[11px] text-ink-3">{e.ruleId}</Mono>
-                  {st && <span className={cx("text-[11.5px] font-medium", st === "received" ? "text-ok" : st === "justified" ? "text-ink-2" : "text-warn")}>{st === "received" ? "· received" : st === "justified" ? "· justified" : "· missing"}</span>}
+                  {st && <span className={cx("text-[11.5px] font-medium", EVIDENCE_TEXT[st].cls)}>{EVIDENCE_TEXT[st].text}</span>}
                 </span>
               );
             })}
@@ -497,17 +516,19 @@ export function SectionPanel({ c, item, since, focused, onOpenPoints, footer }: 
           </dl>
         </>
       )}
+      {/* a documents-only section whose version requires the upload (29 Oct): its status, then its files below */}
+      <SectionUploadRow c={c} state={state} sectionId={id} className="border-t-0" inset="px-4 sm:px-5" who={(by, at) => <Attribution state={state} by={by} at={at} />} />
       <RequestedDocsList
         c={c}
         state={state}
         sectionId={id}
         since={since}
-        className={fields.length || id === "K2.1" ? undefined : "border-t-0"}
+        className={fields.length || id === "K2.1" || sectionUploadRequired(c, id) ? undefined : "border-t-0"}
         inset="px-4 sm:px-5"
         who={(by, at) => <Attribution state={state} by={by} at={at} />}
         action={(slot) => <OpChips ops={c.openPoints.filter((p) => p.ref.fieldId === slot.key && p.status !== "closed")} onOpen={onOpenPoints} compact />}
       />
-      {otherDocs.length > 0 && <DocList state={state} title="Other documents in this section" docs={otherDocs} since={since} />}
+      {otherDocs.length > 0 && <DocList state={state} title={fields.length || id === "K2.1" ? "Other documents in this section" : "Documents in this section"} docs={otherDocs} since={since} />}
       {footer && <div className="border-t border-line">{footer}</div>}
     </Card>
   );

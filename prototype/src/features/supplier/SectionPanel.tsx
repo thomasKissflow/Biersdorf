@@ -1,17 +1,19 @@
 // One questionnaire section: header, field-level content (FieldRenderer / K2.1 table), the K5.1 waiver,
-// or, for a chapter answered with documents only, its document upload (never blocking).
-import { ArrowLeft, ArrowRight, CheckCircle2, Loader2, Lock, SearchX } from "lucide-react";
-import { useEffect } from "react";
+// or, for a chapter answered with documents only, its document upload (blocking only when the questionnaire version
+// requires it and the section is mandatory for the case: then a file or a "Cannot provide" justification).
+import { ArrowLeft, ArrowRight, CheckCircle2, Loader2, Lock, MessageSquareWarning, SearchX } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Badge, Button, Card, FileDrop, ProgressBar, cx } from "@/components/ui";
 import { fieldsOf } from "@/domain/catalog";
+import { sectionUploadKey, sectionUploadRequired, sectionUploadStatus, sectionUploads, slotsIn } from "@/domain/requestedDocs";
 import { isSetByBdf, isVisible } from "@/domain/selectors";
 import type { CiqCase, SectionDef } from "@/domain/types";
 import { usePortalCaps } from "@/store/portalCaps";
 import { useStore } from "@/store/store";
 import { ComponentTable } from "./ComponentTable";
-import { FieldRenderer } from "./FieldRenderer";
+import { FieldRenderer, Justification } from "./FieldRenderer";
 import { isLiveScope, navProgress, sectionCode, sectionCodeShown, sectionMeta, sectionTitle, type RequestedRefs, type SupplierSection, WAIVER_FIELD } from "./lib";
-import { DocumentList, LockedNote, RequestedBadge } from "./parts";
+import { Attribution, DocumentList, LockedNote, RequestedBadge } from "./parts";
 import { RequestedDocuments } from "./RequestedDocuments";
 
 export interface SectionPanelProps {
@@ -57,7 +59,13 @@ export function SectionPanel({ c, sec, locked, requested, focusField, focusRow, 
               {sec.waived ? (
                 <Badge tone="neutral">Waived · justification needed</Badge>
               ) : !def.hasFields ? (
-                <Badge tone="neutral">Documents only</Badge>
+                sectionUploadRequired(c, sec.sectionId) ? (
+                  <Badge tone="brand">Documents · mandatory upload</Badge>
+                ) : requestedHere(c, sec.sectionId) ? (
+                  <Badge tone="brand">Documents · requested documents</Badge>
+                ) : (
+                  <Badge tone="neutral">Documents only</Badge>
+                )
               ) : (
                 <Badge tone={sec.applicability === "mandatory" ? "brand" : "neutral"}>{sec.applicability === "mandatory" ? "Mandatory" : "Optional"}</Badge>
               )}
@@ -126,7 +134,7 @@ export function SectionPanel({ c, sec, locked, requested, focusField, focusRow, 
           )}
         </div>
       ) : (
-        <TemplateChapter c={c} sectionId={sec.sectionId} kind={def.kind} editable={!locked || requested.wholeSections.has(sec.sectionId)} />
+        <TemplateChapter key={sec.sectionId} c={c} sectionId={sec.sectionId} kind={def.kind} editable={!locked || requested.wholeSections.has(sec.sectionId)} focused={focusField === sectionUploadKey(sec.sectionId)} />
       )}
 
       {!sec.waived && <RequestedDocuments c={c} sectionId={sec.sectionId} locked={locked} requested={requested} focusField={focusField} />}
@@ -154,22 +162,49 @@ export function SectionPanel({ c, sec, locked, requested, focusField, focusRow, 
   );
 }
 
-/** A chapter answered with documents only: the CIQ template document, a statement or a certificate. Never blocking. */
-function TemplateChapter({ c, sectionId, kind, editable }: { c: CiqCase; sectionId: string; kind: SectionDef["kind"]; editable: boolean }) {
+/** True when the rules ask for a mandatory requested document in the section (it blocks, whatever its own upload). */
+const requestedHere = (c: CiqCase, sectionId: string) => isLiveScope(c) && slotsIn(c, sectionId).some((x) => !x.optional);
+
+/**
+ * A chapter answered with documents only: the CIQ template document, a statement or a certificate. Optional, unless
+ * the questionnaire version requires the upload ("Upload required? Mandatory", 29 Oct) and the section is mandatory for
+ * the case: then at least one file, or "Cannot provide" with a justification, before the completeness confirmation.
+ * A mandatory requested document below (RequestedDocuments) blocks on its own, so the text never says "does not block"
+ * then. Keyed by section: the justification editor's open state belongs to one section.
+ */
+function TemplateChapter({ c, sectionId, kind, editable, focused }: { c: CiqCase; sectionId: string; kind: SectionDef["kind"]; editable: boolean; focused: boolean }) {
   const noun = kind === "annex" ? "annex" : kind === "basic" ? "section" : "chapter";
-  const { uploadDocument, notify } = useStore();
+  const { uploadDocument, notify, setJustification } = useStore();
   const caps = usePortalCaps();
-  const docs = c.documents.filter((d) => d.sectionId === sectionId && !d.fieldId).sort((a, b) => b.uploadedAt.localeCompare(a.uploadedAt));
+  const docs = sectionUploads(c, sectionId);
+  const required = sectionUploadRequired(c, sectionId);
+  const key = sectionUploadKey(sectionId);
+  const just = c.justifications[key];
+  const [jOpen, setJOpen] = useState(!!just);
   return (
-    <div className="space-y-4 px-5 py-5">
+    <div id={`field-${key}`} data-testid={`q-documents-${sectionId}`} data-required={required ? "true" : "false"} data-status={sectionUploadStatus(c, sectionId)} className={cx("scroll-mt-40 space-y-4 px-5 py-5 transition-colors", focused && "bg-brand-soft/50")}>
       <div className="rounded-lg border border-line bg-surface-2 px-4 py-4" data-testid={`q-documents-only-${sectionId}`}>
         <p className="text-[13.5px] font-medium text-ink">This {noun} is answered with documents</p>
-        <p className="mt-1 text-[13px] text-ink-3">It is covered by the CIQ template document. Upload the completed template, or a statement or certificate that covers it. It does not block your completeness confirmation.</p>
+        <p className="mt-1 text-[13px] text-ink-3">
+          It is covered by the CIQ template document. Upload the completed template, or a statement or certificate that covers it.{" "}
+          {required
+            ? "Beiersdorf needs at least one document here: until you upload one, or say why you cannot provide it, it blocks your completeness confirmation."
+            : requestedHere(c, sectionId)
+              ? "This upload is optional. Beiersdorf also needs the requested documents below: upload each one, or say why you cannot provide it."
+              : "It does not block your completeness confirmation."}
+        </p>
       </div>
       <div className="space-y-2">
         <div>
-          <p className="text-[13.5px] font-medium text-ink">Documents for this {noun}</p>
-          <p className="text-[12.5px] text-ink-3">Optional. Each file is listed with its upload date.</p>
+          <p className="text-[13.5px] font-medium text-ink">
+            Documents for this {noun}
+            {required && (
+              <span className="ml-0.5 text-bad" aria-label="required">
+                *
+              </span>
+            )}
+          </p>
+          <p className="text-[12.5px] text-ink-3">{required ? "Required: at least one document. Each file is listed with its upload date." : "Optional. Each file is listed with its upload date."}</p>
         </div>
         <DocumentList docs={docs} />
         {editable && caps.canUpload(c.id, sectionId) ? (
@@ -183,11 +218,36 @@ function TemplateChapter({ c, sectionId, kind, editable }: { c: CiqCase; section
             />
           </div>
         ) : (
-          docs.length === 0 && (
+          docs.length === 0 &&
+          !just && (
             <p className="inline-flex items-center gap-1.5 text-[12.5px] text-ink-3">
               <Lock size={12} /> No supporting documents were added.
             </p>
           )
+        )}
+        {(required || just) && (
+          <>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              {just && !docs.length ? <Attribution c={c} keyId={key} verb="Justified" /> : <span />}
+              {required && editable && !jOpen && !docs.length && (
+                <button type="button" onClick={() => setJOpen(true)} className="inline-flex items-center gap-1 text-[12px] font-medium text-ink-3 hover:text-brand" data-testid={`q-justify-${key}`}>
+                  <MessageSquareWarning size={13} /> Cannot provide? Add a justification
+                </button>
+              )}
+            </div>
+            {(jOpen || just) && (editable || just) && (
+              <Justification
+                testId={`q-documents-justification-${sectionId}`}
+                value={just ?? ""}
+                editable={editable}
+                onSave={(t) => setJustification(c.id, key, t)}
+                onRemove={() => {
+                  if (just) setJustification(c.id, key, "");
+                  setJOpen(false);
+                }}
+              />
+            )}
+          </>
         )}
       </div>
     </div>

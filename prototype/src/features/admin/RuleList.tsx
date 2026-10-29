@@ -7,6 +7,7 @@ import { useMemo, useState, type ReactNode } from "react";
 import { Badge, Button, Card, EmptyState, IconButton, Mono, Table, Td, TextInput, Tr } from "@/components/ui";
 import { ApplicabilityBadge } from "@/components/status";
 import { CONFIG_QUESTIONS, DEPT_LABEL, DEPT_SHORT, SECTION_BY_ID } from "@/domain/catalog";
+import { isOptionalEvidence } from "@/domain/requestedDocs";
 import type { ConfigQuestionId, Rule, RuleSet } from "@/domain/types";
 import { MarkBadge } from "./controls";
 import { SectionChips, questionMeta } from "./shared";
@@ -149,7 +150,10 @@ export function RuleList({ ruleSet, versionLabel, marks, inDraft, editing, intro
                         {r.evidence.map((e) => (
                           <li key={e} className="flex items-start gap-1.5 text-[12.5px] text-ink-2">
                             <FileText size={12} className="mt-0.5 shrink-0 text-ink-3" />
-                            {e}
+                            <span>
+                              {e}
+                              {isOptionalEvidence(r, e) && <span className="text-ink-3"> (optional)</span>}
+                            </span>
                           </li>
                         ))}
                       </ul>

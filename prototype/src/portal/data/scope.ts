@@ -29,13 +29,16 @@ export interface ScopeRow {
   addedLater?: true;
 }
 
-/** One Requested_Docs_JSON row as the portal UI writes it (the rule ids stay out). */
+/** One Requested_Docs_JSON row as the portal UI writes it (the rule ids stay out). `optional` (29 Oct, written only
+ *  when true): the supplier may leave the document out; after the completeness confirmation it only tightens, so a row
+ *  without it (every row written before) stays mandatory. */
 export interface RequestedDocRow {
   key: string;
   doc: string;
   sectionId: string;
   why: string;
   addedLater?: true;
+  optional?: true;
 }
 
 const RANK: Record<Applicability, number> = { mandatory: 3, optional: 2, na: 1 };
@@ -113,11 +116,11 @@ export function storedSlots(rows: unknown): RequestedDocSlot[] {
   if (!Array.isArray(rows)) return [];
   return rows
     .filter((r): r is RequestedDocRow => !!r && typeof r === "object" && typeof (r as RequestedDocRow).key === "string" && typeof (r as RequestedDocRow).sectionId === "string")
-    .map((r) => ({ key: r.key, doc: typeof r.doc === "string" ? r.doc : r.key, sectionId: r.sectionId, ruleIds: [], why: typeof r.why === "string" ? r.why : "", conditions: [], ...(r.addedLater ? { addedLater: true } : {}) }));
+    .map((r) => ({ key: r.key, doc: typeof r.doc === "string" ? r.doc : r.key, sectionId: r.sectionId, ruleIds: [], why: typeof r.why === "string" ? r.why : "", conditions: [], ...(r.addedLater ? { addedLater: true } : {}), ...(r.optional === true ? { optional: true as const } : {}) }));
 }
 
 /** Requested_Docs_JSON: the slots the case asks for now, in supplier wording. */
 export const requestedDocRows = (c: CiqCase, cfg: ConfigState): RequestedDocRow[] =>
-  requestedDocuments(c, cfg).map((s) => ({ key: s.key, doc: s.doc, sectionId: s.sectionId, why: s.why, ...(s.addedLater ? { addedLater: true as const } : {}) }));
+  requestedDocuments(c, cfg).map((s) => ({ key: s.key, doc: s.doc, sectionId: s.sectionId, why: s.why, ...(s.addedLater ? { addedLater: true as const } : {}), ...(s.optional ? { optional: true as const } : {}) }));
 
 export const partOfPhase = (phase: CiqCase["phase"]): ScopePart => (phase === "supplier-input" ? "part1" : phase === "completed" || phase === "cancelled" ? "locked" : "part2");

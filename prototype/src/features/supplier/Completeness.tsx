@@ -84,7 +84,7 @@ function BlockerPanel({ blockers, templateVersion, onJump }: { blockers: Blocker
         <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-ok" />
         <div className="text-[13px]">
           <p className="font-semibold text-ink">Everything required is answered or justified</p>
-          <p className="text-ink-2">You can confirm completeness now. Optional chapters and chapters answered with documents only do not block the confirmation.</p>
+          <p className="text-ink-2">You can confirm completeness now. Optional chapters and optional uploads do not block the confirmation.</p>
         </div>
       </div>
     );

@@ -8,11 +8,12 @@ import { ApplicabilityBadge } from "@/components/status";
 import { DEPT_LABEL, DEPT_SHORT, isChoiceType, isNumberType } from "@/domain/catalog";
 import { ruleSentence } from "@/domain/conditions";
 import { draftPair, draftSideNames, fieldMark, normalizeSectionCode, rulesPointingAt, sectionMark, shortTemplate } from "@/domain/configActions";
+import { uploadsMandatory } from "@/domain/requestedDocs";
 import type { Dept, FieldType, SectionData, SectionKind } from "@/domain/types";
 import { useStore } from "@/store/store";
 import { Choice, DEPT_ORDER, DeptChips, MarkBadge } from "./controls";
 import { emptyFieldForm, emptySectionForm, fieldFormOf, fieldFormProblems, fieldInputOf, hasProblems, kindFromCode, sectionCodeDuplicateOf, sectionFormOf, sectionFormProblems, sectionInputOf, withType, type FieldForm, type SectionForm } from "./editorModel";
-import { EDITOR_FIELD_TYPES, FIELD_TYPE_HINT, FIELD_TYPE_LABEL, REQUIRED_LABEL } from "./fieldTypes";
+import { EDITOR_FIELD_TYPES, FIELD_TYPE_HINT, FIELD_TYPE_LABEL, REQUIRED_LABEL, UPLOADS_HINT, documentsContent } from "./fieldTypes";
 import { Callout } from "./shared";
 
 export const KIND_LABEL: Record<SectionKind, string> = { basic: "Basic data", chapter: "Chapter", annex: "Annex" };
@@ -140,6 +141,25 @@ export function SectionFormModal({ sectionId, onClose, onSaved }: { sectionId?: 
             <p className="text-[12.5px] text-ink-3">{f.documentsOnly ? "The supplier uploads the documents the section asks for; there are no questions to answer." : "The supplier answers the questions you add to the section."}</p>
           </div>
         </Field>
+        {f.documentsOnly && (
+          <Field label="Upload required?">
+            <div className="space-y-1.5">
+              <Choice<"mandatory" | "optional">
+                data-testid="section-uploads"
+                aria-label="Upload required?"
+                value={f.uploads}
+                onChange={(uploads) => set({ uploads })}
+                options={[
+                  { value: "mandatory", label: REQUIRED_LABEL.mandatory },
+                  { value: "optional", label: REQUIRED_LABEL.optional },
+                ]}
+              />
+              <p className="text-[12.5px] text-ink-3" data-testid="section-uploads-hint">
+                {UPLOADS_HINT[f.uploads]}
+              </p>
+            </div>
+          </Field>
+        )}
       </div>
     </Modal>
   );
@@ -517,6 +537,7 @@ export function SectionEditorDrawer({ sectionId, fieldId, onClose, onCreateRule,
               items={[
                 { k: "Kind", v: KIND_LABEL[sec.kind] },
                 { k: "Content", v: sec.documentsOnly ? "Documents only" : "Questions" },
+                ...(sec.documentsOnly ? [{ k: "Upload required?", v: <span data-testid="section-editor-uploads">{uploadsMandatory(sec) ? REQUIRED_LABEL.mandatory : REQUIRED_LABEL.optional}</span> }] : []),
                 { k: "Lead department", v: DEPT_LABEL[sec.lead] },
                 { k: "Co-reviewers", v: sec.co.length ? sec.co.map((d) => DEPT_SHORT[d]).join(", ") : "None" },
               ]}
@@ -538,8 +559,8 @@ export function SectionEditorDrawer({ sectionId, fieldId, onClose, onCreateRule,
           {sec.id === "K2.1" && <p className="mb-2 text-[12.5px] text-ink-3">Plus the repeatable composition table (INCI, CAS, EC, function, origin and concentration per component), which is not edited here.</p>}
           {sec.documentsOnly ? (
             <div className="rounded-lg border border-dashed border-line-strong">
-              <EmptyState icon={<FileText size={20} />} title="Documents only" action={!sec.retired ? <Button size="sm" onClick={() => setSettingsOpen(true)}>Switch to questions</Button> : undefined}>
-                The supplier uploads the documents this section asks for. To ask questions, switch its content to “Questions”.
+              <EmptyState icon={<FileText size={20} />} title={documentsContent(sec)} action={!sec.retired ? <Button size="sm" onClick={() => setSettingsOpen(true)}>Switch to questions</Button> : undefined}>
+                {UPLOADS_HINT[uploadsMandatory(sec) ? "mandatory" : "optional"]} To ask questions, switch its content to “Questions”.
               </EmptyState>
             </div>
           ) : sec.fields.length === 0 ? (
