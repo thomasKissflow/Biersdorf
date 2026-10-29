@@ -82,18 +82,20 @@ const INTERNAL_USERS = ["u-rmm", "u-reg", "u-saf", "u-qm", "u-mic", "u-sus", "u-
 const SUPS = ["u-sup-1", "u-sup-2"];
 
 /** Menus and landings of spec §3 (the harness checks the shell against them). */
+const CFG = ["/admin/rules", "/admin/templates", "/admin/ownership"];
 const NAV = {
-  rmm: { landing: "/rmm", nav: ["/rmm", "/review", "/cases", "/suppliers"] },
-  reg: { landing: "/review", nav: ["/review", "/cases"] },
-  saf: { landing: "/review", nav: ["/review", "/cases"] },
-  qm: { landing: "/review", nav: ["/review", "/cases"] },
-  mic: { landing: "/review", nav: ["/review", "/cases"] },
-  sus: { landing: "/review", nav: ["/review", "/cases"] },
-  cus: { landing: "/cases", nav: ["/cases"] },
-  leg: { landing: "/cases", nav: ["/cases"] },
-  admin: { landing: "/admin/rules", nav: ["/admin/rules", "/admin/templates", "/admin/ownership", "/suppliers"], hidden: ["/admin/notifications"] },
-  auditor: { landing: "/audit", nav: ["/audit", "/cases", "/admin/rules"] },
-  owner: { landing: "/reports", nav: ["/reports", "/cases"] },
+  // 29 Oct (Thomas): every internal role but the admin also reads the configuration (CFG), read-only
+  rmm: { landing: "/rmm", nav: ["/rmm", "/review", "/cases", "/suppliers", ...CFG] },
+  reg: { landing: "/review", nav: ["/review", "/cases", ...CFG] },
+  saf: { landing: "/review", nav: ["/review", "/cases", ...CFG] },
+  qm: { landing: "/review", nav: ["/review", "/cases", ...CFG] },
+  mic: { landing: "/review", nav: ["/review", "/cases", ...CFG] },
+  sus: { landing: "/review", nav: ["/review", "/cases", ...CFG] },
+  cus: { landing: "/cases", nav: ["/cases", ...CFG] },
+  leg: { landing: "/cases", nav: ["/cases", ...CFG] },
+  admin: { landing: "/admin/rules", nav: [...CFG, "/suppliers"], hidden: ["/admin/notifications"] },
+  auditor: { landing: "/audit", nav: ["/audit", "/cases", ...CFG] },
+  owner: { landing: "/reports", nav: ["/reports", "/cases", ...CFG] },
   "sup:u-sup-1": { landing: "/portal", nav: ["/portal", "/portal/help"] },
   "sup:u-sup-2": { landing: "/portal", nav: ["/portal", "/portal/help"] },
 };
@@ -2346,12 +2348,14 @@ def("S13", "the business changes the configuration: rules and questionnaire (spe
   t.check("the same change by the admin would go through (dry run)", (await probe("createDraft", "u-admin", "probe")) === null);
   t.check("the dry runs saved nothing", JSON.stringify((await t.state()).config) === before);
   await t.viewAs(P.rmm);
-  for (const r of ["/admin/rules", "/admin/templates"]) {
+  // 29 Oct (Thomas): RMM and every department read the rules, the questionnaire and the section owners, read-only
+  for (const r of ["/admin/rules", "/admin/templates", "/admin/ownership"]) {
     await t.go(r);
-    await t.see("no-access", `RMM: ${r} is not available`);
-    for (const id of ["config-create-version", "config-check-publish", "rule-add", "section-add"]) await t.notSee(id, `RMM ${r}: no ${id}`);
+    await t.see("admin-read-only", `RMM: ${r} read-only`);
+    for (const id of ["config-create-version", "config-check-publish", "config-discard-draft", "rule-add", "section-add", "rules-tab"]) await t.notSee(id, `RMM ${r}: no ${id}`);
   }
-  await t.step("RMM: no edit controls");
+  t.check("RMM: no Edit or Delete on any rule", (await rows("rule-edit-")) === 0 && (await rows("rule-delete-")) === 0);
+  await t.step("RMM: read-only, no edit controls");
 });
 
 def("S14", "requested documents: a rule asks for documents no question collects (spec §8.5)", async (t) => {

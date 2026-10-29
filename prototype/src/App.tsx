@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { HashRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { ProductionContext, Toaster } from "@/components/ui";
 import { DemoNotesProvider } from "@/layout/demoNotes";
-import { AdminGate } from "@/layout/Gates";
+import { AdminGate, ConfigViewGate } from "@/layout/Gates";
 import { InternalShell, SupplierShell } from "@/layout/Shells";
 import { StoreProvider, useStore } from "@/store/store";
 import { OwnershipMatrix, ReminderSettings, RuleTable, TemplateManager } from "@/features/admin";
@@ -71,9 +71,9 @@ function AppRoutes() {
         <Route path="/suppliers/:id" element={<SupplierDetail />} />
         <Route path="/reports" element={<Reports />} />
         <Route path="/audit" element={<AuditTrail />} />
-        <Route path="/admin/rules" element={<AdminGate><RuleTable /></AdminGate>} />
-        <Route path="/admin/templates" element={<AdminGate><TemplateManager /></AdminGate>} />
-        <Route path="/admin/ownership" element={<AdminGate><OwnershipMatrix /></AdminGate>} />
+        <Route path="/admin/rules" element={<ConfigViewGate><RuleTable /></ConfigViewGate>} />
+        <Route path="/admin/templates" element={<ConfigViewGate><TemplateManager /></ConfigViewGate>} />
+        <Route path="/admin/ownership" element={<ConfigViewGate><OwnershipMatrix /></ConfigViewGate>} />
         <Route path="/admin/notifications" element={<AdminGate><ReminderSettings /></AdminGate>} />
       </Route>
       <Route

@@ -737,6 +737,11 @@ export function syncCatalog(cfg: ConfigState | undefined): void {
 const CASES_NAV: NavItem = { to: "/cases", label: "Cases", icon: "FolderKanban" };
 const REVIEWS_NAV: NavItem = { to: "/review", label: "My reviews", icon: "ClipboardCheck" };
 const RULES_NAV: NavItem = { to: "/admin/rules", label: "Rules", icon: "GitBranch" };
+const QUESTIONNAIRE_NAV: NavItem = { to: "/admin/templates", label: "Questionnaire", icon: "ListChecks" };
+const OWNERS_NAV: NavItem = { to: "/admin/ownership", label: "Section owners", icon: "Users" };
+/** The configuration, read-only for every internal role but the business administrator (Thomas, 29 Oct: RMM and every
+ *  department may look up the rules, the questionnaire and who owns which section when needed). */
+const CONFIG_VIEW_NAV: NavItem[] = [RULES_NAV, QUESTIONNAIRE_NAV, OWNERS_NAV];
 const SUPPLIERS_NAV: NavItem = { to: "/suppliers", label: "Suppliers", icon: "Building2" };
 
 /** The supplier portal menu (the live portal keeps its own). Tasks are merged into My requests. */
@@ -759,7 +764,7 @@ export const INTERNAL_PERSONAS: Persona[] = [
     landing: "/rmm",
     description:
       "Owns CIQ cases: starts them with the supplier contacts and target markets, reviews the whole CIQ alongside the departments and completes its own review, cancels or reactivates a case, looks up the suppliers (maintained by the business administrator) and receives the final document.",
-    nav: [{ to: "/rmm", label: "Dashboard", icon: "LayoutDashboard" }, REVIEWS_NAV, CASES_NAV, SUPPLIERS_NAV],
+    nav: [{ to: "/rmm", label: "Dashboard", icon: "LayoutDashboard" }, REVIEWS_NAV, CASES_NAV, SUPPLIERS_NAV, ...CONFIG_VIEW_NAV],
   },
   ...REVIEW_DEPTS.map<Persona>((d) => ({
     id: d.toLowerCase() as InternalPersonaId,
@@ -772,7 +777,7 @@ export const INTERNAL_PERSONAS: Persona[] = [
       d === "SAF" || d === "REG"
         ? `Reviews the ${DEPT_SHORT[d]} sections, asks the supplier directly, records the department's decision and completes the ${DEPT_SHORT[d]} review.`
         : `Reviews the ${DEPT_SHORT[d]} sections, asks the supplier directly and completes the ${DEPT_SHORT[d]} review.`,
-    nav: [REVIEWS_NAV, CASES_NAV],
+    nav: [REVIEWS_NAV, CASES_NAV, ...CONFIG_VIEW_NAV],
   })),
   {
     id: "cus",
@@ -782,7 +787,7 @@ export const INTERNAL_PERSONAS: Persona[] = [
     dept: "CUS",
     landing: "/cases",
     description: "Owns K7 (HS code, export control, CITES). Informed and read-only; may post internal notes.",
-    nav: [CASES_NAV],
+    nav: [CASES_NAV, ...CONFIG_VIEW_NAV],
   },
   {
     id: "leg",
@@ -792,7 +797,7 @@ export const INTERNAL_PERSONAS: Persona[] = [
     dept: "LEG",
     landing: "/cases",
     description: "Owns K8 and K8.1 (patents and licences). Informed and read-only; may post internal notes.",
-    nav: [CASES_NAV],
+    nav: [CASES_NAV, ...CONFIG_VIEW_NAV],
   },
   {
     id: "admin",
@@ -802,9 +807,7 @@ export const INTERNAL_PERSONAS: Persona[] = [
     landing: "/admin/rules",
     description: "Maintains the questionnaire, the rules, section ownership and the suppliers, without IT. Every change is versioned or logged.",
     nav: [
-      RULES_NAV,
-      { to: "/admin/templates", label: "Questionnaire", icon: "ListChecks" },
-      { to: "/admin/ownership", label: "Section owners", icon: "Users" },
+      ...CONFIG_VIEW_NAV,
       // Reminders is hidden from the menu (Thomas, 15 Oct); the page /admin/notifications and the reminder engine stay.
       SUPPLIERS_NAV,
     ],
@@ -817,8 +820,8 @@ export const INTERNAL_PERSONAS: Persona[] = [
     side: "internal",
     landing: "/audit",
     description: "Reconstructs who assessed what, when, on which data, document and rule-set version. Read-only.",
-    // Rules read-only: which rule-set version decided a scope.
-    nav: [{ to: "/audit", label: "Audit trail", icon: "ScrollText" }, CASES_NAV, RULES_NAV],
+    // The configuration read-only: which rule-set version decided a scope, the questionnaire, the section owners.
+    nav: [{ to: "/audit", label: "Audit trail", icon: "ScrollText" }, CASES_NAV, ...CONFIG_VIEW_NAV],
   },
   {
     id: "owner",
@@ -827,7 +830,7 @@ export const INTERNAL_PERSONAS: Persona[] = [
     side: "internal",
     landing: "/reports",
     description: "Process owner: pipeline, lead times, workload, clarifications and supplier performance. Read-only.",
-    nav: [{ to: "/reports", label: "Reports", icon: "BarChart3" }, CASES_NAV],
+    nav: [{ to: "/reports", label: "Reports", icon: "BarChart3" }, CASES_NAV, ...CONFIG_VIEW_NAV],
   },
 ];
 

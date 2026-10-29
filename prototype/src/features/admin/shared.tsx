@@ -9,7 +9,8 @@ import { useStore } from "@/store/store";
 
 export * from "./config";
 
-/** Only the business administrator edits; the auditor reads the configuration (read-only). `canEdit` is the role (the
+/** Only the business administrator edits; every other internal role reads the configuration (read-only; the auditor
+ *  since 14 Oct, RMM and the departments since 29 Oct). `canEdit` is the role (the
  *  pages, the Test rules tab); `canChange` also needs configuration changes to work here: the live app of this version
  *  shows the configuration read-only to the business administrator too (FE-CLEANUP A7, A16), so the edit controls
  *  follow `canChange` only. */
@@ -17,10 +18,10 @@ export function useAdminAccess() {
   const { state, me, persona } = useStore();
   const { configEdit } = useLiveFeatures();
   const canEdit = can(state, me.id, "config.manage");
-  return { canEdit, canChange: canEdit && configEdit, canRead: canEdit || persona.id === "auditor", isAuditor: persona.id === "auditor", persona };
+  return { canEdit, canChange: canEdit && configEdit, canRead: canEdit || persona.side === "internal", isAuditor: persona.id === "auditor", persona };
 }
 
-/** Page guard: the configuration pages are for the business administrator (edit) and the auditor (read-only). */
+/** Page guard: the configuration pages are for the business administrator (edit) and the other internal roles (read-only). */
 export function AdminOnly({ children }: { children: ReactNode }) {
   const { canRead } = useAdminAccess();
   if (canRead) return <>{children}</>;

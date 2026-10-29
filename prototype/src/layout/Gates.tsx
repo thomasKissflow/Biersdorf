@@ -6,6 +6,18 @@ import type { Persona } from "@/domain/types";
 import { useStore } from "@/store/store";
 
 /** Admin screens: the Business administrator maintains them; the Auditor reads the rules (its menu's "Rules"). */
+/** The configuration pages (rules, questionnaire, section owners): every internal persona; editing stays with the
+ *  business administrator (features/admin/shared useAdminAccess). Thomas, 29 Oct. */
+export function ConfigViewGate({ children }: { children: ReactNode }) {
+  const { persona } = useStore();
+  if (persona.side === "internal") return <>{children}</>;
+  return (
+    <EmptyState data-testid="admin-only" title="Administrator area">
+      The rules, the questionnaire and the section owners are internal to Beiersdorf.
+    </EmptyState>
+  );
+}
+
 export function AdminGate({ children }: { children: ReactNode }) {
   const { persona } = useStore();
   if (persona.id === "admin" || persona.id === "auditor") return <>{children}</>;

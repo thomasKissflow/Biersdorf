@@ -9,17 +9,18 @@ describe("personas (spec §3)", () => {
   it("internal personas are static, with the final menus and landings", () => {
     const nav = Object.fromEntries(INTERNAL_PERSONAS.map((p) => [p.id, [p.landing, p.nav.map((n) => n.label).join(" · ")]]));
     expect(nav).toEqual({
-      rmm: ["/rmm", "Dashboard · My reviews · Cases · Suppliers"],
-      reg: ["/review", "My reviews · Cases"],
-      saf: ["/review", "My reviews · Cases"],
-      qm: ["/review", "My reviews · Cases"],
-      mic: ["/review", "My reviews · Cases"],
-      sus: ["/review", "My reviews · Cases"],
-      cus: ["/cases", "Cases"],
-      leg: ["/cases", "Cases"],
+      // 29 Oct (Thomas): every internal role reads the rules, the questionnaire and the section owners (read-only)
+      rmm: ["/rmm", "Dashboard · My reviews · Cases · Suppliers · Rules · Questionnaire · Section owners"],
+      reg: ["/review", "My reviews · Cases · Rules · Questionnaire · Section owners"],
+      saf: ["/review", "My reviews · Cases · Rules · Questionnaire · Section owners"],
+      qm: ["/review", "My reviews · Cases · Rules · Questionnaire · Section owners"],
+      mic: ["/review", "My reviews · Cases · Rules · Questionnaire · Section owners"],
+      sus: ["/review", "My reviews · Cases · Rules · Questionnaire · Section owners"],
+      cus: ["/cases", "Cases · Rules · Questionnaire · Section owners"],
+      leg: ["/cases", "Cases · Rules · Questionnaire · Section owners"],
       admin: ["/admin/rules", "Rules · Questionnaire · Section owners · Suppliers"],
-      auditor: ["/audit", "Audit trail · Cases · Rules"],
-      owner: ["/reports", "Reports · Cases"],
+      auditor: ["/audit", "Audit trail · Cases · Rules · Questionnaire · Section owners"],
+      owner: ["/reports", "Reports · Cases · Rules · Questionnaire · Section owners"],
     });
     const routes = INTERNAL_PERSONAS.flatMap((p) => p.nav.map((n) => n.to));
     expect(routes).not.toContain("/understanding");

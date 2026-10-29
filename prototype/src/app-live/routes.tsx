@@ -2,7 +2,7 @@
 // mirror the prototype's internal routes (src/App.tsx AppRoutes, InternalShell children) unchanged, so the screens'
 // own links (caseLink, refLink, …) keep working; plus /diagnostics. No supplier routes: suppliers work in the portal.
 import { Navigate, Route } from "react-router-dom";
-import { AdminGate } from "@/layout/Gates";
+import { AdminGate, ConfigViewGate } from "@/layout/Gates";
 import { OwnershipMatrix, ReminderSettings, RuleTable, TemplateManager } from "@/features/admin";
 import { AuditTrail, Reports } from "@/features/reports";
 import { ReviewQueue, ReviewWorkspace } from "@/features/review";
@@ -33,9 +33,9 @@ export function internalChildRoutes() {
       <Route path="/suppliers/:id" element={<SupplierDetail />} />
       <Route path="/reports" element={<Reports />} />
       <Route path="/audit" element={<AuditTrail />} />
-      <Route path="/admin/rules" element={<AdminGate><RuleTable /></AdminGate>} />
-      <Route path="/admin/templates" element={<AdminGate><TemplateManager /></AdminGate>} />
-      <Route path="/admin/ownership" element={<AdminGate><OwnershipMatrix /></AdminGate>} />
+      <Route path="/admin/rules" element={<ConfigViewGate><RuleTable /></ConfigViewGate>} />
+      <Route path="/admin/templates" element={<ConfigViewGate><TemplateManager /></ConfigViewGate>} />
+      <Route path="/admin/ownership" element={<ConfigViewGate><OwnershipMatrix /></ConfigViewGate>} />
       <Route path="/admin/notifications" element={<AdminGate><ReminderSettings /></AdminGate>} />
       <Route path={DIAGNOSTICS_PATH} element={<Diagnostics />} />
     </>

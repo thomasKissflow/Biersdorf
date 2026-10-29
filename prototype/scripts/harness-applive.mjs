@@ -2429,6 +2429,12 @@ const SCENARIOS = {
       await at("/audit", "audit-trail", "auditor-audit-trail");
       await at("/admin/rules", "admin-read-only", "auditor-rules");
       await done();
+      // 29 Oct (Thomas): the departments read the configuration too, read-only
+      done = await as("Safety reviewer", { roles: "saf", env: "prod" });
+      await at("/admin/rules", "admin-read-only", "saf-rules");
+      await at("/admin/templates", "admin-read-only", "saf-questionnaire");
+      await at("/admin/ownership", "admin-read-only", "saf-owners");
+      await done();
       done = await as("Business owner", { roles: "owner", env: "prod" });
       await at("/reports", "reports", "owner-reports");
       await done();
