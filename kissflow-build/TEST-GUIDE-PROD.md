@@ -67,10 +67,10 @@ Tell us either way: a test that started before the file existed may need stoppin
    - The screen can't link a contact to its portal user. For each contact: (a) invite its e-mail to the prod portal in the Supplier role; (b) open the CIQ Supplier item in Kissflow's own form view and, in the Contacts table, enter that contact's "Portal User Id": the Kissflow user id of its prod Supplier-role portal user. Leave the other columns unchanged; (c) reload the app.
    - Without it, New case refuses: "None of the active supplier contacts has a portal user yet…".
    - **Link every contact before the first case starts.** A contact linked after a case has started never gets that case's request (only its later questions), because the hand-off that updates a request's contacts isn't built (backlog A-8).
-7. **Final PDF.** Set up the Google Apps Script (`kissflow-build/final-pdf/README.md`): paste the files, fill in the Script Properties with the prod values, run `probe()`, then `installTrigger()`.
-   - Run it once prod carries app `ciq-app-ui-cfd65e5766` (`PROD-MORNING-2026-10-26.md` A): `Bundle.gs` (build `c588c2189401d76c`) comes from the same tree. `probe()` must show that build.
+7. **Final PDF.** Event mode since 29 Oct: the Apps Script and its two integrations are set up in prod (`kissflow-build/final-pdf/README.md` "Event mode: prod set-up"; nothing polls, so there is no `installTrigger()` any more).
+   - With each new app build in prod, paste the rebuilt `Bundle.gs` as in the README's "Update the bundle (prod already set up)": the existing project and the existing `Bundle` file, then Manage deployments → edit → New version, so the `/exec` URL stays the same.
+   - Since 30 Oct: app `ciq-app-ui-3505acb598` goes with `Bundle.gs` build `eff9ac4776345e16` (SHA-256 `a19dee82…4b5d`). `probe()` must show that build.
    - Prod has had test cases since the 22 Oct push, so `probe()` shows real rows.
-   - Run `installTrigger()` at least 20 min before the main run's final release: the trigger files only cases released after the install, measured by the supplier's screen clock. If you rehearsed in dev in the same project, also wait 30 min after that `runOnce`.
 
 ## 1. The main run: one case from start to finished PDF (about 30 min)
 

@@ -4,6 +4,13 @@
 
 ## A. Push dev → prod (both containers)
 
+> **30 Oct, newest builds for prod: upload by hand, no push.**
+> - App `ciq-app-ui-3505acb598` and portal `ciq-portal-ui-ffe2f7c93c` (Live in dev since 29 Oct, 22:32Z; commit d72fed9). On top of the 29 Oct prod builds (app `37086b7a6d`, portal `e81db49778`) they add documents Mandatory/Optional and the phone and PWA layout (desktop unchanged from 1024 px). Zips: `optimise-2026-10-26/rollback-zips/phone-2026-10-30/`.
+> - **No Kissflow change in prod for either:** no field, form, step, permission, integration or configuration row. Upload the two zips into the existing Custom UI components: portal first, then app. A dev → prod push is not needed: it would point every integration step at dev's connections again (B1) and could disturb the final-PDF integrations you built in prod.
+> - **In the same sitting, paste the rebuilt `Bundle.gs`** (item 9).
+> - **Then:** every open tab does a full reload, above all a Business administrator's configuration editor, because an old editor tab drops the new document settings when it saves. Nobody publishes "Upload required? Mandatory" or an optional document before all three steps are done.
+> - **Rollback:** `rollback-zips/final-pdf-2026-10-29/` (app `37086b7a6d`, portal `e81db49778`). Keep the new `Bundle.gs` even then: it reads the new settings only when they are present.
+
 Push the app `CIQ_Digital_A00` and the portal `CIQ_Supplier_Portal_A00`. The push must carry:
 - **The custom screens:**
   - app `ciq-app-ui-cfd65e5766` (Live in dev since 29 Oct, 05:47 IST): **the RMES as BDF's 8 fields** (read-only sheet for Safety and Regulatory, filled from the CIQ; no criteria or findings; the decision on the Questionnaire tab; the record's time from its history row, as Kissflow's list rows carry none), on top of the matrix v0.6 fixes (`MATRIX-v0.6-ASSUMPTIONS-2026-10-28.md`) and everything before (PDF design, Full screen, case cascade delete, Rules without Basis). Zip: `optimise-2026-10-26/rollback-zips/rmes-2026-10-29/ciq-app-ui-cfd65e5766.zip`. Rollback: `rollback-zips/rmes-2026-10-29/ciq-app-ui-c8447c06da.zip` (the RMES without the record-time fix) or `rollback-zips/before-rmes/ciq-app-ui-87002b74ba.zip` (the matrix fixes without the RMES change).
@@ -58,16 +65,15 @@ Push the app `CIQ_Digital_A00` and the portal `CIQ_Supplier_Portal_A00`. The pus
 6. **Data.**
    - **Configuration (rebuilt 28 Oct for the matrix fixes):** delete the 12 old CIQ Config Version rows in prod, then run `prod-seed-postman/CIQ-prod-seed-config-version.postman_collection.json` (its README). The same rows are in `CIQ-prod-seed-config-version-INTERNAL.xlsx`. Only `SET:current` is unchanged. Start new test cases after the import; older cases keep their old configuration.
    - `CIQ-prod-seed-help-article-INTERNAL.xlsx` (9 rows), if not imported yet. The guide, §0 step 5, has the details.
-   - **Client testers:** give them the updated `CIQ-UAT-test-cases.xlsx` (29 Oct: TC-26 to TC-29 rewritten for the 8-field RMES).
+   - **Client testers:** give them the updated `CIQ-UAT-test-cases.xlsx` (31 tests since 29 Oct; TC-05 and TC-31 updated on 30 Oct for the new builds).
 7. **Users and roles.**
    - One CIQ role per tester.
    - Supplier test contacts in the portal Supplier role, each linked by Portal User Id on the CIQ Supplier contacts table before the first case (guide §0 step 6).
 8. **Notifications:** your native Kissflow notifications, if they didn't travel with the push.
-9. **Final PDF:** set up the Apps Script as in `final-pdf/README.md` "Morning setup" (updated 29 Oct). The app's own "Download PDF" button on the Final document tab works without it.
-   - **Files:** create the project and paste all 3 files: `appsscript.json`, `Code.gs` and the NEW `Bundle.gs`. The bundle was rebuilt on 29 Oct at 10:10 IST, ASCII-only so a paste can't change it: SHA-256 `1fc6fb78…1fdc`, build `c588c2189401d76c`. It has the same code and PDF bytes as 05:10's `93ce7ec1…92c2`.
-   - **Dev rehearsal (optional):** `runOnce` on ZZT-E2E-25 with your own dev key and mail off.
-   - **Prod:** set the prod Script Properties, then run `probe()`; it must show `bundle` `c588c2189401d76c`. Run `installTrigger()` at least 30 min after the dev `runOnce` and at least 20 min before the first prod release.
-   - **Where to check:** the filed PDF is in the app's data console (CIQ Case drawer), not in Kissflow's own item view.
+9. **Final PDF:** event mode, set up by you in prod on 29 Oct (`final-pdf/README.md` "Event mode: prod set-up"). The app's own "Download PDF" button on the Final document tab works without it.
+   - **30 Oct:** with the upload of app `3505acb598`, paste the rebuilt `Bundle.gs` (build `eff9ac4776345e16`, SHA-256 `a19dee82…4b5d`; it has the 29 Oct documents Mandatory/Optional change) as in the README's "Update the bundle (prod already set up)": the existing project and the existing `Bundle` file, then a new version of the existing deployment. Never a new project or a new deployment: either gives a new `/exec` URL and integration 1 stops reaching the script. There is no `installTrigger()` any more.
+   - **Check:** `probe()` shows `bundle` `eff9ac4776345e16`; after one release, Executions shows `case done`.
+   - **Where to check the PDF:** the app's data console (CIQ Case drawer), not Kissflow's own item view.
 10. **Documents:** run `python3 night-2026-10-21/docs-for-app-fe-cleanup.py --apply` from `kissflow-build/` (the client workbook and the guide's FE texts).
 
 ## C. Your first test: one case, start to finish (about 30 min)

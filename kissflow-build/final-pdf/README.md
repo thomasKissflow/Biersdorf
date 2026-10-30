@@ -8,7 +8,7 @@ Thomas does these himself. No key, token or URL goes into this file, the repo or
 
 1. **Create the project** (script.google.com → New project, e.g. "CIQ final document (prod)"). In Project Settings tick "Show appsscript.json manifest file in editor", then paste:
    - `apps-script/appsscript.json` into `appsscript.json`;
-   - `apps-script/Bundle.gs` into a new script file `Bundle`: `pbcopy < kissflow-build/final-pdf/apps-script/Bundle.gs`, select all in the file, paste. Check: 4233 lines, the last one `CIQFinal.BUILD = "523d17922200b112";` (`shasum -a 256` of the repo file: `d8594215cb08ba500840d0c4c961de1adb8822e61b98f8e17f0b95361616c719`);
+   - `apps-script/Bundle.gs` into a new script file `Bundle`: `pbcopy < kissflow-build/final-pdf/apps-script/Bundle.gs`, select all in the file, paste. Check: 4252 lines, the last one `CIQFinal.BUILD = "eff9ac4776345e16";` (`shasum -a 256` of the repo file: `a19dee823010c1090e36a2a2beedb0cbf92ffd48f4b60338ab51fac5cad24b5d`);
    - `apps-script/Code.gs` into `Code.gs` (`pbcopy < kissflow-build/final-pdf/apps-script/Code.gs`). Save.
 2. **Script Properties** (Project Settings → Script Properties):
    - `KF_DOMAIN` `beiersdorf.kissflow.eu` (the bare host);
@@ -19,7 +19,7 @@ Thomas does these himself. No key, token or URL goes into this file, the repo or
    - `ADMIN_EMAIL`: who gets the alerts.
    - Optional: `KF_APP_ID` (default `CIQ_Digital_A00`), `KF_PORTAL_APP_ID` (default `CIQ_Supplier_Portal_A00`), `PORTAL_COPY_ENABLED` (default true), `MAIL_ENABLED` (default true), `TIME_ZONE`, `DRIVE_FOLDER_ID`.
 3. **Deploy → New deployment → Web app**: Execute as **Me**, Who has access **Anyone**. Copy the `/exec` URL (only into integration 1, step 5). After every later paste of `Code.gs`: **Manage deployments → edit (pencil) → Version: New version → Deploy**, so the URL stays the same. A second "New deployment" makes a new URL and silently breaks integration 1. If "Anyone" is not offered, the Workspace blocks it: stop and tell the team.
-4. **Run `probe`** from the editor (the first run asks you to authorize the scopes; an anonymous POST cannot). It must not throw. Check `bundle` `523d17922200b112`, `rev` `ev-2026-10-29.2`, `triggers.tick` 0 (else run `removeTriggers`), `portalCopy` true, and the list "released without a final document".
+4. **Run `probe`** from the editor (the first run asks you to authorize the scopes; an anonymous POST cannot). It must not throw. Check `bundle` `eff9ac4776345e16`, `rev` `ev-2026-10-29.2`, `triggers.tick` 0 (else run `removeTriggers`), `portalCopy` true, and the list "released without a final document".
 5. **Integration 1** in the prod builder, "CIQ Case Item exits final step – final release PDF Email": trigger "When an item completes its workflow" on CIQ Case; HTTP step: method POST, URL the `/exec` URL with no query, body type raw JSON `{"caseItemId":"<insert the trigger's _id>","token":"<the token>"}`. Never a header token (doPost cannot read headers). Its step test sends `SampleInstance001` and answers `{"ok":true,"status":"test event"}` (behind Google's 302); nothing is queued. If the HTTP step asks for a connection, make one with no authentication. Switch integration 1 ON only after integration 2 is ON (step 6). Its trigger was set over REST in dev; the trigger test stored a sample case, so `_id` is in the field picker.
 6. **Integration 2**, "CIQ Case - Send Final Release to RMM" (steps: Catch a webhook → Find the case → Get user data (RMM role) → RMM mail text → Send the final PDF to the RMMs). Do this BEFORE integration 1 is switched on:
    1. Copy its webhook URL from the trigger into `RMM_WEBHOOK_URL`; set `MAIL_ENABLED` true (or delete it). Run `probe`: `rmmWebhook` must show `set`, `shape`, `sameHost` and `sameAccount` all true.
@@ -27,6 +27,19 @@ Thomas does these himself. No key, token or URL goes into this file, the repo or
    3. Test each step in order. "Find the case" finds that case; "Get user data" lists the RMM role's members (if it returns no users, the RMM role has no member in prod); "RMM mail text" gives To, Subject and Body. **"Send the final PDF to the RMMs" really sends** one mail to the RMM role: without a PDF it says the PDF is not attached yet. Check its **Attachments** pill reads "Find the case → … Final PDF"; if it shows as invalid, pick Final PDF from the "Find the case" output again.
    4. Switch integration 2 ON. Delete `RUN_ONCE_CASE_ID`.
 7. **Check one release:** the Apps Script **Executions** page shows `doPost queued`, then 2–3 min later a `drain` with `portal copy attached`, `audit row written`, `rmm notified` and `case done` (both with the same `rev`); the case's Final PDF in the app's data console; the request's Final PDF in the portal (the supplier-safe copy: no Beiersdorf names or e-mail addresses); integration 2's run history and the RMM mail.
+
+### Update the bundle (prod already set up)
+
+After each new app build that changes the domain code (for example 30 Oct: app `ciq-app-ui-3505acb598`), only `Bundle.gs` changes. Do it in the same sitting as the UI upload, with no final release in between. Code.gs, `appsscript.json`, the Script Properties and both integrations stay as they are.
+
+1. **Locally:** `shasum -a 256 kissflow-build/final-pdf/apps-script/Bundle.gs` prints `a19dee82…4b5d`, its last line is `CIQFinal.BUILD = "eff9ac4776345e16";`, and `node kissflow-build/final-pdf/test/offline.mjs` ends with pass 54, fail 0.
+2. **Nothing queued:** run `probe` in the existing prod project. `probe: event path` shows `queued` 0 and an empty `drainDue`, and Executions shows no running `drain`.
+3. **Paste:** in the existing file `Bundle` (not Code.gs, not a new file): `pbcopy < kissflow-build/final-pdf/apps-script/Bundle.gs`, then select all, paste, save. Check 4252 lines and the last line as in step 1.
+4. **New version of the existing deployment:** Manage deployments → the existing Web app → edit (pencil) → Version: New version → Deploy. The `/exec` URL stays the one integration 1 uses. Never "New deployment".
+5. **Run `probe`:** `bundle` `eff9ac4776345e16`, `rev` `ev-2026-10-29.2`, `triggers.tick` 0.
+6. **One release** as in step 7 above: the `built` line in Executions shows `bundle` `eff9ac4776345e16`. In the case's Final PDF, the "Further sections in scope" intro reads "Answered with documents (the CIQ template document, statements or certificates)…", without "the upload is optional".
+
+**Roll back the bundle:** paste the previous `Bundle.gs` from git (`git show 560de86:kissflow-build/final-pdf/apps-script/Bundle.gs`, build `523d17922200b112`, SHA-256 `d8594215…c719`) the same way. Going back to an older deployment version does not undo it, because `drain` runs the saved code.
 
 The sections below "Morning setup in Google Apps Script" describe the retired polling set-up (`tick`, `installTrigger`, `RELEASED_AFTER`, the RMM mail from the script). Use this section for prod; the reading of the log lines, the safety rules and the PDF sections still apply.
 
